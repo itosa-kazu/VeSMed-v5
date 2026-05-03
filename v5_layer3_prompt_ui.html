@@ -249,12 +249,12 @@
 
 <div style="display:flex; align-items:center; gap:14px; margin-top:10px; flex-wrap:wrap;">
   <button id="storeStage1Btn" onclick="storeStage1()"
-    style="background:#6c757d; color:#fff; padding:10px 18px; border:none;
+    style="display:none; background:#6c757d; color:#fff; padding:10px 18px; border:none;
            border-radius:4px; cursor:pointer; font-size:14px; font-weight:700;">
     Store Stage 1
   </button>
   <button id="mergeStage2Btn" onclick="mergeStage2Patch()"
-    style="background:#17a2b8; color:#fff; padding:10px 18px; border:none;
+    style="display:none; background:#17a2b8; color:#fff; padding:10px 18px; border:none;
            border-radius:4px; cursor:pointer; font-size:14px; font-weight:700;">
     Merge Stage 2 Patch
   </button>
@@ -344,7 +344,7 @@ Use this universal checklist for every disease:
 - For every major treatment, also record patient-specific safety / contraindication context:
   allergy or severe hypersensitivity, pregnancy, renal or hepatic dose limits, active infection,
   TB/HBV reactivation risk, bleeding/procedure risk, volume overload, and major drug-interaction
-  context when clinically important. Encode these as `treatment_modifier` axes and consume them
+  context when clinically important. Encode these as treatment_modifier axes and consume them
   through required_context_axes/effect_modifiers. Do not confuse "drug can kill the pathogen" with
   "this patient can safely receive the drug."
 - Treatment_modifier axes are patient context, not disease natural-history curves. Unless the context
@@ -746,7 +746,7 @@ For treatments/risk factors, output only fields that affect runtime decisions:
 required_context_axes, effect_modifiers, failure_modes, trajectory_modifications, push_targets, sigma_modulation, side_effects, onset_delay_days, knowledge_confidence.
 For each treatment, include both efficacy context and patient-usability context. If allergy, severe hypersensitivity,
 pregnancy, renal/hepatic impairment, active infection, reactivation risk, bleeding/procedure risk, volume overload,
-or major drug interaction changes whether the treatment can be used, add/reuse a `treatment_modifier` axis and put
+or major drug interaction changes whether the treatment can be used, add/reuse a treatment_modifier axis and put
 it in required_context_axes/effect_modifiers.
 Treatment_modifier axes should not receive disease-course peak/plateau/decline parameters by default; they stay at
 baseline unless observed in the case or changed by a risk/context modifier.

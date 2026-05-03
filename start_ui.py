@@ -95,6 +95,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Connection", "close")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
@@ -105,18 +106,19 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, "text/plain", "")
 
     def do_GET(self):
-        if self.path in ("/", "/ui", "/ui.html"):
+        path = self.path.split("?", 1)[0]
+        if path in ("/", "/ui", "/ui.html"):
             ui = ROOT / "v5_layer3_prompt_ui.html"
             self._send(200, "text/html; charset=utf-8", ui.read_bytes())
-        elif self.path == "/ping":
+        elif path == "/ping":
             self._send(200, "application/json; charset=utf-8", '{"ok":true}')
-        elif self.path == "/master_axes.json":
+        elif path == "/master_axes.json":
             mp = ROOT / "master_axes.json"
             if mp.exists():
                 self._send(200, "application/json; charset=utf-8", mp.read_bytes())
             else:
                 self._send(200, "application/json; charset=utf-8", '{"axes": []}')
-        elif self.path == "/list_distillations":
+        elif path == "/list_distillations":
             files = sorted(p.name for p in DISTILL_DIR.glob("v5_*.json"))
             self._send(200, "application/json; charset=utf-8",
                        json.dumps(files, ensure_ascii=False))
