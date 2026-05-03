@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>V5 Layer 3 Distillation Prompt Generator</title>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 20px;
+    color: #222;
+    background: #fafafa;
+  }
+  h1 { margin-top: 0; font-size: 22px; }
+  h2 { font-size: 15px; margin-top: 18px; color: #444; }
+
+  .picker {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .picker label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+  }
+  .picker select {
+    flex: 1;
+    min-width: 360px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+  }
+  .picker .btn-copy {
+    padding: 9px 22px;
+    background: #ffc107;
+    color: #222;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .picker .btn-copy:hover { background: #e0a800; }
+
+  details.advanced {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  details.advanced > summary {
+    cursor: pointer;
+    padding: 10px 16px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+    user-select: none;
+  }
+  details.advanced[open] > summary {
+    border-bottom: 1px solid #eee;
+  }
+  .inputs {
+    padding: 12px 16px 16px;
+  }
+  .inputs .row {
+    display: flex;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .inputs label {
+    width: 130px;
+    font-weight: 600;
+    color: #555;
+    padding-top: 6px;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+  .inputs input, .inputs textarea, .inputs select {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .inputs textarea { min-height: 50px; resize: vertical; }
+  .inputs input[type="number"] { max-width: 100px; }
+  .inputs button.regen {
+    margin-top: 6px;
+    padding: 6px 14px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  textarea#output {
+    width: 100%;
+    box-sizing: border-box;
+    height: 460px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: "Consolas", "Menlo", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    background: #fff;
+  }
+
+  .save-hint {
+    background: #fff8dc;
+    border: 1px solid #f0d860;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .save-hint code {
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    font-family: "Consolas", monospace;
+  }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  .note {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h1>V5 Layer 3 蒸馏 Prompt 生成器</h1>
+<p style="color:#666; font-size:13px;">① 选病 → ② Copy Prompt → ③ 粘贴到 GPT-5 / Claude / Gemini → ④ 返回的 JSON 粘到下面框 → <b>自动保存</b>到 distillations/</p>
+<p style="color:#a04040; font-size:12px; margin:4px 0 6px;">⚠ 架构原则: <b>蒸馏只针对疾病轨迹</b>。健康 = 各流形 baseline 涌现交集, 死亡 = 各流形极端态涌现, 都不单独蒸馏。</p>
+<p id="serverStatus" style="font-size:12px; margin:4px 0 12px; color:#666;">检测 server...</p>
+
+<div class="picker">
+  <label for="diseaseSelect">疾病 / 流形:</label>
+  <select id="diseaseSelect" onchange="loadPreset(this.value)">
+    <option value="hlh_mas" selected>优先级 1: HLH / MAS (D-HLH-MAS)</option>
+    <option value="sle_flare">优先级 1: SLE flare with fever (D-SLE-FLARE)</option>
+    <option value="tb_disseminated">优先级 2: Disseminated / miliary TB (D-TB-DISSEMINATED)</option>
+    <option value="lymphoma_fever">优先级 2: Lymphoma fever (D-LYMPHOMA-FEVER)</option>
+    <option value="infective_endocarditis">优先级 3: Infective endocarditis (D-INFECTIVE-ENDOCARDITIS)</option>
+    <option value="anca_vasculitis">优先级 3: ANCA vasculitis (D-ANCA-VASCULITIS)</option>
+    <option value="dress_drug_fever">优先级 4: DRESS / drug fever (D-DRUG-FEVER-DRESS)</option>
+    <option value="ebv_cmv_mono_like">优先级 4: EBV/CMV mono-like infection (D-EBV-CMV-MONO-LIKE)</option>
+    <option value="mis_a_kawasaki_like">优先级 5: MIS-A / Kawasaki-like (D-MIS-A-KAWASAKI-LIKE)</option>
+    <option value="leptospirosis_severe">优先级 5: Severe leptospirosis (D-LEPTOSPIROSIS-SEVERE)</option>
+    <option value="aosd_nomas">已有: AOSD non-MAS (D137)</option>
+    <option value="sepsis_bacterial">已有: Gram-negative sepsis (D-SEPSIS-GN)</option>
+    <option value="ttp">已有: TTP (D-TTP)</option>
+    <option value="blank">空白 / 自定义</option>
+  </select>
+  <button class="btn-copy" onclick="copyPrompt()">📋 Copy Prompt</button>
+</div>
+
+<details class="advanced">
+  <summary>▸ 高级：调整字段（默认会自动用 preset 填好）</summary>
+  <div class="inputs">
+    <div class="row">
+      <label>Disease ID</label>
+      <input id="diseaseId" oninput="generate()">
+    </div>
+    <div class="row">
+      <label>Disease name</label>
+      <input id="diseaseName" oninput="generate()">
+    </div>
+    <div class="row">
+      <label>Subtype</label>
+      <textarea id="subtype" oninput="generate()"></textarea>
+    </div>
+    <div class="row">
+      <label>Time anchor (day 0)</label>
+      <input id="timeAnchor" oninput="generate()">
+    </div>
+    <div class="row">
+      <label>Time window (days)</label>
+      <input id="tMax" type="number" oninput="generate()">
+    </div>
+    <div class="row">
+      <label>Expert framing</label>
+      <input id="expertise" oninput="generate()">
+    </div>
+    <div class="row">
+      <label>Domain module</label>
+      <select id="domainModule" onchange="generate()">
+        <option value="infection">Infection / sepsis</option>
+        <option value="immune_inflammatory">Immune / inflammatory</option>
+        <option value="hematology_tma">Hematology / TMA</option>
+        <option value="generic">Generic internal medicine</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Output mode</label>
+      <select id="distillStage" onchange="generate()">
+        <option value="full" selected>One-shot semantic JSON (default)</option>
+        <option value="stage1">Fallback only: Stage 1 mechanisms + axes</option>
+        <option value="stage2">Fallback only: Stage 2 treatments + risk patch</option>
+      </select>
+      <div class="note">默认不要两段式。只有 one-shot 输出过长或模型截断时，才用 Stage 1/2 fallback。</div>
+    </div>
+  </div>
+</details>
+
+<h2 style="margin-bottom:6px;">Prompt（給 LLM 用，点上面 Copy）</h2>
+<textarea id="output" readonly></textarea>
+
+<h2 style="margin-bottom:6px;">LLM 返回的 JSON（粘贴这里 → <span id="saveModeHint">检测 server...</span>）</h2>
+<textarea id="yamlInput"
+  placeholder='粘贴 LLM 返回的 JSON 对象，例如：&#10;{&#10;  "disease": "D-SEPSIS-GN",&#10;  "latent_mechanisms": [ ... ],&#10;  "mechanism_edges": [ ... ],&#10;  "axes": [ ... 含 mortality_hazard ... ],&#10;  "axis_couplings": [ ... ],&#10;  "treatments": [ ... ],&#10;  "risk_factors": [ ... ],&#10;  "supportive_care": [ ... ]&#10;}'
+  oninput="updateJsonStats()"
+  style="width:100%; box-sizing:border-box; height:300px; padding:12px;
+         border:1px solid #ccc; border-radius:4px; background:#fff;
+         font-family:'Consolas','Menlo',monospace; font-size:12px; line-height:1.5;">
+</textarea>
+
+<div style="display:flex; align-items:center; gap:14px; margin-top:10px; flex-wrap:wrap;">
+  <button id="storeStage1Btn" onclick="storeStage1()"
+    style="background:#6c757d; color:#fff; padding:10px 18px; border:none;
+           border-radius:4px; cursor:pointer; font-size:14px; font-weight:700;">
+    Store Stage 1
+  </button>
+  <button id="mergeStage2Btn" onclick="mergeStage2Patch()"
+    style="background:#17a2b8; color:#fff; padding:10px 18px; border:none;
+           border-radius:4px; cursor:pointer; font-size:14px; font-weight:700;">
+    Merge Stage 2 Patch
+  </button>
+  <button onclick="saveJson()"
+    style="background:#28a745; color:#fff; padding:10px 22px; border:none;
+           border-radius:4px; cursor:pointer; font-size:14px; font-weight:700;">
+    💾 Save as <span id="saveBtnName">v5_&lt;ID&gt;.json</span>
+  </button>
+  <span id="yamlStats" style="color:#666; font-size:13px;">（粘贴 LLM 输出后会显示统计）</span>
+</div>
+
+<div class="save-hint" id="saveHintBox" style="margin-top:14px;">
+  <strong>保存路径:</strong> <span id="savePathHint">检测 server...</span>　文件名: <code id="saveHint">v5_&lt;ID&gt;.json</code>
+</div>
+
+<div class="toast" id="toast">已复制!</div>
+
+<script>
+const TEMPLATE = `You are a senior clinical expert with combined expertise in {{EXPERTISE}}.
+
+TASK
+----
+Describe the FULL CLINICAL STACK of the disease course of:
+
+  Disease: {{DISEASE_NAME}} (id: {{DISEASE_ID}})
+  Subtype: {{SUBTYPE}}
+  Time window: day 0 ({{TIME_ANCHOR}}) through day {{T_MAX}}
+
+DISTILLATION STEP
+-----------------
+{{DISTILLATION_STEP_RULES}}
+
+You will produce ONE JSON object with these top-level fields:
+
+  - "disease"
+  - "latent_mechanisms" - hidden pathophysiologic drivers / engines, each runnable as 0..1 activity
+  - "mechanism_edges"  - mechanism-grounded causal DAG edges: source -> target, effect on target
+  - "axes"             - lab/physiologic/clinical axes, including mortality_hazard axis
+  - "axis_couplings"   - residual noise correlations and true event chains not explained by mechanisms
+  - "treatments"       - all standard treatments for this disease
+  - "risk_factors"     - individual modifiers (age/sex/genetic/comorbidity)
+  - "supportive_care"  - list of non-specific supportive care items (just names)
+
+Do not hide major pathophysiologic engines inside axis_couplings. First name the
+latent mechanism, then connect it to observed axes / event hazards / outcomes through
+mechanism_edges. Use axis_couplings only for residual covariance or true event transitions.
+
+PROGRAM-OWNED VS LLM-OWNED
+==========================
+The LLM owns clinical semantics only:
+- which mechanisms, axes, edges, treatments, risk factors matter
+- directions, broad ranges, and context needed for treatment effect
+
+The program owns boilerplate and derivable structure:
+- empty top-level arrays, omitted null fields, pretty-printing, defaults
+- sigma / covariance construction, background fallback, mechanism gate scaling
+- duplicate axis reuse, patch merging, and final JSON normalization
+
+Therefore: do NOT output fields whose value is null, empty, generic, or obvious.
+Do NOT fill long prose just because the schema has a text field. Keep only runtime-useful
+and clinically discriminating information.
+
+YOU decide axes count and treatments count — no required number. Choose what best characterizes
+this disease based on your training knowledge.
+
+ONE-SHOT DISTILLATION STRATEGY
+==============================
+The goal is to capture the best possible ingredients in one run, not just common labs.
+
+Use this universal checklist for every disease:
+- Include quantitative axes, qualitative symptom/sign axes, and decision-relevant hidden mechanisms.
+- Start with 2-6 latent mechanisms when the disease has recognizable engines.
+  Examples: cytokine_storm_activity, bacterial_burden_activity, vasodilatory_shock_activity,
+  microthrombotic_activity, immune_adamts13_inhibition_activity, macrophage_activation_activity.
+  Mechanisms are not diagnoses; they are 0..1 hidden activities that drive many axes.
+- Include clinically important complication / event-hazard axes when they materially change outcome.
+  Examples: major_bleeding_hazard, intracranial_hemorrhage_hazard, acute_kidney_injury_hazard,
+  ards_hazard, dic_hazard, shock_hazard, stroke_hazard, myocardial_injury_hazard, mas_hlh_hazard.
+  These are NOT hard labels; they are state-dependent hazard axes that let complications change RMST.
+- Do not encode "a test was performed" as the axis when the clinically relevant state is the finding.
+  Example: do not create "ct_scan_performed"; create "intra_abdominal_abscess_activity",
+  "biliary_obstruction_activity", "pneumonia_infiltrate_extent", or "drainable_focus_probability".
+- Include absent/negative axes only when absence is clinically discriminating for this disease
+  or changes treatment choice. Do not add every possible exclusion test.
+- For every disease-modifying treatment, record what context must be true for it to work,
+  what makes it fail, and what axes modulate its effect.
+- For every major treatment, also record patient-specific safety / contraindication context:
+  allergy or severe hypersensitivity, pregnancy, renal or hepatic dose limits, active infection,
+  TB/HBV reactivation risk, bleeding/procedure risk, volume overload, and major drug-interaction
+  context when clinically important. Encode these as `treatment_modifier` axes and consume them
+  through required_context_axes/effect_modifiers. Do not confuse "drug can kill the pathogen" with
+  "this patient can safely receive the drug."
+- Treatment_modifier axes are patient context, not disease natural-history curves. Unless the context
+  is directly observed in the case, keep it near baseline and do not give it peak_day/peak_value/
+  plateau/decline trajectory parameters.
+- If a risk factor changes treatment efficacy, drug toxicity, resistance risk, diagnostic visibility,
+  or source-control need, put that into risk_factors modulation rather than free text only.
+
+DISEASE-CLASS MODULE
+====================
+{{DOMAIN_MODULE}}
+
+OUTPUT FORMAT (JSON)
+====================
+
+{
+  "disease": "{{DISEASE_ID}}",
+
+  "latent_mechanisms": [
+    {
+      "mechanism_id":             string (snake_case; reusable if same mechanism recurs across diseases),
+      "display_name":             string,
+      "clinical_meaning":         string,
+      "unit":                     "relative_activity_0_1",
+      "log_scale":                false,
+      "baseline_range":           [low, high],   /* inactive/background activity, usually near 0 */
+      "peak_day_range":           [low, high] or null,
+      "peak_value_range":         [low, high],   /* active disease range, usually within 0..1 */
+      "plateau_duration_days":    [low, high] or null,
+      "decline_half_life_days":   [low, high] or null,
+      "evidence_sources":         ["history" | "physical_exam" | "lab" | "microbiology" |
+                                  "imaging" | "procedure" | "treatment_response", ...],
+      "knowledge_confidence":     "high" | "medium" | "low",
+      "additional_notes":         string or null
+    }
+  ],
+
+  "mechanism_edges": [
+    {
+      "source_id":                string,  /* usually a latent mechanism_id */
+      "target_id":                string,  /* latent mechanism_id, axis_id, event_hazard, or mortality_hazard */
+      "effect_on_target":         "increase" | "decrease",
+      "edge_type":                "pathophysiology" | "mechanism_to_mechanism" |
+                                  "mechanism_to_axis" | "mechanism_to_event" |
+                                  "event_transition" | "toxicity" | "treatment_effect",
+      "lag_days_range":           [low, high] or null,
+      "phase":                    "early" | "peak" | "recovery" | "whole_course" | "context_dependent",
+      "conditionality":           string or null,
+      "clinical_rationale":       string,
+      "knowledge_confidence":     "high" | "medium" | "low"
+    }
+  ],
+
+  "axes": [
+    {
+      "axis_id":                  string (snake_case; reuse SAME id across diseases for same concept,
+                                          e.g. "serum_ferritin" not "ferritin_level"),
+      "category":                 "lab_value" | "vital_sign" | "physical_finding" |
+                                  "microbiology" | "imaging_finding" | "source_control" |
+                                  "treatment_modifier" | "event_hazard" |
+                                  "derived_hazard" | "qualitative" | "latent_mechanism",
+      "unit":                     string (e.g. "ng/mL", "°C", "events_per_day"),
+      "log_scale":                boolean,
+      "shape_free_text":          string (curve shape over days 0-{{T_MAX}}),
+      "baseline_range":           [low, high],
+      "peak_day_range":           [low, high] or null,
+      "peak_value_range":         [low, high] or null,
+      "plateau_duration_days":    [low, high] or null,
+      "decline_half_life_days":   [low, high] or null,
+      "second_peak":              string or null,
+      "evidence_sources":         ["history" | "physical_exam" | "lab" | "microbiology" |
+                                  "imaging" | "procedure" | "treatment_response", ...],
+      "absence_is_informative":   boolean,
+      "observer_dependency":      "low" | "medium" | "high" or null,
+      "knowledge_confidence":     "high" | "medium" | "low",
+      "additional_notes":         string or null
+    }
+    /* MUST include one axis with category "derived_hazard": */
+    /* mortality_hazard for this disease, used by V5 SDE first-passage outcome (lifespan RMST). */
+    /* axis_id: "mortality_hazard_in_{{DISEASE_ID}}", unit: "events_per_day", log_scale: true */
+    /* trajectory_params describe how death-rate evolves with disease course. */
+
+    /* OPTIONAL but important when clinically central: event_hazard axes for complications. */
+    /* Prefer reusable axis_ids across diseases when the clinical event is the same, e.g. */
+    /* "major_bleeding_hazard", "intracranial_hemorrhage_hazard", "acute_kidney_injury_hazard". */
+    /* IMPORTANT for treatment choice: treatment_modifier axes describe whether this patient can */
+    /* safely receive a therapy, e.g. "penicillin_type1_hypersensitivity_probability", */
+    /* "pregnancy_or_planning_pregnancy_activity", "active_serious_infection_activity", */
+    /* "severe_renal_impairment_activity", "hepatitis_b_reactivation_risk_activity". */
+    /* They are patient-context priors/observations, not disease-course axes; omit trajectory params */
+    /* unless the modifier is directly observed or explicitly risk-modulated. */
+  ],
+
+  "axis_couplings": [
+    {
+      "source_axis_id":            string,
+      "target_axis_id":            string,
+      "relationship":              "positive_correlation" | "negative_correlation" |
+                                   "same_direction" | "opposite_direction" |
+                                   "source_leads_target" | "target_leads_source",
+      "coupling_type":             "noise_correlation" | "drift" | "hazard_drift" |
+                                   "event_transition" | "mixed" or null,
+      "correlation_range":         [low, high] or null,   /* -1 to +1, broad if uncertain */
+      "effect_direction":          "source_up_increases_target" |
+                                   "source_up_decreases_target" |
+                                   "source_down_increases_target" |
+                                   "source_down_decreases_target" or null,
+      "effect_size_range":         [low, high] or null,   /* target drift strength in transformed units
+                                                             per meaningful source-axis deviation */
+      "activation_threshold_range": [low, high] or null,   /* optional source-axis value where risk accelerates */
+      "lag_days_range":            [low, high] or null,   /* source-to-target lag; 0 = synchronous */
+      "phase":                     "early" | "peak" | "recovery" | "whole_course" | "context_dependent",
+      "conditionality":            string or null,        /* e.g. "only in MAS-like deterioration",
+                                                             "weakened in immunosuppressed patients" */
+      "clinical_rationale":        string,
+      "knowledge_confidence":      "high" | "medium" | "low"
+    }
+  ],
+
+  /* Do not duplicate mechanism_edges here. If a latent mechanism drives platelet_count,
+     LDH, creatinine, rash, fever, lactate, or mortality_hazard, put that in mechanism_edges.
+     axis_couplings is for residual covariance and true event chains such as
+     severe_thrombocytopenia -> major_bleeding_hazard -> intracranial_hemorrhage_hazard. */
+
+  "treatments": [
+    {
+      "drug":                     string (e.g. "prednisolone_1mgkg_per_day", "anakinra_100mg_daily"),
+      "drug_class":               string (e.g. "glucocorticoid", "IL-1_inhibitor", "antibiotic"),
+      "mode":                     "push_state" | "reshape_landscape" | "modulate_sigma" | "modulate_theta",
+      "empiric_or_definitive_role": "empiric" | "definitive" | "bridge" | "rescue" |
+                                   "supportive" | "context_dependent",
+      "required_context_axes":    [string, ...],  /* axes needed to know whether this treatment fits:
+                                                     efficacy context + safety/contraindication context */
+      "effect_modifiers": [
+        {
+          "axis_id":               string,        /* e.g. active_antibiotic_coverage_probability */
+          "condition":             "high" | "low" | "present" | "absent" | "unknown" |
+                                   "above_threshold" | "below_threshold",
+          "effect":                "strengthens" | "weakens" | "blocks" |
+                                   "required_for_effect" | "contraindicates" |
+                                   "requires_source_control" | "changes_toxicity",
+          "factor_range":          [low, high] or null,
+          "clinical_rationale":    string
+        }
+      ],
+      "failure_modes":            [string, ...], /* why this treatment may not work in this disease */
+
+      /* For reshape_landscape (e.g. weakening a disease mechanism / attractor):             */
+      /* Prefer targeting latent mechanism ids when the treatment acts on the disease engine. */
+      /* Example: TPE lowers immune_adamts13_inhibition_activity; antibiotics lower           */
+      /* bacterial_burden_activity; IL-1 blockade lowers cytokine_storm_activity.             */
+      /* Also include mortality_hazard_in_<DISEASE_ID> when there is direct outcome evidence  */
+      /* or when the mechanism-to-outcome path is uncertain. Missing both a mechanism target  */
+      /* and mortality/outcome target makes the simulator treat it as non-disease-modifying.  */
+      "trajectory_modifications": {
+        "<axis_id>": {
+          "peak_value_factor":         [low, high]   (multiplicative, e.g. [0.3, 0.5]),
+          "plateau_duration_factor":   [low, high],
+          "decline_half_life_days":    [low, high]    (treatment-induced decline)
+        }
+      } or null,
+
+      /* For push_state (e.g. norepinephrine pushing MAP up): */
+      "push_targets": [
+        { "axis_id": string, "direction": "up"|"down", "magnitude_range": [low, high], "unit": string }
+      ] or null,
+
+      /* For modulate_sigma (e.g. sedation reducing variability): */
+      "sigma_modulation": { "axes": [...], "factor": [low, high] } or null,
+
+      /* For modulate_theta (e.g. chemo causing long-term marrow suppression): */
+      "theta_changes": [
+        { "covariate": string, "direction": "up"|"down", "duration": "weeks"|"months"|"years"|"lifelong" }
+      ] or null,
+
+      "onset_delay_days":         [low, high],
+      "carryover_after_stop_days": [low, high] or null,
+      "side_effects": [
+        {
+          "axis_id":           string,
+          "direction":         "up" | "down",
+          "magnitude_range":   [low, high],
+          "interpretation":    string
+        }
+      ],
+      "context_specific_role":    string (this drug's role IN THIS DISEASE, not generic),
+      "knowledge_confidence":     "high" | "medium" | "low"
+    }
+  ],
+
+  "risk_factors": [
+    {
+      "factor":                   string (e.g. "age", "sex", "HLA_B_52", "comorbid_CKD"),
+      "type":                     "continuous" | "categorical" | "categorical_genetic" | "comorbidity",
+      "modulation": {
+        "<category_label>": {
+          "P_disease_ratio":          [low, high]   (relative risk of disease, 1.0 = neutral),
+          "trajectory_modulation":    string or null,  (how trajectory shifts for this category)
+
+          /* How this factor changes the observed expression of specific axes.
+             Example: immunosuppression may blunt fever, CRP, WBC response in sepsis. */
+          "axis_response_modulation": [
+            {
+              "axis_id":                   string,
+              "effect":                    "higher_baseline" | "lower_baseline" |
+                                           "higher_peak" | "lower_peak" |
+                                           "delayed_peak" | "blunted_response" |
+                                           "more_variable" | "less_variable",
+              "magnitude_factor_range":    [low, high] or null,
+              "time_shift_days_range":     [low, high] or null,
+              "clinical_rationale":        string
+            }
+          ],
+
+          /* How this factor changes axis-axis linkage.
+             Example: immunosuppression can weaken/decouple CRP-temperature coupling. */
+          "coupling_modulation": [
+            {
+              "source_axis_id":             string,
+              "target_axis_id":             string,
+              "effect":                     "strengthen" | "weaken" | "invert" |
+                                            "delay" | "decouple",
+              "factor_range":               [low, high] or null,
+              "lag_days_delta_range":       [low, high] or null,
+              "clinical_rationale":         string
+            }
+          ],
+
+          /* How this factor changes context axes that decide treatment effect.
+             Example: recent healthcare exposure raises resistant-organism risk. */
+          "context_axis_prior_modulation": [
+            {
+              "axis_id":                     string,
+              "effect":                      "raises_prior" | "lowers_prior" |
+                                             "makes_unknown_more_dangerous",
+              "value_shift_range":           [low, high] or null,
+              "clinical_rationale":          string
+            }
+          ],
+
+          /* How this factor changes treatment efficacy or toxicity directly.
+             Example: CKD changes aminoglycoside toxicity; neutropenia changes antibiotic urgency. */
+          "treatment_effect_modulation": [
+            {
+              "treatment_or_class":          string,
+              "effect":                      "strengthens" | "weakens" | "blocks" |
+                                             "raises_toxicity" | "lowers_toxicity" |
+                                             "requires_dose_adjustment",
+              "factor_range":                [low, high] or null,
+              "clinical_rationale":          string
+            }
+          ]
+        }
+      },
+      "knowledge_confidence":     "high" | "medium" | "low"
+    }
+  ],
+
+  "supportive_care": [string, ...]   /* e.g. "DVT prophylaxis", "PPI for GI protection" */
+}
+
+CALIBRATION RULES
+-----------------
+1. All numeric range fields must be arrays [low, high], never point values.
+2. Widen ranges when uncertain. Do not narrow them to appear precise.
+3. If knowledge is weak, include the field anyway with "knowledge_confidence": "low".
+4. Estimates from textbooks/reviews are acceptable. No PMID citations needed.
+5. Do not anchor on a particular count of axes/treatments. Add as many as you judge relevant.
+6. mortality_hazard axis is REQUIRED (V5 SDE outcome 必需). If you don't know exact rates,
+   give wide intervals with "knowledge_confidence": "low".
+7. latent_mechanisms is REQUIRED unless the disease truly has no useful pathophysiologic engine.
+   These are hidden 0..1 mechanism axes, not symptoms. They are the causal source nodes that
+   explain why multiple observed axes move together.
+8. mechanism_edges is REQUIRED when latent_mechanisms is non-empty. Each edge must state:
+   source_id, target_id, effect_on_target, edge_type, lag_days_range, rationale, confidence.
+   Do not invent numeric force constants. V5 derives magnitude from source activity and target
+   axis ranges. The LLM supplies causal identity and direction, not runtime gear ratios.
+9. Every disease-modifying treatment with mode="reshape_landscape" should modify either:
+   - one or more primary latent mechanism ids, or
+   - mortality_hazard_in_<DISEASE_ID> / an event_hazard when the treatment acts directly there.
+   If the mechanism-to-outcome path is uncertain, include a broad mortality_hazard modification
+   as a fallback with low/medium confidence.
+10. axis_couplings is for residual covariance and true event transitions only. Include clinically
+    meaningful couplings; do NOT enumerate all possible pairs.
+    Use coupling_type:
+    - "noise_correlation" for axes that move together statistically but should not push each other.
+    - "drift" only when no latent mechanism better explains the relation.
+    - "hazard_drift" when a state axis raises/lowers mortality_hazard or another hazard axis.
+    - "event_transition" for complication chains such as platelet_count low -> major_bleeding_hazard
+      -> intracranial_hemorrhage_hazard -> mortality_hazard.
+    If A and B mainly move together because hidden mechanism C drives both, put C in
+    latent_mechanisms and write C -> A and C -> B in mechanism_edges instead of A -> B.
+11. Complication/event hazards are the correct way to make side effects and complications "cost" RMST.
+    Do NOT encode hard rules such as "if platelet < 20 then death". Instead, create axes and event
+    transitions: platelet_count low -> major_bleeding_hazard up; major_bleeding_hazard up ->
+    intracranial_hemorrhage_hazard up; intracranial_hemorrhage_hazard up ->
+    mortality_hazard_in_<DISEASE_ID> up.
+12. risk_factors must capture distorted presentations when clinically important.
+   If a covariate/comorbidity changes how visible the disease is, put it in
+   axis_response_modulation and/or coupling_modulation. Example: immunosuppression
+   may blunt fever, CRP, and WBC response in sepsis, and may weaken CRP-temperature
+   coupling; this should reduce diagnostic penalty for "missing" fever/CRP in that context.
+13. Imaging and procedure data should become clinical-state axes, not test-name axes.
+    Examples: "abdominal_ct_positive" is bad; "intra_abdominal_abscess_activity",
+    "biliary_obstruction_activity", "obstructive_pyelonephritis_activity",
+    "pneumonia_infiltrate_extent", or "drainable_focus_probability" is good.
+14. Treatment effect modifiers are required when treatment success depends on context.
+    Examples: antibiotic effect depends on active coverage / susceptibility; source-control
+    procedures depend on a drainable or removable focus; immunosuppression toxicity depends
+    on infection risk and marrow reserve.
+15. For infection-related diseases, never let an antibiotic reshape bacterial burden without
+    specifying susceptibility / active coverage assumptions and source-control failure modes.
+    If exact susceptibility is unknown, use broad probability axes and low confidence.
+
+AXIS_ID NAMING (跨 session 字段一致性)
+--------------------------------------
+- snake_case, lowercase
+- USE THE SAME axis_id across diseases for the same clinical concept:
+  ✅ "serum_ferritin" in both AOSD and HLH
+  ❌ "ferritin_level" in one, "serum_ferritin_ng_ml" in another
+- For disease-specific derived axes, suffix with disease_id:
+  e.g. "mortality_hazard_in_AOSD", "mortality_hazard_in_HLH"
+
+CURRENT MASTER AXES (already in registry — REUSE these axis_ids when concept matches)
+--------------------------------------------------------------------------------------
+{{MASTER_AXES_LIST}}
+
+OUTPUT
+------
+{{OUTPUT_MODE_RULES}}
+
+Produce ONLY the JSON object. No preamble, no explanation, no markdown code fences,
+no trailing text. Start with { and end with }.`;
+
+
+const DISTILLATION_STEP_RULES = {
+  stage1: `This is STAGE 1 of 2 in the same LLM session.
+Return a PARTIAL disease JSON focused on:
+- disease
+- latent_mechanisms
+- mechanism_edges
+- axes
+- axis_couplings
+
+Set treatments, risk_factors, and supportive_care to empty arrays for now.
+Do not cover treatment details in prose. Do include treatment-relevant context axes if they are core disease-state axes.
+Use runtime-minimal objects. Omit optional annotation fields unless they change diagnosis or treatment.
+After this, the user will paste this JSON back in the same session and ask for Stage 2.`,
+
+  stage2: `This is STAGE 2 of 2 in the same LLM session.
+Use the Stage 1 JSON already present in this chat as fixed context.
+Return ONLY a PATCH JSON with this shape:
+{
+  "disease": "{{DISEASE_ID}}",
+  "axes_add": [],
+  "latent_mechanisms_add": [],
+  "mechanism_edges_add": [],
+  "axis_couplings_add": [],
+  "treatments": [],
+  "risk_factors": [],
+  "supportive_care": []
+}
+Use existing axis_id and mechanism_id from Stage 1 whenever possible.
+Put a new axis in axes_add only if a treatment/risk factor needs a context axis missing from Stage 1.
+Do not repeat Stage 1 arrays unless adding or correcting something.
+Use runtime-minimal objects. Omit optional annotation fields unless they change diagnosis or treatment.`,
+
+  full: `This is the default one-pass semantic distillation.
+Return one complete disease JSON containing all clinically necessary semantics:
+- disease
+- latent_mechanisms
+- mechanism_edges
+- axes
+- axis_couplings
+- treatments
+- risk_factors
+- supportive_care
+
+Use runtime-minimal objects. Omit optional annotation fields, null fields, empty fields,
+and generic prose. The program will normalize missing empty arrays, defaults, formatting,
+patch merging, sigma/covariance, background fallback, and mechanism gate scaling.`
+};
+
+
+const OUTPUT_MODE_RULES = {
+  stage1: `OUTPUT SIZE POLICY
+------------------
+Return complete Stage 1 JSON only. Keep prose concise, but do not omit core mechanisms or core axes.
+For each item, output only fields needed by runtime or clinical disambiguation:
+- axis: axis_id, category, unit, log_scale, baseline_range, peak_day_range, peak_value_range, plateau_duration_days, decline_half_life_days, knowledge_confidence.
+- mechanism: mechanism_id, baseline_range, peak_day_range, peak_value_range, plateau_duration_days, decline_half_life_days, knowledge_confidence.
+- edge/coupling: source, target, direction/type, lag if important, confidence.
+Omit evidence_sources, observer_dependency, absence_is_informative, additional_notes, and long shape text by default.
+Never truncate mid-JSON.`,
+  stage2: `OUTPUT SIZE POLICY
+------------------
+Return complete Stage 2 patch JSON only. Keep prose concise, but include all standard treatments and major risk factors.
+For treatments/risk factors, output only fields that affect runtime decisions:
+required_context_axes, effect_modifiers, failure_modes, trajectory_modifications, push_targets, sigma_modulation, side_effects, onset_delay_days, knowledge_confidence.
+For each treatment, include both efficacy context and patient-usability context. If allergy, severe hypersensitivity,
+pregnancy, renal/hepatic impairment, active infection, reactivation risk, bleeding/procedure risk, volume overload,
+or major drug interaction changes whether the treatment can be used, add/reuse a `treatment_modifier` axis and put
+it in required_context_axes/effect_modifiers.
+Treatment_modifier axes should not receive disease-course peak/plateau/decline parameters by default; they stay at
+baseline unless observed in the case or changed by a risk/context modifier.
+Omit generic explanations and null/empty optional fields.
+Never truncate mid-JSON.`,
+  full: `OUTPUT SIZE POLICY
+------------------
+Return complete one-pass semantic JSON, not verbose schema boilerplate.
+For each item, output only fields needed by runtime or clinical disambiguation.
+Omit evidence_sources, observer_dependency, absence_is_informative, additional_notes,
+long shape text, and null/empty optional fields by default.
+Never truncate mid-JSON. If output still becomes too large, use Stage 1 then Stage 2 as fallback.`
+};
+
+
+const DOMAIN_MODULES = {
+  infection: `DOMAIN MODULE: INFECTION / SEPSIS
+
+Add the infection-specific axes and modifiers that decide diagnosis and treatment success.
+Use them only when clinically relevant to this disease/subtype; do not enumerate irrelevant organisms or drugs.
+
+Required infection concepts to consider:
+- Latent mechanisms to consider first: pathogen_burden_activity, source_control_failure_activity,
+  vasodilatory_shock_activity, endothelial_coagulopathy_activity, immune_blunting_activity,
+  resistant_pathogen_activity. Use mechanism_edges from these mechanisms to lactate, MAP, fever,
+  CRP/PCT, organ-failure hazards, source-control axes, and mortality_hazard.
+- Pathogen burden and identification: blood_culture_bacterial_load, blood_culture_positivity_probability,
+  pathogen_identification_confidence, gram_negative_bacteremia_probability.
+- Drug activity / resistance: active_antibiotic_coverage_probability, ceftriaxone_susceptibility_probability,
+  piperacillin_tazobactam_susceptibility_probability, carbapenem_susceptibility_probability,
+  esbl_risk_activity, pseudomonas_risk_activity, carbapenem_resistance_risk_activity,
+  healthcare_associated_resistance_risk_activity, initial_inactive_antibiotic_exposure_activity.
+- Patient usability / contraindication context: penicillin_type1_hypersensitivity_probability,
+  severe_beta_lactam_reaction_history_activity, renal_dose_adjustment_need, QT_prolongation_risk_activity,
+  pregnancy_or_planning_pregnancy_activity, and other drug-specific allergy/toxicity axes when they decide
+  whether an otherwise active antibiotic can actually be used.
+- Source and imaging-derived states: urinary_source_probability, biliary_source_probability,
+  intra_abdominal_source_probability, pulmonary_source_probability, catheter_source_probability,
+  urinary_obstruction_activity, biliary_obstruction_activity, obstructive_pyelonephritis_activity,
+  intra_abdominal_abscess_activity, pneumonia_infiltrate_extent, infected_catheter_probability,
+  drainable_focus_probability, source_control_need, source_control_adequacy.
+- Complication/event hazards when clinically central: shock_hazard, acute_kidney_injury_hazard,
+  ards_hazard, dic_hazard, septic_emboli_hazard, organ_failure_hazard. Link these to lactate, MAP,
+  oxygenation, creatinine/urine output, coagulation axes, source control, and mortality_hazard using
+  hazard_drift or event_transition couplings.
+
+Treatment instructions:
+- For every antibiotic, add required_context_axes and effect_modifiers. Antibiotic lowering of bacterial load
+  must be weakened or blocked when active coverage / susceptibility is low or unknown in a high-risk context.
+- Separate pathogen coverage from patient contraindication: a susceptible organism should not make a drug rank
+  highly when allergy, severe hypersensitivity, renal-dose toxicity, pregnancy, or major interaction context
+  makes that drug unsafe.
+- If source_control_need is high and source_control_adequacy is low, antibiotics may flatten fever/PCT/CRP
+  but should not fully terminate bacterial burden or mortality hazard.
+- Include source_control_procedure as a treatment when abscess, obstruction, infected catheter, infected stone,
+  cholangitis, perforation, necrotic tissue, or another removable/drainable focus is central.
+- Risk factors such as immunosuppression, neutropenia, CKD, transplant, recent hospitalization, indwelling catheter,
+  and recent antibiotics must modulate both presentation axes and resistance/source-control context axes.`,
+
+  immune_inflammatory: `DOMAIN MODULE: IMMUNE / INFLAMMATORY DISEASE
+
+Add immune-disease axes that distinguish systemic inflammation from infection, malignancy, and hematologic mimics.
+Use negative/exclusion axes only when they are clinically central, not as a generic test dump.
+
+Concepts to consider:
+- Latent mechanisms to consider first: autoinflammatory_cytokine_activity, il1_il6_axis_activity,
+  macrophage_activation_activity, immune_mediated_endothelial_injury_activity, infection_mimic_activity.
+  Use mechanism_edges from these mechanisms to fever, rash, ferritin, CRP, cytopenias, liver axes,
+  event hazards, and mortality_hazard.
+- Signature inflammatory axes: fever pattern, rash/activity pattern, arthritis or arthralgia activity,
+  sore_throat_activity, serositis_activity, myalgia/fatigue, ferritin, CRP/ESR, neutrophilia,
+  anemia, platelet response, liver enzymes, albumin, fibrinogen, D-dimer, triglycerides.
+- Immune pathway axes when treatment-relevant: il1_activity, il6_activity, tnf_activity, complement activity,
+  autoantibody activity, macrophage activation / HLH-transition risk when clinically applicable.
+- Complication/event hazards when clinically central: mas_hlh_hazard, myocarditis_hazard,
+  fulminant_hepatitis_hazard, macrophage_activation_hazard, infection_complication_hazard,
+  thrombotic_event_hazard. Link them to ferritin, platelet_count, fibrinogen, AST/ALT, D-dimer,
+  cardiac/respiratory axes, immunosuppression context, and mortality_hazard.
+- Mimic/exclusion context when central: culture positivity probability, malignancy_signal_activity,
+  drug_reaction_activity, autoimmune_overlap_activity.
+- Treatment safety context when central: active_serious_infection_activity,
+  pregnancy_or_planning_pregnancy_activity, severe_hepatic_impairment_activity,
+  severe_renal_impairment_activity, active_gi_bleeding_or_ulcer_activity,
+  latent_tb_or_chronic_hepatitis_reactivation_risk_activity, uncontrolled_hypertension_activity.
+
+Treatment instructions:
+- Steroids, biologics, DMARDs, IVIG, chemotherapy-like immunosuppression, and rescue therapies must include
+  mortality_hazard modifications when disease-modifying.
+- Add effect_modifiers for active infection risk, liver disease, CKD, cytopenias, pregnancy, and immunosuppressed states
+  when these change efficacy, toxicity, or apparent response.
+- Add explicit treatment_modifier axes/effect_modifiers for contraindications such as methotrexate in pregnancy,
+  NSAIDs in severe renal impairment or active GI bleeding, biologics/JAK/TNF inhibitors in uncontrolled infection
+  or untreated TB/HBV risk, and hepatotoxic drugs in severe liver injury.
+- If immune suppression blunts fever/CRP/WBC response, encode that in risk_factors axis_response_modulation
+  and coupling_modulation.`,
+
+  hematology_tma: `DOMAIN MODULE: HEMATOLOGY / TMA / CYTOPENIA
+
+Add axes that separate platelet destruction/consumption, marrow failure, hemolysis, coagulation disorders,
+and organ ischemia. Include treatment logistics and complications that change outcome.
+
+Concepts to consider:
+- Latent mechanisms to consider first: immune_adamts13_inhibition_activity,
+  microthrombotic_activity, endothelial_vwf_platelet_adhesion_activity, hemolysis_activity,
+  bleeding_tendency_activity. Use mechanism_edges from these mechanisms to platelet_count,
+  LDH, schistocytes, neurologic/renal/cardiac injury hazards, bleeding hazards, and mortality_hazard.
+- TMA/hemolysis axes: platelet_count, hemoglobin, schistocyte_fraction, serum_ldh, haptoglobin,
+  indirect_bilirubin, reticulocyte_count, direct_antiglobulin_test_activity.
+- Disease-defining mechanism axes when applicable: adamts13_activity, anti_adamts13_igg_inhibitor_titer,
+  ultra_large_vwf_multimer_activity, complement_activation_activity.
+- Coagulation and mimic axes: fibrinogen, D-dimer, PT/INR, aPTT, DIC_activity, bleeding_activity,
+  thrombosis_risk_activity.
+- End-organ axes: neurologic_deficit_activity, mental_status_abnormality_activity, seizure_activity,
+  stroke_like_deficit_activity, serum_creatinine, urine_output, troponin, chest_pain_activity,
+  abdominal_pain_activity.
+- Complication/event hazards: major_bleeding_hazard, intracranial_hemorrhage_hazard,
+  ischemic_stroke_hazard, myocardial_injury_hazard, acute_kidney_injury_hazard,
+  procedure_related_bleeding_hazard. Encode chains such as platelet_count low -> major_bleeding_hazard,
+  caplacizumab -> major_bleeding_hazard, troponin high -> mortality_hazard, neurologic ischemia
+  -> mortality_hazard, and bleeding/ICH -> mortality_hazard using hazard_drift or event_transition couplings.
+- Treatment safety/logistics context: plasma_product_anaphylaxis_risk_activity,
+  severe_volume_overload_risk_activity, active_serious_infection_activity,
+  hepatitis_b_reactivation_risk_activity, therapeutic_anticoagulation_activity,
+  pregnancy_or_planning_pregnancy_activity, severe_neutropenia_activity,
+  meningococcal_prophylaxis_adequacy when complement inhibition is considered.
+
+Treatment instructions:
+- Plasma exchange, plasma infusion bridge, caplacizumab, steroids, rituximab, complement inhibition,
+  transfusion, dialysis, ICU support, and rescue immunosuppression should include effect_modifiers when relevant.
+- Capture required_context_axes such as plasma_exchange_access_feasibility, severe_bleeding_risk_activity,
+  infection_risk_activity, renal_failure_activity, and diagnostic mechanism confidence.
+- Also capture whether the patient can safely receive the treatment: plasma-product reaction risk for plasma
+  therapies, anticoagulation/bleeding risk for caplacizumab, HBV reactivation and severe neutropenia for
+  rituximab/cytotoxic rescue, infection/prophylaxis context for complement blockade, and volume-overload
+  risk for transfusion/plasma.
+- Do not make platelet transfusion look beneficial in immune TTP unless life-threatening bleeding or procedure context
+  is explicitly encoded.`,
+
+  generic: `DOMAIN MODULE: GENERIC INTERNAL MEDICINE
+
+Use the universal schema. Add disease-class-specific hidden states only when they materially change diagnosis,
+treatment effect, contraindications, or prognosis.
+
+For each major treatment, ask:
+- What patient context must be true for this treatment to work?
+- What clinical finding makes it fail or become unsafe?
+- What allergy, contraindication, organ-function limit, pregnancy context, procedure risk, infection/reactivation
+  risk, or drug-interaction context would make a clinically active therapy inappropriate?
+- Which axis should represent that context?
+- Is the context observed by history, lab, microbiology, imaging, procedure, or treatment response?`
+};
+
+
+const PRESETS = {
+  hlh_mas: {
+    diseaseId: "D-HLH-MAS",
+    diseaseName: "Secondary hemophagocytic lymphohistiocytosis / macrophage activation syndrome",
+    subtype: "adult secondary HLH/MAS fever-hyperinflammation manifold, trigger-aware but not trigger-specific; include infection-associated HLH, rheumatologic MAS, malignancy-associated HLH, and drug-induced HLH as risk/trigger modifiers rather than separate diagnosis labels. Core phenotype: persistent high fever, cytopenias, hepatosplenomegaly, hepatitis, hyperferritinemia often >10000 ng/mL, hypofibrinogenemia, hypertriglyceridemia, elevated soluble IL-2 receptor, low NK-cell activity when available, coagulopathy, CNS/ARDS/AKI hazards, and mortality hazard. Distinguish from AOSD non-MAS, sepsis, SLE flare, lymphoma fever, disseminated TB, and DIC.",
+    timeAnchor: "first HLH/MAS-defining feature onset or first unexplained cytopenia/ferritin surge",
+    tMax: 60,
+    expertise: "hematology, rheumatology, infectious disease, critical care, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  sle_flare: {
+    diseaseId: "D-SLE-FLARE",
+    diseaseName: "Systemic lupus erythematosus flare with fever",
+    subtype: "adult SLE flare presenting with fever/systemic inflammation; include mucocutaneous, arthritis/serositis, hematologic cytopenia, lupus nephritis, neuropsychiatric, and complement/anti-dsDNA activity axes. Explicitly model infection mimicry under immunosuppression, TTP/APS/TMA overlap hazards, HLH/MAS hazard, renal event hazards, and treatment safety context for glucocorticoids, hydroxychloroquine, mycophenolate, cyclophosphamide, rituximab, belimumab, and infection/TB/HBV reactivation risk.",
+    timeAnchor: "flare symptom onset or first objective immune activity rise",
+    tMax: 90,
+    expertise: "rheumatology, nephrology, hematology, infectious disease, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  tb_disseminated: {
+    diseaseId: "D-TB-DISSEMINATED",
+    diseaseName: "Disseminated / miliary tuberculosis",
+    subtype: "adult disseminated or miliary TB fever manifold; include subacute fever, night sweats, weight loss, lymphadenopathy, pulmonary/miliary imaging burden, hepatic/splenic/bone marrow involvement, hyponatremia, anemia, lymphopenia, ferritin/CRP patterns, granulomatous burden, culture/PCR context, immunosuppression risk, IRIS hazard, hepatotoxicity context, and mortality hazard. Distinguish from sepsis, lymphoma fever, AOSD, SLE flare, and HLH.",
+    timeAnchor: "onset of sustained fever or constitutional symptoms",
+    tMax: 180,
+    expertise: "infectious disease, pulmonology, hematology, rheumatology, and quantitative physiology",
+    domainModule: "infection"
+  },
+  lymphoma_fever: {
+    diseaseId: "D-LYMPHOMA-FEVER",
+    diseaseName: "Lymphoma-associated fever / inflammatory presentation",
+    subtype: "adult lymphoma fever/FUO presentation; include B symptoms, lymphadenopathy, extranodal burden, LDH, cytopenias, ferritin, ESR/CRP, cholestatic/hepatic involvement, marrow involvement, tumor lysis hazard, HLH trigger hazard, infection mimicry, biopsy/FDG-PET finding context as clinical-state axes rather than procedure labels, and mortality hazard. Distinguish from TB, AOSD, SLE flare, sepsis, and HLH/MAS.",
+    timeAnchor: "first persistent fever/B-symptom onset",
+    tMax: 180,
+    expertise: "hematology, oncology, infectious disease, rheumatology, and quantitative physiology",
+    domainModule: "generic"
+  },
+  infective_endocarditis: {
+    diseaseId: "D-INFECTIVE-ENDOCARDITIS",
+    diseaseName: "Subacute infective endocarditis",
+    subtype: "adult infective endocarditis presenting as fever/FUO; include bacteremia burden, vegetation burden, valvular destruction, embolic phenomena, immune-complex renal disease, splenomegaly, anemia, CRP/ESR, blood culture context, echo finding context, heart failure hazard, stroke/systemic embolism hazard, abscess/conduction hazard, source-control/surgery need, antibiotic susceptibility context, and mortality hazard.",
+    timeAnchor: "onset of sustained fever or first positive-bacteremia clinical syndrome",
+    tMax: 90,
+    expertise: "infectious disease, cardiology, neurology, nephrology, and quantitative physiology",
+    domainModule: "infection"
+  },
+  anca_vasculitis: {
+    diseaseId: "D-ANCA-VASCULITIS",
+    diseaseName: "ANCA-associated vasculitis with systemic inflammation",
+    subtype: "adult ANCA-associated vasculitis fever/systemic presentation; include ENT/pulmonary/renal small-vessel inflammation, alveolar hemorrhage hazard, rapidly progressive glomerulonephritis/AKI hazard, neuropathy/purpura axes, ANCA/MPO/PR3 context, CRP/ESR, anemia/thrombocytosis patterns, infection/TB mimic and immunosuppression safety context, and mortality hazard.",
+    timeAnchor: "first systemic vasculitis symptom or renal/pulmonary objective abnormality",
+    tMax: 120,
+    expertise: "rheumatology, nephrology, pulmonology, infectious disease, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  dress_drug_fever: {
+    diseaseId: "D-DRUG-FEVER-DRESS",
+    diseaseName: "DRESS / severe drug hypersensitivity syndrome",
+    subtype: "adult drug reaction with eosinophilia and systemic symptoms; include drug exposure latency, fever, morbilliform rash/facial edema, eosinophilia/atypical lymphocytes, hepatitis, AKI, pneumonitis/myocarditis hazards, HHV-6/EBV/CMV reactivation context, culprit drug withdrawal, glucocorticoid effects, contraindication context, relapse during taper, and mortality hazard. Distinguish from viral infection, sepsis, SLE flare, AOSD, and lymphoma.",
+    timeAnchor: "culprit drug exposure start and symptom onset; disease day 0 is first fever/rash/systemic symptom",
+    tMax: 120,
+    expertise: "allergy/immunology, dermatology, hepatology, infectious disease, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  ebv_cmv_mono_like: {
+    diseaseId: "D-EBV-CMV-MONO-LIKE",
+    diseaseName: "EBV/CMV mononucleosis-like systemic infection",
+    subtype: "adult EBV or CMV mononucleosis-like fever illness; include fever, pharyngitis/tonsillitis when EBV, lymphadenopathy, splenomegaly, atypical lymphocytosis, transaminitis, cytopenia, viral-load/serology context, immunosuppression modulation, splenic rupture hazard, HLH trigger hazard, and mortality hazard. Distinguish from lymphoma, acute HIV when relevant, SLE flare, AOSD, and disseminated TB.",
+    timeAnchor: "first fever or mononucleosis-like symptom onset",
+    tMax: 60,
+    expertise: "infectious disease, hematology, hepatology, and quantitative physiology",
+    domainModule: "infection"
+  },
+  mis_a_kawasaki_like: {
+    diseaseId: "D-MIS-A-KAWASAKI-LIKE",
+    diseaseName: "Adult MIS-A / Kawasaki-like hyperinflammatory syndrome",
+    subtype: "adult multisystem inflammatory syndrome or Kawasaki-like hyperinflammation with fever; include mucocutaneous/conjunctival changes, rash, GI symptoms, shock/vasodilation, myocarditis/cardiac dysfunction hazard, coronary involvement context when relevant, CRP/ferritin/D-dimer/troponin/BNP axes, SARS-CoV-2 exposure/serology context, sepsis mimicry, and mortality hazard.",
+    timeAnchor: "first fever or systemic inflammatory symptom onset",
+    tMax: 45,
+    expertise: "rheumatology, infectious disease, cardiology, critical care, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  leptospirosis_severe: {
+    diseaseId: "D-LEPTOSPIROSIS-SEVERE",
+    diseaseName: "Severe leptospirosis / Weil disease",
+    subtype: "adult severe leptospirosis fever-sepsis mimic; include exposure context, biphasic fever, conjunctival suffusion, myalgia/calf pain, jaundice/cholestasis, AKI, thrombocytopenia, pulmonary hemorrhage/ARDS hazard, meningitis context, bilirubin-creatinine dissociation, antibiotic timing, dialysis/ICU support, and mortality hazard.",
+    timeAnchor: "first fever after exposure or first systemic symptom",
+    tMax: 45,
+    expertise: "infectious disease, nephrology, hepatology, critical care, and quantitative physiology",
+    domainModule: "infection"
+  },
+  aosd_nomas: {
+    diseaseId: "D137",
+    diseaseName: "Adult-onset Still's disease (AOSD)",
+    subtype: "classic systemic, untreated, not progressing to MAS / secondary HLH; describe the AOSD manifold itself, NOT the cytokine-storm complication (which is a separate manifold)",
+    timeAnchor: "symptom onset",
+    tMax: 90,
+    expertise: "rheumatology, general internal medicine, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  hlh: {
+    diseaseId: "D-HLH",
+    diseaseName: "Secondary hemophagocytic lymphohistiocytosis (sHLH) / cytokine storm syndrome — trigger-agnostic",
+    subtype: "the cytokine-storm phase itself, AGNOSTIC of the upstream trigger (rheumatologic-MAS, infection-associated HLH, malignancy-associated HLH, drug-induced HLH all converge to this same manifold). Full HLH phenotype: cytopenias (especially thrombocytopenia and anemia), hepatic dysfunction, hypofibrinogenemia, hypertriglyceridemia, marked hyperferritinemia (often >10000 ng/mL), elevated soluble IL-2 receptor (sCD25), low/absent NK cell activity, hemophagocytosis on bone marrow if obtained; HLH-2004 / 2016-MAS classification criteria fulfilled; untreated or pre-treatment baseline period. Describe the cytokine-storm manifold ONLY — do NOT describe the upstream disease that triggered it.",
+    timeAnchor: "first HLH-defining feature onset (e.g. unexplained cytopenia, fibrinogen drop, ferritin surge)",
+    tMax: 60,
+    expertise: "hematology, critical care, rheumatology, infectious disease, and quantitative physiology",
+    domainModule: "immune_inflammatory"
+  },
+  sepsis_bacterial: {
+    diseaseId: "D-SEPSIS-GN",
+    diseaseName: "Bacterial sepsis (gram-negative, community-acquired)",
+    subtype: "sepsis with documented gram-negative bacteremia (e.g. E. coli, K. pneumoniae); untreated baseline through day 1, then standard antibiotic therapy; non-septic-shock subset (no vasopressor requirement)",
+    timeAnchor: "first SIRS-criterion onset / clinical deterioration",
+    tMax: 30,
+    expertise: "infectious disease, critical care, and quantitative physiology",
+    domainModule: "infection"
+  },
+  ttp: {
+    diseaseId: "D-TTP",
+    diseaseName: "Thrombotic thrombocytopenic purpura (TTP), acquired/idiopathic, ADAMTS13 severely deficient",
+    subtype: "classic acquired idiopathic TTP with ADAMTS13 activity <10% and detectable anti-ADAMTS13 IgG inhibitor; NOT familial Upshaw-Schulman; pre-plasma-exchange / pre-treatment baseline period. Classic features: microangiopathic hemolytic anemia with schistocytes on peripheral smear, severe thrombocytopenia (often <30 × 10^9/L), neurologic abnormalities (often fluctuating), fever, and renal dysfunction (often only mild). Describe the TTP manifold itself; this is distinct from HLH/MAS — TTP has profound ADAMTS13 deficiency, prominent schistocytes and indirect hyperbilirubinemia, very high LDH, normal-to-mildly-low fibrinogen (NOT consumption coagulopathy), and typically preserved synthetic liver function. Coombs test is negative.",
+    timeAnchor: "first symptom or first abnormal lab consistent with TMA (thrombotic microangiopathy)",
+    tMax: 30,
+    expertise: "hematology, neurology, nephrology, and quantitative physiology",
+    domainModule: "hematology_tma"
+  },
+  blank: {
+    diseaseId: "",
+    diseaseName: "",
+    subtype: "",
+    timeAnchor: "symptom onset",
+    tMax: 90,
+    expertise: "internal medicine and quantitative physiology",
+    domainModule: "generic"
+  }
+};
+
+
+function loadPreset(name) {
+  const p = PRESETS[name];
+  if (!p) return;
+  document.getElementById('diseaseId').value = p.diseaseId;
+  document.getElementById('diseaseName').value = p.diseaseName;
+  document.getElementById('subtype').value = p.subtype;
+  document.getElementById('timeAnchor').value = p.timeAnchor;
+  document.getElementById('tMax').value = p.tMax;
+  document.getElementById('expertise').value = p.expertise;
+  document.getElementById('domainModule').value = p.domainModule || 'generic';
+  generate();
+}
+
+
+function getInputs() {
+  return {
+    diseaseId:   document.getElementById('diseaseId').value.trim(),
+    diseaseName: document.getElementById('diseaseName').value.trim(),
+    subtype:     document.getElementById('subtype').value.trim(),
+    timeAnchor:  document.getElementById('timeAnchor').value.trim(),
+    tMax:        document.getElementById('tMax').value.trim(),
+    expertise:   document.getElementById('expertise').value.trim(),
+    domainModule: document.getElementById('domainModule').value,
+    distillStage: document.getElementById('distillStage').value
+  };
+}
+
+
+let _masterCache = null;
+let _masterFetching = null;
+
+async function ensureMasterAxes() {
+  if (_masterCache !== null) return _masterCache;
+  if (_masterFetching) return _masterFetching;
+  _masterFetching = (async () => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2500);
+    try {
+      const r = await fetch('/master_axes.json', { cache: 'no-store', signal: controller.signal });
+      _masterCache = await r.json();
+    } catch (e) {
+      _masterCache = { axes: [] };
+    } finally {
+      clearTimeout(timer);
+    }
+    return _masterCache;
+  })();
+  return _masterFetching;
+}
+
+function invalidateMasterAxes() {
+  _masterCache = null;
+  _masterFetching = null;
+}
+
+function formatMasterAxesList(master) {
+  const axes = (master && master.axes) || [];
+  if (axes.length === 0) {
+    return '(registry 还没有 axes — 这是第一个被蒸的病, 自由命名 axis_id 即可)';
+  }
+  const lines = axes.map(a => {
+    const ls = a.log_scale === true ? 'log' : a.log_scale === false ? 'linear' : '?';
+    const seen = (a.seen_in && a.seen_in.length) ? ` [from: ${a.seen_in.join(',')}]` : '';
+    return `- ${a.axis_id} (${a.category || '?'}, ${a.unit || '?'}, ${ls})${seen}`;
+  });
+  return lines.join('\n') + `\n\n(${axes.length} axes total — REUSE matching axis_ids; propose new only for genuinely novel concepts, with synonyms/unit/log_scale.)`;
+}
+
+async function generate() {
+  const i = getInputs();
+  updateStageButtons(i.distillStage);
+  const master = await ensureMasterAxes();
+  const masterList = formatMasterAxesList(master);
+  const domainModule = DOMAIN_MODULES[i.domainModule] || DOMAIN_MODULES.generic;
+  const stageRules = DISTILLATION_STEP_RULES[i.distillStage] || DISTILLATION_STEP_RULES.stage1;
+  const outputModeRules = OUTPUT_MODE_RULES[i.distillStage] || OUTPUT_MODE_RULES.stage1;
+  const prompt = TEMPLATE
+    .replaceAll('{{DISEASE_ID}}', i.diseaseId || '<DISEASE_ID>')
+    .replaceAll('{{DISEASE_NAME}}', i.diseaseName || '<DISEASE_NAME>')
+    .replaceAll('{{SUBTYPE}}', i.subtype || '<SUBTYPE>')
+    .replaceAll('{{TIME_ANCHOR}}', i.timeAnchor || '<TIME_ANCHOR>')
+    .replaceAll('{{T_MAX}}', i.tMax || '90')
+    .replaceAll('{{EXPERTISE}}', i.expertise || '<EXPERTISE>')
+    .replaceAll('{{DISTILLATION_STEP_RULES}}', stageRules)
+    .replaceAll('{{DOMAIN_MODULE}}', domainModule)
+    .replaceAll('{{MASTER_AXES_LIST}}', masterList)
+    .replaceAll('{{OUTPUT_MODE_RULES}}', outputModeRules);
+  document.getElementById('output').value = prompt;
+
+  const saveName = i.diseaseId ? `v5_${i.diseaseId}.json` : 'v5_<ID>.json';
+  document.getElementById('saveHint').textContent = saveName;
+  document.getElementById('saveBtnName').textContent = saveName;
+}
+
+
+function updateStageButtons(stage) {
+  const storeBtn = document.getElementById('storeStage1Btn');
+  const mergeBtn = document.getElementById('mergeStage2Btn');
+  if (storeBtn) storeBtn.style.display = stage === 'stage1' ? 'inline-block' : 'none';
+  if (mergeBtn) mergeBtn.style.display = stage === 'stage2' ? 'inline-block' : 'none';
+}
+
+
+function updateJsonStats() {
+  const txt = document.getElementById('yamlInput').value;
+  const stats = document.getElementById('yamlStats');
+  if (!txt.trim()) {
+    stats.textContent = '（粘贴 LLM 输出后会显示统计）';
+    stats.style.color = '#666';
+    return;
+  }
+  const lines = txt.split('\n').length;
+  const chars = txt.length;
+  try {
+    const obj = JSON.parse(txt);
+    const axesCount = Array.isArray(obj.axes) ? obj.axes.length : 0;
+    const mechanismOk = Array.isArray(obj.latent_mechanisms);
+    const mechanismCount = mechanismOk ? obj.latent_mechanisms.length : 0;
+    const mechanismEdgeOk = Array.isArray(obj.mechanism_edges);
+    const mechanismEdgeCount = mechanismEdgeOk ? obj.mechanism_edges.length : 0;
+    const couplingOk = Array.isArray(obj.axis_couplings);
+    const couplingCount = couplingOk ? obj.axis_couplings.length : 0;
+    const tCount = Array.isArray(obj.treatments) ? obj.treatments.length : 0;
+    const rfCount = Array.isArray(obj.risk_factors) ? obj.risk_factors.length : 0;
+    const scCount = Array.isArray(obj.supportive_care) ? obj.supportive_care.length : 0;
+    const hazardOk = Array.isArray(obj.axes) && obj.axes.some(a => a && a.category === 'derived_hazard');
+    const eventHazardCount = Array.isArray(obj.axes) ? obj.axes.filter(a => a && a.category === 'event_hazard').length : 0;
+    const contextAxisCount = Array.isArray(obj.axes)
+      ? obj.axes.filter(a => a && ['microbiology', 'imaging_finding', 'source_control', 'treatment_modifier'].includes(a.category)).length
+      : 0;
+    const modifierCount = Array.isArray(obj.treatments)
+      ? obj.treatments.reduce((n, t) => n + ((t && Array.isArray(t.effect_modifiers)) ? t.effect_modifiers.length : 0), 0)
+      : 0;
+    const couplingText = couplingOk ? `联动: ${couplingCount}${couplingCount > 0 ? '' : ' ⚠ 空'}` : '⚠ 缺 axis_couplings';
+    const mechanismText = mechanismOk ? `mechanisms: ${mechanismCount}` : '⚠ 缺 latent_mechanisms';
+    const mechanismEdgeText = mechanismEdgeOk ? `mech_edges: ${mechanismEdgeCount}` : '⚠ 缺 mechanism_edges';
+    stats.textContent = `✅ JSON OK　${mechanismText}　${mechanismEdgeText}　axes: ${axesCount}${hazardOk ? ' (含 mortality_hazard)' : ' ⚠ 缺 mortality_hazard'}　event hazards: ${eventHazardCount}　上下文轴: ${contextAxisCount}　${couplingText}　治疗: ${tCount}　effect modifiers: ${modifierCount}　RF: ${rfCount}　supportive: ${scCount}　行: ${lines}`;
+    stats.style.color = (hazardOk && mechanismOk && mechanismEdgeOk && couplingOk && axesCount > 0 && tCount > 0 && rfCount > 0) ? '#28a745' : '#c0392b';
+  } catch (e) {
+    stats.textContent = `❌ JSON parse error: ${String(e.message).slice(0, 60)}　行: ${lines}　字符: ${chars}`;
+    stats.style.color = '#c0392b';
+  }
+}
+
+
+let SERVER_ONLINE = false;
+
+function stageStorageKey(diseaseId) {
+  return `vesmed_stage1_${diseaseId || 'blank'}`;
+}
+
+function itemKey(item) {
+  if (!item || typeof item !== 'object') return JSON.stringify(item);
+  if (item.axis_id) return `axis:${item.axis_id}`;
+  if (item.mechanism_id) return `mechanism:${item.mechanism_id}`;
+  if (item.drug) return `drug:${item.drug}`;
+  if (item.factor) return `factor:${item.factor}`;
+  if (item.source_id || item.target_id || item.source_axis_id || item.target_axis_id) {
+    return [
+      item.source_id || item.source_axis_id || '',
+      item.target_id || item.target_axis_id || '',
+      item.effect_on_target || item.effect_direction || '',
+      item.edge_type || item.coupling_type || ''
+    ].join('->');
+  }
+  return JSON.stringify(item);
+}
+
+function mergeArrayByKey(baseArray, addArray) {
+  const out = Array.isArray(baseArray) ? baseArray.slice() : [];
+  const pos = new Map(out.map((item, idx) => [itemKey(item), idx]));
+  for (const item of (Array.isArray(addArray) ? addArray : [])) {
+    const key = itemKey(item);
+    if (pos.has(key)) out[pos.get(key)] = item;
+    else {
+      pos.set(key, out.length);
+      out.push(item);
+    }
+  }
+  return out;
+}
+
+function normalizeTopLevelArrays(obj) {
+  const out = { ...obj };
+  for (const key of [
+    'latent_mechanisms',
+    'mechanism_edges',
+    'axes',
+    'axis_couplings',
+    'treatments',
+    'risk_factors',
+    'supportive_care'
+  ]) {
+    if (!Array.isArray(out[key])) out[key] = [];
+  }
+  return out;
+}
+
+function isFinalDistillation(obj) {
+  obj = normalizeTopLevelArrays(obj);
+  return !!(
+    obj && obj.disease &&
+    Array.isArray(obj.axes) &&
+    Array.isArray(obj.axis_couplings) &&
+    Array.isArray(obj.treatments) && obj.treatments.length > 0 &&
+    Array.isArray(obj.risk_factors)
+  );
+}
+
+function parseInputJson() {
+  const txt = document.getElementById('yamlInput').value;
+  if (!txt.trim()) throw new Error('empty JSON box');
+  return JSON.parse(txt);
+}
+
+function storeStage1() {
+  let obj;
+  try { obj = parseInputJson(); }
+  catch (e) { showToast('Stage 1 JSON parse failed: ' + String(e.message).slice(0, 60)); return; }
+  obj = normalizeTopLevelArrays(obj);
+  if (!obj.disease || !Array.isArray(obj.axes) || !Array.isArray(obj.latent_mechanisms)) {
+    showToast('Stage 1 needs disease, latent_mechanisms, and axes');
+    return;
+  }
+  localStorage.setItem(stageStorageKey(obj.disease), JSON.stringify(obj));
+  showToast(`Stage 1 stored for ${obj.disease}`);
+}
+
+function mergeStage2Patch() {
+  let patch;
+  try { patch = parseInputJson(); }
+  catch (e) { showToast('Stage 2 patch parse failed: ' + String(e.message).slice(0, 60)); return; }
+  patch = normalizeTopLevelArrays(patch);
+  const diseaseId = patch.disease || document.getElementById('diseaseId').value.trim();
+  const rawBase = localStorage.getItem(stageStorageKey(diseaseId));
+  if (!rawBase) {
+    showToast(`No stored Stage 1 for ${diseaseId}; paste Stage 1 and click Store Stage 1 first`);
+    return;
+  }
+  let base;
+  try { base = JSON.parse(rawBase); }
+  catch (e) { showToast('Stored Stage 1 is corrupted'); return; }
+  base = normalizeTopLevelArrays(base);
+
+  const merged = {
+    ...base,
+    disease: diseaseId,
+    latent_mechanisms: mergeArrayByKey(base.latent_mechanisms, patch.latent_mechanisms_add || patch.latent_mechanisms),
+    mechanism_edges: mergeArrayByKey(base.mechanism_edges, patch.mechanism_edges_add || patch.mechanism_edges),
+    axes: mergeArrayByKey(base.axes, patch.axes_add || patch.axes),
+    axis_couplings: mergeArrayByKey(base.axis_couplings, patch.axis_couplings_add || patch.axis_couplings),
+    treatments: Array.isArray(patch.treatments) ? patch.treatments : (base.treatments || []),
+    risk_factors: Array.isArray(patch.risk_factors) ? patch.risk_factors : (base.risk_factors || []),
+    supportive_care: Array.isArray(patch.supportive_care) ? patch.supportive_care : (base.supportive_care || [])
+  };
+
+  document.getElementById('yamlInput').value = JSON.stringify(merged, null, 2);
+  updateJsonStats();
+  showToast(`Merged final JSON for ${diseaseId}; review then Save`);
+}
+
+async function pingServer() {
+  try {
+    const r = await fetch('/ping', { cache: 'no-store' });
+    SERVER_ONLINE = r.ok;
+  } catch (e) {
+    SERVER_ONLINE = false;
+  }
+  updateModeUI();
+}
+
+function updateModeUI() {
+  const status = document.getElementById('serverStatus');
+  const saveModeHint = document.getElementById('saveModeHint');
+  const savePathHint = document.getElementById('savePathHint');
+  if (SERVER_ONLINE) {
+    if (status) {
+      status.textContent = '🟢 Server 在线 — paste JSON 后自动保存到 distillations/';
+      status.style.color = '#28a745';
+    }
+    if (saveModeHint) saveModeHint.textContent = '自动保存到 distillations/';
+    if (savePathHint) savePathHint.innerHTML = '<code>vesmed_v5_poc/distillations/</code> (server 写, 无需移动)';
+  } else {
+    if (status) {
+      status.textContent = '🔴 Server 离线 — 双击 start_ui.bat 启动。当前 file:// 模式, 点 Save 走浏览器下载。';
+      status.style.color = '#c0392b';
+    }
+    if (saveModeHint) saveModeHint.textContent = '点 Save 下载 (server 未启动)';
+    if (savePathHint) savePathHint.innerHTML = '浏览器下载 → 请移到 <code>vesmed_v5_poc/distillations/</code>';
+  }
+}
+
+async function saveJson() {
+  const txt = document.getElementById('yamlInput').value;
+  if (!txt.trim()) { showToast('粘贴框是空的'); return; }
+
+  let obj;
+  try { obj = JSON.parse(txt); }
+  catch (e) { showToast('❌ JSON 解析失败: ' + String(e.message).slice(0, 60)); return; }
+  obj = normalizeTopLevelArrays(obj);
+
+  if (!obj.disease) { showToast('❌ JSON 里缺 "disease" 字段'); return; }
+  if (!isFinalDistillation(obj)) {
+    showToast('Not final JSON yet: store Stage 1 or merge Stage 2 patch before saving');
+    return;
+  }
+  const serialized = JSON.stringify(obj, null, 2);
+  document.getElementById('yamlInput').value = serialized;
+  updateJsonStats();
+
+  // 优先 server (paste 自动保存也走这条)
+  if (SERVER_ONLINE) {
+    try {
+      const r = await fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: serialized
+      });
+      const j = await r.json();
+      if (j.ok) {
+        const tail = (typeof j.master_axes_count === 'number')
+          ? ` (master_axes: ${j.master_axes_count})` : '';
+        showToast('✅ 已保存 → ' + j.path + tail);
+        invalidateMasterAxes();   // server 已 rebuild master, 下次 generate 拿新的
+        return;
+      }
+      showToast('❌ Server 拒绝: ' + j.error);
+      return;
+    } catch (e) {
+      showToast('⚠ Server 通信失败, fallback 下载');
+      // fall through
+    }
+  }
+
+  // fallback: 浏览器下载
+  const fileName = `v5_${obj.disease}.json`;
+  const blob = new Blob([serialized], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = fileName; a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已下载 ${fileName} → 移到 distillations/`);
+}
+
+
+async function copyPrompt() {
+  const o = document.getElementById('output');
+  if (!o.value) await generate();
+  navigator.clipboard.writeText(o.value).then(() => showToast('已复制! 粘贴到 LLM'));
+}
+
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+
+// 初始化：默认优先级 1 的 HLH/MAS；仍然是 one-shot 蒸馏，不是两段式
+loadPreset('hlh_mas');
+
+// Server 检测 (启动时 + 每 5 秒一次)
+pingServer();
+setInterval(pingServer, 5000);
+
+// paste 时自动保存 (server 在线 + JSON 合法时)
+document.getElementById('yamlInput').addEventListener('paste', () => {
+  setTimeout(() => {
+    const txt = document.getElementById('yamlInput').value;
+    try {
+      const obj = JSON.parse(txt);
+      if (obj && obj.disease && SERVER_ONLINE && isFinalDistillation(obj)) {
+        saveJson();
+      }
+    } catch (e) {
+      // JSON 不完整, 不自动保存
+    }
+  }, 120);
+});
+</script>
+</body>
+</html>
