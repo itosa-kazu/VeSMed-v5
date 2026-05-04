@@ -259,6 +259,7 @@ PoC 阶段接受 QOL 缺失；QOL 是未来第二维。
 - 例：先有 `pathologic_lymphadenopathy_presence=1`，再用 satellite/measurement 描述 `mediastinal_lymphadenopathy_activity`、`largest_nodal_mass_diameter_cm`。不要直接把“CT 有淋巴结包块”拍成 `0.5`。
 - V5 JSON 用 `axis_role` 标注三层角色：`finding` / `measurement` / `satellite`。当 satellite 或 child measurement 有明确上位 Finding 时，必须写 `parent_axis_id`；runtime 只在 parent present 时消费 child，并避免 parent + child 对同一临床事实粗细双算。
 - OPQRST 属于同一原则：先有症状是否存在的主变量，再把 onset/provocation/quality/radiation/severity/timing 作为卫星变量；没有完成拆分前可以保留旧的 compact activity axis，但不能为了排名删除原文证据。
+- **缺 axis 时允许补 ontology**：如果 audit 发现某个 disease manifold 漏了真实、重要、符合实际医学的临床 axis，agent 可以直接补进该 disease 的 `axes`，并同步补 `mechanism_edges` / case structured observations / `master_axes.json`。这不是排名补丁；禁止为了让某个 case 过而发明不存在或不稳定的特征、删除证据、调窄竞品疾病范围。补完必须跑相关 case 与全量回归，报告是否引入退化。
 
 当前 `start_ui.py` 会在保存 distillation 时自动 rebuild `master_axes.json`。
 
