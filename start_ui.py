@@ -9,6 +9,7 @@ V5 蒸馏 UI 本地 server (双击 start_ui.bat 启动)
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import json
+import re
 import threading
 import webbrowser
 
@@ -16,6 +17,7 @@ ROOT = Path(__file__).parent.resolve()
 DISTILL_DIR = ROOT / "distillations"
 DISTILL_DIR.mkdir(exist_ok=True)
 MASTER_PATH = ROOT / "master_axes.json"
+ROADMAP_PATH = DISTILL_DIR / "disease_leaf_atlas_roadmap_100.md"
 PORT = 8765
 
 
@@ -72,9 +74,14 @@ def build_master_axes():
                 "category": cat,
                 "unit": a.get("unit"),
                 "log_scale": a.get("log_scale"),
+                "axis_role": a.get("axis_role"),
+                "parent_axis_id": a.get("parent_axis_id"),
                 "synonyms": [],
                 "seen_in": [],
             })
+            for meta_key in ("axis_role", "parent_axis_id"):
+                if not entry.get(meta_key) and a.get(meta_key):
+                    entry[meta_key] = a.get(meta_key)
             if disease_id not in entry["seen_in"]:
                 entry["seen_in"].append(disease_id)
     master = {
@@ -85,6 +92,67 @@ def build_master_axes():
     MASTER_PATH.write_text(json.dumps(master, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"  [master_axes] {len(master['axes'])} axes -> {MASTER_PATH.name}")
     return master
+
+
+def _roadmap_key(disease_id):
+    key = disease_id.lower()
+    if key.startswith("d-"):
+        key = key[2:]
+    key = re.sub(r"[^a-z0-9]+", "_", key).strip("_")
+    return f"roadmap_{key}"
+
+
+def parse_roadmap_presets():
+    """Read the roadmap markdown and expose disease-leaf candidates to the UI.
+
+    The current atlas audit table is intentionally ignored; only the "Next 20"
+    and candidate-pool sections are selectable roadmap presets.
+    """
+    if not ROADMAP_PATH.exists():
+        return []
+
+    section_group = None
+    items = []
+    seen = set()
+    candidate_sections = {
+        "Infection",
+        "Rheumatology / Autoinflammatory",
+        "Hematology / Oncology / TMA",
+        "Drug / Toxicology / Endocrine / Critical Mimics",
+    }
+
+    for raw_line in ROADMAP_PATH.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if line.startswith("## "):
+            section_group = "Next 20 high-priority" if line.startswith("## Next 20") else None
+            continue
+        if line.startswith("### "):
+            title = line[4:].strip()
+            section_group = title if title in candidate_sections else None
+            continue
+        if not section_group or not line.startswith("|"):
+            continue
+
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        disease_id = disease_name = None
+        if len(cells) >= 3 and cells[0].isdigit():
+            disease_id, disease_name = cells[1], cells[2]
+        elif len(cells) >= 2:
+            disease_id, disease_name = cells[0], cells[1]
+        if not disease_id or not disease_name:
+            continue
+        if not (disease_id.startswith("D-") or disease_id == "D137"):
+            continue
+        if disease_id in seen:
+            continue
+        seen.add(disease_id)
+        items.append({
+            "key": _roadmap_key(disease_id),
+            "diseaseId": disease_id,
+            "diseaseName": disease_name,
+            "group": section_group,
+        })
+    return items
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -122,6 +190,9 @@ class Handler(BaseHTTPRequestHandler):
             files = sorted(p.name for p in DISTILL_DIR.glob("v5_*.json"))
             self._send(200, "application/json; charset=utf-8",
                        json.dumps(files, ensure_ascii=False))
+        elif path == "/roadmap_presets":
+            self._send(200, "application/json; charset=utf-8",
+                       json.dumps(parse_roadmap_presets(), ensure_ascii=False))
         else:
             self._send(404, "text/plain", "not found")
 

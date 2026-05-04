@@ -11,6 +11,7 @@ shows how key axes move versus no treatment.
 """
 import itertools
 import math
+import os
 import sys
 from pathlib import Path
 
@@ -40,6 +41,14 @@ MAX_TREATMENTS_PER_DISEASE_BUNDLE = 4
 MAX_SINGLE_DISEASE_POLICIES = 48
 MAX_COMBO_OPTIONS_PER_DISEASE = 12
 STAGED_POLICY_START_EPS = 1e-6
+
+
+def env_csv(name):
+    raw = os.environ.get(name, "")
+    return [part.strip() for part in raw.split(",") if part.strip()]
+
+
+CASE_FILTER = env_csv("VESMED_CASE_FILTER")
 
 DRUG_SPECIFIC_COVERAGE_AXES = {
     "ceftriaxone_iv": "ceftriaxone_susceptibility_probability",
@@ -1114,6 +1123,11 @@ def main():
     manifolds = {label: joint.load_manifold(path) for label, path in joint.MANIFOLD_PATHS.items()}
     background_axes = joint.build_background_axes(manifolds, joint.load_master_axes())
     cases = [joint.load_case(path) for path in sorted(CASE_DIR.glob("v5_case_*.json"))]
+    if CASE_FILTER:
+        cases = [
+            case for case in cases
+            if any(token in case.get("case_id", "") or token in str(case.get("source_pmcid", "")) for token in CASE_FILTER)
+        ]
 
     lines = []
     lines.append("=" * 108)
@@ -1122,6 +1136,9 @@ def main():
     lines.append(f"N_PARTICLES={N_PARTICLES}, horizon={HORIZON_DAYS}d, dt={DT}, kappa={KAPPA}, noise_scale={NOISE_SCALE}")
     lines.append("Treatment policies, including same-disease bundles and timed stages, are ranked by RMST over the horizon. Candidate disease/combo is taken from each case's expected manifold(s).")
     lines.append(f"Manifold discovery: {len(manifolds)} root distillation files from {DISTILL_DIR / 'v5_*.json'}")
+    if CASE_FILTER:
+        lines.append(f"Case filter: {', '.join(CASE_FILTER)}")
+    lines.append(f"Cases loaded for this run: {len(cases)}")
     lines.append("")
 
     for case in cases:

@@ -46,6 +46,18 @@ def env_int(name, default):
     return value if value >= 0 else default
 
 
+def env_bool(name, default=False):
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def env_csv(name):
+    raw = os.environ.get(name, "")
+    return [part.strip() for part in raw.split(",") if part.strip()]
+
+
 def distillation_disease_id(path, data):
     disease = (data.get("disease") or "").strip()
     if disease:
@@ -115,8 +127,11 @@ N_MC = env_int("VESMED_N_MC", 2500)
 SEED = 20260430
 COMBO_LOG_PENALTY = -2.0
 MAX_COMBO_SIZE = env_int("VESMED_MAX_COMBO_SIZE", 2)
+CASE_FILTER = env_csv("VESMED_CASE_FILTER")
+ONLY_COMBO_CASES = env_bool("VESMED_ONLY_COMBO_CASES", False)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
+PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
 DRIFT_COUPLING_TYPES = {"drift", "hazard_drift", "event_transition", "mixed"}
@@ -351,8 +366,13 @@ def build_background_axes(manifolds, master_axes):
                 "category": axis.get("category"),
                 "unit": axis.get("unit"),
                 "log_scale": bool(axis.get("log_scale", False)),
+                "axis_role": axis.get("axis_role"),
+                "parent_axis_id": axis.get("parent_axis_id"),
                 "ranges": [],
             })
+            for meta_key in ("axis_role", "parent_axis_id"):
+                if not entry.get(meta_key) and axis.get(meta_key):
+                    entry[meta_key] = axis.get(meta_key)
             unit = entry.get("unit") or axis.get("unit")
             lo, hi = axis["baseline_range"]
             entry["ranges"].append((
@@ -366,6 +386,8 @@ def build_background_axes(manifolds, master_axes):
             "category": meta.get("category"),
             "unit": meta.get("unit") or meta.get("unit_canonical"),
             "log_scale": bool(meta.get("log_scale", False)),
+            "axis_role": meta.get("axis_role"),
+            "parent_axis_id": meta.get("parent_axis_id"),
             "ranges": [],
         })
 
@@ -403,6 +425,8 @@ def build_background_axes(manifolds, master_axes):
             "category": entry.get("category"),
             "unit": unit,
             "log_scale": log_scale,
+            "axis_role": entry.get("axis_role"),
+            "parent_axis_id": entry.get("parent_axis_id"),
             "baseline_range": baseline,
             "peak_day_range": None,
             "peak_value_range": None,
@@ -413,8 +437,26 @@ def build_background_axes(manifolds, master_axes):
     return background
 
 
+def fallback_axis_from_observation(axis_id, obs):
+    unit = obs.get("unit")
+    if norm_unit(unit) not in ("severityscore01", "probability01", "relativeactivity01"):
+        return None
+    return {
+        "axis_id": axis_id,
+        "category": "qualitative",
+        "unit": unit,
+        "log_scale": False,
+        "baseline_range": [0.0, 0.05],
+        "peak_day_range": None,
+        "peak_value_range": None,
+        "plateau_duration_days": None,
+        "decline_half_life_days": None,
+        "_source": "case_observation_background_fallback",
+    }
+
+
 def background_axes_for_case(background_axes, case, candidate):
-    return v5_background.adjust_background_axes(
+    adjusted = v5_background.adjust_background_axes(
         background_axes,
         case,
         tuple(candidate),
@@ -422,6 +464,14 @@ def background_axes_for_case(background_axes, case, candidate):
         CONDITION_SCOPE,
         convert_value,
     )
+    adjusted = dict(adjusted)
+    for axis_id, obs in case.get("observations_by_axis", {}).items():
+        if axis_id in adjusted:
+            continue
+        fallback = fallback_axis_from_observation(axis_id, obs)
+        if fallback is not None:
+            adjusted[axis_id] = fallback
+    return adjusted
 
 
 def load_case(path):
@@ -450,6 +500,28 @@ def sample_uniform(rng, interval):
     if lo == hi:
         return lo
     return float(rng.uniform(lo, hi))
+
+
+def inferred_t_max(manifold):
+    horizons = []
+    for axis in manifold.get("axes", {}).values():
+        if axis.get("category") in ("derived_hazard", "treatment_modifier"):
+            continue
+        peak = parse_interval(axis.get("peak_day_range"))
+        plateau = parse_interval(axis.get("plateau_duration_days"))
+        if peak is None:
+            continue
+        horizon = peak[1]
+        if plateau is not None:
+            horizon += 0.5 * plateau[1]
+        horizons.append(horizon)
+    if not horizons:
+        return 90.0
+    return float(np.clip(np.percentile(horizons, 75), 14.0, 365.0))
+
+
+def disease_t_max(disease, manifold):
+    return T_MAX_BY_DISEASE.get(disease, inferred_t_max(manifold))
 
 
 def sample_mu_and_baseline(axis, t, rng):
@@ -582,6 +654,50 @@ def observed_value(case, axis_id):
     if not obs:
         return None
     return obs["value"]
+
+
+def observed_absent(case, axis_id):
+    obs = case["observations_by_axis"].get(axis_id)
+    if not obs:
+        return False
+    unit = norm_unit(obs.get("unit"))
+    if unit not in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+        return False
+    return float(obs["value"]) < PARENT_FINDING_PRESENT_THRESHOLD
+
+
+def conditional_axis_ids(case, candidate, manifolds, background_axes):
+    """Observed axes eligible for likelihood under finding/measurement/satellite ontology.
+
+    Satellite and measurement axes with a parent finding are conditional on the
+    parent not being explicitly absent. This preserves the old V3 principle:
+    first ask whether the finding exists; only then score its distribution,
+    size, or other satellite attributes.
+    """
+    obs = case["observations_by_axis"]
+    eligible = set()
+    children_by_parent = {}
+    for axis_id in obs:
+        axis = eval_axis(axis_id, candidate, manifolds, background_axes)
+        if axis is None:
+            continue
+        parent_axis_id = axis.get("parent_axis_id")
+        if parent_axis_id and observed_absent(case, parent_axis_id):
+            continue
+        eligible.add(axis_id)
+        if parent_axis_id:
+            children_by_parent.setdefault(parent_axis_id, set()).add(axis_id)
+
+    axis_ids = []
+    for axis_id in eligible:
+        if (
+            axis_id in children_by_parent
+            and observed_value(case, axis_id) is not None
+            and not observed_absent(case, axis_id)
+        ):
+            continue
+        axis_ids.append(axis_id)
+    return sorted(axis_ids)
 
 
 def component_anchor_support(case, disease):
@@ -937,7 +1053,7 @@ def nearest_corr_psd(corr):
     return psd
 
 
-def build_corr(axis_ids, candidate, manifolds, risk_payloads):
+def build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes):
     idx = {a: i for i, a in enumerate(axis_ids)}
     corr = np.eye(len(axis_ids))
 
@@ -987,10 +1103,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
     background_axes = background_axes_for_case(background_axes, case, candidate)
     rng = np.random.default_rng(deterministic_seed(candidate + (case.get("case_id"),)))
     obs = case["observations_by_axis"]
-    axis_ids = sorted(
-        axis_id for axis_id in obs
-        if eval_axis(axis_id, candidate, manifolds, background_axes) is not None
-    )
+    axis_ids = conditional_axis_ids(case, candidate, manifolds, background_axes)
     if not axis_ids:
         return None
 
@@ -1009,14 +1122,14 @@ def score_candidate(case, candidate, manifolds, background_axes):
         }
         log_prior += lp
 
-    corr = build_corr(axis_ids, candidate, manifolds, risk_payloads)
+    corr = build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes)
     log_joint = np.zeros(N_MC)
     best = None
     best_lp = float("-inf")
 
     for i in range(N_MC):
         t_by_disease = {
-            disease: float(rng.uniform(0.0, T_MAX_BY_DISEASE.get(disease, 90.0)))
+            disease: float(rng.uniform(0.0, disease_t_max(disease, manifolds[disease])))
             for disease in candidate
         }
         x = []
@@ -1070,11 +1183,11 @@ def score_background_null(case, background_axes):
     background_axes = background_axes_for_case(background_axes, case, ())
     rng = np.random.default_rng(deterministic_seed(("background_null", case.get("case_id"))))
     obs = case["observations_by_axis"]
-    axis_ids = sorted(axis_id for axis_id in obs if axis_id in background_axes)
+    axis_ids = conditional_axis_ids(case, tuple(), {}, background_axes)
     if not axis_ids:
         return None
 
-    corr = np.eye(len(axis_ids))
+    corr = build_corr(axis_ids, tuple(), {}, {}, background_axes)
     log_joint = np.zeros(N_MC)
     best = None
     best_lp = float("-inf")
@@ -1136,6 +1249,13 @@ def main():
     manifolds = {label: load_manifold(path) for label, path in MANIFOLD_PATHS.items()}
     background_axes = build_background_axes(manifolds, load_master_axes())
     cases = [load_case(path) for path in sorted(CASE_DIR.glob("v5_case_*.json"))]
+    if CASE_FILTER:
+        cases = [
+            case for case in cases
+            if any(token in case.get("case_id", "") or token in str(case.get("source_pmcid", "")) for token in CASE_FILTER)
+        ]
+    if ONLY_COMBO_CASES:
+        cases = [case for case in cases if len(expected_tuple(case)) > 1]
     candidates = candidate_tuples(tuple(MANIFOLD_PATHS))
 
     lines = []
@@ -1149,6 +1269,11 @@ def main():
     lines.append("Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.")
     lines.append(f"Manifold discovery: {len(MANIFOLD_PATHS)} root distillation files from {DISTILL_DIR / 'v5_*.json'}")
     lines.append(f"Candidate sets: singles={len(manifolds)}, total_ranked={len(candidates)}, max_combo_size={MAX_COMBO_SIZE}")
+    if CASE_FILTER:
+        lines.append(f"Case filter: {', '.join(CASE_FILTER)}")
+    if ONLY_COMBO_CASES:
+        lines.append("Case filter: expected_manifolds length > 1")
+    lines.append(f"Cases loaded for this run: {len(cases)}")
     lines.append("")
     lines.append("Manifolds:")
     for label, manifold in manifolds.items():

@@ -1,0 +1,5326 @@
+{
+  "disease": "D-DLBCL",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_DLBCL_TUMOR_BURDEN",
+      "display_name": "DLBCL clonal B-cell tumor burden",
+      "clinical_meaning": "Total body burden of clonal CD20+ aggressive B-cell lymphoma (nodal + extranodal). Drives lymphadenopathy, mass effect, LDH release, and prognosis (IPI). Reuses concept of lymphoma_tumor_burden_activity but specific to aggressive DLBCL kinetics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.4,
+        0.95
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_HIGH_GRADE_PROLIFERATION",
+      "display_name": "High-grade proliferative kinetics (Ki-67 high, double/triple hit)",
+      "clinical_meaning": "Rapid mitotic turnover with very high proliferation index (Ki-67 often >80%, up to ~100% in HGBCL with MYC and BCL2/BCL6 rearrangement). Drives extreme LDH elevation, tumor lysis risk, rapid clinical progression, and CNS dissemination tendency.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.5,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_RAPID_CELL_TURNOVER_LDH_RELEASE",
+      "display_name": "Rapid lymphoma cell turnover and intracellular enzyme release",
+      "clinical_meaning": "Spontaneous and treatment-induced apoptosis of high-turnover lymphoma cells releases LDH, urate, K+, and PO4 into circulation. Underlies LDH as both diagnostic clue and IPI risk factor, and TLS pathophysiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.4,
+        0.95
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "display_name": "Lymphoma-associated B-symptom cytokine activity",
+      "clinical_meaning": "IL-6/TNF/IFN-γ-driven constitutional inflammation from lymphoma microenvironment. Causes B-symptoms (fever >38°C, drenching night sweats, weight loss >10%/6mo), low albumin, low Hb, and elevated CRP/ferritin without infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        0.8
+      ],
+      "plateau_duration_days": [
+        14,
+        120
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_BONE_MARROW_INFILTRATION",
+      "display_name": "Bone marrow infiltration by lymphoma",
+      "clinical_meaning": "Direct lymphomatous infiltration of bone marrow (10-20% of de novo DLBCL; concordant large-cell vs discordant low-grade infiltration). Causes peripheral cytopenias (anemia, thrombocytopenia, leukopenia) and is a stage-IV-defining feature.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        0.85
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "display_name": "Extranodal organ infiltration and mass effect",
+      "clinical_meaning": "Extranodal involvement (GI tract, testis, kidney/adrenal, breast, bone, skin, paraspinal) causes site-specific symptoms: GI bleeding/perforation, ureteric obstruction, adrenal insufficiency, cord compression. Independent IPI risk factor when ≥2 sites involved.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.1,
+        0.8
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_CNS_INFILTRATION",
+      "display_name": "Central nervous system lymphomatous infiltration",
+      "clinical_meaning": "Leptomeningeal or parenchymal CNS infiltration. Occurs in ~5% at diagnosis or relapse; risk stratified by CNS-IPI (age, LDH, ECOG, stage, extranodal sites, kidney/adrenal involvement). Accounts for poor-prognosis CNS relapse despite systemic remission.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        365
+      ],
+      "peak_value_range": [
+        0.05,
+        0.7
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_HUMORAL_IMMUNE_DYSREGULATION",
+      "display_name": "Lymphoma-associated humoral immune dysregulation",
+      "clinical_meaning": "Loss of normal B-cell repertoire and hypogammaglobulinemia from displacement of normal lymphoid tissue and rituximab-induced B-cell depletion. Predisposes to encapsulated organism, viral, and PCP infections; exacerbated by chemotherapy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        30,
+        180
+      ],
+      "peak_value_range": [
+        0.3,
+        0.85
+      ],
+      "plateau_duration_days": [
+        90,
+        540
+      ],
+      "decline_half_life_days": [
+        60,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_EBV_DRIVEN_LYMPHOMAGENESIS",
+      "display_name": "EBV-driven DLBCL lymphomagenesis (subset)",
+      "clinical_meaning": "EBV-positive DLBCL NOS (often elderly, immunosenescent or post-transplant). EBER-ISH positive; LMP1/EBNA2 expression drives NF-kB activation. Worse prognosis with R-CHOP. Distinct from EBV-negative majority.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "display_name": "Tumor lysis metabolic activity",
+      "clinical_meaning": "Rapid release of intracellular K+, PO4, and nucleic acids (→ uric acid via xanthine oxidase) from dying lymphoma cells. Risk highest in bulky disease, high LDH, high WBC, high-grade variants, in first 1-7 days of cytotoxic therapy or steroid pre-phase.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.05,
+        0.8
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_CHEMOTHERAPY_MARROW_SUPPRESSION",
+      "display_name": "Cytotoxic chemotherapy bone marrow suppression",
+      "clinical_meaning": "Treatment-induced myelosuppression from cyclophosphamide/doxorubicin/etoposide. Nadir ANC at days 7-14 of each cycle; predisposes to febrile neutropenia and opportunistic infection. Distinct from infiltrative cytopenia (M_DLBCL_BONE_MARROW_INFILTRATION).",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        7,
+        14
+      ],
+      "peak_value_range": [
+        0.3,
+        0.9
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_CAR_T_CYTOKINE_RELEASE_NEUROTOXICITY",
+      "display_name": "CAR-T / bispecific cytokine release syndrome and ICANS pathophysiology",
+      "clinical_meaning": "Massive T-cell activation against CD19/CD20 on lymphoma → IL-6/IFN-γ/IL-1 surge (CRS) plus blood-brain-barrier disruption (ICANS). Onset typically days 1-7 post-CAR-T; days 1-3 with bispecifics. Drives fever, hypotension, hypoxia, encephalopathy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_ANTHRACYCLINE_CARDIOTOXICITY",
+      "display_name": "Doxorubicin cumulative dose-dependent cardiotoxicity",
+      "clinical_meaning": "Topoisomerase-IIβ-mediated cardiomyocyte injury, dose-dependent. Risk rises sharply >300 mg/m² doxorubicin (R-CHOP exposes ~300 mg/m² over 6 cycles). Causes LVEF decline, late-onset heart failure (months-years).",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        60,
+        1825
+      ],
+      "peak_value_range": [
+        0.05,
+        0.8
+      ],
+      "plateau_duration_days": [
+        180,
+        3650
+      ],
+      "decline_half_life_days": [
+        365,
+        3650
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DLBCL_HBV_REACTIVATION_PATHOGENESIS",
+      "display_name": "Rituximab-associated HBV reactivation",
+      "clinical_meaning": "B-cell depletion abrogates anti-HBV humoral control; in HBsAg+ or HBsAg-/anti-HBc+ patients, viral replication resumes during/after therapy, with delayed hepatitis flare often after rituximab last dose. Can cause fulminant hepatitis if not prophylaxed.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        60,
+        365
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TREATMENT_IMMUNOSUPPRESSION_INFECTION_RISK",
+      "display_name": "Treatment-induced immunosuppression infection risk",
+      "clinical_meaning": "Cumulative effect of B-cell depletion (rituximab), neutropenia, lymphopenia, steroid exposure, and CD19/CD20-targeted therapy on infection susceptibility. Predisposes to PCP, encapsulated bacteria, HBV/CMV/VZV reactivation, invasive fungal infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        30,
+        365
+      ],
+      "peak_value_range": [
+        0.3,
+        0.85
+      ],
+      "plateau_duration_days": [
+        90,
+        540
+      ],
+      "decline_half_life_days": [
+        90,
+        365
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "lymphadenopathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Clonal proliferation expands lymph nodes; nodes typically >2cm, painless, rubbery, often rapidly progressive over weeks.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "splenomegaly_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Splenic involvement present (~30-40% of stage III-IV DLBCL).",
+      "clinical_rationale": "Direct splenic infiltration by lymphoma; can be diffuse or nodular pattern on imaging.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "hepatomegaly_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Hepatic involvement.",
+      "clinical_rationale": "Hepatic lymphomatous infiltration causes hepatomegaly with variable transaminase rise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "soluble_il2_receptor_scd25",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "sIL-2R (sCD25) shed from activated lymphocytes correlates with tumor burden and is a Japanese-textbook prognostic marker for malignant lymphoma; commonly elevated >1000 U/mL in DLBCL.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "serum_beta2_microglobulin_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "β2-microglobulin shed from lymphoma cell surface MHC-I; correlates with tumor burden and renal function; included in some prognostic indices.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "pet_ct_suv_max_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "FDG-avid in essentially all DLBCL; SUVmax often 10-30 at diagnosis. PET-CT defines staging and is the response-assessment standard (Deauville 5-PS).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_HIGH_GRADE_PROLIFERATION",
+      "target_id": "M_DLBCL_RAPID_CELL_TURNOVER_LDH_RELEASE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "High Ki-67 and double/triple-hit kinetics drive accelerated apoptosis-proliferation cycle, releasing intracellular contents.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_HIGH_GRADE_PROLIFERATION",
+      "target_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "early",
+      "clinical_rationale": "Highly proliferative tumors are most susceptible to spontaneous and treatment-induced TLS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_RAPID_CELL_TURNOVER_LDH_RELEASE",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "LDH elevation is a key IPI factor; reflects both tumor burden and proliferation rate. Often 1.5-5× ULN in advanced disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_RAPID_CELL_TURNOVER_LDH_RELEASE",
+      "target_id": "lactate_dehydrogenase_to_normal_ratio",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "LDH/ULN ratio is the IPI-relevant scaled metric (cutoff >1).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "serum_uric_acid",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Nucleic acid degradation → uric acid via xanthine oxidase; can crystallize in renal tubules causing AKI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "serum_potassium",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Intracellular K+ release → hyperkalemia, arrhythmia risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "serum_phosphorus_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Intracellular phosphate release; complexes with calcium to cause secondary hypocalcemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "serum_calcium",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Hyperphosphatemia drives calcium phosphate precipitation → hypocalcemia, tetany risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "early",
+      "clinical_rationale": "Urate and calcium-phosphate crystal nephropathy; AKI is a Cairo-Bishop clinical TLS criterion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_LYSIS_METABOLIC",
+      "target_id": "tumor_lysis_syndrome_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "early",
+      "clinical_rationale": "Defines clinical TLS with Cairo-Bishop criteria; major early-treatment hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Pel-Ebstein/cyclical fevers >38°C without infection (B-symptom). IL-6/TNF-mediated.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "night_sweats_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Drenching night sweats requiring change of clothing — classic B-symptom.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "weight_loss_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        30,
+        180
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cachexia from chronic IL-6/TNF-mediated inflammation; >10% weight loss over 6 months defines B-symptom.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "fatigue_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cytokine-driven fatigue plus anemia of inflammation; affects ECOG performance status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "IL-6-driven hepatic acute phase response; CRP elevation common in advanced lymphoma without infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "serum_albumin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        14,
+        60
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Negative acute phase reactant; hypoalbuminemia is a poor prognostic marker.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY",
+      "target_id": "ecog_performance_status_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        14,
+        90
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Constitutional symptoms degrade performance status; ECOG ≥2 is an IPI factor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_BONE_MARROW_INFILTRATION",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        14,
+        90
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Marrow displacement plus chronic disease anemia → normocytic anemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_BONE_MARROW_INFILTRATION",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        14,
+        90
+      ],
+      "phase": "whole_course",
+      "conditionality": "Heavy marrow infiltration (>30%).",
+      "clinical_rationale": "Megakaryocyte displacement; thrombocytopenia worsens with treatment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_BONE_MARROW_INFILTRATION",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        14,
+        90
+      ],
+      "phase": "whole_course",
+      "conditionality": "Heavy marrow infiltration.",
+      "clinical_rationale": "Granulopoietic compartment displacement; baseline neutropenia complicates chemotherapy dosing.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_BONE_MARROW_INFILTRATION",
+      "target_id": "bone_marrow_infiltration_extent_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Bone marrow biopsy confirms involvement (concordant large-cell vs discordant low-grade); upstages to stage IV.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "extranodal_disease_extent_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "PET/CT-defined extranodal sites; ≥2 sites is an IPI factor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "M_DLBCL_CNS_INFILTRATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        365
+      ],
+      "phase": "whole_course",
+      "conditionality": "Specific high-risk extranodal sites: testis, breast, kidney/adrenal, paraspinal/epidural, multiple extranodal sites.",
+      "clinical_rationale": "These sites confer markedly elevated CNS relapse risk and inform CNS prophylaxis decisions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CNS_INFILTRATION",
+      "target_id": "cns_disease_extent_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "MRI brain + LP cytology/flow define leptomeningeal vs parenchymal disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CNS_INFILTRATION",
+      "target_id": "cns_relapse_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        730
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "CNS relapse occurs in ~5% overall, up to 25-35% in high-risk testicular DLBCL without prophylaxis; usually within 1-2 years.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CNS_INFILTRATION",
+      "target_id": "neurologic_deficit_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cranial neuropathy, focal deficits, headache, encephalopathy from CNS lymphoma.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_HUMORAL_IMMUNE_DYSREGULATION",
+      "target_id": "M_TREATMENT_IMMUNOSUPPRESSION_INFECTION_RISK",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Lymphoma-related immune dysfunction stacks with chemotherapy/rituximab effects.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TREATMENT_IMMUNOSUPPRESSION_INFECTION_RISK",
+      "target_id": "secondary_infection_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        7,
+        365
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Encapsulated bacteria, PCP, HBV/CMV/VZV reactivation, invasive fungal infection during and post-treatment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CHEMOTHERAPY_MARROW_SUPPRESSION",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "decrease",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        7,
+        14
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "ANC nadir typically days 8-14 of each cycle; G-CSF shifts nadir earlier and shallower.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CHEMOTHERAPY_MARROW_SUPPRESSION",
+      "target_id": "febrile_neutropenia_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        7,
+        14
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Febrile neutropenia in 15-25% of R-CHOP cycles without primary G-CSF prophylaxis; major cause of treatment delay.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CHEMOTHERAPY_MARROW_SUPPRESSION",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        7,
+        14
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Mild-moderate thrombocytopenia with R-CHOP; severe with DA-EPOCH-R, salvage regimens, or post-ASCT.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "febrile_neutropenia_hazard_dlbcl",
+      "target_id": "secondary_infection_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Neutropenic fever frequently reflects bacteremia or occult infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_ANTHRACYCLINE_CARDIOTOXICITY",
+      "target_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        60,
+        1825
+      ],
+      "phase": "recovery",
+      "clinical_rationale": "Cumulative-dose-dependent LV dysfunction; risk ~5% at 400 mg/m², ~26% at 550 mg/m². R-CHOP×6 reaches ~300 mg/m².",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_HBV_REACTIVATION_PATHOGENESIS",
+      "target_id": "hbv_reactivation_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        60,
+        365
+      ],
+      "phase": "context_dependent",
+      "conditionality": "HBsAg+ or HBsAg-/anti-HBc+ without prophylaxis.",
+      "clinical_rationale": "Without prophylaxis, ~20-50% of HBsAg+ patients reactivate; entecavir/tenofovir prophylaxis reduces risk to <5%.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_HBV_REACTIVATION_PATHOGENESIS",
+      "target_id": "serum_alt",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        60,
+        365
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Hepatitis flare with marked ALT/AST elevation; can be fulminant.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CAR_T_CYTOKINE_RELEASE_NEUROTOXICITY",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "First sign of CRS; fever >38°C ASTCT grade 1 onset.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CAR_T_CYTOKINE_RELEASE_NEUROTOXICITY",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "CRS grade 2-4: hypotension, requiring fluids/pressors and tocilizumab.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CAR_T_CYTOKINE_RELEASE_NEUROTOXICITY",
+      "target_id": "mental_status_abnormality_activity",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        3,
+        14
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "ICANS: confusion, aphasia, seizure, cerebral edema; ICE score-based grading.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_CAR_T_CYTOKINE_RELEASE_NEUROTOXICITY",
+      "target_id": "serum_il6",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Massive IL-6 rise during CRS; rationale for tocilizumab.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_EBV_DRIVEN_LYMPHOMAGENESIS",
+      "target_id": "ebv_viral_load",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "EBV+ DLBCL subtype.",
+      "clinical_rationale": "Plasma EBV-DNA often detectable in EBV+ DLBCL; correlates with tumor burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EBV_DRIVEN_LYMPHOMAGENESIS",
+      "target_id": "M_DLBCL_TUMOR_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "EBV+ subset.",
+      "clinical_rationale": "EBV oncoproteins drive NF-kB activation and clonal proliferation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "progression_or_relapse_hazard_dlbcl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        730
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Untreated/refractory disease progresses rapidly; ~40% of patients relapse or are refractory after first-line.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "progression_or_relapse_hazard_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        30,
+        365
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Refractory/relapsed DLBCL has historical 6-month median OS without effective salvage; CAR-T improves but not all eligible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "tumor_lysis_syndrome_hazard_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        1,
+        14
+      ],
+      "phase": "early",
+      "clinical_rationale": "Hyperkalemic arrhythmia, AKI requiring dialysis, and sudden death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "secondary_infection_hazard",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        1,
+        30
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Septic shock during neutropenia or post-rituximab is a leading cause of treatment-related mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        60,
+        3650
+      ],
+      "phase": "recovery",
+      "clinical_rationale": "Late-onset heart failure contributes to non-relapse mortality, especially in older survivors.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "hbv_reactivation_hazard_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        30,
+        180
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Fulminant hepatitis post-rituximab carries high mortality without prophylaxis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cns_relapse_hazard_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        30,
+        365
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "CNS relapse historically has median OS <6 months despite intensive therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "ipi_score_dlbcl",
+      "target_id": "mortality_hazard_in_D-DLBCL",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        1825
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "IPI 0-1: ~90% 5-yr OS; IPI 4-5: ~50-55% 5-yr OS in rituximab era. Composite of age, LDH, ECOG, stage, extranodal sites.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "mediastinal_lymphadenopathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Magnitude depends on anatomic subtype, stage, and whether disease is nodal-predominant or extranodal-predominant.",
+      "clinical_rationale": "mediastinal_lymphadenopathy_activity is an observable anatomic expression of lymphoma burden/distribution, not a separate diagnosis label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "deep_abdominal_lymphadenopathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Magnitude depends on anatomic subtype, stage, and whether disease is nodal-predominant or extranodal-predominant.",
+      "clinical_rationale": "deep_abdominal_lymphadenopathy_activity is an observable anatomic expression of lymphoma burden/distribution, not a separate diagnosis label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "bulky_nodal_mass_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Magnitude depends on anatomic subtype, stage, and whether disease is nodal-predominant or extranodal-predominant.",
+      "clinical_rationale": "bulky_nodal_mass_activity is an observable anatomic expression of lymphoma burden/distribution, not a separate diagnosis label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "metabolic_tumor_burden_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Magnitude depends on anatomic subtype, stage, and whether disease is nodal-predominant or extranodal-predominant.",
+      "clinical_rationale": "metabolic_tumor_burden_activity is an observable anatomic expression of lymphoma burden/distribution, not a separate diagnosis label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "splenic_lesion_burden",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Magnitude depends on anatomic subtype, stage, and whether disease is nodal-predominant or extranodal-predominant.",
+      "clinical_rationale": "splenic_lesion_burden captures extranodal or organ-specific lymphoma distribution relevant before biopsy confirmation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "early_satiety_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Most relevant when DLBCL involves spleen, mesentery, retroperitoneum, bowel, liver, or bulky abdominal nodal/extranodal sites.",
+      "clinical_rationale": "Visceral or splenic DLBCL can produce early satiety before biopsy confirmation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "abdominal_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Most relevant when DLBCL involves spleen, mesentery, retroperitoneum, bowel, liver, or bulky abdominal nodal/extranodal sites.",
+      "clinical_rationale": "Abdominal extranodal or bulky nodal DLBCL can produce pain or fullness as part of the observable clinical stack.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "largest_nodal_mass_diameter_cm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Only when the lymphoma has measurable nodal or splenic mass burden on imaging or examination.",
+      "clinical_rationale": "Nodal lymphoma burden can be observed as a measured nodal mass diameter; preserve reported cm instead of guessing 0..1 severity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "splenic_long_axis_cm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Only when the lymphoma has measurable nodal or splenic mass burden on imaging or examination.",
+      "clinical_rationale": "Splenic involvement or splenic lymphoma burden can be followed as raw splenic size when reported.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_TUMOR_BURDEN",
+      "target_id": "pathologic_lymphadenopathy_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Parent finding becomes present when the corresponding lymphoma distribution is clinically or radiographically present.",
+      "clinical_rationale": "Lymphoma tumor burden commonly first appears as pathologic nodal disease; satellites describe where and how large.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "splenic_lesion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Parent finding becomes present when the corresponding lymphoma distribution is clinically or radiographically present.",
+      "clinical_rationale": "Splenic lymphoma involvement is a parent imaging finding; size and burden are satellites/measurements.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_DLBCL_EXTRANODAL_VISCERAL_INFILTRATION",
+      "target_id": "extranodal_lesion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": "Parent finding becomes present when the corresponding lymphoma distribution is clinically or radiographically present.",
+      "clinical_rationale": "Extranodal lymphoma involvement is a parent finding; organ-specific extent is a satellite.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "lymphadenopathy_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Painless rubbery node enlargement, often rapidly progressive over weeks; cervical, axillary, inguinal, or mediastinal/abdominal.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.3,
+        0.95
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "splenomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Variable; nodular or diffuse splenic infiltration on imaging.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "hepatomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Hepatic infiltration, less common than splenic.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "°C",
+      "log_scale": false,
+      "shape_free_text": "Intermittent or sustained low-grade to high fever (>38°C) without infectious focus; B-symptom criterion.",
+      "baseline_range": [
+        36.4,
+        37
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        37.5,
+        39.5
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "night_sweats_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Drenching nocturnal diaphoresis requiring change of clothes.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        0.85
+      ],
+      "plateau_duration_days": [
+        14,
+        120
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "weight_loss_rate",
+      "category": "physical_finding",
+      "unit": "kg_per_week",
+      "log_scale": false,
+      "shape_free_text": "Unintentional weight loss; B-symptom defined as >10% body weight in 6 months.",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        30,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Cytokine- and anemia-driven fatigue; tracks with ECOG decline.",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.3,
+        0.9
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "ecog_performance_status_dlbcl",
+      "category": "lab_value",
+      "unit": "points",
+      "log_scale": false,
+      "shape_free_text": "ECOG 0-4; ≥2 is an IPI risk factor and influences treatment intensity choice.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0,
+        4
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "ipi_score_dlbcl",
+      "category": "lab_value",
+      "unit": "points",
+      "log_scale": false,
+      "shape_free_text": "International Prognostic Index 0-5: age >60, LDH > ULN, ECOG ≥2, stage III-IV, extranodal sites >1. NCCN-IPI uses age and LDH bands.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0,
+        5
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "cns_ipi_score_dlbcl",
+      "category": "lab_value",
+      "unit": "points",
+      "log_scale": false,
+      "shape_free_text": "CNS-IPI 0-6 (IPI factors + kidney/adrenal involvement). High-risk (≥4) → ~10-12% 2-yr CNS relapse risk.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0,
+        6
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ldh",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Often 1.5-5× ULN; can be markedly elevated in high-grade or bulky disease. Falls with response.",
+      "baseline_range": [
+        120,
+        220
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        250,
+        3000
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "lactate_dehydrogenase_to_normal_ratio",
+      "category": "lab_value",
+      "unit": "ratio",
+      "log_scale": true,
+      "shape_free_text": "LDH/ULN ratio; >1 is IPI factor; NCCN-IPI bands at >1, >3.",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        1,
+        15
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "soluble_il2_receptor_scd25",
+      "category": "lab_value",
+      "unit": "U/mL",
+      "log_scale": true,
+      "shape_free_text": "Often >1000 U/mL; correlates with tumor burden and prognosis (Japanese practice).",
+      "baseline_range": [
+        122,
+        496
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        800,
+        20000
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_beta2_microglobulin_dlbcl",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "Elevated in advanced/bulky disease; also rises with renal dysfunction.",
+      "baseline_range": [
+        0.8,
+        2.4
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        2.5,
+        15
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Hypoalbuminemia from inflammation/cachexia; poor prognostic marker.",
+      "baseline_range": [
+        3.8,
+        5
+      ],
+      "peak_day_range": [
+        30,
+        120
+      ],
+      "peak_value_range": [
+        2,
+        3.5
+      ],
+      "plateau_duration_days": [
+        30,
+        120
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "Variably elevated; high in B-symptomatic patients without infection.",
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        10,
+        250
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Normocytic anemia of chronic disease ± marrow infiltration; deepens with chemotherapy.",
+      "baseline_range": [
+        12,
+        16
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        7,
+        11.5
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        21,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Normal at baseline unless marrow infiltration; falls with chemotherapy nadirs.",
+      "baseline_range": [
+        150,
+        400
+      ],
+      "peak_day_range": [
+        0,
+        120
+      ],
+      "peak_value_range": [
+        50,
+        650
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Usually normal or mildly elevated; leukoerythroblastic picture if marrow infiltrated; very high in leukemic-phase HGBCL.",
+      "baseline_range": [
+        4,
+        11
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        3,
+        25
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "absolute_lymphocyte_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Lymphopenia common; ALC <1.0 is adverse prognostic factor in DLBCL.",
+      "baseline_range": [
+        1,
+        4
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.2,
+        1.5
+      ],
+      "plateau_duration_days": [
+        30,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        180
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Cyclical nadir at days 7-14 of each chemotherapy cycle; G-CSF blunts.",
+      "baseline_range": [
+        2,
+        7.5
+      ],
+      "peak_day_range": [
+        7,
+        14
+      ],
+      "peak_value_range": [
+        0.1,
+        1.5
+      ],
+      "plateau_duration_days": [
+        3,
+        7
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_uric_acid",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Elevated baseline in bulky disease; surges in TLS.",
+      "baseline_range": [
+        3,
+        7
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        8,
+        25
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        5
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "shape_free_text": "Hyperkalemia in TLS; arrhythmia risk.",
+      "baseline_range": [
+        3.5,
+        5
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        5.5,
+        8
+      ],
+      "plateau_duration_days": [
+        1,
+        5
+      ],
+      "decline_half_life_days": [
+        1,
+        3
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_calcium",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Hypocalcemia in TLS due to phosphate complexation; rare hypercalcemia from PTHrP/1,25-OH-D in some lymphomas.",
+      "baseline_range": [
+        8.5,
+        10.5
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        5.5,
+        8
+      ],
+      "plateau_duration_days": [
+        1,
+        5
+      ],
+      "decline_half_life_days": [
+        1,
+        5
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_phosphorus_dlbcl",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Hyperphosphatemia in TLS.",
+      "baseline_range": [
+        2.5,
+        4.5
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        5,
+        12
+      ],
+      "plateau_duration_days": [
+        1,
+        5
+      ],
+      "decline_half_life_days": [
+        1,
+        3
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Rises with TLS-AKI, pre-existing CKD, or obstructive uropathy from retroperitoneal/pelvic mass.",
+      "baseline_range": [
+        0.6,
+        1.2
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        1.5,
+        8
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_alt",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Mild elevation with hepatic infiltration; severe rise with HBV reactivation or anti-tumor drug DILI.",
+      "baseline_range": [
+        10,
+        40
+      ],
+      "peak_day_range": [
+        60,
+        365
+      ],
+      "peak_value_range": [
+        60,
+        3000
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ast",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Tracks with ALT in hepatic involvement or DILI/HBV reactivation.",
+      "baseline_range": [
+        10,
+        40
+      ],
+      "peak_day_range": [
+        60,
+        365
+      ],
+      "peak_value_range": [
+        60,
+        3000
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "ebv_viral_load",
+      "category": "microbiology",
+      "unit": "copies/mL",
+      "log_scale": true,
+      "shape_free_text": "Detectable in plasma in EBV+ DLBCL subset; falls with treatment response.",
+      "baseline_range": [
+        0,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        1000,
+        1000000
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_il6",
+      "category": "lab_value",
+      "unit": "pg/mL",
+      "log_scale": true,
+      "shape_free_text": "Markedly elevated during CAR-T/bispecific CRS; mildly elevated in B-symptomatic disease.",
+      "baseline_range": [
+        0,
+        7
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        50,
+        10000
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "shape_free_text": "Hypotension during CRS or septic shock during neutropenia.",
+      "baseline_range": [
+        70,
+        100
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        40,
+        65
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        5
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "shape_free_text": "Hypoxia from mediastinal mass effect, pleural effusion, infection, or CRS.",
+      "baseline_range": [
+        95,
+        100
+      ],
+      "peak_day_range": [
+        1,
+        30
+      ],
+      "peak_value_range": [
+        80,
+        94
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "neurologic_deficit_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Cranial neuropathy, cord compression deficit, or focal CNS lymphoma signs.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        365
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        14,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mental_status_abnormality_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "ICANS encephalopathy, CNS lymphoma, or sepsis-related delirium.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        3,
+        14
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "pet_ct_suv_max_dlbcl",
+      "category": "imaging_finding",
+      "unit": "SUV_units",
+      "log_scale": true,
+      "shape_free_text": "FDG-PET SUVmax usually 10-30 at diagnosis; falls below liver background on Deauville 1-3 with response.",
+      "baseline_range": [
+        0,
+        3
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        8,
+        35
+      ],
+      "plateau_duration_days": [
+        14,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "pet_ct_deauville_score_dlbcl",
+      "category": "imaging_finding",
+      "unit": "deauville_score_1_5",
+      "log_scale": false,
+      "shape_free_text": "5-point scale; D1-3 = response, D4-5 = residual/progressive disease at end-of-treatment PET.",
+      "baseline_range": [
+        4,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        4,
+        5
+      ],
+      "decline_half_life_days": [
+        60,
+        180
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "nodal_disease_extent_dlbcl",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Lugano staging derivative: nodal sites involved + bulky (>7.5-10 cm) status.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "extranodal_disease_extent_dlbcl",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Number and burden of extranodal sites; ≥2 is IPI factor.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "parent_axis_id": "extranodal_lesion_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "bone_marrow_infiltration_extent_dlbcl",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Bone marrow biopsy or PET-detected marrow uptake; concordant large-cell infiltration is adverse prognostic.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0,
+        0.85
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "parent_axis_id": "extranodal_lesion_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "cns_disease_extent_dlbcl",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "MRI brain + CSF flow cytometry; leptomeningeal vs parenchymal disease.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        365
+      ],
+      "peak_value_range": [
+        0,
+        0.85
+      ],
+      "plateau_duration_days": [
+        30,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "parent_axis_id": "extranodal_lesion_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "tumor_lysis_syndrome_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Hazard concentrated in days 0-7 of cytotoxic therapy or steroid pre-phase, particularly in bulky/high-grade disease.",
+      "baseline_range": [
+        1e-06,
+        0.0001
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.001,
+        0.1
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        3,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "febrile_neutropenia_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Per-cycle hazard; peaks at ANC nadir (days 8-14).",
+      "baseline_range": [
+        1e-06,
+        0.0001
+      ],
+      "peak_day_range": [
+        7,
+        14
+      ],
+      "peak_value_range": [
+        0.005,
+        0.05
+      ],
+      "plateau_duration_days": [
+        3,
+        7
+      ],
+      "decline_half_life_days": [
+        2,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "secondary_infection_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Elevated throughout treatment and for months after rituximab/CAR-T due to B-cell aplasia.",
+      "baseline_range": [
+        1e-05,
+        0.0001
+      ],
+      "peak_day_range": [
+        30,
+        365
+      ],
+      "peak_value_range": [
+        0.001,
+        0.02
+      ],
+      "plateau_duration_days": [
+        90,
+        540
+      ],
+      "decline_half_life_days": [
+        60,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cns_relapse_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Highest in first 1-2 years; concentrated in CNS-IPI high or specific high-risk extranodal sites.",
+      "baseline_range": [
+        1e-07,
+        1e-05
+      ],
+      "peak_day_range": [
+        90,
+        730
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.001
+      ],
+      "plateau_duration_days": [
+        180,
+        540
+      ],
+      "decline_half_life_days": [
+        180,
+        730
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "progression_or_relapse_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "~40% lifetime risk of refractory or relapsed disease; hazard highest in first 24 months.",
+      "baseline_range": [
+        1e-06,
+        0.0001
+      ],
+      "peak_day_range": [
+        30,
+        730
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.01
+      ],
+      "plateau_duration_days": [
+        180,
+        730
+      ],
+      "decline_half_life_days": [
+        180,
+        730
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Late-onset hazard from cumulative dose; rises beyond 300 mg/m².",
+      "baseline_range": [
+        1e-07,
+        1e-05
+      ],
+      "peak_day_range": [
+        180,
+        3650
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.0005
+      ],
+      "plateau_duration_days": [
+        365,
+        3650
+      ],
+      "decline_half_life_days": [
+        365,
+        3650
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hbv_reactivation_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Concentrated during and 6-12 months after rituximab; abrogated by entecavir/tenofovir prophylaxis.",
+      "baseline_range": [
+        1e-07,
+        1e-05
+      ],
+      "peak_day_range": [
+        60,
+        365
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.005
+      ],
+      "plateau_duration_days": [
+        180,
+        540
+      ],
+      "decline_half_life_days": [
+        60,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "infusion_reaction_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Highest with first rituximab infusion in patients with circulating CD20+ disease; cytokine release-like.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.05,
+        0.5
+      ],
+      "plateau_duration_days": [
+        1,
+        1
+      ],
+      "decline_half_life_days": [
+        1,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "crs_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "CAR-T: median onset day 2-5; bispecifics: usually first cycle day 1-3 with step-up dosing.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.05,
+        0.4
+      ],
+      "plateau_duration_days": [
+        3,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "icans_hazard_dlbcl",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "CAR-T: median onset day 4-10; later than CRS. Lower with liso-cel than axi-cel.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        4,
+        14
+      ],
+      "peak_value_range": [
+        0.01,
+        0.2
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cd20_positive_status_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "≥98% of de novo DLBCL CD20+; loss of CD20 occurs in ~10-30% at relapse post-rituximab and contraindicates further CD20-targeted therapy.",
+      "baseline_range": [
+        0.95,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "double_hit_high_grade_classification_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "MYC + BCL2 and/or BCL6 rearrangements (HGBCL); ~5-10% of DLBCL. Drives intensive regimen choice.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "cell_of_origin_abc_classification_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "ABC (non-GCB) ~40% of DLBCL; worse prognosis with R-CHOP; Pola-R-CHP showed greater PFS benefit in non-GCB in subgroup analysis.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "cardiac_lvef_for_anthracycline_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "%",
+      "log_scale": false,
+      "shape_free_text": "Baseline LVEF determines anthracycline eligibility; <50% generally contraindicates standard doxorubicin dosing → consider non-anthracycline regimens or liposomal doxorubicin.",
+      "baseline_range": [
+        55,
+        70
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hepatitis_b_status_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "HBsAg+, anti-HBc+, or HBV-DNA+ status mandates antiviral prophylaxis with rituximab.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "hepatitis_b_reactivation_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Composite risk from HBV serology and rituximab/B-cell-depleting therapy.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_value_range": [
+        0,
+        0.95
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "transplant_eligibility_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Age, comorbidity, performance status, and chemosensitivity determine ASCT eligibility. Generally age <70-75 with adequate organ function.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "car_t_eligibility_dlbcl",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Adequate organ function, no active CNS disease (some products allow), no uncontrolled infection, manufacturing access.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "underlying_lymphoma_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Pre-treatment diagnostic confidence in DLBCL diagnosis (excisional biopsy with CD20+ large B-cell morphology + IHC); high after biopsy.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0.85,
+        1
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-DLBCL",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Composite hazard: untreated aggressive disease has median OS of months; with R-CHOP, ~60% cured. Hazard concentrated in first 6 months (treatment toxicity, refractory disease) and at relapse.",
+      "baseline_range": [
+        1e-06,
+        0.0001
+      ],
+      "peak_day_range": [
+        30,
+        365
+      ],
+      "peak_value_range": [
+        0.0001,
+        0.01
+      ],
+      "plateau_duration_days": [
+        180,
+        730
+      ],
+      "decline_half_life_days": [
+        180,
+        730
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mediastinal_lymphadenopathy_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Imaging-visible mediastinal lymph node enlargement or nodal packets, not the CT test itself.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "deep_abdominal_lymphadenopathy_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Imaging-visible retroperitoneal, mesenteric, porta hepatis, para-aortic, pelvic, or other deep abdominal nodal disease.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "bulky_nodal_mass_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Large confluent nodal mass or bulky nodal conglomerate by exam or imaging.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        21,
+        120
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "metabolic_tumor_burden_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Whole-body active lymphoma burden inferred from PET avidity, multi-station mass burden, or equivalent staging imaging.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "splenic_lesion_burden",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Focal or multinodular splenic lymphoma lesion burden distinct from palpable splenomegaly alone.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "splenic_lesion_presence",
+      "axis_role": "satellite"
+    },
+    {
+      "axis_id": "early_satiety_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Early satiety or post-prandial fullness caused by splenic enlargement, abdominal mass effect, or visceral lymphoma involvement.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        120
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "abdominal_pain_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Abdominal or left upper quadrant pain from splenic, mesenteric, retroperitoneal, bowel, hepatic, or other abdominal lymphoma involvement.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        120
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        3,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "largest_nodal_mass_diameter_cm",
+      "category": "imaging_finding",
+      "unit": "cm",
+      "log_scale": false,
+      "shape_free_text": "Largest reported nodal or nodal-conglomerate diameter on CT/MRI/ultrasound or physical measurement; raw size, not a guessed severity score.",
+      "baseline_range": [
+        0,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        1,
+        20
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "splenic_long_axis_cm",
+      "category": "imaging_finding",
+      "unit": "cm",
+      "log_scale": false,
+      "shape_free_text": "Largest splenic long-axis dimension on imaging; raw measurement when available.",
+      "baseline_range": [
+        8,
+        13
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        13,
+        30
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "splenic_lesion_presence",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "pathologic_lymphadenopathy_presence",
+      "axis_role": "finding",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Pathologic lymph node enlargement or nodal mass is present by examination or imaging. Parent finding for nodal distribution and size satellites.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "splenic_lesion_presence",
+      "axis_role": "finding",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Focal or multinodular splenic lesion suspicious for lymphoma is present. Parent finding for splenic lesion burden and splenic size satellites.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "extranodal_lesion_presence",
+      "axis_role": "finding",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Extranodal mass, organ lesion, or tissue infiltration suspicious for lymphoma is present. Parent finding for organ-specific extranodal extent satellites.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "serum_ldh",
+      "target_axis_id": "lactate_dehydrogenase_to_normal_ratio",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.95,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "LDH/ULN is a derived scaling of LDH; nearly perfect collinearity by construction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_uric_acid",
+      "target_axis_id": "serum_creatinine",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        1,
+        5
+      ],
+      "phase": "early",
+      "conditionality": "Tumor lysis context.",
+      "clinical_rationale": "Hyperuricemia precedes urate nephropathy AKI by hours to days.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_phosphorus_dlbcl",
+      "target_axis_id": "serum_calcium",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.4
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early",
+      "conditionality": "TLS context.",
+      "clinical_rationale": "Calcium phosphate precipitation tightly couples PO4 rise to Ca fall.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "absolute_neutrophil_count",
+      "target_axis_id": "febrile_neutropenia_hazard_dlbcl",
+      "relationship": "negative_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.6
+      ],
+      "effect_direction": "source_down_increases_target",
+      "activation_threshold_range": [
+        0.5,
+        1
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "ANC <0.5 × 10⁹/L sharply elevates febrile neutropenia hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "ipi_score_dlbcl",
+      "target_axis_id": "progression_or_relapse_hazard_dlbcl",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Higher IPI predicts shorter PFS and OS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cns_ipi_score_dlbcl",
+      "target_axis_id": "cns_relapse_hazard_dlbcl",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.85
+      ],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "CNS-IPI ≥4 → ~10-12% 2-yr CNS relapse vs <1% for low risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "pet_ct_deauville_score_dlbcl",
+      "target_axis_id": "progression_or_relapse_hazard_dlbcl",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.7
+      ],
+      "effect_direction": "source_up_increases_target",
+      "phase": "recovery",
+      "clinical_rationale": "End-of-treatment Deauville 4-5 strongly predicts refractory/relapsed disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "metabolic_tumor_burden_activity",
+      "target_axis_id": "serum_ldh",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.2,
+        0.7
+      ],
+      "activation_threshold_range": [
+        0.2,
+        0.5
+      ],
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "conditionality": "Large active lymphoma burden can raise turnover and inflammatory burden, but effect varies by subtype and bulk.",
+      "clinical_rationale": "Anatomic/metabolic lymphoma burden is a driver of LDH and inflammatory marker elevation rather than a laboratory test name.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "metabolic_tumor_burden_activity",
+      "target_axis_id": "serum_crp",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.1,
+        0.5
+      ],
+      "activation_threshold_range": [
+        0.2,
+        0.6
+      ],
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "conditionality": "Large active lymphoma burden can raise turnover and inflammatory burden, but effect varies by subtype and bulk.",
+      "clinical_rationale": "Anatomic/metabolic lymphoma burden is a driver of LDH and inflammatory marker elevation rather than a laboratory test name.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "rituximab_cyclophosphamide_doxorubicin_vincristine_prednisone",
+      "drug_class": "anti_CD20_anthracycline_chemoimmunotherapy_R_CHOP",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "cd20_positive_status_dlbcl",
+        "cardiac_lvef_for_anthracycline_dlbcl",
+        "hepatitis_b_status_dlbcl",
+        "ipi_score_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cd20_positive_status_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            1
+          ],
+          "clinical_rationale": "Rituximab requires CD20 expression; CD20-negative DLBCL needs alternative anti-tumor strategies."
+        },
+        {
+          "axis_id": "cardiac_lvef_for_anthracycline_dlbcl",
+          "condition": "below_threshold",
+          "effect": "contraindicates",
+          "factor_range": [
+            0,
+            0.5
+          ],
+          "clinical_rationale": "LVEF <50% increases doxorubicin cardiotoxicity risk; consider liposomal doxorubicin or anthracycline-free regimens (R-mini-CHOP, R-GemOx)."
+        },
+        {
+          "axis_id": "hepatitis_b_status_dlbcl",
+          "condition": "present",
+          "effect": "requires_source_control",
+          "clinical_rationale": "HBsAg+ or anti-HBc+ requires entecavir/tenofovir prophylaxis to prevent fulminant reactivation."
+        },
+        {
+          "axis_id": "double_hit_high_grade_classification_dlbcl",
+          "condition": "present",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.7
+          ],
+          "clinical_rationale": "R-CHOP underperforms in HGBCL with MYC + BCL2/BCL6 rearrangement; DA-EPOCH-R or Pola-R-CHP preferred."
+        }
+      ],
+      "failure_modes": [
+        "primary_refractory_disease",
+        "early_relapse_within_12_months",
+        "cd20_loss_at_relapse",
+        "anthracycline_cardiotoxicity_late",
+        "hbv_reactivation_without_prophylaxis"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            10,
+            30
+          ]
+        },
+        "M_DLBCL_HIGH_GRADE_PROLIFERATION": {
+          "peak_value_factor": [
+            0.1,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            7,
+            21
+          ]
+        },
+        "M_DLBCL_BONE_MARROW_INFILTRATION": {
+          "peak_value_factor": [
+            0.1,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            14,
+            60
+          ]
+        },
+        "M_DLBCL_B_SYMPTOM_CYTOKINE_ACTIVITY": {
+          "peak_value_factor": [
+            0.1,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.3
+          ],
+          "decline_half_life_days": [
+            3,
+            14
+          ]
+        }
+      },
+      "sigma_modulation": {
+        "axes": [
+          "serum_ldh",
+          "lactate_dehydrogenase_to_normal_ratio",
+          "lymphadenopathy_activity"
+        ],
+        "factor": [
+          0.5,
+          0.9
+        ]
+      },
+      "onset_delay_days": [
+        3,
+        21
+      ],
+      "carryover_after_stop_days": [
+        180,
+        365
+      ],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            0.95
+          ],
+          "interpretation": "Cyclical neutropenia at days 8-14 each cycle; G-CSF prophylaxis recommended for elderly/IPI-high."
+        },
+        {
+          "axis_id": "febrile_neutropenia_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "15-25% incidence per cycle without G-CSF."
+        },
+        {
+          "axis_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "Cumulative dose ~300 mg/m² across 6 cycles; late-onset HF risk."
+        },
+        {
+          "axis_id": "hbv_reactivation_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "Mitigated by entecavir/tenofovir prophylaxis."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            3,
+            20
+          ],
+          "interpretation": "Encapsulated organisms, PCP, herpesvirus reactivation; B-cell aplasia for 6-12 months."
+        },
+        {
+          "axis_id": "neurologic_deficit_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.4
+          ],
+          "interpretation": "Vincristine peripheral neuropathy, dose-limiting."
+        },
+        {
+          "axis_id": "infusion_reaction_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.4
+          ],
+          "interpretation": "First rituximab infusion, especially with high tumor burden; managed with premedication and slow titration."
+        }
+      ],
+      "context_specific_role": "Standard chemoimmunotherapy backbone for newly diagnosed CD20+ DLBCL; 6 cycles standard, with possible 4 cycles in low-risk PET-negative limited stage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "polatuzumab_vedotin_rituximab_cyclophosphamide_doxorubicin_prednisone",
+      "drug_class": "anti_CD79b_ADC_plus_CD20_chemoimmunotherapy_Pola_R_CHP",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "cd20_positive_status_dlbcl",
+        "cardiac_lvef_for_anthracycline_dlbcl",
+        "hepatitis_b_status_dlbcl",
+        "ipi_score_dlbcl",
+        "cell_of_origin_abc_classification_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "ipi_score_dlbcl",
+          "condition": "above_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1.1,
+            1.5
+          ],
+          "clinical_rationale": "POLARIX trial showed PFS benefit largely in IPI 2-5; less benefit in IPI 0-1."
+        },
+        {
+          "axis_id": "cell_of_origin_abc_classification_dlbcl",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.1,
+            1.5
+          ],
+          "clinical_rationale": "Subgroup analysis suggests greater PFS benefit in non-GCB/ABC DLBCL."
+        },
+        {
+          "axis_id": "cd20_positive_status_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Replaces vincristine with polatuzumab (anti-CD79b ADC); maintains rituximab + anthracycline backbone."
+        }
+      ],
+      "failure_modes": [
+        "primary_refractory_disease",
+        "peripheral_neuropathy_polatuzumab",
+        "early_relapse"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.25
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.35
+          ],
+          "decline_half_life_days": [
+            10,
+            30
+          ]
+        },
+        "progression_or_relapse_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.7,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            1,
+            1
+          ],
+          "decline_half_life_days": [
+            180,
+            730
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        21
+      ],
+      "carryover_after_stop_days": [
+        180,
+        365
+      ],
+      "side_effects": [
+        {
+          "axis_id": "neurologic_deficit_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.3
+          ],
+          "interpretation": "Polatuzumab peripheral neuropathy, milder than vincristine in head-to-head."
+        },
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            0.95
+          ],
+          "interpretation": "Similar cytopenia profile to R-CHOP."
+        },
+        {
+          "axis_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "Same anthracycline exposure as R-CHOP."
+        }
+      ],
+      "context_specific_role": "Alternative chemoimmunotherapy for newly diagnosed IPI 2-5 DLBCL; substitutable for R-CHOP in higher-risk or non-GCB patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dose_adjusted_etoposide_prednisone_vincristine_cyclophosphamide_doxorubicin_rituximab",
+      "drug_class": "intensive_anthracycline_etoposide_chemoimmunotherapy_DA_EPOCH_R",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "double_hit_high_grade_classification_dlbcl",
+        "cd20_positive_status_dlbcl",
+        "cardiac_lvef_for_anthracycline_dlbcl",
+        "ecog_performance_status_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "double_hit_high_grade_classification_dlbcl",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2
+          ],
+          "clinical_rationale": "Retrospective and prospective data favor DA-EPOCH-R over R-CHOP in HGBCL with MYC + BCL2/BCL6."
+        },
+        {
+          "axis_id": "ecog_performance_status_dlbcl",
+          "condition": "above_threshold",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.8
+          ],
+          "clinical_rationale": "Frail/poor PS patients tolerate DA-EPOCH-R poorly; toxicity dominates."
+        }
+      ],
+      "failure_modes": [
+        "severe_myelosuppression",
+        "treatment_related_mortality",
+        "primary_refractory_HGBCL"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            10,
+            30
+          ]
+        },
+        "M_DLBCL_HIGH_GRADE_PROLIFERATION": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.3
+          ],
+          "decline_half_life_days": [
+            7,
+            21
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        21
+      ],
+      "carryover_after_stop_days": [
+        180,
+        365
+      ],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.7,
+            0.98
+          ],
+          "interpretation": "More severe neutropenia than R-CHOP; mandatory G-CSF."
+        },
+        {
+          "axis_id": "platelet_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            0.9
+          ],
+          "interpretation": "Etoposide adds thrombocytopenia."
+        },
+        {
+          "axis_id": "febrile_neutropenia_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            20,
+            200
+          ],
+          "interpretation": "Higher than R-CHOP; ICU admissions more common."
+        }
+      ],
+      "context_specific_role": "Intensified regimen for HGBCL/double-hit and primary mediastinal large B-cell lymphoma; not standard for ordinary DLBCL.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "rituximab_attenuated_chop_for_elderly",
+      "drug_class": "attenuated_anti_CD20_chemoimmunotherapy_R_mini_CHOP",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "cd20_positive_status_dlbcl",
+        "cardiac_lvef_for_anthracycline_dlbcl",
+        "ecog_performance_status_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "ecog_performance_status_dlbcl",
+          "condition": "above_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.3
+          ],
+          "clinical_rationale": "Allows curative-intent treatment in patients ≥80 or with comorbidities who cannot tolerate full-dose R-CHOP."
+        }
+      ],
+      "failure_modes": [
+        "under-dosing_relative_to_disease",
+        "early_relapse"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.1,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.6
+          ],
+          "decline_half_life_days": [
+            14,
+            45
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        21
+      ],
+      "carryover_after_stop_days": [
+        120,
+        365
+      ],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.3,
+            0.9
+          ],
+          "interpretation": "Lower neutropenia incidence than full R-CHOP."
+        }
+      ],
+      "context_specific_role": "Reserved for elderly/frail patients (≥80 years or significant comorbidity); ~50% 2-yr OS in LNH-03-7B trial.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "involved_site_radiation_therapy",
+      "drug_class": "consolidative_radiation_for_bulky_or_limited_stage",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "nodal_disease_extent_dlbcl",
+        "extranodal_disease_extent_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "pet_ct_deauville_score_dlbcl",
+          "condition": "above_threshold",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "End-of-treatment PET-positive residual disease benefits from consolidative radiation 30-40 Gy."
+        }
+      ],
+      "failure_modes": [
+        "out-of-field_relapse",
+        "long_term_radiation_toxicity"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            7,
+            30
+          ]
+        }
+      },
+      "onset_delay_days": [
+        7,
+        30
+      ],
+      "carryover_after_stop_days": [
+        180,
+        1825
+      ],
+      "side_effects": [
+        {
+          "axis_id": "doxorubicin_cardiotoxicity_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            5
+          ],
+          "interpretation": "Mediastinal RT adds cardiotoxicity to anthracycline exposure."
+        }
+      ],
+      "context_specific_role": "Consolidation for bulky disease (>7.5-10 cm), limited-stage disease post-R-CHOP×4, or PET-positive residual sites; definitive treatment for primary CNS, testicular, or skeletal lymphoma sanctuary sites.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "high_dose_methotrexate_cns_prophylaxis_treatment",
+      "drug_class": "cns_penetrant_antifolate",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "cns_ipi_score_dlbcl",
+        "cns_disease_extent_dlbcl",
+        "serum_creatinine"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cns_ipi_score_dlbcl",
+          "condition": "above_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "Considered for CNS-IPI ≥4 or specific high-risk extranodal sites (testis, breast, kidney/adrenal)."
+        },
+        {
+          "axis_id": "cns_disease_extent_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "MTX-based regimens (e.g., MATRix) for established CNS-DLBCL."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "above_threshold",
+          "effect": "contraindicates",
+          "factor_range": [
+            0,
+            0.5
+          ],
+          "clinical_rationale": "Renal impairment markedly increases MTX toxicity; aggressive hydration, urine alkalinization, and leucovorin rescue required."
+        }
+      ],
+      "failure_modes": [
+        "delayed_methotrexate_clearance",
+        "mucositis",
+        "cns_relapse_despite_prophylaxis"
+      ],
+      "trajectory_modifications": {
+        "cns_relapse_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            1,
+            1
+          ],
+          "decline_half_life_days": [
+            180,
+            730
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "cns_disease_extent_dlbcl",
+          "direction": "down",
+          "magnitude_range": [
+            0.3,
+            0.8
+          ],
+          "unit": "relative_extent_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        1,
+        14
+      ],
+      "carryover_after_stop_days": [
+        7,
+        30
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_creatinine",
+          "direction": "up",
+          "magnitude_range": [
+            1.2,
+            3
+          ],
+          "interpretation": "MTX nephrotoxicity, especially with delayed clearance."
+        },
+        {
+          "axis_id": "serum_alt",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            5
+          ],
+          "interpretation": "Hepatotoxicity, usually transient."
+        }
+      ],
+      "context_specific_role": "Intrathecal or systemic high-dose MTX (3-3.5 g/m²) for CNS prophylaxis in high CNS-IPI or treatment of established CNS-DLBCL; debate persists about prophylactic efficacy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "salvage_chemotherapy_followed_by_autologous_stem_cell_transplant",
+      "drug_class": "platinum_based_salvage_with_ASCT_consolidation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "transplant_eligibility_dlbcl",
+        "progression_or_relapse_hazard_dlbcl",
+        "pet_ct_deauville_score_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "transplant_eligibility_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Generally requires age <70-75, adequate organ function, and chemosensitivity (response to salvage)."
+        },
+        {
+          "axis_id": "pet_ct_deauville_score_dlbcl",
+          "condition": "below_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1.5,
+            3
+          ],
+          "clinical_rationale": "Pre-ASCT PET-negative status (Deauville 1-3) predicts much better outcomes than PET-positive."
+        }
+      ],
+      "failure_modes": [
+        "chemorefractory_to_salvage",
+        "transplant_related_mortality",
+        "post_ASCT_relapse"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            14,
+            60
+          ]
+        },
+        "progression_or_relapse_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.4,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            1,
+            1
+          ],
+          "decline_half_life_days": [
+            365,
+            1825
+          ]
+        }
+      },
+      "onset_delay_days": [
+        21,
+        60
+      ],
+      "carryover_after_stop_days": [
+        365,
+        1825
+      ],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.95,
+            0.99
+          ],
+          "interpretation": "Profound conditioning-related cytopenia for 10-21 days."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "Bacterial, fungal, viral infections during aplastic phase and prolonged immune reconstitution."
+        }
+      ],
+      "context_specific_role": "Second-line for chemosensitive late-relapsed DLBCL (>12 months from frontline); displaced by CAR-T for early-relapsed/refractory in most settings (ZUMA-7, TRANSFORM).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "anti_CD19_chimeric_antigen_receptor_t_cell_therapy",
+      "drug_class": "anti_CD19_CAR_T_cell_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "car_t_eligibility_dlbcl",
+        "progression_or_relapse_hazard_dlbcl",
+        "ipi_score_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "car_t_eligibility_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Adequate organ function, performance status, no uncontrolled infection; CD19 expression assumed in DLBCL."
+        },
+        {
+          "axis_id": "M_DLBCL_TUMOR_BURDEN",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.8
+          ],
+          "clinical_rationale": "Bulky disease at infusion increases CRS/ICANS severity and lowers durable response rate; bridging therapy often used."
+        }
+      ],
+      "failure_modes": [
+        "antigen_escape_cd19_loss",
+        "tumor_microenvironment_resistance",
+        "severe_crs_or_icans",
+        "prolonged_cytopenia",
+        "manufacturing_failure_or_delay"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.3
+          ],
+          "decline_half_life_days": [
+            3,
+            21
+          ]
+        },
+        "progression_or_relapse_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.4,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            1,
+            1
+          ],
+          "decline_half_life_days": [
+            365,
+            1825
+          ]
+        }
+      },
+      "onset_delay_days": [
+        7,
+        30
+      ],
+      "carryover_after_stop_days": [
+        180,
+        3650
+      ],
+      "side_effects": [
+        {
+          "axis_id": "crs_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            50,
+            500
+          ],
+          "interpretation": "Any-grade CRS in 70-95%; ≥grade 3 in 10-25% depending on product (axi-cel highest, liso-cel lowest)."
+        },
+        {
+          "axis_id": "icans_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            20,
+            200
+          ],
+          "interpretation": "Any-grade ICANS in 30-65%; ≥grade 3 in 10-30%."
+        },
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.7,
+            0.98
+          ],
+          "interpretation": "Lymphodepletion (flu/cy) and prolonged post-CAR-T cytopenia (months)."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "Prolonged B-cell aplasia/hypogammaglobulinemia for ≥6-12 months."
+        }
+      ],
+      "context_specific_role": "Frontline for primary refractory or early-relapsed (<12 months) DLBCL after ZUMA-7/TRANSFORM; also used in 3rd line+ as standard of care. Distinct products: axi-cel, liso-cel, tisa-cel.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cd20_cd3_bispecific_t_cell_engager",
+      "drug_class": "cd20_cd3_bispecific_antibody",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "cd20_positive_status_dlbcl",
+        "progression_or_relapse_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cd20_positive_status_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Engages CD20 on lymphoma and CD3 on T cells; CD20-loss escape possible after rituximab pretreatment."
+        }
+      ],
+      "failure_modes": [
+        "cd20_antigen_escape",
+        "exhausted_T_cell_repertoire",
+        "crs_severe"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.7
+          ],
+          "decline_half_life_days": [
+            14,
+            60
+          ]
+        }
+      },
+      "onset_delay_days": [
+        7,
+        30
+      ],
+      "carryover_after_stop_days": [
+        30,
+        180
+      ],
+      "side_effects": [
+        {
+          "axis_id": "crs_hazard_dlbcl",
+          "direction": "up",
+          "magnitude_range": [
+            10,
+            100
+          ],
+          "interpretation": "CRS during step-up dosing in cycle 1; usually grade 1-2."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            3,
+            30
+          ],
+          "interpretation": "B-cell depletion, hypogammaglobulinemia."
+        }
+      ],
+      "context_specific_role": "Off-the-shelf alternative to CAR-T for relapsed/refractory DLBCL after ≥2 prior lines; epcoritamab and glofitamab approved.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "tafasitamab_lenalidomide",
+      "drug_class": "anti_CD19_antibody_plus_immunomodulator",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "transplant_eligibility_dlbcl",
+        "progression_or_relapse_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "transplant_eligibility_dlbcl",
+          "condition": "absent",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.3
+          ],
+          "clinical_rationale": "Studied in transplant-ineligible relapsed/refractory DLBCL (L-MIND); chemo-free option."
+        }
+      ],
+      "failure_modes": [
+        "lenalidomide_intolerance",
+        "limited_durability_post_lenalidomide_phase"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            30,
+            90
+          ]
+        }
+      },
+      "onset_delay_days": [
+        14,
+        60
+      ],
+      "carryover_after_stop_days": [
+        30,
+        180
+      ],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.4,
+            0.9
+          ],
+          "interpretation": "Lenalidomide-related neutropenia."
+        },
+        {
+          "axis_id": "platelet_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.3,
+            0.7
+          ],
+          "interpretation": "Lenalidomide-related thrombocytopenia."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            3,
+            20
+          ],
+          "interpretation": "Cumulative immunosuppression with prior anti-CD20 therapy."
+        }
+      ],
+      "context_specific_role": "Transplant-ineligible relapsed/refractory DLBCL; alternative when CAR-T not feasible.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "polatuzumab_vedotin_bendamustine_rituximab",
+      "drug_class": "anti_CD79b_ADC_chemotherapy_pola_BR",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "transplant_eligibility_dlbcl",
+        "progression_or_relapse_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "transplant_eligibility_dlbcl",
+          "condition": "absent",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.3
+          ],
+          "clinical_rationale": "Approved for relapsed/refractory DLBCL not eligible for ASCT."
+        }
+      ],
+      "failure_modes": [
+        "polatuzumab_neuropathy",
+        "bendamustine_lymphopenia"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.7
+          ],
+          "decline_half_life_days": [
+            21,
+            60
+          ]
+        }
+      },
+      "onset_delay_days": [
+        7,
+        30
+      ],
+      "carryover_after_stop_days": [
+        60,
+        365
+      ],
+      "side_effects": [
+        {
+          "axis_id": "neurologic_deficit_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.3
+          ],
+          "interpretation": "Polatuzumab peripheral neuropathy."
+        },
+        {
+          "axis_id": "absolute_lymphocyte_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.7,
+            0.95
+          ],
+          "interpretation": "Bendamustine prolonged lymphopenia."
+        }
+      ],
+      "context_specific_role": "Bridge or salvage in transplant-ineligible relapsed DLBCL.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "loncastuximab_tesirine",
+      "drug_class": "anti_CD19_pyrrolobenzodiazepine_ADC",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "progression_or_relapse_hazard_dlbcl"
+      ],
+      "effect_modifiers": [],
+      "failure_modes": [
+        "antigen_escape",
+        "pleural_pericardial_effusions",
+        "edema"
+      ],
+      "trajectory_modifications": {
+        "M_DLBCL_TUMOR_BURDEN": {
+          "peak_value_factor": [
+            0.4,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            30,
+            90
+          ]
+        }
+      },
+      "onset_delay_days": [
+        14,
+        60
+      ],
+      "carryover_after_stop_days": [
+        30,
+        180
+      ],
+      "side_effects": [
+        {
+          "axis_id": "platelet_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.4,
+            0.85
+          ],
+          "interpretation": "Thrombocytopenia common."
+        },
+        {
+          "axis_id": "serum_alt",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            3
+          ],
+          "interpretation": "Transaminitis."
+        }
+      ],
+      "context_specific_role": "≥3rd line relapsed/refractory DLBCL after CAR-T/bispecific failure or ineligibility.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "rasburicase",
+      "drug_class": "recombinant_urate_oxidase",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "serum_uric_acid",
+        "tumor_lysis_syndrome_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "g6pd_deficiency_activity",
+          "condition": "present",
+          "effect": "contraindicates",
+          "clinical_rationale": "Hydrogen peroxide byproduct triggers oxidative hemolysis in G6PD deficiency."
+        },
+        {
+          "axis_id": "tumor_lysis_syndrome_hazard_dlbcl",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.5,
+            3
+          ],
+          "clinical_rationale": "First-line for high-risk TLS in DLBCL with bulky/high-LDH disease."
+        }
+      ],
+      "failure_modes": [
+        "g6pd_hemolysis",
+        "anaphylaxis"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "serum_uric_acid",
+          "direction": "down",
+          "magnitude_range": [
+            5,
+            20
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "trajectory_modifications": {
+        "tumor_lysis_syndrome_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.1,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        1,
+        3
+      ],
+      "side_effects": [
+        {
+          "axis_id": "hemoglobin",
+          "direction": "down",
+          "magnitude_range": [
+            1,
+            5
+          ],
+          "interpretation": "Hemolysis, primarily in G6PD-deficient patients."
+        }
+      ],
+      "context_specific_role": "Pre-emptive or therapeutic for high-risk or established TLS, especially with bulky/high-LDH DLBCL or HGBCL.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "allopurinol",
+      "drug_class": "xanthine_oxidase_inhibitor",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "tumor_lysis_syndrome_hazard_dlbcl",
+        "serum_uric_acid"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "above_threshold",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            0.7
+          ],
+          "clinical_rationale": "Renal dose adjustment required; rare DRESS-like hypersensitivity."
+        }
+      ],
+      "failure_modes": [
+        "established_high_uric_acid_unresponsive_xanthine_accumulation",
+        "allopurinol_hypersensitivity_DRESS"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "serum_uric_acid",
+          "direction": "down",
+          "magnitude_range": [
+            1,
+            4
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "trajectory_modifications": {
+        "tumor_lysis_syndrome_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.4,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            3,
+            7
+          ]
+        }
+      },
+      "onset_delay_days": [
+        1,
+        3
+      ],
+      "carryover_after_stop_days": [
+        1,
+        5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "rash_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.5
+          ],
+          "interpretation": "Allopurinol hypersensitivity, DRESS rare but serious."
+        }
+      ],
+      "context_specific_role": "Standard low-to-intermediate TLS-risk prophylaxis; used with hydration. Insufficient alone for high-risk DLBCL with bulky disease/LDH ≥2× ULN.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "granulocyte_colony_stimulating_factor",
+      "drug_class": "myeloid_growth_factor",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "absolute_neutrophil_count",
+        "febrile_neutropenia_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "ecog_performance_status_dlbcl",
+          "condition": "above_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "Primary prophylaxis recommended in elderly/frail receiving R-CHOP."
+        }
+      ],
+      "failure_modes": [
+        "bone_pain",
+        "splenic_enlargement"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "up",
+          "magnitude_range": [
+            2,
+            10
+          ],
+          "unit": "10^9/L"
+        }
+      ],
+      "trajectory_modifications": {
+        "febrile_neutropenia_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.3,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        }
+      },
+      "onset_delay_days": [
+        1,
+        5
+      ],
+      "carryover_after_stop_days": [
+        3,
+        10
+      ],
+      "side_effects": [
+        {
+          "axis_id": "myalgia_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Bone pain from marrow expansion."
+        }
+      ],
+      "context_specific_role": "Primary prophylaxis for elderly/IPI-high patients on R-CHOP; secondary after febrile neutropenia or dose-limiting cytopenia; mandatory with DA-EPOCH-R.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "entecavir_or_tenofovir_for_hbv_prophylaxis",
+      "drug_class": "nucleos_tide_analog_anti_HBV",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "hepatitis_b_status_dlbcl",
+        "hbv_reactivation_hazard_dlbcl"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "hepatitis_b_status_dlbcl",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "clinical_rationale": "HBsAg+ requires prophylaxis throughout therapy and ≥12 months after; HBsAg-/anti-HBc+ requires monitoring or prophylaxis."
+        }
+      ],
+      "failure_modes": [
+        "non_adherence",
+        "tenofovir_nephrotoxicity"
+      ],
+      "trajectory_modifications": {
+        "hbv_reactivation_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.05,
+            0.2
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.3
+          ],
+          "decline_half_life_days": [
+            30,
+            90
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        14
+      ],
+      "carryover_after_stop_days": [
+        30,
+        180
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_creatinine",
+          "direction": "up",
+          "magnitude_range": [
+            1,
+            1.5
+          ],
+          "interpretation": "Tenofovir disoproxil renal effect; tenofovir alafenamide preferred for renal-impaired."
+        }
+      ],
+      "context_specific_role": "Mandatory for HBsAg+ patients on rituximab-containing therapy; consider for anti-HBc+ patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "trimethoprim_sulfamethoxazole_pcp_prophylaxis",
+      "drug_class": "anti_pneumocystis_antibiotic_prophylaxis",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "M_TREATMENT_IMMUNOSUPPRESSION_INFECTION_RISK",
+        "absolute_lymphocyte_count"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "absolute_lymphocyte_count",
+          "condition": "below_threshold",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "ALC <0.5 × 10⁹/L during steroid + rituximab use elevates PCP risk."
+        }
+      ],
+      "failure_modes": [
+        "sulfa_allergy",
+        "myelosuppression_overlap"
+      ],
+      "trajectory_modifications": {
+        "secondary_infection_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.7,
+            0.9
+          ],
+          "decline_half_life_days": [
+            14,
+            60
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        14
+      ],
+      "carryover_after_stop_days": [
+        7,
+        30
+      ],
+      "side_effects": [
+        {
+          "axis_id": "rash_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.3
+          ],
+          "interpretation": "Sulfa hypersensitivity rash."
+        }
+      ],
+      "context_specific_role": "PCP prophylaxis during R-CHOP and beyond; commonly continued through R-CHOP and 3-6 months post.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "tocilizumab",
+      "drug_class": "anti_IL6_receptor_monoclonal_antibody",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "crs_hazard_dlbcl",
+        "serum_il6"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "crs_hazard_dlbcl",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.5,
+            3
+          ],
+          "clinical_rationale": "First-line for grade ≥2 CAR-T/bispecific CRS."
+        }
+      ],
+      "failure_modes": [
+        "does_not_treat_icans_alone",
+        "infection_unmasking"
+      ],
+      "sigma_modulation": {
+        "axes": [
+          "body_temperature",
+          "mean_arterial_pressure",
+          "serum_il6"
+        ],
+        "factor": [
+          0.3,
+          0.7
+        ]
+      },
+      "trajectory_modifications": {
+        "crs_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.2,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        7,
+        21
+      ],
+      "side_effects": [
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            3
+          ],
+          "interpretation": "Masks CRP/fever; reactivation of latent infections."
+        }
+      ],
+      "context_specific_role": "Acute treatment of CAR-T/bispecific CRS; less effective for ICANS, where corticosteroids are first-line.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dexamethasone_for_icans",
+      "drug_class": "corticosteroid_for_neurotoxicity",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "icans_hazard_dlbcl",
+        "mental_status_abnormality_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "icans_hazard_dlbcl",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.5,
+            3
+          ],
+          "clinical_rationale": "Corticosteroids first-line for ICANS grade ≥2; methylprednisolone pulse for grade 3-4."
+        }
+      ],
+      "failure_modes": [
+        "impaired_car_t_persistence_with_high_dose_steroid",
+        "steroid_psychosis"
+      ],
+      "sigma_modulation": {
+        "axes": [
+          "mental_status_abnormality_activity",
+          "neurologic_deficit_activity"
+        ],
+        "factor": [
+          0.3,
+          0.7
+        ]
+      },
+      "trajectory_modifications": {
+        "icans_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        3,
+        14
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_glucose",
+          "direction": "up",
+          "magnitude_range": [
+            50,
+            200
+          ],
+          "interpretation": "Steroid hyperglycemia."
+        },
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            3
+          ],
+          "interpretation": "Steroid immunosuppression."
+        }
+      ],
+      "context_specific_role": "Acute treatment of CAR-T/bispecific ICANS; theoretical concern about CAR-T persistence is outweighed by safety in grade ≥2 ICANS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_hydration_and_urine_alkalinization",
+      "drug_class": "supportive_TLS_prevention",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "tumor_lysis_syndrome_hazard_dlbcl",
+        "serum_creatinine"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "tumor_lysis_syndrome_hazard_dlbcl",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            2
+          ],
+          "clinical_rationale": "Maintain urine output >100 mL/m²/hr; alkalinization no longer routinely recommended due to calcium phosphate precipitation risk."
+        }
+      ],
+      "failure_modes": [
+        "volume_overload",
+        "calcium_phosphate_precipitation_with_alkali"
+      ],
+      "trajectory_modifications": {
+        "tumor_lysis_syndrome_hazard_dlbcl": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        1,
+        3
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_calcium",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            2
+          ],
+          "interpretation": "Alkalinization can precipitate calcium phosphate; dilutional hypocalcemia possible."
+        }
+      ],
+      "context_specific_role": "Backbone of TLS prevention; started 24-48h before cytoreductive therapy.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "advanced_age",
+      "type": "continuous",
+      "modulation": {
+        "age_above_60": {
+          "P_disease_ratio": [
+            3,
+            8
+          ],
+          "trajectory_modulation": "Higher IPI risk band; greater treatment toxicity and lower fitness for intensive regimens."
+        },
+        "age_above_80": {
+          "P_disease_ratio": [
+            5,
+            15
+          ],
+          "trajectory_modulation": "Often R-mini-CHOP; cure rates lower; treatment-related mortality higher."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hiv_infection",
+      "type": "comorbidity",
+      "modulation": {
+        "hiv_positive_uncontrolled": {
+          "P_disease_ratio": [
+            10,
+            100
+          ],
+          "trajectory_modulation": "AIDS-defining illness; concurrent ART required; outcomes approach HIV-negative when CD4 preserved."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "post_transplant_immunosuppression",
+      "type": "comorbidity",
+      "modulation": {
+        "solid_organ_transplant_recipient": {
+          "P_disease_ratio": [
+            10,
+            50
+          ],
+          "trajectory_modulation": "Often EBV-driven post-transplant lymphoproliferative disorder (PTLD) presenting as DLBCL morphology; reduction of immunosuppression and rituximab are first steps."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ebv_infection_status",
+      "type": "categorical",
+      "modulation": {
+        "ebv_positive_dlbcl_subtype": {
+          "P_disease_ratio": [
+            1.5,
+            3
+          ],
+          "trajectory_modulation": "Worse outcomes with R-CHOP; older age skew."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "autoimmune_disease",
+      "type": "comorbidity",
+      "modulation": {
+        "rheumatoid_arthritis_or_sjogren_or_sle": {
+          "P_disease_ratio": [
+            1.5,
+            5
+          ],
+          "trajectory_modulation": "Chronic immune stimulation predisposes; methotrexate-associated lymphoproliferative disorder may regress on drug withdrawal."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "hepatitis_c_infection",
+      "type": "comorbidity",
+      "modulation": {
+        "hcv_chronic_infection": {
+          "P_disease_ratio": [
+            1.5,
+            3
+          ],
+          "trajectory_modulation": "Some marginal-zone-derived DLBCL cases regress with antiviral therapy."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "family_history_of_lymphoma",
+      "type": "categorical_genetic",
+      "modulation": {
+        "first_degree_relative_with_NHL": {
+          "P_disease_ratio": [
+            1.5,
+            3
+          ],
+          "trajectory_modulation": null
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "primary_immunodeficiency",
+      "type": "categorical_genetic",
+      "modulation": {
+        "common_variable_immunodeficiency_or_xlp_or_ataxia_telangiectasia": {
+          "P_disease_ratio": [
+            10,
+            100
+          ],
+          "trajectory_modulation": "Often EBV-driven; tailored multidisciplinary management."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "occupational_chemical_exposure",
+      "type": "categorical",
+      "modulation": {
+        "chronic_pesticide_or_organic_solvent_exposure": {
+          "P_disease_ratio": [
+            1.2,
+            2
+          ],
+          "trajectory_modulation": null
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "obesity",
+      "type": "continuous",
+      "modulation": {
+        "bmi_above_30": {
+          "P_disease_ratio": [
+            1.1,
+            1.5
+          ],
+          "trajectory_modulation": null
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "male_sex",
+      "type": "categorical",
+      "modulation": {
+        "male": {
+          "P_disease_ratio": [
+            1.1,
+            1.5
+          ],
+          "trajectory_modulation": "Slight male predominance; testicular DLBCL is a unique sanctuary site."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Pre-treatment excisional biopsy (preferred over core/FNA) for histopathology, IHC (CD20, CD3, CD5, CD10, BCL2, BCL6, MUM1, MYC, Ki-67, EBER-ISH), and FISH for MYC/BCL2/BCL6 rearrangements; cell-of-origin classification (Hans algorithm or GEP).",
+    "Staging with whole-body PET-CT (Lugano), bone marrow biopsy if PET ambiguous, MRI brain + LP for CNS-IPI high or high-risk extranodal sites.",
+    "Baseline echocardiogram or MUGA to confirm LVEF ≥50% before anthracycline.",
+    "Pre-treatment HBV serology (HBsAg, anti-HBc, anti-HBs, HBV-DNA), HCV serology, HIV testing; pregnancy testing in women of childbearing potential.",
+    "Tumor lysis risk stratification (Cairo-Bishop): aggressive hydration, allopurinol for low-intermediate risk, rasburicase for high-risk (bulky/high-LDH) or HGBCL.",
+    "Primary G-CSF prophylaxis for elderly (≥65) or IPI-high patients on R-CHOP; mandatory for DA-EPOCH-R.",
+    "PCP prophylaxis (TMP-SMX) during chemoimmunotherapy and 3-6 months post; consider for prolonged steroid use.",
+    "HBV antiviral prophylaxis (entecavir/tenofovir) for HBsAg+ patients during therapy and ≥12 months post; surveillance HBV-DNA for HBsAg-/anti-HBc+.",
+    "Antiviral prophylaxis (acyclovir/valacyclovir) for VZV/HSV reactivation, especially during CAR-T/bispecifics.",
+    "Antifungal prophylaxis (e.g., posaconazole) selectively in prolonged neutropenia or post-allo-SCT.",
+    "Vaccinations: inactivated influenza, pneumococcal, COVID-19 (response may be blunted); avoid live vaccines during and 6-12 months post-rituximab.",
+    "Fertility preservation counseling (sperm banking, ovarian tissue cryopreservation) before cyclophosphamide-containing therapy in patients of reproductive age.",
+    "Cardiac surveillance during and after anthracycline (echocardiogram, BNP, troponin); consider dexrazoxane for high cumulative-dose patients.",
+    "Vincristine peripheral neuropathy monitoring with possible dose reduction or omission.",
+    "Mucositis and infection surveillance during nadirs; thresholds for empiric antibiotic initiation in febrile neutropenia.",
+    "Psychosocial support, patient/family education on B-symptoms vs infection, and symptom-directed palliative care for refractory disease.",
+    "Long-term survivorship: secondary malignancy surveillance (especially MDS/AML after alkylators), cardiovascular risk modification, fatigue and cognitive symptom management.",
+    "CAR-T-specific: caregiver requirement, 30-day proximity to treatment center, IgG monitoring with IVIG replacement if recurrent infection, prolonged cytopenia management.",
+    "End-of-treatment PET-CT with Deauville scoring for response assessment; surveillance imaging individualized as routine surveillance has limited survival benefit in CR patients."
+  ]
+}

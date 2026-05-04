@@ -33,21 +33,21 @@
 | disease_id | disease leaf | 为什么做 |
 | --- | --- | --- |
 | D-INFECTIVE-ENDOCARDITIS | Subacute infective endocarditis | FUO、sepsis、vasculitis、immune complex renal disease mimic；需要 vegetation/embolic/valvular context axes |
-| D-ANCA-VASCULITIS | ANCA-associated vasculitis with systemic inflammation | fever + renal/pulmonary/ENT + inflammatory markers；和 infection、TB、SLE、AOSD 都容易混 |
+| D-MPA | Microscopic polyangiitis / 顕微鏡的多発血管炎 | fever + renal/pulmonary capillaritis + inflammatory markers；和 infection、TB、SLE、AOSD 都容易混；不把 GPA/EGPA 合进同一个 umbrella manifold |
 
 ### Batch 4
 
 | disease_id | disease leaf | 为什么做 |
 | --- | --- | --- |
-| D-DRUG-FEVER-DRESS | DRESS / severe drug hypersensitivity syndrome | fever + rash + eosinophilia + hepatitis/AKI；测试 treatment/risk context、drug exposure 不可观测上下文 |
-| D-EBV-CMV-MONO-LIKE | EBV/CMV mononucleosis-like systemic infection | fever、lymphadenopathy、transaminitis、cytopenia；和 lymphoma/AOSD/SLE/HLH 边界近 |
+| D-DRESS | DRESS / severe drug hypersensitivity syndrome | fever + rash + eosinophilia + hepatitis/AKI；测试 treatment/risk context、drug exposure 不可观测上下文；旧已蒸 ID D-DRUG-FEVER-DRESS 先保留为 legacy |
+| D-INFECTIOUS-MONONUCLEOSIS | Infectious mononucleosis / 伝染性単核球症 | fever、lymphadenopathy、transaminitis、atypical lymphocytosis；和 lymphoma/AOSD/SLE/HLH 边界近；不要把 CMV mononucleosis-like illness 合进同一 first-layer manifold |
 
 ### Batch 5
 
 | disease_id | disease leaf | 为什么做 |
 | --- | --- | --- |
-| D-MIS-A-KAWASAKI-LIKE | Adult MIS-A / Kawasaki-like hyperinflammation | fever、rash、conjunctival/mucosal、shock/myocarditis；和 sepsis/AOSD/HLH 高度重叠 |
-| D-LEPTOSPIROSIS-SEVERE | Severe leptospirosis / Weil disease | fever + renal/liver/thrombocytopenia/sepsis mimic；测试 exposure context 和 multi-organ event hazards |
+| D-MIS-A | Multisystem inflammatory syndrome in adults | fever、rash、conjunctival/mucosal、shock/myocarditis；和 sepsis/AOSD/HLH 高度重叠；Kawasaki-like 作为 mimic/phenotype，不写进 ID |
+| D-LEPTOSPIROSIS | Leptospirosis | fever + renal/liver/thrombocytopenia/sepsis mimic；测试 exposure context 和 multi-organ event hazards；severe/Weil 作为病程严重度或 subtype |
 
 ## 每个 disease 蒸馏必须覆盖
 
@@ -56,7 +56,7 @@
 - `axes`：至少覆盖 fever vitals、CBC、CRP/PCT、ferritin、liver/renal/coagulation、signature qualitative axes、event hazards、唯一 mortality hazard。
 - `axis_couplings`：只写真实残余 covariance 或事件链，不写全矩阵。
 - `risk_factors`：免疫抑制、年龄、妊娠、CKD、malignancy、drug exposure 等对表现和 hazard 的变形。
-- `treatments`：每个治疗至少 3-5 个真实可改变的显性 axis 或机制轴；副作用通过 event hazard / hazard_drift 进入 outcome。
+- `treatments`：不规定固定 target 数；每个治疗输出最小充分因果作用路径，写清直接改变的机制轴、显性 axis、event hazard 或 context axis；副作用通过 event hazard / hazard_drift 进入 outcome，不靠只改 mortality_hazard 过关。
 
 ## 每批验证
 

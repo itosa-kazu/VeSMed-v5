@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "note": "Scope registry for clinical conditions. A condition may later become a disease manifold, but in one inference pass the same axes must not be explained twice.",
+  "conditions": {
+    "chronic_kidney_disease": {
+      "default_scope": "background_modifier",
+      "future_manifold_id": "D-CKD",
+      "primary_axes": [
+        "serum_creatinine",
+        "blood_urea_nitrogen",
+        "urine_output",
+        "hemoglobin",
+        "serum_procalcitonin"
+      ],
+      "skip_background_modifier_when_candidate_contains": [
+        "D-CKD"
+      ],
+      "rationale": "CKD changes renal laboratory base measure. If CKD is later modeled as f_CKD, that manifold should explain renal axes instead."
+    },
+    "systemic_lupus_erythematosus": {
+      "default_scope": "background_modifier",
+      "future_manifold_id": "D-SLE",
+      "primary_axes": [
+        "serum_crp",
+        "body_temperature",
+        "serum_creatinine",
+        "proteinuria_activity",
+        "hematuria_activity",
+        "complement_activity",
+        "autoimmune_disease_background_activity"
+      ],
+      "skip_background_modifier_when_candidate_contains": [
+        "D-SLE"
+      ],
+      "rationale": "SLE can be background autoimmune context for TTP now, but may later become its own disease manifold."
+    },
+    "autoimmune_disease_background": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "serum_crp",
+        "body_temperature",
+        "serum_creatinine",
+        "hematuria_activity",
+        "proteinuria_activity"
+      ],
+      "rationale": "Generic autoimmune background can alter inflammatory and renal base measure without implying a full active autoimmune manifold."
+    },
+    "immunosuppression": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "white_blood_cell_count",
+        "absolute_neutrophil_count",
+        "body_temperature",
+        "serum_crp",
+        "blood_culture_positivity_probability"
+      ],
+      "rationale": "Immunosuppression changes the patient's response capacity and diagnostic visibility."
+    },
+    "transplant_status": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "serum_creatinine",
+        "blood_urea_nitrogen",
+        "white_blood_cell_count",
+        "blood_culture_positivity_probability"
+      ],
+      "rationale": "Transplant status is a patient-context modifier unless a transplant complication manifold is explicitly modeled."
+    },
+    "recent_antibiotic_exposure_or_healthcare_contact": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "active_antibiotic_coverage_probability",
+        "ceftriaxone_susceptibility_probability",
+        "healthcare_associated_resistance_risk_activity",
+        "initial_inactive_antibiotic_exposure_activity"
+      ],
+      "rationale": "Recent antibiotic or healthcare contact changes resistance prior, not the sepsis vector field by itself."
+    },
+    "diabetes_mellitus": {
+      "default_scope": "background_modifier",
+      "future_manifold_id": "D-DIABETES",
+      "primary_axes": [
+        "serum_glucose",
+        "infection_risk_activity",
+        "urinary_source_probability"
+      ],
+      "skip_background_modifier_when_candidate_contains": [
+        "D-DIABETES"
+      ],
+      "rationale": "Diabetes can be a background metabolic/infection-risk modifier until a diabetes manifold is modeled."
+    },
+    "pregnancy": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "white_blood_cell_count",
+        "hemoglobin",
+        "serum_creatinine",
+        "d_dimer",
+        "serum_fibrinogen",
+        "heart_rate"
+      ],
+      "rationale": "Pregnancy changes normal ranges for multiple axes and should not be represented as a disease manifold."
+    },
+    "liver_cirrhosis": {
+      "default_scope": "background_modifier",
+      "future_manifold_id": "D-CIRRHOSIS",
+      "primary_axes": [
+        "serum_albumin",
+        "prothrombin_time_inr",
+        "platelet_count",
+        "serum_bilirubin_total",
+        "serum_ast",
+        "serum_alt"
+      ],
+      "skip_background_modifier_when_candidate_contains": [
+        "D-CIRRHOSIS"
+      ],
+      "rationale": "Cirrhosis changes hepatic/coagulation base measure; if later modeled as f_CIRRHOSIS, avoid double-counting those axes."
+    },
+    "age": {
+      "default_scope": "background_modifier",
+      "primary_axes": [
+        "serum_creatinine",
+        "hemoglobin",
+        "serum_albumin",
+        "mortality_hazard"
+      ],
+      "rationale": "Age changes baseline physiology and frailty without being a disease manifold."
+    }
+  }
+}

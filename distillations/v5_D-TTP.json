@@ -1,0 +1,3108 @@
+{
+  "disease": "D-TTP",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "immune_adamts13_inhibition_activity",
+      "display_name": "Autoantibody-mediated ADAMTS13 inhibition",
+      "clinical_meaning": "IgG autoantibody (and rarely IgM/IgA) binding ADAMTS13 spacer/CUB domains, neutralizing protease activity and accelerating clearance; underlies immune-mediated TTP (iTTP). In congenital TTP this mechanism is replaced by biallelic ADAMTS13 mutation but the downstream cascade is identical.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.7,
+        1
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "display_name": "Ultra-large von Willebrand factor multimer-platelet adhesion",
+      "clinical_meaning": "Endothelial-released ULvWF multimers, normally cleaved by ADAMTS13, persist on endothelium and bind platelet GPIbα, forming platelet-vWF microthrombi in the high-shear arteriolar/capillary microcirculation. Drives platelet consumption and microvascular obstruction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.7,
+        1
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "microthrombotic_ischemia_activity",
+      "display_name": "Microvascular thrombotic ischemia",
+      "clinical_meaning": "Diffuse platelet-rich microthrombi occlude terminal arterioles and capillaries in brain, heart, kidney, mesentery, pancreas, and skin. Produces fluctuating neurologic deficits, troponin leak, mild AKI, abdominal pain, and contributes to LDH elevation through ischemic tissue release.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.5,
+        0.95
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        2,
+        10
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "microangiopathic_hemolysis_activity",
+      "display_name": "Shear-induced microangiopathic hemolysis",
+      "clinical_meaning": "Erythrocytes traversing microthrombi-narrowed vessels are mechanically fragmented, generating schistocytes and intravascular hemolysis with LDH release, free hemoglobin, haptoglobin consumption, and indirect hyperbilirubinemia. Coombs-negative because mechanism is mechanical, not antibody-mediated.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.6,
+        1
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "ischemic_endothelial_injury_activity",
+      "display_name": "Endothelial injury and feed-forward vWF release",
+      "clinical_meaning": "Microthrombosis and ischemia further damage endothelium, releasing additional ULvWF and propagating the cycle; also contributes to subtle DIC-like features (modest D-dimer elevation) without true consumptive coagulopathy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        2,
+        10
+      ],
+      "peak_value_range": [
+        0.3,
+        0.7
+      ],
+      "plateau_duration_days": [
+        5,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "treatment_delay_accumulated_injury_activity",
+      "display_name": "Accumulated end-organ injury from treatment delay",
+      "clinical_meaning": "Each hour without plasma exchange in iTTP increases cumulative microthrombotic burden in CNS and myocardium. Defines short-term mortality risk and likelihood of permanent neurologic/cardiac sequelae. The clinical motto 'PLEX before confirmed ADAMTS13' reflects this.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.3,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "immune_adamts13_inhibition_activity",
+      "target_id": "adamts13_activity",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Anti-ADAMTS13 IgG inhibitor neutralizes plasma ADAMTS13 protease activity; in iTTP measured activity is characteristically <10% (often <5% or undetectable).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "immune_adamts13_inhibition_activity",
+      "target_id": "anti_adamts13_igg_inhibitor_titer",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Direct serologic reflection of the autoantibody-mediated mechanism; Bethesda assay quantifies functional inhibitor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "adamts13_activity",
+      "target_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "conditionality": "active when adamts13_activity below ~10% of normal",
+      "clinical_rationale": "Without ADAMTS13 cleavage of vWF A2 domain, ULvWF multimers persist on endothelium and recruit platelets via GPIbα; threshold-like behavior near 10% activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "target_id": "ultra_large_vwf_multimer_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "ULvWF multimers detectable on multimer gel are the substrate of platelet adhesion in this disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Platelets are consumed in microvascular vWF-platelet aggregates; nadir typically 10–30 ×10^9/L, often <20.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "target_id": "microthrombotic_ischemia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Platelet-vWF aggregates physically occlude terminal arterioles, producing distributed micro-infarction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "microangiopathic_hemolysis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "RBCs are mechanically sheared as they traverse vessels narrowed by platelet-vWF microthrombi.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "ischemic_endothelial_injury_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        1,
+        5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Ischemia-reperfusion injures endothelium, releasing more ULvWF and amplifying the cycle.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "ischemic_endothelial_injury_activity",
+      "target_id": "ultra_large_vwf_platelet_adhesion_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Damaged endothelium releases additional ULvWF stored in Weibel-Palade bodies, sustaining the thrombotic loop.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "schistocyte_fraction",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Mechanical RBC fragmentation produces helmet cells and schistocytes; threshold typically >1% (often 2–10%).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Intravascular hemolysis lowers hemoglobin; values commonly 7–10 g/dL at presentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "serum_haptoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Free hemoglobin binds haptoglobin which is then cleared; haptoglobin typically undetectable.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "serum_bilirubin_indirect",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Heme catabolism produces unconjugated bilirubin; usually 2–5 mg/dL with normal liver enzymes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "reticulocyte_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        3,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Compensatory marrow erythroid response to hemolysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "RBC lysis releases LDH; in TTP a substantial fraction also reflects ischemic tissue release, so LDH commonly 1000–3000 U/L (often disproportionate to anemia).",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Ischemic tissue (kidney, heart, muscle) contributes additional LDH beyond hemolysis component; helps explain LDH-disproportionate-to-hemolysis pattern.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "lactate_dehydrogenase_to_normal_ratio",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "LDH-to-ULN ratio is a sensitive marker of ongoing hemolysis and is followed during PLEX response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microangiopathic_hemolysis_activity",
+      "target_id": "direct_antiglobulin_test_activity",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": null,
+      "phase": "whole_course",
+      "clinical_rationale": "Mechanical (not antibody-mediated) hemolysis: DAT/Coombs is characteristically negative — a key discriminator from autoimmune hemolytic anemia and Evans syndrome.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "petechiae_purpura_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "conditionality": "active when platelet_count below ~30 ×10^9/L",
+      "clinical_rationale": "Severe thrombocytopenia produces petechiae/purpura; mucosal bleeding less prominent than in ITP because consumption rather than failed production dominates.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "bleeding_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "conditionality": "more pronounced when platelet_count below ~10 ×10^9/L or with procedures",
+      "clinical_rationale": "Major bleeding is uncommon at presentation despite very low platelet counts; thrombosis dominates the phenotype.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "mental_status_abnormality_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "CNS microthrombi cause fluctuating confusion, headache, lethargy — most common neurologic manifestation, classically transient and waxing/waning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "neurologic_deficit_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Focal deficits (aphasia, hemiparesis, visual disturbance) from arteriolar microinfarcts; classically transient and migrating.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "seizure_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cortical microthrombi can manifest as focal or generalized seizures.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "headache_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Frequent early symptom from CNS microvascular involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        5
+      ],
+      "phase": "whole_course",
+      "conditionality": "typically mild rise; severe AKI should redirect toward complement-mediated TMA / Shiga toxin HUS",
+      "clinical_rationale": "Renal microthrombi commonly cause mild creatinine elevation (≤2 mg/dL); severe AKI is uncharacteristic of TTP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "serum_troponin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cardiac microthrombi produce troponin elevation in up to half of patients; correlates with mortality and is an independent predictor of poor outcome.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "chest_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Subset of patients have angina-like chest pain from cardiac microthrombi.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "abdominal_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Mesenteric or pancreatic microthrombi cause abdominal pain, occasionally with mild pancreatitis or ileus.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Low-grade fever (~37.5–38.5°C) is part of the classic pentad; high spiking fever should prompt re-evaluation for sepsis or HLH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "ischemic_endothelial_injury_activity",
+      "target_id": "d_dimer",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "whole_course",
+      "conditionality": "mild-to-moderate elevation only; markedly elevated D-dimer with low fibrinogen and prolonged PT favors DIC",
+      "clinical_rationale": "Localized microvascular fibrin turnover causes modest D-dimer rise without consumptive coagulopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "ischemic_stroke_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Larger vessel occlusion or coalescing microthrombi can produce frank stroke; major contributor to early mortality and persistent neurologic disability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "myocardial_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cardiac microthrombi can precipitate MI, arrhythmia, or sudden cardiac death; troponin elevation predicts this hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "thrombotic_event_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Aggregate risk of any new thrombotic event during active disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "intracranial_hemorrhage_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "conditionality": "active when platelet_count <20 ×10^9/L, especially with concurrent ischemic stroke or after platelet transfusion",
+      "clinical_rationale": "Although thrombosis dominates, severe thrombocytopenia plus possible ischemic stroke confers ICH risk; inappropriate platelet transfusion can precipitate further microthrombosis or hemorrhage at infarct sites.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "conditionality": "rises sharply when platelet_count <10 ×10^9/L or with central line placement",
+      "clinical_rationale": "Major bleeding less common than expected for the thrombocytopenia degree, but procedure-related bleeding is meaningful.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "treatment_delay_accumulated_injury_activity",
+      "target_id": "mortality_hazard_in_D-TTP",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "early",
+      "clinical_rationale": "Untreated iTTP carries ~90% mortality. PLEX initiated within 24 h reduces mortality to 10–20%. Each hour of delay adds CNS/cardiac micro-infarction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "microthrombotic_ischemia_activity",
+      "target_id": "mortality_hazard_in_D-TTP",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cardiac and cerebral microinfarction are the dominant proximate causes of TTP death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "immune_adamts13_inhibition_activity",
+      "target_id": "diagnostic_mechanism_confidence_immune_ttp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Confirmed ADAMTS13 <10% with detectable inhibitor establishes iTTP diagnosis and supports rituximab consideration.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "adamts13_activity",
+      "category": "lab_value",
+      "unit": "percent_of_normal",
+      "log_scale": false,
+      "shape_free_text": "Healthy 50–150%; in active TTP <10% (often undetectable); rises gradually with PLEX/immunosuppression over weeks",
+      "baseline_range": [
+        50,
+        150
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        10
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "anti_adamts13_igg_inhibitor_titer",
+      "category": "lab_value",
+      "unit": "BU/mL",
+      "log_scale": true,
+      "shape_free_text": "Healthy undetectable; in iTTP typically 1–10 BU/mL at presentation; declines slowly with B-cell depletion (rituximab) over months",
+      "baseline_range": [
+        0,
+        0.4
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        1,
+        50
+      ],
+      "plateau_duration_days": [
+        14,
+        60
+      ],
+      "decline_half_life_days": [
+        30,
+        180
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Healthy 150–400; nadir at presentation typically 10–30 (often <20); recovers to >150 within 3–10 days of effective PLEX/caplacizumab",
+      "baseline_range": [
+        150,
+        400
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        5,
+        30
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        7
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Falls to 7–10 g/dL with active hemolysis; recovers over 1–4 weeks after disease control",
+      "baseline_range": [
+        12,
+        16
+      ],
+      "peak_day_range": [
+        3,
+        10
+      ],
+      "peak_value_range": [
+        6,
+        10
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        28
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "schistocyte_fraction",
+      "category": "lab_value",
+      "unit": "percent_red_cells",
+      "log_scale": false,
+      "shape_free_text": "Healthy <0.5%; TTP typically 2–10% on peripheral smear; clears over 1–3 weeks after disease control",
+      "baseline_range": [
+        0,
+        0.5
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        2,
+        15
+      ],
+      "plateau_duration_days": [
+        5,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ldh",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Markedly elevated 1000–3000+ U/L (often >5× ULN), reflecting both hemolysis and ischemic tissue release; normalizes within 1–2 weeks of effective treatment",
+      "baseline_range": [
+        120,
+        250
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        800,
+        4000
+      ],
+      "plateau_duration_days": [
+        3,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "lactate_dehydrogenase_to_normal_ratio",
+      "category": "lab_value",
+      "unit": "ratio",
+      "log_scale": true,
+      "shape_free_text": "Often 3–10× ULN; followed daily during PLEX as a sensitive response marker",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        3,
+        12
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_haptoglobin",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Suppressed/undetectable (<10 mg/dL) during active hemolysis; recovers slowly over 1–2 weeks",
+      "baseline_range": [
+        30,
+        200
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        10
+      ],
+      "plateau_duration_days": [
+        5,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_bilirubin_indirect",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "Indirect-predominant elevation 2–5 mg/dL with normal liver transaminases; normalizes over 1–2 weeks",
+      "baseline_range": [
+        0.1,
+        0.7
+      ],
+      "peak_day_range": [
+        2,
+        7
+      ],
+      "peak_value_range": [
+        1.5,
+        6
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "reticulocyte_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Compensatory rise (often >100 ×10^9/L) emerging by day 3–7; normalizes after hemolysis resolves",
+      "baseline_range": [
+        25,
+        100
+      ],
+      "peak_day_range": [
+        3,
+        14
+      ],
+      "peak_value_range": [
+        80,
+        250
+      ],
+      "plateau_duration_days": [
+        7,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "direct_antiglobulin_test_activity",
+      "category": "qualitative",
+      "unit": "probability_0_1_positive",
+      "log_scale": false,
+      "shape_free_text": "Characteristically negative throughout disease — key discriminator from autoimmune hemolytic anemia / Evans syndrome",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0,
+        0.1
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "ultra_large_vwf_multimer_activity",
+      "category": "qualitative",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Detectable on multimer gel during active disease; resolves with ADAMTS13 recovery",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.5,
+        1
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Mild elevation typical (1.0–2.0 mg/dL); severe AKI/dialysis dependence is uncharacteristic and should prompt aHUS / STEC-HUS reconsideration",
+      "baseline_range": [
+        0.6,
+        1.1
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.9,
+        2.5
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_troponin",
+      "category": "lab_value",
+      "unit": "ng/L",
+      "log_scale": true,
+      "shape_free_text": "Elevated in ~25–60% of patients reflecting cardiac microthrombi; independent predictor of mortality",
+      "baseline_range": [
+        0,
+        14
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        30,
+        5000
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "d_dimer",
+      "category": "lab_value",
+      "unit": "μg/mL_FEU",
+      "log_scale": true,
+      "shape_free_text": "Mild-to-moderate elevation (1–5 μg/mL FEU) from localized microvascular fibrin turnover; markedly higher values with low fibrinogen and prolonged PT favor DIC over TTP",
+      "baseline_range": [
+        0,
+        0.5
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        1,
+        8
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "category": "lab_value",
+      "unit": "INR",
+      "log_scale": false,
+      "shape_free_text": "Characteristically normal in TTP — key DIC discriminator",
+      "baseline_range": [
+        0.9,
+        1.1
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0.9,
+        1.3
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "activated_partial_thromboplastin_time",
+      "category": "lab_value",
+      "unit": "seconds",
+      "log_scale": false,
+      "shape_free_text": "Characteristically normal in TTP",
+      "baseline_range": [
+        25,
+        35
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        25,
+        40
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Normal or elevated (acute-phase) in TTP — key DIC discriminator",
+      "baseline_range": [
+        200,
+        400
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        200,
+        600
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "mental_status_abnormality_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Confusion, lethargy, coma — fluctuating; present in 50–60% at presentation",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.3,
+        0.9
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "neurologic_deficit_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Focal deficits — aphasia, hemiparesis, visual disturbance — classically transient and migrating",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        0.8
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "seizure_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Less common; focal or generalized seizures in subset",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        0.6
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "headache_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Frequent early symptom",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.3,
+        0.8
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "petechiae_purpura_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Common at presentation; reflects severity of thrombocytopenia",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.3,
+        0.8
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "bleeding_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Mucosal bleeding less prominent than expected for the thrombocytopenia degree",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        0.5
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "abdominal_pain_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Mesenteric/pancreatic microthrombosis; subset develop pancreatitis",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        0.7
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        10
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "chest_pain_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Subset with cardiac involvement",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        0.6
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        10
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Common nonspecific symptom from anemia and systemic illness",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        0.4,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        28
+      ],
+      "decline_half_life_days": [
+        7,
+        21
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "°C",
+      "log_scale": false,
+      "shape_free_text": "Low-grade fever (37.5–38.5°C) typical; high spiking fever should prompt sepsis/HLH evaluation",
+      "baseline_range": [
+        36.4,
+        37.2
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        37.2,
+        38.8
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "shape_free_text": "Mild tachycardia from anemia and systemic illness",
+      "baseline_range": [
+        60,
+        90
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        90,
+        120
+      ],
+      "plateau_duration_days": [
+        3,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        7
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Pre-test high (PLASMIC score 6–7); confirmed by ADAMTS13 <10% with detectable inhibitor",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.6,
+        1
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "plasma_exchange_access_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Depends on institutional apheresis availability and central line placement; lower in resource-limited settings",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0.5,
+        1
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "plasma_product_anaphylaxis_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Elevated in IgA-deficient patients and prior plasma reactions; mitigated with washed/IgA-deficient FFP",
+      "baseline_range": [
+        0.01,
+        0.05
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0.05,
+        0.5
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "severe_bleeding_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Modulates caplacizumab use and timing of central line placement",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        0.7
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "infection_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Elevated by central line, plasma exposure, corticosteroids, and rituximab",
+      "baseline_range": [
+        0.05,
+        0.15
+      ],
+      "peak_day_range": [
+        7,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        0.6
+      ],
+      "plateau_duration_days": [
+        14,
+        180
+      ],
+      "decline_half_life_days": [
+        30,
+        180
+      ],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "hepatitis_b_reactivation_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Relevant before rituximab; HBsAg/anti-HBc screening required",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0,
+        0.6
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "pregnancy_or_planning_pregnancy_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Pregnancy is both a trigger and a treatment-modifying context (caplacizumab pregnancy data limited; rituximab generally avoided)",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "infection_trigger_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Recent viral infection (HIV, influenza, SARS-CoV-2, gastroenteritis) precedes a notable subset of episodes",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": null,
+      "peak_value_range": [
+        0,
+        0.6
+      ],
+      "plateau_duration_days": null,
+      "decline_half_life_days": null,
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "ischemic_stroke_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "High during untreated phase, falls rapidly with PLEX + caplacizumab",
+      "baseline_range": [
+        5e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.005,
+        0.05
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "myocardial_injury_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Cardiac microthrombosis-driven; elevated troponin signals risk",
+      "baseline_range": [
+        5e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.005,
+        0.05
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "thrombotic_event_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Aggregate hazard for any new thrombotic event during active disease",
+      "baseline_range": [
+        1e-05,
+        0.0001
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.01,
+        0.1
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "intracranial_hemorrhage_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Low overall; rises with severe thrombocytopenia, post-stroke hemorrhagic conversion, and inappropriate platelet transfusion",
+      "baseline_range": [
+        5e-07,
+        5e-06
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.01
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Modest at baseline (consumption pattern); rises with caplacizumab and procedures",
+      "baseline_range": [
+        5e-07,
+        5e-06
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.01
+      ],
+      "plateau_duration_days": [
+        3,
+        30
+      ],
+      "decline_half_life_days": [
+        3,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "procedure_related_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Concentrated around central line placement; mitigated by ultrasound-guided femoral access and careful timing",
+      "baseline_range": [
+        1e-07,
+        1e-06
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.001,
+        0.05
+      ],
+      "plateau_duration_days": [
+        0,
+        1
+      ],
+      "decline_half_life_days": [
+        1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-TTP",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Untreated iTTP ~90% mortality; with timely PLEX + immunosuppression ± caplacizumab overall mortality 10–20%; cardiac/CNS microthrombosis dominate causes of death",
+      "baseline_range": [
+        1e-05,
+        0.0001
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.001,
+        0.15
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        10
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "lactate_dehydrogenase_to_normal_ratio",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.7,
+        -0.4
+      ],
+      "effect_direction": "source_down_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Daily PLEX response is judged by simultaneous platelet rise and LDH fall; tight inverse coupling beyond what is captured by individual mechanism edges.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_haptoglobin",
+      "target_axis_id": "serum_bilirubin_indirect",
+      "relationship": "negative_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        -0.6,
+        -0.3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Both move with hemolysis intensity; residual covariance after the common mechanism is partialed out.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "mental_status_abnormality_activity",
+      "target_axis_id": "neurologic_deficit_activity",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        0.3,
+        0.6
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Same-patient CNS microthrombi typically produce both global and focal manifestations together; classic fluctuating waxing/waning pattern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "petechiae_purpura_activity",
+      "relationship": "negative_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        -0.7,
+        -0.4
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Bedside skin findings track platelet nadir and recovery in real time.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_troponin",
+      "target_axis_id": "mortality_hazard_in_D-TTP",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.6
+      ],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Troponin elevation is an independent predictor of TTP mortality even after adjusting for other markers, reflecting cardiac micro-infarction load.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "adamts13_activity",
+      "target_axis_id": "anti_adamts13_igg_inhibitor_titer",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.7,
+        -0.4
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "In iTTP these two move inversely under shared autoimmune drive; tracking both during follow-up helps detect impending relapse.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "Therapeutic plasma exchange (TPE/PLEX)",
+      "drug_class": "apheresis_with_FFP_replacement",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "plasma_exchange_access_feasibility",
+        "diagnostic_mechanism_confidence_immune_ttp"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "plasma_exchange_access_feasibility",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [
+            0,
+            0.3
+          ],
+          "clinical_rationale": "Without apheresis access bridging therapy with FFP infusion is used until transfer; suboptimal."
+        },
+        {
+          "axis_id": "plasma_product_anaphylaxis_risk_activity",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Reactions interrupt sessions; mitigated with antihistamine/steroid premedication or IgA-deficient plasma."
+        },
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.2
+          ],
+          "clinical_rationale": "Should be initiated empirically on high pre-test probability (PLASMIC ≥6) without waiting for ADAMTS13 result."
+        }
+      ],
+      "failure_modes": [
+        "exacerbation_or_refractory_after_5_to_7_sessions",
+        "early_relapse_within_30_days",
+        "plasma_anaphylaxis",
+        "central_line_complications"
+      ],
+      "trajectory_modifications": {
+        "platelet_count": {
+          "peak_value_factor": [
+            2,
+            5
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            3,
+            7
+          ]
+        },
+        "serum_ldh": {
+          "peak_value_factor": [
+            0.4,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            3,
+            7
+          ]
+        },
+        "ultra_large_vwf_platelet_adhesion_activity": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "adamts13_activity": {
+          "peak_value_factor": [
+            3,
+            10
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            3,
+            14
+          ]
+        },
+        "anti_adamts13_igg_inhibitor_titer": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.8
+          ],
+          "decline_half_life_days": [
+            7,
+            30
+          ]
+        },
+        "mortality_hazard_in_D-TTP": {
+          "peak_value_factor": [
+            0.1,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.5
+          ],
+          "decline_half_life_days": [
+            2,
+            7
+          ]
+        }
+      },
+      "onset_delay_days": [
+        1,
+        3
+      ],
+      "carryover_after_stop_days": [
+        3,
+        14
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_calcium",
+          "direction": "down",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Citrate-induced hypocalcemia; perioral paresthesias; replace IV calcium"
+        },
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.2
+          ],
+          "interpretation": "Catheter-related bloodstream infection; bacteremia risk increases with prolonged access"
+        },
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            5
+          ],
+          "interpretation": "Central line placement in severely thrombocytopenic patient"
+        }
+      ],
+      "context_specific_role": "Initiated emergently within 4–8 hours of clinical suspicion (PLASMIC ≥6); 1.0–1.5 plasma volume daily until platelet >150 ×10^9/L for 2 consecutive days, then taper.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Caplacizumab",
+      "drug_class": "anti_vWF_A1_domain_nanobody",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": [
+        "severe_bleeding_risk_activity",
+        "diagnostic_mechanism_confidence_immune_ttp"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "severe_bleeding_risk_activity",
+          "condition": "high",
+          "effect": "contraindicates",
+          "factor_range": [
+            0,
+            0.3
+          ],
+          "clinical_rationale": "Active major bleeding or intracranial hemorrhage contraindicates caplacizumab."
+        },
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.2
+          ],
+          "clinical_rationale": "Triple therapy (PLEX + steroids + caplacizumab) reduces refractory disease, exacerbations, and time to platelet recovery (HERCULES, TITAN)."
+        },
+        {
+          "axis_id": "pregnancy_or_planning_pregnancy_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            1
+          ],
+          "clinical_rationale": "Limited pregnancy data; case-by-case discussion."
+        }
+      ],
+      "failure_modes": [
+        "rebound_after_stop_with_inhibitor_still_present",
+        "minor_to_moderate_mucocutaneous_bleeding",
+        "epistaxis_gingival_bleeding"
+      ],
+      "trajectory_modifications": {
+        "platelet_count": {
+          "peak_value_factor": [
+            3,
+            8
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        },
+        "ultra_large_vwf_platelet_adhesion_activity": {
+          "peak_value_factor": [
+            0.1,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        },
+        "thrombotic_event_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        },
+        "mortality_hazard_in_D-TTP": {
+          "peak_value_factor": [
+            0.4,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            2,
+            5
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        2
+      ],
+      "carryover_after_stop_days": [
+        3,
+        7
+      ],
+      "side_effects": [
+        {
+          "axis_id": "bleeding_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.4
+          ],
+          "interpretation": "Mucocutaneous bleeding, epistaxis, gingival bleeding common"
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            1.5,
+            5
+          ],
+          "interpretation": "Major bleeding rare but reported; hold around invasive procedures"
+        }
+      ],
+      "context_specific_role": "Daily SC injection alongside PLEX + immunosuppression; continued ≥30 days post-PLEX cessation, extended if ADAMTS13 not recovered to avoid rebound.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Methylprednisolone or prednisone",
+      "drug_class": "corticosteroid",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [],
+      "effect_modifiers": [
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.3
+          ],
+          "clinical_rationale": "Suppresses autoreactive B/T cells producing anti-ADAMTS13."
+        },
+        {
+          "axis_id": "infection_risk_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.2,
+            2
+          ],
+          "clinical_rationale": "Worsens infectious risk in already-immunocompromised host."
+        }
+      ],
+      "failure_modes": [
+        "incomplete_inhibitor_suppression_alone",
+        "hyperglycemia",
+        "steroid_psychosis",
+        "infection"
+      ],
+      "trajectory_modifications": {
+        "immune_adamts13_inhibition_activity": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            7,
+            30
+          ]
+        },
+        "anti_adamts13_igg_inhibitor_titer": {
+          "peak_value_factor": [
+            0.6,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            14,
+            60
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        14
+      ],
+      "carryover_after_stop_days": [
+        3,
+        14
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_glucose",
+          "direction": "up",
+          "magnitude_range": [
+            20,
+            100
+          ],
+          "interpretation": "Steroid-induced hyperglycemia"
+        },
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.3
+          ],
+          "interpretation": "Opportunistic and bacterial infections"
+        },
+        {
+          "axis_id": "mental_status_abnormality_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.2
+          ],
+          "interpretation": "Steroid psychosis confounds CNS assessment"
+        }
+      ],
+      "context_specific_role": "Adjunct to PLEX from day 1; high-dose pulse (methylprednisolone 1 g/day × 3 days) often used in severe disease, then tapered.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Rituximab",
+      "drug_class": "anti_CD20_monoclonal_antibody",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [
+        "hepatitis_b_reactivation_risk_activity",
+        "diagnostic_mechanism_confidence_immune_ttp"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "iTTP-specific; not indicated in cTTP."
+        },
+        {
+          "axis_id": "hepatitis_b_reactivation_risk_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.5,
+            5
+          ],
+          "clinical_rationale": "Mandatory HBV screening; entecavir/tenofovir prophylaxis if HBcAb+ to prevent fulminant reactivation."
+        },
+        {
+          "axis_id": "pregnancy_or_planning_pregnancy_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.3,
+            1
+          ],
+          "clinical_rationale": "Generally avoided in pregnancy due to neonatal B-cell depletion; case-specific."
+        }
+      ],
+      "failure_modes": [
+        "infusion_reaction",
+        "delayed_neutropenia",
+        "HBV_reactivation",
+        "PML_rare",
+        "hypogammaglobulinemia_with_repeat_courses"
+      ],
+      "trajectory_modifications": {
+        "anti_adamts13_igg_inhibitor_titer": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            30,
+            120
+          ]
+        },
+        "immune_adamts13_inhibition_activity": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            30,
+            90
+          ]
+        },
+        "adamts13_activity": {
+          "peak_value_factor": [
+            3,
+            10
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.6
+          ],
+          "decline_half_life_days": [
+            30,
+            120
+          ]
+        }
+      },
+      "onset_delay_days": [
+        7,
+        28
+      ],
+      "carryover_after_stop_days": [
+        180,
+        540
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.3
+          ],
+          "interpretation": "B-cell depletion 6–12 months; respiratory infections, HBV reactivation"
+        },
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            2
+          ],
+          "interpretation": "Late-onset neutropenia in subset"
+        }
+      ],
+      "context_specific_role": "Front-loaded in severe iTTP, refractory disease, exacerbation, or relapse; pre-emptive use during ADAMTS13 relapse (activity dropping <10% before clinical recurrence) is increasingly standard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Recombinant ADAMTS13 (apadamtase alfa)",
+      "drug_class": "recombinant_protease_replacement",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": [],
+      "effect_modifiers": [
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1,
+            1.5
+          ],
+          "clinical_rationale": "Definitive for congenital TTP (cTTP/Upshaw-Schulman); in iTTP, anti-ADAMTS13 antibody can neutralize it, limiting effect."
+        },
+        {
+          "axis_id": "anti_adamts13_igg_inhibitor_titer",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.3,
+            0.8
+          ],
+          "clinical_rationale": "High inhibitor titers reduce efficacy in iTTP."
+        }
+      ],
+      "failure_modes": [
+        "neutralization_by_inhibitor_in_iTTP",
+        "anti_drug_antibody_development"
+      ],
+      "trajectory_modifications": {
+        "adamts13_activity": {
+          "peak_value_factor": [
+            5,
+            15
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.3
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        },
+        "ultra_large_vwf_platelet_adhesion_activity": {
+          "peak_value_factor": [
+            0.2,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.3
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        1,
+        5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.05
+          ],
+          "interpretation": "Generally well tolerated; infusion reactions uncommon"
+        }
+      ],
+      "context_specific_role": "Standard prophylaxis and on-demand for cTTP; emerging investigational role in refractory iTTP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "FFP infusion (bridging plasma)",
+      "drug_class": "plasma_replacement",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": [
+        "plasma_exchange_access_feasibility",
+        "severe_volume_overload_risk_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "plasma_exchange_access_feasibility",
+          "condition": "low",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            1
+          ],
+          "clinical_rationale": "Used only when PLEX cannot be initiated within hours; provides ADAMTS13 but cannot remove inhibitor."
+        }
+      ],
+      "failure_modes": [
+        "volume_overload",
+        "anaphylaxis",
+        "incomplete_inhibitor_removal"
+      ],
+      "trajectory_modifications": {
+        "adamts13_activity": {
+          "peak_value_factor": [
+            1.5,
+            4
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        1
+      ],
+      "carryover_after_stop_days": [
+        1,
+        3
+      ],
+      "side_effects": [
+        {
+          "axis_id": "plasma_product_anaphylaxis_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.3
+          ],
+          "interpretation": "Allergic and anaphylactic reactions"
+        }
+      ],
+      "context_specific_role": "Temporary bridge until apheresis available; clearly inferior to PLEX and never substituted for it long-term.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Folic acid",
+      "drug_class": "vitamin_supplement",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [],
+      "effect_modifiers": [],
+      "failure_modes": [],
+      "trajectory_modifications": {
+        "reticulocyte_count": {
+          "peak_value_factor": [
+            1,
+            1.2
+          ],
+          "plateau_duration_factor": [
+            0.8,
+            1
+          ],
+          "decline_half_life_days": [
+            7,
+            21
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        14
+      ],
+      "carryover_after_stop_days": [
+        3,
+        14
+      ],
+      "side_effects": [],
+      "context_specific_role": "Supports erythropoiesis during sustained hemolysis; routine adjunct.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Avoidance of platelet transfusion (relative contraindication)",
+      "drug_class": "transfusion_management_principle",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "severe_bleeding_risk_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "severe_bleeding_risk_activity",
+          "condition": "high",
+          "effect": "contraindicates",
+          "factor_range": [
+            0,
+            0.5
+          ],
+          "clinical_rationale": "Platelet transfusion historically associated with worsening microthrombosis; reserved strictly for life-threatening bleeding (e.g., ICH) or as cover for emergent procedures."
+        }
+      ],
+      "failure_modes": [
+        "fueling_microthrombosis_if_used_inappropriately"
+      ],
+      "trajectory_modifications": {
+        "thrombotic_event_hazard": {
+          "peak_value_factor": [
+            0.7,
+            1
+          ],
+          "plateau_duration_factor": [
+            0.7,
+            1
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0
+      ],
+      "carryover_after_stop_days": [
+        0,
+        1
+      ],
+      "side_effects": [],
+      "context_specific_role": "Standard supportive principle; communicated explicitly to ED/ICU teams to avoid reflexive transfusion at low platelet thresholds.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Mycophenolate mofetil or cyclosporine",
+      "drug_class": "non_rituximab_immunosuppressant",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "diagnostic_mechanism_confidence_immune_ttp"
+      ],
+      "effect_modifiers": [],
+      "failure_modes": [
+        "delayed_onset",
+        "hepatotoxicity",
+        "infection"
+      ],
+      "trajectory_modifications": {
+        "anti_adamts13_igg_inhibitor_titer": {
+          "peak_value_factor": [
+            0.4,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.8
+          ],
+          "decline_half_life_days": [
+            30,
+            120
+          ]
+        }
+      },
+      "onset_delay_days": [
+        14,
+        60
+      ],
+      "carryover_after_stop_days": [
+        14,
+        60
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.2
+          ],
+          "interpretation": "Opportunistic infection risk"
+        }
+      ],
+      "context_specific_role": "Rescue/maintenance for refractory iTTP, rituximab failure, or as steroid-sparing agent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Splenectomy",
+      "drug_class": "surgical_immunomodulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [],
+      "effect_modifiers": [
+        {
+          "axis_id": "diagnostic_mechanism_confidence_immune_ttp",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            1
+          ],
+          "clinical_rationale": "Removes major site of antibody production and platelet sequestration in selected refractory iTTP."
+        }
+      ],
+      "failure_modes": [
+        "perioperative_complications",
+        "encapsulated_organism_sepsis_lifelong"
+      ],
+      "trajectory_modifications": {
+        "anti_adamts13_igg_inhibitor_titer": {
+          "peak_value_factor": [
+            0.3,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.7
+          ],
+          "decline_half_life_days": [
+            30,
+            180
+          ]
+        }
+      },
+      "onset_delay_days": [
+        3,
+        14
+      ],
+      "carryover_after_stop_days": [
+        365,
+        3650
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.2
+          ],
+          "interpretation": "Lifelong risk of overwhelming post-splenectomy infection (encapsulated organisms)"
+        }
+      ],
+      "context_specific_role": "Rare in modern era; reserved for chronic refractory/relapsing iTTP failing rituximab and other immunosuppression.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "Female sex",
+      "type": "categorical",
+      "modulation": {
+        "female": {
+          "P_disease_ratio": [
+            2,
+            3.5
+          ],
+          "trajectory_modulation": "Approximately 2–3:1 female predominance in iTTP"
+        },
+        "male": {
+          "P_disease_ratio": [
+            0.3,
+            0.5
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "African ancestry",
+      "type": "categorical",
+      "modulation": {
+        "african_ancestry": {
+          "P_disease_ratio": [
+            3,
+            9
+          ],
+          "trajectory_modulation": "Higher iTTP incidence and possibly higher relapse rate; HLA-DRB1*11 associated"
+        },
+        "non_african_ancestry": {
+          "P_disease_ratio": [
+            0.5,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Age 30–50 years",
+      "type": "continuous",
+      "modulation": {
+        "30_to_50_years": {
+          "P_disease_ratio": [
+            2,
+            4
+          ],
+          "trajectory_modulation": "Peak incidence of iTTP in this band"
+        },
+        "child_or_elderly": {
+          "P_disease_ratio": [
+            0.3,
+            0.8
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Pregnancy or postpartum",
+      "type": "categorical",
+      "modulation": {
+        "pregnant_or_postpartum": {
+          "P_disease_ratio": [
+            3,
+            10
+          ],
+          "trajectory_modulation": "Trigger event; physiologic ADAMTS13 fall in 2nd/3rd trimester unmasks cTTP and precipitates iTTP; HELLP/preeclampsia is a major mimicker"
+        },
+        "non_pregnant": {
+          "P_disease_ratio": [
+            0.7,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "HIV infection",
+      "type": "comorbidity",
+      "modulation": {
+        "hiv_positive": {
+          "P_disease_ratio": [
+            10,
+            40
+          ],
+          "trajectory_modulation": "Strong trigger; ART suppression reduces incidence"
+        },
+        "hiv_negative": {
+          "P_disease_ratio": [
+            0.8,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Systemic lupus erythematosus",
+      "type": "comorbidity",
+      "modulation": {
+        "active_sle": {
+          "P_disease_ratio": [
+            5,
+            30
+          ],
+          "trajectory_modulation": "iTTP can present concurrently with SLE flare; consider as part of overlap autoimmunity"
+        },
+        "no_sle": {
+          "P_disease_ratio": [
+            0.8,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Drug exposure (ticlopidine, clopidogrel, quinine, gemcitabine, cyclosporine, tacrolimus, mitomycin, bevacizumab, interferon)",
+      "type": "categorical",
+      "modulation": {
+        "implicated_drug_exposure": {
+          "P_disease_ratio": [
+            5,
+            50
+          ],
+          "trajectory_modulation": "Drug-induced TMA — ADAMTS13 may be normal/mildly low (toxic mechanism distinct from iTTP); supports drug withdrawal as primary management"
+        },
+        "no_exposure": {
+          "P_disease_ratio": [
+            0.9,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Recent infection (gastroenteritis, viral URI, COVID-19, influenza)",
+      "type": "categorical",
+      "modulation": {
+        "recent_infection": {
+          "P_disease_ratio": [
+            2,
+            6
+          ],
+          "trajectory_modulation": "Common antecedent trigger of iTTP episodes"
+        },
+        "no_recent_infection": {
+          "P_disease_ratio": [
+            0.7,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "Obesity",
+      "type": "continuous",
+      "modulation": {
+        "high_bmi": {
+          "P_disease_ratio": [
+            1.5,
+            3
+          ],
+          "trajectory_modulation": "Independent risk factor and possible relapse predictor"
+        },
+        "normal_bmi": {
+          "P_disease_ratio": [
+            0.7,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "Allogeneic HSCT or solid organ transplant",
+      "type": "comorbidity",
+      "modulation": {
+        "post_transplant": {
+          "P_disease_ratio": [
+            3,
+            15
+          ],
+          "trajectory_modulation": "Calcineurin inhibitor-associated TMA / transplant-associated TMA — overlapping phenotype with TTP but distinct mechanism (often complement-mediated)"
+        },
+        "no_transplant": {
+          "P_disease_ratio": [
+            0.9,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "Biallelic ADAMTS13 mutation (Upshaw-Schulman syndrome)",
+      "type": "categorical_genetic",
+      "modulation": {
+        "homozygous_or_compound_heterozygous": {
+          "P_disease_ratio": [
+            200,
+            2000
+          ],
+          "trajectory_modulation": "Defines congenital TTP (cTTP); presents in neonates/children or unmasked in pregnancy/adulthood; no inhibitor; treated with prophylactic FFP or recombinant ADAMTS13 rather than rituximab"
+        },
+        "wild_type": {
+          "P_disease_ratio": [
+            1,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Prior episode of iTTP",
+      "type": "comorbidity",
+      "modulation": {
+        "prior_ittp": {
+          "P_disease_ratio": [
+            10,
+            50
+          ],
+          "trajectory_modulation": "Lifetime relapse risk 30–50%; ADAMTS13 surveillance every 3–6 months guides pre-emptive rituximab"
+        },
+        "first_episode": {
+          "P_disease_ratio": [
+            1,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Active malignancy",
+      "type": "comorbidity",
+      "modulation": {
+        "active_malignancy": {
+          "P_disease_ratio": [
+            2,
+            8
+          ],
+          "trajectory_modulation": "Cancer-associated TMA overlaps with TTP differential; chemotherapy agents and disseminated mucin-producing adenocarcinoma can mimic"
+        },
+        "no_malignancy": {
+          "P_disease_ratio": [
+            0.9,
+            1
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Daily monitoring of platelet count, LDH, hemoglobin, schistocytes, creatinine, and troponin during PLEX therapy",
+    "Folate supplementation (5 mg PO daily) during sustained hemolysis",
+    "Avoid platelet transfusion unless life-threatening bleeding or as cover for absolutely necessary invasive procedure",
+    "Cardiac monitoring (telemetry, baseline troponin, ECG) given high prevalence of cardiac microthrombosis",
+    "Neurologic monitoring with periodic NIHSS-style focused exam to detect new deficits early",
+    "Ultrasound-guided femoral or jugular central line for PLEX (avoid subclavian to allow direct compression if bleeding)",
+    "IV calcium replacement during PLEX to counter citrate-induced hypocalcemia",
+    "DVT prophylaxis with mechanical compression initially; pharmacologic prophylaxis once platelet count >50 ×10^9/L",
+    "PPI for stress ulcer prophylaxis and steroid co-administration",
+    "Hyperglycemia management during corticosteroid therapy",
+    "HBV serology (HBsAg, anti-HBc) and TB screening before rituximab; antiviral prophylaxis if anti-HBc positive",
+    "Pneumocystis jirovecii prophylaxis (TMP-SMX) during prolonged corticosteroid + rituximab therapy",
+    "Pneumococcal, meningococcal, and H. influenzae type b vaccination at least 2 weeks before splenectomy if performed",
+    "Transition planning with hematology for ADAMTS13 surveillance every 3–6 months for relapse prevention; pre-emptive rituximab if ADAMTS13 falls <10–20%",
+    "Genetic testing for ADAMTS13 mutations if ADAMTS13 persistently low without detectable inhibitor or in pediatric/familial presentations",
+    "Counseling on relapse warning signs (fatigue, bruising, headache) and clear ED return plan",
+    "Pregnancy counseling — high risk of relapse; close hematologic and obstetric co-management with serial ADAMTS13 monitoring",
+    "Psychological support and cognitive screening for post-TTP cognitive sequelae, depression, and PTSD which are common after recovery"
+  ]
+}

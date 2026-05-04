@@ -1,0 +1,306 @@
+{
+  "version": 1,
+  "note": "Global base-measure modifiers. These modify fallback/background axes only, not disease trajectories when a candidate disease already contains that axis.",
+  "modifiers": [
+    {
+      "factor": "chronic_kidney_disease",
+      "categories": [
+        "present",
+        "stage_3_5",
+        "stage_4_5_or_dialysis",
+        "dialysis",
+        "kidney_transplant_history"
+      ],
+      "axis_modulations": {
+        "serum_creatinine": {
+          "baseline_range_override": [1.3, 6.0],
+          "unit": "mg/dL",
+          "rationale": "Advanced CKD/dialysis history raises creatinine base measure."
+        },
+        "blood_urea_nitrogen": {
+          "baseline_range_override": [22.0, 90.0],
+          "unit": "mg/dL",
+          "rationale": "Advanced CKD raises BUN base measure."
+        },
+        "urine_output": {
+          "baseline_factor": [0.1, 0.8],
+          "rationale": "Advanced CKD/dialysis may reduce baseline urine output."
+        },
+        "hemoglobin": {
+          "baseline_factor": [0.65, 0.95],
+          "rationale": "CKD commonly lowers hemoglobin through EPO deficiency and chronic inflammation."
+        },
+        "serum_procalcitonin": {
+          "baseline_factor": [1.2, 3.0],
+          "widen_factor": [1.2, 2.0],
+          "rationale": "Reduced renal clearance and chronic inflammation can raise baseline PCT and make it less specific."
+        }
+      }
+    },
+    {
+      "factor": "immunosuppression",
+      "categories": [
+        "present",
+        "glucocorticoids_or_biologic_or_transplant",
+        "transplant_immunosuppression",
+        "neutropenia_or_chemotherapy"
+      ],
+      "axis_modulations": {
+        "white_blood_cell_count": {
+          "baseline_factor": [0.35, 1.25],
+          "widen_factor": [1.5, 2.5],
+          "rationale": "Immunosuppression can blunt or distort WBC response; steroids can also increase WBC."
+        },
+        "absolute_neutrophil_count": {
+          "baseline_factor": [0.25, 1.25],
+          "widen_factor": [1.5, 2.5],
+          "rationale": "Neutropenia or steroid effects can make ANC less representative of infection burden."
+        },
+        "body_temperature": {
+          "baseline_range_override": [36.0, 38.2],
+          "unit": "°C",
+          "rationale": "Immunosuppressed patients may have blunted fever response."
+        },
+        "serum_crp": {
+          "baseline_factor": [0.5, 1.5],
+          "widen_factor": [1.5, 2.5],
+          "rationale": "CRP response can be blunted or nonspecific depending on immunosuppression and concurrent inflammation."
+        }
+      }
+    },
+    {
+      "factor": "transplant_status",
+      "categories": [
+        "present",
+        "kidney_transplant",
+        "solid_organ_transplant"
+      ],
+      "axis_modulations": {
+        "serum_creatinine": {
+          "baseline_range_override": [0.9, 2.5],
+          "unit": "mg/dL",
+          "rationale": "Kidney transplant recipients often have non-healthy renal base measure."
+        },
+        "blood_urea_nitrogen": {
+          "baseline_range_override": [15.0, 55.0],
+          "unit": "mg/dL",
+          "rationale": "Transplant and perioperative renal dysfunction can raise BUN base measure."
+        },
+        "blood_culture_positivity_probability": {
+          "baseline_factor": [1.5, 5.0],
+          "widen_factor": [1.5, 3.0],
+          "rationale": "Transplant status raises occult infection prior even before a specific infection manifold is selected."
+        }
+      }
+    },
+    {
+      "factor": "recent_antibiotic_exposure_or_healthcare_contact",
+      "categories": [
+        "present",
+        "present_within_90_days",
+        "recent_hospitalization",
+        "recent_broad_spectrum_antibiotics"
+      ],
+      "axis_modulations": {
+        "healthcare_associated_resistance_risk_activity": {
+          "baseline_range_override": [0.4, 0.9],
+          "unit": "relative_activity_0_1",
+          "rationale": "Healthcare contact increases resistant organism prior."
+        },
+        "initial_inactive_antibiotic_exposure_activity": {
+          "baseline_range_override": [0.2, 0.8],
+          "unit": "relative_activity_0_1",
+          "rationale": "Recent antibiotics increase the chance that common empiric therapy is initially inactive."
+        },
+        "ceftriaxone_susceptibility_probability": {
+          "baseline_range_override": [0.05, 0.6],
+          "unit": "probability_0_1",
+          "rationale": "Recent healthcare/antibiotic exposure lowers prior probability that ceftriaxone covers the pathogen."
+        },
+        "active_antibiotic_coverage_probability": {
+          "baseline_range_override": [0.1, 0.7],
+          "unit": "probability_0_1",
+          "rationale": "Before susceptibility results, active coverage is uncertain in healthcare-associated infection."
+        }
+      }
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "categories": [
+        "present",
+        "poorly_controlled",
+        "insulin_treated"
+      ],
+      "axis_modulations": {
+        "serum_glucose": {
+          "baseline_range_override": [110.0, 300.0],
+          "unit": "mg/dL",
+          "rationale": "Diabetes raises glucose base measure."
+        },
+        "infection_risk_activity": {
+          "baseline_range_override": [0.2, 0.7],
+          "unit": "relative_activity_0_1",
+          "rationale": "Diabetes raises background infection risk."
+        },
+        "urinary_source_probability": {
+          "baseline_factor": [1.2, 3.0],
+          "widen_factor": [1.2, 2.0],
+          "rationale": "Diabetes increases urinary infection prior."
+        }
+      }
+    },
+    {
+      "factor": "pregnancy",
+      "categories": [
+        "present",
+        "first_trimester",
+        "second_trimester",
+        "third_trimester",
+        "postpartum"
+      ],
+      "axis_modulations": {
+        "white_blood_cell_count": {
+          "baseline_range_override": [6.0, 16.0],
+          "unit": "10^9/L",
+          "rationale": "Pregnancy commonly raises WBC baseline."
+        },
+        "hemoglobin": {
+          "baseline_range_override": [9.5, 13.5],
+          "unit": "g/dL",
+          "rationale": "Hemodilution lowers pregnancy hemoglobin base measure."
+        },
+        "serum_creatinine": {
+          "baseline_range_override": [0.35, 0.9],
+          "unit": "mg/dL",
+          "rationale": "Pregnancy increases GFR and lowers creatinine baseline."
+        },
+        "d_dimer": {
+          "baseline_factor": [1.5, 6.0],
+          "widen_factor": [1.5, 3.0],
+          "rationale": "Pregnancy raises D-dimer baseline."
+        },
+        "serum_fibrinogen": {
+          "baseline_range_override": [350.0, 650.0],
+          "unit": "mg/dL",
+          "rationale": "Pregnancy raises fibrinogen baseline."
+        },
+        "heart_rate": {
+          "baseline_range_override": [70.0, 110.0],
+          "unit": "beats_per_min",
+          "rationale": "Pregnancy raises resting heart rate."
+        }
+      }
+    },
+    {
+      "factor": "liver_cirrhosis",
+      "categories": [
+        "present",
+        "decompensated",
+        "portal_hypertension"
+      ],
+      "axis_modulations": {
+        "serum_albumin": {
+          "baseline_range_override": [1.8, 3.6],
+          "unit": "g/dL",
+          "rationale": "Cirrhosis lowers albumin base measure."
+        },
+        "prothrombin_time_inr": {
+          "baseline_range_override": [1.1, 2.5],
+          "unit": "INR",
+          "rationale": "Cirrhosis can raise INR baseline."
+        },
+        "platelet_count": {
+          "baseline_range_override": [40.0, 180.0],
+          "unit": "10^9/L",
+          "rationale": "Portal hypertension/hypersplenism lowers platelet baseline."
+        },
+        "serum_bilirubin_total": {
+          "baseline_range_override": [0.8, 5.0],
+          "unit": "mg/dL",
+          "rationale": "Cirrhosis can raise bilirubin baseline."
+        }
+      }
+    },
+    {
+      "factor": "systemic_lupus_erythematosus",
+      "categories": [
+        "present",
+        "active",
+        "cutaneous_articular",
+        "lupus_nephritis"
+      ],
+      "axis_modulations": {
+        "serum_crp": {
+          "baseline_factor": [1.0, 4.0],
+          "widen_factor": [1.5, 3.0],
+          "rationale": "SLE background can add inflammatory noise, though CRP may be modest unless infection/serositis is present."
+        },
+        "body_temperature": {
+          "baseline_range_override": [36.5, 38.3],
+          "unit": "°C",
+          "rationale": "Autoimmune flares can cause low-grade fever background."
+        },
+        "serum_creatinine": {
+          "baseline_factor": [1.0, 2.5],
+          "widen_factor": [1.2, 2.0],
+          "rationale": "SLE nephritis background may alter renal base measure."
+        },
+        "hematuria_activity": {
+          "baseline_range_override": [0.0, 0.5],
+          "unit": "relative_activity_0_1",
+          "rationale": "SLE nephritis can cause background hematuria."
+        },
+        "proteinuria_activity": {
+          "baseline_range_override": [0.0, 0.6],
+          "unit": "relative_activity_0_1",
+          "rationale": "SLE nephritis can cause background proteinuria."
+        }
+      }
+    },
+    {
+      "factor": "autoimmune_disease_background",
+      "categories": [
+        "present",
+        "active"
+      ],
+      "axis_modulations": {
+        "serum_crp": {
+          "baseline_factor": [1.0, 3.0],
+          "widen_factor": [1.2, 2.0],
+          "rationale": "Autoimmune background can add nonspecific inflammatory signal."
+        },
+        "body_temperature": {
+          "baseline_range_override": [36.5, 38.2],
+          "unit": "°C",
+          "rationale": "Autoimmune activity can add low-grade fever background."
+        }
+      }
+    },
+    {
+      "factor": "age",
+      "categories": [
+        "age_65_79",
+        "age_ge80",
+        "older_adult_over_60_years",
+        "older_adult_over_65"
+      ],
+      "axis_modulations": {
+        "hemoglobin": {
+          "baseline_range_override": [10.5, 16.0],
+          "unit": "g/dL",
+          "rationale": "Older age broadens/lower-shifts hemoglobin background."
+        },
+        "serum_albumin": {
+          "baseline_range_override": [3.0, 4.8],
+          "unit": "g/dL",
+          "rationale": "Frailty/chronic disease in older adults can lower albumin background."
+        },
+        "serum_creatinine": {
+          "baseline_factor": [0.8, 1.5],
+          "widen_factor": [1.2, 2.0],
+          "rationale": "Older age changes creatinine interpretation through muscle mass and renal reserve."
+        }
+      }
+    }
+  ]
+}
