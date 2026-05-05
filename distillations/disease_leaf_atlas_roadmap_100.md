@@ -99,31 +99,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-HEAT-STROKE | Heat stroke |
 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome |
 | D-SEROTONIN-SYNDROME | Serotonin syndrome |
+| D-THYROID-STORM | Thyroid storm |
+| D-ACUTE-LIVER-FAILURE | Acute liver failure |
+| D-ADRENAL-CRISIS | Adrenal crisis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-THYROID-STORM | Thyroid storm | critical endocrine fever, tachyarrhythmia, and shock mimic |
-| 2 | D-ACUTE-LIVER-FAILURE | Acute liver failure | critical coagulopathy/encephalopathy fever mimic |
-| 3 | D-ADRENAL-CRISIS | Adrenal crisis | critical endocrine shock and infection mimic |
-| 4 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
-| 5 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
-| 6 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia | critical hyperthermia, rigidity, acidosis, and rhabdomyolysis mimic |
-| 7 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
-| 8 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
-| 9 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy | critical TMA mimic of TTP, HUS, sepsis-DIC, and malignant hypertension |
-| 10 | D-EVANS-SYNDROME | Evans syndrome | immune cytopenia fever mimic near SLE, AIHA, TTP, and lymphoma |
-| 11 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
-| 12 | D-DERMATOMYOSITIS | Dermatomyositis | common fever/rash/myositis/ILD mimic of infection, AOSD, and malignancy |
-| 13 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
-| 14 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
-| 15 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
-| 16 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
-| 17 | D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia | critical thrombocytopenia/thrombosis mimic near TMA, DIC, and APS |
-| 18 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
-| 19 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
-| 20 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
+| 1 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
+| 2 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
+| 3 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia | critical hyperthermia, rigidity, acidosis, and rhabdomyolysis mimic |
+| 4 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
+| 5 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
+| 6 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy | critical TMA mimic of TTP, HUS, sepsis-DIC, and malignant hypertension |
+| 7 | D-EVANS-SYNDROME | Evans syndrome | immune cytopenia fever mimic near SLE, AIHA, TTP, and lymphoma |
+| 8 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
+| 9 | D-DERMATOMYOSITIS | Dermatomyositis | common fever/rash/myositis/ILD mimic of infection, AOSD, and malignancy |
+| 10 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
+| 11 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
+| 12 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
+| 13 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
+| 14 | D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia | critical thrombocytopenia/thrombosis mimic near TMA, DIC, and APS |
+| 15 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
+| 16 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
+| 17 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
+| 18 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
+| 19 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 20 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
 
 ## Candidate Pool Toward 100
 
