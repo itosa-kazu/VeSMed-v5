@@ -1,0 +1,175 @@
+{
+  "case_id": "CAR_T_CRS_PLEURAL_CAVITY_PMC5839873",
+  "source_pmid": "29443792",
+  "source_pmcid": "PMC5839873",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5839873/",
+  "disease_label_per_paper": "Pleural cavity cytokine release syndrome in CD19-directed chimeric antigen receptor-modified T cell therapy",
+  "expected_manifolds": ["D-CAR-T-CRS"],
+  "demographics": {
+    "age": 28,
+    "sex": "F",
+    "country": "China"
+  },
+  "presentation_summary": [
+    "Diffuse large B-cell lymphoma treated with CD19-directed CAR-T cells after lymphodepleting fludarabine/cyclophosphamide.",
+    "Fever to 39.3 C developed the day after infusion with CRP above 100 mg/L and negative blood cultures.",
+    "Progressive cough and bilateral pleural effusion developed; pleural fluid IL-6 and CAR construct copies were markedly higher than paired blood measurements.",
+    "Symptoms attenuated by day 9, effusions resolved by day 21, and PET/CT at 1 month showed complete remission."
+  ],
+  "snapshot_day": 4,
+  "treatment_start_days": {
+    "D-CAR-T-CRS": 1
+  },
+  "risk_context": [
+    {
+      "factor": "recent_car_t_infusion_exposure",
+      "category": "present",
+      "applies_to": ["D-CAR-T-CRS"],
+      "source_text_value": "infused with a total of 2.45 x 10^8 CART19 cells"
+    },
+    {
+      "factor": "localized_pleural_or_thoracic_tumor_context",
+      "category": "present",
+      "applies_to": ["D-CAR-T-CRS"],
+      "source_text_value": "posterior mediastinal mass and later bilateral pleural effusion after CART19 infusion"
+    },
+    {
+      "factor": "active_infection_workup",
+      "category": "blood_cultures_negative",
+      "applies_to": ["D-CAR-T-CRS"],
+      "source_text_value": "Multiple blood cultures were negative, which eliminated bacterial infection in the paper's interpretation",
+      "use_in_ranking": false
+    }
+  ],
+  "observations": [
+    {
+      "axis_id": "car_t_cell_recent_infusion_exposure",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "CD19-directed CART19 infusion"
+    },
+    {
+      "axis_id": "days_since_car_t_infusion",
+      "value": 4,
+      "unit": "days",
+      "source_text_value": "progressive cough and suspected pleural effusion three days after fever began"
+    },
+    {
+      "axis_id": "body_temperature",
+      "value": 39.3,
+      "unit": "degC",
+      "source_text_value": "next day after CART19 infusion, temperature 39.3 C"
+    },
+    {
+      "axis_id": "serum_crp",
+      "value": 100,
+      "unit": "mg/L",
+      "source_text_value": "CRP increased beyond 100 mg/L",
+      "quality_note": "Lower bound encoded because the paper reported CRP beyond 100 mg/L."
+    },
+    {
+      "axis_id": "pleural_effusion_activity",
+      "value": 0.9,
+      "unit": "severity_score_0_1",
+      "source_text_value": "CT scan showed bilateral pleural effusion; ultrasound widths 5-6 cm left and 6-7 cm right"
+    },
+    {
+      "axis_id": "capillary_leak_hazard",
+      "value": 0.3,
+      "unit": "events_per_day",
+      "source_text_value": "localized pleural cavity cytokine release with bilateral effusions"
+    },
+    {
+      "axis_id": "serum_il6",
+      "value": 5.69,
+      "unit": "pg/mL",
+      "source_text_value": "paired peripheral blood serum IL-6 5.69 pg/mL when hydrothorax IL-6 was 1212.45 pg/mL",
+      "quality_note": "Peripheral serum IL-6 was low at the time of pleural fluid sampling despite local pleural CRS."
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard",
+      "value": 0.1,
+      "unit": "events_per_day",
+      "source_text_value": "progressive cough and positional symptoms from pleural effusion without reported serious hypoxemia"
+    }
+  ],
+  "clinical_timeline": [
+    {
+      "day": 0,
+      "event": "Infused with 2.45 x 10^8 CART19 cells."
+    },
+    {
+      "day": 1,
+      "event": "Fever 39.3 C; CRP beyond 100 mg/L; blood cultures negative; serum cytokines including IFN-gamma, IL-6 and IL-10 elevated according to the paper."
+    },
+    {
+      "day": 4,
+      "event": "Progressive cough, especially lying down; CT and ultrasound showed bilateral pleural effusion; thoracentesis performed."
+    },
+    {
+      "day": 9,
+      "event": "Symptoms and signs attenuated; blood test almost normal and left effusion largely absorbed."
+    },
+    {
+      "day": 21,
+      "event": "Pleural effusions completely absorbed."
+    },
+    {
+      "day": 30,
+      "event": "PET/CT showed complete remission."
+    }
+  ],
+  "microbiology": [
+    {
+      "finding": "Multiple blood cultures were negative",
+      "category": "infection_workup",
+      "axis_id": "blood_culture_positivity_probability",
+      "value": 0.0,
+      "unit": "probability_0_1",
+      "source_text_value": "Multiple blood cultures were negative",
+      "use_in_ranking": false
+    }
+  ],
+  "confirmatory_findings": [
+    {
+      "finding": "Pleural fluid IL-6 much higher than peripheral serum",
+      "category": "confirmatory_cytokine_panel",
+      "axis_id": "pleural_fluid_il6",
+      "value": 1212.45,
+      "unit": "pg/mL",
+      "source_text_value": "IL-6 at 1212.45 pg/mL in hydrothorax versus 5.69 pg/mL in blood",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "CAR construct copies enriched in pleural fluid compared with blood",
+      "category": "confirmatory_cellular_kinetics",
+      "axis_id": "car_t_cell_expansion_level",
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "source_text_value": "qPCR CAR constructs 1119696 copies/ug DNA in hydrothorax versus 522227 copies/ug DNA in blood",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "Paper described grade 2 CRS",
+      "category": "paper_diagnostic_conclusion",
+      "source_text_value": "suggesting a grade 2 cytokine release syndrome",
+      "use_in_ranking": false
+    }
+  ],
+  "actual_treatment": [
+    "anti-infection agents",
+    "supportive care",
+    "thoracentesis",
+    "monitoring of cytokines and CAR construct copies"
+  ],
+  "outcome": {
+    "short_term": "Symptoms attenuated by day 9.",
+    "radiographic": "Pleural effusion fully absorbed by day 21.",
+    "oncologic": "Complete remission on PET/CT at 1 month."
+  },
+  "quality_warnings": [
+    "Pleural fluid IL-6 and local CAR qPCR are confirmatory/local-compartment evidence and marked use_in_ranking:false.",
+    "Peripheral serum IL-6 was encoded separately because the disease axis is serum_il6.",
+    "No oxygen saturation, blood pressure, or exact antimicrobial regimen was reported and none was invented."
+  ]
+}

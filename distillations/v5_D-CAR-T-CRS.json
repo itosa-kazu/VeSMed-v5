@@ -1,0 +1,600 @@
+{
+  "disease": "D-CAR-T-CRS",
+  "disease_name": "CAR-T cytokine release syndrome",
+  "distillation_scope_note": "Disease-specific medical input is limited to the disease name: CAR-T cytokine release syndrome. ICANS, IEC-HS/HLH-like inflammation, infection mimicry, tumor context, CAR-T target, and severity are represented only as axes, mechanisms, risk/context factors, event hazards, or treatment modifiers.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "car_t_cell_activation_expansion_activity",
+      "display_name": "CAR-T in vivo activation and expansion",
+      "clinical_meaning": "Recent CAR-T infusion followed by antigen-driven T-cell activation, proliferation, cytotoxic synapse formation, and cytokine secretion. Expansion kinetics determine the timing and intensity of CRS but are modulated by tumor burden, product dose, lymphodepletion, and host inflammatory state.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [1, 10],
+      "peak_value_range": [0.35, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "target_antigen_tumor_cell_engagement_activity",
+      "display_name": "Target antigen and tumor-cell engagement",
+      "clinical_meaning": "CAR-T cells bind target-bearing malignant cells and stromal antigen reservoirs, producing local cytotoxicity, antigen release, and bystander immune activation. Higher target-positive burden increases CRS risk and early intensity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "monocyte_macrophage_activation_activity",
+      "display_name": "Monocyte and macrophage activation",
+      "clinical_meaning": "CAR-T-derived IFN-gamma, GM-CSF, perforin/granzyme tissue injury, and danger signals activate monocytes/macrophages and endothelial cells. Myeloid cells are major producers of IL-6, IL-1, IL-10, nitric oxide, tissue factor, ferritin, and vascular mediators in CRS.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [1, 10],
+      "peak_value_range": [0.3, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "il6_receptor_signaling_activity",
+      "display_name": "IL-6 receptor and acute-phase signaling",
+      "clinical_meaning": "IL-6 trans- and classic-signaling through IL-6R/JAK/STAT drives fever, CRP, hepcidin, endothelial activation, vasodilation, capillary leak, and myocardial depression. Serum IL-6 may rise after receptor blockade, while downstream CRP and fever improve.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [1, 8],
+      "peak_value_range": [0.4, 1],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "il1_inflammasome_myeloid_activity",
+      "display_name": "IL-1 inflammasome and myeloid amplification",
+      "clinical_meaning": "Activated monocytes/macrophages produce IL-1 beta and IL-18, sustaining fever, endothelial permeability, neuroinflammation, and CRS that can persist despite IL-6 receptor blockade.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [1, 12],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "capillary_leak_vasodilatory_shock_activity",
+      "display_name": "Capillary leak and vasodilatory shock physiology",
+      "clinical_meaning": "Cytokine-driven endothelial activation, nitric oxide, myocardial stunning, hypoalbuminemia, and distributive vasodilation produce hypotension, tachycardia, pleural effusions, pulmonary edema, oxygen need, and vasopressor-requiring shock.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [1, 10],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "endothelial_coagulopathy_activation_activity",
+      "display_name": "Endothelial and coagulation activation",
+      "clinical_meaning": "Inflammatory endotheliopathy and tissue-factor expression perturb fibrinogen, PT/aPTT, D-dimer, FDP, platelet count, bleeding risk, and thrombotic risk. CRS can therefore produce mixed thrombosis and bleeding rather than a single coagulation phenotype.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "neuroinflammatory_endothelial_barrier_activity",
+      "display_name": "Neuroinflammatory endothelial barrier injury",
+      "clinical_meaning": "Systemic cytokines, endothelial activation, blood-brain barrier permeability, and myeloid mediators create ICANS risk with headache, confusion, aphasia, seizure, cerebral edema, or coma. It can overlap with CRS but is not required for CRS.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0, 0.9],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "iec_hs_hlh_like_inflammation_activity",
+      "display_name": "Immune-effector-cell hemophagocytic / HLH-like inflammation",
+      "clinical_meaning": "A subset of immune effector cell toxicity evolves into hyperferritinemic HLH-like inflammation with persistent fever, cytopenias, hypofibrinogenemia, transaminitis, high ferritin, and organ dysfunction. This is a complication axis, not a separate first-layer disease name here.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [7, 35],
+      "peak_value_range": [0, 0.9],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [5, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "accumulated_multiorgan_injury_activity",
+      "display_name": "Accumulated multiorgan injury from uncontrolled CRS",
+      "clinical_meaning": "Sustained shock, hypoxemia, cytokine injury, coagulopathy, infection overlap, rhabdomyolysis, and delayed immune-toxicity treatment accumulate into AKI, respiratory failure, neurologic injury, DIC, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [2, 21],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "car_t_cell_recent_infusion_exposure", "target_id": "car_t_cell_activation_expansion_activity", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 3], "phase": "initiation", "clinical_rationale": "CRS requires recent immune effector cell exposure; CAR-T expansion follows infusion and lymphodepletion.", "knowledge_confidence": "high"},
+    {"source_id": "days_since_car_t_infusion", "target_id": "car_t_cell_activation_expansion_activity", "effect_on_target": "bidirectional", "edge_type": "context_to_mechanism", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "CRS timing usually clusters in the first days to two weeks after infusion, with later toxicity possible when CAR-T expansion is delayed or biphasic.", "knowledge_confidence": "high"},
+    {"source_id": "tumor_burden_before_car_t_activity", "target_id": "target_antigen_tumor_cell_engagement_activity", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 3], "phase": "initiation", "clinical_rationale": "Higher target-positive tumor burden increases antigen engagement and CAR-T activation.", "knowledge_confidence": "high"},
+    {"source_id": "target_antigen_tumor_cell_engagement_activity", "target_id": "car_t_cell_activation_expansion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "early", "clinical_rationale": "Antigen encounter drives CAR-T proliferation and effector cytokine production.", "knowledge_confidence": "high"},
+    {"source_id": "car_t_cell_activation_expansion_activity", "target_id": "car_t_cell_expansion_level", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Peripheral CAR transgene copies or flow-detected CAR-T cells reflect in vivo expansion.", "knowledge_confidence": "high"},
+    {"source_id": "car_t_cell_activation_expansion_activity", "target_id": "serum_ifn_gamma", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Activated CAR-T cells secrete IFN-gamma, which activates myeloid cells.", "knowledge_confidence": "high"},
+    {"source_id": "car_t_cell_activation_expansion_activity", "target_id": "monocyte_macrophage_activation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "CAR-T effector cytokines and tissue injury activate monocytes and macrophages.", "knowledge_confidence": "high"},
+    {"source_id": "monocyte_macrophage_activation_activity", "target_id": "il6_receptor_signaling_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Activated myeloid cells are a principal IL-6 source in CRS.", "knowledge_confidence": "high"},
+    {"source_id": "monocyte_macrophage_activation_activity", "target_id": "il1_inflammasome_myeloid_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Myeloid inflammasome activation produces IL-1 beta and IL-18.", "knowledge_confidence": "medium"},
+    {"source_id": "monocyte_macrophage_activation_activity", "target_id": "serum_il6", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Measured IL-6 rises sharply during CRS and can peak around clinical deterioration.", "knowledge_confidence": "high"},
+    {"source_id": "monocyte_macrophage_activation_activity", "target_id": "serum_il10", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "IL-10 is a common anti-inflammatory counter-regulatory cytokine in CRS cytokine panels.", "knowledge_confidence": "medium"},
+    {"source_id": "il1_inflammasome_myeloid_activity", "target_id": "serum_il18", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 4], "phase": "whole_course", "clinical_rationale": "IL-18 tracks inflammasome/myeloid activation and may be prominent in refractory CRS or HLH-like toxicity.", "knowledge_confidence": "medium"},
+    {"source_id": "il6_receptor_signaling_activity", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Fever is the sentinel CRS manifestation and reflects IL-6/IL-1/prostaglandin signaling.", "knowledge_confidence": "high"},
+    {"source_id": "il6_receptor_signaling_activity", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Hepatic CRP production is IL-6 dependent and falls after effective IL-6 receptor blockade.", "knowledge_confidence": "high"},
+    {"source_id": "il6_receptor_signaling_activity", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Fever, catecholamine tone, and distributive physiology produce tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "il6_receptor_signaling_activity", "target_id": "serum_ferritin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "phase": "peak", "clinical_rationale": "Macrophage activation and acute-phase biology can produce marked hyperferritinemia.", "knowledge_confidence": "high"},
+    {"source_id": "il6_receptor_signaling_activity", "target_id": "capillary_leak_vasodilatory_shock_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "IL-6 and endothelial activation contribute to vasodilation and permeability.", "knowledge_confidence": "high"},
+    {"source_id": "il1_inflammasome_myeloid_activity", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "IL-1 is pyrogenic and may sustain fever after IL-6 blockade.", "knowledge_confidence": "medium"},
+    {"source_id": "il1_inflammasome_myeloid_activity", "target_id": "neuroinflammatory_endothelial_barrier_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "IL-1 and endothelial permeability are implicated in ICANS risk.", "knowledge_confidence": "medium"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Distributive vasodilation and vascular leak lower MAP.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "CRS hypotension is often expressed by low systolic BP and fluid/vasopressor requirement.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Pulmonary edema, fever, and metabolic stress increase respiratory rate.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Pulmonary vascular leak, pleural effusion, pulmonary edema, and ARDS reduce oxygen saturation.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "phase": "peak", "clinical_rationale": "Protein extravasation and inflammation lower serum albumin.", "knowledge_confidence": "medium"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "pleural_effusion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Localized or systemic permeability can produce pleural effusions after CAR-T therapy.", "knowledge_confidence": "medium"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "pulmonary_edema_extent", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "CRS capillary leak and fluid resuscitation can cause pulmonary edema.", "knowledge_confidence": "medium"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Persistent hypotension despite fluids creates vasopressor-requiring shock risk.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "capillary_leak_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Endothelial permeability can become clinically significant with effusions, edema, and intravascular depletion.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 4], "phase": "peak", "clinical_rationale": "Hypoxemia and pulmonary edema can require oxygen or ventilatory support.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "ards_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Severe pulmonary endothelial leak may evolve into ARDS.", "knowledge_confidence": "medium"},
+    {"source_id": "mean_arterial_pressure", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "axis_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Low perfusion pressure raises lactate; direction is inverse for MAP.", "knowledge_confidence": "high"},
+    {"source_id": "capillary_leak_vasodilatory_shock_activity", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Shock physiology and adrenergic stress increase lactate.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "platelet_count", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Inflammation, marrow suppression, consumption, and immune effector toxicity can lower platelets.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Consumptive/inflammatory coagulopathy can prolong PT/INR.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "activated_partial_thromboplastin_time", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Severe CRS-associated coagulopathy can prolong aPTT.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "serum_fibrinogen", "effect_on_target": "bidirectional", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "phase": "whole_course", "clinical_rationale": "Fibrinogen may rise as an acute-phase reactant or fall with IEC-HS/DIC-like consumption.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "d_dimer", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Fibrin formation and breakdown increase D-dimer.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "fibrin_degradation_products", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Fibrinolysis increases FDP in severe coagulopathy.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Inflammatory coagulopathy can cross into DIC-like physiology.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "thrombotic_event_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Endothelial activation, immobility, malignancy, and inflammation raise venous and arterial thrombosis risk.", "knowledge_confidence": "medium"},
+    {"source_id": "endothelial_coagulopathy_activation_activity", "target_id": "major_bleeding_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Thrombocytopenia, coagulopathy, low fibrinogen, procedures, and anticoagulation increase bleeding risk.", "knowledge_confidence": "medium"},
+    {"source_id": "neuroinflammatory_endothelial_barrier_activity", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "ICANS often manifests as confusion, encephalopathy, aphasia, or reduced attention.", "knowledge_confidence": "high"},
+    {"source_id": "neuroinflammatory_endothelial_barrier_activity", "target_id": "headache_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Headache may precede or accompany ICANS.", "knowledge_confidence": "medium"},
+    {"source_id": "neuroinflammatory_endothelial_barrier_activity", "target_id": "seizure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Seizures are a serious ICANS manifestation.", "knowledge_confidence": "high"},
+    {"source_id": "neuroinflammatory_endothelial_barrier_activity", "target_id": "icans_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "The endothelial/neuroinflammatory mechanism creates risk of overt immune-effector-cell neurotoxicity.", "knowledge_confidence": "high"},
+    {"source_id": "iec_hs_hlh_like_inflammation_activity", "target_id": "serum_ferritin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "late_peak", "clinical_rationale": "IEC-HS/HLH-like toxicity is hyperferritinemic.", "knowledge_confidence": "high"},
+    {"source_id": "iec_hs_hlh_like_inflammation_activity", "target_id": "serum_fibrinogen", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "late_peak", "clinical_rationale": "HLH-like toxicity often has hypofibrinogenemia.", "knowledge_confidence": "medium"},
+    {"source_id": "iec_hs_hlh_like_inflammation_activity", "target_id": "hemophagocytic_syndrome_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "late_peak", "clinical_rationale": "Persistent hyperinflammation can transition to immune-effector-cell hemophagocytic syndrome.", "knowledge_confidence": "medium"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Shock, nephrotoxic exposures, rhabdomyolysis, and inflammation cause AKI.", "knowledge_confidence": "high"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Renal hypoperfusion and AKI increase BUN.", "knowledge_confidence": "medium"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Shock liver, cytokine hepatitis, tumor lysis, or muscle injury can increase AST.", "knowledge_confidence": "medium"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Cytokine-mediated or hypoxic liver injury increases ALT.", "knowledge_confidence": "medium"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Tissue injury, tumor lysis, hepatic injury, and hemolysis raise LDH.", "knowledge_confidence": "medium"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Severe CRS can rarely be complicated by myositis/rhabdomyolysis.", "knowledge_confidence": "low"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "serum_myoglobin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Myoglobin rises with rhabdomyolysis and can worsen AKI.", "knowledge_confidence": "low"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Shock, capillary leak, rhabdomyolysis, and nephrotoxins create AKI risk.", "knowledge_confidence": "high"},
+    {"source_id": "circulatory_collapse_shock_hazard", "target_id": "accumulated_multiorgan_injury_activity", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Uncontrolled shock accelerates multiorgan injury.", "knowledge_confidence": "high"},
+    {"source_id": "acute_respiratory_failure_hazard", "target_id": "accumulated_multiorgan_injury_activity", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Sustained hypoxemia contributes to organ injury.", "knowledge_confidence": "high"},
+    {"source_id": "active_uncontrolled_infection_activity", "target_id": "accumulated_multiorgan_injury_activity", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Infection can mimic CRS and independently amplifies organ injury and mortality during neutropenia or immunosuppression.", "knowledge_confidence": "high"},
+    {"source_id": "accumulated_multiorgan_injury_activity", "target_id": "mortality_hazard_in_D-CAR-T-CRS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Death in CRS is mediated through shock, respiratory failure, neurologic catastrophe, infection overlap, coagulopathy, and multiorgan failure.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "car_t_cell_recent_infusion_exposure", "category": "exposure_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Recent CAR-T or CAR-modified immune effector cell infusion exposure. This is necessary context evidence, not a CRS grade label.", "baseline_range": [0, 0.001], "peak_day_range": [0, 1], "peak_value_range": [1, 1], "plateau_duration_days": [1, 30], "decline_half_life_days": [30, 180], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "days_since_car_t_infusion", "category": "time_context", "unit": "days", "log_scale": false, "shape_free_text": "Time from CAR-T infusion to clinical snapshot. Typical CRS occurs from day 0 through about day 14, with delayed or biphasic cases possible.", "baseline_range": [-365, -30], "peak_day_range": [0, 1], "peak_value_range": [0, 14], "plateau_duration_days": [0, 30], "decline_half_life_days": [30, 180], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "car_t_cell_expansion_level", "category": "lab_value", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "CAR transgene copy number or flow-detected CAR-T expansion normalized to a 0-1 activity scale when reported.", "baseline_range": [0, 0.01], "peak_day_range": [2, 14], "peak_value_range": [0.2, 1], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "tumor_burden_before_car_t_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Pre-infusion burden of target-positive malignancy. Higher burden increases antigen engagement and CRS intensity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0.2, 1], "plateau_duration_days": [7, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "shape_free_text": "Fever is the sentinel CRS sign; high fevers above 39-40 C are common in clinically significant CRS.", "baseline_range": [36.4, 37.2], "peak_day_range": [0, 5], "peak_value_range": [38, 41], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Tachycardia tracks fever, shock physiology, pain, hypoxemia, anemia, or catecholamine exposure.", "baseline_range": [60, 100], "peak_day_range": [0, 7], "peak_value_range": [100, 180], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "shape_free_text": "Rises with fever, metabolic stress, capillary leak, pulmonary edema, pleural effusion, infection overlap, or ARDS.", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [20, 40], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Hypotension reflects CRS vasodilation/capillary leak and defines escalation when fluids or vasopressors are needed.", "baseline_range": [105, 135], "peak_day_range": [1, 7], "peak_value_range": [60, 100], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Falls with distributive shock; MAP below about 65 mmHg or vasopressor need signals severe organ-risk physiology.", "baseline_range": [70, 100], "peak_day_range": [1, 7], "peak_value_range": [40, 70], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "percent", "log_scale": false, "shape_free_text": "May fall with pulmonary edema, pleural effusion, ARDS, pneumonia overlap, or capillary leak; oxygen requirement is severity context.", "baseline_range": [95, 100], "peak_day_range": [1, 10], "peak_value_range": [75, 94], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "shape_free_text": "IL-6-dependent acute-phase marker; may become very high and usually falls after IL-6 receptor blockade.", "baseline_range": [0.1, 5], "peak_day_range": [1, 7], "peak_value_range": [30, 300], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_ferritin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "shape_free_text": "Macrophage activation marker; can be thousands to >100000 ng/mL in severe CRS or IEC-HS/HLH-like toxicity.", "baseline_range": [20, 300], "peak_day_range": [2, 21], "peak_value_range": [500, 100000], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_il6", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "shape_free_text": "Key CRS cytokine. Serum IL-6 can be tens to thousands of pg/mL and may transiently rise after receptor blockade because clearance changes.", "baseline_range": [0, 5], "peak_day_range": [1, 10], "peak_value_range": [20, 20000], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_il10", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "shape_free_text": "Counter-regulatory cytokine frequently elevated in CRS cytokine panels.", "baseline_range": [0, 5], "peak_day_range": [1, 10], "peak_value_range": [5, 500], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ifn_gamma", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "shape_free_text": "Activated T-cell cytokine that drives myeloid activation during CRS.", "baseline_range": [0, 5], "peak_day_range": [1, 10], "peak_value_range": [10, 1000], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_il18", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "shape_free_text": "Inflammasome/HLH-like activation marker; useful in refractory CRS or IEC-HS context.", "baseline_range": [50, 300], "peak_day_range": [2, 21], "peak_value_range": [500, 20000], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "soluble_il2_receptor_scd25", "category": "lab_value", "unit": "U/mL", "log_scale": true, "shape_free_text": "T-cell activation and HLH-like inflammation marker; can support IEC-HS evaluation.", "baseline_range": [200, 1000], "peak_day_range": [2, 21], "peak_value_range": [1000, 30000], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "Rises with shock, hypoperfusion, adrenergic stress, or severe infection overlap.", "baseline_range": [0.5, 2.0], "peak_day_range": [1, 7], "peak_value_range": [2, 8], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "shape_free_text": "Falls with inflammation and capillary leak; low albumin worsens edema physiology.", "baseline_range": [3.5, 5.0], "peak_day_range": [2, 10], "peak_value_range": [1.8, 3.4], "plateau_duration_days": [2, 14], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "AKI from shock, capillary leak, tumor lysis, rhabdomyolysis, nephrotoxins, or sepsis overlap.", "baseline_range": [0.5, 1.2], "peak_day_range": [2, 14], "peak_value_range": [1.2, 6.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "Rises with AKI, catabolism, hypoperfusion, or renal replacement delay.", "baseline_range": [7, 20], "peak_day_range": [2, 14], "peak_value_range": [20, 100], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Can rise with hepatic injury, shock, cytokine hepatitis, tumor lysis, or rhabdomyolysis.", "baseline_range": [10, 40], "peak_day_range": [2, 14], "peak_value_range": [50, 3000], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Can rise with cytokine hepatitis, shock liver, drug toxicity, infection, or tumor lysis.", "baseline_range": [7, 40], "peak_day_range": [2, 14], "peak_value_range": [50, 2000], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ldh", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Tissue injury, tumor lysis, liver injury, hemolysis, or rhabdomyolysis can raise LDH.", "baseline_range": [120, 250], "peak_day_range": [1, 14], "peak_value_range": [300, 10000], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Usually normal or mildly elevated; very high values signal rare CRS-associated myositis/rhabdomyolysis or immobility injury.", "baseline_range": [40, 200], "peak_day_range": [2, 14], "peak_value_range": [200, 50000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_myoglobin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "shape_free_text": "Rises with rhabdomyolysis and can precede or worsen AKI.", "baseline_range": [0, 118], "peak_day_range": [2, 14], "peak_value_range": [200, 50000], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "May be low from lymphodepletion, marrow disease, infection, DIC-like consumption, IEC-HS, or bleeding/thrombosis context.", "baseline_range": [150, 400], "peak_day_range": [2, 21], "peak_value_range": [5, 150], "plateau_duration_days": [2, 30], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "shape_free_text": "Can rise with CRS-associated coagulopathy, liver injury, anticoagulation, or DIC-like physiology.", "baseline_range": [0.9, 1.2], "peak_day_range": [2, 14], "peak_value_range": [1.2, 3.0], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "activated_partial_thromboplastin_time", "category": "lab_value", "unit": "sec", "log_scale": false, "shape_free_text": "Can prolong with consumptive coagulopathy, anticoagulation, liver dysfunction, or severe inflammatory coagulopathy.", "baseline_range": [25, 38], "peak_day_range": [2, 14], "peak_value_range": [40, 120], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_fibrinogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "May be high as an acute phase reactant early, then low with IEC-HS/DIC-like consumption.", "baseline_range": [200, 450], "peak_day_range": [2, 21], "peak_value_range": [60, 700], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug/mL_FEU", "log_scale": true, "shape_free_text": "Elevates with inflammatory coagulation activation, thrombosis, DIC-like physiology, or bleeding/thrombus treatment.", "baseline_range": [0, 0.5], "peak_day_range": [2, 14], "peak_value_range": [1, 50], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "fibrin_degradation_products", "category": "lab_value", "unit": "ug/mL", "log_scale": true, "shape_free_text": "Elevates with fibrinolysis in CRS-associated coagulopathy.", "baseline_range": [0, 5], "peak_day_range": [2, 14], "peak_value_range": [5, 100], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Confusion, encephalopathy, aphasia, somnolence, delirium, or reduced attention; may indicate ICANS but can also reflect shock, fever, infection, or medication.", "baseline_range": [0, 0.01], "peak_day_range": [1, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "headache_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Headache can occur with CRS, ICANS, fever, hypertension/hypotension, infection, or intracranial pathology.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "seizure_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Clinical or electrographic seizure activity is a severe ICANS manifestation.", "baseline_range": [0, 0.001], "peak_day_range": [2, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "myalgia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Myalgia is common in CRS; severe focal muscle pain with CK/myoglobin rise suggests rhabdomyolysis.", "baseline_range": [0, 0.05], "peak_day_range": [0, 10], "peak_value_range": [0, 1], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "arthritis_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Rare CRS-associated inflammatory or periarticular large-joint swelling and pain; also may reflect infection, crystal disease, or malignancy context.", "baseline_range": [0, 0.01], "peak_day_range": [2, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "pleural_effusion_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Pleural effusion can reflect localized CAR-T expansion/cytokines, capillary leak, infection, malignancy, or fluid overload.", "baseline_range": [0, 0.02], "peak_day_range": [2, 14], "peak_value_range": [0, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "pulmonary_edema_extent", "category": "imaging", "unit": "relative_extent_0_1", "log_scale": false, "shape_free_text": "Pulmonary edema from capillary leak, fluid resuscitation, cardiac dysfunction, or infection overlap.", "baseline_range": [0, 0.02], "peak_day_range": [2, 14], "peak_value_range": [0, 1], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "capillary_leak_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of clinically important capillary leak with edema, effusions, intravascular depletion, hypotension, or pulmonary compromise.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [1, 10], "peak_value_range": [0.01, 0.3], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of fluid-refractory hypotension, vasopressor support, cardiac arrest, or shock-mediated organ injury.", "baseline_range": [0.000005, 0.00005], "peak_day_range": [1, 10], "peak_value_range": [0.005, 0.25], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of oxygen-requiring hypoxemic respiratory failure from capillary leak, pulmonary edema, pleural effusion, ARDS, pneumonia overlap, or cardiac dysfunction.", "baseline_range": [0.000005, 0.00005], "peak_day_range": [1, 14], "peak_value_range": [0.005, 0.25], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 10], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "ards_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of ARDS-level lung injury in severe CRS or infection overlap.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [2, 14], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 10], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "icans_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of immune effector cell-associated neurotoxicity syndrome with encephalopathy, aphasia, seizure, cerebral edema, or coma.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [2, 14], "peak_value_range": [0.001, 0.15], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "hemophagocytic_syndrome_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of IEC-HS/HLH-like hyperferritinemic syndrome after CAR-T therapy, often later than initial CRS.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [7, 35], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of AKI from shock, tumor lysis, rhabdomyolysis, nephrotoxins, sepsis overlap, or capillary leak.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [1, 14], "peak_value_range": [0.002, 0.2], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of DIC-like consumptive coagulopathy during severe CRS, infection overlap, or IEC-HS.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [2, 14], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 10], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "thrombotic_event_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of venous or arterial thrombosis during inflammatory endotheliopathy, malignancy, immobility, central access, or coagulopathy.", "baseline_range": [0.000005, 0.00005], "peak_day_range": [2, 21], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Risk of clinically important bleeding from thrombocytopenia, hypofibrinogenemia, prolonged PT/aPTT, procedures, anticoagulation, or mucosal injury.", "baseline_range": [0.000005, 0.00005], "peak_day_range": [2, 21], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "active_uncontrolled_infection_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Concurrent infection probability or activity; infection can mimic CRS and increases immunosuppression risk.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "infection_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Risk of secondary infection from neutropenia, prior chemotherapy, steroids, IL blockade, central lines, and prolonged ICU care.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.1, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "severe_hepatic_impairment_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Severe liver injury changes safety monitoring for immunomodulators and ICU medications.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "severe_renal_impairment_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Severe renal impairment changes dosing and toxicity for anakinra, antimicrobials, and supportive care.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "steroid_psychosis_diabetes_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Risk of clinically important corticosteroid psychiatric or metabolic toxicity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "mortality_hazard_in_D-CAR-T-CRS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Lifespan hazard from CAR-T CRS mediated by shock, respiratory failure, ICANS, IEC-HS/HLH-like inflammation, infection overlap, DIC/bleeding/thrombosis, AKI, and multiorgan failure.", "baseline_range": [0.000001, 0.00001], "peak_day_range": [1, 21], "peak_value_range": [0.0005, 0.15], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 30], "knowledge_confidence": "high", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "serum_il6", "target_axis_id": "serum_crp", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "CRP production is strongly IL-6 dependent.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 1], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Fever and sympathetic tone raise heart rate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "serum_lactate", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.4], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_down_increases_target", "clinical_rationale": "Hypoperfusion raises lactate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "circulatory_collapse_shock_hazard", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.9, -0.5], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_down_increases_target", "clinical_rationale": "Lower MAP increases shock hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "oxygen_saturation", "target_axis_id": "acute_respiratory_failure_hazard", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.9, -0.5], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_down_increases_target", "clinical_rationale": "Lower oxygen saturation increases respiratory failure hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pleural_effusion_activity", "target_axis_id": "oxygen_saturation", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [-0.6, -0.2], "lag_days_range": [0, 2], "phase": "peak", "effect_direction": "source_up_decreases_target", "clinical_rationale": "Large effusions can impair oxygenation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "pulmonary_edema_extent", "target_axis_id": "oxygen_saturation", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [-0.8, -0.4], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_up_decreases_target", "clinical_rationale": "Pulmonary edema reduces gas exchange.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_ferritin", "target_axis_id": "hemophagocytic_syndrome_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 3], "phase": "late_peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Rising hyperferritinemia contributes to IEC-HS/HLH-like concern.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_fibrinogen", "target_axis_id": "hemophagocytic_syndrome_hazard", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.7, -0.3], "lag_days_range": [0, 3], "phase": "late_peak", "effect_direction": "source_down_increases_target", "clinical_rationale": "Low fibrinogen is an IEC-HS/HLH-like clue.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "platelet_count", "target_axis_id": "major_bleeding_hazard", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.4], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "source_down_increases_target", "clinical_rationale": "Bleeding hazard rises when platelets fall.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_fibrinogen", "target_axis_id": "major_bleeding_hazard", "relationship": "inverse_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.4], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "source_down_increases_target", "clinical_rationale": "Hypofibrinogenemia increases bleeding risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "d_dimer", "target_axis_id": "thrombotic_event_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 3], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "High D-dimer can track thrombosis or severe inflammatory coagulation activation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "major_bleeding_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 2], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "DIC-like physiology can produce major bleeding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "thrombotic_event_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 2], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "DIC-like physiology can also create thrombotic events.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Shock increases AKI risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatine_kinase", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Rhabdomyolysis increases AKI risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "mental_status_abnormality_activity", "target_axis_id": "icans_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Encephalopathy raises ICANS concern.", "knowledge_confidence": "high"},
+    {"source_axis_id": "seizure_activity", "target_axis_id": "icans_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Seizures indicate severe ICANS physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "mortality_hazard_in_D-CAR-T-CRS", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 2], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Vasopressor shock is a major mortality pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_respiratory_failure_hazard", "target_axis_id": "mortality_hazard_in_D-CAR-T-CRS", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Respiratory failure increases short-term mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "icans_hazard", "target_axis_id": "mortality_hazard_in_D-CAR-T-CRS", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Severe neurotoxicity can be fatal or drive ICU complications.", "knowledge_confidence": "high"},
+    {"source_axis_id": "hemophagocytic_syndrome_hazard", "target_axis_id": "mortality_hazard_in_D-CAR-T-CRS", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 7], "phase": "late_peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "IEC-HS/HLH-like toxicity can cause persistent cytopenias, infection, and organ failure.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "active_uncontrolled_infection_activity", "target_axis_id": "mortality_hazard_in_D-CAR-T-CRS", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 7], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Infection overlap during neutropenia or immunosuppression increases death risk.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "tocilizumab",
+      "drug_class": "il6_receptor_blockade",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["serum_il6", "serum_crp", "body_temperature", "mean_arterial_pressure", "oxygen_saturation", "active_uncontrolled_infection_activity", "severe_hepatic_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "il6_receptor_signaling_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "IL-6 receptor signaling is the direct target of tocilizumab."},
+        {"axis_id": "active_uncontrolled_infection_activity", "condition": "high", "effect": "changes_risk", "factor_range": [0.5, 1], "clinical_rationale": "Tocilizumab can blunt fever/CRP and obscure infection; antimicrobial evaluation must continue."},
+        {"axis_id": "severe_hepatic_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1], "clinical_rationale": "Hepatic injury requires monitoring for transaminase worsening and drug interactions."}
+      ],
+      "failure_modes": ["il1_or_ifn_gamma_dominant_refractory_crs", "uncontrolled_infection_misread_as_crs", "recurrent_fever_after_single_dose", "does_not_treat_isolated_icans_without_crs"],
+      "trajectory_modifications": {
+        "il6_receptor_signaling_activity": {"peak_value_factor": [0.05, 0.25], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 2]},
+        "body_temperature": {"peak_value_factor": [0.94, 0.98], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.25, 1.5]},
+        "serum_crp": {"peak_value_factor": [0.05, 0.25], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [1, 3]},
+        "capillary_leak_vasodilatory_shock_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 3]},
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.35], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [0.5, 3]},
+        "oxygen_saturation": {"peak_value_factor": [1.01, 1.08], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 5]},
+        "capillary_leak_hazard": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.7], "decline_half_life_days": [0.5, 3]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 3]},
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 5]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [3, 14],
+      "side_effects": [
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 150], "interpretation": "Transaminase elevation or hepatic monitoring issue."},
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0.02, 0.15], "interpretation": "Fever/CRP suppression can delay recognition of infection."}
+      ],
+      "context_specific_role": "Rapid IL-6 receptor pathway blockade for CRS with persistent fever plus hypotension or oxygen need; must be paired with infection assessment when clinical source is unclear.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "systemic_corticosteroids",
+      "drug_class": "glucocorticoid_immunosuppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["body_temperature", "mean_arterial_pressure", "oxygen_saturation", "mental_status_abnormality_activity", "active_uncontrolled_infection_activity", "infection_risk_activity", "steroid_psychosis_diabetes_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "monocyte_macrophage_activation_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Steroids suppress myeloid and T-cell cytokine production."},
+        {"axis_id": "neuroinflammatory_endothelial_barrier_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Steroids are central for ICANS physiology and severe/refractory CRS."},
+        {"axis_id": "active_uncontrolled_infection_activity", "condition": "high", "effect": "changes_risk", "factor_range": [0.4, 1], "clinical_rationale": "Steroids can worsen uncontrolled infection; antimicrobial/source evaluation is required."},
+        {"axis_id": "steroid_psychosis_diabetes_risk_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1], "clinical_rationale": "High-dose steroids can cause psychiatric or metabolic complications."}
+      ],
+      "failure_modes": ["occult_uncontrolled_infection", "steroid_refractory_iec_hs_or_icans", "relapse_of_crs_during_taper", "hyperglycemia_psychosis_myopathy"],
+      "trajectory_modifications": {
+        "car_t_cell_activation_expansion_activity": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 7]},
+        "monocyte_macrophage_activation_activity": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 4]},
+        "il1_inflammasome_myeloid_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 5]},
+        "il6_receptor_signaling_activity": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 5]},
+        "body_temperature": {"peak_value_factor": [0.94, 0.98], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 2]},
+        "serum_ferritin": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "serum_crp": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [1, 5]},
+        "capillary_leak_vasodilatory_shock_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 5]},
+        "neuroinflammatory_endothelial_barrier_activity": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [1, 7]},
+        "iec_hs_hlh_like_inflammation_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 14]},
+        "icans_hazard": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 7]},
+        "hemophagocytic_syndrome_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 14]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0.05, 0.3], "interpretation": "Dose- and duration-dependent bacterial, fungal, and viral infection risk."},
+        {"axis_id": "steroid_psychosis_diabetes_risk_activity", "direction": "up", "magnitude_range": [0.1, 0.5], "interpretation": "Hyperglycemia, delirium, psychosis, myopathy, and fluid retention."}
+      ],
+      "context_specific_role": "Broad cytokine and neuroinflammatory suppression for severe, refractory, recurrent, or neurotoxicity-overlapping CRS, with infection risk explicitly modeled.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "anakinra",
+      "drug_class": "il1_receptor_antagonist",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["il1_inflammasome_myeloid_activity", "serum_il18", "serum_ferritin", "mental_status_abnormality_activity", "hemophagocytic_syndrome_hazard", "severe_renal_impairment_activity", "active_uncontrolled_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "il1_inflammasome_myeloid_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "IL-1 receptor blockade directly targets the inflammasome/myeloid amplification lane."},
+        {"axis_id": "icans_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "IL-1 blockade is biologically plausible in CRS with neurotoxicity overlap."},
+        {"axis_id": "hemophagocytic_syndrome_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "IL-1 blockade may help refractory hyperferritinemic/HLH-like immune effector toxicity."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1], "clinical_rationale": "Renal impairment requires dosing interval adjustment."},
+        {"axis_id": "active_uncontrolled_infection_activity", "condition": "high", "effect": "changes_risk", "factor_range": [0.5, 1], "clinical_rationale": "Immunomodulation should not replace antimicrobial evaluation."}
+      ],
+      "failure_modes": ["il6_dominant_crs_without_il1_lane", "uncontrolled_infection", "renal_clearance_accumulation", "late_start_after_multiorgan_injury"],
+      "trajectory_modifications": {
+        "il1_inflammasome_myeloid_activity": {"peak_value_factor": [0.1, 0.4], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [1, 4]},
+        "body_temperature": {"peak_value_factor": [0.95, 0.99], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 4]},
+        "serum_il18": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "serum_ferritin": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [3, 14]},
+        "neuroinflammatory_endothelial_barrier_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "iec_hs_hlh_like_inflammation_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 14]},
+        "icans_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "hemophagocytic_syndrome_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 14]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [3, 14]}
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0.02, 0.15], "interpretation": "Additional immunosuppression in neutropenic hosts."},
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 100], "interpretation": "Occasional transaminase elevation."}
+      ],
+      "context_specific_role": "IL-1 lane blockade for persistent/refractory CRS, CRS with ICANS biology, or hyperferritinemic/IEC-HS-like evolution.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "intravenous_fluid_resuscitation",
+      "drug_class": "hemodynamic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["mean_arterial_pressure", "capillary_leak_hazard", "oxygen_saturation", "pulmonary_edema_extent", "serum_albumin"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Fluid responsiveness improves MAP in early distributive/capillary leak physiology."},
+        {"axis_id": "pulmonary_edema_extent", "condition": "high", "effect": "weakens", "factor_range": [0.2, 0.8], "clinical_rationale": "Existing pulmonary edema limits safe fluid volume."},
+        {"axis_id": "capillary_leak_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1], "clinical_rationale": "Severe capillary leak reduces durable intravascular benefit and worsens edema."}
+      ],
+      "failure_modes": ["fluid_refractory_vasodilatory_shock", "pulmonary_edema_or_effusion_worsening", "cardiac_dysfunction"],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.25], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.25, 1]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.25, 2]},
+        "serum_lactate": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 2]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [0.5, 3]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 15], "clinical_rationale": "Bolus fluids can transiently improve preload and MAP."}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "pulmonary_edema_extent", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "Fluid can worsen pulmonary edema in capillary leak or cardiac dysfunction."},
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 3], "interpretation": "Oxygenation can worsen if fluid overload develops."}
+      ],
+      "context_specific_role": "Immediate state push for hypotension while determining whether shock is fluid-responsive or vasopressor-requiring.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "vasopressor_support",
+      "drug_class": "critical_care_hemodynamic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["mean_arterial_pressure", "serum_lactate", "circulatory_collapse_shock_hazard", "heart_rate"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Vasopressors directly restore perfusion pressure in distributive shock."},
+        {"axis_id": "serum_lactate", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Lactate suggests hypoperfusion where MAP support is organ-protective."}
+      ],
+      "failure_modes": ["uncontrolled_cytokine_driver_without_immunomodulation", "arrhythmia_or_limb_ischemia", "delayed_source_control_for_infection_overlap"],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.15, 1.6], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.25, 2]},
+        "serum_lactate": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 3]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 3]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 5]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [15, 35], "clinical_rationale": "Norepinephrine or equivalent raises vascular tone and MAP."}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "heart_rate", "direction": "up", "magnitude_range": [0, 20], "interpretation": "Catecholamine support can worsen tachycardia."},
+        {"axis_id": "serum_lactate", "direction": "up", "magnitude_range": [0, 1], "interpretation": "Beta-adrenergic stimulation can contribute to lactate independent of perfusion."}
+      ],
+      "context_specific_role": "Perfusion-pressure support for fluid-refractory CRS shock while immunomodulatory therapy reshapes the underlying cytokine field.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "oxygen_and_ventilatory_support",
+      "drug_class": "critical_care_respiratory_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["oxygen_saturation", "respiratory_rate", "acute_respiratory_failure_hazard", "ards_hazard", "pleural_effusion_activity", "pulmonary_edema_extent"],
+      "effect_modifiers": [
+        {"axis_id": "oxygen_saturation", "condition": "low", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Oxygen, high-flow nasal cannula, noninvasive ventilation, or intubation directly improves oxygen delivery."},
+        {"axis_id": "ards_hazard", "condition": "high", "effect": "changes_support_level", "factor_range": [1, 1.3], "clinical_rationale": "ARDS physiology requires escalation to lung-protective ventilation and ICU-level support."}
+      ],
+      "failure_modes": ["untreated_capillary_leak_or_pneumonia", "fluid_overload", "delayed_intubation_in_progressive_ards"],
+      "trajectory_modifications": {
+        "oxygen_saturation": {"peak_value_factor": [1.03, 1.15], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.25, 3]},
+        "respiratory_rate": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.5, 5]},
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "ards_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 10]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "oxygen_saturation", "direction": "up", "magnitude_range": [3, 20], "clinical_rationale": "Supplemental oxygen and ventilatory support increase measured oxygen saturation."}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Intubation and ICU exposure increase secondary infection risk."}
+      ],
+      "context_specific_role": "State support for hypoxemia from CRS capillary leak, effusion, pulmonary edema, ARDS, or infection overlap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "icu_level_monitoring_and_organ_support",
+      "drug_class": "critical_care_bundle",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["circulatory_collapse_shock_hazard", "acute_respiratory_failure_hazard", "icans_hazard", "acute_kidney_injury_hazard", "dic_hazard", "active_uncontrolled_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Continuous monitoring and rapid escalation reduce rescue delay."},
+        {"axis_id": "icans_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Frequent neurologic scoring and seizure management reduce catastrophic delay."},
+        {"axis_id": "active_uncontrolled_infection_activity", "condition": "high", "effect": "requires_parallel_antimicrobials", "clinical_rationale": "ICU care does not treat infection; it enables cultures, antimicrobials, source evaluation, and organ support."}
+      ],
+      "failure_modes": ["late_transfer_after_multiorgan_failure", "unrecognized_infection_or_bleeding", "insufficient_nursing_or_monitoring_capacity"],
+      "trajectory_modifications": {
+        "accumulated_multiorgan_injury_activity": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 10]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]},
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "icans_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]},
+        "major_bleeding_hazard": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [1, 10]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]}
+      },
+      "sigma_modulation": {"axes": ["mean_arterial_pressure", "oxygen_saturation", "serum_lactate", "mental_status_abnormality_activity"], "factor": [0.5, 0.8], "clinical_rationale": "Close monitoring and rapid rescue reduce uncontrolled physiologic volatility."},
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0, 0.15], "interpretation": "ICU devices, lines, and ventilation increase nosocomial infection risk."}
+      ],
+      "context_specific_role": "Monitoring and organ-support environment for CRS with shock, oxygen need, neurotoxicity risk, renal failure, coagulopathy, or rapidly changing status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "renal_support_and_blood_purification",
+      "drug_class": "renal_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "acute_kidney_injury_hazard", "serum_creatine_kinase", "serum_myoglobin"],
+      "effect_modifiers": [
+        {"axis_id": "acute_kidney_injury_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Renal replacement support matters most when AKI or rhabdomyolysis threatens homeostasis."},
+        {"axis_id": "serum_myoglobin", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Myoglobin-associated AKI may need aggressive renal support."}
+      ],
+      "failure_modes": ["hemodynamic_instability_precluding_clearance", "late_irreversible_multiorgan_failure", "catheter_bleeding_or_infection"],
+      "trajectory_modifications": {
+        "serum_creatinine": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "blood_urea_nitrogen": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]},
+        "serum_myoglobin": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-CAR-T-CRS": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Catheter placement and anticoagulation can increase bleeding risk."},
+        {"axis_id": "infection_risk_activity", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Dialysis access increases line infection risk."}
+      ],
+      "context_specific_role": "Organ support for CRS complicated by AKI, rhabdomyolysis, tumor lysis physiology, fluid overload, or severe inflammatory toxin burden.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "high_target_positive_tumor_burden",
+      "category": "disease_context",
+      "effect": "increases CRS probability and intensity",
+      "modulation": {"present": {"axis_response_modulation": {"tumor_burden_before_car_t_activity": "higher", "target_antigen_tumor_cell_engagement_activity": "higher", "serum_il6": "higher", "body_temperature": "higher", "circulatory_collapse_shock_hazard": "higher"}}},
+      "clinical_rationale": "More antigen engagement drives CAR-T expansion and myeloid activation."
+    },
+    {
+      "factor": "rapid_or_high_peak_car_t_expansion",
+      "category": "treatment_context",
+      "effect": "increases CRS and ICANS intensity",
+      "modulation": {"present": {"axis_response_modulation": {"car_t_cell_expansion_level": "higher", "serum_il6": "higher", "serum_crp": "higher", "icans_hazard": "higher"}}},
+      "clinical_rationale": "Expansion kinetics mirror immune effector activation."
+    },
+    {
+      "factor": "baseline_systemic_inflammation_or_high_crp_ferritin",
+      "category": "host_context",
+      "effect": "amplifies cytokine and endothelial response",
+      "modulation": {"present": {"axis_response_modulation": {"serum_crp": "higher", "serum_ferritin": "higher", "capillary_leak_hazard": "higher"}}},
+      "clinical_rationale": "Pre-activated inflammatory tone lowers the threshold for severe CRS."
+    },
+    {
+      "factor": "neutropenia_or_recent_intensive_chemotherapy",
+      "category": "host_context",
+      "effect": "increases infection overlap and blunts WBC interpretation",
+      "modulation": {"present": {"axis_response_modulation": {"active_uncontrolled_infection_activity": "higher", "infection_risk_activity": "higher", "mortality_hazard_in_D-CAR-T-CRS": "higher"}}},
+      "clinical_rationale": "Lymphodepletion and prior therapy increase occult infection and sepsis mimic risk."
+    },
+    {
+      "factor": "baseline_cardiopulmonary_disease_or_frailty",
+      "category": "host_context",
+      "effect": "reduces reserve during capillary leak and shock",
+      "modulation": {"present": {"axis_response_modulation": {"oxygen_saturation": "lower", "mean_arterial_pressure": "lower", "acute_respiratory_failure_hazard": "higher", "mortality_hazard_in_D-CAR-T-CRS": "higher"}}},
+      "clinical_rationale": "Limited reserve makes the same cytokine field more dangerous."
+    },
+    {
+      "factor": "baseline_coagulopathy_thrombocytopenia_or_anticoagulation",
+      "category": "host_context",
+      "effect": "increases bleeding and thrombosis complications",
+      "modulation": {"present": {"axis_response_modulation": {"platelet_count": "lower", "major_bleeding_hazard": "higher", "thrombotic_event_hazard": "higher", "dic_hazard": "higher"}}},
+      "clinical_rationale": "CRS endotheliopathy interacts with pre-existing hemostatic vulnerability."
+    },
+    {
+      "factor": "delayed_recognition_or_delayed_immunomodulation",
+      "category": "care_context",
+      "effect": "increases accumulated organ injury",
+      "modulation": {"present": {"axis_response_modulation": {"accumulated_multiorgan_injury_activity": "higher", "acute_kidney_injury_hazard": "higher", "mortality_hazard_in_D-CAR-T-CRS": "higher"}}},
+      "clinical_rationale": "Untreated shock/hypoxemia/cytokine injury accumulates organ damage."
+    },
+    {
+      "factor": "active_uncontrolled_infection_overlap",
+      "category": "mimic_or_complication_context",
+      "effect": "raises mortality and changes treatment risk",
+      "modulation": {"present": {"axis_response_modulation": {"active_uncontrolled_infection_activity": "higher", "serum_lactate": "higher", "mortality_hazard_in_D-CAR-T-CRS": "higher"}, "treatment_effect_modulation": {"tocilizumab": "requires infection monitoring", "systemic_corticosteroids": "higher infection toxicity"}}},
+      "clinical_rationale": "CRS and infection can coexist; infection cannot be excluded by CRS diagnosis alone."
+    }
+  ],
+  "supportive_care": [
+    "Frequent vital-sign, oxygen requirement, fluid balance, and neurologic scoring from infusion through the risk window.",
+    "Parallel infectious evaluation when fever occurs: cultures, imaging as indicated, antimicrobial coverage in neutropenia or unstable patients; infection workup should be preserved as context rather than deleted.",
+    "Serial CRP, ferritin, CBC, CMP, coagulation studies, fibrinogen, D-dimer/FDP, lactate, and organ-function monitoring in clinically significant CRS.",
+    "Early ICU transfer threshold for fluid-refractory hypotension, escalating oxygen need, altered mental status, seizure, rapidly rising ferritin/coagulopathy, oliguria, or unstable trajectory.",
+    "Blood product and coagulation support when thrombocytopenia, low fibrinogen, bleeding, or procedures create event risk.",
+    "Renal replacement or blood purification support for severe AKI, rhabdomyolysis, tumor lysis physiology, refractory fluid overload, or severe inflammatory organ failure.",
+    "Antipyretics, analgesia, careful diuresis after capillary leak stabilization, nutrition, rehabilitation, and delirium prevention as recovery-phase supports."
+  ]
+}

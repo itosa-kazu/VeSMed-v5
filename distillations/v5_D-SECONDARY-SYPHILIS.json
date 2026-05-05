@@ -1,0 +1,2184 @@
+{
+  "disease": "D-SECONDARY-SYPHILIS",
+  "disease_name": "Secondary syphilis",
+  "schema_version": "v5_current",
+  "distillation_scope": "Pure disease-name leaf distillation for the full clinical spectrum of secondary syphilis.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "display_name": "Hematogenous Treponema pallidum dissemination",
+      "clinical_meaning": "Spirochetes disseminate from the inoculation site through blood and lymphatics, producing a systemic infectious stage with high organism burden in skin, mucosa, lymphoid tissue, and sometimes liver, kidney, eye, CNS, or ear.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.55, 1.0],
+      "plateau_duration_days": [14, 90],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic cytokine and constitutional response",
+      "clinical_meaning": "Host inflammatory response to disseminated spirochetes produces fever, malaise, fatigue, headache, myalgia, arthralgia, anorexia, and mild acute-phase reactant elevation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.25, 0.85],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "display_name": "Spirochete-rich mucocutaneous inflammation",
+      "clinical_meaning": "Dense treponemal infiltration and plasma-cell-rich inflammation in skin and mucosa produce the polymorphic rash, palmoplantar lesions, mucous patches, condyloma lata, patchy alopecia, and occasionally nodular or ulceronecrotic lesions.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_REACTIVE_LYMPHOID_RETICULOENDOTHELIAL_ACTIVATION",
+      "display_name": "Reactive lymphoid and reticuloendothelial activation",
+      "clinical_meaning": "Antigenic stimulation and tissue dissemination drive generalized lymphadenopathy, hepatosplenomegaly, and mild hematologic or inflammatory laboratory changes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.25, 0.8],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "display_name": "Syphilitic cholestatic hepatitis pathway",
+      "clinical_meaning": "Treponemal dissemination and periportal inflammatory injury can produce disproportionate alkaline phosphatase elevation, mild to moderate AST/ALT elevation, abdominal symptoms, and rare clinically significant hepatitis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [28, 120],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "display_name": "Immune-complex glomerular injury pathway",
+      "clinical_meaning": "Circulating treponemal antigen-antibody complexes can deposit in glomeruli and produce proteinuria, membranous-pattern nephropathy, edema, hypoalbuminemia, and rare nephrotic syndrome.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "display_name": "Ocular, CNS, and otic inflammatory seeding",
+      "clinical_meaning": "Disseminated infection can involve uveal tract, retina, optic nerve, meninges, cranial nerves, or inner ear during secondary-stage disease, causing panuveitis, visual symptoms, meningitis-like symptoms, or otosyphilis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.003],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 14],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Disseminated organism burden is the upstream driver of constitutional inflammatory symptoms.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 21],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Skin and mucosal lesions contain abundant organisms and often dominate the clinical phenotype.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_REACTIVE_LYMPHOID_RETICULOENDOTHELIAL_ACTIVATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 21],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Systemic antigenic stimulation explains generalized lymph node and reticuloendothelial involvement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [7, 45],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Hepatic involvement is a recognized systemic manifestation of secondary-stage disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [14, 60],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Antigen load and host antibody response can form immune complexes that deposit in glomeruli.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION",
+      "target_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 60],
+      "phase": "secondary_stage",
+      "clinical_rationale": "Ocular, neurologic, and otic involvement can occur during early disseminated syphilis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Fever is common but may be absent at a single visit.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Several days to weeks of intermittent fever may precede or accompany the rash.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "target_id": "malaise_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Constitutional symptoms are part of the systemic secondary-stage syndrome.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "target_id": "myalgia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Myalgia often accompanies fever and malaise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "target_id": "headache_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Headache can reflect systemic inflammation or early meningeal involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "rash_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "The rash is the dominant clinically recognized secondary syphilis manifestation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "maculopapular_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Macules and papules are common morphologies, though secondary syphilis is polymorphic.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "palmoplantar_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Palm and sole involvement is a highly useful ordinary clinical clue but can be absent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "mucous_patch_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Oral and genital mucous patches are spirochete-rich secondary lesions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "condyloma_lata_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 28],
+      "clinical_rationale": "Moist intertriginous papules and plaques represent infectious mucocutaneous secondary lesions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "cutaneous_ulceronecrotic_nodular_lesion_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 28],
+      "clinical_rationale": "Ulceronodular and necrotic lesions are uncommon but real secondary-stage presentations.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION",
+      "target_id": "patchy_alopecia_activity_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [7, 45],
+      "clinical_rationale": "Moth-eaten patchy alopecia is a recognized secondary syphilis manifestation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_REACTIVE_LYMPHOID_RETICULOENDOTHELIAL_ACTIVATION",
+      "target_id": "pathologic_lymphadenopathy_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Generalized painless lymphadenopathy is a common systemic finding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_REACTIVE_LYMPHOID_RETICULOENDOTHELIAL_ACTIVATION",
+      "target_id": "lymphadenopathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "The extent and activity of lymphadenopathy track lymphoid activation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "target_id": "serum_alkaline_phosphatase",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Syphilitic hepatitis often has a cholestatic or mixed pattern with disproportionate alkaline phosphatase elevation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "target_id": "serum_ast",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "AST can rise mildly or moderately with hepatic involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "target_id": "serum_alt",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "ALT can rise mildly or moderately with hepatic involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_HEPATIC_CHOLESTATIC_INJURY",
+      "target_id": "syphilitic_hepatitis_hazard_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Clinically significant hepatitis is an uncommon but outcome-relevant secondary syphilis complication.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "target_id": "proteinuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Immune-complex nephropathy presents first as proteinuria.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "target_id": "urine_protein_24h_g",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Nephrotic-range proteinuria can occur in syphilitic membranous nephropathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "target_id": "serum_albumin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [7, 45],
+      "clinical_rationale": "Heavy urinary protein loss lowers serum albumin when nephrotic syndrome develops.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_IMMUNE_COMPLEX_RENAL_INJURY",
+      "target_id": "syphilitic_nephrotic_syndrome_hazard_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [7, 45],
+      "clinical_rationale": "Proteinuria, edema, and hypoalbuminemia define the clinically important renal event.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "anterior_uveitis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Anterior uveitis can be part of syphilitic panuveitis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "posterior_uveitis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Posterior uveitis, retinitis, vasculitis, and panuveitis are important ocular syphilis patterns.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "visual_symptom_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Floaters, flashers, blurred vision, and decreased acuity reflect ocular involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Ocular involvement is a treatment-changing event because it threatens vision and changes the required antibiotic exposure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Meningitis or cranial nerve involvement can overlap with secondary-stage disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING",
+      "target_id": "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Sensorineural hearing or vestibular involvement can occur in early syphilis and changes treatment urgency.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "recent_unprotected_sexual_exposure_probability",
+      "category": "exposure_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Recent condomless or barrier-free sexual exposure in the incubation window before primary/secondary syphilis.",
+      "baseline_range": [0.0, 0.15],
+      "peak_day_range": [-180, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "genital_ulcer_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Current or recently resolved genital ulcer or chancre-like lesion; in secondary syphilis this is often historical rather than active at the snapshot.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-90, -7],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 42],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Often normal at presentation but can rise to 38-39.5 degC during systemic secondary-stage symptoms or Jarisch-Herxheimer reaction.",
+      "baseline_range": [36.4, 37.2],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [37.0, 39.5],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "category": "clinical_course_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Patient-reported fever or febrile prodrome over days to weeks.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [1, 42],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal to mildly elevated; tachycardia tracks fever, dehydration, pain, or Jarisch-Herxheimer reaction.",
+      "baseline_range": [60, 90],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [70, 120],
+      "plateau_duration_days": [0, 7],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually preserved; hypotension suggests severe Jarisch-Herxheimer reaction, dehydration, sepsis mimic, or another process.",
+      "baseline_range": [70, 100],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [65, 100],
+      "plateau_duration_days": [0, 2],
+      "decline_half_life_days": [1, 3],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "malaise_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Generalized malaise or reduced wellbeing during secondary-stage systemic illness.",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [1, 42],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Fatigue accompanying systemic infection or inflammatory prodrome.",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "myalgia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Diffuse myalgia during prodrome or active systemic disease.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arthralgia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Arthralgia without destructive arthritis; often part of the constitutional prodrome.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 90],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "headache_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Headache from systemic inflammation or early meningeal irritation; marked headache with meningismus should trigger CNS evaluation.",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "anorexia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Loss of appetite during systemic secondary-stage illness or hepatic involvement.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "rash_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any secondary syphilis-compatible rash; morphology can be macular, papular, papulosquamous, annular, nodular, pustular, or ulceronecrotic.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "maculopapular_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rash_activity",
+      "shape_free_text": "Macular or papular secondary syphilis rash, often nonpainful and variably pruritic.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [14, 90],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "palmoplantar_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rash_activity",
+      "shape_free_text": "Rash involving palms and/or soles; a strong ordinary clinical clue but not mandatory.",
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "diffuse_truncal_extremity_rash_extent_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rash_activity",
+      "shape_free_text": "Extent of rash across trunk, extremities, face, scalp, palms, soles, and intertriginous or perineal areas.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "copper_colored_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rash_activity",
+      "shape_free_text": "Copper-colored, reddish-brown, or hyperpigmented macules or papules described on exam.",
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cutaneous_ulceronecrotic_nodular_lesion_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rash_activity",
+      "shape_free_text": "Nodular, papulopustular, ulcerated, or necrotic secondary lesions including lues maligna-like morphology.",
+      "baseline_range": [0.0, 0.0],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mucous_patch_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Oral or genital mucous patches, erosive plaques, or snail-track lesions caused by secondary syphilis.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "condyloma_lata_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Broad, moist, highly infectious papules or plaques in genital, perianal, or intertriginous regions.",
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "patchy_alopecia_activity_in_D-SECONDARY-SYPHILIS",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Patchy moth-eaten alopecia caused by secondary syphilis scalp involvement.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pruritus_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Secondary syphilis rash is often nonpruritic but itch can occur and should not exclude the diagnosis.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.6],
+      "plateau_duration_days": [0, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pathologic_lymphadenopathy_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Painless generalized lymphadenopathy, especially cervical, epitrochlear, axillary, or inguinal nodes.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lymphadenopathy_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pathologic_lymphadenopathy_presence",
+      "shape_free_text": "Extent and prominence of generalized lymph node enlargement.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hepatomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Mild liver enlargement from reticuloendothelial or hepatic involvement.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.5],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "splenomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Mild spleen enlargement from reticuloendothelial activation.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.0, 0.5],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Often normal; mild leukocytosis or leukopenia can occur but is nonspecific.",
+      "baseline_range": [4.0, 10.0],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [3.0, 13.0],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal; mild anemia can reflect chronic inflammation, renal protein loss, or unrelated comorbidity.",
+      "baseline_range": [12.0, 16.5],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [10.0, 16.5],
+      "plateau_duration_days": [0, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal; marked thrombocytopenia suggests another process or rare severe systemic involvement.",
+      "baseline_range": [150, 400],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [120, 450],
+      "plateau_duration_days": [0, 60],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "c_reactive_protein",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Normal to moderately elevated inflammatory marker; very high values should broaden the differential.",
+      "baseline_range": [0.2, 5.0],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [2.0, 80.0],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [3, 21],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_alkaline_phosphatase",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Can be disproportionately elevated in syphilitic hepatitis; otherwise normal.",
+      "baseline_range": [40, 120],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [70, 600],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_ast",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal or mildly elevated; can rise in syphilitic hepatitis.",
+      "baseline_range": [10, 40],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [20, 300],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_alt",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal or mildly elevated; can rise in syphilitic hepatitis.",
+      "baseline_range": [7, 45],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [20, 300],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_bilirubin_total",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Often normal even with syphilitic hepatitis; jaundice is uncommon.",
+      "baseline_range": [0.2, 1.2],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.2, 3.0],
+      "plateau_duration_days": [0, 60],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Abdominal discomfort can occur with hepatitis, nephrotic edema, or unrelated gastrointestinal disease.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "proteinuria_activity",
+      "category": "lab_value",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any clinically meaningful urinary protein elevation from immune-complex glomerular injury.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "urine_protein_24h_g",
+      "category": "lab_value",
+      "unit": "g_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "proteinuria_activity",
+      "shape_free_text": "Quantified 24-hour urinary protein; nephrotic-range values can occur in secondary syphilis-associated membranous nephropathy.",
+      "baseline_range": [0.0, 0.15],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 10.0],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Usually normal; decreases with nephrotic syndrome or marked inflammation.",
+      "baseline_range": [3.5, 4.8],
+      "peak_day_range": [35, 180],
+      "peak_value_range": [1.5, 4.5],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "peripheral_edema_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Pedal or generalized edema when nephrotic syndrome develops.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [35, 180],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_total_cholesterol",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Total cholesterol can rise in nephrotic syndrome; not specific to syphilis.",
+      "baseline_range": [120, 200],
+      "peak_day_range": [35, 180],
+      "peak_value_range": [150, 350],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "serum_triglycerides",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Triglycerides can rise with nephrotic syndrome or metabolic comorbidity.",
+      "baseline_range": [40, 150],
+      "peak_day_range": [35, 180],
+      "peak_value_range": [80, 400],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "visual_symptom_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Blurred vision, decreased visual acuity, floaters, flashers, scotoma, or other ocular inflammatory symptoms.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ocular_pain_photophobia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Ocular pain, redness, and photophobia accompanying anterior or panuveitis.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "anterior_uveitis_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Anterior chamber inflammatory component of ocular syphilis.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "posterior_uveitis_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Posterior uveitis, retinitis, retinal vasculitis, optic nerve inflammation, or panuveitis component.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "visual_acuity_logmar",
+      "category": "physical_finding",
+      "unit": "logMAR",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "posterior_uveitis_activity",
+      "shape_free_text": "Reduced visual acuity encoded as logMAR when numeric acuity is available.",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 1.5],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hearing_loss_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Sensorineural hearing loss or vestibular symptoms suggesting otosyphilis.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "neck_stiffness_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Meningismus suggesting early neurosyphilis or another meningitis process.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0, 60],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "csf_wbc_count",
+      "category": "lab_value",
+      "unit": "cells_per_uL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "CSF pleocytosis when neurosyphilis is evaluated; CSF testing is confirmatory/contextual rather than ordinary first-pass presentation evidence.",
+      "baseline_range": [0, 5],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0, 200],
+      "plateau_duration_days": [0, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "csf_protein",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "CSF protein can rise in neurosyphilis but can be normal in ocular syphilis without CNS involvement.",
+      "baseline_range": [15, 45],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [20, 150],
+      "plateau_duration_days": [0, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "syphilitic_hepatitis_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Daily hazard of clinically significant syphilitic hepatitis with cholestatic or mixed liver injury.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.03],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "syphilitic_nephrotic_syndrome_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Daily hazard of nephrotic syndrome from secondary syphilis-associated immune-complex glomerular injury.",
+      "baseline_range": [0.0, 0.00005],
+      "peak_day_range": [28, 150],
+      "peak_value_range": [0.0, 0.02],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Daily hazard of ocular syphilis severe enough to require urgent ophthalmologic evaluation and neurosyphilis-style therapy.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.0, 0.03],
+      "plateau_duration_days": [1, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Daily hazard of symptomatic early neurosyphilis such as meningitis, cranial neuropathy, or meningovascular involvement.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [21, 180],
+      "peak_value_range": [0.0, 0.02],
+      "plateau_duration_days": [1, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Daily hazard of otosyphilis with sensorineural hearing loss, tinnitus, or vestibular symptoms.",
+      "baseline_range": [0.0, 0.00005],
+      "peak_day_range": [21, 180],
+      "peak_value_range": [0.0, 0.015],
+      "plateau_duration_days": [1, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "jarisch_herxheimer_reaction_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Transient fever, chills, myalgia, tachycardia, and possible hypotension shortly after treponemicidal therapy.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0, 1],
+      "decline_half_life_days": [0.5, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vertical_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of fetal infection or congenital syphilis in pregnancy before adequate maternal treatment.",
+      "baseline_range": [0.0, 0.00001],
+      "peak_day_range": [0, 280],
+      "peak_value_range": [0.0, 0.1],
+      "plateau_duration_days": [1, 280],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of transmitting syphilis through contact with infectious mucocutaneous lesions.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.01, 0.25],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of persistent or rising nontreponemal titers from reinfection, inadequate exposure, nonadherence, or unrecognized CNS/ocular disease.",
+      "baseline_range": [0.0, 0.0001],
+      "peak_day_range": [30, 365],
+      "peak_value_range": [0.0, 0.015],
+      "plateau_duration_days": [30, 365],
+      "decline_half_life_days": [60, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Disease-specific lifespan hazard from secondary syphilis itself; generally very low, rising mainly with severe CNS involvement, extreme Jarisch-Herxheimer physiology, severe hepatitis, nephrotic complications, or major comorbidity.",
+      "baseline_range": [0.0, 0.00001],
+      "peak_day_range": [21, 180],
+      "peak_value_range": [0.00001, 0.002],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "rpr_vdrl_positivity_probability",
+      "category": "confirmatory_test",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Qualitative positive nontreponemal RPR or VDRL when numeric titer is unavailable. This is confirmatory evidence; case files should mark it use_in_ranking:false.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.8, 1.0],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [60, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rpr_vdrl_titer",
+      "category": "confirmatory_test",
+      "unit": "dilution_titer_denominator",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Quantitative nontreponemal RPR or VDRL titer. This is confirmatory and monitoring evidence; case files should mark it use_in_ranking:false.",
+      "baseline_range": [0, 1],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [8, 4096],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [60, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "treponemal_serology_positivity_probability",
+      "category": "confirmatory_test",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Treponemal antibody, TPPA, TPHA, FTA-ABS, EIA, or related treponemal test positivity. This is confirmatory evidence and should not be ordinary ranking evidence.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [21, 150],
+      "peak_value_range": [0.85, 1.0],
+      "plateau_duration_days": [365, 3650],
+      "decline_half_life_days": [3650, 3650],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "skin_biopsy_syphilitic_dermatitis_pattern_activity",
+      "category": "confirmatory_test",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Skin biopsy pattern supportive of secondary syphilis such as plasma-cell-rich dermatitis, granulomatous inflammation, pustular change, or compatible perivascular dermatitis when direct organism detection is not reported. Confirmatory/context pathology; mark use_in_ranking:false in cases.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "skin_biopsy_treponemal_detection_probability",
+      "category": "confirmatory_test",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Histology, immunohistochemistry, or special stain showing treponemal organisms in a skin lesion. Confirmatory pathology; mark use_in_ranking:false in cases.",
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lesion_pcr_treponema_pallidum_positivity_probability",
+      "category": "confirmatory_test",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Treponema pallidum PCR positivity from lesion material. Confirmatory pathogen evidence; mark use_in_ranking:false in cases.",
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [21, 120],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "csf_vdrl_positivity_probability",
+      "category": "confirmatory_test",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "CSF VDRL positivity in suspected neurosyphilis. Confirmatory/contextual evidence and should not be ordinary first-pass ranking evidence.",
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [21, 180],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "fever_history_activity",
+      "target_axis_id": "body_temperature",
+      "coupling_type": "noise_correlation",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "strength": [0.25, 0.6],
+      "conditionality": "Only when fever is active near the snapshot; many patients are afebrile at evaluation.",
+      "clinical_rationale": "A febrile prodrome and measured fever are related but not interchangeable."
+    },
+    {
+      "source_axis_id": "rash_activity",
+      "target_axis_id": "palmoplantar_rash_activity_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "mixed",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "strength": [0.2, 0.75],
+      "conditionality": "Palmoplantar involvement is common but not required.",
+      "clinical_rationale": "Diffuse secondary rash often includes acral surfaces."
+    },
+    {
+      "source_axis_id": "rash_activity",
+      "target_axis_id": "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "strength": [0.3, 0.9],
+      "conditionality": "Highest when mucous patches, condyloma lata, or moist skin lesions are present.",
+      "clinical_rationale": "Secondary mucocutaneous lesions are infectious and drive onward transmission hazard."
+    },
+    {
+      "source_axis_id": "mucous_patch_activity_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "strength": [0.4, 1.0],
+      "conditionality": "Applies to exposed mucosal contact before effective treatment.",
+      "clinical_rationale": "Mucous patches contain many treponemes."
+    },
+    {
+      "source_axis_id": "serum_alkaline_phosphatase",
+      "target_axis_id": "serum_ast",
+      "coupling_type": "noise_correlation",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "strength": [0.2, 0.6],
+      "conditionality": "Only in the hepatic-injury phenotype.",
+      "clinical_rationale": "Syphilitic hepatitis often creates a mixed but cholestatic-skewed liver enzyme pattern."
+    },
+    {
+      "source_axis_id": "serum_alkaline_phosphatase",
+      "target_axis_id": "syphilitic_hepatitis_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "strength": [0.3, 0.8],
+      "conditionality": "Stronger when viral, obstructive, autoimmune, and medication causes are less likely.",
+      "clinical_rationale": "Disproportionate cholestatic enzyme elevation is a key ordinary signal of clinically meaningful hepatic involvement."
+    },
+    {
+      "source_axis_id": "proteinuria_activity",
+      "target_axis_id": "urine_protein_24h_g",
+      "coupling_type": "mixed",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "strength": [0.7, 1.0],
+      "conditionality": "Only when a quantified 24-hour urine protein is available.",
+      "clinical_rationale": "The activity score and measurement encode the same renal process at different granularity."
+    },
+    {
+      "source_axis_id": "urine_protein_24h_g",
+      "target_axis_id": "serum_albumin",
+      "coupling_type": "drift",
+      "direction": "negative",
+      "lag_days_range": [7, 45],
+      "strength": [0.3, 0.9],
+      "conditionality": "Applies when proteinuria is sustained or nephrotic range.",
+      "clinical_rationale": "Heavy urinary protein loss lowers serum albumin over time."
+    },
+    {
+      "source_axis_id": "urine_protein_24h_g",
+      "target_axis_id": "peripheral_edema_activity",
+      "coupling_type": "drift",
+      "direction": "positive",
+      "lag_days_range": [3, 30],
+      "strength": [0.3, 0.8],
+      "conditionality": "Stronger when serum albumin is low.",
+      "clinical_rationale": "Nephrotic protein loss produces edema through reduced oncotic pressure."
+    },
+    {
+      "source_axis_id": "posterior_uveitis_activity",
+      "target_axis_id": "visual_acuity_logmar",
+      "coupling_type": "drift",
+      "direction": "positive",
+      "lag_days_range": [0, 14],
+      "strength": [0.3, 0.9],
+      "conditionality": "Higher logMAR means worse visual acuity.",
+      "clinical_rationale": "Posterior inflammation and panuveitis can reduce visual acuity."
+    },
+    {
+      "source_axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "visual_symptom_activity",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [0, 14],
+      "strength": [0.3, 0.9],
+      "conditionality": "Ocular syphilis can be asymptomatic early but usually becomes symptomatic when inflammation is clinically significant.",
+      "clinical_rationale": "The ocular event manifests as visual symptoms and uveitis."
+    },
+    {
+      "source_axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 30],
+      "strength": [0.05, 0.35],
+      "conditionality": "Mortality remains low in treated disease but rises with severe CNS involvement or major comorbidity.",
+      "clinical_rationale": "CNS disease is the main lifespan-relevant secondary-stage complication."
+    },
+    {
+      "source_axis_id": "syphilitic_hepatitis_hazard_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 30],
+      "strength": [0.02, 0.25],
+      "conditionality": "Mainly relevant if hepatitis is severe, delayed, or occurs on limited hepatic reserve.",
+      "clinical_rationale": "Secondary syphilitic hepatitis is usually reversible but can add risk in severe presentations."
+    },
+    {
+      "source_axis_id": "syphilitic_nephrotic_syndrome_hazard_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 60],
+      "strength": [0.01, 0.2],
+      "conditionality": "Relevant when nephrotic syndrome is severe, thrombotic, infected, or superimposed on renal/cardiovascular disease.",
+      "clinical_rationale": "Nephrotic syndrome is rarely fatal by itself but can increase complication risk."
+    },
+    {
+      "source_axis_id": "jarisch_herxheimer_reaction_hazard",
+      "target_axis_id": "body_temperature",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "strength": [0.4, 1.0],
+      "conditionality": "Only after treponemicidal therapy.",
+      "clinical_rationale": "Jarisch-Herxheimer reaction causes an acute fever and systemic inflammatory spike."
+    },
+    {
+      "source_axis_id": "jarisch_herxheimer_reaction_hazard",
+      "target_axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 2],
+      "strength": [0.0, 0.15],
+      "conditionality": "Mostly relevant in pregnancy, cardiovascular frailty, severe systemic disease, or hypotensive reaction.",
+      "clinical_rationale": "The reaction is usually self-limited but can be outcome-relevant in vulnerable contexts."
+    },
+    {
+      "source_axis_id": "vertical_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+      "target_axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 30],
+      "strength": [0.0, 0.05],
+      "conditionality": "Maternal lifespan hazard is not the main concern; this coupling only captures rare severe obstetric/systemic consequences.",
+      "clinical_rationale": "Pregnancy primarily changes fetal outcome and treatment urgency rather than maternal mortality."
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "benzathine_penicillin_g_im",
+      "drug_class": "long_acting_beta_lactam_antibiotic",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "beta_lactam_allergy_activity",
+        "pregnancy_or_planning_pregnancy_activity",
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "beta_lactam_allergy_activity",
+          "condition": "high",
+          "effect": "changes_toxicity_or_requires_desensitization",
+          "clinical_rationale": "True immediate penicillin allergy changes the usable pathway; pregnancy or neuro/ocular disease favors desensitization rather than nonpenicillin substitution."
+        },
+        {
+          "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "weakens_for_organ_event",
+          "clinical_rationale": "Ocular disease requires sustained IV aqueous penicillin exposure rather than relying on single-dose benzathine penicillin alone."
+        },
+        {
+          "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "weakens_for_organ_event",
+          "clinical_rationale": "Symptomatic CNS involvement requires neurosyphilis therapy."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION": {
+          "peak_value_factor": [0.03, 0.2],
+          "plateau_duration_factor": [0.05, 0.25],
+          "decline_half_life_days": [3, 14]
+        },
+        "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION": {
+          "peak_value_factor": [0.08, 0.35],
+          "plateau_duration_factor": [0.1, 0.35],
+          "decline_half_life_days": [7, 30]
+        },
+        "M_SECONDARY_SYPHILIS_SYSTEMIC_INFLAMMATORY_RESPONSE": {
+          "peak_value_factor": [0.15, 0.5],
+          "plateau_duration_factor": [0.15, 0.5],
+          "decline_half_life_days": [2, 14]
+        },
+        "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.01, 0.15],
+          "plateau_duration_factor": [0.05, 0.3],
+          "decline_half_life_days": [1, 7]
+        },
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.25, 0.7],
+          "decline_half_life_days": [60, 365]
+        }
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [21, 60],
+      "failure_modes": [
+        "incorrect stage or unrecognized ocular/CNS/otic disease requiring a different exposure profile",
+        "reinfection from untreated partner",
+        "missed diagnosis of another rash illness or coinfection",
+        "true penicillin allergy without desensitization plan"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "jarisch_herxheimer_reaction_hazard",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.8],
+          "interpretation": "Acute post-treatment inflammatory reaction from treponemal lysis."
+        },
+        {
+          "axis_id": "body_temperature",
+          "direction": "up",
+          "magnitude_range": [0.0, 2.0],
+          "interpretation": "Transient fever spike during Jarisch-Herxheimer reaction."
+        }
+      ],
+      "context_specific_role": "Treponemicidal therapy for secondary-stage disease without ocular, otic, or neurologic organ-event context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "aqueous_crystalline_penicillin_g_iv",
+      "drug_class": "intravenous_beta_lactam_antibiotic",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "beta_lactam_allergy_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Sustained IV exposure is needed when syphilis threatens ocular structures."
+        },
+        {
+          "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "CNS involvement requires adequate CSF exposure."
+        },
+        {
+          "axis_id": "beta_lactam_allergy_activity",
+          "condition": "high",
+          "effect": "requires_desensitization_or_specialist_alternative",
+          "clinical_rationale": "No equally proven nonpenicillin regimen exists for pregnancy or neurosyphilis-style disease."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION": {
+          "peak_value_factor": [0.03, 0.2],
+          "plateau_duration_factor": [0.05, 0.25],
+          "decline_half_life_days": [3, 14]
+        },
+        "M_SECONDARY_SYPHILIS_OCULAR_CNS_OTIC_SEEDING": {
+          "peak_value_factor": [0.08, 0.4],
+          "plateau_duration_factor": [0.1, 0.5],
+          "decline_half_life_days": [7, 45]
+        },
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.05, 0.3],
+          "decline_half_life_days": [7, 45]
+        },
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.05, 0.35],
+          "decline_half_life_days": [7, 60]
+        },
+        "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.05, 0.4],
+          "decline_half_life_days": [7, 60]
+        },
+        "visual_symptom_activity": {
+          "peak_value_factor": [0.2, 0.8],
+          "decline_half_life_days": [14, 120]
+        }
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [7, 30],
+      "failure_modes": [
+        "delayed ophthalmology or neurology recognition before irreversible injury",
+        "premature discontinuation of IV course",
+        "coinfection or non-syphilitic ocular inflammatory disease"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "jarisch_herxheimer_reaction_hazard",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.8],
+          "interpretation": "Post-treatment inflammatory reaction can occur after IV therapy."
+        }
+      ],
+      "context_specific_role": "Treponemicidal exposure path for ocular, CNS, or otic organ-event phenotypes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "doxycycline_oral",
+      "drug_class": "tetracycline_antibiotic",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "pregnancy_or_planning_pregnancy_activity",
+        "beta_lactam_allergy_activity",
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "pregnancy_or_planning_pregnancy_activity",
+          "condition": "high",
+          "effect": "contraindicates_or_requires_alternative",
+          "clinical_rationale": "Doxycycline is avoided in pregnancy and does not reliably prevent fetal infection."
+        },
+        {
+          "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "weakens",
+          "clinical_rationale": "Ocular disease needs neurosyphilis-style therapy rather than oral doxycycline alone."
+        },
+        {
+          "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "weakens",
+          "clinical_rationale": "Oral doxycycline is not a robust pathway for symptomatic CNS disease."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION": {
+          "peak_value_factor": [0.15, 0.55],
+          "plateau_duration_factor": [0.15, 0.6],
+          "decline_half_life_days": [7, 30]
+        },
+        "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION": {
+          "peak_value_factor": [0.2, 0.65],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [10, 45]
+        },
+        "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.05, 0.35],
+          "decline_half_life_days": [3, 14]
+        },
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.8, 1.4],
+          "decline_half_life_days": [90, 365]
+        }
+      },
+      "onset_delay_days": [1, 5],
+      "carryover_after_stop_days": [3, 14],
+      "failure_modes": [
+        "missed doses or incomplete course",
+        "use in pregnancy",
+        "unrecognized ocular, otic, or CNS disease",
+        "reinfection before partner treatment"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "nausea_vomiting_activity",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.5],
+          "interpretation": "Gastrointestinal intolerance can reduce adherence."
+        },
+        {
+          "axis_id": "rash_activity",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.3],
+          "interpretation": "Photosensitivity or drug eruption can confuse rash tracking."
+        }
+      ],
+      "context_specific_role": "Nonpregnant oral alternative pathway when penicillin cannot be used and reliable follow-up/adherence are available.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "ceftriaxone_daily_im_or_iv",
+      "drug_class": "third_generation_cephalosporin",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "beta_lactam_allergy_activity",
+        "pregnancy_or_planning_pregnancy_activity",
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "pregnancy_or_planning_pregnancy_activity",
+          "condition": "high",
+          "effect": "insufficient_for_fetal_context",
+          "clinical_rationale": "Evidence is insufficient for preventing congenital syphilis compared with penicillin."
+        },
+        {
+          "axis_id": "beta_lactam_allergy_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Cephalosporin cross-reactivity is low but not zero; allergy details matter."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION": {
+          "peak_value_factor": [0.1, 0.45],
+          "plateau_duration_factor": [0.1, 0.55],
+          "decline_half_life_days": [5, 21]
+        },
+        "M_SECONDARY_SYPHILIS_MUCOTANEOUS_SPIROCHETE_RICH_INFLAMMATION": {
+          "peak_value_factor": [0.15, 0.6],
+          "plateau_duration_factor": [0.15, 0.65],
+          "decline_half_life_days": [7, 30]
+        },
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.15, 0.7],
+          "decline_half_life_days": [7, 45]
+        },
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.15, 0.8],
+          "decline_half_life_days": [7, 60]
+        },
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.6, 1.2],
+          "decline_half_life_days": [90, 365]
+        }
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [3, 21],
+      "failure_modes": [
+        "uncertain optimal dose or duration for uncomplicated secondary-stage disease",
+        "use when penicillin desensitization is needed for pregnancy or CNS/ocular certainty",
+        "loss to follow-up after nonpenicillin regimen"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "nausea_vomiting_activity",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.3],
+          "interpretation": "Gastrointestinal adverse effects are possible."
+        }
+      ],
+      "context_specific_role": "Parenteral alternative path when penicillin cannot be used immediately and specialist follow-up is reliable.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "penicillin_desensitization_then_penicillin",
+      "drug_class": "allergy_management_plus_beta_lactam_antibiotic",
+      "mode": "modulate_theta",
+      "required_context_axes": [
+        "beta_lactam_allergy_activity",
+        "pregnancy_or_planning_pregnancy_activity",
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "beta_lactam_allergy_activity",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Desensitization is only relevant when a true penicillin allergy blocks the otherwise necessary penicillin pathway."
+        },
+        {
+          "axis_id": "pregnancy_or_planning_pregnancy_activity",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Pregnancy removes proven nonpenicillin alternatives and raises fetal-event stakes."
+        }
+      ],
+      "trajectory_modifications": {
+        "beta_lactam_allergy_activity": {
+          "peak_value_factor": [0.1, 0.4],
+          "plateau_duration_factor": [0.05, 0.3],
+          "decline_half_life_days": [1, 7]
+        },
+        "M_SECONDARY_SYPHILIS_TREPONEMAL_HEMATOGENOUS_DISSEMINATION": {
+          "peak_value_factor": [0.03, 0.25],
+          "plateau_duration_factor": [0.05, 0.35],
+          "decline_half_life_days": [3, 21]
+        },
+        "vertical_transmission_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.05, 0.3],
+          "decline_half_life_days": [3, 30]
+        },
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS": {
+          "peak_value_factor": [0.25, 0.8],
+          "decline_half_life_days": [60, 365]
+        }
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [0, 7],
+      "failure_modes": [
+        "desensitization performed without monitored setting when high-risk allergy exists",
+        "interruption after desensitization before penicillin course is completed",
+        "misclassified non-allergic adverse reaction causing unnecessary delay"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "beta_lactam_allergy_activity",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.5],
+          "interpretation": "Breakthrough allergic symptoms can occur during desensitization."
+        }
+      ],
+      "context_specific_role": "Context-enabling pathway that permits penicillin treatment when allergy would otherwise block the needed regimen.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "topical_ophthalmic_corticosteroid_and_cycloplegic",
+      "drug_class": "ocular_antiinflammatory_support",
+      "mode": "push_state",
+      "required_context_axes": [
+        "anterior_uveitis_activity",
+        "posterior_uveitis_activity",
+        "ocular_pain_photophobia_activity",
+        "visual_symptom_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+          "condition": "high",
+          "effect": "requires_concurrent_antibiotic",
+          "clinical_rationale": "Ocular inflammation control does not eradicate Treponema pallidum and should not replace treponemicidal therapy."
+        }
+      ],
+      "trajectory_modifications": {
+        "anterior_uveitis_activity": {
+          "peak_value_factor": [0.25, 0.75],
+          "plateau_duration_factor": [0.3, 0.8],
+          "decline_half_life_days": [3, 30]
+        },
+        "ocular_pain_photophobia_activity": {
+          "peak_value_factor": [0.2, 0.7],
+          "decline_half_life_days": [1, 14]
+        },
+        "visual_symptom_activity": {
+          "peak_value_factor": [0.4, 0.9],
+          "decline_half_life_days": [7, 60]
+        }
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [0, 14],
+      "failure_modes": [
+        "anti-inflammatory treatment without treponemicidal therapy",
+        "intraocular pressure rise",
+        "missed posterior segment disease requiring systemic management"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "visual_symptom_activity",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.2],
+          "interpretation": "Steroid-associated intraocular pressure or cataract effects can worsen visual complaints over time."
+        }
+      ],
+      "context_specific_role": "Adjunctive ocular symptom and inflammation control when ophthalmology documents uveitis.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_condomless_or_multiple_partner_sexual_exposure",
+      "type": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 12.0],
+          "trajectory_modulation": "Raises prior probability of acquired syphilis and other STI coinfections; does not by itself determine disease severity.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "recent_unprotected_sexual_exposure_probability",
+              "direction": "up",
+              "factor_range": [2.0, 8.0]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hiv_coinfection_or_immunosuppression",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "trajectory_modulation": "Can increase prior probability, atypical or severe cutaneous phenotypes, ocular/CNS involvement concern, and serologic follow-up complexity.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "cutaneous_ulceronecrotic_nodular_lesion_activity_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.2, 4.0]
+            },
+            {
+              "axis_id": "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.2, 3.0]
+            },
+            {
+              "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.1, 2.5]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pregnancy",
+      "type": "physiologic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.2],
+          "trajectory_modulation": "Maternal disease likelihood is not intrinsically higher, but fetal-event hazard and treatment constraints dominate management.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "vertical_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [10.0, 200.0]
+            },
+            {
+              "axis_id": "jarisch_herxheimer_reaction_hazard",
+              "direction": "up",
+              "factor_range": [1.0, 2.0]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "doxycycline_oral",
+              "direction": "weakens_or_contraindicates",
+              "factor_range": [0.0, 0.2]
+            },
+            {
+              "treatment": "penicillin_desensitization_then_penicillin",
+              "direction": "strengthens",
+              "factor_range": [1.5, 3.0]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "penicillin_allergy",
+      "type": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.0],
+          "trajectory_modulation": "Does not change disease biology but changes treatment path and failure/toxicity risk.",
+          "treatment_effect_modulation": [
+            {
+              "treatment": "benzathine_penicillin_g_im",
+              "direction": "changes_toxicity",
+              "factor_range": [0.0, 1.0]
+            },
+            {
+              "treatment": "aqueous_crystalline_penicillin_g_iv",
+              "direction": "changes_toxicity",
+              "factor_range": [0.0, 1.0]
+            },
+            {
+              "treatment": "penicillin_desensitization_then_penicillin",
+              "direction": "strengthens",
+              "factor_range": [1.5, 4.0]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_or_inadequate_prior_syphilis_treatment",
+      "type": "clinical_course_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "trajectory_modulation": "Prolongs active disease, raises organ-event and serologic failure hazards, and increases need to distinguish reinfection from treatment failure.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.5, 5.0]
+            },
+            {
+              "axis_id": "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.1, 3.0]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "baseline_liver_or_kidney_disease",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.0],
+          "trajectory_modulation": "Does not cause secondary syphilis, but makes hepatic or renal involvement more outcome-relevant and harder to attribute.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "syphilitic_hepatitis_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.0, 2.5]
+            },
+            {
+              "axis_id": "syphilitic_nephrotic_syndrome_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.0, 2.5]
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-SECONDARY-SYPHILIS",
+              "direction": "up",
+              "factor_range": [1.0, 3.0]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care": "sti_hiv_pregnancy_and_partner_context_assessment",
+      "targets": [
+        "recent_unprotected_sexual_exposure_probability",
+        "pregnancy_or_planning_pregnancy_activity",
+        "vertical_transmission_hazard_in_D-SECONDARY-SYPHILIS",
+        "sexual_transmission_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "clinical_role": "Assess pregnancy and coexisting STI/HIV context, counsel abstinence until treatment and lesion resolution, and arrange partner notification/evaluation/treatment to reduce reinfection and transmission."
+    },
+    {
+      "care": "confirmatory_testing_and_serologic_followup",
+      "targets": [
+        "rpr_vdrl_titer",
+        "treponemal_serology_positivity_probability",
+        "serologic_treatment_failure_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "clinical_role": "Use RPR/VDRL and treponemal tests for diagnosis confirmation and response monitoring; these axes are confirmatory evidence and should not be consumed as ordinary presentation likelihood in case ranking."
+    },
+    {
+      "care": "ocular_neurologic_otic_triage",
+      "targets": [
+        "visual_symptom_activity",
+        "ocular_pain_photophobia_activity",
+        "hearing_loss_presence",
+        "headache_activity",
+        "neck_stiffness_activity",
+        "ocular_syphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "neurosyphilis_hazard_in_D-SECONDARY-SYPHILIS",
+        "otosyphilis_hazard_in_D-SECONDARY-SYPHILIS"
+      ],
+      "clinical_role": "Urgent ophthalmology, audiology, neurology, lumbar puncture, and IV therapy pathway when visual, auditory, or neurologic symptoms are present."
+    },
+    {
+      "care": "jarisch_herxheimer_monitoring_and_symptom_control",
+      "targets": [
+        "jarisch_herxheimer_reaction_hazard",
+        "body_temperature",
+        "heart_rate",
+        "mean_arterial_pressure",
+        "myalgia_activity"
+      ],
+      "clinical_role": "Antipyretics, hydration, observation, and obstetric monitoring when needed; do not delay necessary treponemicidal therapy solely because of reaction risk."
+    },
+    {
+      "care": "hepatic_and_renal_complication_workup",
+      "targets": [
+        "serum_alkaline_phosphatase",
+        "serum_ast",
+        "serum_alt",
+        "proteinuria_activity",
+        "urine_protein_24h_g",
+        "serum_albumin",
+        "peripheral_edema_activity"
+      ],
+      "clinical_role": "Evaluate alternative viral, autoimmune, obstructive, medication, diabetic, and primary renal causes while treating syphilis when ordinary clinical syndrome supports it."
+    },
+    {
+      "care": "ophthalmic_antiinflammatory_support_with_antibiotic_coverage",
+      "targets": [
+        "anterior_uveitis_activity",
+        "posterior_uveitis_activity",
+        "visual_symptom_activity"
+      ],
+      "clinical_role": "Topical steroids, cycloplegics, and follow-up visual assessment can reduce ocular inflammation but must accompany treponemicidal therapy."
+    }
+  ],
+  "quality_warnings": [
+    "Disease-specific prompt scope is only Disease: Secondary syphilis (id: D-SECONDARY-SYPHILIS); HIV, ocular disease, malignant morphology, pregnancy, and organ complications are context or phenotype axes, not disease-name qualifiers.",
+    "RPR, VDRL, treponemal serology, PCR, and biopsy organism detection are confirmatory axes for ontology completeness; case files should place them in confirmatory_findings with use_in_ranking:false.",
+    "Only mortality_hazard_in_D-SECONDARY-SYPHILIS is category derived_hazard; organ events and treatment reactions are event_hazard axes."
+  ]
+}
