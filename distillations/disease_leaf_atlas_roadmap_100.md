@@ -84,31 +84,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-CLL-TRANSFORMATION-RICHTER | Richter transformation |
 | D-CML-BLAST-CRISIS | Chronic myeloid leukemia blast crisis |
 | D-CAEBV | Chronic active EBV disease |
+| D-ADENOVIRUS-INFECTION | Adenovirus infection |
+| D-BABESIOSIS | Babesiosis |
+| D-TOXOPLASMOSIS | Toxoplasmosis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-ADENOVIRUS-SEVERE | Severe adenovirus infection | critical immunocompromised viral sepsis/pneumonia/hepatitis mimic |
-| 2 | D-BABESIOSIS | Babesiosis | travel/tick fever with hemolysis, thrombocytopenia, and malaria/TMA mimic |
-| 3 | D-TOXOPLASMOSIS-DISSEMINATED | Disseminated toxoplasmosis | critical immunocompromised CNS/pulmonary fever mimic |
-| 4 | D-COCCIDIOIDOMYCOSIS-DISSEMINATED | Disseminated coccidioidomycosis | endemic fungal fever with pulmonary, bone, skin, and CNS axes |
-| 5 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis | fever, splenomegaly, pancytopenia, and HLH mimic |
-| 6 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia | common invasive enteric bacteremia in immunocompromised hosts |
-| 7 | D-ALL | Acute lymphoblastic leukemia | hematologic fever/cytopenia/leukostasis mimic |
-| 8 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection | common fever-arthritis/tenosynovitis mimic around septic arthritis |
-| 9 | D-DISSEMINATED-LYME | Disseminated Lyme disease | common arthralgia/neurologic/cardiac fever mimic |
-| 10 | D-SECONDARY-SYPHILIS | Secondary syphilis | common rash/fever/lymphadenopathy mimic |
-| 11 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis | fever/inflammation chondritis mimic of vasculitis and infection |
-| 12 | D-CAR-T-CRS | CAR-T cytokine release syndrome | critical post-cellular-therapy fever/shock/HLH mimic |
-| 13 | D-HEAT-STROKE | Heat stroke | critical hyperthermia, DIC, liver injury, and sepsis mimic |
-| 14 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome | critical drug-induced hyperthermia and rigidity mimic |
-| 15 | D-SEROTONIN-SYNDROME | Serotonin syndrome | critical serotonergic hyperthermia/autonomic mimic |
-| 16 | D-THYROID-STORM | Thyroid storm | critical endocrine fever, tachyarrhythmia, and shock mimic |
-| 17 | D-ACUTE-LIVER-FAILURE | Acute liver failure | critical coagulopathy/encephalopathy fever mimic |
-| 18 | D-ADRENAL-CRISIS | Adrenal crisis | critical endocrine shock and infection mimic |
-| 19 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
-| 20 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
+| 1 | D-COCCIDIOIDOMYCOSIS | Coccidioidomycosis | endemic fungal fever with pulmonary, bone, skin, and CNS axes |
+| 2 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis | fever, splenomegaly, pancytopenia, and HLH mimic |
+| 3 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia | common invasive enteric bacteremia in immunocompromised hosts |
+| 4 | D-ALL | Acute lymphoblastic leukemia | hematologic fever/cytopenia/leukostasis mimic |
+| 5 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection | common fever-arthritis/tenosynovitis mimic around septic arthritis |
+| 6 | D-DISSEMINATED-LYME | Disseminated Lyme disease | common arthralgia/neurologic/cardiac fever mimic |
+| 7 | D-SECONDARY-SYPHILIS | Secondary syphilis | common rash/fever/lymphadenopathy mimic |
+| 8 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis | fever/inflammation chondritis mimic of vasculitis and infection |
+| 9 | D-CAR-T-CRS | CAR-T cytokine release syndrome | critical post-cellular-therapy fever/shock/HLH mimic |
+| 10 | D-HEAT-STROKE | Heat stroke | critical hyperthermia, DIC, liver injury, and sepsis mimic |
+| 11 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome | critical drug-induced hyperthermia and rigidity mimic |
+| 12 | D-SEROTONIN-SYNDROME | Serotonin syndrome | critical serotonergic hyperthermia/autonomic mimic |
+| 13 | D-THYROID-STORM | Thyroid storm | critical endocrine fever, tachyarrhythmia, and shock mimic |
+| 14 | D-ACUTE-LIVER-FAILURE | Acute liver failure | critical coagulopathy/encephalopathy fever mimic |
+| 15 | D-ADRENAL-CRISIS | Adrenal crisis | critical endocrine shock and infection mimic |
+| 16 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
+| 17 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
+| 18 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia | critical hyperthermia, rigidity, acidosis, and rhabdomyolysis mimic |
+| 19 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
+| 20 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
 
 ## Candidate Pool Toward 100
 
@@ -131,7 +134,7 @@ Prioritize diseases that are either common, critical, or both.
 | D-ACUTE-HIV | Acute HIV retroviral syndrome |
 | D-CMV-MONO | Cytomegalovirus mononucleosis-like illness |
 | D-CAEBV | Chronic active EBV disease |
-| D-ADENOVIRUS-SEVERE | Severe adenovirus infection |
+| D-ADENOVIRUS-INFECTION | Adenovirus infection |
 | D-STAPH-AUREUS-BACTEREMIA | Staphylococcus aureus bacteremia |
 | D-NOCARDIOSIS | Nocardiosis |
 | D-BRUCELLOSIS | Brucellosis |
@@ -140,9 +143,9 @@ Prioritize diseases that are either common, critical, or both.
 | D-RICKETTSIOSIS-SCRUB-TYPHUS | Scrub typhus / rickettsiosis |
 | D-MALARIA-FALCIPARUM | Plasmodium falciparum malaria |
 | D-BABESIOSIS | Babesiosis |
-| D-TOXOPLASMOSIS-DISSEMINATED | Disseminated toxoplasmosis |
+| D-TOXOPLASMOSIS | Toxoplasmosis |
 | D-HISTOPLASMOSIS-DISSEMINATED | Disseminated histoplasmosis |
-| D-COCCIDIOIDOMYCOSIS-DISSEMINATED | Disseminated coccidioidomycosis |
+| D-COCCIDIOIDOMYCOSIS | Coccidioidomycosis |
 | D-CRYPTOCOCCOSIS-DISSEMINATED | Disseminated cryptococcosis |
 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis |
 | D-TYPHOID-FEVER | Typhoid fever |
