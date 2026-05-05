@@ -72,31 +72,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-HISTOPLASMOSIS-DISSEMINATED | Disseminated histoplasmosis |
 | D-CRYPTOCOCCOSIS-DISSEMINATED | Disseminated cryptococcosis |
 | D-TYPHOID-FEVER | Typhoid fever |
+| D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection |
+| D-SEPTIC-ARTHRITIS | Septic arthritis |
+| D-VERTEBRAL-OSTEOMYELITIS | Vertebral osteomyelitis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection | common critical antibiotic-associated fever/shock mimic |
-| 2 | D-SEPTIC-ARTHRITIS | Septic arthritis | common critical fever with source-control and joint-destruction risk |
-| 3 | D-VERTEBRAL-OSTEOMYELITIS | Vertebral osteomyelitis | common missed fever/back-pain source; imaging/source-control bridge |
-| 4 | D-HSV-ENCEPHALITIS | HSV encephalitis | critical treatable CNS fever/AMS mimic |
-| 5 | D-PAN | Polyarteritis nodosa | critical systemic vasculitis mimic with renal/neurologic/GI ischemia axes |
-| 6 | D-GCA | Giant cell arteritis | common older-adult fever/inflammation vasculitis mimic |
-| 7 | D-CATASTROPHIC-APS | Catastrophic antiphospholipid syndrome | critical TMA/DIC/sepsis mimic with multiorgan thrombosis |
-| 8 | D-DIC | Disseminated intravascular coagulation | critical coagulopathy bridge across sepsis/HLH/TMA/obstetric and malignancy contexts |
-| 9 | D-FEBRILE-NEUTROPENIA | Febrile neutropenia | treatment-critical oncology fever syndrome; keep as special syndrome leaf if retained |
-| 10 | D-CLL-TRANSFORMATION-RICHTER | Richter transformation | lymphoma/leukemia fever bridge |
-| 11 | D-CML-BLAST-CRISIS | Chronic myeloid leukemia blast crisis | fever/cytopenia/leukostasis hematology mimic |
-| 12 | D-CAEBV | Chronic active EBV disease | rare but critical EBV/HLH/lymphoma fever bridge |
-| 13 | D-ADENOVIRUS-SEVERE | Severe adenovirus infection | critical immunocompromised viral sepsis/pneumonia/hepatitis mimic |
-| 14 | D-BABESIOSIS | Babesiosis | travel/tick fever with hemolysis, thrombocytopenia, and malaria/TMA mimic |
-| 15 | D-TOXOPLASMOSIS-DISSEMINATED | Disseminated toxoplasmosis | critical immunocompromised CNS/pulmonary fever mimic |
-| 16 | D-COCCIDIOIDOMYCOSIS-DISSEMINATED | Disseminated coccidioidomycosis | endemic fungal fever with pulmonary, bone, skin, and CNS axes |
-| 17 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis | fever, splenomegaly, pancytopenia, and HLH mimic |
-| 18 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia | common invasive enteric bacteremia in immunocompromised hosts |
-| 19 | D-ALL | Acute lymphoblastic leukemia | hematologic fever/cytopenia/leukostasis mimic |
-| 20 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection | common fever-arthritis/tenosynovitis mimic around septic arthritis |
+| 1 | D-HSV-ENCEPHALITIS | HSV encephalitis | critical treatable CNS fever/AMS mimic |
+| 2 | D-PAN | Polyarteritis nodosa | critical systemic vasculitis mimic with renal/neurologic/GI ischemia axes |
+| 3 | D-GCA | Giant cell arteritis | common older-adult fever/inflammation vasculitis mimic |
+| 4 | D-CATASTROPHIC-APS | Catastrophic antiphospholipid syndrome | critical TMA/DIC/sepsis mimic with multiorgan thrombosis |
+| 5 | D-DIC | Disseminated intravascular coagulation | critical coagulopathy bridge across sepsis/HLH/TMA/obstetric and malignancy contexts |
+| 6 | D-FEBRILE-NEUTROPENIA | Febrile neutropenia | treatment-critical oncology fever syndrome; keep as special syndrome leaf if retained |
+| 7 | D-CLL-TRANSFORMATION-RICHTER | Richter transformation | lymphoma/leukemia fever bridge |
+| 8 | D-CML-BLAST-CRISIS | Chronic myeloid leukemia blast crisis | fever/cytopenia/leukostasis hematology mimic |
+| 9 | D-CAEBV | Chronic active EBV disease | rare but critical EBV/HLH/lymphoma fever bridge |
+| 10 | D-ADENOVIRUS-SEVERE | Severe adenovirus infection | critical immunocompromised viral sepsis/pneumonia/hepatitis mimic |
+| 11 | D-BABESIOSIS | Babesiosis | travel/tick fever with hemolysis, thrombocytopenia, and malaria/TMA mimic |
+| 12 | D-TOXOPLASMOSIS-DISSEMINATED | Disseminated toxoplasmosis | critical immunocompromised CNS/pulmonary fever mimic |
+| 13 | D-COCCIDIOIDOMYCOSIS-DISSEMINATED | Disseminated coccidioidomycosis | endemic fungal fever with pulmonary, bone, skin, and CNS axes |
+| 14 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis | fever, splenomegaly, pancytopenia, and HLH mimic |
+| 15 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia | common invasive enteric bacteremia in immunocompromised hosts |
+| 16 | D-ALL | Acute lymphoblastic leukemia | hematologic fever/cytopenia/leukostasis mimic |
+| 17 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection | common fever-arthritis/tenosynovitis mimic around septic arthritis |
+| 18 | D-DISSEMINATED-LYME | Disseminated Lyme disease | common arthralgia/neurologic/cardiac fever mimic |
+| 19 | D-SECONDARY-SYPHILIS | Secondary syphilis | common rash/fever/lymphadenopathy mimic |
+| 20 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis | fever/inflammation chondritis mimic of vasculitis and infection |
 
 ## Candidate Pool Toward 100
 
