@@ -1,0 +1,119 @@
+============================================================================
+ v5 流体架构 PoC 第二跑 — 三 case 对照
+============================================================================
+
+日期: 2026-04-29
+N_MC: 10000, seed: 42
+
+Component labels (rho_disease):
+  comp 1: classic_systemic_hyperinflammatory
+  comp 2: chronic_articular_dominant_or_subacute
+  comp 3: MAS_or_HLH_like_hyperferritinemic
+  comp 4: atypical_elderly_onset_or_partially_treated
+
+============================================================================
+ case1_AOSD
+============================================================================
+  case_id: PMC7725026
+  PMID: 33363596, URL: https://pmc.ncbi.nlm.nih.gov/articles/PMC7725026/
+  diagnosis: AOSD (confirmed)
+  observed axes: 6/9 (idx [np.int64(0), np.int64(1), np.int64(3), np.int64(4), np.int64(6), np.int64(7)])
+  x* observed: [ 39.5      3.8665 208.      33.51     1.9085   7.6   ]
+
+  log10 LR distribution (vs healthy ρ):
+    min        :  +2349.650
+    5%         :  +2661.373
+    25%        :  +3709.321
+    50% (med)  :  +6317.722
+    75%        : +13200.898
+    95%        : +30862.287
+    max        : +43809.196
+
+  亚型 relative likelihood (median over MC):
+    classic_systemic_hyperinflammatory             99.99%   [5%-95%:   0.0-100.0] ★
+    chronic_articular_dominant_or_subacute          0.00%   [5%-95%:   0.0-  0.0]
+    MAS_or_HLH_like_hyperferritinemic               0.00%   [5%-95%:   0.0-  0.0]
+    atypical_elderly_onset_or_partially_treated     0.00%   [5%-95%:   0.0-100.0]
+
+  → 主导亚型: classic_systemic_hyperinflammatory
+
+============================================================================
+ case2_healthy
+============================================================================
+  case_id: REFERENCE_HEALTHY_ADULT
+  diagnosis: Healthy adult (no disease)
+  observed axes: 9/9 (idx [np.int64(0), np.int64(1), np.int64(2), np.int64(3), np.int64(4), np.int64(5), np.int64(6), np.int64(7), np.int64(8)])
+  x* observed: [ 36.7   2.   65.    1.    4.  240.    1.3   3.    1.9]
+
+  log10 LR distribution (vs healthy ρ):
+    min        :    -19.842
+    5%         :    -12.372
+    25%        :    -10.097
+    50% (med)  :     -8.764
+    75%        :     -7.622
+    95%        :     -6.193
+    max        :     -2.676
+
+  亚型 relative likelihood (median over MC):
+    classic_systemic_hyperinflammatory              0.00%   [5%-95%:   0.0-  0.0]
+    chronic_articular_dominant_or_subacute         26.01%   [5%-95%:   0.0-100.0]
+    MAS_or_HLH_like_hyperferritinemic               0.00%   [5%-95%:   0.0-  0.0]
+    atypical_elderly_onset_or_partially_treated    73.93%   [5%-95%:   0.0-100.0] ★
+
+  → 主导亚型: atypical_elderly_onset_or_partially_treated
+
+============================================================================
+ case3_MAS
+============================================================================
+  case_id: PMC8148416
+  PMID: 34046637, URL: https://pmc.ncbi.nlm.nih.gov/articles/PMC8148416/
+  diagnosis: AOSD with MAS (macrophage activation syndrome)
+  observed axes: 6/9 (idx [np.int64(0), np.int64(1), np.int64(3), np.int64(5), np.int64(6), np.int64(7)])
+  x* observed: [ 40.6      4.1601 275.      55.       2.2175   1.35  ]
+
+  log10 LR distribution (vs healthy ρ):
+    min        :  +4303.290
+    5%         :  +4924.221
+    25%        :  +6829.094
+    50% (med)  : +11503.233
+    75%        : +23662.893
+    95%        : +54490.193
+    max        : +76399.534
+
+  亚型 relative likelihood (median over MC):
+    classic_systemic_hyperinflammatory              0.00%   [5%-95%:   0.0-  0.1]
+    chronic_articular_dominant_or_subacute          0.00%   [5%-95%:   0.0-  0.0]
+    MAS_or_HLH_like_hyperferritinemic             100.00%   [5%-95%:  99.7-100.0] ★
+    atypical_elderly_onset_or_partially_treated     0.00%   [5%-95%:   0.0-  0.0]
+
+  → 主导亚型: MAS_or_HLH_like_hyperferritinemic
+
+============================================================================
+ 跨 case ranking (log10 LR median)
+============================================================================
+  1. case3_MAS            log10 LR = +11503.233
+  2. case1_AOSD           log10 LR =  +6317.722
+  3. case2_healthy        log10 LR =     -8.764
+
+============================================================================
+ 三条验证
+============================================================================
+  [1] ranking: AOSD/MAS > healthy
+      AOSD log10 LR (+6317.72) > healthy (-8.76)? True
+      MAS  log10 LR (+11503.23) > healthy (-8.76)? True
+      → PASS
+
+  [2] 极端度: MAS > AOSD
+      MAS log10 LR (+11503.23) > AOSD (+6317.72)? True
+      → PASS
+
+  [3] 亚型识别: MAS case → MAS_like 主导
+      MAS case 主导 = 'MAS_or_HLH_like_hyperferritinemic' (100.0%)
+      → PASS
+
+============================================================================
+ 总评: 3/3 验证通过
+============================================================================
+  v5 流体架构在三 case 对照中表现完美 — ranking + 极端度 + 亚型全 PASS
+  量级失真已知 (LR 数量级太大)，但 ranking 和亚型识别都正确
+  → 路线 viable，可以扩展到层级 1 (加 phase tag 时间分层)

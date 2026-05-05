@@ -737,6 +737,62 @@
       "phase": "peak",
       "clinical_rationale": "Secondary HLH overlap markedly increases case-fatality rate in severe DRESS.",
       "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "infection_mimic_activity",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": null,
+      "clinical_rationale": "The disease can present with persistent or recurrent fever over the observed clinical history.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "infection_mimic_activity",
+      "target_id": "antibiotic_nonresponse_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        2,
+        60
+      ],
+      "phase": "whole_course",
+      "conditionality": null,
+      "clinical_rationale": "DRESS may be misread as infection and fail to improve until the culprit drug is stopped and immune injury controlled.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "infection_mimic_activity",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": null,
+      "clinical_rationale": "Pulmonary, cardiac, serosal, anemia, or systemic inflammatory involvement can cause dyspnea.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "infection_mimic_activity",
+      "target_id": "cough_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "conditionality": null,
+      "clinical_rationale": "Pulmonary or airway involvement can cause cough.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axes": [
@@ -1802,6 +1858,130 @@
       ],
       "knowledge_confidence": "high",
       "axis_role": "finding"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "display_name": "Persistent or recurrent fever history",
+      "category": "clinical_course_context",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "shape_free_text": "History-level fever burden over days to months, distinct from a single measured body temperature.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "antibiotic_nonresponse_activity",
+      "display_name": "Lack of clinical response to standard antibacterial therapy",
+      "category": "clinical_course_context",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        2,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "shape_free_text": "Persistent fever, inflammation, or organ findings despite antibacterial therapy that should have covered ordinary bacterial infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "display_name": "Dyspnea / breathlessness activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "shape_free_text": "Patient-reported or observed breathlessness from pulmonary, cardiac, mediastinal, anemia, or systemic inflammatory involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cough_activity",
+      "display_name": "Cough activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "shape_free_text": "Dry or productive cough as a symptom axis; mechanism depends on pulmonary, airway, cardiac, or mediastinal involvement.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axis_couplings": [

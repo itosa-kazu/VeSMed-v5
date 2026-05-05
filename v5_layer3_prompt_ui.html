@@ -746,6 +746,56 @@ const PRESETS = {
   }
 };
 
+const DISTILLED_DISEASE_IDS = new Set();
+
+
+function resetDiseaseSelect() {
+  const select = document.getElementById('diseaseSelect');
+  if (!select) return;
+  select.innerHTML = '';
+  const blank = document.createElement('option');
+  blank.value = 'blank';
+  blank.textContent = 'Custom / blank';
+  select.appendChild(blank);
+}
+
+
+async function populateDistilledPresets() {
+  const select = document.getElementById('diseaseSelect');
+  if (!select) return;
+
+  try {
+    const response = await fetch('/distilled_presets', { cache: 'no-store' });
+    if (!response.ok) return;
+    const items = await response.json();
+    if (!Array.isArray(items) || items.length === 0) return;
+
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = `Already distilled (${items.length})`;
+    for (const item of items) {
+      if (!item || !item.key || !item.diseaseId || !item.diseaseName) continue;
+      DISTILLED_DISEASE_IDS.add(item.diseaseId);
+      PRESETS[item.key] = {
+        diseaseId: item.diseaseId,
+        diseaseName: item.diseaseName,
+      };
+      const option = document.createElement('option');
+      option.value = item.key;
+      const parts = [];
+      if (typeof item.axes === 'number') parts.push(`${item.axes} axes`);
+      if (typeof item.latentMechanisms === 'number') parts.push(`${item.latentMechanisms} mechs`);
+      option.textContent = `${item.diseaseName} (${item.diseaseId})${parts.length ? ' - ' + parts.join(', ') : ''}`;
+      optgroup.appendChild(option);
+    }
+
+    const blankOption = select.querySelector('option[value="blank"]');
+    if (blankOption) select.insertBefore(optgroup, blankOption);
+    else select.appendChild(optgroup);
+  } catch (e) {
+    console.warn('distilled presets unavailable', e);
+  }
+}
+
 
 async function populateRoadmapPresets() {
   const select = document.getElementById('diseaseSelect');
@@ -757,9 +807,7 @@ async function populateRoadmapPresets() {
     const items = await response.json();
     if (!Array.isArray(items) || items.length === 0) return;
 
-    const existingDiseaseIds = new Set(
-      Object.values(PRESETS).map(p => p.diseaseId).filter(Boolean)
-    );
+    const existingDiseaseIds = new Set(DISTILLED_DISEASE_IDS);
     const groups = new Map();
 
     for (const item of items) {
@@ -791,6 +839,18 @@ async function populateRoadmapPresets() {
   } catch (e) {
     console.warn('roadmap presets unavailable', e);
   }
+}
+
+
+async function initDiseasePresets() {
+  resetDiseaseSelect();
+  await populateDistilledPresets();
+  await populateRoadmapPresets();
+  const preferred = [
+    'roadmap_pyogenic_liver_abscess',
+    'blank'
+  ].find(key => PRESETS[key]);
+  loadPreset(preferred || 'blank');
 }
 
 
@@ -1144,9 +1204,8 @@ function showToast(msg) {
 }
 
 
-// 初始化：默认优先级 1 的 HLH/MAS；仍然是 one-shot 蒸馏，不是两段式
-populateRoadmapPresets();
-loadPreset('hlh_mas');
+// Initialize: already-distilled atlas first, then common/critical roadmap candidates.
+initDiseasePresets();
 
 // Server 检测 (启动时 + 每 5 秒一次)
 pingServer();

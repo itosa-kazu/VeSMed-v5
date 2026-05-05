@@ -1,0 +1,93 @@
+====================================================================================
+ v5 SDE Forward Simulate v2 — 4-way ranking (AOSD / HLH / Healthy)
+====================================================================================
+日期: 2026-04-30   N_MC: 10000   seed: 42
+
+流形:
+  AOSD    :  39 axes (蒸馏)  / mapping 9/9  / t_max=90d
+  HLH     :  82 axes (蒸馏)  / mapping 8/8  / t_max=60d
+  Healthy : 退化 mode (用 AOSD axes baseline_range, t=-1)
+
+====================================================================================
+ case1_AOSD   PMC7725026   AOSD (confirmed)
+====================================================================================
+  log P (marginal):
+    AOSD    :      -27.147  [n_obs=6]   (best_t= 59.0, post= 48.2±24.3)
+    HLH     :     -233.955  [n_obs=6]   (best_t=  3.7, post=  3.7±0.0)
+    Healthy :     -199.094  [n_obs=6]
+  → ranking: AOSD > Healthy > HLH
+
+  per-axis log_pdf at HLH best_t:
+    peak_body_temperature               → body_temperature                    x=    39.500  log p=  -1.671
+    log10_serum_ferritin                → serum_ferritin                      x=     3.866  log p=  -4.742
+    CRP                                 → c_reactive_protein                  x=   208.000  log p=  -8.005
+    absolute_neutrophil_count           → absolute_neutrophil_count           x=    33.510  log p=-182.679
+    log10_AST                           → aspartate_aminotransferase_ast      x=     1.909  log p=  +0.450
+    fibrinogen                          → fibrinogen                          x=     7.600  log p= -28.097
+
+====================================================================================
+ case2_healthy   REFERENCE_HEALTHY_ADULT   Healthy adult (no disease)
+====================================================================================
+  log P (marginal):
+    AOSD    :      -26.253  [n_obs=9]   (best_t=  0.0, post=  0.0±0.1)
+    HLH     :      -26.230  [n_obs=8]   (best_t=  0.0, post=  0.0±0.0)
+    Healthy :      -18.788  [n_obs=9]
+  → ranking: Healthy > HLH > AOSD
+
+  per-axis log_pdf at HLH best_t:
+    peak_body_temperature               → body_temperature                    x=    36.700  log p=  -1.526
+    log10_serum_ferritin                → serum_ferritin                      x=     2.000  log p=  -0.479
+    CRP                                 → c_reactive_protein                  x=     1.000  log p=  -1.175
+    absolute_neutrophil_count           → absolute_neutrophil_count           x=     4.000  log p=  -1.696
+    platelet_count                      → platelet_count                      x=   240.000  log p=  -5.075
+    log10_AST                           → aspartate_aminotransferase_ast      x=     1.300  log p=  -1.505
+    fibrinogen                          → fibrinogen                          x=     3.000  log p=  -2.830
+    log10_serum_IL18                    → plasma_il18                         x=     1.900  log p=  -2.734
+
+====================================================================================
+ case3_MAS   PMC8148416   AOSD with MAS (macrophage activation syndrome)
+====================================================================================
+  log P (marginal):
+    AOSD    :      -22.359  [n_obs=6]   (best_t= 10.5, post= 10.5±6.8)
+    HLH     :      -20.421  [n_obs=6]   (best_t=  8.1, post=  6.8±1.3)
+    Healthy :      -48.143  [n_obs=6]
+  → ranking: HLH > AOSD > Healthy
+
+  per-axis log_pdf at HLH best_t:
+    peak_body_temperature               → body_temperature                    x=    40.600  log p=  -2.106
+    log10_serum_ferritin                → serum_ferritin                      x=     4.160  log p=  -3.176
+    CRP                                 → c_reactive_protein                  x=   275.000  log p=  -1.441
+    platelet_count                      → platelet_count                      x=    55.000  log p=  -5.318
+    log10_AST                           → aspartate_aminotransferase_ast      x=     2.217  log p=  +0.969
+    fibrinogen                          → fibrinogen                          x=     1.350  log p=  -0.997
+
+====================================================================================
+ 4-way Ranking 表
+====================================================================================
+  Case                        AOSD           HLH       Healthy        best
+  ------------------  ------------  ------------  ------------  ----------
+  case1_AOSD               -27.147      -233.955      -199.094        AOSD
+  case2_healthy            -26.253       -26.230       -18.788     Healthy
+  case3_MAS                -22.359       -20.421       -48.143         HLH
+
+====================================================================================
+ 验证 (Pass / Fail)
+====================================================================================
+
+[A] 流形归属 check (每个 case 应落在正确的流形)
+  [1] case1_AOSD         expected: AOSD      got: AOSD      PASS
+  [2] case2_healthy      expected: Healthy   got: Healthy   PASS
+  [3] case3_MAS          expected: HLH       got: HLH       PASS
+
+[B] 跨流形分离强度 check (V5 时代极端度, 替代 v1 [4]: MAS_LR > AOSD_LR)
+  [4] MAS  case: HLH(-20.42) > AOSD(-22.36)?   Δ=+1.94 nat  PASS
+  [5] AOSD case: AOSD(-27.15) > HLH(-233.95)?  Δ=+206.81 nat  PASS
+
+  → 5/5 PASS  ([A] 3 ranking + [B] 2 separation)
+
+注:
+  - HLH 流形 = trigger-agnostic 蒸馏 (rheum/感染/肿瘤/药物 都 collapse 进同流形)
+  - v1 的 [4] 极端度 (MAS_LR > AOSD_LR_in_AOSD_manifold) 在 v2 已过时
+    → v2 改成 [4][5] 跨流形分离: 每个 case 应在其正确流形最 fit, 且和别的流形拉开
+  - MAS case 在 HLH 比 AOSD 流形高 ≈ trigger-agnostic 流形精确容纳 cytopenia 特征
+  - AOSD case 在 AOSD 比 HLH 流形高 ≈ AOSD non-MAS 流形排除嗜中性球减少特征

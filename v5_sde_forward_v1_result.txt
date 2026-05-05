@@ -1,0 +1,117 @@
+============================================================================
+ v5 SDE Forward Simulate v1 — Day Marginalized (Curve Distillation)
+============================================================================
+
+日期: 2026-04-30
+N_MC: 10000, seed: 42, t_max: 90
+LLM 蒸馏: 39 axes (v5_AOSD.txt)
+Case 用 axes: 9 (重合于静态 PoC 9 axes)
+
+Reference measure:
+  - AOSD trajectory: μ_i(t), t ~ Uniform(0, 90)  (marginalize over day)
+  - Healthy baseline: μ_i = baseline 恒定 (time-invariant)
+v0 → v1 改动:
+  - 废 CASE_DAY = {AOSD:11, MAS:10, healthy:14} 外部指定
+  - log P(case | AOSD) = log [(1/T) ∫ ρ(case | t) dt]  (内部 marginal)
+  - 报告 best_day (max joint log p) + posterior day mean ± std
+
+============================================================================
+ case1_AOSD
+============================================================================
+  case_id: PMC7725026
+  PMID: 33363596
+  diagnosis: AOSD (confirmed)
+  observed axes (with mapping): 6
+
+  log P (marginal):
+    AOSD trajectory :    -27.147
+    Healthy baseline:   -199.094
+    log10 LR        :    +74.676  (>0 = AOSD-like)
+
+  AOSD trajectory implied day:
+    best_day        :  59.0
+    posterior mean  :  48.2 ± 24.3
+
+  per-axis log_pdf at best_day (AOSD):
+    peak_body_temperature               x=    39.500  log p=  -1.530
+    log10_serum_ferritin                x=     3.866  log p=  +0.292
+    CRP                                 x=   208.000  log p=  -0.937
+    absolute_neutrophil_count           x=    33.510  log p= -15.356
+    log10_AST                           x=     1.909  log p=  +0.962
+    fibrinogen                          x=     7.600  log p=  -4.831
+
+============================================================================
+ case2_healthy
+============================================================================
+  case_id: REFERENCE_HEALTHY_ADULT
+  diagnosis: Healthy adult (no disease)
+  observed axes (with mapping): 9
+
+  log P (marginal):
+    AOSD trajectory :    -26.253
+    Healthy baseline:    -18.788
+    log10 LR        :     -3.242  (>0 = AOSD-like)
+
+  AOSD trajectory implied day:
+    best_day        :   0.0
+    posterior mean  :   0.0 ± 0.1
+
+  per-axis log_pdf at best_day (AOSD):
+    peak_body_temperature               x=    36.700  log p=  -1.588
+    log10_serum_ferritin                x=     2.000  log p=  +0.196
+    glycosylated_ferritin_fraction      x=    65.000  log p=  -2.975
+    CRP                                 x=     1.000  log p=  -1.026
+    absolute_neutrophil_count           x=     4.000  log p=  -2.137
+    platelet_count                      x=   240.000  log p=  -5.180
+    log10_AST                           x=     1.300  log p=  +0.975
+    fibrinogen                          x=     3.000  log p=  -4.831
+    log10_serum_IL18                    x=     1.900  log p=  -0.564
+
+============================================================================
+ case3_MAS
+============================================================================
+  case_id: PMC8148416
+  PMID: 34046637
+  diagnosis: AOSD with MAS (macrophage activation syndrome)
+  observed axes (with mapping): 6
+
+  log P (marginal):
+    AOSD trajectory :    -22.359
+    Healthy baseline:    -48.143
+    log10 LR        :    +11.198  (>0 = AOSD-like)
+
+  AOSD trajectory implied day:
+    best_day        :  10.5
+    posterior mean  :  10.5 ± 6.8
+
+  per-axis log_pdf at best_day (AOSD):
+    peak_body_temperature               x=    40.600  log p=  -1.946
+    log10_serum_ferritin                x=     4.160  log p=  -0.468
+    CRP                                 x=   275.000  log p=  -0.877
+    platelet_count                      x=    55.000  log p=  -8.012
+    log10_AST                           x=     2.217  log p=  +0.581
+    fibrinogen                          x=     1.350  log p=  -4.836
+
+============================================================================
+ Ranking (log10 LR)
+============================================================================
+  1. case1_AOSD         log10 LR =    +74.676
+  2. case3_MAS          log10 LR =    +11.198
+  3. case2_healthy      log10 LR =     -3.242
+
+============================================================================
+ 验证
+============================================================================
+  [1] AOSD case → AOSD > Healthy?  log10 LR = +74.676 PASS
+  [2] Healthy case → AOSD < Healthy? log10 LR = -3.242 PASS
+  [3] MAS case → AOSD > Healthy?    log10 LR = +11.198 PASS
+  [4] 极端度: MAS > AOSD?            MAS(+11.198) > AOSD(+74.676) FAIL
+
+  Bonus: AOSD case implied day = 59.0  (paper says day 11)
+         MAS  case implied day = 10.5  (推测 acute phase)
+
+注意:
+  - day 不再外部指定, trajectory 自己挑最 fit 的 day
+  - implied day 离 paper-reported day 越近, 说明 trajectory 拟合越准
+  - 极端度 [4] 可能仍 FAIL (AOSD trajectory 不能容纳 MAS subtype 的 PLT 暴跌)
+    → 真要解需 LLM 单独蒸 MAS trajectory

@@ -121,6 +121,10 @@ Risk factor = 球的内在属性 / theta_i 个体调制
 
 LLM 只蒸数字和结构，不蒸临床判断标签。不要加入 `first_line`, `preferred`, `guideline_recommended`, `indication_strength` 这类字段。first-line 由 forward simulate + outcome argmax 涌现。
 
+### Agent Reasoning Effort
+
+所有被派去做 disease distillation、axis ontology audit、real PMC case expansion、医学结构化或治疗语义补全的 subagent，默认必须使用 `reasoning_effort: "xhigh"`。这是质量优先的铁律；除非用户明确要求降级，或任务完全是非医学、非质量关键的机械操作，否则不要用 `high` / `medium` / `low`。
+
 ### Disease Leaf Granularity
 
 第一层 disease manifold 必须蒸到“临床流形稳定、医生能独立假设”的具体 disease leaf，不用过宽 umbrella 诊断。
@@ -131,6 +135,7 @@ LLM 只蒸数字和结构，不蒸临床判断标签。不要加入 `first_line`
 - 例：`ANCA-associated vasculitis` 太宽，不能作为第一层 disease leaf；应拆为 `D-MPA`（Microscopic polyangiitis / 顕微鏡的多発血管炎）、`D-GPA`、`D-EGPA` 等独立 manifold。
 - `disease_id` 也会被 LLM 当成医学输入，因此不能把 disease name 之外的病因、mimic、亚型或近邻病写进 ID。例：`Disease: Infectious mononucleosis` 不能配 `D-EBV-CMV-MONO-LIKE`，因为 `CMV` 会污染蒸馏；应使用 `D-INFECTIOUS-MONONUCLEOSIS`，CMV mononucleosis-like illness 未来单独蒸。
 - `D-LYMPHOMA-FEVER` 过宽，只能作为 legacy umbrella 暂存；不能为了 ALCL case 被 `D-MIS-A` 吸走而调 case 或加语义补丁。正确下一步是拆成 subtype disease leaves，例如 `D-ALCL`、`D-HODGKIN-LYMPHOMA`、`D-DLBCL`、`D-IVLBCL`，并为每个 subtype 加 PMC real case。
+- `complicated` / `uncomplicated` 这类限定通常不是第一层 disease leaf 名本身。例：尿路感染应先蒸 `D-PYELONEPHRITIS`（Pyelonephritis / 腎盂腎炎）；`uncomplicated pyelonephritis`、`complicated pyelonephritis`、`obstructive pyelonephritis`、`emphysematous pyelonephritis` 等先放 risk/context/source-control/event axes，未来需要时再在 `D-PYELONEPHRITIS` 下做第二层 subtype distillation。
 - 第一层先诊断到具体 leaf；如果未来需要更细分亚型，再在已诊断 leaf 内做第二层 subtype distillation。
 
 ## Prompt 策略
@@ -260,6 +265,7 @@ PoC 阶段接受 QOL 缺失；QOL 是未来第二维。
 - V5 JSON 用 `axis_role` 标注三层角色：`finding` / `measurement` / `satellite`。当 satellite 或 child measurement 有明确上位 Finding 时，必须写 `parent_axis_id`；runtime 只在 parent present 时消费 child，并避免 parent + child 对同一临床事实粗细双算。
 - OPQRST 属于同一原则：先有症状是否存在的主变量，再把 onset/provocation/quality/radiation/severity/timing 作为卫星变量；没有完成拆分前可以保留旧的 compact activity axis，但不能为了排名删除原文证据。
 - **缺 axis 时允许补 ontology**：如果 audit 发现某个 disease manifold 漏了真实、重要、符合实际医学的临床 axis，agent 可以直接补进该 disease 的 `axes`，并同步补 `mechanism_edges` / case structured observations / `master_axes.json`。这不是排名补丁；禁止为了让某个 case 过而发明不存在或不稳定的特征、删除证据、调窄竞品疾病范围。补完必须跑相关 case 与全量回归，报告是否引入退化。
+- **新增 axis 必须横向公平审查**：给某个 disease / disease family 补 axis 时，必须同时检查当前 atlas 里的竞争病和近邻 mimic 是否也应医学真实地拥有该 axis 或其 parent axis / satellite。该补的同步补，不该有的明确不补；不能只给目标病增加解释力、让其他真实也会出现该证据的疾病被不公平扣分。横向补轴仍必须符合真实医学，不能为了“公平”把不存在或极罕见、非稳定的特征硬塞进别的病。
 
 当前 `start_ui.py` 会在保存 distillation 时自动 rebuild `master_axes.json`。
 
@@ -426,6 +432,7 @@ case 3: 健康人
 找 PMC case 时：
 
 - 必须记录 `PMID` / `PMCID` / URL / paper diagnosis
+- **每新增一个 disease leaf，必须同步新增至少 1 个真实 PMC/PubMed case**，并把该 case 纳入 smoke test。不能只新增 distillation JSON 而没有真实病例压测。
 - **真实病例信息不得只停留在 free text**：原文出现的 presentation-time 症状、体征、影像状态、微生物/药敏、治疗前 labs/vitals，都要保留原文 `source_text_value`，并尽可能投到结构化 `observations` / `lab_trajectories` / `risk_context`。free-text `presentation_summary` / `presenting_symptoms` 只能作为人读摘要，不能替代 runtime evidence。
 - **结构化后必须进入测试**：测试 runtime 应消费病例中所有可映射的 observed axes；若 axis 尚未被任何 disease 拥有，0-1 qualitative/probability/relative_activity 轴先走 background fallback，不允许静默丢弃。真正缺 ontology 的 axis 应作为 pending axis 暴露给后处理。
 - 不要使用确诊性检查作为普通 diagnostic evidence，例如活检、培养定种、ADAMTS13 等可作为 source/context，但 ranking evidence 优先用 presentation-time labs/vitals/symptoms

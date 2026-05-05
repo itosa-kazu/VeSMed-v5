@@ -1,0 +1,493 @@
+============================================================================================================
+V5 joint SDE treatment vector-field simulation
+============================================================================================================
+N_PARTICLES=260, horizon=30d, dt=1.0, kappa=0.55, noise_scale=0.06
+Treatment policies, including same-disease bundles and timed stages, are ranked by RMST over the horizon. Candidate disease/combo is taken from each case's expected manifold(s).
+Manifold discovery: 13 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+
+------------------------------------------------------------------------------------------------------------
+AOSD_pmc_41059024_1  candidate=D137
+source: PMID 41059024 / PMC12499899 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12499899/
+start latent days: D137=day16.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:anakinra
+   2. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:naproxen_or_indomethacin + D137:anakinra
+   3. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:prednisolone + D137:anakinra
+   4. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:methotrexate + D137:anakinra
+   5. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:anakinra + D137:canakinumab
+   6. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:anakinra + D137:tocilizumab
+   7. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:naproxen_or_indomethacin + D137:prednisolone + D137:anakinra
+   8. RMST= 29.98d [p25=29.98, p75=29.98] gain= +0.00d  D137:naproxen_or_indomethacin + D137:methotrexate + D137:anakinra
+Best vs no treatment: D137:anakinra  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D137                      treated= 1.889e-05  untreated= 3.868e-05  delta=-1.979e-05
+  ards_hazard                                   treated=  0.001834  untreated=  0.001926  delta=-9.239e-05
+  dic_hazard                                    treated=   0.00203  untreated=  0.002199  delta=-0.0001689
+  mas_hlh_hazard                                treated= 0.0009328  untreated=  0.001017  delta=-8.397e-05
+  serum_procalcitonin                           treated=    0.5191  untreated=    0.5191  delta=        +0
+  serum_crp                                     treated=     7.415  untreated=     7.562  delta=   -0.1468
+
+------------------------------------------------------------------------------------------------------------
+AOSD_PMC10875399_hypocomplementemia  candidate=D137
+source: PMID 38374851 / PMC10875399 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10875399/
+start latent days: D137=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:anakinra + D137:canakinumab
+   2. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:naproxen_or_indomethacin + D137:anakinra + D137:canakinumab
+   3. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:prednisolone + D137:anakinra + D137:canakinumab
+   4. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:methotrexate + D137:anakinra + D137:canakinumab
+   5. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:anakinra + D137:canakinumab + D137:tocilizumab
+   6. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:anakinra
+   7. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:naproxen_or_indomethacin + D137:anakinra
+   8. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.00d  D137:prednisolone + D137:anakinra
+Best vs no treatment: D137:anakinra + D137:canakinumab  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D137                      treated= 7.866e-06  untreated= 1.083e-05  delta=-2.964e-06
+  ards_hazard                                   treated=  0.001526  untreated=  0.001584  delta=-5.831e-05
+  dic_hazard                                    treated=  0.003301  untreated=  0.003505  delta=-0.0002046
+  mas_hlh_hazard                                treated= 0.0004316  untreated=  0.000638  delta=-0.0002064
+  serum_crp                                     treated=     2.584  untreated=      9.43  delta=    -6.846
+  body_temperature                              treated=     36.88  untreated=     37.17  delta=   -0.2923
+
+------------------------------------------------------------------------------------------------------------
+AOSD_TTP_CONCURRENT_PMC7523203  candidate=D137+D-TTP
+source: PMID 32988976 / PMC7523203 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7523203/
+start latent days: D137=day30.0, D-TTP=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab
+   2. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone
+   3. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Rituximab
+   4. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Recombinant ADAMTS13 (apadamtase alfa)
+   5. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:FFP infusion (bridging plasma)
+   6. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D137:naproxen_or_indomethacin + D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab
+   7. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D137:naproxen_or_indomethacin + D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone
+   8. RMST= 29.56d [p25=29.55, p75=29.58] gain= +1.11d  D137:naproxen_or_indomethacin + D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Rituximab
+Best vs no treatment: D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab  gain=+1.11d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-TTP                     treated=  0.003382  untreated=   0.01071  delta= -0.007333
+  mortality_hazard_in_D137                      treated= 3.435e-05  untreated= 3.435e-05  delta=        +0
+  major_bleeding_hazard                         treated= 1.672e-05  untreated= 4.932e-05  delta= -3.26e-05
+  intracranial_hemorrhage_hazard                treated= 3.477e-05  untreated= 0.0004361  delta=-0.0004014
+  ards_hazard                                   treated= 0.0009821  untreated= 0.0009821  delta=        +0
+  dic_hazard                                    treated=  0.001218  untreated=  0.001218  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+DRESS_METRONIDAZOLE_PMC10194756  candidate=D-DRUG-FEVER-DRESS
+source: PMID 37213922 / PMC10194756 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10194756/
+start latent days: D-DRUG-FEVER-DRESS=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:immediate_withdrawal_of_offending_drug + D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine
+   2. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine
+   3. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine + D-DRUG-FEVER-DRESS:intravenous_immunoglobulin
+   4. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine + D-DRUG-FEVER-DRESS:n_acetylcysteine_for_acute_liver_failure
+   5. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine@day3
+   6. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:immediate_withdrawal_of_offending_drug + D-DRUG-FEVER-DRESS:cyclosporine
+   7. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:immediate_withdrawal_of_offending_drug + D-DRUG-FEVER-DRESS:topical_high_potency_corticosteroid + D-DRUG-FEVER-DRESS:cyclosporine
+   8. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-DRUG-FEVER-DRESS:immediate_withdrawal_of_offending_drug + D-DRUG-FEVER-DRESS:cyclosporine + D-DRUG-FEVER-DRESS:intravenous_immunoglobulin
+Best vs no treatment: D-DRUG-FEVER-DRESS:immediate_withdrawal_of_offending_drug + D-DRUG-FEVER-DRESS:systemic_prednisolone + D-DRUG-FEVER-DRESS:cyclosporine  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-DRUG-FEVER-DRESS        treated= 1.161e-06  untreated= 1.316e-06  delta=-1.552e-07
+  acute_kidney_injury_hazard                    treated= 0.0007878  untreated= 0.0008469  delta=-5.913e-05
+  mas_hlh_hazard                                treated= 0.0002661  untreated= 0.0002661  delta=        +0
+  serum_procalcitonin                           treated=    0.3394  untreated=    0.3394  delta=        +0
+  serum_crp                                     treated=     3.194  untreated=     3.194  delta=        +0
+  body_temperature                              treated=     37.92  untreated=     37.23  delta=   +0.6848
+
+------------------------------------------------------------------------------------------------------------
+EBV_MONO_ATYPICAL_PMC12965848  candidate=D-INFECTIOUS-MONONUCLEOSIS
+source: PMID 41797744 / PMC12965848 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12965848/
+start latent days: D-INFECTIOUS-MONONUCLEOSIS=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  (no treatment)
+   2. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:acetaminophen
+   3. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:ibuprofen
+   4. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:prednisolone
+   5. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:rituximab
+   6. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:etoposide
+   7. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:ivig
+   8. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.00d  D-INFECTIOUS-MONONUCLEOSIS:etoposide@day3
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-INFECTIOUS-MONONUCLEOSIS treated=  9.48e-07  untreated=  9.48e-07  delta=        +0
+  mas_hlh_hazard                                treated= 0.0005775  untreated= 0.0005775  delta=        +0
+  serum_crp                                     treated=     8.294  untreated=     8.294  delta=        +0
+  body_temperature                              treated=     37.52  untreated=     37.52  delta=        +0
+  platelet_count                                treated=     277.6  untreated=     277.6  delta=        +0
+  hemoglobin                                    treated=     15.76  untreated=     15.76  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+HLH_EBV_HIV_PMC6592840_CASE2  candidate=D-HLH-MAS
+source: PMID 31275772 / PMC6592840 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6592840/
+start latent days: D-HLH-MAS=day6.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.57d [p25=29.56, p75=29.58] gain= +2.91d  D-HLH-MAS:dexamethasone + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib
+   2. RMST= 29.57d [p25=29.56, p75=29.57] gain= +2.91d  D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib
+   3. RMST= 29.55d [p25=29.54, p75=29.55] gain= +2.89d  D-HLH-MAS:dexamethasone + D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab
+   4. RMST= 29.51d [p25=29.50, p75=29.52] gain= +2.85d  D-HLH-MAS:dexamethasone + D-HLH-MAS:etoposide + D-HLH-MAS:emapalumab
+   5. RMST= 29.51d [p25=29.50, p75=29.52] gain= +2.85d  D-HLH-MAS:etoposide + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib
+   6. RMST= 29.50d [p25=29.50, p75=29.51] gain= +2.85d  D-HLH-MAS:dexamethasone + D-HLH-MAS:emapalumab + D-HLH-MAS:cyclosporine
+   7. RMST= 29.48d [p25=29.48, p75=29.49] gain= +2.83d  D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab + D-HLH-MAS:cyclosporine
+   8. RMST= 29.44d [p25=29.43, p75=29.45] gain= +2.78d  D-HLH-MAS:dexamethasone + D-HLH-MAS:emapalumab
+Best vs no treatment: D-HLH-MAS:dexamethasone + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib  gain=+2.91d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-HLH-MAS                 treated= 0.0006084  untreated=  0.009861  delta= -0.009253
+  dic_hazard                                    treated=  0.004893  untreated=   0.00868  delta= -0.003787
+  mas_hlh_hazard                                treated= 0.0009429  untreated=  0.006874  delta= -0.005931
+  serum_crp                                     treated=     3.505  untreated=     38.26  delta=    -34.75
+  body_temperature                              treated=     37.31  untreated=     38.74  delta=    -1.436
+  serum_lactate                                 treated=     6.729  untreated=     6.729  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+HLH_MAS_DERMATOMYOSITIS_PMC7281037  candidate=D-HLH-MAS
+source: PMID 32548165 / PMC7281037 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7281037/
+start latent days: D-HLH-MAS=day15.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.51d [p25=29.49, p75=29.52] gain= +2.15d  D-HLH-MAS:dexamethasone + D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab
+   2. RMST= 29.49d [p25=29.48, p75=29.50] gain= +2.13d  D-HLH-MAS:dexamethasone + D-HLH-MAS:anakinra + D-HLH-MAS:ruxolitinib
+   3. RMST= 29.42d [p25=29.40, p75=29.43] gain= +2.06d  D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib
+   4. RMST= 29.40d [p25=29.38, p75=29.41] gain= +2.04d  D-HLH-MAS:dexamethasone + D-HLH-MAS:emapalumab + D-HLH-MAS:ruxolitinib
+   5. RMST= 29.38d [p25=29.37, p75=29.40] gain= +2.03d  D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab + D-HLH-MAS:cyclosporine
+   6. RMST= 29.36d [p25=29.35, p75=29.38] gain= +2.01d  D-HLH-MAS:etoposide + D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab
+   7. RMST= 29.36d [p25=29.35, p75=29.38] gain= +2.01d  D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab
+   8. RMST= 29.36d [p25=29.35, p75=29.38] gain= +2.01d  D-HLH-MAS:dexamethasone + D-HLH-MAS:etoposide + D-HLH-MAS:emapalumab
+Best vs no treatment: D-HLH-MAS:dexamethasone + D-HLH-MAS:anakinra + D-HLH-MAS:emapalumab  gain=+2.15d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-HLH-MAS                 treated= 0.0005022  untreated=  0.007036  delta= -0.006534
+  dic_hazard                                    treated=   0.00205  untreated=   0.01649  delta=  -0.01444
+  mas_hlh_hazard                                treated= 0.0006362  untreated=  0.006447  delta= -0.005811
+  serum_crp                                     treated=     3.124  untreated=     13.15  delta=    -10.02
+  body_temperature                              treated=     36.82  untreated=     37.86  delta=    -1.042
+  platelet_count                                treated=     262.7  untreated=     129.7  delta=    +133.1
+
+------------------------------------------------------------------------------------------------------------
+IE_STREP_PLURANIMALIUM_PMC10739377  candidate=D-INFECTIVE-ENDOCARDITIS
+source: PMID 38143616 / PMC10739377 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10739377/
+start latent days: D-INFECTIVE-ENDOCARDITIS=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Ceftriaxone
+   2. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Cefazolin
+   3. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Nafcillin
+   4. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Daptomycin
+   5. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Ceftriaxone + D-INFECTIVE-ENDOCARDITIS:Nafcillin
+   6. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Ceftriaxone + D-INFECTIVE-ENDOCARDITIS:Daptomycin
+   7. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Ceftriaxone + D-INFECTIVE-ENDOCARDITIS:Ampicillin
+   8. RMST= 29.23d [p25=29.22, p75=29.24] gain= +0.23d  D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Cefazolin + D-INFECTIVE-ENDOCARDITIS:Nafcillin
+Best vs no treatment: D-INFECTIVE-ENDOCARDITIS:Vancomycin + D-INFECTIVE-ENDOCARDITIS:Ceftriaxone  gain=+0.23d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-INFECTIVE-ENDOCARDITIS  treated=  0.001197  untreated=  0.001396  delta=-0.0001992
+  intracranial_hemorrhage_hazard                treated= 8.265e-05  untreated= 8.265e-05  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.004141  untreated=  0.004141  delta=-1.961e-08
+  ischemic_stroke_hazard                        treated= 0.0003069  untreated= 0.0003069  delta=        +0
+  blood_culture_bacterial_load                  treated= 9.339e-08  untreated= 6.737e-05  delta=-6.728e-05
+  serum_procalcitonin                           treated=    0.5821  untreated=     1.165  delta=   -0.5825
+
+------------------------------------------------------------------------------------------------------------
+LYMPHOMA_ALCL_FUO_PMC5649675  candidate=D-LYMPHOMA-FEVER
+source: PMID 29147338 / PMC5649675 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5649675/
+start latent days: D-LYMPHOMA-FEVER=day11.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.57d [p25=29.56, p75=29.58] gain= +0.02d  D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide + D-LYMPHOMA-FEVER:r_chop
+   2. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide
+   3. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:diagnostic_excisional_lymph_node_biopsy + D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide
+   4. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:broad_spectrum_empiric_antibiotic_bridge + D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide
+   5. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:naproxen_diagnostic_trial + D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide
+   6. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:diagnostic_excisional_lymph_node_biopsy + D-LYMPHOMA-FEVER:broad_spectrum_empiric_antibiotic_bridge + D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide
+   7. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:r_chop
+   8. RMST= 29.57d [p25=29.56, p75=29.57] gain= +0.02d  D-LYMPHOMA-FEVER:diagnostic_excisional_lymph_node_biopsy + D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:r_chop
+Best vs no treatment: D-LYMPHOMA-FEVER:corticosteroid_pulse_or_high_dose + D-LYMPHOMA-FEVER:etoposide + D-LYMPHOMA-FEVER:r_chop  gain=+0.02d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-LYMPHOMA-FEVER          treated= 0.0008609  untreated= 0.0008609  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.001605  untreated=  0.001605  delta=        +0
+  mas_hlh_hazard                                treated=  0.001037  untreated=  0.001053  delta= -1.57e-05
+  serum_procalcitonin                           treated=   0.05676  untreated=   0.05676  delta=        +0
+  serum_crp                                     treated=     4.079  untreated=     4.079  delta=        +0
+  body_temperature                              treated=     38.92  untreated=     37.75  delta=    +1.176
+
+------------------------------------------------------------------------------------------------------------
+MPA_MPO_ANCA_COVID_PMC8907777  candidate=D-MPA
+source: PMID 34840232 / PMC8907777 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8907777/
+start latent days: D-MPA=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.02d  D-MPA:prednisolone_oral + D-MPA:cyclophosphamide + D-MPA:rituximab + D-MPA:avacopan
+   2. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.02d  D-MPA:prednisolone_oral + D-MPA:cyclophosphamide + D-MPA:avacopan
+   3. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.02d  D-MPA:methylprednisolone_pulse + D-MPA:cyclophosphamide + D-MPA:rituximab + D-MPA:avacopan
+   4. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.02d  D-MPA:methylprednisolone_pulse + D-MPA:cyclophosphamide + D-MPA:avacopan
+   5. RMST= 29.99d [p25=29.99, p75=29.99] gain= +0.02d  D-MPA:methylprednisolone_pulse + D-MPA:cyclophosphamide + D-MPA:plasma_exchange + D-MPA:avacopan
+   6. RMST= 29.98d [p25=29.98, p75=29.99] gain= +0.02d  D-MPA:methylprednisolone_pulse + D-MPA:rituximab + D-MPA:plasma_exchange + D-MPA:avacopan
+   7. RMST= 29.98d [p25=29.98, p75=29.99] gain= +0.02d  D-MPA:methylprednisolone_pulse + D-MPA:rituximab + D-MPA:avacopan
+   8. RMST= 29.98d [p25=29.98, p75=29.99] gain= +0.02d  D-MPA:prednisolone_oral + D-MPA:rituximab + D-MPA:avacopan
+Best vs no treatment: D-MPA:prednisolone_oral + D-MPA:cyclophosphamide + D-MPA:rituximab + D-MPA:avacopan  gain=+0.02d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-MPA                     treated= 2.157e-05  untreated= 2.689e-05  delta=-5.321e-06
+  acute_kidney_injury_hazard                    treated=  0.003429  untreated=  0.003484  delta=-5.522e-05
+  ards_hazard                                   treated=  0.002035  untreated=   0.00222  delta= -0.000186
+  serum_crp                                     treated=     3.157  untreated=     4.223  delta=    -1.067
+  body_temperature                              treated=     37.33  untreated=     37.42  delta=  -0.08868
+  mean_arterial_pressure                        treated=     80.46  untreated=     79.89  delta=   +0.5728
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_ECOLI_INFECTED_RENAL_CYST_PMC5343142  candidate=D-SEPSIS-GN
+source: PMID 28348784 / PMC5343142 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5343142/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  (no treatment)
+   2. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 25.82d [p25=25.70, p75=25.94] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=   0.03131  untreated=   0.03131  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.005615  untreated=  0.005615  delta=        +0
+  ards_hazard                                   treated=   0.00461  untreated=   0.00461  delta=        +0
+  dic_hazard                                    treated=  0.008441  untreated=  0.008441  delta=        +0
+  mas_hlh_hazard                                treated= 0.0009858  untreated= 0.0009858  delta=        +0
+  blood_culture_bacterial_load                  treated= 0.0001476  untreated= 0.0001476  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_ECOLI_PMC6312905_APN_bacteremia  candidate=D-SEPSIS-GN
+source: PMID 30600660 / PMC6312905 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6312905/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  (no treatment)
+   2. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 25.75d [p25=25.64, p75=25.85] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=   0.01695  untreated=   0.01695  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.009416  untreated=  0.009416  delta=        +0
+  ards_hazard                                   treated=  0.002368  untreated=  0.002368  delta=        +0
+  dic_hazard                                    treated=  0.004062  untreated=  0.004062  delta=        +0
+  mas_hlh_hazard                                treated=  0.001072  untreated=  0.001072  delta=        +0
+  blood_culture_bacterial_load                  treated= 9.554e-05  untreated= 9.554e-05  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KIDNEY_TX_RALSTONIA_PMC9309314  candidate=D-SEPSIS-GN
+source: PMID 35899082 / PMC9309314 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9309314/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  (no treatment)
+   2. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 27.66d [p25=27.60, p75=27.72] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=  0.008198  untreated=  0.008198  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.006387  untreated=  0.006387  delta=        +0
+  ards_hazard                                   treated=  0.006157  untreated=  0.006157  delta=        +0
+  dic_hazard                                    treated=  0.004603  untreated=  0.004603  delta=        +0
+  mas_hlh_hazard                                treated= 0.0002737  untreated= 0.0002737  delta=        +0
+  blood_culture_bacterial_load                  treated= 5.081e-05  untreated= 5.081e-05  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_EPN_ESBL_PMC7573926  candidate=D-SEPSIS-GN
+source: PMID 33102052 / PMC7573926 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7573926/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  (no treatment)
+   2. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 28.04d [p25=27.99, p75=28.09] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=  0.006465  untreated=  0.006465  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.004836  untreated=  0.004836  delta=        +0
+  ards_hazard                                   treated=  0.003057  untreated=  0.003057  delta=        +0
+  dic_hazard                                    treated=  0.001824  untreated=  0.001824  delta=        +0
+  mas_hlh_hazard                                treated= 0.0004631  untreated= 0.0004631  delta=        +0
+  blood_culture_bacterial_load                  treated= 0.0001611  untreated= 0.0001611  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_IKLAS_POLYMICROBIAL_PMC12390790  candidate=D-SEPSIS-GN
+source: PMID None / PMC12390790 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12390790/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  (no treatment)
+   2. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 28.10d [p25=28.05, p75=28.14] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=  0.005953  untreated=  0.005953  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.006341  untreated=  0.006341  delta=        +0
+  ards_hazard                                   treated=   0.00179  untreated=   0.00179  delta=        +0
+  dic_hazard                                    treated=  0.003349  untreated=  0.003349  delta=        +0
+  mas_hlh_hazard                                treated=  0.001083  untreated=  0.001083  delta=        +0
+  blood_culture_bacterial_load                  treated= 0.0001035  untreated= 0.0001035  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_LIVER_ABSCESS_PMC10247906_CASE2  candidate=D-SEPSIS-GN
+source: PMID 37303348 / PMC10247906 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10247906/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  (no treatment)
+   2. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 26.83d [p25=26.75, p75=26.91] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=   0.02955  untreated=   0.02955  delta=        +0
+  acute_kidney_injury_hazard                    treated=   0.00574  untreated=   0.00574  delta=        +0
+  ards_hazard                                   treated=  0.005801  untreated=  0.005801  delta=        +0
+  dic_hazard                                    treated=   0.00707  untreated=   0.00707  delta=        +0
+  mas_hlh_hazard                                treated= 0.0009276  untreated= 0.0009276  delta=        +0
+  blood_culture_bacterial_load                  treated= 0.0002329  untreated= 0.0002329  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_MULTIORGAN_ILAS_PMC9356912  candidate=D-SEPSIS-GN
+source: PMID None / PMC9356912 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9356912/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  (no treatment)
+   2. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 26.20d [p25=26.12, p75=26.29] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=   0.01904  untreated=   0.01904  delta=        +0
+  acute_kidney_injury_hazard                    treated=   0.01091  untreated=   0.01091  delta=        +0
+  ards_hazard                                   treated=  0.005413  untreated=  0.005413  delta=        +0
+  dic_hazard                                    treated=  0.004359  untreated=  0.004359  delta=        +0
+  mas_hlh_hazard                                treated= 0.0004348  untreated= 0.0004348  delta=        +0
+  blood_culture_bacterial_load                  treated= 7.516e-05  untreated= 7.516e-05  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_VARIICOLA_LIVER_ABSCESS_PMC10784832  candidate=D-SEPSIS-GN
+source: PMID 38222021 / PMC10784832 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10784832/
+start latent days: D-SEPSIS-GN=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  (no treatment)
+   2. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:piperacillin_tazobactam
+   3. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:meropenem
+   4. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:cefepime
+   5. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:ceftriaxone
+   6. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:ceftazidime_avibactam
+   7. RMST= 27.61d [p25=27.57, p75=27.67] gain= +0.00d  D-SEPSIS-GN:amikacin
+Best vs no treatment: (no treatment)  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SEPSIS-GN               treated=   0.01193  untreated=   0.01193  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.006096  untreated=  0.006096  delta=        +0
+  ards_hazard                                   treated=  0.001704  untreated=  0.001704  delta=        +0
+  dic_hazard                                    treated=  0.004213  untreated=  0.004213  delta=        +0
+  mas_hlh_hazard                                treated= 0.0008679  untreated= 0.0008679  delta=        +0
+  blood_culture_bacterial_load                  treated= 2.435e-05  untreated= 2.435e-05  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+SLE_PNEUMONITIS_PMC7769658  candidate=D-SLE-FLARE
+source: PMID 33414977 / PMC7769658 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7769658/
+start latent days: D-SLE-FLARE=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:cyclophosphamide_iv
+   2. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:hydroxychloroquine + D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:cyclophosphamide_iv
+   3. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:mycophenolate_mofetil + D-SLE-FLARE:cyclophosphamide_iv
+   4. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:cyclophosphamide_iv + D-SLE-FLARE:rituximab
+   5. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:hydroxychloroquine + D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:mycophenolate_mofetil + D-SLE-FLARE:cyclophosphamide_iv
+   6. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:hydroxychloroquine + D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:cyclophosphamide_iv + D-SLE-FLARE:rituximab
+   7. RMST= 29.87d [p25=29.87, p75=29.87] gain= +0.02d  D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:mycophenolate_mofetil + D-SLE-FLARE:cyclophosphamide_iv + D-SLE-FLARE:rituximab
+   8. RMST= 29.86d [p25=29.86, p75=29.87] gain= +0.01d  D-SLE-FLARE:methylprednisolone_pulse
+Best vs no treatment: D-SLE-FLARE:methylprednisolone_pulse + D-SLE-FLARE:cyclophosphamide_iv  gain=+0.02d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-SLE-FLARE               treated= 0.0003608  untreated= 0.0004099  delta=-4.902e-05
+  major_bleeding_hazard                         treated=  3.51e-06  untreated=  3.51e-06  delta=        +0
+  acute_kidney_injury_hazard                    treated=  0.004833  untreated=  0.005268  delta=-0.0004354
+  ischemic_stroke_hazard                        treated= 0.0003129  untreated= 0.0003129  delta=        +0
+  mas_hlh_hazard                                treated= 1.478e-05  untreated= 1.478e-05  delta=        +0
+  serum_procalcitonin                           treated=   0.08522  untreated=   0.08522  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+TB_DISSEMINATED_AIDS_CHOLESTASIS_PMC3939406  candidate=D-TB-DISSEMINATED
+source: PMID 24567181 / PMC3939406 / https://pmc.ncbi.nlm.nih.gov/articles/PMC3939406/
+start latent days: D-TB-DISSEMINATED=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide + D-TB-DISSEMINATED:ethambutol
+   2. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide
+   3. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide + D-TB-DISSEMINATED:pyridoxine
+   4. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide + D-TB-DISSEMINATED:dexamethasone
+   5. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:ethambutol
+   6. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:ethambutol + D-TB-DISSEMINATED:pyridoxine
+   7. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:ethambutol + D-TB-DISSEMINATED:dexamethasone
+   8. RMST= 29.96d [p25=29.96, p75=29.96] gain= +0.00d  D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide + D-TB-DISSEMINATED:ethambutol
+Best vs no treatment: D-TB-DISSEMINATED:isoniazid + D-TB-DISSEMINATED:rifampin + D-TB-DISSEMINATED:pyrazinamide + D-TB-DISSEMINATED:ethambutol  gain=+0.00d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-TB-DISSEMINATED         treated= 0.0001217  untreated= 0.0001217  delta=        +0
+  ards_hazard                                   treated=  0.001446  untreated=  0.001446  delta=        +0
+  mas_hlh_hazard                                treated= 0.0006228  untreated= 0.0006228  delta=        +0
+  serum_procalcitonin                           treated=   0.05305  untreated=   0.05305  delta=        +0
+  serum_crp                                     treated=     2.623  untreated=     2.623  delta=        +0
+  body_temperature                              treated=     37.31  untreated=     37.31  delta=        +0
+
+------------------------------------------------------------------------------------------------------------
+TTP_SLE_PMC12234117  candidate=D-TTP
+source: PMID 40625480 / PMC12234117 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12234117/
+start latent days: D-TTP=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab
+   2. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone
+   3. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Rituximab
+   4. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Recombinant ADAMTS13 (apadamtase alfa)
+   5. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:FFP infusion (bridging plasma)
+   6. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone + D-TTP:Rituximab
+   7. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone + D-TTP:Recombinant ADAMTS13 (apadamtase alfa)
+   8. RMST= 29.67d [p25=29.66, p75=29.69] gain= +0.91d  D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab + D-TTP:Methylprednisolone or prednisone + D-TTP:FFP infusion (bridging plasma)
+Best vs no treatment: D-TTP:Therapeutic plasma exchange (TPE/PLEX) + D-TTP:Caplacizumab  gain=+0.91d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-TTP                     treated=  0.003046  untreated=   0.01002  delta= -0.006978
+  major_bleeding_hazard                         treated= 4.653e-06  untreated= 0.0001378  delta=-0.0001331
+  intracranial_hemorrhage_hazard                treated= 4.961e-05  untreated= 0.0008289  delta=-0.0007793
+  ischemic_stroke_hazard                        treated= 0.0003937  untreated=   0.00172  delta= -0.001326
+  myocardial_injury_hazard                      treated= 3.277e-05  untreated= 0.0004176  delta=-0.0003848
+  serum_crp                                     treated=     41.49  untreated=     41.49  delta=        +0
+
+============================================================================================================
+Notes:
+  - reshape_landscape changes disease trajectory targets including mortality_hazard when distilled.
+  - latent_mechanisms / mechanism_edges let treatments change hidden disease engines and propagate to downstream axes.
+  - push_state adds an explicit treatment force to axes such as MAP, oxygen saturation, hemoglobin, fever, or potassium.
+  - sigma_modulation changes diffusion amplitude for specified axes.
+  - required_context_axes/effect_modifiers can scale treatment force by susceptibility, active coverage, source control, contraindications, or toxicity context when distilled.
+  - same-disease bundle generation combines complementary treatment lanes and avoids duplicate alternatives such as two antibiotics or TPE plus plasma-infusion bridge.
+  - timed-stage policies can start slower add-ons later, shown as labels such as rituximab@day1 or anakinra@day2.
+  - hazard_drift/event_transition couplings can let treatment-moved axes push event hazards or mortality_hazard; old couplings without coupling_type remain covariance-only.
+  - This is treatment runtime v0.1; it has timed stages but does not yet branch on simulated follow-up response.

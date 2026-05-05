@@ -333,6 +333,7 @@ def is_antimicrobial(treatment):
     drug_class = str(treatment.get("drug_class") or "").lower()
     drug = treatment_drug(treatment).lower()
     antimicrobial_terms = (
+        "antibacterial",
         "antibiotic",
         "antimicrobial",
         "beta_lactam",
@@ -349,11 +350,46 @@ def is_antimicrobial(treatment):
         "imipenem",
         "aztreonam",
         "aminoglycoside",
+        "macrolide",
+        "azithromycin",
+        "clarithromycin",
+        "tetracycline",
+        "doxycycline",
+        "minocycline",
         "fluoroquinolone",
         "ciprofloxacin",
+        "levofloxacin",
+        "moxifloxacin",
     )
     text = f"{drug_class} {drug}"
     return any(term in text for term in antimicrobial_terms)
+
+
+def is_antiviral(treatment):
+    drug_class = str(treatment.get("drug_class") or "").lower()
+    drug = treatment_drug(treatment).lower()
+    antiviral_terms = (
+        "antiviral",
+        "neuraminidase",
+        "cap_dependent_endonuclease",
+        "rna-dependent rna polymerase",
+        "polymerase inhibitor",
+        "protease inhibitor",
+        "mpro",
+        "nirmatrelvir",
+        "ritonavir",
+        "remdesivir",
+        "molnupiravir",
+        "oseltamivir",
+        "baloxavir",
+        "peramivir",
+        "zanamivir",
+        "anti-sars-cov-2",
+        "anti_spike",
+        "monoclonal_antibody",
+    )
+    text = f"{drug_class} {drug}"
+    return any(term in text for term in antiviral_terms)
 
 
 def is_sepsis_adjunct(treatment):
@@ -368,8 +404,10 @@ def treatment_lane(treatment):
     mode = str(treatment.get("mode") or "").lower()
     text = " ".join([drug, drug_class, role, mode])
 
+    if is_antiviral(treatment):
+        return "antiviral"
     if is_antimicrobial(treatment):
-        return "antimicrobial"
+        return "antibacterial"
     if "source_control" in drug:
         return "source_control"
     if "plasma_exchange" in text or "plasma_replacement" in text or "plasma_infusion" in text:
@@ -465,7 +503,7 @@ def default_stage_day(treatment, peer_treatments):
     role = str(treatment.get("empiric_or_definitive_role") or "").lower()
     peer_lanes = {treatment_lane(t) for t in peer_treatments if t is not treatment}
 
-    if lane in ("antimicrobial", "source_control", "plasma_replacement", "glucocorticoid"):
+    if lane in ("antimicrobial", "antibacterial", "antiviral", "source_control", "plasma_replacement", "glucocorticoid"):
         return 0.0
     if lane in ("critical_care", "renal_support", "red_cell_transfusion", "platelet_transfusion"):
         return 0.0

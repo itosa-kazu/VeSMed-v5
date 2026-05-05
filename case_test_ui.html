@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>VeSMed V5 Real Case Tester</title>
+<style>
+  :root {
+    --bg: #f6f7f8;
+    --panel: #fff;
+    --line: #d8dde3;
+    --text: #1f2933;
+    --muted: #637083;
+    --blue: #1d72b8;
+    --green: #238636;
+    --amber: #b7791f;
+    --red: #b42318;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    font-size: 14px;
+  }
+  header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  h1 {
+    font-size: 18px;
+    margin: 0;
+  }
+  main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 16px 20px 28px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .panel h2 {
+    margin: 0 0 10px;
+    font-size: 15px;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .row.wrap { flex-wrap: wrap; }
+  label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  input, select, textarea, button {
+    font: inherit;
+  }
+  input, select, textarea {
+    border: 1px solid #cbd5df;
+    border-radius: 4px;
+    background: #fff;
+    padding: 7px 9px;
+  }
+  input, select { min-height: 34px; }
+  input.grow, select.grow { flex: 1; min-width: 0; }
+  textarea {
+    width: 100%;
+    min-height: 220px;
+    resize: vertical;
+    font-family: Consolas, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  button {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 7px 12px;
+    background: #edf2f7;
+    color: #17202a;
+    cursor: pointer;
+    font-weight: 650;
+    white-space: nowrap;
+  }
+  button.primary { background: var(--blue); color: #fff; }
+  button.green { background: var(--green); color: #fff; }
+  button.warn { background: var(--amber); color: #fff; }
+  button:disabled {
+    opacity: 0.55;
+    cursor: wait;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  .hint {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .status {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .case-list {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    max-height: 520px;
+    overflow: auto;
+  }
+  .case-item {
+    width: 100%;
+    display: block;
+    text-align: left;
+    padding: 9px 10px;
+    border: 0;
+    border-bottom: 1px solid #edf1f5;
+    border-radius: 0;
+    background: #fff;
+    font-weight: 500;
+  }
+  .case-item:hover { background: #f4f8fb; }
+  .case-item.active {
+    background: #e8f2fb;
+    border-left: 4px solid var(--blue);
+    padding-left: 6px;
+  }
+  .case-title {
+    font-size: 13px;
+    color: #111827;
+    overflow-wrap: anywhere;
+  }
+  .case-meta {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .metric {
+    border: 1px solid #e3e8ef;
+    border-radius: 5px;
+    padding: 8px;
+    background: #fbfcfd;
+  }
+  .metric b {
+    display: block;
+    font-size: 18px;
+    line-height: 1.1;
+  }
+  .metric span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    border-bottom: 1px solid #edf1f5;
+    padding: 6px 7px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    color: var(--muted);
+    font-weight: 700;
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+  }
+  .scroll-table {
+    max-height: 360px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .tag {
+    display: inline-block;
+    border: 1px solid #d7dee8;
+    background: #f8fafc;
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin: 2px 3px 2px 0;
+    font-size: 12px;
+    color: #384657;
+  }
+  .summary-box {
+    border: 1px solid var(--line);
+    background: #fbfcfd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+  .summary-box p {
+    margin: 0 0 7px;
+    line-height: 1.55;
+  }
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: Consolas, Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .output {
+    background: #101828;
+    color: #e5e7eb;
+    border-radius: 6px;
+    padding: 12px;
+    min-height: 260px;
+    max-height: 660px;
+    overflow: auto;
+  }
+  .pass { color: var(--green); font-weight: 700; }
+  .fail { color: var(--red); font-weight: 700; }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .tab {
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  .tab.active {
+    background: #1f2933;
+    color: #fff;
+  }
+  .hidden { display: none; }
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>VeSMed V5 Real Case Tester</h1>
+  <div class="status">
+    <a href="/">Prompt UI</a>
+    <span id="serverStatus">checking server...</span>
+  </div>
+</header>
+
+<main>
+  <div class="layout">
+    <section class="panel">
+      <h2>1. 选择真实病例</h2>
+      <div class="row">
+        <input id="caseSearch" class="grow" placeholder="搜索 case_id / PMID / PMCID / 诊断" oninput="renderCaseList()">
+      </div>
+      <div class="row">
+        <select id="expectedFilter" class="grow" onchange="renderCaseList()">
+          <option value="">全部 expected disease</option>
+        </select>
+        <button onclick="loadCases()">刷新</button>
+      </div>
+      <div class="case-list" id="caseList"></div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>2. 查看证据并运行</h2>
+        <div id="caseDetail" class="summary-box">
+          <p class="hint">左边选一个 case。这里会显示原文来源、expected manifold、结构化 observations、risk context 和摘要。</p>
+        </div>
+        <div class="row wrap">
+          <label>N_MC</label>
+          <select id="nMc">
+            <option value="40">40 fast</option>
+            <option value="80" selected>80 balanced</option>
+            <option value="250">250 slower</option>
+            <option value="1000">1000 audit</option>
+          </select>
+          <button class="primary" onclick="runSelected(1)">运行当前 case: single</button>
+          <button class="primary" onclick="runSelected(2)">运行当前 case: combo</button>
+          <button onclick="runAllSingle()">全量 single 回归</button>
+          <button onclick="runComboCases()">只跑 combo cases</button>
+        </div>
+        <p class="hint">single 只排单病；combo 会排两病叠加，速度明显更慢。runtime 只输出 likelihood 和 delta，不写死未知病阈值。</p>
+      </div>
+
+      <div class="panel" style="margin-top:14px;">
+        <div class="tabs">
+          <button id="tabResult" class="tab active" onclick="showTab('result')">测试结果</button>
+          <button id="tabJson" class="tab" onclick="showTab('json')">粘贴/保存 case JSON</button>
+        </div>
+
+        <div id="resultPane">
+          <div id="resultSummary" class="summary-box">
+            <p class="hint">运行后这里显示 PASS/FAIL 摘要。</p>
+          </div>
+          <div class="output"><pre id="rawOutput">等待运行。</pre></div>
+        </div>
+
+        <div id="jsonPane" class="hidden">
+          <p class="hint">这里只保存你自己从 PMC/PubMed 整理出的真实病例 JSON。需要有 case_id、expected_manifold 或 expected_manifolds、source PMID/PMCID/URL，以及结构化 observations 或 lab_trajectories。</p>
+          <textarea id="caseJsonInput" placeholder='{
+  "case_id": "EXAMPLE_PMC0000000",
+  "source_pmid": "...",
+  "source_pmcid": "PMC...",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC.../",
+  "disease_label_per_paper": "...",
+  "expected_manifold": "D-...",
+  "observations": [
+    {"axis_id": "body_temperature", "value": 39.0, "unit": "degC", "source_text_value": "..."}
+  ]
+}'></textarea>
+          <div class="row wrap" style="margin-top:10px;">
+            <button class="green" onclick="saveCaseJson()">保存 case JSON</button>
+            <button onclick="formatCaseJson()">格式化</button>
+            <span id="saveCaseStatus" class="hint"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+let CASES = [];
+let SELECTED_CASE_ID = "";
+let SELECTED_CASE = null;
+
+function $(id) { return document.getElementById(id); }
+
+async function ping() {
+  try {
+    const r = await fetch('/ping', { cache: 'no-store' });
+    $('serverStatus').textContent = r.ok ? 'server online' : 'server error';
+  } catch {
+    $('serverStatus').textContent = 'server offline';
+  }
+}
+
+function expectedKey(item) {
+  return (item.expected_manifolds || []).join('+') || '(none)';
+}
+
+async function loadCases(selectCaseId) {
+  const r = await fetch('/case_cases', { cache: 'no-store' });
+  CASES = await r.json();
+  populateExpectedFilter();
+  renderCaseList();
+  if (selectCaseId) {
+    await selectCase(selectCaseId);
+  } else if (!SELECTED_CASE_ID && CASES.length) {
+    await selectCase(CASES[0].case_id);
+  }
+}
+
+function populateExpectedFilter() {
+  const filter = $('expectedFilter');
+  const current = filter.value;
+  const values = Array.from(new Set(CASES.map(expectedKey))).sort();
+  filter.innerHTML = '<option value="">全部 expected disease</option>';
+  for (const value of values) {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = value;
+    filter.appendChild(opt);
+  }
+  if (values.includes(current)) filter.value = current;
+}
+
+function renderCaseList() {
+  const search = $('caseSearch').value.trim().toLowerCase();
+  const expected = $('expectedFilter').value;
+  const list = $('caseList');
+  list.innerHTML = '';
+  const filtered = CASES.filter(item => {
+    if (expected && expectedKey(item) !== expected) return false;
+    if (!search) return true;
+    const hay = [
+      item.case_id,
+      item.source_pmid,
+      item.source_pmcid,
+      item.disease_label_per_paper,
+      expectedKey(item),
+      item.summary_preview,
+    ].join(' ').toLowerCase();
+    return hay.includes(search);
+  });
+  for (const item of filtered) {
+    const btn = document.createElement('button');
+    btn.className = 'case-item' + (item.case_id === SELECTED_CASE_ID ? ' active' : '');
+    btn.onclick = () => selectCase(item.case_id);
+    btn.innerHTML = `
+      <div class="case-title">${escapeHtml(item.case_id || item.file)}</div>
+      <div class="case-meta">${escapeHtml(expectedKey(item))} · obs ${item.observation_count || 0} · ${escapeHtml(item.source_pmcid || item.source_pmid || '')}</div>
+    `;
+    list.appendChild(btn);
+  }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="hint" style="padding:12px;">没有匹配 case。</div>';
+  }
+}
+
+async function selectCase(caseId) {
+  SELECTED_CASE_ID = caseId;
+  renderCaseList();
+  const r = await fetch('/case_detail?case_id=' + encodeURIComponent(caseId), { cache: 'no-store' });
+  SELECTED_CASE = await r.json();
+  renderCaseDetail(SELECTED_CASE);
+}
+
+function renderCaseDetail(data) {
+  const expected = data.expected_manifolds || (data.expected_manifold ? [data.expected_manifold] : []);
+  const summary = Array.isArray(data.presentation_summary) ? data.presentation_summary : [];
+  const risks = Array.isArray(data.risk_context) ? data.risk_context : [];
+  const observations = Array.isArray(data.observations) ? data.observations : [];
+  const confirmatory = Array.isArray(data.confirmatory_findings) ? data.confirmatory_findings : [];
+  const source = data.source_url ? `<a href="${escapeAttr(data.source_url)}" target="_blank">${escapeHtml(data.source_url)}</a>` : '';
+  const riskTags = risks.map(r => `<span class="tag">${escapeHtml(r.factor || '')}${r.category ? ': ' + escapeHtml(r.category) : ''}</span>`).join('');
+  const confirmTags = confirmatory.map(c => `<span class="tag">${escapeHtml(c.axis_id || c.finding || c.test || '')}</span>`).join('');
+  const rows = observations.map(o => `
+    <tr>
+      <td>${escapeHtml(o.axis_id || '')}</td>
+      <td>${escapeHtml(String(o.value ?? ''))}</td>
+      <td>${escapeHtml(o.unit || '')}</td>
+      <td>${escapeHtml(o.source_text_value || '')}</td>
+    </tr>
+  `).join('');
+  $('caseDetail').innerHTML = `
+    <div class="grid">
+      <div class="metric"><b>${escapeHtml(String(observations.length))}</b><span>observations</span></div>
+      <div class="metric"><b>${escapeHtml(String((data.lab_trajectories || []).length))}</b><span>trajectories</span></div>
+      <div class="metric"><b>${escapeHtml(String(risks.length))}</b><span>risk context</span></div>
+      <div class="metric"><b>${escapeHtml(String(confirmatory.length))}</b><span>confirmatory</span></div>
+    </div>
+    <p><b>${escapeHtml(data.case_id || '')}</b></p>
+    <p>expected: ${expected.map(x => `<span class="tag">${escapeHtml(x)}</span>`).join('')}</p>
+    <p>paper diagnosis: ${escapeHtml(data.disease_label_per_paper || '')}</p>
+    <p>source: ${escapeHtml(data.source_pmid || '')} ${escapeHtml(data.source_pmcid || '')} ${source}</p>
+    ${summary.length ? `<div>${summary.map(x => `<p>${escapeHtml(x)}</p>`).join('')}</div>` : ''}
+    ${riskTags ? `<p>risk: ${riskTags}</p>` : ''}
+    ${confirmTags ? `<p>confirmatory: ${confirmTags}</p>` : ''}
+    <div class="scroll-table">
+      <table>
+        <thead><tr><th>axis_id</th><th>value</th><th>unit</th><th>source text</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="4">No observations</td></tr>'}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function runSelected(maxComboSize) {
+  if (!SELECTED_CASE_ID) return;
+  await runCaseTest({ caseFilter: SELECTED_CASE_ID, maxComboSize, nMc: Number($('nMc').value) });
+}
+
+async function runAllSingle() {
+  await runCaseTest({ caseFilter: '', maxComboSize: 1, nMc: Number($('nMc').value) });
+}
+
+async function runComboCases() {
+  await runCaseTest({ caseFilter: '', maxComboSize: 2, onlyComboCases: true, nMc: Number($('nMc').value) });
+}
+
+async function runCaseTest(payload) {
+  setBusy(true);
+  $('rawOutput').textContent = 'running...';
+  $('resultSummary').innerHTML = '<p class="hint">运行中。combo 和全量回归会慢一些。</p>';
+  showTab('result');
+  try {
+    const r = await fetch('/run_case_test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await r.json();
+    if (!data.ok) {
+      $('resultSummary').innerHTML = `<p class="fail">运行失败: ${escapeHtml(data.error || data.returncode || '')}</p>`;
+    } else {
+      renderResultSummary(data.output || '');
+    }
+    $('rawOutput').textContent = data.output || JSON.stringify(data, null, 2);
+  } catch (e) {
+    $('resultSummary').innerHTML = `<p class="fail">运行失败: ${escapeHtml(String(e))}</p>`;
+    $('rawOutput').textContent = String(e);
+  } finally {
+    setBusy(false);
+  }
+}
+
+function renderResultSummary(text) {
+  const single = text.match(/Single-manifold validation:\s+(\d+)\/(\d+) PASS/);
+  const combo = text.match(/Combo-manifold validation:\s+(\d+)\/(\d+) PASS/);
+  const singleFail = Array.from(text.matchAll(/single validation: best_single=([^\s]+)\s+FAIL/g)).map(m => m[1]);
+  const comboFail = Array.from(text.matchAll(/combo validation: best_overall=([^\s]+)\s+FAIL/g)).map(m => m[1]);
+  const best = text.match(/\[joint SDE ranking: all candidates\]\n\*\s+(.+?)\s+logP=/);
+  const parts = [];
+  if (single) parts.push(`<p>single: <span class="${single[1] === single[2] ? 'pass' : 'fail'}">${single[1]}/${single[2]} PASS</span></p>`);
+  if (combo) parts.push(`<p>combo: <span class="${combo[1] === combo[2] ? 'pass' : 'fail'}">${combo[1]}/${combo[2]} PASS</span></p>`);
+  if (best) parts.push(`<p>best overall: <b>${escapeHtml(best[1].trim())}</b></p>`);
+  if (singleFail.length) parts.push(`<p class="fail">single fail best: ${singleFail.map(escapeHtml).join(', ')}</p>`);
+  if (comboFail.length) parts.push(`<p class="fail">combo fail best: ${comboFail.map(escapeHtml).join(', ')}</p>`);
+  $('resultSummary').innerHTML = parts.join('') || '<p class="hint">没有解析到摘要，查看 raw output。</p>';
+}
+
+async function saveCaseJson() {
+  const txt = $('caseJsonInput').value.trim();
+  if (!txt) return;
+  try {
+    const obj = JSON.parse(txt);
+    const r = await fetch('/save_case', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj),
+    });
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || 'save failed');
+    $('saveCaseStatus').textContent = `saved: ${data.path}`;
+    await loadCases(obj.case_id);
+  } catch (e) {
+    $('saveCaseStatus').textContent = String(e);
+  }
+}
+
+function formatCaseJson() {
+  const txt = $('caseJsonInput').value.trim();
+  if (!txt) return;
+  try {
+    $('caseJsonInput').value = JSON.stringify(JSON.parse(txt), null, 2);
+    $('saveCaseStatus').textContent = 'JSON formatted';
+  } catch (e) {
+    $('saveCaseStatus').textContent = String(e);
+  }
+}
+
+function showTab(name) {
+  $('resultPane').classList.toggle('hidden', name !== 'result');
+  $('jsonPane').classList.toggle('hidden', name !== 'json');
+  $('tabResult').classList.toggle('active', name === 'result');
+  $('tabJson').classList.toggle('active', name === 'json');
+}
+
+function setBusy(busy) {
+  for (const btn of document.querySelectorAll('button')) btn.disabled = busy;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replaceAll('`', '&#96;');
+}
+
+ping();
+loadCases();
+</script>
+</body>
+</html>

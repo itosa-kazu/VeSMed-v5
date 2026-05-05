@@ -1,0 +1,135 @@
+============================================================================
+ v5 SDE Forward Simulate v0 — Curve Distillation Paradigm 第一跑
+============================================================================
+
+日期: 2026-04-29
+N_MC: 10000, seed: 42
+LLM 蒸馏: 39 axes (v5_AOSD.txt)
+Case 用 axes: 9 (重合于静态 PoC 9 axes)
+
+Reference measure:
+  - AOSD trajectory: μ_i(t) 时间剧本 (baseline → peak → plateau → optional decline)
+  - Healthy baseline: μ_i 恒定 baseline_range
+简化:
+  - axes 独立 (no correlation)
+  - σ_i = baseline_range width / 4
+  - log_scale=true 的 axis 在 log10 space 算
+
+============================================================================
+ case1_AOSD
+============================================================================
+  case_id: PMC7725026
+  PMID: 33363596
+  diagnosis: AOSD (confirmed)
+  effective day: 11
+  observed axes (with mapping): 6
+
+  log P (sum over axes):
+    AOSD trajectory :    -27.326
+    Healthy baseline:   -198.574
+    log10 LR        :    +74.372  (>0 = AOSD-like, <0 = Healthy-like)
+
+  per-axis log_pdf (AOSD trajectory):
+    peak_body_temperature               x=    39.500  log p=  -1.598
+    log10_serum_ferritin                x=     3.866  log p=  -0.142
+    CRP                                 x=   208.000  log p=  -0.875
+    absolute_neutrophil_count           x=    33.510  log p= -20.154
+    log10_AST                           x=     1.909  log p=  +0.274
+    fibrinogen                          x=     7.600  log p=  -4.832
+
+  per-axis log_pdf (Healthy baseline):
+    peak_body_temperature               x=    39.500  log p=  -2.754
+    log10_serum_ferritin                x=     3.866  log p= -12.915
+    CRP                                 x=   208.000  log p=  -3.031
+    absolute_neutrophil_count           x=    33.510  log p=-172.150
+    log10_AST                           x=     1.909  log p=  -2.889
+    fibrinogen                          x=     7.600  log p=  -4.835
+
+============================================================================
+ case2_healthy
+============================================================================
+  case_id: REFERENCE_HEALTHY_ADULT
+  diagnosis: Healthy adult (no disease)
+  effective day: 14
+  observed axes (with mapping): 9
+
+  log P (sum over axes):
+    AOSD trajectory :    -67.919
+    Healthy baseline:    -18.794
+    log10 LR        :    -21.335  (>0 = AOSD-like, <0 = Healthy-like)
+
+  per-axis log_pdf (AOSD trajectory):
+    peak_body_temperature               x=    36.700  log p=  -3.051
+    log10_serum_ferritin                x=     2.000  log p=  -8.050
+    glycosylated_ferritin_fraction      x=    65.000  log p=  -3.453
+    CRP                                 x=     1.000  log p=  -3.625
+    absolute_neutrophil_count           x=     4.000  log p= -10.436
+    platelet_count                      x=   240.000  log p=  -7.111
+    log10_AST                           x=     1.300  log p=  -3.271
+    fibrinogen                          x=     3.000  log p=  -4.833
+    log10_serum_IL18                    x=     1.900  log p= -24.090
+
+  per-axis log_pdf (Healthy baseline):
+    peak_body_temperature               x=    36.700  log p=  -1.543
+    log10_serum_ferritin                x=     2.000  log p=  -0.154
+    glycosylated_ferritin_fraction      x=    65.000  log p=  -3.453
+    CRP                                 x=     1.000  log p=  -0.976
+    absolute_neutrophil_count           x=     4.000  log p=  -1.806
+    platelet_count                      x=   240.000  log p=  -5.609
+    log10_AST                           x=     1.300  log p=  +0.428
+    fibrinogen                          x=     3.000  log p=  -4.831
+    log10_serum_IL18                    x=     1.900  log p=  -0.850
+
+============================================================================
+ case3_MAS
+============================================================================
+  case_id: PMC8148416
+  PMID: 34046637
+  diagnosis: AOSD with MAS (macrophage activation syndrome)
+  effective day: 10
+  observed axes (with mapping): 6
+
+  log P (sum over axes):
+    AOSD trajectory :    -19.973
+    Healthy baseline:    -48.256
+    log10 LR        :    +12.283  (>0 = AOSD-like, <0 = Healthy-like)
+
+  per-axis log_pdf (AOSD trajectory):
+    peak_body_temperature               x=    40.600  log p=  -1.657
+    log10_serum_ferritin                x=     4.160  log p=  -0.334
+    CRP                                 x=   275.000  log p=  -0.915
+    platelet_count                      x=    55.000  log p= -12.195
+    log10_AST                           x=     2.217  log p=  -0.038
+    fibrinogen                          x=     1.350  log p=  -4.835
+
+  per-axis log_pdf (Healthy baseline):
+    peak_body_temperature               x=    40.600  log p=  -3.849
+    log10_serum_ferritin                x=     4.160  log p= -18.296
+    CRP                                 x=   275.000  log p=  -3.299
+    platelet_count                      x=    55.000  log p=  -8.260
+    log10_AST                           x=     2.217  log p=  -9.720
+    fibrinogen                          x=     1.350  log p=  -4.832
+
+============================================================================
+ Ranking (log10 LR)
+============================================================================
+  1. case1_AOSD         log10 LR =    +74.372
+  2. case3_MAS          log10 LR =    +12.283
+  3. case2_healthy      log10 LR =    -21.335
+
+============================================================================
+ 验证 (2-way: AOSD trajectory vs Healthy baseline)
+============================================================================
+  [1] AOSD case → AOSD trajectory > Healthy baseline?
+      log10 LR = +74.372 PASS
+  [2] Healthy case → Healthy baseline > AOSD trajectory?
+      log10 LR = -21.335 PASS
+  [3] MAS case → AOSD trajectory > Healthy baseline?
+      log10 LR = +12.283 PASS
+  [4] 极端度: MAS log10 LR > AOSD log10 LR?
+      MAS (+12.283) > AOSD (+74.372) FAIL
+
+注意:
+  - 没有 MAS-specific reference, 这次只能比 vs Healthy
+  - MAS subtype 区分 需要单独蒸馏 MAS trajectory 才能做
+  - 静态 PoC 之前用 GMM components 区分 MAS subtype, 在 v5 SDE 里需要单独 trajectory

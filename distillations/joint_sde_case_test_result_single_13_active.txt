@@ -1,0 +1,1036 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=120, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 13 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=13, total_ranked=13, max_combo_size=1
+Cases loaded for this run: 21
+
+Manifolds:
+  D137        : axes=63, mechanisms=11, mech_edges=59, couplings= 7, risk_factors= 6
+  D-SEPSIS-GN : axes=82, mechanisms=11, mech_edges=56, couplings=17, risk_factors=13
+  D-TTP       : axes=49, mechanisms= 6, mech_edges=38, couplings= 6, risk_factors=13
+  D-DRUG-FEVER-DRESS: axes=58, mechanisms=10, mech_edges=35, couplings= 9, risk_factors=18
+  D-HLH-MAS   : axes=68, mechanisms=11, mech_edges=50, couplings= 9, risk_factors= 7
+  D-INFECTIOUS-MONONUCLEOSIS: axes=53, mechanisms=13, mech_edges=47, couplings= 8, risk_factors= 5
+  D-INFECTIVE-ENDOCARDITIS: axes=98, mechanisms=13, mech_edges=47, couplings=11, risk_factors=13
+  D-LEPTOSPIROSIS: axes=75, mechanisms=11, mech_edges=56, couplings=12, risk_factors=10
+  D-LYMPHOMA-FEVER: axes=54, mechanisms=14, mech_edges=50, couplings= 7, risk_factors=11
+  D-MIS-A     : axes=80, mechanisms=16, mech_edges=62, couplings= 7, risk_factors= 8
+  D-MPA       : axes=56, mechanisms=12, mech_edges=44, couplings=10, risk_factors= 7
+  D-SLE-FLARE : axes=78, mechanisms=11, mech_edges=71, couplings=13, risk_factors=13
+  D-TB-DISSEMINATED: axes=60, mechanisms=15, mech_edges=59, couplings= 9, risk_factors=11
+Base-measure/background axes: 340
+
+----------------------------------------------------------------------------------------------------
+AOSD_pmc_41059024_1  expected=D137
+source: PMID 41059024 / PMC12499899 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12499899/
+paper diagnosis: Adult-Onset Still disease Presenting as Antibiotic-Refractory Sepsis (no MAS/HLH)
+observed axes: 24
+
+[joint SDE ranking: all candidates]
+* D137                    logP=   -280.47 mean= -11.686 n=24 prior= +0.18
+  D-LYMPHOMA-FEVER        logP=   -352.96 mean= -14.707 n=24 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -363.73 mean= -15.155 n=24 prior= +0.00
+  D-HLH-MAS               logP=   -370.50 mean= -15.437 n=24 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -378.60 mean= -15.775 n=24 prior= +0.00
+  D-MIS-A                 logP=   -381.96 mean= -15.915 n=24 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -424.14 mean= -17.673 n=24 prior= +0.00
+  D-MPA                   logP=   -438.86 mean= -18.286 n=24 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -443.48 mean= -18.478 n=24 prior= +0.00
+  D-SLE-FLARE             logP=   -454.88 mean= -18.954 n=24 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -513.51 mean= -21.396 n=24 prior= +0.00
+  D-SEPSIS-GN             logP=   -585.62 mean= -24.401 n=24 prior= +0.00
+  D-TTP                   logP=   -715.94 mean= -29.831 n=24 prior= +0.00
+
+[best single-manifold diagnostic]
+* D137         logP=   -280.47 mean= -11.686 prior= +0.18
+  D-LYMPHOMA-FEVER logP=   -352.96 mean= -14.707 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -363.73 mean= -15.155 prior= +0.00
+  D-HLH-MAS    logP=   -370.50 mean= -15.437 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -378.60 mean= -15.775 prior= +0.00
+  D-MIS-A      logP=   -381.96 mean= -15.915 prior= +0.00
+  D-TB-DISSEMINATED logP=   -424.14 mean= -17.673 prior= +0.00
+  D-MPA        logP=   -438.86 mean= -18.286 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -443.48 mean= -18.478 prior= +0.00
+  D-SLE-FLARE  logP=   -454.88 mean= -18.954 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -513.51 mean= -21.396 prior= +0.00
+  D-SEPSIS-GN  logP=   -585.62 mean= -24.401 prior= +0.00
+  D-TTP        logP=   -715.94 mean= -29.831 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -280.47 candidate=D137
+  logP_best_single=   -280.47 candidate=D137
+  logP_background_only=   -741.53 mean= -30.897 n=24
+  delta_to_null_best_known=   +461.07
+  delta_to_null_best_single=   +461.07
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D137  PASS
+best latent times: D137=day11.3
+largest standardized residuals: antibiotic_nonresponse_activity obs=1 relative_activity_0_1 mu=0.00624017 via=case_observation_background_fallback z=12.4; proximal_muscle_weakness_activity obs=0.8 severity_score_0_1 mu=0.0350272 via=case_observation_background_fallback z=9.6; sore_throat_activity obs=1 severity_score_0_1 mu=0.17925 via=D137 z=7.0; hepatomegaly_activity obs=0.8 severity_score_0_1 mu=0.169405 via=D137 z=6.3; splenomegaly_activity obs=0.8 severity_score_0_1 mu=0.0815588 via=D137 z=6.2
+
+----------------------------------------------------------------------------------------------------
+AOSD_PMC10875399_hypocomplementemia  expected=D137
+source: PMID 38374851 / PMC10875399 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10875399/
+paper diagnosis: Adult-onset Still's disease with hypocomplementemia
+observed axes: 14
+
+[joint SDE ranking: all candidates]
+* D137                    logP=   -108.59 mean=  -7.756 n=14 prior= +0.18
+  D-MIS-A                 logP=   -213.74 mean= -15.267 n=14 prior= +0.00
+  D-SEPSIS-GN             logP=   -216.17 mean= -15.441 n=14 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -223.77 mean= -15.983 n=14 prior= +0.00
+  D-HLH-MAS               logP=   -245.28 mean= -17.520 n=14 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -253.44 mean= -18.103 n=14 prior= +0.00
+  D-MPA                   logP=   -256.71 mean= -18.336 n=14 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -260.82 mean= -18.630 n=14 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -271.37 mean= -19.384 n=14 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -289.99 mean= -20.714 n=14 prior= +0.00
+  D-SLE-FLARE             logP=   -323.14 mean= -23.081 n=14 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -345.50 mean= -24.679 n=14 prior= +0.00
+  D-TTP                   logP=   -448.67 mean= -32.048 n=14 prior= +0.00
+
+[best single-manifold diagnostic]
+* D137         logP=   -108.59 mean=  -7.756 prior= +0.18
+  D-MIS-A      logP=   -213.74 mean= -15.267 prior= +0.00
+  D-SEPSIS-GN  logP=   -216.17 mean= -15.441 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -223.77 mean= -15.983 prior= +0.00
+  D-HLH-MAS    logP=   -245.28 mean= -17.520 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -253.44 mean= -18.103 prior= +0.00
+  D-MPA        logP=   -256.71 mean= -18.336 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -260.82 mean= -18.630 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -271.37 mean= -19.384 prior= +0.00
+  D-TB-DISSEMINATED logP=   -289.99 mean= -20.714 prior= +0.00
+  D-SLE-FLARE  logP=   -323.14 mean= -23.081 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -345.50 mean= -24.679 prior= +0.00
+  D-TTP        logP=   -448.67 mean= -32.048 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -108.59 candidate=D137
+  logP_best_single=   -108.59 candidate=D137
+  logP_background_only=   -495.49 mean= -35.392 n=14
+  delta_to_null_best_known=   +386.90
+  delta_to_null_best_single=   +386.90
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D137  PASS
+best latent times: D137=day17.1
+largest standardized residuals: sore_throat_activity obs=1 severity_score_0_1 mu=0.110268 via=D137 z=7.6; arthritis_activity obs=0.8 severity_score_0_1 mu=0.101111 via=D137 z=5.2; serum_crp obs=217.1 mg/L mu=1.27114 via=D137 z=4.8; evanescent_rash_activity obs=1 severity_score_0_1 mu=0.357345 via=D137 z=4.8; hemoglobin obs=11 g/dL mu=15.2701 via=D137 z=3.7
+
+----------------------------------------------------------------------------------------------------
+AOSD_TTP_CONCURRENT_PMC7523203  expected=D137+D-TTP
+source: PMID 32988976 / PMC7523203 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7523203/
+paper diagnosis: Adult-onset Still's disease with concurrent thrombotic thrombocytopenic purpura
+observed axes: 18
+risk context: delayed_diagnosis_or_delayed_immunomodulation=delay_over_30_days; systemic_pattern_at_onset=high_spiking_fever_rash_sore_throat_neutrophilia; active_infection_or_systemic_inflammation=present; severe_neurologic_involvement_at_presentation=present
+
+[joint SDE ranking: all candidates]
+* D137                    logP=   -251.65 mean= -13.981 n=18 prior= -0.16
+  D-MIS-A                 logP=   -254.51 mean= -14.139 n=18 prior= +0.00
+  D-SEPSIS-GN             logP=   -271.22 mean= -15.068 n=18 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -333.86 mean= -18.548 n=18 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -429.23 mean= -23.846 n=18 prior= +0.00
+  D-MPA                   logP=   -449.67 mean= -24.982 n=18 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -464.83 mean= -25.824 n=18 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -466.27 mean= -25.904 n=18 prior= +0.00
+  D-HLH-MAS               logP=   -476.04 mean= -26.447 n=18 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -514.14 mean= -28.563 n=18 prior= +0.00
+  D-SLE-FLARE             logP=   -532.63 mean= -29.591 n=18 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -554.27 mean= -30.793 n=18 prior= +0.00
+  D-TTP                   logP=   -816.40 mean= -45.355 n=18 prior= +0.00
+
+[best single-manifold diagnostic]
+* D137         logP=   -251.65 mean= -13.981 prior= -0.16
+  D-MIS-A      logP=   -254.51 mean= -14.139 prior= +0.00
+  D-SEPSIS-GN  logP=   -271.22 mean= -15.068 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -333.86 mean= -18.548 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -429.23 mean= -23.846 prior= +0.00
+  D-MPA        logP=   -449.67 mean= -24.982 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -464.83 mean= -25.824 prior= +0.00
+  D-TB-DISSEMINATED logP=   -466.27 mean= -25.904 prior= +0.00
+  D-HLH-MAS    logP=   -476.04 mean= -26.447 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -514.14 mean= -28.563 prior= +0.00
+  D-SLE-FLARE  logP=   -532.63 mean= -29.591 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -554.27 mean= -30.793 prior= +0.00
+  D-TTP        logP=   -816.40 mean= -45.355 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -251.65 candidate=D137
+  logP_best_single=   -251.65 candidate=D137
+  logP_background_only=   -967.12 mean= -53.729 n=18
+  delta_to_null_best_known=   +715.47
+  delta_to_null_best_single=   +715.47
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+combo validation: best_overall=D137  FAIL
+best latent times: D137=day17.2
+largest standardized residuals: mental_status_abnormality_activity obs=1 severity_score_0_1 mu=0.0286203 via=base_measure_background z=12.1; schistocytosis_activity obs=1 severity_score_0_1 mu=0.0355301 via=case_observation_background_fallback z=12.1; anti_adamts13_igg_inhibitor_titer obs=1 BU mu=0.344318 via=base_measure_background z=8.2; arthritis_activity obs=1 severity_score_0_1 mu=0.243775 via=D137 z=5.7; adamts13_activity obs=1 percent_of_normal mu=65.8094 via=base_measure_background z=3.9
+
+----------------------------------------------------------------------------------------------------
+DRESS_METRONIDAZOLE_PMC10194756  expected=D-DRUG-FEVER-DRESS
+source: PMID 37213922 / PMC10194756 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10194756/
+paper diagnosis: DRESS syndrome after metronidazole exposure
+observed axes: 17
+risk context: recent_drug_exposure=metronidazole_12_days_prior
+
+[joint SDE ranking: all candidates]
+* D-DRUG-FEVER-DRESS      logP=   -162.58 mean=  -9.564 n=17 prior= +0.00
+  D137                    logP=   -686.35 mean= -40.373 n=17 prior= -0.16
+  D-MIS-A                 logP=   -695.65 mean= -40.921 n=17 prior= +0.00
+  D-SEPSIS-GN             logP=   -696.34 mean= -40.961 n=17 prior= +0.00
+  D-HLH-MAS               logP=   -712.75 mean= -41.926 n=17 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -720.13 mean= -42.360 n=17 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -721.52 mean= -42.443 n=17 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -738.21 mean= -43.424 n=17 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -753.18 mean= -44.305 n=17 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -1555.48 mean= -91.499 n=17 prior= +0.00
+  D-SLE-FLARE             logP=  -1564.53 mean= -92.031 n=17 prior= +0.00
+  D-MPA                   logP=  -1587.49 mean= -93.382 n=17 prior= +0.00
+  D-TTP                   logP=  -1651.93 mean= -97.172 n=17 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-DRUG-FEVER-DRESS logP=   -162.58 mean=  -9.564 prior= +0.00
+  D137         logP=   -686.35 mean= -40.373 prior= -0.16
+  D-MIS-A      logP=   -695.65 mean= -40.921 prior= +0.00
+  D-SEPSIS-GN  logP=   -696.34 mean= -40.961 prior= +0.00
+  D-HLH-MAS    logP=   -712.75 mean= -41.926 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -720.13 mean= -42.360 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -721.52 mean= -42.443 prior= +0.00
+  D-TB-DISSEMINATED logP=   -738.21 mean= -43.424 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -753.18 mean= -44.305 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -1555.48 mean= -91.499 prior= +0.00
+  D-SLE-FLARE  logP=  -1564.53 mean= -92.031 prior= +0.00
+  D-MPA        logP=  -1587.49 mean= -93.382 prior= +0.00
+  D-TTP        logP=  -1651.93 mean= -97.172 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -162.58 candidate=D-DRUG-FEVER-DRESS
+  logP_best_single=   -162.58 candidate=D-DRUG-FEVER-DRESS
+  logP_background_only=  -1600.28 mean= -94.134 n=17
+  delta_to_null_best_known=  +1437.70
+  delta_to_null_best_single=  +1437.70
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-DRUG-FEVER-DRESS  PASS
+best latent times: D-DRUG-FEVER-DRESS=day23.0
+largest standardized residuals: fever_activity obs=1 severity_score_0_1 mu=0.0011329 via=case_observation_background_fallback z=12.5; pulmonary_involvement_activity obs=0.7 relative_activity_0_1 mu=0.0497646 via=case_observation_background_fallback z=8.1; absolute_neutrophil_count obs=11.73 10^9/L mu=3.13674 via=D-DRUG-FEVER-DRESS z=4.0; morbilliform_rash_activity_DRESS obs=1 severity_score_0_1 mu=0.375702 via=D-DRUG-FEVER-DRESS z=3.7; erythrocyte_sedimentation_rate obs=29 mm_per_hr mu=19.1803 via=base_measure_background z=2.9
+
+----------------------------------------------------------------------------------------------------
+EBV_MONO_ATYPICAL_PMC12965848  expected=D-INFECTIOUS-MONONUCLEOSIS
+source: PMID 41797744 / PMC12965848 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12965848/
+paper diagnosis: Atypical infectious mononucleosis due to Epstein-Barr virus without pharyngitis
+observed axes: 18
+
+[joint SDE ranking: all candidates]
+* D-INFECTIOUS-MONONUCLEOSIS logP=   -528.27 mean= -29.348 n=18 prior= +0.00
+  D-HLH-MAS               logP=   -802.65 mean= -44.592 n=18 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=  -1372.90 mean= -76.272 n=18 prior= +0.00
+  D-TTP                   logP=  -3355.34 mean=-186.408 n=18 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -3358.85 mean=-186.603 n=18 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -3458.68 mean=-192.149 n=18 prior= +0.00
+  D-MIS-A                 logP=  -3467.13 mean=-192.618 n=18 prior= +0.00
+  D-LEPTOSPIROSIS         logP=  -3568.56 mean=-198.253 n=18 prior= +0.00
+  D-MPA                   logP=  -3645.80 mean=-202.544 n=18 prior= +0.00
+  D137                    logP=  -3668.84 mean=-203.825 n=18 prior= -0.16
+  D-SLE-FLARE             logP=  -3813.24 mean=-211.847 n=18 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=  -4080.90 mean=-226.717 n=18 prior= +0.00
+  D-SEPSIS-GN             logP=  -4102.13 mean=-227.896 n=18 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-INFECTIOUS-MONONUCLEOSIS logP=   -528.27 mean= -29.348 prior= +0.00
+  D-HLH-MAS    logP=   -802.65 mean= -44.592 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=  -1372.90 mean= -76.272 prior= +0.00
+  D-TTP        logP=  -3355.34 mean=-186.408 prior= +0.00
+  D-TB-DISSEMINATED logP=  -3358.85 mean=-186.603 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -3458.68 mean=-192.149 prior= +0.00
+  D-MIS-A      logP=  -3467.13 mean=-192.618 prior= +0.00
+  D-LEPTOSPIROSIS logP=  -3568.56 mean=-198.253 prior= +0.00
+  D-MPA        logP=  -3645.80 mean=-202.544 prior= +0.00
+  D137         logP=  -3668.84 mean=-203.825 prior= -0.16
+  D-SLE-FLARE  logP=  -3813.24 mean=-211.847 prior= +0.00
+  D-LYMPHOMA-FEVER logP=  -4080.90 mean=-226.717 prior= +0.00
+  D-SEPSIS-GN  logP=  -4102.13 mean=-227.896 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -528.27 candidate=D-INFECTIOUS-MONONUCLEOSIS
+  logP_best_single=   -528.27 candidate=D-INFECTIOUS-MONONUCLEOSIS
+  logP_background_only=  -3929.43 mean=-218.301 n=18
+  delta_to_null_best_known=  +3401.16
+  delta_to_null_best_single=  +3401.16
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-INFECTIOUS-MONONUCLEOSIS  PASS
+best latent times: D-INFECTIOUS-MONONUCLEOSIS=day16.9
+largest standardized residuals: cmv_viral_load obs=0 copies/mL mu=4541.13 via=D-INFECTIOUS-MONONUCLEOSIS z=31.3; absolute_lymphocyte_count obs=13.425 10^9/L mu=7.0967 via=D-INFECTIOUS-MONONUCLEOSIS z=3.5; lymphadenopathy_activity obs=1 severity_score_0_1 mu=0.524303 via=D-INFECTIOUS-MONONUCLEOSIS z=3.0; fatigue_activity obs=0.8 severity_score_0_1 mu=0.358595 via=D-INFECTIOUS-MONONUCLEOSIS z=2.8; white_blood_cell_count obs=17.9 10^9/L mu=10.1757 via=D-INFECTIOUS-MONONUCLEOSIS z=2.6
+
+----------------------------------------------------------------------------------------------------
+HLH_EBV_HIV_PMC6592840_CASE2  expected=D-HLH-MAS
+source: PMID 31275772 / PMC6592840 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6592840/
+paper diagnosis: Secondary hemophagocytic lymphohistiocytosis in an HIV patient with EBV DNAemia and occult Hodgkin lymphoma
+observed axes: 16
+risk context: hiv_immunosuppression=cd4_51_nonadherent_haart; malignancy_trigger=occult_hodgkin_lymphoma_found_at_autopsy
+
+[joint SDE ranking: all candidates]
+* D-HLH-MAS               logP=   -386.18 mean= -24.136 n=16 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -573.93 mean= -35.870 n=16 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -694.41 mean= -43.400 n=16 prior= +0.00
+  D-SEPSIS-GN             logP=   -714.35 mean= -44.647 n=16 prior= +0.00
+  D137                    logP=   -729.63 mean= -45.602 n=16 prior= +0.18
+  D-LEPTOSPIROSIS         logP=   -783.42 mean= -48.964 n=16 prior= +0.00
+  D-MIS-A                 logP=   -835.43 mean= -52.215 n=16 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -940.50 mean= -58.781 n=16 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1081.96 mean= -67.623 n=16 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -1136.40 mean= -71.025 n=16 prior= +0.00
+  D-SLE-FLARE             logP=  -1244.77 mean= -77.798 n=16 prior= +0.00
+  D-TTP                   logP=  -1270.05 mean= -79.378 n=16 prior= +0.00
+  D-MPA                   logP=  -1324.05 mean= -82.753 n=16 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-HLH-MAS    logP=   -386.18 mean= -24.136 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -573.93 mean= -35.870 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -694.41 mean= -43.400 prior= +0.00
+  D-SEPSIS-GN  logP=   -714.35 mean= -44.647 prior= +0.00
+  D137         logP=   -729.63 mean= -45.602 prior= +0.18
+  D-LEPTOSPIROSIS logP=   -783.42 mean= -48.964 prior= +0.00
+  D-MIS-A      logP=   -835.43 mean= -52.215 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -940.50 mean= -58.781 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1081.96 mean= -67.623 prior= +0.00
+  D-TB-DISSEMINATED logP=  -1136.40 mean= -71.025 prior= +0.00
+  D-SLE-FLARE  logP=  -1244.77 mean= -77.798 prior= +0.00
+  D-TTP        logP=  -1270.05 mean= -79.378 prior= +0.00
+  D-MPA        logP=  -1324.05 mean= -82.753 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -386.18 candidate=D-HLH-MAS
+  logP_best_single=   -386.18 candidate=D-HLH-MAS
+  logP_background_only=  -1344.55 mean= -84.034 n=16
+  delta_to_null_best_known=   +958.37
+  delta_to_null_best_single=   +958.37
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-HLH-MAS  PASS
+best latent times: D-HLH-MAS=day16.2
+largest standardized residuals: fever_activity obs=1 severity_score_0_1 mu=0.0116261 via=case_observation_background_fallback z=12.4; vasopressor_requirement_activity obs=1 severity_score_0_1 mu=0.0264198 via=case_observation_background_fallback z=12.2; hypotension_activity obs=1 severity_score_0_1 mu=0.0315055 via=case_observation_background_fallback z=12.1; night_sweats_activity obs=1 severity_score_0_1 mu=0.047338 via=base_measure_background z=11.9; hepatosplenic_hypodense_lesion_activity obs=0.8 relative_activity_0_1 mu=0.0220812 via=case_observation_background_fallback z=9.7
+
+----------------------------------------------------------------------------------------------------
+HLH_MAS_DERMATOMYOSITIS_PMC7281037  expected=D-HLH-MAS
+source: PMID 32548165 / PMC7281037 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7281037/
+paper diagnosis: Dermatomyositis complicated by macrophage activation syndrome / secondary HLH
+observed axes: 21
+risk context: autoimmune_rheumatic_trigger=dermatomyositis
+
+[joint SDE ranking: all candidates]
+* D-HLH-MAS               logP=   -257.19 mean= -12.247 n=21 prior= +0.00
+  D137                    logP=   -269.68 mean= -12.842 n=21 prior= +0.18
+  D-LYMPHOMA-FEVER        logP=   -302.71 mean= -14.415 n=21 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -322.50 mean= -15.357 n=21 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -332.66 mean= -15.841 n=21 prior= +0.00
+  D-MIS-A                 logP=   -351.00 mean= -16.714 n=21 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -373.94 mean= -17.807 n=21 prior= +0.00
+  D-SEPSIS-GN             logP=   -405.50 mean= -19.310 n=21 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -468.48 mean= -22.308 n=21 prior= +0.00
+  D-SLE-FLARE             logP=  -2046.30 mean= -97.443 n=21 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -2063.89 mean= -98.281 n=21 prior= +0.00
+  D-MPA                   logP=  -2089.26 mean= -99.489 n=21 prior= +0.00
+  D-TTP                   logP=  -2166.35 mean=-103.160 n=21 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-HLH-MAS    logP=   -257.19 mean= -12.247 prior= +0.00
+  D137         logP=   -269.68 mean= -12.842 prior= +0.18
+  D-LYMPHOMA-FEVER logP=   -302.71 mean= -14.415 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -322.50 mean= -15.357 prior= +0.00
+  D-TB-DISSEMINATED logP=   -332.66 mean= -15.841 prior= +0.00
+  D-MIS-A      logP=   -351.00 mean= -16.714 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -373.94 mean= -17.807 prior= +0.00
+  D-SEPSIS-GN  logP=   -405.50 mean= -19.310 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -468.48 mean= -22.308 prior= +0.00
+  D-SLE-FLARE  logP=  -2046.30 mean= -97.443 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -2063.89 mean= -98.281 prior= +0.00
+  D-MPA        logP=  -2089.26 mean= -99.489 prior= +0.00
+  D-TTP        logP=  -2166.35 mean=-103.160 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -257.19 candidate=D-HLH-MAS
+  logP_best_single=   -257.19 candidate=D-HLH-MAS
+  logP_background_only=  -2264.34 mean=-107.826 n=21
+  delta_to_null_best_known=  +2007.15
+  delta_to_null_best_single=  +2007.15
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-HLH-MAS  PASS
+best latent times: D-HLH-MAS=day18.3
+largest standardized residuals: proximal_muscle_weakness_activity obs=1 severity_score_0_1 mu=0.0167818 via=case_observation_background_fallback z=12.3; dermatomyositis_rash_activity obs=1 severity_score_0_1 mu=0.028624 via=case_observation_background_fallback z=12.1; arthritis_activity obs=0.8 severity_score_0_1 mu=0.0649236 via=base_measure_background z=9.2; absolute_neutrophil_count obs=10.89 10^9/L mu=4.7142 via=D-HLH-MAS z=5.4; white_blood_cell_count obs=13.1 10^9/L mu=7.07856 via=D-HLH-MAS z=3.6
+
+----------------------------------------------------------------------------------------------------
+IE_STREP_PLURANIMALIUM_PMC10739377  expected=D-INFECTIVE-ENDOCARDITIS
+source: PMID 38143616 / PMC10739377 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10739377/
+paper diagnosis: Infective endocarditis caused by Streptococcus pluranimalium
+observed axes: 17
+risk context: congenital_heart_disease=ventricular_septal_defect
+
+[joint SDE ranking: all candidates]
+* D-INFECTIVE-ENDOCARDITIS logP=   -118.61 mean=  -6.977 n=17 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -324.85 mean= -19.109 n=17 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -327.07 mean= -19.239 n=17 prior= +0.00
+  D137                    logP=   -330.01 mean= -19.413 n=17 prior= +0.18
+  D-MIS-A                 logP=   -330.21 mean= -19.424 n=17 prior= +0.00
+  D-SLE-FLARE             logP=   -331.46 mean= -19.497 n=17 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -333.08 mean= -19.593 n=17 prior= +0.00
+  D-MPA                   logP=   -333.79 mean= -19.635 n=17 prior= +0.00
+  D-HLH-MAS               logP=   -361.45 mean= -21.262 n=17 prior= +0.00
+  D-SEPSIS-GN             logP=   -471.75 mean= -27.750 n=17 prior= +0.00
+  D-TTP                   logP=   -581.18 mean= -34.187 n=17 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -588.84 mean= -34.637 n=17 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -591.93 mean= -34.819 n=17 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-INFECTIVE-ENDOCARDITIS logP=   -118.61 mean=  -6.977 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -324.85 mean= -19.109 prior= +0.00
+  D-TB-DISSEMINATED logP=   -327.07 mean= -19.239 prior= +0.00
+  D137         logP=   -330.01 mean= -19.413 prior= +0.18
+  D-MIS-A      logP=   -330.21 mean= -19.424 prior= +0.00
+  D-SLE-FLARE  logP=   -331.46 mean= -19.497 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -333.08 mean= -19.593 prior= +0.00
+  D-MPA        logP=   -333.79 mean= -19.635 prior= +0.00
+  D-HLH-MAS    logP=   -361.45 mean= -21.262 prior= +0.00
+  D-SEPSIS-GN  logP=   -471.75 mean= -27.750 prior= +0.00
+  D-TTP        logP=   -581.18 mean= -34.187 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -588.84 mean= -34.637 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -591.93 mean= -34.819 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -118.61 candidate=D-INFECTIVE-ENDOCARDITIS
+  logP_best_single=   -118.61 candidate=D-INFECTIVE-ENDOCARDITIS
+  logP_background_only=   -578.60 mean= -34.035 n=17
+  delta_to_null_best_known=   +459.99
+  delta_to_null_best_single=   +459.99
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-INFECTIVE-ENDOCARDITIS  PASS
+best latent times: D-INFECTIVE-ENDOCARDITIS=day19.1
+largest standardized residuals: ie_vegetation_activity obs=1 relative_activity_0_1 mu=0.0399727 via=case_observation_background_fallback z=12.0; blood_culture_positivity_probability obs=1 probability_0_1 mu=0.398304 via=D-INFECTIVE-ENDOCARDITIS z=3.7; systolic_blood_pressure obs=107 mmHg mu=136.049 via=D-INFECTIVE-ENDOCARDITIS z=2.5; erythrocyte_sedimentation_rate obs=95 mm_per_hr mu=50.9772 via=D-INFECTIVE-ENDOCARDITIS z=2.2; hemoglobin obs=12.4 g/dL mu=10.6895 via=D-INFECTIVE-ENDOCARDITIS z=1.3
+
+----------------------------------------------------------------------------------------------------
+LYMPHOMA_ALCL_FUO_PMC5649675  expected=D-LYMPHOMA-FEVER
+source: PMID 29147338 / PMC5649675 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5649675/
+paper diagnosis: ALK-positive anaplastic large cell lymphoma with bladder involvement presenting as fever of unknown origin
+observed axes: 20
+
+[joint SDE ranking: all candidates]
+* D-MIS-A                 logP=   -210.01 mean= -10.501 n=20 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -219.36 mean= -10.968 n=20 prior= +0.00
+  D137                    logP=   -229.98 mean= -11.499 n=20 prior= -0.16
+  D-TB-DISSEMINATED       logP=   -235.37 mean= -11.768 n=20 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -257.80 mean= -12.890 n=20 prior= +0.00
+  D-HLH-MAS               logP=   -258.80 mean= -12.940 n=20 prior= +0.00
+  D-MPA                   logP=   -262.76 mean= -13.138 n=20 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -308.81 mean= -15.440 n=20 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -313.24 mean= -15.662 n=20 prior= +0.00
+  D-SLE-FLARE             logP=   -315.97 mean= -15.798 n=20 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -329.47 mean= -16.474 n=20 prior= +0.00
+  D-SEPSIS-GN             logP=   -358.94 mean= -17.947 n=20 prior= +0.00
+  D-TTP                   logP=   -502.82 mean= -25.141 n=20 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-MIS-A      logP=   -210.01 mean= -10.501 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -219.36 mean= -10.968 prior= +0.00
+  D137         logP=   -229.98 mean= -11.499 prior= -0.16
+  D-TB-DISSEMINATED logP=   -235.37 mean= -11.768 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -257.80 mean= -12.890 prior= +0.00
+  D-HLH-MAS    logP=   -258.80 mean= -12.940 prior= +0.00
+  D-MPA        logP=   -262.76 mean= -13.138 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -308.81 mean= -15.440 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -313.24 mean= -15.662 prior= +0.00
+  D-SLE-FLARE  logP=   -315.97 mean= -15.798 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -329.47 mean= -16.474 prior= +0.00
+  D-SEPSIS-GN  logP=   -358.94 mean= -17.947 prior= +0.00
+  D-TTP        logP=   -502.82 mean= -25.141 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -210.01 candidate=D-MIS-A
+  logP_best_single=   -210.01 candidate=D-MIS-A
+  logP_background_only=   -521.82 mean= -26.091 n=20
+  delta_to_null_best_known=   +311.81
+  delta_to_null_best_single=   +311.81
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-MIS-A  FAIL
+best latent times: D-MIS-A=day5.0
+largest standardized residuals: chills_activity obs=0.8 severity_score_0_1 mu=0.0279773 via=case_observation_background_fallback z=9.7; malaise_activity obs=0.8 severity_score_0_1 mu=0.0452507 via=case_observation_background_fallback z=9.4; bulky_nodal_mass_activity obs=0.8 relative_activity_0_1 mu=0.0453801 via=case_observation_background_fallback z=9.4; fatigue_activity obs=0.8 severity_score_0_1 mu=0.186891 via=base_measure_background z=7.7; flank_pain_activity obs=0.4 severity_score_0_1 mu=0.0228849 via=case_observation_background_fallback z=4.7
+
+----------------------------------------------------------------------------------------------------
+MPA_MPO_ANCA_COVID_PMC8907777  expected=D-MPA
+source: PMID 34840232 / PMC8907777 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8907777/
+paper diagnosis: MPO-ANCA-positive microscopic polyangiitis following COVID-19 infection
+observed axes: 14
+risk context: recent_covid19_infection=preceding_infection_or_immune_trigger
+
+[joint SDE ranking: all candidates]
+* D-MPA                   logP=   -111.82 mean=  -7.987 n=14 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -215.65 mean= -15.404 n=14 prior= +0.00
+  D-SLE-FLARE             logP=   -290.11 mean= -20.722 n=14 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -301.30 mean= -21.522 n=14 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -316.55 mean= -22.611 n=14 prior= +0.00
+  D137                    logP=   -320.84 mean= -22.917 n=14 prior= +0.18
+  D-LYMPHOMA-FEVER        logP=   -322.90 mean= -23.064 n=14 prior= +0.00
+  D-MIS-A                 logP=   -364.24 mean= -26.017 n=14 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -366.07 mean= -26.148 n=14 prior= +0.00
+  D-HLH-MAS               logP=   -397.28 mean= -28.377 n=14 prior= +0.00
+  D-TTP                   logP=   -398.23 mean= -28.445 n=14 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -404.32 mean= -28.880 n=14 prior= +0.00
+  D-SEPSIS-GN             logP=   -411.87 mean= -29.419 n=14 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-MPA        logP=   -111.82 mean=  -7.987 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -215.65 mean= -15.404 prior= +0.00
+  D-SLE-FLARE  logP=   -290.11 mean= -20.722 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -301.30 mean= -21.522 prior= +0.00
+  D-TB-DISSEMINATED logP=   -316.55 mean= -22.611 prior= +0.00
+  D137         logP=   -320.84 mean= -22.917 prior= +0.18
+  D-LYMPHOMA-FEVER logP=   -322.90 mean= -23.064 prior= +0.00
+  D-MIS-A      logP=   -364.24 mean= -26.017 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -366.07 mean= -26.148 prior= +0.00
+  D-HLH-MAS    logP=   -397.28 mean= -28.377 prior= +0.00
+  D-TTP        logP=   -398.23 mean= -28.445 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -404.32 mean= -28.880 prior= +0.00
+  D-SEPSIS-GN  logP=   -411.87 mean= -29.419 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -111.82 candidate=D-MPA
+  logP_best_single=   -111.82 candidate=D-MPA
+  logP_background_only=   -433.00 mean= -30.928 n=14
+  delta_to_null_best_known=   +321.18
+  delta_to_null_best_single=   +321.18
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-MPA  PASS
+best latent times: D-MPA=day45.7
+largest standardized residuals: antibiotic_nonresponse_activity obs=1 relative_activity_0_1 mu=0.0462979 via=case_observation_background_fallback z=11.9; serum_crp obs=136 mg/L mu=7.6448 via=D-MPA z=4.4; rheumatoid_factor_activity obs=1 probability_0_1_positive mu=0.533815 via=D-MPA z=4.0; hematuria_activity obs=0.8 severity_score_0_1 mu=0.304318 via=D-MPA z=3.3; active_urinary_sediment_activity obs=1 severity_score_0_1 mu=0.541124 via=D-MPA z=2.9
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_ECOLI_INFECTED_RENAL_CYST_PMC5343142  expected=D-SEPSIS-GN
+source: PMID 28348784 / PMC5343142 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5343142/
+paper diagnosis: Community-acquired pyelonephritis with infected renal parenchymal cyst and secondary Escherichia coli bloodstream infection
+observed axes: 24
+risk context: diabetes_mellitus=present; benign_prostatic_hypertrophy=present
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -343.62 mean= -14.317 n=24 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -452.74 mean= -18.864 n=24 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -762.75 mean= -31.781 n=24 prior= +0.00
+  D-MIS-A                 logP=   -790.71 mean= -32.946 n=24 prior= +0.00
+  D-MPA                   logP=   -802.78 mean= -33.449 n=24 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -858.80 mean= -35.783 n=24 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -864.17 mean= -36.007 n=24 prior= +0.00
+  D137                    logP=   -865.20 mean= -36.050 n=24 prior= -0.16
+  D-HLH-MAS               logP=   -866.31 mean= -36.096 n=24 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -875.53 mean= -36.480 n=24 prior= +0.00
+  D-TTP                   logP=   -878.79 mean= -36.616 n=24 prior= +0.00
+  D-SLE-FLARE             logP=   -881.82 mean= -36.743 n=24 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -889.57 mean= -37.065 n=24 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -343.62 mean= -14.317 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -452.74 mean= -18.864 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -762.75 mean= -31.781 prior= +0.00
+  D-MIS-A      logP=   -790.71 mean= -32.946 prior= +0.00
+  D-MPA        logP=   -802.78 mean= -33.449 prior= +0.00
+  D-TB-DISSEMINATED logP=   -858.80 mean= -35.783 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -864.17 mean= -36.007 prior= +0.00
+  D137         logP=   -865.20 mean= -36.050 prior= -0.16
+  D-HLH-MAS    logP=   -866.31 mean= -36.096 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -875.53 mean= -36.480 prior= +0.00
+  D-TTP        logP=   -878.79 mean= -36.616 prior= +0.00
+  D-SLE-FLARE  logP=   -881.82 mean= -36.743 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -889.57 mean= -37.065 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -343.62 candidate=D-SEPSIS-GN
+  logP_best_single=   -343.62 candidate=D-SEPSIS-GN
+  logP_background_only=   -901.52 mean= -37.564 n=24
+  delta_to_null_best_known=   +557.91
+  delta_to_null_best_single=   +557.91
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day2.9
+largest standardized residuals: fever_activity obs=1 severity_score_0_1 mu=0.0133757 via=case_observation_background_fallback z=12.3; rigors_activity obs=1 severity_score_0_1 mu=0.0440359 via=case_observation_background_fallback z=11.9; vomiting_activity obs=0.8 severity_score_0_1 mu=0.0318311 via=case_observation_background_fallback z=9.6; malaise_activity obs=0.7 severity_score_0_1 mu=0.0105495 via=case_observation_background_fallback z=8.6; penicillin_type1_hypersensitivity_probability obs=1 probability_0_1 mu=0.0267244 via=D-SEPSIS-GN z=6.5
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_ECOLI_PMC6312905_APN_bacteremia  expected=D-SEPSIS-GN
+source: PMID 30600660 / PMC6312905 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6312905/
+paper diagnosis: Community-acquired acute pyelonephritis with persistent ESBL-producing Escherichia coli bacteremia
+observed axes: 28
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -351.18 mean= -12.542 n=28 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -428.43 mean= -15.301 n=28 prior= +0.00
+  D-MIS-A                 logP=   -610.44 mean= -21.802 n=28 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -673.10 mean= -24.039 n=28 prior= +0.00
+  D137                    logP=   -679.97 mean= -24.284 n=28 prior= +0.18
+  D-MPA                   logP=   -731.01 mean= -26.107 n=28 prior= +0.00
+  D-HLH-MAS               logP=   -746.66 mean= -26.666 n=28 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -760.17 mean= -27.149 n=28 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -787.13 mean= -28.112 n=28 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -838.51 mean= -29.947 n=28 prior= +0.00
+  D-SLE-FLARE             logP=   -880.83 mean= -31.458 n=28 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -980.06 mean= -35.002 n=28 prior= +0.00
+  D-TTP                   logP=  -1082.64 mean= -38.666 n=28 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -351.18 mean= -12.542 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -428.43 mean= -15.301 prior= +0.00
+  D-MIS-A      logP=   -610.44 mean= -21.802 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -673.10 mean= -24.039 prior= +0.00
+  D137         logP=   -679.97 mean= -24.284 prior= +0.18
+  D-MPA        logP=   -731.01 mean= -26.107 prior= +0.00
+  D-HLH-MAS    logP=   -746.66 mean= -26.666 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -760.17 mean= -27.149 prior= +0.00
+  D-TB-DISSEMINATED logP=   -787.13 mean= -28.112 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -838.51 mean= -29.947 prior= +0.00
+  D-SLE-FLARE  logP=   -880.83 mean= -31.458 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -980.06 mean= -35.002 prior= +0.00
+  D-TTP        logP=  -1082.64 mean= -38.666 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -351.18 candidate=D-SEPSIS-GN
+  logP_best_single=   -351.18 candidate=D-SEPSIS-GN
+  logP_background_only=  -1120.52 mean= -40.018 n=28
+  delta_to_null_best_known=   +769.34
+  delta_to_null_best_single=   +769.34
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day4.5
+largest standardized residuals: erythrocyte_sedimentation_rate obs=67 mm_per_hr mu=17.3647 via=base_measure_background z=14.9; flank_pain_activity obs=1 severity_score_0_1 mu=0.00650842 via=case_observation_background_fallback z=12.4; initial_inactive_antibiotic_exposure_activity obs=1 relative_activity_0_1 mu=0 via=D-SEPSIS-GN z=6.3; esbl_risk_activity obs=1 relative_activity_0_1 mu=0.0718215 via=D-SEPSIS-GN z=6.2; urinary_source_probability obs=0.98 probability_0_1 mu=0.00226488 via=D-SEPSIS-GN z=6.2
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KIDNEY_TX_RALSTONIA_PMC9309314  expected=D-SEPSIS-GN
+source: PMID 35899082 / PMC9309314 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9309314/
+paper diagnosis: Septic shock after kidney transplant caused by bloodstream Ralstonia mannitolilytica infection
+observed axes: 17
+risk context: immunosuppression=glucocorticoids_or_biologic_or_transplant; chronic_kidney_disease=stage_4_5_or_dialysis; recent_antibiotic_exposure_or_healthcare_contact=present_within_90_days
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -357.41 mean= -21.024 n=17 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -454.57 mean= -26.740 n=17 prior= +0.00
+  D-HLH-MAS               logP=   -534.56 mean= -31.445 n=17 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -537.41 mean= -31.612 n=17 prior= +0.00
+  D-MIS-A                 logP=   -553.89 mean= -32.582 n=17 prior= +0.00
+  D137                    logP=   -554.72 mean= -32.631 n=17 prior= -0.16
+  D-TTP                   logP=   -563.81 mean= -33.166 n=17 prior= +0.00
+  D-SLE-FLARE             logP=   -607.80 mean= -35.753 n=17 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -610.94 mean= -35.938 n=17 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -612.87 mean= -36.051 n=17 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -614.83 mean= -36.166 n=17 prior= +0.00
+  D-MPA                   logP=   -622.31 mean= -36.606 n=17 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -624.02 mean= -36.707 n=17 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -357.41 mean= -21.024 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -454.57 mean= -26.740 prior= +0.00
+  D-HLH-MAS    logP=   -534.56 mean= -31.445 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -537.41 mean= -31.612 prior= +0.00
+  D-MIS-A      logP=   -553.89 mean= -32.582 prior= +0.00
+  D137         logP=   -554.72 mean= -32.631 prior= -0.16
+  D-TTP        logP=   -563.81 mean= -33.166 prior= +0.00
+  D-SLE-FLARE  logP=   -607.80 mean= -35.753 prior= +0.00
+  D-TB-DISSEMINATED logP=   -610.94 mean= -35.938 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -612.87 mean= -36.051 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -614.83 mean= -36.166 prior= +0.00
+  D-MPA        logP=   -622.31 mean= -36.606 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -624.02 mean= -36.707 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -357.41 candidate=D-SEPSIS-GN
+  logP_best_single=   -357.41 candidate=D-SEPSIS-GN
+  logP_background_only=   -632.05 mean= -37.179 n=17
+  delta_to_null_best_known=   +274.63
+  delta_to_null_best_single=   +274.63
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day2.8
+largest standardized residuals: chills_activity obs=1 severity_score_0_1 mu=0.0149221 via=case_observation_background_fallback z=12.3; septic_shock_activity obs=1 severity_score_0_1 mu=0.0335671 via=case_observation_background_fallback z=12.1; amikacin_susceptibility_probability obs=1 probability_0_1 mu=0.034741 via=case_observation_background_fallback z=12.1; trimethoprim_sulfamethoxazole_susceptibility_probability obs=1 probability_0_1 mu=0.0460819 via=case_observation_background_fallback z=11.9; d_dimer obs=57.35 μg/mL_FEU mu=1.12267 via=D-SEPSIS-GN z=5.1
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_EPN_ESBL_PMC7573926  expected=D-SEPSIS-GN
+source: PMID 33102052 / PMC7573926 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7573926/
+paper diagnosis: Emphysematous pyelonephritis with septic shock caused by ESBL-producing Klebsiella pneumoniae
+observed axes: 26
+risk context: diabetes_mellitus=present; age=elderly_>=75; recent_antibiotic_exposure_within_90_days=present
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -311.78 mean= -11.992 n=26 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -555.96 mean= -21.383 n=26 prior= +0.00
+  D-MIS-A                 logP=   -666.66 mean= -25.641 n=26 prior= +0.00
+  D-MPA                   logP=   -747.04 mean= -28.732 n=26 prior= +0.00
+  D137                    logP=   -801.09 mean= -30.811 n=26 prior= -0.16
+  D-DRUG-FEVER-DRESS      logP=   -801.91 mean= -30.843 n=26 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -937.24 mean= -36.048 n=26 prior= +0.00
+  D-HLH-MAS               logP=   -972.75 mean= -37.414 n=26 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -976.92 mean= -37.574 n=26 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -987.98 mean= -37.999 n=26 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1005.25 mean= -38.663 n=26 prior= +0.00
+  D-SLE-FLARE             logP=  -1053.95 mean= -40.537 n=26 prior= +0.00
+  D-TTP                   logP=  -1275.90 mean= -49.073 n=26 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -311.78 mean= -11.992 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -555.96 mean= -21.383 prior= +0.00
+  D-MIS-A      logP=   -666.66 mean= -25.641 prior= +0.00
+  D-MPA        logP=   -747.04 mean= -28.732 prior= +0.00
+  D137         logP=   -801.09 mean= -30.811 prior= -0.16
+  D-DRUG-FEVER-DRESS logP=   -801.91 mean= -30.843 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -937.24 mean= -36.048 prior= +0.00
+  D-HLH-MAS    logP=   -972.75 mean= -37.414 prior= +0.00
+  D-TB-DISSEMINATED logP=   -976.92 mean= -37.574 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -987.98 mean= -37.999 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1005.25 mean= -38.663 prior= +0.00
+  D-SLE-FLARE  logP=  -1053.95 mean= -40.537 prior= +0.00
+  D-TTP        logP=  -1275.90 mean= -49.073 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -311.78 candidate=D-SEPSIS-GN
+  logP_best_single=   -311.78 candidate=D-SEPSIS-GN
+  logP_background_only=  -1339.24 mean= -51.509 n=26
+  delta_to_null_best_known=  +1027.46
+  delta_to_null_best_single=  +1027.46
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day2.1
+largest standardized residuals: dysuria_activity obs=1 severity_score_0_1 mu=0.0277387 via=case_observation_background_fallback z=12.2; abdominal_pain_activity obs=0.9 severity_score_0_1 mu=0.0080428 via=base_measure_background z=11.1; drainable_focus_probability obs=1 probability_0_1 mu=0.00284113 via=D-SEPSIS-GN z=6.6; esbl_risk_activity obs=1 relative_activity_0_1 mu=0.076893 via=D-SEPSIS-GN z=6.2; urinary_source_probability obs=0.98 probability_0_1 mu=0.0609063 via=D-SEPSIS-GN z=5.8
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_IKLAS_POLYMICROBIAL_PMC12390790  expected=D-SEPSIS-GN
+source: PMID None / PMC12390790 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12390790/
+paper diagnosis: Invasive Klebsiella pneumoniae liver abscess syndrome with septic pulmonary embolism and later polymicrobial hospital-acquired infection
+observed axes: 35
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -407.16 mean= -11.633 n=35 prior= +0.00
+  D-MIS-A                 logP=   -716.06 mean= -20.459 n=35 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -896.60 mean= -25.617 n=35 prior= +0.00
+  D-HLH-MAS               logP=   -900.29 mean= -25.723 n=35 prior= +0.00
+  D137                    logP=   -968.19 mean= -27.663 n=35 prior= +0.18
+  D-DRUG-FEVER-DRESS      logP=  -1030.94 mean= -29.455 n=35 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -1100.81 mean= -31.452 n=35 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=  -1270.15 mean= -36.290 n=35 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1314.16 mean= -37.547 n=35 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -7176.44 mean=-205.041 n=35 prior= +0.00
+  D-MPA                   logP=  -7596.77 mean=-217.051 n=35 prior= +0.00
+  D-TTP                   logP=  -7797.19 mean=-222.777 n=35 prior= +0.00
+  D-SLE-FLARE             logP=  -7803.81 mean=-222.966 n=35 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -407.16 mean= -11.633 prior= +0.00
+  D-MIS-A      logP=   -716.06 mean= -20.459 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -896.60 mean= -25.617 prior= +0.00
+  D-HLH-MAS    logP=   -900.29 mean= -25.723 prior= +0.00
+  D137         logP=   -968.19 mean= -27.663 prior= +0.18
+  D-DRUG-FEVER-DRESS logP=  -1030.94 mean= -29.455 prior= +0.00
+  D-TB-DISSEMINATED logP=  -1100.81 mean= -31.452 prior= +0.00
+  D-LYMPHOMA-FEVER logP=  -1270.15 mean= -36.290 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1314.16 mean= -37.547 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -7176.44 mean=-205.041 prior= +0.00
+  D-MPA        logP=  -7596.77 mean=-217.051 prior= +0.00
+  D-TTP        logP=  -7797.19 mean=-222.777 prior= +0.00
+  D-SLE-FLARE  logP=  -7803.81 mean=-222.966 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -407.16 candidate=D-SEPSIS-GN
+  logP_best_single=   -407.16 candidate=D-SEPSIS-GN
+  logP_background_only=  -8055.70 mean=-230.163 n=35
+  delta_to_null_best_known=  +7648.54
+  delta_to_null_best_single=  +7648.54
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day2.0
+largest standardized residuals: serum_il6 obs=482 pg/mL mu=5.18115 via=base_measure_background z=13.1; abdominal_pain_activity obs=1 severity_score_0_1 mu=0.0441401 via=base_measure_background z=11.9; respiratory_distress_activity obs=0.9 severity_score_0_1 mu=0.0480808 via=case_observation_background_fallback z=10.6; intra_abdominal_abscess_activity obs=1 relative_activity_0_1 mu=0 via=D-SEPSIS-GN z=6.7; drainable_focus_probability obs=1 probability_0_1 mu=0.085593 via=D-SEPSIS-GN z=6.1
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_LIVER_ABSCESS_PMC10247906_CASE2  expected=D-SEPSIS-GN
+source: PMID 37303348 / PMC10247906 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10247906/
+paper diagnosis: Klebsiella pneumoniae pyogenic liver abscess with septic shock
+observed axes: 27
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -419.09 mean= -15.522 n=27 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -672.12 mean= -24.893 n=27 prior= +0.00
+  D-MIS-A                 logP=   -799.65 mean= -29.617 n=27 prior= +0.00
+  D-HLH-MAS               logP=   -834.75 mean= -30.917 n=27 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -850.33 mean= -31.494 n=27 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -850.80 mean= -31.511 n=27 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -854.13 mean= -31.634 n=27 prior= +0.00
+  D137                    logP=   -856.00 mean= -31.704 n=27 prior= -0.16
+  D-LYMPHOMA-FEVER        logP=   -890.65 mean= -32.987 n=27 prior= +0.00
+  D-MPA                   logP=   -907.83 mean= -33.623 n=27 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -910.49 mean= -33.722 n=27 prior= +0.00
+  D-TTP                   logP=   -972.59 mean= -36.022 n=27 prior= +0.00
+  D-SLE-FLARE             logP=  -1022.52 mean= -37.871 n=27 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -419.09 mean= -15.522 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -672.12 mean= -24.893 prior= +0.00
+  D-MIS-A      logP=   -799.65 mean= -29.617 prior= +0.00
+  D-HLH-MAS    logP=   -834.75 mean= -30.917 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -850.33 mean= -31.494 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -850.80 mean= -31.511 prior= +0.00
+  D-TB-DISSEMINATED logP=   -854.13 mean= -31.634 prior= +0.00
+  D137         logP=   -856.00 mean= -31.704 prior= -0.16
+  D-LYMPHOMA-FEVER logP=   -890.65 mean= -32.987 prior= +0.00
+  D-MPA        logP=   -907.83 mean= -33.623 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -910.49 mean= -33.722 prior= +0.00
+  D-TTP        logP=   -972.59 mean= -36.022 prior= +0.00
+  D-SLE-FLARE  logP=  -1022.52 mean= -37.871 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -419.09 candidate=D-SEPSIS-GN
+  logP_best_single=   -419.09 candidate=D-SEPSIS-GN
+  logP_background_only=  -1070.00 mean= -39.630 n=27
+  delta_to_null_best_known=   +650.91
+  delta_to_null_best_single=   +650.91
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day3.7
+largest standardized residuals: fever_history_activity obs=1 severity_score_0_1 mu=0.0156405 via=case_observation_background_fallback z=12.3; chills_activity obs=1 severity_score_0_1 mu=0.039972 via=case_observation_background_fallback z=12.0; abdominal_pain_activity obs=0.9 severity_score_0_1 mu=0.0415735 via=base_measure_background z=10.7; body_aches_activity obs=0.8 severity_score_0_1 mu=0.00680079 via=case_observation_background_fallback z=9.9; cough_activity obs=0.7 severity_score_0_1 mu=0.0485832 via=base_measure_background z=8.1
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_MULTIORGAN_ILAS_PMC9356912  expected=D-SEPSIS-GN
+source: PMID None / PMC9356912 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9356912/
+paper diagnosis: Septic shock from invasive Klebsiella pneumoniae syndrome with necrotizing pneumonia and multiple hepatic abscesses
+observed axes: 32
+risk context: diabetes_mellitus=present
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -397.63 mean= -12.426 n=32 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -712.08 mean= -22.253 n=32 prior= +0.00
+  D-MIS-A                 logP=   -917.51 mean= -28.672 n=32 prior= +0.00
+  D137                    logP=  -1014.22 mean= -31.694 n=32 prior= -0.16
+  D-DRUG-FEVER-DRESS      logP=  -1084.13 mean= -33.879 n=32 prior= +0.00
+  D-MPA                   logP=  -1190.21 mean= -37.194 n=32 prior= +0.00
+  D-HLH-MAS               logP=  -1318.39 mean= -41.200 n=32 prior= +0.00
+  D-LEPTOSPIROSIS         logP=  -1321.24 mean= -41.289 n=32 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -1411.96 mean= -44.124 n=32 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=  -1441.71 mean= -45.054 n=32 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1508.33 mean= -47.135 n=32 prior= +0.00
+  D-SLE-FLARE             logP=  -1604.86 mean= -50.152 n=32 prior= +0.00
+  D-TTP                   logP=  -1965.42 mean= -61.419 n=32 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -397.63 mean= -12.426 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -712.08 mean= -22.253 prior= +0.00
+  D-MIS-A      logP=   -917.51 mean= -28.672 prior= +0.00
+  D137         logP=  -1014.22 mean= -31.694 prior= -0.16
+  D-DRUG-FEVER-DRESS logP=  -1084.13 mean= -33.879 prior= +0.00
+  D-MPA        logP=  -1190.21 mean= -37.194 prior= +0.00
+  D-HLH-MAS    logP=  -1318.39 mean= -41.200 prior= +0.00
+  D-LEPTOSPIROSIS logP=  -1321.24 mean= -41.289 prior= +0.00
+  D-TB-DISSEMINATED logP=  -1411.96 mean= -44.124 prior= +0.00
+  D-LYMPHOMA-FEVER logP=  -1441.71 mean= -45.054 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -1508.33 mean= -47.135 prior= +0.00
+  D-SLE-FLARE  logP=  -1604.86 mean= -50.152 prior= +0.00
+  D-TTP        logP=  -1965.42 mean= -61.419 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -397.63 candidate=D-SEPSIS-GN
+  logP_best_single=   -397.63 candidate=D-SEPSIS-GN
+  logP_background_only=  -1974.52 mean= -61.704 n=32
+  delta_to_null_best_known=  +1576.89
+  delta_to_null_best_single=  +1576.89
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day2.4
+largest standardized residuals: septic_shock_activity obs=1 severity_score_0_1 mu=0.00847413 via=case_observation_background_fallback z=12.4; vasopressor_requirement_activity obs=1 severity_score_0_1 mu=0.0496325 via=case_observation_background_fallback z=11.9; hypoxia_activity obs=0.8 severity_score_0_1 mu=0.0350796 via=case_observation_background_fallback z=9.6; drainable_focus_probability obs=1 probability_0_1 mu=0.0856254 via=D-SEPSIS-GN z=6.1; intra_abdominal_abscess_activity obs=0.9 relative_activity_0_1 mu=0 via=D-SEPSIS-GN z=6.0
+
+----------------------------------------------------------------------------------------------------
+SEPSIS_KLEBSIELLA_VARIICOLA_LIVER_ABSCESS_PMC10784832  expected=D-SEPSIS-GN
+source: PMID 38222021 / PMC10784832 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10784832/
+paper diagnosis: Invasive liver abscess syndrome caused by Klebsiella variicola with intracranial infection and septic shock
+observed axes: 29
+risk context: recent_antibiotic_exposure_or_healthcare_contact=recent_broad_spectrum_antibiotics
+
+[joint SDE ranking: all candidates]
+* D-SEPSIS-GN             logP=   -451.98 mean= -15.586 n=29 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -803.53 mean= -27.708 n=29 prior= +0.00
+  D-MIS-A                 logP=   -871.73 mean= -30.060 n=29 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -886.14 mean= -30.557 n=29 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -887.32 mean= -30.597 n=29 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -889.58 mean= -30.675 n=29 prior= +0.00
+  D-HLH-MAS               logP=   -891.44 mean= -30.739 n=29 prior= +0.00
+  D137                    logP=   -909.40 mean= -31.359 n=29 prior= +0.18
+  D-LYMPHOMA-FEVER        logP=   -913.29 mean= -31.493 n=29 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -930.27 mean= -32.078 n=29 prior= +0.00
+  D-MPA                   logP=  -1002.00 mean= -34.552 n=29 prior= +0.00
+  D-SLE-FLARE             logP=  -1028.93 mean= -35.480 n=29 prior= +0.00
+  D-TTP                   logP=  -1082.62 mean= -37.332 n=29 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SEPSIS-GN  logP=   -451.98 mean= -15.586 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -803.53 mean= -27.708 prior= +0.00
+  D-MIS-A      logP=   -871.73 mean= -30.060 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -886.14 mean= -30.557 prior= +0.00
+  D-TB-DISSEMINATED logP=   -887.32 mean= -30.597 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -889.58 mean= -30.675 prior= +0.00
+  D-HLH-MAS    logP=   -891.44 mean= -30.739 prior= +0.00
+  D137         logP=   -909.40 mean= -31.359 prior= +0.18
+  D-LYMPHOMA-FEVER logP=   -913.29 mean= -31.493 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -930.27 mean= -32.078 prior= +0.00
+  D-MPA        logP=  -1002.00 mean= -34.552 prior= +0.00
+  D-SLE-FLARE  logP=  -1028.93 mean= -35.480 prior= +0.00
+  D-TTP        logP=  -1082.62 mean= -37.332 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -451.98 candidate=D-SEPSIS-GN
+  logP_best_single=   -451.98 candidate=D-SEPSIS-GN
+  logP_background_only=  -1085.54 mean= -37.432 n=29
+  delta_to_null_best_known=   +633.56
+  delta_to_null_best_single=   +633.56
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SEPSIS-GN  PASS
+best latent times: D-SEPSIS-GN=day3.4
+largest standardized residuals: coma_activity obs=1 severity_score_0_1 mu=0.0233597 via=case_observation_background_fallback z=12.2; fever_history_activity obs=1 severity_score_0_1 mu=0.0235411 via=case_observation_background_fallback z=12.2; chills_activity obs=1 severity_score_0_1 mu=0.024573 via=case_observation_background_fallback z=12.2; septic_shock_activity obs=1 severity_score_0_1 mu=0.0318854 via=case_observation_background_fallback z=12.1; intra_abdominal_abscess_activity obs=1 relative_activity_0_1 mu=0 via=D-SEPSIS-GN z=6.7
+
+----------------------------------------------------------------------------------------------------
+SLE_PNEUMONITIS_PMC7769658  expected=D-SLE-FLARE
+source: PMID 33414977 / PMC7769658 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7769658/
+paper diagnosis: New-onset systemic lupus erythematosus presenting as acute lupus pneumonitis during pregnancy
+observed axes: 20
+risk context: pregnancy=second_trimester
+
+[joint SDE ranking: all candidates]
+* D-SLE-FLARE             logP=   -308.11 mean= -16.217 n=19 prior= +0.00
+  D-MPA                   logP=   -335.53 mean= -17.660 n=19 prior= +0.00
+  D137                    logP=   -374.18 mean= -19.694 n=19 prior= +0.18
+  D-TB-DISSEMINATED       logP=   -388.33 mean= -20.438 n=19 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -391.87 mean= -20.625 n=19 prior= +0.00
+  D-MIS-A                 logP=   -407.29 mean= -21.436 n=19 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -411.59 mean= -21.662 n=19 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=   -417.65 mean= -21.982 n=19 prior= +0.00
+  D-HLH-MAS               logP=   -422.17 mean= -22.220 n=19 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -485.75 mean= -25.566 n=19 prior= +0.00
+  D-SEPSIS-GN             logP=   -492.85 mean= -25.939 n=19 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -494.19 mean= -26.010 n=19 prior= +0.00
+  D-TTP                   logP=   -496.28 mean= -26.120 n=19 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-SLE-FLARE  logP=   -308.11 mean= -16.217 prior= +0.00
+  D-MPA        logP=   -335.53 mean= -17.660 prior= +0.00
+  D137         logP=   -374.18 mean= -19.694 prior= +0.18
+  D-TB-DISSEMINATED logP=   -388.33 mean= -20.438 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -391.87 mean= -20.625 prior= +0.00
+  D-MIS-A      logP=   -407.29 mean= -21.436 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -411.59 mean= -21.662 prior= +0.00
+  D-LYMPHOMA-FEVER logP=   -417.65 mean= -21.982 prior= +0.00
+  D-HLH-MAS    logP=   -422.17 mean= -22.220 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -485.75 mean= -25.566 prior= +0.00
+  D-SEPSIS-GN  logP=   -492.85 mean= -25.939 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -494.19 mean= -26.010 prior= +0.00
+  D-TTP        logP=   -496.28 mean= -26.120 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -308.11 candidate=D-SLE-FLARE
+  logP_best_single=   -308.11 candidate=D-SLE-FLARE
+  logP_background_only=   -498.90 mean= -26.258 n=19
+  delta_to_null_best_known=   +190.79
+  delta_to_null_best_single=   +190.79
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-SLE-FLARE  PASS
+best latent times: D-SLE-FLARE=day21.0
+largest standardized residuals: anti_ssa_positivity_probability obs=1 probability_0_1 mu=0.0266612 via=case_observation_background_fallback z=12.2; ana_positivity_probability obs=1 probability_0_1 mu=0.0395891 via=case_observation_background_fallback z=12.0; dyspnea_activity obs=0.8 severity_score_0_1 mu=0.00926147 via=case_observation_background_fallback z=9.9; cough_activity obs=0.8 severity_score_0_1 mu=0.0311041 via=base_measure_background z=9.6; lupus_pneumonitis_activity obs=1 relative_activity_0_1 mu=0.0403919 via=D-SLE-FLARE z=7.2
+
+----------------------------------------------------------------------------------------------------
+TB_DISSEMINATED_AIDS_CHOLESTASIS_PMC3939406  expected=D-TB-DISSEMINATED
+source: PMID 24567181 / PMC3939406 / https://pmc.ncbi.nlm.nih.gov/articles/PMC3939406/
+paper diagnosis: Disseminated tuberculosis manifesting as cholestasis in a patient with AIDS
+observed axes: 24
+risk context: hiv_aids=advanced_untreated_cd4_below_50; tb_exposure_or_endemic_origin=born_or_extensively_travelled_in_high_burden_regions
+
+[joint SDE ranking: all candidates]
+* D-TB-DISSEMINATED       logP=   -421.47 mean= -17.561 n=24 prior= +0.00
+  D137                    logP=   -578.66 mean= -24.111 n=24 prior= -0.16
+  D-LYMPHOMA-FEVER        logP=   -605.77 mean= -25.240 n=24 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -941.09 mean= -39.212 n=24 prior= +0.00
+  D-MPA                   logP=  -1128.87 mean= -47.036 n=24 prior= +0.00
+  D-LEPTOSPIROSIS         logP=  -3071.52 mean=-127.980 n=24 prior= +0.00
+  D-HLH-MAS               logP=  -3110.58 mean=-129.607 n=24 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=  -3124.76 mean=-130.198 n=24 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -3143.93 mean=-130.997 n=24 prior= +0.00
+  D-SEPSIS-GN             logP=  -3149.58 mean=-131.233 n=24 prior= +0.00
+  D-MIS-A                 logP=  -3158.18 mean=-131.591 n=24 prior= +0.00
+  D-SLE-FLARE             logP=  -3339.66 mean=-139.153 n=24 prior= +0.00
+  D-TTP                   logP=  -3348.21 mean=-139.509 n=24 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-TB-DISSEMINATED logP=   -421.47 mean= -17.561 prior= +0.00
+  D137         logP=   -578.66 mean= -24.111 prior= -0.16
+  D-LYMPHOMA-FEVER logP=   -605.77 mean= -25.240 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=   -941.09 mean= -39.212 prior= +0.00
+  D-MPA        logP=  -1128.87 mean= -47.036 prior= +0.00
+  D-LEPTOSPIROSIS logP=  -3071.52 mean=-127.980 prior= +0.00
+  D-HLH-MAS    logP=  -3110.58 mean=-129.607 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=  -3124.76 mean=-130.198 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=  -3143.93 mean=-130.997 prior= +0.00
+  D-SEPSIS-GN  logP=  -3149.58 mean=-131.233 prior= +0.00
+  D-MIS-A      logP=  -3158.18 mean=-131.591 prior= +0.00
+  D-SLE-FLARE  logP=  -3339.66 mean=-139.153 prior= +0.00
+  D-TTP        logP=  -3348.21 mean=-139.509 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -421.47 candidate=D-TB-DISSEMINATED
+  logP_best_single=   -421.47 candidate=D-TB-DISSEMINATED
+  logP_background_only=  -3363.37 mean=-140.141 n=24
+  delta_to_null_best_known=  +2941.91
+  delta_to_null_best_single=  +2941.91
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-TB-DISSEMINATED  PASS
+best latent times: D-TB-DISSEMINATED=day87.8
+largest standardized residuals: weight_loss_rate obs=6 kg_per_week mu=1.08013 via=D-TB-DISSEMINATED z=19.7; afb_smear_positivity_probability obs=1 probability_0_1 mu=0.0389983 via=case_observation_background_fallback z=12.0; jaundice_activity obs=0.8 severity_score_0_1 mu=0 via=base_measure_background z=10.0; hepatomegaly_activity obs=0.9 severity_score_0_1 mu=0.0849589 via=D-TB-DISSEMINATED z=7.0; mtb_pcr_positivity obs=1 probability_0_1 mu=0.0723855 via=D-TB-DISSEMINATED z=5.9
+
+----------------------------------------------------------------------------------------------------
+TTP_SLE_PMC12234117  expected=D-TTP
+source: PMID 40625480 / PMC12234117 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12234117/
+paper diagnosis: Systemic lupus erythematosus-associated thrombotic thrombocytopenic purpura
+observed axes: 18
+risk context: systemic_lupus_erythematosus=present; autoimmune_disease_background=present; severe_neurologic_involvement_at_presentation=present
+
+[joint SDE ranking: all candidates]
+* D-TTP                   logP=   -459.28 mean= -25.516 n=18 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -651.40 mean= -36.189 n=18 prior= +0.00
+  D-SLE-FLARE             logP=   -796.50 mean= -44.250 n=18 prior= +0.00
+  D-SEPSIS-GN             logP=   -949.49 mean= -52.749 n=18 prior= +0.00
+  D-MIS-A                 logP=   -964.05 mean= -53.558 n=18 prior= +0.00
+  D-LEPTOSPIROSIS         logP=   -976.55 mean= -54.253 n=18 prior= +0.00
+  D-DRUG-FEVER-DRESS      logP=   -984.48 mean= -54.693 n=18 prior= +0.00
+  D137                    logP=   -990.38 mean= -55.021 n=18 prior= +0.18
+  D-HLH-MAS               logP=   -998.84 mean= -55.491 n=18 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -1008.08 mean= -56.005 n=18 prior= +0.00
+  D-LYMPHOMA-FEVER        logP=  -1017.74 mean= -56.541 n=18 prior= +0.00
+  D-MPA                   logP=  -1157.50 mean= -64.306 n=18 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -1185.80 mean= -65.878 n=18 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-TTP        logP=   -459.28 mean= -25.516 prior= +0.00
+  D-INFECTIOUS-MONONUCLEOSIS logP=   -651.40 mean= -36.189 prior= +0.00
+  D-SLE-FLARE  logP=   -796.50 mean= -44.250 prior= +0.00
+  D-SEPSIS-GN  logP=   -949.49 mean= -52.749 prior= +0.00
+  D-MIS-A      logP=   -964.05 mean= -53.558 prior= +0.00
+  D-LEPTOSPIROSIS logP=   -976.55 mean= -54.253 prior= +0.00
+  D-DRUG-FEVER-DRESS logP=   -984.48 mean= -54.693 prior= +0.00
+  D137         logP=   -990.38 mean= -55.021 prior= +0.18
+  D-HLH-MAS    logP=   -998.84 mean= -55.491 prior= +0.00
+  D-TB-DISSEMINATED logP=  -1008.08 mean= -56.005 prior= +0.00
+  D-LYMPHOMA-FEVER logP=  -1017.74 mean= -56.541 prior= +0.00
+  D-MPA        logP=  -1157.50 mean= -64.306 prior= +0.00
+  D-INFECTIVE-ENDOCARDITIS logP=  -1185.80 mean= -65.878 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -459.28 candidate=D-TTP
+  logP_best_single=   -459.28 candidate=D-TTP
+  logP_background_only=  -1336.38 mean= -74.243 n=18
+  delta_to_null_best_known=   +877.09
+  delta_to_null_best_single=   +877.09
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-TTP  PASS
+best latent times: D-TTP=day7.4
+largest standardized residuals: serum_ast obs=122 U/L mu=34.9729 via=base_measure_background z=17.4; anti_adamts13_antibody_positivity_probability obs=1 probability_0_1 mu=0.046662 via=case_observation_background_fallback z=11.9; jaundice_activity obs=0.8 severity_score_0_1 mu=0 via=base_measure_background z=10.0; reticulocyte_count obs=446.1 10^9/L mu=113.244 via=D-TTP z=8.9; absolute_neutrophil_count obs=13.31 10^9/L mu=6.56445 via=base_measure_background z=8.1
+
+====================================================================================================
+Single-manifold validation: 19/20 PASS
+Combo-manifold validation:  0/1 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.

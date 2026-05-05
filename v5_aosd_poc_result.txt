@@ -1,0 +1,66 @@
+========================================================================
+ v5 流体架构 PoC — AOSD real case 实测
+========================================================================
+
+日期: 2026-04-29
+Case: PMID 33363596 / PMC7725026
+  Title: Adult-onset Still's disease and the role of dermatological manifestations: A case report and literature review
+  URL: https://pmc.ncbi.nlm.nih.gov/articles/PMC7725026/
+  Diagnosis: AOSD (confirmed)
+
+观测 6/9 轴 (缺失: glycosylated_ferritin, platelet, IL-18)
+
+x* full vector:
+  [*] axis 0 peak_body_temperature                = 39.5 (degC)
+  [*] axis 1 log10_serum_ferritin                 = 3.8665 (log10(ng/mL))
+  [  ] axis 2 glycosylated_ferritin_fraction       = MISSING (percent)
+  [*] axis 3 CRP                                  = 208 (mg/L)
+  [*] axis 4 absolute_neutrophil_count            = 33.51 (10^9/L)
+  [  ] axis 5 platelet_count                       = MISSING (10^9/L)
+  [*] axis 6 log10_AST                            = 1.9085 (log10(U/L))
+  [*] axis 7 fibrinogen                           = 7.6 (g/L)
+  [  ] axis 8 log10_serum_IL18                     = MISSING (log10(pg/mL))
+
+========================================================================
+ MC 结果 (10000 次 uniform sampling in intervals)
+========================================================================
+
+valid samples: 10000 / 10000 (invalid: 0)
+
+log10 LR distribution (NOTE: 用 log10 因为 LR 远超 float64):
+  min        : log10_LR = +2349.687
+  1%         : log10_LR = +2481.918
+  5%         : log10_LR = +2661.343
+  25%        : log10_LR = +3709.317
+  50% (med)  : log10_LR = +6317.710
+  75%        : log10_LR = +13200.896
+  95%        : log10_LR = +30862.262
+  99%        : log10_LR = +38939.430
+  max        : log10_LR = +43809.197
+
+(LR 数量级太大没法用 float 直接表示，用 log10 看)
+
+分项: log p(x* | disease) vs log p(x* | healthy)
+  log p_d median = -26.184
+  log p_h median = -14572.329
+
+========================================================================
+ 临床判读
+========================================================================
+
+  log10 LR median = +6317.710 → 强烈支持 AOSD (log10 LR > 2 = LR > 100, Oxford CEBM 阈值)
+  [WARN] log10 LR 极大 (>100)，提示模型 misspecification:
+     可能原因: 健康人 GMM 方差过窄 / CRP 等长尾变量未 log-transform
+
+  LR 区间跨度: 41459.51 数量级 → 高波动 (区间宽 > 6 数量级，警示)
+
+  期望: AOSD 真实 case → LR_AOSD >> 1 (理想 > 100)
+
+========================================================================
+ 工程 metrics
+========================================================================
+
+  N_MC: 10000
+  invalid samples: 0 (0.00%)
+  Higham PSD projection applied per sample
+  observed axes: 6/9 (marginalized 3 missing)

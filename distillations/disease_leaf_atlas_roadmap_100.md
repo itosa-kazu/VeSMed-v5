@@ -1,57 +1,84 @@
 # VeSMed V5 Disease Leaf Atlas Roadmap to 100
 
-原则：
+This roadmap is the source for the UI candidate dropdown. The first-layer
+distillation unit is a clinically stable disease leaf. Do not use broad umbrella
+diagnoses when the clinical course, axes, treatment, or mimic structure differs.
 
-- 第一层 disease manifold 蒸到临床稳定 disease leaf，不蒸过宽 umbrella。
-- `disease_id` 不能夹带病名之外的 mimic、近邻病、严重度或亚型提示。
-- 已蒸旧 ID 可以先保留做测试基线；新蒸馏优先使用 clean ID。
-- 治疗旧 JSON 可由工程侧 compact/补 treatment vector field，不要求重复重蒸旧病。
+## Selection Rule
 
-## 当前 Atlas 审核
+Prioritize diseases that are either common, critical, or both.
 
-| 当前 ID | 状态 | 判断 |
-| --- | --- | --- |
-| D137 | keep | AOSD non-MAS 可作为稳定 disease leaf |
-| D-SEPSIS-GN | legacy keep | 作为 PoC sepsis baseline 可保留；未来按 source/pathogen 拆细 |
-| D-TTP | keep | acquired immune TTP 是合格 disease leaf |
-| D-HLH-MAS | keep | HLH/MAS 是综合征型 leaf；触发因素先放 risk/context |
-| D-SLE-FLARE | keep for now | 可作为 fever atlas leaf；未来可拆 lupus nephritis/pneumonitis/CNS lupus |
-| D-TB-DISSEMINATED | keep | disseminated TB 是合格 leaf |
-| D-LYMPHOMA-FEVER | legacy split now | 过宽；ALCL real case 被 MIS-A 吸走时不要调 case，应拆 Hodgkin / DLBCL / ALCL / IVLBCL 等 subtype leaves |
-| D-INFECTIVE-ENDOCARDITIS | keep | IE 是合格 leaf；native/prosthetic/right-sided 先作 context/subtype |
-| D-MPA | keep | microscopic polyangiitis 是合格 leaf |
-| D-DRUG-FEVER-DRESS | legacy migrate | ID 混入 drug fever；未来 clean ID 用 D-DRESS |
-| D-EBV-CMV-MONO-LIKE | polluted, replace | ID 混入 CMV；未来用 D-INFECTIOUS-MONONUCLEOSIS，CMV 另蒸 |
-| D-INFECTIOUS-MONONUCLEOSIS | next clean | clean ID，替代 D-EBV-CMV-MONO-LIKE |
-| D-MIS-A-KAWASAKI-LIKE | rename before distill | ID 混入 Kawasaki-like；clean ID 用 D-MIS-A |
-| D-LEPTOSPIROSIS-SEVERE | rename before distill | severe 是严重度；clean ID 用 D-LEPTOSPIROSIS |
+- Common: high clinical frequency in fever/acute-care workflows, or frequent
+  near-neighbor mimic of already distilled diseases.
+- Critical: time-sensitive, high mortality/morbidity, ICU/source-control,
+  immunocompromised-host, or treatment-toxic disease where early ranking matters.
+- Prefer leaves that add reusable axes for future diseases: pneumonia imaging,
+  source-control, neurologic infection, immunocompromised infection, shock,
+  coagulopathy, organ failure, and medication/toxicologic mimics.
+
+## Already Distilled Active Atlas
+
+| disease_id | disease leaf |
+| --- | --- |
+| D137 | Adult-onset Still's disease |
+| D-SEPSIS-GN | Bacterial sepsis |
+| D-TTP | Thrombotic thrombocytopenic purpura |
+| D-HLH-MAS | Hemophagocytic lymphohistiocytosis / macrophage activation syndrome |
+| D-SLE-FLARE | Systemic lupus erythematosus flare |
+| D-TB-DISSEMINATED | Disseminated tuberculosis |
+| D-INFECTIVE-ENDOCARDITIS | Infective endocarditis |
+| D-MPA | Microscopic polyangiitis |
+| D-GPA | Granulomatosis with polyangiitis |
+| D-EGPA | Eosinophilic granulomatosis with polyangiitis |
+| D-DRUG-FEVER-DRESS | Drug reaction with eosinophilia and systemic symptoms |
+| D-INFECTIOUS-MONONUCLEOSIS | Infectious mononucleosis |
+| D-MIS-A | Multisystem inflammatory syndrome in adults |
+| D-LEPTOSPIROSIS | Leptospirosis |
+| D-HODGKIN-LYMPHOMA | Hodgkin lymphoma |
+| D-DLBCL | Diffuse large B-cell lymphoma |
+| D-ALCL | Anaplastic large-cell lymphoma |
+| D-IVLBCL | Intravascular large B-cell lymphoma |
+| D-COVID19-ACUTE | Acute COVID-19 |
+| D-INFLUENZA | Influenza |
+| D-MYCOPLASMA-PNEUMONIA | Mycoplasma pneumoniae pneumonia |
+| D-PNEUMOCOCCAL-PNEUMONIA | Pneumococcal pneumonia |
+| D-LEGIONELLA-PNEUMONIA | Legionella pneumonia |
+| D-PYELONEPHRITIS | Pyelonephritis |
+| D-ACUTE-CHOLANGITIS | Acute cholangitis |
+| D-BACTERIAL-MENINGITIS | Acute bacterial meningitis |
+| D-IGG4-RELATED-DISEASE | IgG4-related disease |
+| D-SARCOIDOSIS | Sarcoidosis |
+| D-SJOGREN-SYSTEMIC | Systemic Sjogren disease |
+| D-MENINGOCOCCEMIA | Meningococcemia |
+| D-TOXIC-SHOCK-SYNDROME | Toxic shock syndrome |
+| D-NECROTIZING-FASCIITIS | Necrotizing fasciitis |
+| D-TAKAYASU-ARTERITIS | Takayasu arteritis |
+| D-BEHCET-DISEASE | Behcet disease |
 
 ## Next 20 High-Priority Leaves
 
-这些优先覆盖发热疑难、近邻 mimic、治疗上下文和 ICU 风险。
-
-| priority | disease_id | disease leaf |
-| --- | --- | --- |
-| 1 | D-INFECTIOUS-MONONUCLEOSIS | Infectious mononucleosis |
-| 2 | D-CMV-MONO | Cytomegalovirus mononucleosis-like illness |
-| 3 | D-MIS-A | Multisystem inflammatory syndrome in adults |
-| 4 | D-LEPTOSPIROSIS | Leptospirosis |
-| 5 | D-GPA | Granulomatosis with polyangiitis |
-| 6 | D-EGPA | Eosinophilic granulomatosis with polyangiitis |
-| 7 | D-HODGKIN-LYMPHOMA | Hodgkin lymphoma with inflammatory fever |
-| 8 | D-DLBCL | Diffuse large B-cell lymphoma |
-| 9 | D-ALCL | Anaplastic large-cell lymphoma |
-| 10 | D-IVLBCL | Intravascular large B-cell lymphoma |
-| 11 | D-ACUTE-HIV | Acute HIV retroviral syndrome |
-| 12 | D-BRUCELLOSIS | Brucellosis |
-| 13 | D-Q-FEVER | Q fever |
-| 14 | D-BARTONELLA-ENDOCARDITIS | Bartonella infective endocarditis |
-| 15 | D-RICKETTSIOSIS-SCRUB-TYPHUS | Scrub typhus / rickettsiosis |
-| 16 | D-MALARIA-FALCIPARUM | Plasmodium falciparum malaria |
-| 17 | D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess |
-| 18 | D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia |
-| 19 | D-NEUTROPENIC-FEVER | Febrile neutropenia |
-| 20 | D-CAR-T-CRS | CAR-T cytokine release syndrome |
+| priority | disease_id | disease leaf | why now |
+| --- | --- | --- | --- |
+| 1 | D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess | common sepsis mimic; imaging/source-control axes |
+| 2 | D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia | critical immunocompromised respiratory mimic |
+| 3 | D-CANDIDEMIA | Candidemia | common hospital critical fever; line/source axes |
+| 4 | D-INVASIVE-ASPERGILLOSIS | Invasive aspergillosis | critical immunocompromised pulmonary disease |
+| 5 | D-ACUTE-HIV | Acute HIV retroviral syndrome | common fever/pharyngitis/rash mimic |
+| 6 | D-CMV-MONO | Cytomegalovirus mononucleosis-like illness | common mono/AOSD/lymphoma mimic; separate from EBV IM |
+| 7 | D-BRUCELLOSIS | Brucellosis | subacute fever mimic; exposure/relapse axes |
+| 8 | D-Q-FEVER | Q fever | culture-negative fever/pneumonia/hepatitis/IE bridge |
+| 9 | D-RICKETTSIOSIS-SCRUB-TYPHUS | Scrub typhus / rickettsiosis | critical treatable fever + rash/eschar/thrombocytopenia |
+| 10 | D-MALARIA-FALCIPARUM | Plasmodium falciparum malaria | critical travel fever; hemolysis/AKI/CNS axes |
+| 11 | D-NEUTROPENIC-FEVER | Febrile neutropenia | common critical oncology fever |
+| 12 | D-ACUTE-LEUKEMIA | Acute leukemia | critical hematology fever/cytopenia mimic |
+| 13 | D-STAPH-AUREUS-BACTEREMIA | Staphylococcus aureus bacteremia | common critical bloodstream infection; metastatic focus/endocarditis bridge |
+| 14 | D-NOCARDIOSIS | Nocardiosis | immunocompromised pulmonary/CNS mimic; chronic fever bridge |
+| 15 | D-BARTONELLA-ENDOCARDITIS | Bartonella infective endocarditis | culture-negative endocarditis and fever mimic |
+| 16 | D-HISTOPLASMOSIS-DISSEMINATED | Disseminated histoplasmosis | critical immunocompromised fever; HLH/TB/lymphoma mimic |
+| 17 | D-CRYPTOCOCCOSIS-DISSEMINATED | Disseminated cryptococcosis | immunocompromised CNS/pulmonary fever; meningitis bridge |
+| 18 | D-TYPHOID-FEVER | Typhoid fever | travel fever; abdominal/GI/hepatosplenic mimic |
+| 19 | D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection | common critical antibiotic-associated fever/shock mimic |
+| 20 | D-SEPTIC-ARTHRITIS | Septic arthritis | common critical fever with source-control and joint-destruction risk |
 
 ## Candidate Pool Toward 100
 
@@ -59,20 +86,23 @@
 
 | disease_id | disease leaf |
 | --- | --- |
-| D-CMV-MONO | Cytomegalovirus mononucleosis-like illness |
-| D-ACUTE-HIV | Acute HIV retroviral syndrome |
-| D-CAEBV | Chronic active EBV disease |
-| D-COVID19-ACUTE | Acute COVID-19 |
-| D-INFLUENZA | Influenza |
-| D-ADENOVIRUS-SEVERE | Severe adenovirus infection |
-| D-MYCOPLASMA-PNEUMONIA | Mycoplasma pneumoniae pneumonia |
-| D-LEGIONELLA-PNEUMONIA | Legionella pneumonia |
 | D-PNEUMOCOCCAL-PNEUMONIA | Pneumococcal pneumonia |
-| D-STAPH-AUREUS-SEPSIS | Staphylococcus aureus sepsis / bacteremia |
-| D-MRSA-BACTEREMIA | MRSA bacteremia |
+| D-LEGIONELLA-PNEUMONIA | Legionella pneumonia |
+| D-PYELONEPHRITIS | Pyelonephritis |
+| D-ACUTE-CHOLANGITIS | Acute cholangitis |
+| D-BACTERIAL-MENINGITIS | Acute bacterial meningitis |
+| D-MENINGOCOCCEMIA | Meningococcemia |
+| D-TOXIC-SHOCK-SYNDROME | Toxic shock syndrome |
+| D-NECROTIZING-FASCIITIS | Necrotizing fasciitis |
+| D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess |
+| D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia |
 | D-CANDIDEMIA | Candidemia |
 | D-INVASIVE-ASPERGILLOSIS | Invasive aspergillosis |
-| D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia |
+| D-ACUTE-HIV | Acute HIV retroviral syndrome |
+| D-CMV-MONO | Cytomegalovirus mononucleosis-like illness |
+| D-CAEBV | Chronic active EBV disease |
+| D-ADENOVIRUS-SEVERE | Severe adenovirus infection |
+| D-STAPH-AUREUS-BACTEREMIA | Staphylococcus aureus bacteremia |
 | D-NOCARDIOSIS | Nocardiosis |
 | D-BRUCELLOSIS | Brucellosis |
 | D-Q-FEVER | Q fever |
@@ -88,13 +118,8 @@
 | D-TYPHOID-FEVER | Typhoid fever |
 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia |
 | D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection |
-| D-COMPLICATED-PYELONEPHRITIS | Complicated pyelonephritis |
-| D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess |
 | D-VERTEBRAL-OSTEOMYELITIS | Vertebral osteomyelitis |
 | D-SEPTIC-ARTHRITIS | Septic arthritis |
-| D-NECROTIZING-FASCIITIS | Necrotizing fasciitis |
-| D-MENINGOCOCCEMIA | Meningococcemia |
-| D-BACTERIAL-MENINGITIS | Acute bacterial meningitis |
 | D-HSV-ENCEPHALITIS | HSV encephalitis |
 | D-DISSEMINATED-LYME | Disseminated Lyme disease |
 | D-SECONDARY-SYPHILIS | Secondary syphilis |
@@ -104,8 +129,6 @@
 
 | disease_id | disease leaf |
 | --- | --- |
-| D-GPA | Granulomatosis with polyangiitis |
-| D-EGPA | Eosinophilic granulomatosis with polyangiitis |
 | D-PAN | Polyarteritis nodosa |
 | D-GCA | Giant cell arteritis |
 | D-TAKAYASU-ARTERITIS | Takayasu arteritis |
@@ -129,10 +152,6 @@
 
 | disease_id | disease leaf |
 | --- | --- |
-| D-HODGKIN-LYMPHOMA | Hodgkin lymphoma |
-| D-DLBCL | Diffuse large B-cell lymphoma |
-| D-ALCL | Anaplastic large-cell lymphoma |
-| D-IVLBCL | Intravascular large B-cell lymphoma |
 | D-ACUTE-LEUKEMIA | Acute leukemia |
 | D-APL | Acute promyelocytic leukemia |
 | D-NEUTROPENIC-FEVER | Febrile neutropenia |
@@ -167,8 +186,8 @@
 
 ## Operational Batch Rule
 
-- 每批 3-4 个新 disease leaf 可以并行蒸。
-- 每个新 disease 至少补 1 个 PMC/PubMed positive real case。
-- 每批跑现有 full single + combo smoke test。
-- 如果治疗 ranking 异常，优先 compact/补 treatment vector field，不要求重蒸整个 disease。
-- Lymphoma fever 拆分优先从 `D-ALCL` 开始，因为当前 ALCL FUO real case 会被 `D-MIS-A` 吸走；随后补 `D-HODGKIN-LYMPHOMA`、`D-DLBCL`、`D-IVLBCL`。
+- Distill 3-4 new disease leaves per batch.
+- After each batch, add at least one PMC/PubMed positive real case per new disease.
+- Run focused new-case ranking, then full single smoke, then combo smoke.
+- If treatment ranking is abnormal, compact or complete the treatment vector field first;
+  do not re-distill the whole disease unless the disease manifold itself is polluted.
