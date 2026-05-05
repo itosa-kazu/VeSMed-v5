@@ -15,6 +15,7 @@ import itertools
 import json
 import math
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -483,6 +484,82 @@ def fallback_axis_from_observation(axis_id, obs):
     }
 
 
+MAPPED_EVIDENCE_SECTIONS = ("imaging", "pathology", "procedures", "diagnostics", "physical_exam", "microbiology")
+
+
+def mapped_axis_ids(item):
+    ids = []
+    if item.get("mapped_axis_id"):
+        ids.append(item.get("mapped_axis_id"))
+    raw_ids = item.get("mapped_axis_ids")
+    if isinstance(raw_ids, list):
+        ids.extend(raw_ids)
+    return [axis_id for axis_id in ids if axis_id]
+
+
+def can_infer_qualitative_mapped_axis(axis_id):
+    qualitative_markers = (
+        "_activity",
+        "_presence",
+        "_probability",
+        "_severity",
+        "_extent",
+        "_need",
+        "presence_in_",
+        "activity_in_",
+        "hazard_in_",
+    )
+    measurement_markers = (
+        "_size_",
+        "_diameter_",
+        "_gradient_",
+        "_count",
+        "_days",
+        "_mmhg",
+        "_cm",
+        "_mm",
+    )
+    if any(marker in axis_id for marker in measurement_markers):
+        return False
+    if axis_id.endswith("_hazard") or "_hazard_" in axis_id:
+        return False
+    return any(marker in axis_id for marker in qualitative_markers)
+
+
+def mapped_item_is_negative(item):
+    text = " ".join(
+        str(item.get(key, ""))
+        for key in ("finding", "result", "source_text_value")
+    ).lower()
+    negative_patterns = (
+        r"\bnegative\b",
+        r"\bnormal\b",
+        r"\bno\b",
+        r"no_",
+        r"\bwithout\b",
+        r"\babsent\b",
+        r"\bresolved\b",
+        r"\bdisappeared\b",
+        r"\bclear\b",
+        r"not\s+found",
+        r"not\s+noted",
+    )
+    return any(re.search(pattern, text) for pattern in negative_patterns)
+
+
+def infer_mapped_observation(item, axis_id):
+    if item.get("use_in_ranking") is False:
+        return None
+    value = item.get("value")
+    if value is not None:
+        return value, item.get("unit") or "severity_score_0_1"
+    if not can_infer_qualitative_mapped_axis(axis_id):
+        return None
+    if mapped_item_is_negative(item):
+        return 0.0, "severity_score_0_1"
+    return 1.0, "severity_score_0_1"
+
+
 def background_axes_for_case(background_axes, case, candidate):
     adjusted = v5_background.adjust_background_axes(
         background_axes,
@@ -525,6 +602,20 @@ def load_case(path):
             continue
         first = sorted(numeric, key=lambda o: float(o.get("day", 0)))[0]
         observations[axis_id] = {"value": float(first["value"]), "unit": traj.get("unit")}
+
+    for section in MAPPED_EVIDENCE_SECTIONS:
+        records = data.get(section)
+        if not isinstance(records, list):
+            continue
+        for item in records:
+            if not isinstance(item, dict):
+                continue
+            for axis_id in mapped_axis_ids(item):
+                inferred = infer_mapped_observation(item, axis_id)
+                if inferred is None:
+                    continue
+                value, unit = inferred
+                add_observation(axis_id, value, unit)
 
     data["observations_by_axis"] = observations
     return data
@@ -665,6 +756,9 @@ def case_risk_context(case, disease):
 
 def matched_risk_payload(manifold, context):
     by_key = {(c.get("factor"), c.get("category")) for c in context}
+    by_factor = {}
+    for item in context:
+        by_factor.setdefault(item.get("factor"), []).append(item)
     axis_mods = {}
     coupling_mods = []
     log_prior = 0.0
@@ -672,16 +766,87 @@ def matched_risk_payload(manifold, context):
     for rf in manifold["risk_factors"]:
         factor = rf.get("factor")
         for category, mod in (rf.get("modulation") or {}).items():
-            if (factor, category) not in by_key:
+            if (factor, category) not in by_key and not risk_factor_present_match(factor, category, by_factor):
                 continue
             p_ratio = midpoint(mod.get("P_disease_ratio"), 1.0)
             if p_ratio > 0:
                 log_prior += math.log(min(max(p_ratio, 0.05), 50.0))
-            for item in mod.get("axis_response_modulation") or []:
+            for item in iter_axis_response_modulation_items(mod.get("axis_response_modulation")):
                 axis_mods.setdefault(item.get("axis_id"), []).append(item)
-            for item in mod.get("coupling_modulation") or []:
+            for item in iter_risk_modulation_items(mod.get("coupling_modulation")):
                 coupling_mods.append(item)
     return axis_mods, coupling_mods, log_prior
+
+
+def iter_axis_response_modulation_items(raw):
+    if raw is None:
+        return
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, dict):
+                yield item
+        return
+    if isinstance(raw, dict):
+        for axis_id, value in raw.items():
+            if isinstance(value, dict):
+                item = dict(value)
+                item.setdefault("axis_id", axis_id)
+                yield item
+            elif isinstance(value, str):
+                yield {"axis_id": axis_id, "effect": value}
+
+
+def iter_risk_modulation_items(raw):
+    if raw is None:
+        return
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, dict):
+                yield item
+        return
+    if isinstance(raw, dict):
+        for key, value in raw.items():
+            if isinstance(value, dict):
+                item = dict(value)
+                item.setdefault("coupling_id", key)
+                yield item
+
+
+def risk_context_item_is_positive(item):
+    value = item.get("value")
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)) and value <= 0:
+        return False
+
+    category = str(item.get("category", "")).lower()
+    negative_markers = (
+        "absent",
+        "denied",
+        "negative",
+        "not_reported",
+        "not_identified",
+        "not_known",
+        "none",
+        "no_",
+        "without",
+        "ruled_out",
+    )
+    return not any(marker in category for marker in negative_markers)
+
+
+def risk_factor_present_match(factor, category, by_factor):
+    """Match factor-level positive context to generic ``present`` modulation.
+
+    New distillations commonly write risk-factor modulation as
+    ``factor -> present`` while real case JSON stores the factor with a
+    contextual category such as ``immunosuppression`` or ``comorbidity``.
+    Exact category matches remain authoritative; this fallback only bridges
+    positive evidence for the same factor to the generic ``present`` bucket.
+    """
+    if category != "present":
+        return False
+    return any(risk_context_item_is_positive(item) for item in by_factor.get(factor, []))
 
 
 def observed_value(case, axis_id):
@@ -816,7 +981,8 @@ def combo_anchor_penalty(case, candidate):
 def apply_axis_modulations(axis_id, axis, mu, baseline, sigma, mods, rng):
     for mod in mods:
         effect = mod.get("effect")
-        factor = midpoint(mod.get("magnitude_factor_range"), 1.0)
+        direction = str(mod.get("direction") or mod.get("effect_direction") or "").strip().lower()
+        factor = midpoint(mod.get("magnitude_factor_range") or mod.get("factor_range"), 1.0)
         if effect in ("blunted_response", "lower_peak"):
             mu = baseline + factor * (mu - baseline)
         elif effect == "higher_peak":
@@ -833,6 +999,12 @@ def apply_axis_modulations(axis_id, axis, mu, baseline, sigma, mods, rng):
             sigma *= min(max(factor, 0.1), 1.0)
         elif effect == "delayed_peak":
             pass
+        elif direction in ("up", "increase", "increased", "higher", "raise", "raises"):
+            mu = baseline + max(factor, 1.0) * (mu - baseline)
+        elif direction in ("down", "decrease", "decreased", "lower", "lowers", "blunted", "attenuated"):
+            if factor > 1.0:
+                factor = 1.0 / factor
+            mu = baseline + min(max(factor, 0.05), 1.0) * (mu - baseline)
     if axis.get("log_scale"):
         mu = max(mu, 1e-12)
     elif axis_id not in ("body_temperature",):
