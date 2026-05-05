@@ -1,0 +1,2358 @@
+{
+  "disease": "D-AML",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "leukemic_blast_burden",
+      "display_name": "Leukemic myeloid blast expansion",
+      "clinical_meaning": "Clonal immature myeloid cells expand in marrow and, variably, peripheral blood. This drives marrow replacement, high circulating blast fraction, hyperleukocytosis, LDH elevation, and early relapse pressure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.5, 1],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "marrow_failure_activity",
+      "display_name": "Normal hematopoiesis suppression",
+      "clinical_meaning": "Blast replacement and inflammatory suppression of marrow output produce anemia, thrombocytopenia, neutropenia, fatigue, infection risk, bleeding, and transfusion dependence.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.4, 1],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "inflammatory_fever_cytokine_activity",
+      "display_name": "Leukemia-driven inflammatory fever",
+      "clinical_meaning": "AML can produce sterile fever, weight loss, high CRP/ferritin, and sepsis-like physiology through cytokine release, tissue necrosis, and secondary infections.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "neutropenic_infection_susceptibility_activity",
+      "display_name": "Neutropenic infection susceptibility",
+      "clinical_meaning": "Quantitative and functional neutrophil impairment from AML and treatment increases bacterial sepsis, invasive fungal infection, febrile neutropenia, and muted localizing signs.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.3, 1],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "leukostasis_microvascular_occlusion_activity",
+      "display_name": "Blast-mediated microvascular leukostasis",
+      "clinical_meaning": "Large adhesive myeloid blasts obstruct pulmonary, cerebral, cardiac, renal, and splenic microcirculation, especially with hyperleukocytosis and monocytic biology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "consumptive_coagulopathy_activity",
+      "display_name": "Consumptive coagulopathy and DIC-like bleeding pressure",
+      "clinical_meaning": "AML can activate tissue factor, endothelial injury, fibrinolysis, platelet consumption, and fibrinogen consumption. This is strongest in some biologic subgroups but can occur across AML during sepsis, leukostasis, or tumor lysis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "aml_tumor_lysis_cell_turnover_activity",
+      "display_name": "High cell-turnover tumor lysis pressure",
+      "clinical_meaning": "High blast burden and cytotoxic therapy release potassium, phosphate, uric acid, and nucleic acids, producing AKI, hypocalcemia, arrhythmia, seizure risk, and early mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "extramedullary_myeloid_infiltration_activity",
+      "display_name": "Extramedullary myeloid infiltration",
+      "clinical_meaning": "Leukemic myeloid cells infiltrate gingiva, skin, liver, spleen, lymph nodes, GI/biliary tract, CNS, or other organs, producing organ-specific mimicry such as cholecystitis, rash, gingival swelling, hepatosplenomegaly, and pain.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.1, 0.8],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "peripheral_blood_blast_fraction",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "Circulating blasts are the most direct presentation-time blood expression of AML burden when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "circulating_blast_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "Absolute blast count captures both WBC count and blast fraction and tracks leukostasis pressure better than WBC alone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "bidirectional",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "presentation",
+      "clinical_rationale": "AML may present with leukopenia, normal WBC, leukocytosis, or extreme hyperleukocytosis depending on marrow release and biology; WBC remains informative when interpreted with blast fraction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "High proliferation, tissue ischemia, and cell turnover elevate LDH, often markedly in leukostasis or tumor lysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "marrow_failure_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 21],
+      "phase": "whole_course",
+      "clinical_rationale": "Blast replacement and niche disruption suppress normal hematopoiesis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Anemia is common at AML presentation from impaired erythropoiesis and bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Thrombocytopenia drives petechiae, mucosal bleeding, and transfusion need.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Neutropenia can be present at diagnosis and is accentuated by induction therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "petechiae_purpura_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "Low platelets produce petechiae and purpura, sometimes before AML is suspected.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "mucosal_bleeding_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "Gingival bleeding, epistaxis, and menorrhagia are typical thrombocytopenic AML presentations.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "marrow_failure_activity",
+      "target_id": "neutropenic_infection_susceptibility_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "ANC reduction and defective myeloid function raise infection susceptibility.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "neutropenic_infection_susceptibility_activity",
+      "target_id": "infection_risk_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "Bacterial and fungal infection risk rises as ANC falls and mucosal barriers fail.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "neutropenic_infection_susceptibility_activity",
+      "target_id": "febrile_neutropenia_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "presentation_and_treatment",
+      "clinical_rationale": "Fever with neutropenia is a major AML emergency before and during treatment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "neutropenic_infection_susceptibility_activity",
+      "target_id": "sepsis_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "Neutropenic hosts can progress rapidly to sepsis with muted localizing signs.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "Sterile leukemia fever can mimic infection or inflammatory rheumatic disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "Daily fever spikes can be driven by AML itself or by infection; both remain clinically relevant.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 5],
+      "phase": "presentation",
+      "clinical_rationale": "CRP can be high in AML fever and becomes very high with infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "serum_ferritin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 10],
+      "phase": "presentation",
+      "clinical_rationale": "Ferritin may rise with leukemia inflammation, transfusion burden, infection, or HLH-like pressure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "erythrocyte_sedimentation_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [2, 14],
+      "phase": "presentation",
+      "clinical_rationale": "AML-associated inflammatory fever, infection, tissue necrosis, and anemia can markedly raise ESR.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "weight_loss_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [7, 60],
+      "phase": "subacute_presentation",
+      "clinical_rationale": "Subacute AML cytokine activity and catabolic illness can produce clinically important weight loss before diagnosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "arthritis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "inflammatory_mimic_presentation",
+      "clinical_rationale": "AML can rarely present with paraneoplastic inflammatory arthritis or AOSD-like inflammatory symptoms, especially before blood or marrow diagnosis is recognized.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "inflammatory_fever_cytokine_activity",
+      "target_id": "sore_throat_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "inflammatory_or_neutropenic_presentation",
+      "clinical_rationale": "Sore throat can accompany leukemia-associated fever through inflammatory pharyngitis, mucosal vulnerability, or early infection even when cultures are unrevealing.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "evanescent_rash_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "inflammatory_mimic_presentation",
+      "clinical_rationale": "AML-associated skin inflammation, Sweet-like dermatosis, leukemia cutis, or paraneoplastic inflammatory rash can rarely mimic an AOSD-like febrile rash.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "leukemic_blast_burden",
+      "target_id": "leukostasis_microvascular_occlusion_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 3],
+      "phase": "hyperleukocytic_presentation",
+      "conditionality": "Risk rises sharply with high circulating blast count but can occur below 100 x10^9/L when blasts are adhesive/monocytic.",
+      "clinical_rationale": "Circulating AML blasts are large and adhesive, producing pulmonary and CNS microvascular plugging.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukostasis_microvascular_occlusion_activity",
+      "target_id": "leukostasis_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Symptomatic leukostasis is the event-level expression of blast microvascular obstruction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukostasis_microvascular_occlusion_activity",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Pulmonary leukostasis produces dyspnea, hypoxemia, diffuse infiltrates, and respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukostasis_microvascular_occlusion_activity",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Pulmonary microvascular obstruction lowers oxygenation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukostasis_microvascular_occlusion_activity",
+      "target_id": "mental_status_abnormality_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "CNS leukostasis can mimic stroke, seizure, encephalopathy, or coma.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "leukostasis_microvascular_occlusion_activity",
+      "target_id": "acute_respiratory_failure_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Pulmonary leukostasis is a leading cause of early death in hyperleukocytic AML.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "dic_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "AML can produce overt DIC-like consumptive coagulopathy, especially with leukostasis, infection, or high cell turnover.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "d_dimer",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "Fibrin formation and fibrinolysis elevate D-dimer in AML-associated coagulopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "serum_fibrinogen",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "overt_consumption",
+      "clinical_rationale": "Fibrinogen falls when consumption exceeds acute-phase synthesis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "prothrombin_time_inr",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "overt_consumption",
+      "clinical_rationale": "Consumptive coagulopathy prolongs PT/INR.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "activated_partial_thromboplastin_time",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "overt_consumption",
+      "clinical_rationale": "Severe coagulopathy prolongs aPTT.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "consumptive_coagulopathy_activity",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "whole_course",
+      "clinical_rationale": "Platelet failure plus coagulopathy increases life-threatening bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "tumor_lysis_metabolic_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "High turnover and cytotoxic therapy cause the biochemical tumor lysis pattern.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "serum_uric_acid",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "Nucleic-acid breakdown raises uric acid.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "serum_potassium",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "Cell lysis releases potassium.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "serum_phosphate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "Cell lysis releases phosphate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "serum_calcium",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "Hyperphosphatemia lowers serum calcium via calcium-phosphate precipitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "aml_tumor_lysis_cell_turnover_activity",
+      "target_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "Metabolic tumor lysis can progress to AKI, arrhythmia, seizure, and death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "tumor_lysis_metabolic_activity",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_axis",
+      "lag_days_range": [0, 5],
+      "phase": "tumor_lysis",
+      "clinical_rationale": "Uric acid and calcium-phosphate precipitation cause AKI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "extramedullary_organ_infiltration_activity_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Myeloid sarcoma or diffuse leukemic organ infiltration can dominate the presentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "gingival_infiltration_activity_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "presentation",
+      "clinical_rationale": "Gingival hypertrophy is a classic AML extramedullary finding, especially with monocytic differentiation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "leukemia_cutis_activity_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "presentation",
+      "clinical_rationale": "Skin infiltration can produce nodules, plaques, or leukemia cutis mimicking infection or inflammatory rash.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "hepatomegaly_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "presentation",
+      "clinical_rationale": "Reticuloendothelial and leukemic infiltration may enlarge liver.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "splenomegaly_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "presentation",
+      "clinical_rationale": "Splenic infiltration and congestion can produce splenomegaly and rare rupture.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "extramedullary_myeloid_infiltration_activity",
+      "target_id": "cholestatic_biliary_infiltration_activity_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "extramedullary_presentation",
+      "clinical_rationale": "Gallbladder or biliary infiltration can mimic cholecystitis or refractory sepsis.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "cholestatic_biliary_infiltration_activity_in_D-AML",
+      "target_id": "serum_alkaline_phosphatase",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "extramedullary_presentation",
+      "clinical_rationale": "Biliary wall or hepatic infiltration can produce cholestatic enzyme elevation.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "cholestatic_biliary_infiltration_activity_in_D-AML",
+      "target_id": "serum_bilirubin_total",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "extramedullary_presentation",
+      "clinical_rationale": "Biliary obstruction or inflammation can raise bilirubin.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "leukostasis_hazard_in_D-AML",
+      "target_id": "mortality_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_hazard",
+      "lag_days_range": [0, 3],
+      "phase": "early_presentation",
+      "clinical_rationale": "Pulmonary/CNS leukostasis is a major driver of early AML mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "febrile_neutropenia_hazard_in_D-AML",
+      "target_id": "mortality_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_hazard",
+      "lag_days_range": [0, 7],
+      "phase": "whole_course",
+      "clinical_rationale": "Neutropenic infection and sepsis are major causes of early AML death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "major_bleeding_hazard",
+      "target_id": "mortality_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_hazard",
+      "lag_days_range": [0, 3],
+      "phase": "whole_course",
+      "clinical_rationale": "Major hemorrhage, especially intracranial or pulmonary, directly increases mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+      "target_id": "mortality_hazard_in_D-AML",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_hazard",
+      "lag_days_range": [0, 3],
+      "phase": "early_treatment",
+      "clinical_rationale": "TLS can cause fatal arrhythmia, renal failure, and shock.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "shape_free_text": "Often febrile at presentation from leukemia cytokines, infection, or both; spikes may exceed 39-40 C.",
+      "baseline_range": [36.2, 37.2],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [37.5, 40.5],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Reported recurrent fever or fever without source is common and may mimic sepsis, AOSD, TB, or lymphoma.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.4, 1],
+      "plateau_duration_days": [2, 60],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "weight_loss_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Unintentional weight loss from subacute leukemia cytokine activity, catabolic illness, infection, or poor intake.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [7, 90],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [14, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "arthritis_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Paraneoplastic inflammatory arthritis or arthralgia can rarely be an AML presentation and may mimic AOSD or rheumatic disease; this is not a typical dominant AML axis.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "low",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "sore_throat_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Sore throat or pharyngitis-like symptoms can occur with leukemia fever, mucosal vulnerability, or early infection and may contribute to an AOSD-like mimic.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "low",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "evanescent_rash_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Rare AOSD-like febrile rash mimic from AML-associated skin inflammation, Sweet-like dermatosis, leukemia cutis, or paraneoplastic inflammation; leukemia cutis morphology should be captured separately when present.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "knowledge_confidence": "low",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "erythrocyte_sedimentation_rate",
+      "category": "lab_value",
+      "unit": "mm_per_hr",
+      "log_scale": false,
+      "shape_free_text": "Often elevated from AML-associated inflammation, infection, tissue necrosis, anemia, or paraneoplastic inflammatory mimicry.",
+      "baseline_range": [0, 20],
+      "peak_day_range": [2, 30],
+      "peak_value_range": [30, 120],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "shape_free_text": "Tachycardia tracks fever, anemia, sepsis, leukostasis, pain, or shock.",
+      "baseline_range": [60, 100],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [95, 150],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "shape_free_text": "Elevates with pulmonary leukostasis, pneumonia, sepsis, metabolic acidosis, or severe anemia.",
+      "baseline_range": [12, 20],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [18, 40],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "shape_free_text": "Usually preserved unless sepsis, bleeding, adrenal/organ infiltration, TLS, or shock develops.",
+      "baseline_range": [70, 105],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [45, 95],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "percent",
+      "log_scale": false,
+      "shape_free_text": "Falls with pulmonary leukostasis, pneumonia, diffuse alveolar hemorrhage, or severe anemia.",
+      "baseline_range": [95, 100],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [70, 94],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": true,
+      "shape_free_text": "Can be low, normal, high, or extreme; hyperleukocytosis often >100 x10^9/L and can exceed 300-400 x10^9/L.",
+      "baseline_range": [4, 11],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.5, 400],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "peripheral_blood_blast_fraction",
+      "category": "lab_value",
+      "unit": "percent_leukocytes",
+      "log_scale": false,
+      "shape_free_text": "Peripheral smear may show 0-90% blasts; absence of circulating blasts does not exclude marrow AML.",
+      "baseline_range": [0, 0.5],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [5, 95],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "circulating_blast_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": true,
+      "shape_free_text": "Absolute circulating blast burden; high values drive leukostasis and tumor lysis risk.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.5, 350],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": true,
+      "shape_free_text": "May be low at presentation despite high WBC; profound neutropenia (<0.5) strongly raises infection hazard.",
+      "baseline_range": [1.8, 7.5],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0, 3],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Commonly low from marrow failure and bleeding; severe anemia contributes to dyspnea, tachycardia, ischemia, and fatigue.",
+      "baseline_range": [12, 16],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [4, 11],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": true,
+      "shape_free_text": "Often low at presentation; bleeding hazard rises sharply below 20-30 x10^9/L and with concurrent coagulopathy.",
+      "baseline_range": [150, 400],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [2, 120],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ldh",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Mild to extreme elevation; very high values track high turnover, leukostasis, organ ischemia, TLS, or relapse.",
+      "baseline_range": [120, 250],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [250, 7000],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ferritin",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "shape_free_text": "May be elevated with inflammation, transfusion burden, infection, or HLH-like pressure; values can reach several thousand.",
+      "baseline_range": [20, 300],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [500, 10000],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "Can be markedly elevated in leukemia fever, infection, tissue necrosis, or extramedullary inflammation.",
+      "baseline_range": [0, 5],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [20, 350],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Falls with inflammation, poor intake, hepatic involvement, or critical illness.",
+      "baseline_range": [3.5, 5.0],
+      "peak_day_range": [7, 60],
+      "peak_value_range": [2.0, 3.5],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "petechiae_purpura_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Petechiae, purpura, bruising, or ecchymoses from thrombocytopenia and coagulopathy.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mucosal_bleeding_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Epistaxis, gingival bleeding, oral bleeding, gastrointestinal bleeding, or menorrhagia.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "soft_tissue_bleeding_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Large ecchymosis, subcutaneous bleeding, hematoma, or traumatic bleeding amplified by AML-associated coagulopathy.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of major hemorrhage from thrombocytopenia, DIC-like coagulopathy, invasive procedures, infection, or anticoagulation.",
+      "baseline_range": [0.000005, 0.00005],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.12],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "intracranial_hemorrhage_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of intracranial hemorrhage, highest with severe thrombocytopenia, DIC, leukostasis, hypertension, trauma, or anticoagulation.",
+      "baseline_range": [0.000001, 0.00001],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0005, 0.05],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "dic_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of overt disseminated intravascular coagulopathy with thrombocytopenia, prolonged PT/aPTT, elevated D-dimer, and low fibrinogen.",
+      "baseline_range": [0.000005, 0.00005],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.15],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "d_dimer",
+      "category": "lab_value",
+      "unit": "ug/mL_FEU",
+      "log_scale": true,
+      "shape_free_text": "Often elevated with DIC-like coagulopathy, infection, leukostasis, or thrombosis; extreme elevations suggest active consumption/fibrinolysis.",
+      "baseline_range": [0, 0.5],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [1, 100],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "May rise as an acute-phase reactant but falls in overt consumption; low values are high-risk with bleeding.",
+      "baseline_range": [200, 400],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [80, 650],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "category": "lab_value",
+      "unit": "INR",
+      "log_scale": false,
+      "shape_free_text": "Usually near-normal unless DIC, liver dysfunction, vitamin K deficiency, anticoagulation, or critical illness develops.",
+      "baseline_range": [0.9, 1.2],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [1.1, 3.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "activated_partial_thromboplastin_time",
+      "category": "lab_value",
+      "unit": "seconds",
+      "log_scale": false,
+      "shape_free_text": "May be prolonged in DIC-like coagulopathy or anticoagulation.",
+      "baseline_range": [25, 40],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [35, 90],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "infection_risk_activity",
+      "category": "clinical_state",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Composite host susceptibility to bacterial/fungal infection from neutropenia, mucosal barrier injury, catheters, and treatment aplasia.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "febrile_neutropenia_hazard_in_D-AML",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of fever with neutropenia requiring urgent empiric antimicrobials; present at diagnosis or after therapy.",
+      "baseline_range": [0.00001, 0.0001],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.01, 0.35],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [3, 14],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "sepsis_hazard_in_D-AML",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk that neutropenic infection or mucosal barrier injury progresses to sepsis or septic shock.",
+      "baseline_range": [0.000005, 0.00005],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.005, 0.25],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "blood_culture_positivity_probability",
+      "category": "microbiology",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Probability of bloodstream infection; often negative in sterile leukemia fever and positive in bacteremia/fungemia.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0, 0.8],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "leukostasis_hazard_in_D-AML",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of symptomatic leukostasis affecting lung, CNS, heart, kidney, or spleen; highest with hyperleukocytosis and high blast fraction.",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.005, 0.35],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 3],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Dyspnea can reflect pulmonary leukostasis, pneumonia, anemia, pulmonary hemorrhage, or TLS-related acidosis.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mental_status_abnormality_activity",
+      "category": "neurologic_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Confusion, somnolence, focal deficit, seizure, coma, or stroke-like presentation from CNS leukostasis, sepsis, bleeding, or metabolic failure.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard_in_D-AML",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of requiring high-flow oxygen, noninvasive ventilation, or mechanical ventilation from leukostasis, infection, hemorrhage, or metabolic acidosis.",
+      "baseline_range": [0.000005, 0.00005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.005, 0.25],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "tumor_lysis_metabolic_activity",
+      "category": "clinical_state",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Composite biochemical tumor lysis pattern: hyperuricemia, hyperkalemia, hyperphosphatemia, hypocalcemia, AKI, and high LDH.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Risk of clinical TLS with AKI, arrhythmia, seizure, dialysis, or death; rises before and during cytoreduction.",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.002, 0.2],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_uric_acid",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Can be elevated at presentation or after cytoreduction; rasburicase rapidly lowers it.",
+      "baseline_range": [3, 7],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [6, 20],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "shape_free_text": "Hyperkalemia can occur with TLS, AKI, acidosis, or cell lysis.",
+      "baseline_range": [3.5, 5.0],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [4.8, 8.0],
+      "plateau_duration_days": [1, 5],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_phosphate",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Rises with cell lysis and kidney injury.",
+      "baseline_range": [2.5, 4.5],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [4.5, 12],
+      "plateau_duration_days": [1, 5],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_calcium",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Falls in TLS from calcium-phosphate precipitation; symptoms can include tetany, seizures, and arrhythmia.",
+      "baseline_range": [8.5, 10.5],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [5.5, 8.4],
+      "plateau_duration_days": [1, 5],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "May rise from TLS, leukostasis, sepsis, dehydration, nephrotoxins, or baseline CKD.",
+      "baseline_range": [0.6, 1.2],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [1.0, 6.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "extramedullary_organ_infiltration_activity_in_D-AML",
+      "category": "clinical_state",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Any clinically important tissue infiltration by myeloid blasts outside marrow/blood: skin, gingiva, liver, spleen, lymph node, GI/biliary tract, CNS, or other sites.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "gingival_infiltration_activity_in_D-AML",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Gingival swelling, hypertrophy, pain, or bleeding from leukemic infiltration and thrombocytopenia.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "leukemia_cutis_activity_in_D-AML",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Leukemia cutis nodules, papules, plaques, or violaceous lesions from cutaneous blast infiltration.",
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "hepatomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Hepatic enlargement from infiltration, inflammation, infection, or extramedullary hematopoietic pressure.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.1, 0.8],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 60],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "splenomegaly_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Splenic enlargement from infiltration, congestion, or antecedent myeloid neoplasm; rarely associated with rupture.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 60],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "abdominal_pain_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "May reflect splenic infarct/rupture, hepatosplenic infiltration, cholecystitis mimic, infection, typhlitis, or TLS.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "cholestatic_biliary_infiltration_activity_in_D-AML",
+      "category": "clinical_state",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Gallbladder, bile duct, or hepatic portal infiltration by myeloid blasts producing cholecystitis/sepsis mimic or cholestatic labs.",
+      "baseline_range": [0, 0.005],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.05, 0.8],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "low",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_bilirubin_total",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "May rise with hemolysis, sepsis, hepatic/biliary infiltration, cholestasis, drug injury, or TLS-related organ failure.",
+      "baseline_range": [0.2, 1.2],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.8, 8],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_alkaline_phosphatase",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Cholestatic elevation can occur with biliary infiltration, hepatic infiltration, sepsis, or drug injury.",
+      "baseline_range": [40, 130],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [130, 800],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 30],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hyperleukocytosis_cytoreduction_need",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Urgency of cytoreduction from WBC/blast burden, leukostasis symptoms, and TLS/DIC pressure.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "leukapheresis_access_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Operational feasibility of immediate leukapheresis: vascular access, hemodynamic stability, apheresis availability, and anticoagulation tolerance.",
+      "baseline_range": [0.2, 1],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "intensive_chemotherapy_tolerability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Physiologic ability to tolerate intensive induction: age/frailty, organ function, active infection, cardiac reserve, goals of care.",
+      "baseline_range": [0.2, 0.9],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "active_uncontrolled_infection_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Active infection not yet controlled; weakens immediate intensive therapy tolerance but strengthens urgent antimicrobial vector fields.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "transfusion_support_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Availability and safety of platelet, RBC, cryoprecipitate/fibrinogen, and plasma support.",
+      "baseline_range": [0.3, 1],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "tumor_lysis_prophylaxis_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Feasibility of hydration, rasburicase/allopurinol, monitoring, dialysis access, and safe cytoreduction.",
+      "baseline_range": [0.4, 1],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "renal_function_treatment_constraint",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Renal dysfunction limiting chemotherapy, antimicrobial, TLS, and contrast choices.",
+      "baseline_range": [0, 0.1],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "venetoclax_interaction_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Risk of drug interaction, prolonged cytopenia, or TLS when venetoclax is combined with azoles, CYP3A inhibitors, or renal impairment.",
+      "baseline_range": [0, 0.1],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-AML",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Lifespan hazard in AML. Early peaks are driven by leukostasis, sepsis/febrile neutropenia, bleeding/DIC, TLS, and organ failure; later hazard tracks refractory/relapsed blast burden and treatment complications.",
+      "baseline_range": [0.000005, 0.00002],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.003, 0.08],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [-0.8, -0.4],
+      "effect_direction": "source_down_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Bleeding hazard rises sharply with severe thrombocytopenia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_fibrinogen",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [-0.7, -0.3],
+      "effect_direction": "source_down_increases_target",
+      "phase": "overt_coagulopathy",
+      "clinical_rationale": "Low fibrinogen in DIC-like AML coagulopathy increases major bleeding risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "dic_hazard",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.4, 0.8],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "DIC integrates coagulopathy, platelet consumption, and fibrinolysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "major_bleeding_hazard",
+      "target_axis_id": "intracranial_hemorrhage_hazard",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [0.3, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Intracranial hemorrhage is a high-impact subset of major bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "absolute_neutrophil_count",
+      "target_axis_id": "febrile_neutropenia_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [-0.8, -0.4],
+      "effect_direction": "source_down_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Febrile neutropenia risk accelerates when ANC drops below 0.5 x10^9/L.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "febrile_neutropenia_hazard_in_D-AML",
+      "target_axis_id": "sepsis_hazard_in_D-AML",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [0.4, 0.8],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "A subset of febrile neutropenia progresses to sepsis or septic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "white_blood_cell_count",
+      "target_axis_id": "leukostasis_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.3, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "High WBC is an imperfect but important leukostasis risk driver.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "circulating_blast_count",
+      "target_axis_id": "leukostasis_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.5, 0.9],
+      "effect_direction": "source_up_increases_target",
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Absolute blast count is closer to the leukostasis mechanism than total WBC.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "leukostasis_hazard_in_D-AML",
+      "target_axis_id": "acute_respiratory_failure_hazard_in_D-AML",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [0.4, 0.8],
+      "effect_direction": "source_up_increases_target",
+      "phase": "hyperleukocytic_presentation",
+      "clinical_rationale": "Pulmonary leukostasis is a common route to respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_ldh",
+      "target_axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.3, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "presentation_and_early_treatment",
+      "clinical_rationale": "High LDH marks high cell turnover and TLS risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_uric_acid",
+      "target_axis_id": "serum_creatinine",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.3, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "tumor_lysis",
+      "clinical_rationale": "Uric acid nephropathy contributes to AKI in TLS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+      "target_axis_id": "mortality_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.3, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "early_treatment",
+      "clinical_rationale": "Clinical TLS increases death hazard through arrhythmia, AKI, and metabolic collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "sepsis_hazard_in_D-AML",
+      "target_axis_id": "mortality_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.4, 0.8],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Sepsis is one of the dominant early mortality pathways in AML.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "intracranial_hemorrhage_hazard",
+      "target_axis_id": "mortality_hazard_in_D-AML",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.4, 0.9],
+      "effect_direction": "source_up_increases_target",
+      "phase": "whole_course",
+      "clinical_rationale": "Intracranial hemorrhage is a high-fatality AML bleeding event.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_crp",
+      "target_axis_id": "body_temperature",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.2, 0.5],
+      "phase": "fever_presentation",
+      "clinical_rationale": "Leukemia fever and infection often move CRP and fever together, but the relationship is loose.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "hydroxyurea_cytoreduction",
+      "drug_class": "oral_antimetabolite_cytoreductive_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": ["hyperleukocytosis_cytoreduction_need", "tumor_lysis_prophylaxis_feasibility"],
+      "effect_modifiers": [
+        {
+          "axis_id": "hyperleukocytosis_cytoreduction_need",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [1.2, 2.0],
+          "clinical_rationale": "Hydroxyurea is used to lower blast/WBC burden while definitive planning and stabilization occur."
+        },
+        {
+          "axis_id": "renal_function_treatment_constraint",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [0.5, 0.9],
+          "clinical_rationale": "Renal dysfunction increases TLS and dosing complexity; cytoreduction must be paired with close monitoring."
+        }
+      ],
+      "failure_modes": ["insufficiently_fast_cytoreduction", "worsening_tls_without_prophylaxis", "delayed_definitive_therapy"],
+      "trajectory_modifications": {
+        "leukemic_blast_burden": {
+          "peak_value_factor": [0.4, 0.8],
+          "plateau_duration_factor": [0.3, 0.7],
+          "decline_half_life_days": [1, 5]
+        },
+        "white_blood_cell_count": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.2, 0.6],
+          "decline_half_life_days": [1, 4]
+        },
+        "circulating_blast_count": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.2, 0.6],
+          "decline_half_life_days": [1, 4]
+        },
+        "leukostasis_microvascular_occlusion_activity": {
+          "peak_value_factor": [0.4, 0.8],
+          "plateau_duration_factor": [0.3, 0.7],
+          "decline_half_life_days": [1, 4]
+        },
+        "leukostasis_hazard_in_D-AML": {
+          "peak_value_factor": [0.3, 0.8],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [1, 4]
+        }
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [1, 5],
+      "side_effects": [
+        {
+          "axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [1.2, 3.0],
+          "interpretation": "Cytoreduction can precipitate TLS if prophylaxis and monitoring are inadequate."
+        },
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [0.2, 1.0],
+          "interpretation": "Additional marrow suppression may deepen neutropenia."
+        }
+      ],
+      "context_specific_role": "Short-term cytoreduction for hyperleukocytic or rapidly rising AML while definitive therapy, TLS prevention, infection control, and transfer decisions are made.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "leukapheresis_for_symptomatic_leukostasis",
+      "drug_class": "mechanical_leukoreduction",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": ["leukapheresis_access_feasibility", "hyperleukocytosis_cytoreduction_need"],
+      "effect_modifiers": [
+        {
+          "axis_id": "leukapheresis_access_feasibility",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [0, 0.3],
+          "clinical_rationale": "Apheresis requires vascular access, staffing, and hemodynamic stability."
+        },
+        {
+          "axis_id": "dic_hazard",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [0.6, 1.0],
+          "clinical_rationale": "Line placement and anticoagulation are higher risk in coagulopathy."
+        }
+      ],
+      "failure_modes": ["rebound_leukocytosis_without_chemotherapy", "apheresis_delay", "line_bleeding", "hemodynamic_instability"],
+      "trajectory_modifications": {
+        "white_blood_cell_count": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.1, 0.4],
+          "decline_half_life_days": [0.2, 1]
+        },
+        "circulating_blast_count": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.1, 0.4],
+          "decline_half_life_days": [0.2, 1]
+        },
+        "leukostasis_microvascular_occlusion_activity": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.1, 0.4],
+          "decline_half_life_days": [0.2, 2]
+        },
+        "acute_respiratory_failure_hazard_in_D-AML": {
+          "peak_value_factor": [0.4, 0.9],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [0.5, 3]
+        }
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [1.1, 2.5],
+          "interpretation": "Central access and anticoagulation can increase bleeding risk."
+        },
+        {
+          "axis_id": "serum_calcium",
+          "direction": "down",
+          "magnitude_range": [0.2, 1.0],
+          "interpretation": "Citrate exposure can lower calcium."
+        }
+      ],
+      "context_specific_role": "Rapid temporary debulking when symptomatic leukostasis is present or imminent; must be paired with cytoreductive/definitive therapy to prevent rebound.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "intensive_cytarabine_anthracycline_induction",
+      "drug_class": "intensive_induction_chemotherapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": ["intensive_chemotherapy_tolerability", "active_uncontrolled_infection_activity", "tumor_lysis_prophylaxis_feasibility"],
+      "effect_modifiers": [
+        {
+          "axis_id": "intensive_chemotherapy_tolerability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.1, 0.6],
+          "clinical_rationale": "Frailty, cardiac dysfunction, organ failure, or goals of care reduce feasibility."
+        },
+        {
+          "axis_id": "active_uncontrolled_infection_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [1.2, 3.0],
+          "clinical_rationale": "Profound treatment aplasia amplifies uncontrolled infection risk."
+        },
+        {
+          "axis_id": "tumor_lysis_prophylaxis_feasibility",
+          "condition": "low",
+          "effect": "changes_toxicity",
+          "factor_range": [1.5, 5.0],
+          "clinical_rationale": "High tumor burden induction without TLS protection can be fatal."
+        }
+      ],
+      "failure_modes": ["induction_death_from_sepsis_or_bleeding", "primary_refractory_aml", "prolonged_aplasia", "anthracycline_cardiotoxicity"],
+      "trajectory_modifications": {
+        "leukemic_blast_burden": {
+          "peak_value_factor": [0.03, 0.3],
+          "plateau_duration_factor": [0.05, 0.4],
+          "decline_half_life_days": [7, 21]
+        },
+        "peripheral_blood_blast_fraction": {
+          "peak_value_factor": [0.02, 0.3],
+          "plateau_duration_factor": [0.05, 0.4],
+          "decline_half_life_days": [3, 14]
+        },
+        "marrow_failure_activity": {
+          "peak_value_factor": [0.5, 1.2],
+          "plateau_duration_factor": [0.8, 1.5],
+          "decline_half_life_days": [21, 60]
+        },
+        "extramedullary_myeloid_infiltration_activity": {
+          "peak_value_factor": [0.05, 0.4],
+          "plateau_duration_factor": [0.1, 0.5],
+          "decline_half_life_days": [14, 45]
+        },
+        "mortality_hazard_in_D-AML": {
+          "peak_value_factor": [0.4, 0.9],
+          "plateau_duration_factor": [0.5, 1.2],
+          "decline_half_life_days": [30, 180]
+        }
+      },
+      "onset_delay_days": [3, 14],
+      "carryover_after_stop_days": [30, 180],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [1.0, 7.0],
+          "interpretation": "Expected induction aplasia."
+        },
+        {
+          "axis_id": "febrile_neutropenia_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [2.0, 10.0],
+          "interpretation": "Early treatment window carries high febrile neutropenia risk."
+        },
+        {
+          "axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [1.5, 8.0],
+          "interpretation": "Rapid blast kill can trigger TLS."
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [1.2, 4.0],
+          "interpretation": "Aplasia and mucositis amplify bleeding risk."
+        }
+      ],
+      "context_specific_role": "Disease-eradicating induction vector field for patients able to tolerate intensive therapy; downstream benefit emerges from blast reduction and hematopoietic recovery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hypomethylating_agent_venetoclax",
+      "drug_class": "lower_intensity_epigenetic_bcl2_directed_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": ["intensive_chemotherapy_tolerability", "venetoclax_interaction_risk_activity", "tumor_lysis_prophylaxis_feasibility"],
+      "effect_modifiers": [
+        {
+          "axis_id": "intensive_chemotherapy_tolerability",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [1.1, 1.6],
+          "clinical_rationale": "Lower-intensity therapy becomes more suitable when intensive induction tolerance is low."
+        },
+        {
+          "axis_id": "venetoclax_interaction_risk_activity",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [0.4, 0.9],
+          "clinical_rationale": "CYP3A inhibitors, azoles, renal impairment, and prolonged cytopenia require dose adjustment and may reduce practical intensity."
+        }
+      ],
+      "failure_modes": ["prolonged_cytopenia", "infectious_death", "primary_resistance", "tls_with_high_burden"],
+      "trajectory_modifications": {
+        "leukemic_blast_burden": {
+          "peak_value_factor": [0.05, 0.5],
+          "plateau_duration_factor": [0.1, 0.7],
+          "decline_half_life_days": [14, 45]
+        },
+        "marrow_failure_activity": {
+          "peak_value_factor": [0.5, 1.2],
+          "plateau_duration_factor": [0.8, 1.5],
+          "decline_half_life_days": [21, 90]
+        },
+        "infection_risk_activity": {
+          "peak_value_factor": [1.1, 2.5],
+          "plateau_duration_factor": [1.0, 1.6],
+          "decline_half_life_days": [14, 60]
+        },
+        "tumor_lysis_syndrome_hazard_in_D-AML": {
+          "peak_value_factor": [1.2, 5.0],
+          "plateau_duration_factor": [0.5, 1.0],
+          "decline_half_life_days": [1, 7]
+        }
+      },
+      "onset_delay_days": [7, 28],
+      "carryover_after_stop_days": [21, 120],
+      "side_effects": [
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "direction": "down",
+          "magnitude_range": [0.5, 5.0],
+          "interpretation": "Prolonged cytopenia is common and drives infection risk."
+        },
+        {
+          "axis_id": "tumor_lysis_syndrome_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [1.2, 4.0],
+          "interpretation": "Venetoclax initiation can precipitate TLS, especially with high burden or renal impairment."
+        }
+      ],
+      "context_specific_role": "Lower-intensity disease-directed vector for patients where intensive induction is poorly tolerated; requires TLS and infection safeguards.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "broad_spectrum_antimicrobial_therapy_for_febrile_neutropenia",
+      "drug_class": "anti_infective_supportive_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["febrile_neutropenia_hazard_in_D-AML", "active_uncontrolled_infection_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_uncontrolled_infection_activity",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [1.2, 2.5],
+          "clinical_rationale": "Antimicrobial effect is most outcome-relevant when infection is active or suspected."
+        },
+        {
+          "axis_id": "absolute_neutrophil_count",
+          "condition": "very_low",
+          "effect": "weakens",
+          "factor_range": [0.5, 0.9],
+          "clinical_rationale": "Profound neutropenia reduces host clearance even with active drugs."
+        }
+      ],
+      "failure_modes": ["resistant_pathogen_or_inactive_coverage", "delayed_source_control", "invasive_fungal_breakthrough", "renal_or_hepatic_toxicity"],
+      "trajectory_modifications": {
+        "active_uncontrolled_infection_activity": {
+          "peak_value_factor": [0.2, 0.7],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [1, 7]
+        },
+        "febrile_neutropenia_hazard_in_D-AML": {
+          "peak_value_factor": [0.3, 0.8],
+          "plateau_duration_factor": [0.3, 0.8],
+          "decline_half_life_days": [1, 7]
+        },
+        "sepsis_hazard_in_D-AML": {
+          "peak_value_factor": [0.2, 0.8],
+          "plateau_duration_factor": [0.2, 0.8],
+          "decline_half_life_days": [1, 7]
+        },
+        "mortality_hazard_in_D-AML": {
+          "peak_value_factor": [0.5, 0.9],
+          "plateau_duration_factor": [0.4, 0.9],
+          "decline_half_life_days": [2, 14]
+        }
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {
+          "axis_id": "serum_creatinine",
+          "direction": "up",
+          "magnitude_range": [0.1, 2.0],
+          "interpretation": "Nephrotoxicity from selected agents or sepsis-associated AKI can complicate treatment."
+        }
+      ],
+      "context_specific_role": "Empiric and adjusted antimicrobial vector for AML fever, febrile neutropenia, pneumonia, bacteremia, sepsis, or fungal infection; source control remains a separate context requirement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "platelet_red_cell_and_coagulation_factor_support",
+      "drug_class": "transfusion_and_hemostatic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["transfusion_support_feasibility"],
+      "effect_modifiers": [
+        {
+          "axis_id": "transfusion_support_feasibility",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.1, 0.7],
+          "clinical_rationale": "Without blood products, severe anemia/bleeding coagulopathy cannot be stabilized."
+        },
+        {
+          "axis_id": "dic_hazard",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [1.1, 1.8],
+          "clinical_rationale": "DIC-like coagulopathy increases need for platelet and fibrinogen support."
+        }
+      ],
+      "failure_modes": ["alloimmunization_or_refractoriness", "volume_overload", "ongoing_uncontrolled_dic", "transfusion_reaction"],
+      "trajectory_modifications": {
+        "hemoglobin": {
+          "peak_value_factor": [1.1, 1.5],
+          "plateau_duration_factor": [0.5, 1.0],
+          "decline_half_life_days": [7, 30]
+        },
+        "platelet_count": {
+          "peak_value_factor": [1.5, 8.0],
+          "plateau_duration_factor": [0.2, 0.8],
+          "decline_half_life_days": [1, 4]
+        },
+        "serum_fibrinogen": {
+          "peak_value_factor": [1.2, 3.0],
+          "plateau_duration_factor": [0.3, 0.8],
+          "decline_half_life_days": [1, 5]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [0.2, 0.8],
+          "plateau_duration_factor": [0.2, 0.8],
+          "decline_half_life_days": [1, 5]
+        }
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 7],
+      "side_effects": [
+        {
+          "axis_id": "acute_respiratory_failure_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [1.0, 2.5],
+          "interpretation": "Volume overload or transfusion lung injury can worsen respiratory status in susceptible patients."
+        }
+      ],
+      "context_specific_role": "Stabilizes marrow-failure consequences and DIC-like bleeding while disease-directed therapy acts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "tumor_lysis_prophylaxis_and_rasburicase",
+      "drug_class": "tls_prevention_and_urate_lowering",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["tumor_lysis_prophylaxis_feasibility"],
+      "effect_modifiers": [
+        {
+          "axis_id": "tumor_lysis_prophylaxis_feasibility",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.1, 0.7],
+          "clinical_rationale": "TLS prevention requires monitoring, fluids, urate lowering, and escalation pathways."
+        },
+        {
+          "axis_id": "renal_function_treatment_constraint",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [1.1, 1.8],
+          "clinical_rationale": "Renal impairment makes TLS prevention more urgent and may favor rasburicase and dialysis readiness."
+        }
+      ],
+      "failure_modes": ["uncontrolled_hyperkalemia", "dialysis_unavailable", "rasburicase_contraindication", "fluid_overload"],
+      "trajectory_modifications": {
+        "tumor_lysis_metabolic_activity": {
+          "peak_value_factor": [0.2, 0.7],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [1, 5]
+        },
+        "tumor_lysis_syndrome_hazard_in_D-AML": {
+          "peak_value_factor": [0.1, 0.5],
+          "plateau_duration_factor": [0.1, 0.6],
+          "decline_half_life_days": [1, 5]
+        },
+        "serum_uric_acid": {
+          "peak_value_factor": [0.05, 0.5],
+          "plateau_duration_factor": [0.1, 0.7],
+          "decline_half_life_days": [0.5, 3]
+        },
+        "serum_creatinine": {
+          "peak_value_factor": [0.6, 1.0],
+          "plateau_duration_factor": [0.4, 0.9],
+          "decline_half_life_days": [2, 14]
+        }
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 7],
+      "side_effects": [
+        {
+          "axis_id": "acute_respiratory_failure_hazard_in_D-AML",
+          "direction": "up",
+          "magnitude_range": [1.0, 2.0],
+          "interpretation": "Aggressive fluids can worsen pulmonary status in patients with leukostasis, renal failure, or heart dysfunction."
+        }
+      ],
+      "context_specific_role": "Reduces TLS and AKI hazard before and during cytoreduction or induction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "allogeneic_hematopoietic_cell_transplantation",
+      "drug_class": "cellular_consolidation_and_graft_versus_leukemia",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "definitive",
+      "required_context_axes": ["intensive_chemotherapy_tolerability", "active_uncontrolled_infection_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_uncontrolled_infection_activity",
+          "condition": "high",
+          "effect": "contraindicates",
+          "factor_range": [0, 0.4],
+          "clinical_rationale": "Uncontrolled infection markedly increases transplant mortality."
+        },
+        {
+          "axis_id": "intensive_chemotherapy_tolerability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.1, 0.7],
+          "clinical_rationale": "Conditioning, immunosuppression, and organ toxicity require physiologic reserve."
+        }
+      ],
+      "failure_modes": ["relapse_after_transplant", "graft_versus_host_disease", "opportunistic_infection", "nonrelapse_mortality"],
+      "trajectory_modifications": {
+        "leukemic_blast_burden": {
+          "peak_value_factor": [0.01, 0.3],
+          "plateau_duration_factor": [0.01, 0.4],
+          "decline_half_life_days": [30, 180]
+        },
+        "mortality_hazard_in_D-AML": {
+          "peak_value_factor": [0.3, 0.9],
+          "plateau_duration_factor": [0.3, 1.2],
+          "decline_half_life_days": [180, 1825]
+        }
+      },
+      "onset_delay_days": [30, 180],
+      "carryover_after_stop_days": [365, 3650],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [1.5, 5.0],
+          "interpretation": "Conditioning and post-transplant immunosuppression raise infection risk."
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [1.0, 3.0],
+          "interpretation": "Thrombocytopenia and mucosal injury can increase bleeding during transplant aplasia."
+        }
+      ],
+      "context_specific_role": "Long-horizon relapse-reduction vector for selected patients after disease control; not a presentation-time stabilizer.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "Older age and frailty",
+      "type": "continuous_or_ordinal",
+      "modulation": {
+        "older_or_frail": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": {
+            "intensive_chemotherapy_tolerability": "decrease",
+            "mortality_hazard_in_D-AML": "increase",
+            "infection_risk_activity": "increase"
+          }
+        },
+        "young_fit": {
+          "P_disease_ratio": [0.2, 0.8],
+          "axis_response_modulation": {
+            "intensive_chemotherapy_tolerability": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Antecedent myelodysplastic or myeloproliferative neoplasm",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5.0, 50.0],
+          "axis_response_modulation": {
+            "marrow_failure_activity": "increase",
+            "splenomegaly_activity": "increase",
+            "mortality_hazard_in_D-AML": "increase"
+          }
+        },
+        "absent_or_unknown": {
+          "P_disease_ratio": [0.7, 1.0]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Prior cytotoxic chemotherapy or radiation exposure",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 20.0],
+          "axis_response_modulation": {
+            "marrow_failure_activity": "increase",
+            "intensive_chemotherapy_tolerability": "decrease",
+            "mortality_hazard_in_D-AML": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Monocytic or myelomonocytic clinical biology",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": {
+            "gingival_infiltration_activity_in_D-AML": "increase",
+            "extramedullary_organ_infiltration_activity_in_D-AML": "increase",
+            "leukostasis_hazard_in_D-AML": "increase",
+            "infection_risk_activity": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "High presenting circulating blast count or hyperleukocytosis",
+      "type": "continuous",
+      "modulation": {
+        "high": {
+          "P_disease_ratio": [2.0, 20.0],
+          "axis_response_modulation": {
+            "leukostasis_hazard_in_D-AML": "increase",
+            "tumor_lysis_syndrome_hazard_in_D-AML": "increase",
+            "dic_hazard": "increase",
+            "mortality_hazard_in_D-AML": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Baseline renal impairment",
+      "type": "continuous_or_categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.2],
+          "axis_response_modulation": {
+            "serum_creatinine": "increase",
+            "renal_function_treatment_constraint": "increase",
+            "tumor_lysis_syndrome_hazard_in_D-AML": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "Profound neutropenia at presentation",
+      "type": "continuous",
+      "modulation": {
+        "anc_below_0_5": {
+          "P_disease_ratio": [1.0, 4.0],
+          "axis_response_modulation": {
+            "infection_risk_activity": "increase",
+            "febrile_neutropenia_hazard_in_D-AML": "increase",
+            "sepsis_hazard_in_D-AML": "increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "Active bleeding or severe coagulopathy at presentation",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 5.0],
+          "axis_response_modulation": {
+            "major_bleeding_hazard": "increase",
+            "intracranial_hemorrhage_hazard": "increase",
+            "mortality_hazard_in_D-AML": "increase",
+            "transfusion_support_feasibility": "importance_increase"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Use presentation-time CBC with differential, peripheral smear blast percentage when available, vitals, infection workup, LDH, uric acid, creatinine, potassium, phosphate, calcium, PT/INR, aPTT, fibrinogen, and D-dimer as ordinary observations.",
+    "Keep flow cytometry, cytogenetics, molecular results, marrow biopsy, and tissue IHC in confirmatory_findings/context, not ordinary observations.",
+    "Urgently monitor for leukostasis when circulating blast count is high or there is dyspnea, hypoxemia, neurologic abnormality, renal injury, or cardiac ischemia.",
+    "Treat fever with neutropenia as an emergency while preserving sterile leukemia fever as a possible explanation when cultures and source evaluation are negative.",
+    "Provide platelet/RBC/fibrinogen support according to bleeding risk, procedure need, and DIC-like consumption.",
+    "Begin TLS prevention and frequent electrolyte/renal monitoring before cytoreduction in high-burden disease.",
+    "Do not encode static treatment rank labels; treatment ranking should emerge from forward simulation and case context."
+  ]
+}
