@@ -62,6 +62,9 @@ DISEASE_NAME_OVERRIDES = {
     "D-NECROTIZING-FASCIITIS": "Necrotizing fasciitis",
     "D-TAKAYASU-ARTERITIS": "Takayasu arteritis",
     "D-BEHCET-DISEASE": "Behcet disease",
+    "D-PYOGENIC-LIVER-ABSCESS": "Pyogenic liver abscess",
+    "D-PJP-PNEUMONIA": "Pneumocystis jirovecii pneumonia",
+    "D-CANDIDEMIA": "Candidemia",
 }
 
 

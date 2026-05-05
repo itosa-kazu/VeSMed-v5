@@ -54,31 +54,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-NECROTIZING-FASCIITIS | Necrotizing fasciitis |
 | D-TAKAYASU-ARTERITIS | Takayasu arteritis |
 | D-BEHCET-DISEASE | Behcet disease |
+| D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess |
+| D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia |
+| D-CANDIDEMIA | Candidemia |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-PYOGENIC-LIVER-ABSCESS | Pyogenic liver abscess | common sepsis mimic; imaging/source-control axes |
-| 2 | D-PJP-PNEUMONIA | Pneumocystis jirovecii pneumonia | critical immunocompromised respiratory mimic |
-| 3 | D-CANDIDEMIA | Candidemia | common hospital critical fever; line/source axes |
-| 4 | D-INVASIVE-ASPERGILLOSIS | Invasive aspergillosis | critical immunocompromised pulmonary disease |
-| 5 | D-ACUTE-HIV | Acute HIV retroviral syndrome | common fever/pharyngitis/rash mimic |
-| 6 | D-CMV-MONO | Cytomegalovirus mononucleosis-like illness | common mono/AOSD/lymphoma mimic; separate from EBV IM |
-| 7 | D-BRUCELLOSIS | Brucellosis | subacute fever mimic; exposure/relapse axes |
-| 8 | D-Q-FEVER | Q fever | culture-negative fever/pneumonia/hepatitis/IE bridge |
-| 9 | D-RICKETTSIOSIS-SCRUB-TYPHUS | Scrub typhus / rickettsiosis | critical treatable fever + rash/eschar/thrombocytopenia |
-| 10 | D-MALARIA-FALCIPARUM | Plasmodium falciparum malaria | critical travel fever; hemolysis/AKI/CNS axes |
-| 11 | D-NEUTROPENIC-FEVER | Febrile neutropenia | common critical oncology fever |
-| 12 | D-ACUTE-LEUKEMIA | Acute leukemia | critical hematology fever/cytopenia mimic |
-| 13 | D-STAPH-AUREUS-BACTEREMIA | Staphylococcus aureus bacteremia | common critical bloodstream infection; metastatic focus/endocarditis bridge |
-| 14 | D-NOCARDIOSIS | Nocardiosis | immunocompromised pulmonary/CNS mimic; chronic fever bridge |
-| 15 | D-BARTONELLA-ENDOCARDITIS | Bartonella infective endocarditis | culture-negative endocarditis and fever mimic |
-| 16 | D-HISTOPLASMOSIS-DISSEMINATED | Disseminated histoplasmosis | critical immunocompromised fever; HLH/TB/lymphoma mimic |
-| 17 | D-CRYPTOCOCCOSIS-DISSEMINATED | Disseminated cryptococcosis | immunocompromised CNS/pulmonary fever; meningitis bridge |
-| 18 | D-TYPHOID-FEVER | Typhoid fever | travel fever; abdominal/GI/hepatosplenic mimic |
-| 19 | D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection | common critical antibiotic-associated fever/shock mimic |
-| 20 | D-SEPTIC-ARTHRITIS | Septic arthritis | common critical fever with source-control and joint-destruction risk |
+| 1 | D-INVASIVE-ASPERGILLOSIS | Invasive aspergillosis | critical immunocompromised pulmonary disease |
+| 2 | D-ACUTE-HIV | Acute HIV retroviral syndrome | common fever/pharyngitis/rash mimic |
+| 3 | D-CMV-MONO | Cytomegalovirus mononucleosis-like illness | common mono/AOSD/lymphoma mimic; separate from EBV IM |
+| 4 | D-BRUCELLOSIS | Brucellosis | subacute fever mimic; exposure/relapse axes |
+| 5 | D-Q-FEVER | Q fever | culture-negative fever/pneumonia/hepatitis/IE bridge |
+| 6 | D-RICKETTSIOSIS-SCRUB-TYPHUS | Scrub typhus / rickettsiosis | critical treatable fever + rash/eschar/thrombocytopenia |
+| 7 | D-MALARIA-FALCIPARUM | Plasmodium falciparum malaria | critical travel fever; hemolysis/AKI/CNS axes |
+| 8 | D-NEUTROPENIC-FEVER | Febrile neutropenia | common critical oncology fever |
+| 9 | D-ACUTE-LEUKEMIA | Acute leukemia | critical hematology fever/cytopenia mimic |
+| 10 | D-STAPH-AUREUS-BACTEREMIA | Staphylococcus aureus bacteremia | common critical bloodstream infection; metastatic focus/endocarditis bridge |
+| 11 | D-NOCARDIOSIS | Nocardiosis | immunocompromised pulmonary/CNS mimic; chronic fever bridge |
+| 12 | D-BARTONELLA-ENDOCARDITIS | Bartonella infective endocarditis | culture-negative endocarditis and fever mimic |
+| 13 | D-HISTOPLASMOSIS-DISSEMINATED | Disseminated histoplasmosis | critical immunocompromised fever; HLH/TB/lymphoma mimic |
+| 14 | D-CRYPTOCOCCOSIS-DISSEMINATED | Disseminated cryptococcosis | immunocompromised CNS/pulmonary fever; meningitis bridge |
+| 15 | D-TYPHOID-FEVER | Typhoid fever | travel fever; abdominal/GI/hepatosplenic mimic |
+| 16 | D-CLOSTRIDIOIDES-DIFFICILE-SEVERE | Severe Clostridioides difficile infection | common critical antibiotic-associated fever/shock mimic |
+| 17 | D-SEPTIC-ARTHRITIS | Septic arthritis | common critical fever with source-control and joint-destruction risk |
+| 18 | D-VERTEBRAL-OSTEOMYELITIS | Vertebral osteomyelitis | common missed fever/back-pain source; imaging/source-control bridge |
+| 19 | D-HSV-ENCEPHALITIS | HSV encephalitis | critical treatable CNS fever/AMS mimic |
+| 20 | D-PAN | Polyarteritis nodosa | critical systemic vasculitis mimic with renal/neurologic/GI ischemia axes |
 
 ## Candidate Pool Toward 100
 
