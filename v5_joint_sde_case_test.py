@@ -256,6 +256,26 @@ def convert_value(value, from_unit, to_unit, axis_id):
     return value
 
 
+def observation_value_for_axis(obs, axis, axis_id):
+    """Convert a case observation into the axis unit without inventing precision.
+
+    Some PMC reports only state that a lab was normal. Encoding that as numeric
+    zero is wrong for log-scale measurements such as CRP, where 0 mg/L becomes a
+    mathematical extreme rather than "within the reference range".
+    """
+    value = obs.get("value")
+    src = norm_unit(obs.get("unit"))
+    if src == "normalflagonly":
+        baseline = parse_interval(axis.get("baseline_range"))
+        if baseline is None:
+            return 0.0 if float(value) <= 0.5 else 1.0
+        if float(value) <= 0.5:
+            return midpoint(baseline)
+        peak = parse_interval(axis.get("peak_value_range"))
+        return midpoint(peak, midpoint(baseline))
+    return convert_value(value, obs.get("unit"), axis.get("unit"), axis_id)
+
+
 def raw_axis_records(data):
     for raw in data.get("axes", []) or []:
         yield raw
@@ -1156,7 +1176,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
             if endpoint is None:
                 continue
             axis, mu_value, sigma, source = endpoint
-            obs_value = convert_value(obs[axis_id]["value"], obs[axis_id].get("unit"), axis.get("unit"), axis_id)
+            obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
             x.append(transform(axis, obs_value))
             mu.append(transform(axis, mu_value))
             sigmas.append(sigma)
@@ -1215,7 +1235,7 @@ def score_background_null(case, background_axes):
         for axis_id in axis_ids:
             axis = background_axes[axis_id]
             mu_value, _ = sample_mu_and_baseline(axis, -1.0, rng)
-            obs_value = convert_value(obs[axis_id]["value"], obs[axis_id].get("unit"), axis.get("unit"), axis_id)
+            obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
             x.append(transform(axis, obs_value))
             mu.append(transform(axis, mu_value))
             sigmas.append(axis_sigma(axis))
