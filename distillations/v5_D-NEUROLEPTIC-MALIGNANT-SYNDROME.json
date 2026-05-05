@@ -1,0 +1,609 @@
+{
+  "disease": "D-NEUROLEPTIC-MALIGNANT-SYNDROME",
+  "disease_name": "Neuroleptic malignant syndrome",
+  "distillation_scope_note": "Disease-specific medical input is limited to the disease name: Neuroleptic malignant syndrome. Triggering antipsychotic class, dopamine agonist withdrawal, severity, serotonin-syndrome overlap, malignant catatonia mimicry, rhabdomyolysis, and organ-failure complications are represented only as axes, mechanisms, risk/context factors, event hazards, or treatment modifiers.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "central_dopamine_deficiency_activity",
+      "display_name": "Central dopamine deficiency from receptor blockade or dopaminergic withdrawal",
+      "clinical_meaning": "Reduced dopaminergic signaling in hypothalamic, nigrostriatal, and limbic circuits after dopamine antagonist exposure, rapid dose escalation, depot persistence, interacting drugs, or abrupt withdrawal of dopaminergic therapy. This is the upstream driver linking the medication context to fever, rigidity, autonomic instability, and mental status change.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 1],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "hypothalamic_thermoregulatory_failure_activity",
+      "display_name": "Hypothalamic thermoregulatory failure",
+      "clinical_meaning": "Dopamine-deficient hypothalamic thermoregulation, sustained muscle heat production, dehydration, and sympathetic activation raise core temperature and make fever less responsive to antipyretics alone.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.3, 1],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "skeletal_muscle_rigidity_contracture_activity",
+      "display_name": "Sustained skeletal muscle rigidity and contracture",
+      "clinical_meaning": "Nigrostriatal dopamine deficiency and peripheral calcium-handling stress produce lead-pipe rigidity, tremor, dysphagia, immobility, heat generation, myocyte injury, and rhabdomyolysis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.35, 1],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "sympathetic_autonomic_instability_activity",
+      "display_name": "Sympathetic autonomic instability",
+      "clinical_meaning": "Central dysautonomia and physiologic stress cause tachycardia, tachypnea, labile blood pressure, diaphoresis, incontinence, arrhythmia vulnerability, and shock risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.25, 1],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "neuropsychiatric_catatonic_encephalopathic_activity",
+      "display_name": "Neuropsychiatric encephalopathic and catatonic activity",
+      "clinical_meaning": "Dopaminergic disruption and systemic stress produce delirium, mutism, agitation, obtundation, catatonic features, seizure-like events, airway-protection failure, and diagnostic overlap with malignant catatonia.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "rhabdomyolysis_pigment_nephropathy_activity",
+      "display_name": "Rhabdomyolysis and pigment nephropathy",
+      "clinical_meaning": "Sustained muscle contracture, hyperthermia, dehydration, and immobility release CK, myoglobin, potassium, phosphate, AST, LDH, and tubular pigment load, creating AKI and electrolyte-event hazards.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [1, 10],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "coagulopathic_and_respiratory_complication_activity",
+      "display_name": "Coagulopathic, respiratory, and critical-care complications",
+      "clinical_meaning": "Severe hyperthermia, rhabdomyolysis, immobility, dehydration, aspiration, seizures, and ICU exposures accumulate into DIC, arrhythmias, respiratory failure, shock, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "recent_dopamine_antagonist_exposure", "target_id": "central_dopamine_deficiency_activity", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 14], "phase": "initiation", "clinical_rationale": "NMS commonly follows recent dopamine antagonist exposure.", "knowledge_confidence": "high"},
+    {"source_id": "recent_antipsychotic_dose_increase_activity", "target_id": "central_dopamine_deficiency_activity", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 7], "phase": "initiation", "clinical_rationale": "Rapid dose escalation or parenteral dosing increases central dopamine blockade.", "knowledge_confidence": "high"},
+    {"source_id": "recent_dopaminergic_withdrawal_activity", "target_id": "central_dopamine_deficiency_activity", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 7], "phase": "initiation", "clinical_rationale": "Withdrawal of levodopa, dopamine agonists, or amantadine can create an NMS-like hypodopaminergic state.", "knowledge_confidence": "high"},
+    {"source_id": "central_dopamine_deficiency_activity", "target_id": "hypothalamic_thermoregulatory_failure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Hypothalamic dopamine deficiency impairs thermoregulation.", "knowledge_confidence": "high"},
+    {"source_id": "central_dopamine_deficiency_activity", "target_id": "skeletal_muscle_rigidity_contracture_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Nigrostriatal dopamine deficiency produces severe extrapyramidal rigidity.", "knowledge_confidence": "high"},
+    {"source_id": "central_dopamine_deficiency_activity", "target_id": "sympathetic_autonomic_instability_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Dopaminergic disruption can destabilize autonomic output.", "knowledge_confidence": "high"},
+    {"source_id": "central_dopamine_deficiency_activity", "target_id": "neuropsychiatric_catatonic_encephalopathic_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "NMS frequently includes delirium, stupor, mutism, agitation, or catatonic features.", "knowledge_confidence": "medium"},
+    {"source_id": "hypothalamic_thermoregulatory_failure_activity", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Hyperthermia is a core NMS sign.", "knowledge_confidence": "high"},
+    {"source_id": "hypothalamic_thermoregulatory_failure_activity", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Fever and sympathetic tone raise heart rate.", "knowledge_confidence": "high"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "generalized_muscle_rigidity_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Lead-pipe or generalized rigidity is the main motor manifestation.", "knowledge_confidence": "high"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "tremor_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Tremor and parkinsonian features commonly accompany rigidity.", "knowledge_confidence": "medium"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "dysphagia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Severe rigidity and catatonic state can impair swallowing.", "knowledge_confidence": "medium"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Sustained contraction causes myocyte injury and CK release.", "knowledge_confidence": "high"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Muscle injury can raise AST.", "knowledge_confidence": "high"},
+    {"source_id": "skeletal_muscle_rigidity_contracture_activity", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Cell injury and rhabdomyolysis raise LDH.", "knowledge_confidence": "medium"},
+    {"source_id": "serum_creatine_kinase", "target_id": "rhabdomyolysis_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Marked CK elevation indicates clinically important rhabdomyolysis.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_hazard", "target_id": "rhabdomyolysis_pigment_nephropathy_activity", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Rhabdomyolysis drives pigment nephropathy and electrolyte release.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "serum_myoglobin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Myoglobin rises with muscle breakdown.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "urine_myoglobin_positivity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Myoglobinuria reflects pigment release.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Pigment nephropathy and dehydration raise creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "AKI and volume depletion raise BUN.", "knowledge_confidence": "medium"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "serum_potassium", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Muscle injury and AKI can produce hyperkalemia.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_pigment_nephropathy_activity", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 7], "phase": "peak", "clinical_rationale": "Myoglobin pigment load and dehydration increase AKI risk.", "knowledge_confidence": "high"},
+    {"source_id": "sympathetic_autonomic_instability_activity", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Tachycardia is a common autonomic sign.", "knowledge_confidence": "high"},
+    {"source_id": "sympathetic_autonomic_instability_activity", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Tachypnea accompanies fever, acidosis, and autonomic activation.", "knowledge_confidence": "high"},
+    {"source_id": "sympathetic_autonomic_instability_activity", "target_id": "blood_pressure_lability_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "NMS can cause labile or elevated blood pressure.", "knowledge_confidence": "high"},
+    {"source_id": "sympathetic_autonomic_instability_activity", "target_id": "diaphoresis_sweats_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Diaphoresis is a recognized autonomic sign.", "knowledge_confidence": "high"},
+    {"source_id": "sympathetic_autonomic_instability_activity", "target_id": "autonomic_instability_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Severe dysautonomia is an event-level instability state.", "knowledge_confidence": "high"},
+    {"source_id": "neuropsychiatric_catatonic_encephalopathic_activity", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Delirium, stupor, confusion, agitation, or coma are common.", "knowledge_confidence": "high"},
+    {"source_id": "neuropsychiatric_catatonic_encephalopathic_activity", "target_id": "mutism_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Mutism can occur in NMS and catatonia-overlap presentations.", "knowledge_confidence": "medium"},
+    {"source_id": "neuropsychiatric_catatonic_encephalopathic_activity", "target_id": "glasgow_coma_scale_score", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "More severe encephalopathy lowers GCS.", "knowledge_confidence": "medium"},
+    {"source_id": "neuropsychiatric_catatonic_encephalopathic_activity", "target_id": "seizure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "Seizure-like events or true seizures can complicate severe presentations.", "knowledge_confidence": "low"},
+    {"source_id": "dysphagia_activity", "target_id": "aspiration_pneumonia_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Dysphagia increases aspiration risk.", "knowledge_confidence": "high"},
+    {"source_id": "mental_status_abnormality_activity", "target_id": "aspiration_pneumonia_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Obtundation and delirium impair airway protection.", "knowledge_confidence": "high"},
+    {"source_id": "aspiration_pneumonia_hazard", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Aspiration can progress to hypoxemic respiratory failure.", "knowledge_confidence": "high"},
+    {"source_id": "serum_potassium", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Hyperkalemia from rhabdomyolysis or AKI increases arrhythmia risk.", "knowledge_confidence": "high"},
+    {"source_id": "serum_bicarbonate", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "decrease", "edge_type": "axis_to_event", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Metabolic acidosis worsens arrhythmia and hyperkalemia physiology.", "knowledge_confidence": "medium"},
+    {"source_id": "coagulopathic_and_respiratory_complication_activity", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 10], "phase": "peak", "clinical_rationale": "Severe hyperthermia and tissue injury can trigger DIC.", "knowledge_confidence": "medium"},
+    {"source_id": "acute_kidney_injury_hazard", "target_id": "coagulopathic_and_respiratory_complication_activity", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "AKI adds metabolic, electrolyte, and volume complications.", "knowledge_confidence": "high"},
+    {"source_id": "autonomic_instability_hazard", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Severe dysautonomia can create hemodynamic collapse.", "knowledge_confidence": "medium"},
+    {"source_id": "body_temperature", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Severe hyperthermia is a major mortality pathway.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "Rhabdomyolysis can cause AKI, hyperkalemia, and DIC.", "knowledge_confidence": "high"},
+    {"source_id": "acute_kidney_injury_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "AKI and renal replacement need increase short-term risk.", "knowledge_confidence": "high"},
+    {"source_id": "cardiac_arrhythmia_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 2], "phase": "peak", "clinical_rationale": "Arrhythmia can produce sudden death or shock.", "knowledge_confidence": "high"},
+    {"source_id": "acute_respiratory_failure_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Respiratory failure and aspiration pneumonia raise mortality.", "knowledge_confidence": "high"},
+    {"source_id": "dic_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "DIC adds bleeding, thrombosis, and organ failure risk.", "knowledge_confidence": "medium"},
+    {"source_id": "circulatory_collapse_shock_hazard", "target_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Hemodynamic collapse is a direct short-term death pathway.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "recent_dopamine_antagonist_exposure", "category": "treatment_modifier", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Recent exposure to an antipsychotic or other central dopamine antagonist. Encodes context, not a confirmatory causality conclusion.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.5, 1], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "recent_antipsychotic_dose_increase_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Recent initiation, dose increase, parenteral dosing, high-potency exposure, depot persistence, or antipsychotic polypharmacy.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.4, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "satellite", "parent_axis_id": "recent_dopamine_antagonist_exposure"},
+    {"axis_id": "recent_dopaminergic_withdrawal_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Abrupt reduction or interruption of levodopa, dopamine agonist, or amantadine therapy.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.3, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "depot_or_long_half_life_antipsychotic_context", "category": "treatment_modifier", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Depot formulation or long half-life dopamine antagonist exposure that slows reversal after stopping the drug.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [7, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "active_psychosis_or_mania_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Psychosis, mania, or severe behavioral activation that changes toxicity of dopaminergic NMS treatment and antipsychotic withdrawal.", "baseline_range": [0, 0.1], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "enteral_access_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Ability to give oral or nasogastric dopaminergic medications such as bromocriptine or amantadine.", "baseline_range": [0.8, 1], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "heart_failure_or_volume_overload_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Cardiac, pulmonary, renal, or critical-care context that limits aggressive IV fluid safety.", "baseline_range": [0, 0.1], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "severe_hepatic_impairment_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Hepatic vulnerability relevant to dantrolene toxicity and transaminase monitoring.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "severe_renal_impairment_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Renal impairment context relevant to amantadine dosing and AKI/electrolyte vulnerability.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "renal_replacement_therapy_availability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Local feasibility of urgent intermittent hemodialysis or CRRT for AKI, hyperkalemia, acidosis, or fluid overload.", "baseline_range": [0.5, 1], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "generalized_muscle_rigidity_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Generalized or lead-pipe rigidity affecting trunk, neck, or limbs.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.3, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "tremor_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Tremor, parkinsonian tremulousness, or extrapyramidal motor activity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "dysphagia_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Swallowing impairment from rigidity, catatonia, or encephalopathy; drives aspiration risk.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "mutism_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Mutism or near-mutism in encephalopathic/catatonic NMS presentations.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "satellite", "parent_axis_id": "mental_status_abnormality_activity"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Agitation, confusion, delirium, stupor, obtundation, or coma.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "altered_mental_status_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Synonym-compatible altered mental status axis used by some cases; included to preserve existing ontology mapping.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "glasgow_coma_scale_score", "category": "physical_finding", "unit": "points", "log_scale": false, "shape_free_text": "Lower GCS when NMS encephalopathy is severe.", "baseline_range": [15, 15], "peak_day_range": [0, 14], "peak_value_range": [3, 14], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "satellite", "parent_axis_id": "altered_mental_status_activity"},
+    {"axis_id": "seizure_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Seizure or seizure-like motor episodes in severe encephalopathic presentations.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0, 0.6], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 10], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "diaphoresis_sweats_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Diaphoresis or profuse sweating from autonomic activation.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "urinary_incontinence_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Urinary incontinence accompanying delirium or autonomic instability.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "shape_free_text": "Hyperthermia is typical but early, atypical, or dopaminergic-withdrawal cases may be less febrile.", "baseline_range": [36.1, 37.2], "peak_day_range": [0, 7], "peak_value_range": [37.8, 41.5], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Tachycardia from fever, dysautonomia, agitation, dehydration, or shock.", "baseline_range": [60, 100], "peak_day_range": [0, 7], "peak_value_range": [100, 170], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "May be high, low, or labile depending on autonomic state, dehydration, shock, and baseline hypertension.", "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [80, 190], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Perfusion pressure; can fall with dehydration, shock, sedatives, or critical illness.", "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [55, 115], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "shape_free_text": "Tachypnea from fever, acidosis, aspiration, respiratory failure, or autonomic activation.", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [20, 40], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "percent", "log_scale": false, "shape_free_text": "Usually preserved unless aspiration, respiratory failure, heavy sedation, shock, or pulmonary comorbidity occurs.", "baseline_range": [95, 100], "peak_day_range": [0, 14], "peak_value_range": [75, 98], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "blood_pressure_lability_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Labile blood pressure or alternating hypertensive/hypotensive autonomic instability.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "satellite"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "Stress leukocytosis can occur; normal WBC does not exclude NMS.", "baseline_range": [4, 10], "peak_day_range": [0, 10], "peak_value_range": [10, 30], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "CK elevation from myocyte injury; may be modest, extreme, delayed, or occasionally normal.", "baseline_range": [25, 200], "peak_day_range": [0, 10], "peak_value_range": [300, 250000], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_myoglobin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "shape_free_text": "Serum myoglobin rises with rhabdomyolysis and contributes to pigment nephropathy.", "baseline_range": [0, 118], "peak_day_range": [0, 7], "peak_value_range": [200, 50000], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "urine_myoglobin_positivity", "category": "lab_value", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Positive urine myoglobin or myoglobinuria report.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "shape_free_text": "AKI from pigment nephropathy, dehydration, shock, or background kidney disease.", "baseline_range": [0.6, 1.2], "peak_day_range": [1, 14], "peak_value_range": [1.2, 10], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "shape_free_text": "BUN rises with AKI, dehydration, catabolism, or renal replacement need.", "baseline_range": [7, 20], "peak_day_range": [1, 14], "peak_value_range": [25, 150], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "urine_output", "category": "lab_value", "unit": "mL/kg/hr", "log_scale": false, "shape_free_text": "Oliguria when pigment nephropathy or shock-related AKI develops.", "baseline_range": [0.5, 2], "peak_day_range": [1, 14], "peak_value_range": [0, 0.5], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "Hyperkalemia from rhabdomyolysis, acidosis, or AKI.", "baseline_range": [3.5, 5], "peak_day_range": [0, 10], "peak_value_range": [4.8, 8.5], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "Metabolic acidosis can occur in severe rhabdomyolysis, AKI, shock, or respiratory failure; alkalosis can occur in some presentations.", "baseline_range": [22, 28], "peak_day_range": [0, 10], "peak_value_range": [8, 22], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_calcium", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "Calcium can be low during rhabdomyolysis or renal injury.", "baseline_range": [8.6, 10.2], "peak_day_range": [0, 10], "peak_value_range": [6.5, 8.6], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "AST can rise from skeletal muscle injury, liver stress, or hypoperfusion.", "baseline_range": [5, 40], "peak_day_range": [0, 10], "peak_value_range": [50, 3000], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "ALT can rise with hepatic stress, muscle injury contribution, or hypoperfusion.", "baseline_range": [5, 45], "peak_day_range": [0, 10], "peak_value_range": [50, 1500], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ldh", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "LDH rises with muscle injury, hemolysis, hypoperfusion, or systemic tissue injury.", "baseline_range": [120, 250], "peak_day_range": [0, 10], "peak_value_range": [300, 10000], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "shape_free_text": "CRP may be normal or elevated; high values raise infection or tissue-injury overlap rather than confirming NMS.", "baseline_range": [0, 5], "peak_day_range": [0, 14], "peak_value_range": [5, 150], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "Usually preserved unless DIC, sepsis overlap, or critical illness develops.", "baseline_range": [150, 400], "peak_day_range": [1, 14], "peak_value_range": [30, 150], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug/mLFEU", "log_scale": true, "shape_free_text": "Can rise with DIC, thrombosis, surgery, inflammation, or immobility.", "baseline_range": [0, 0.5], "peak_day_range": [1, 14], "peak_value_range": [1, 30], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_fibrinogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "Can fall in DIC but may be normal or high as an acute-phase reactant.", "baseline_range": [200, 450], "peak_day_range": [1, 14], "peak_value_range": [80, 250], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "rhabdomyolysis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Event hazard for clinically significant rhabdomyolysis with CK/myoglobin rise.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 10], "peak_value_range": [0.03, 0.9], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "AKI hazard from pigment nephropathy, dehydration, shock, hyperthermia, or background renal vulnerability.", "baseline_range": [0.0001, 0.003], "peak_day_range": [1, 14], "peak_value_range": [0.02, 0.7], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "cardiac_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Arrhythmia hazard from hyperkalemia, hyperthermia, acidosis, catecholamine excess, QT-active drugs, or myocardial stress.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 10], "peak_value_range": [0.005, 0.4], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "DIC hazard in severe hyperthermia, tissue injury, shock, or infection overlap.", "baseline_range": [0.0001, 0.003], "peak_day_range": [1, 14], "peak_value_range": [0.005, 0.3], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "autonomic_instability_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Event-level hazard of severe autonomic instability: extreme tachycardia, unstable blood pressure, diaphoresis, tachypnea, and temperature swings.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 7], "peak_value_range": [0.02, 0.8], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "aspiration_pneumonia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Aspiration pneumonia hazard from dysphagia, rigidity, altered mental status, seizure, or intubation course.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.4], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Respiratory failure hazard from aspiration, severe rigidity, hypoventilation, pneumonia, shock, or ICU complications.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.5], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "need_for_mechanical_ventilation_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Need for intubation or mechanical ventilation due to respiratory failure, airway-protection failure, or sedation in severe NMS.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.5], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Shock or circulatory collapse hazard from dysautonomia, dehydration, hyperthermia, arrhythmia, sepsis overlap, or sedatives.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.4], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Major bleeding hazard downstream of DIC, thrombocytopenia, invasive lines, renal failure, or critical illness.", "baseline_range": [0.0001, 0.003], "peak_day_range": [1, 14], "peak_value_range": [0.003, 0.25], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Lifespan outcome hazard emerging from hyperthermia, rhabdomyolysis, AKI, hyperkalemia/arrhythmia, DIC, aspiration/respiratory failure, shock, and delayed recognition.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [0, 21], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "high", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 1], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Fever and sympathetic activation raise pulse.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "serum_creatine_kinase", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Hyperthermia and rigidity amplify muscle injury.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "generalized_muscle_rigidity_activity", "target_axis_id": "serum_creatine_kinase", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Sustained rigidity is a direct CK driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatine_kinase", "target_axis_id": "rhabdomyolysis_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "High CK defines rhabdomyolysis hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_myoglobin", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Myoglobin pigment nephropathy increases AKI risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "serum_potassium", "relationship": "positive_correlation", "coupling_type": "drift", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "AKI reduces potassium excretion.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_potassium", "target_axis_id": "cardiac_arrhythmia_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Hyperkalemia increases arrhythmia hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mental_status_abnormality_activity", "target_axis_id": "aspiration_pneumonia_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Altered mental status impairs airway protection.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dysphagia_activity", "target_axis_id": "aspiration_pneumonia_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Dysphagia makes aspiration more likely.", "knowledge_confidence": "high"},
+    {"source_axis_id": "aspiration_pneumonia_hazard", "target_axis_id": "acute_respiratory_failure_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 5], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Aspiration can progress to respiratory failure.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 7], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "AKI increases mortality through electrolyte, acid-base, and fluid complications.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiac_arrhythmia_hazard", "target_axis_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 2], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Arrhythmia can cause sudden deterioration.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_respiratory_failure_hazard", "target_axis_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 5], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Respiratory failure raises short-term mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "major_bleeding_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 3], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "DIC can produce clinically important bleeding.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 7], "phase": "peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "DIC adds bleeding, thrombosis, and organ failure risk.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "stop_offending_dopamine_blocker",
+      "drug_class": "causative_agent_withdrawal",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "cause_removal",
+      "required_context_axes": ["recent_dopamine_antagonist_exposure", "recent_antipsychotic_dose_increase_activity", "central_dopamine_deficiency_activity"],
+      "effect_modifiers": [
+        {"axis_id": "recent_dopamine_antagonist_exposure", "condition": "present", "effect": "strengthens", "factor_range": [1, 1.4], "clinical_rationale": "Stopping the ongoing antagonist removes the main driver."},
+        {"axis_id": "depot_or_long_half_life_antipsychotic_context", "condition": "present", "effect": "weakens", "factor_range": [0.4, 0.8], "clinical_rationale": "Depot or long half-life drugs make offset slower."}
+      ],
+      "failure_modes": ["depot_drug_persistence", "unrecognized_nonpsychiatric_dopamine_antagonist", "ongoing_rechallenge", "delayed_recognition_after_organ_injury"],
+      "trajectory_modifications": {
+        "central_dopamine_deficiency_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 10]},
+        "hypothalamic_thermoregulatory_failure_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 7]},
+        "skeletal_muscle_rigidity_contracture_activity": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]},
+        "body_temperature": {"peak_value_factor": [0.97, 1.0], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]}
+      },
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [1, 21],
+      "side_effects": [
+        {"axis_id": "neuropsychiatric_catatonic_encephalopathic_activity", "direction": "up", "magnitude_range": [0, 0.3], "interpretation": "Psychosis, agitation, or catatonia may re-emerge when antipsychotic therapy is stopped."}
+      ],
+      "context_specific_role": "Remove the causative dopamine antagonist driver while substituting safer psychiatric and supportive strategies.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "reinstitute_or_titrate_dopaminergic_therapy",
+      "drug_class": "dopaminergic_replacement",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["recent_dopaminergic_withdrawal_activity", "central_dopamine_deficiency_activity", "generalized_muscle_rigidity_activity", "body_temperature"],
+      "effect_modifiers": [
+        {"axis_id": "recent_dopaminergic_withdrawal_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.4], "clinical_rationale": "Withdrawal-induced NMS responds to restoring dopaminergic tone."},
+        {"axis_id": "active_psychosis_or_mania_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1], "clinical_rationale": "Dopaminergic escalation can worsen psychosis or agitation."}
+      ],
+      "failure_modes": ["nonwithdrawal_dopamine_antagonist_driven_nms", "insufficient_absorption_or_enteral_access", "psychosis_worsening", "late_multiorgan_injury"],
+      "trajectory_modifications": {
+        "central_dopamine_deficiency_activity": {"peak_value_factor": [0.1, 0.4], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 4]},
+        "hypothalamic_thermoregulatory_failure_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.7], "decline_half_life_days": [0.5, 5]},
+        "skeletal_muscle_rigidity_contracture_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "body_temperature": {"peak_value_factor": [0.96, 0.99], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0.5, 7],
+      "side_effects": [
+        {"axis_id": "heart_rate", "direction": "up", "magnitude_range": [0, 15], "interpretation": "Dopaminergic therapy can worsen tachycardia or orthostasis."},
+        {"axis_id": "mental_status_abnormality_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Hallucinations or agitation can worsen in susceptible patients."}
+      ],
+      "context_specific_role": "Restore dopaminergic tone when NMS physiology follows abrupt dopaminergic withdrawal.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "external_cooling_and_antipyretic_support",
+      "drug_class": "temperature_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["body_temperature", "heart_rate", "serum_creatine_kinase", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "body_temperature", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Cooling directly lowers core temperature."},
+        {"axis_id": "hypothalamic_thermoregulatory_failure_activity", "condition": "high", "effect": "does_not_remove_driver", "factor_range": [0.7, 1], "clinical_rationale": "Cooling does not itself reverse dopamine-deficiency physiology."}
+      ],
+      "failure_modes": ["untreated_dopamine_blockade", "ongoing_rigidity_heat_generation", "insufficient_sedation_or_agitation_control", "late_multiorgan_injury"],
+      "trajectory_modifications": {
+        "body_temperature": {"peak_value_factor": [0.94, 0.98], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.1, 1]},
+        "heart_rate": {"peak_value_factor": [0.85, 0.98], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.2, 2]},
+        "rhabdomyolysis_hazard": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [0.5, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "body_temperature", "direction": "down", "magnitude_range": [0.5, 2.5], "clinical_rationale": "Cooling blankets, ice packs, evaporative cooling, and antipyretic support reduce measured temperature."}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "generalized_muscle_rigidity_activity", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Shivering from cooling can worsen muscle activity unless controlled."}
+      ],
+      "context_specific_role": "Immediate temperature state support while causal and rigidity-directed treatment takes effect.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "aggressive_intravenous_fluids_for_rhabdomyolysis",
+      "drug_class": "renal_protective_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["serum_creatine_kinase", "serum_myoglobin", "urine_output", "serum_creatinine", "heart_failure_or_volume_overload_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "serum_creatine_kinase", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "High CK implies pigment nephropathy risk where hydration can protect kidney perfusion."},
+        {"axis_id": "heart_failure_or_volume_overload_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.3, 0.8], "clinical_rationale": "Cardiopulmonary disease limits safe fluid rate and may require ICU/renal support."}
+      ],
+      "failure_modes": ["fluid_overload", "established_oliguric_aki", "uncontrolled_hyperkalemia_or_acidosis", "continued_rigidity_heat_generation"],
+      "trajectory_modifications": {
+        "rhabdomyolysis_pigment_nephropathy_activity": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]},
+        "serum_creatinine": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "serum_potassium": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 5]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [2, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "urine_output", "direction": "up", "magnitude_range": [0.2, 1.0], "clinical_rationale": "Volume repletion improves renal perfusion and pigment clearance if urine output is recoverable."}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Excess fluid can worsen pulmonary edema or oxygenation in vulnerable patients."}
+      ],
+      "context_specific_role": "Renal-protective state support for CK/myoglobin-driven AKI risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "benzodiazepines",
+      "drug_class": "gabaergic_sedation_and_catatonia_treatment",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["mental_status_abnormality_activity", "mutism_activity", "generalized_muscle_rigidity_activity", "acute_respiratory_failure_hazard", "aspiration_pneumonia_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "neuropsychiatric_catatonic_encephalopathic_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Benzodiazepines can improve catatonic and agitation components."},
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.4, 1], "clinical_rationale": "Sedation can worsen airway protection or ventilation without monitoring."}
+      ],
+      "failure_modes": ["respiratory_depression_or_aspiration", "rigidity_dominant_dopamine_blockade_needing_dopaminergic_or_dantrolene_path", "undertreated_hyperthermia"],
+      "trajectory_modifications": {
+        "neuropsychiatric_catatonic_encephalopathic_activity": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]},
+        "sympathetic_autonomic_instability_activity": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 5]},
+        "mental_status_abnormality_activity": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 7]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]},
+        "autonomic_instability_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 5]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [1, 7]}
+      },
+      "sigma_modulation": {"axes": ["heart_rate", "blood_pressure_lability_activity", "mental_status_abnormality_activity"], "factor": [0.5, 0.85], "clinical_rationale": "Sedation and catatonia control reduce physiologic volatility."},
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "aspiration_pneumonia_hazard", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Sedation can impair airway protection."},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Respiratory depression risk rises with frailty or co-sedatives."}
+      ],
+      "context_specific_role": "Control agitation, catatonia overlap, and autonomic volatility while other therapies address dopamine deficiency and rigidity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "dantrolene",
+      "drug_class": "skeletal_muscle_calcium_release_inhibition",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["generalized_muscle_rigidity_activity", "body_temperature", "serum_creatine_kinase", "serum_ast", "serum_alt"],
+      "effect_modifiers": [
+        {"axis_id": "skeletal_muscle_rigidity_contracture_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Dantrolene directly targets sustained skeletal muscle contraction."},
+        {"axis_id": "severe_hepatic_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.4, 1], "clinical_rationale": "Hepatotoxicity risk requires monitoring and may limit duration."}
+      ],
+      "failure_modes": ["central_dopamine_deficiency_not_addressed", "late_multiorgan_injury", "hepatic_toxicity", "insufficient_access_or_delayed_start"],
+      "trajectory_modifications": {
+        "skeletal_muscle_rigidity_contracture_activity": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 4]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 4]},
+        "body_temperature": {"peak_value_factor": [0.94, 0.98], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 4]},
+        "serum_creatine_kinase": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "rhabdomyolysis_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0, 0.5],
+      "carryover_after_stop_days": [0.5, 2],
+      "side_effects": [
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 200], "interpretation": "Dantrolene can cause liver injury."},
+        {"axis_id": "generalized_muscle_rigidity_activity", "direction": "down", "magnitude_range": [0.1, 0.5], "interpretation": "Therapeutic muscle relaxation can cause weakness."}
+      ],
+      "context_specific_role": "Reduce rigidity-driven heat and rhabdomyolysis, especially when hyperthermia and CK elevation are prominent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "bromocriptine",
+      "drug_class": "dopamine_agonist",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["central_dopamine_deficiency_activity", "generalized_muscle_rigidity_activity", "body_temperature", "mental_status_abnormality_activity", "enteral_access_feasibility"],
+      "effect_modifiers": [
+        {"axis_id": "central_dopamine_deficiency_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Bromocriptine reverses the hypodopaminergic state."},
+        {"axis_id": "active_psychosis_or_mania_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1], "clinical_rationale": "Dopamine agonism can worsen psychosis or agitation."}
+      ],
+      "failure_modes": ["lack_of_enteral_access", "psychosis_or_hypotension_limiting_dose", "depot_antipsychotic_persistence", "late_multiorgan_failure"],
+      "trajectory_modifications": {
+        "central_dopamine_deficiency_activity": {"peak_value_factor": [0.2, 0.5], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 4]},
+        "hypothalamic_thermoregulatory_failure_activity": {"peak_value_factor": [0.3, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "skeletal_muscle_rigidity_contracture_activity": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "sympathetic_autonomic_instability_activity": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "body_temperature": {"peak_value_factor": [0.95, 0.99], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]}
+      },
+      "onset_delay_days": [0.25, 1],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 15], "interpretation": "Dopamine agonists can cause hypotension."},
+        {"axis_id": "mental_status_abnormality_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Psychosis or agitation can worsen."}
+      ],
+      "context_specific_role": "Dopamine agonist landscape reshaping for persistent or severe NMS physiology when enteral therapy is feasible.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "amantadine",
+      "drug_class": "dopaminergic_nmda_modulating_agent",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["recent_dopaminergic_withdrawal_activity", "central_dopamine_deficiency_activity", "neuropsychiatric_catatonic_encephalopathic_activity", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "recent_dopaminergic_withdrawal_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.4], "clinical_rationale": "Amantadine withdrawal can trigger NMS-like dopaminergic deficiency; restarting directly addresses that lane."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.4, 0.8], "clinical_rationale": "Amantadine requires renal dosing and can accumulate in renal impairment."}
+      ],
+      "failure_modes": ["renal_accumulation", "psychosis_worsening", "not_the_withdrawn_or_needed_dopaminergic_agent", "partial_response_needing_ect_or_bromocriptine"],
+      "trajectory_modifications": {
+        "central_dopamine_deficiency_activity": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]},
+        "neuropsychiatric_catatonic_encephalopathic_activity": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 10]},
+        "body_temperature": {"peak_value_factor": [0.96, 1.0], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]}
+      },
+      "onset_delay_days": [0.5, 2],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {"axis_id": "mental_status_abnormality_activity", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "Confusion or hallucinations can worsen, especially with renal impairment."}
+      ],
+      "context_specific_role": "Dopaminergic support particularly relevant to amantadine or dopaminergic-withdrawal presentations, and sometimes used as an alternative to bromocriptine.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "renal_replacement_therapy",
+      "drug_class": "critical_care_renal_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "serum_potassium", "serum_bicarbonate", "urine_output", "renal_replacement_therapy_availability"],
+      "effect_modifiers": [
+        {"axis_id": "serum_potassium", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Dialysis rapidly treats refractory hyperkalemia."},
+        {"axis_id": "serum_bicarbonate", "condition": "low", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Severe acidosis is a renal replacement indication."},
+        {"axis_id": "renal_replacement_therapy_availability", "condition": "low", "effect": "weakens", "factor_range": [0, 0.6], "clinical_rationale": "Benefit depends on access to dialysis or CRRT."}
+      ],
+      "failure_modes": ["dialysis_unavailable", "uncontrolled_hyperthermia_or_rigidity_continues", "hemodynamic_instability_limiting_intermittent_hd", "line_or_anticoagulation_complications"],
+      "trajectory_modifications": {
+        "serum_potassium": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [0.1, 1]},
+        "serum_bicarbonate": {"peak_value_factor": [1.05, 1.4], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.2, 2]},
+        "serum_creatinine": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.6, 1], "decline_half_life_days": [2, 14]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.2, 3]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0.5, 2.5], "clinical_rationale": "Dialysis removes potassium."},
+        {"axis_id": "serum_bicarbonate", "direction": "up", "magnitude_range": [2, 10], "clinical_rationale": "Dialysis corrects acidosis."}
+      ],
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 15], "interpretation": "Intermittent hemodialysis can worsen hypotension."}
+      ],
+      "context_specific_role": "Organ support for AKI, refractory hyperkalemia, acidosis, uremia, or fluid overload while NMS drivers resolve.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "icu_airway_ventilation_and_monitoring",
+      "drug_class": "critical_care_support",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["autonomic_instability_hazard", "acute_respiratory_failure_hazard", "need_for_mechanical_ventilation_hazard", "cardiac_arrhythmia_hazard", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.3], "clinical_rationale": "Airway and ventilation support directly reduce hypoxemic death risk."},
+        {"axis_id": "cardiac_arrhythmia_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.2], "clinical_rationale": "Telemetry and electrolyte rescue reduce catastrophic delay."}
+      ],
+      "failure_modes": ["late_transfer_after_cardiac_arrest_or_organ_failure", "ventilator_associated_infection", "does_not_remove_nms_driver", "insufficient_rigidity_or_temperature_control"],
+      "trajectory_modifications": {
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]},
+        "need_for_mechanical_ventilation_hazard": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 7]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 5]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 5]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "oxygen_saturation", "direction": "up", "magnitude_range": [3, 20], "clinical_rationale": "Oxygen, airway protection, and ventilation improve oxygenation when failure is present."}
+      ],
+      "sigma_modulation": {"axes": ["heart_rate", "mean_arterial_pressure", "oxygen_saturation", "serum_potassium"], "factor": [0.5, 0.85], "clinical_rationale": "Continuous monitoring and rescue reduce uncontrolled physiologic volatility."},
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "aspiration_pneumonia_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Intubation and critical illness can introduce pneumonia risk."}
+      ],
+      "context_specific_role": "Critical-care containment of airway, arrhythmia, shock, renal, and temperature complications.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "electroconvulsive_therapy_for_refractory_nms_catatonia_overlap",
+      "drug_class": "neuromodulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["neuropsychiatric_catatonic_encephalopathic_activity", "mutism_activity", "generalized_muscle_rigidity_activity", "autonomic_instability_hazard", "cardiac_arrhythmia_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "neuropsychiatric_catatonic_encephalopathic_activity", "condition": "high", "effect": "strengthens", "factor_range": [1, 1.4], "clinical_rationale": "ECT can rapidly improve malignant catatonia/NMS overlap refractory to medications."},
+        {"axis_id": "cardiac_arrhythmia_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.4, 1], "clinical_rationale": "Anesthesia and ECT require cardiac and ICU readiness when arrhythmia risk is high."}
+      ],
+      "failure_modes": ["consent_or_availability_delay", "unstable_anesthesia_risk", "untreated_hyperkalemia_or_hyperthermia", "insufficient_continuation_strategy"],
+      "trajectory_modifications": {
+        "neuropsychiatric_catatonic_encephalopathic_activity": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 3]},
+        "mutism_activity": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 3]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 5]},
+        "autonomic_instability_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]},
+        "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0.5, 3],
+      "carryover_after_stop_days": [1, 7],
+      "side_effects": [
+        {"axis_id": "cardiac_arrhythmia_hazard", "direction": "up", "magnitude_range": [0, 0.05], "interpretation": "Anesthesia and seizure induction require monitoring in unstable patients."}
+      ],
+      "context_specific_role": "Neuromodulatory rescue for refractory NMS with prominent catatonic or encephalopathic rigidity after medical therapy is insufficient.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "high_potency_or_parenteral_dopamine_antagonist_exposure",
+      "category": "treatment_context",
+      "effect": "increases NMS probability and early intensity",
+      "modulation": {"present": {"P_disease_ratio": [2, 8], "axis_response_modulation": {"central_dopamine_deficiency_activity": "higher", "body_temperature": "higher", "generalized_muscle_rigidity_activity": "higher", "serum_creatine_kinase": "higher"}}},
+      "clinical_rationale": "High-potency and parenteral dopamine antagonism creates stronger dopamine blockade."
+    },
+    {
+      "factor": "rapid_dose_escalation_or_antipsychotic_polypharmacy",
+      "category": "treatment_context",
+      "effect": "increases central dopamine blockade and severity",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 5], "axis_response_modulation": {"recent_antipsychotic_dose_increase_activity": "higher", "central_dopamine_deficiency_activity": "higher", "autonomic_instability_hazard": "higher"}}},
+      "clinical_rationale": "Dose escalation and polypharmacy increase exposure intensity."
+    },
+    {
+      "factor": "dopaminergic_agent_withdrawal",
+      "category": "treatment_context",
+      "effect": "increases NMS-like hypodopaminergic syndrome probability",
+      "modulation": {"present": {"P_disease_ratio": [2, 8], "axis_response_modulation": {"recent_dopaminergic_withdrawal_activity": "higher", "central_dopamine_deficiency_activity": "higher", "neuropsychiatric_catatonic_encephalopathic_activity": "higher"}, "treatment_effect_modulation": {"reinstitute_or_titrate_dopaminergic_therapy": "stronger", "amantadine": "stronger_if_amantadine_related"}}},
+      "clinical_rationale": "Abrupt dopaminergic interruption is a recognized NMS pathway."
+    },
+    {
+      "factor": "dehydration_or_volume_depletion",
+      "category": "host_context",
+      "effect": "amplifies hyperthermia and rhabdomyolysis-AKI pathway",
+      "modulation": {"present": {"P_disease_ratio": [1.2, 3], "axis_response_modulation": {"body_temperature": "higher", "serum_creatinine": "higher", "acute_kidney_injury_hazard": "higher", "serum_potassium": "higher"}}},
+      "clinical_rationale": "Volume depletion worsens heat illness and pigment nephropathy."
+    },
+    {
+      "factor": "agitation_catatonia_immobility_or_restraint",
+      "category": "host_context",
+      "effect": "increases rigidity heat production and rhabdomyolysis",
+      "modulation": {"present": {"P_disease_ratio": [1.2, 4], "axis_response_modulation": {"neuropsychiatric_catatonic_encephalopathic_activity": "higher", "generalized_muscle_rigidity_activity": "higher", "serum_creatine_kinase": "higher", "rhabdomyolysis_hazard": "higher"}}},
+      "clinical_rationale": "Agitated or catatonic immobility can amplify muscle injury and diagnostic overlap."
+    },
+    {
+      "factor": "baseline_renal_impairment",
+      "category": "host_context",
+      "effect": "raises AKI, hyperkalemia, and treatment-toxicity risk",
+      "modulation": {"present": {"P_disease_ratio": [1, 2], "axis_response_modulation": {"serum_creatinine": "higher", "serum_potassium": "higher", "acute_kidney_injury_hazard": "higher", "cardiac_arrhythmia_hazard": "higher"}, "treatment_effect_modulation": {"amantadine": "renal_dose_required", "renal_replacement_therapy": "stronger_if_complications_active"}}},
+      "clinical_rationale": "CKD makes the same rhabdomyolysis load more dangerous."
+    },
+    {
+      "factor": "older_age_or_cardiopulmonary_frailty",
+      "category": "host_context",
+      "effect": "reduces reserve during dysautonomia, aspiration, and fluid therapy",
+      "modulation": {"present": {"P_disease_ratio": [1, 2], "axis_response_modulation": {"acute_respiratory_failure_hazard": "higher", "cardiac_arrhythmia_hazard": "higher", "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": "higher"}, "treatment_effect_modulation": {"aggressive_intravenous_fluids_for_rhabdomyolysis": "higher_volume_toxicity", "benzodiazepines": "higher_sedation_toxicity"}}},
+      "clinical_rationale": "Frailty lowers tolerance for hyperthermia, aspiration, sedation, and fluid shifts."
+    },
+    {
+      "factor": "delayed_recognition_or_continued_dopamine_blockade",
+      "category": "care_context",
+      "effect": "increases accumulated organ injury",
+      "modulation": {"present": {"P_disease_ratio": [1, 2], "axis_response_modulation": {"coagulopathic_and_respiratory_complication_activity": "higher", "acute_kidney_injury_hazard": "higher", "mortality_hazard_in_D-NEUROLEPTIC-MALIGNANT-SYNDROME": "higher"}}},
+      "clinical_rationale": "Delay allows hyperthermia, rigidity, and organ injury to accumulate."
+    },
+    {
+      "factor": "infection_serotonin_syndrome_or_malignant_catatonia_overlap_context",
+      "category": "mimic_or_overlap_context",
+      "effect": "changes interpretation of fever, mental status, rigidity, CRP, and treatment risk",
+      "modulation": {"present": {"P_disease_ratio": [0.5, 2], "axis_response_modulation": {"serum_crp": "higher", "aspiration_pneumonia_hazard": "higher", "mental_status_abnormality_activity": "higher"}, "treatment_effect_modulation": {"benzodiazepines": "stronger_if_catatonia_active", "electroconvulsive_therapy_for_refractory_nms_catatonia_overlap": "stronger_if_refractory_catatonia_active"}}},
+      "clinical_rationale": "Overlap should be preserved as context rather than deleted; it can coexist with or mimic NMS."
+    }
+  ],
+  "supportive_care": [
+    "Immediately stop suspected dopamine antagonist exposure; if the syndrome follows dopaminergic withdrawal, restore the withdrawn dopaminergic therapy when clinically feasible.",
+    "Track temperature, heart rate, blood pressure lability, respiratory status, mental status, rigidity, urine output, CK, creatinine/BUN, potassium, bicarbonate, calcium, AST/ALT/LDH, WBC, and coagulation markers.",
+    "Use active cooling, hydration, electrolyte correction, and careful fluid balance; adjust strategy when heart failure, pulmonary edema, or oliguric AKI is present.",
+    "Escalate to ICU monitoring for severe hyperthermia, rigidity, altered consciousness, aspiration risk, respiratory failure, arrhythmia, shock, rapidly rising CK, AKI, hyperkalemia, or DIC concern.",
+    "Evaluate infection, serotonin syndrome, malignant catatonia, malignant hyperthermia, CNS infection, heat stroke, and toxicologic mimics as parallel context; preserve confirmatory exclusions outside ordinary ranking evidence when testing presentation-only diagnosis.",
+    "Avoid early rechallenge with dopamine antagonists; if psychiatric treatment is later necessary, wait for full resolution, choose lower-risk therapy, titrate slowly, and monitor closely."
+  ]
+}

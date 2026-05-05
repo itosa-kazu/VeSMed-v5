@@ -1,0 +1,489 @@
+{
+  "disease": "D-SEROTONIN-SYNDROME",
+  "disease_name": "Serotonin syndrome",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope_note": "Disease-specific medical input is limited to the disease name: Serotonin syndrome. Specific drug triggers, overdose, linezolid or MAOI context, opioid coexposure, stimulant exposure, severe hyperthermia, NMS mimicry, infection overlap, and rhabdomyolysis are represented only as axes, mechanisms, risk/context factors, event hazards, treatment modifiers, or case evidence.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY",
+      "display_name": "Excess serotonergic receptor activity",
+      "clinical_meaning": "Central and peripheral serotonin excess with 5-HT1A and 5-HT2A receptor overactivation after serotonergic exposure, interaction, dose escalation, impaired clearance, or overdose. This is the root disease activity and can fall quickly after short half-life drugs are stopped but persist with long half-life agents or MAO inhibition.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.1, 7],
+      "decline_half_life_days": [0.25, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY",
+      "display_name": "Neuromuscular hyperexcitability",
+      "clinical_meaning": "Spinal and brainstem serotonergic overactivity producing clonus, ocular clonus, hyperreflexia, tremor, myoclonus, inducible ankle clonus, rigidity, and incoordination. Lower-extremity predominance and clonus help distinguish this field from many mimics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.25, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY",
+      "display_name": "Autonomic and sympathetic instability",
+      "clinical_meaning": "Serotonergic and catecholaminergic autonomic activation causing tachycardia, hypertension or labile pressure, tachypnea, diaphoresis, mydriasis, fever, diarrhea, nausea, and vomiting.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.25, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SS_MENTAL_STATUS_EXCITATION",
+      "display_name": "Mental status excitation and toxic encephalopathy",
+      "clinical_meaning": "Serotonergic CNS toxicity causing agitation, anxiety, delirium, hallucinations, confusion, reduced GCS, coma, and seizure susceptibility. Sedatives and airway support reshape this mechanism without proving or excluding the disease.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.25, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE",
+      "display_name": "Muscle heat generation and rhabdomyolysis cascade",
+      "clinical_meaning": "Sustained rigidity, clonus, tremor, agitation, seizures, and physical restraint generate heat, lactate, CK and myoglobin release, hyperkalemia, acidosis, and pigment nephropathy. Severe temperature elevation is muscle-driven and does not reliably respond to antipyretics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 5],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE",
+      "display_name": "Multiorgan complication cascade",
+      "clinical_meaning": "Uncontrolled hyperthermia, seizures, rhabdomyolysis, hypoxemia, aspiration, acidosis, DIC physiology, shock, and renal injury accumulate into respiratory failure, AKI, DIC, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 10],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "serotonergic_agent_exposure_activity", "target_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 1], "phase": "initiation", "clinical_rationale": "Serotonin syndrome requires exposure to one or more serotonergic agents, interactions, or serotonergic toxins.", "knowledge_confidence": "high"},
+    {"source_id": "days_since_serotonergic_change_or_overdose", "target_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect_on_target": "bidirectional", "edge_type": "context_to_mechanism", "lag_days_range": [0, 0], "phase": "initiation", "clinical_rationale": "Compatible timing clusters within hours to about one day after dose increase, new drug, interaction, or overdose, while long half-life agents can prolong activity.", "knowledge_confidence": "high"},
+    {"source_id": "serotonergic_polypharmacy_burden", "target_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Multiple serotonergic agents increase receptor agonism and interaction risk.", "knowledge_confidence": "high"},
+    {"source_id": "serotonergic_overdose_activity", "target_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 1], "phase": "initiation", "clinical_rationale": "Large acute ingestion can saturate serotonergic pathways and prolong toxicity.", "knowledge_confidence": "high"},
+    {"source_id": "monoamine_oxidase_inhibition_activity", "target_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "MAO inhibition, including linezolid-like context, reduces monoamine metabolism and can precipitate syndrome with serotonergic drugs.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "target_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Excess serotonin directly increases spinal motor neuron excitability.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "target_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Central and peripheral serotonergic activation drives autonomic hyperactivity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "target_id": "M_SS_MENTAL_STATUS_EXCITATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "CNS serotonergic toxicity changes arousal, attention, perception, and seizure threshold.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "clonus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Clonus is a defining neuromuscular sign and may be spontaneous, inducible, or ocular.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "ocular_clonus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Ocular clonus is a recognized serotonin toxicity sign.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "hyperreflexia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Hyperreflexia commonly accompanies tremor and clonus, often more in lower limbs.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "tremor_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Resting, postural, or intention tremor reflects serotonergic motor overactivity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "myoclonus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Myoclonus can be spontaneous or inducible during moderate to severe toxicity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "muscle_rigidity_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "moderate_to_severe", "clinical_rationale": "Rigidity occurs in more severe syndrome and can mask clonus if extreme.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Fever and hyperthermia reflect autonomic and muscle activity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Tachycardia is common in autonomic toxicity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "systolic_blood_pressure", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Hypertension or labile pressure can occur during sympathetic surge.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Tachypnea follows agitation, hyperthermia, acidosis, and respiratory stress.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "diaphoresis_sweats_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Diaphoresis is a common autonomic sign and pairs with clonus in diagnostic criteria.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "mydriasis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Mydriasis can appear with autonomic activation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY", "target_id": "diarrhea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Peripheral serotonin increases gastrointestinal motility.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MENTAL_STATUS_EXCITATION", "target_id": "agitation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Agitation is a common mental status manifestation and worsens heat generation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MENTAL_STATUS_EXCITATION", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Confusion, delirium, hallucinations, reduced consciousness, and coma reflect CNS toxicity.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MENTAL_STATUS_EXCITATION", "target_id": "seizure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Seizures occur in severe toxicity or co-ingestion and amplify hyperthermia and acidosis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY", "target_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Clonus, tremor, rigidity, and myoclonus generate heat and muscle injury when sustained.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MENTAL_STATUS_EXCITATION", "target_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Agitation, seizures, and restraint increase muscular heat and lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "life_threatening_hyperthermia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Severe muscle-driven hyperthermia can rapidly injure organs.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Sustained muscle activity and adrenergic stress raise lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "serum_bicarbonate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Lactic acidosis and metabolic stress lower bicarbonate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Rhabdomyolysis raises CK.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "serum_myoglobin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Muscle breakdown releases myoglobin and can worsen kidney injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "serum_potassium", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Rhabdomyolysis and acidosis can produce hyperkalemia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE", "target_id": "rhabdomyolysis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "CK and myoglobin injury can cross into clinical rhabdomyolysis.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_hazard", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "event_to_event", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Myoglobinuria and hypovolemia increase AKI hazard.", "knowledge_confidence": "high"},
+    {"source_id": "life_threatening_hyperthermia_hazard", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "event_to_event", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Extreme hyperthermia can trigger coagulopathy and DIC physiology.", "knowledge_confidence": "medium"},
+    {"source_id": "seizure_activity", "target_id": "seizure_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Observed seizure activity indicates ongoing seizure hazard and airway risk.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Aspiration, respiratory muscle stress, sedation, and ARDS can reduce oxygenation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Coma, seizures, aspiration, hypoxemia, and severe acidosis can require ventilatory support.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "need_for_mechanical_ventilation_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Airway protection, deep sedation, paralysis, and respiratory failure can require intubation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "phase": "severe", "clinical_rationale": "AKI from rhabdomyolysis, hypovolemia, shock, or nephrotoxin exposure raises creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "phase": "severe", "clinical_rationale": "Renal hypoperfusion, catabolism, or AKI raise BUN.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Muscle injury, hyperthermia, or hypoxic liver stress can increase AST.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Hepatic stress or co-ingestion can increase ALT.", "knowledge_confidence": "low"},
+    {"source_id": "M_SS_MULTIORGAN_COMPLICATION_CASCADE", "target_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Death is mediated by uncontrolled hyperthermia, seizures, AKI, DIC, respiratory failure, shock, aspiration, and severe co-ingestion.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "serotonergic_agent_exposure_activity", "category": "exposure_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Recent exposure to serotonergic drugs or toxins. This includes antidepressants, MAO inhibition context, linezolid-like exposure, serotonergic opioids, dextromethorphan, triptans, lithium, stimulants, supplements, or overdose; it is exposure evidence, not a diagnostic label.", "baseline_range": [0, 0.02], "peak_day_range": [-14, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "days_since_serotonergic_change_or_overdose", "category": "time_context", "unit": "days", "log_scale": false, "shape_free_text": "Time from new serotonergic drug, dose increase, interacting drug addition, illicit exposure, or overdose to symptom snapshot. Values near 0-1 strongly fit rapid-onset serotonin toxicity, while long half-life drugs can prolong course.", "baseline_range": [30, 365], "peak_day_range": [0, 0], "peak_value_range": [0, 2], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serotonergic_polypharmacy_burden", "category": "risk_context", "unit": "count", "log_scale": false, "shape_free_text": "Number of active serotonergic or serotonin-modulating agents at the relevant time, including prescribed drugs, over-the-counter agents, opioids, MAO inhibitors, and recreational substances.", "baseline_range": [0, 1], "peak_day_range": [-30, 0], "peak_value_range": [1, 6], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serotonergic_overdose_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Intentional or accidental large serotonergic ingestion or high exposure state.", "baseline_range": [0, 0.005], "peak_day_range": [0, 1], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "monoamine_oxidase_inhibition_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "MAO inhibition context from MAOI drugs or MAO-inhibiting antibiotics such as linezolid, increasing serotonin toxicity risk when combined with serotonergic agents.", "baseline_range": [0, 0.01], "peak_day_range": [-14, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "serotonergic_clearance_impairment_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Reduced metabolic or renal clearance, CYP interaction, advanced age, hepatic impairment, renal impairment, or long half-life drug accumulation that prolongs serotonergic activity.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "clonus_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Spontaneous or inducible clonus, often ankle/lower-extremity predominant. Use as a finding axis; ocular clonus can be additionally represented as a satellite.", "baseline_range": [0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "ocular_clonus_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Ocular clonus or rhythmic ocular oscillation in serotonin toxicity.", "baseline_range": [0, 0.005], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "high", "axis_role": "satellite", "parent_axis_id": "clonus_activity"},
+    {"axis_id": "hyperreflexia_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Brisk or pathologically increased tendon reflexes, often lower-extremity predominant.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "tremor_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Resting, postural, intention, or generalized tremor caused by neuromuscular hyperexcitability.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "myoclonus_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Spontaneous or inducible myoclonic jerks from serotonin toxicity; may overlap with clonus or seizure descriptions.", "baseline_range": [0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "muscle_rigidity_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Increased muscle tone or rigidity, usually worse in severe serotonin syndrome. Extreme rigidity amplifies heat generation and can obscure clonus.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "agitation_activity", "category": "neuropsychiatric_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Psychomotor agitation, restlessness, anxiety, combativeness, or excitation in serotonin toxicity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Confusion, delirium, hallucination, disorientation, coma, or reduced consciousness from toxic encephalopathy.", "baseline_range": [0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "glasgow_coma_scale_score", "category": "neurologic_measurement", "unit": "points", "log_scale": false, "shape_free_text": "Level of consciousness measurement; low values indicate airway and ICU risk in severe toxicity or co-ingestion.", "baseline_range": [15, 15], "peak_day_range": [0, 2], "peak_value_range": [3, 14], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "seizure_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Witnessed seizure, convulsion, or recurrent seizure-like activity during toxicity.", "baseline_range": [0, 0.005], "peak_day_range": [0, 2], "peak_value_range": [0, 1.0], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "shape_free_text": "Fever or severe hyperthermia. Temperatures above 40 C suggest severe muscle-driven toxicity and organ hazard.", "baseline_range": [36.4, 37.2], "peak_day_range": [0, 2], "peak_value_range": [38.0, 41.5], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Tachycardia from autonomic activation, fever, agitation, or acidosis.", "baseline_range": [60, 100], "peak_day_range": [0, 2], "peak_value_range": [100, 190], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Often elevated or labile during sympathetic surge; late hypotension should be interpreted through shock/complication axes rather than as core early serotonin activity.", "baseline_range": [105, 135], "peak_day_range": [0, 2], "peak_value_range": [140, 220], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Can be high or labile from autonomic activation; low MAP reflects complication physiology, sedation, shock, or co-ingestion rather than the core early syndrome.", "baseline_range": [70, 100], "peak_day_range": [0, 2], "peak_value_range": [90, 140], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "shape_free_text": "Tachypnea from agitation, hyperthermia, acidosis, aspiration, or respiratory stress.", "baseline_range": [12, 20], "peak_day_range": [0, 2], "peak_value_range": [20, 55], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "percent", "log_scale": false, "shape_free_text": "Usually preserved in uncomplicated syndrome but may fall with aspiration, coma, respiratory failure, sedatives, ARDS, or co-ingestion.", "baseline_range": [95, 100], "peak_day_range": [0, 3], "peak_value_range": [75, 94], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "diaphoresis_sweats_activity", "category": "autonomic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Diaphoresis or profuse sweating from autonomic activation.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "mydriasis_activity", "category": "autonomic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Dilated pupils or reduced pupillary reactivity from autonomic toxicity or co-ingestion context.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.25, 5], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "diarrhea_activity", "category": "gastrointestinal_symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Diarrhea or loose stools from peripheral serotonergic excess; vomiting/nausea may coexist but should use separate axes when needed.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "May be normal or elevated from stress, infection overlap, seizure, or hyperthermia.", "baseline_range": [4, 10], "peak_day_range": [0, 3], "peak_value_range": [10, 25], "plateau_duration_days": [0, 5], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "Rises with severe agitation, seizure, sustained muscle activity, hypoperfusion, or co-ingestion.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [2, 12], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "Low values reflect metabolic acidosis from lactate, seizure, renal injury, or co-ingestion.", "baseline_range": [22, 29], "peak_day_range": [0, 2], "peak_value_range": [8, 21], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Usually normal or mildly elevated in mild cases; can rise markedly with rigidity, clonus, seizure, hyperthermia, or rhabdomyolysis.", "baseline_range": [40, 200], "peak_day_range": [0, 4], "peak_value_range": [200, 100000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_myoglobin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "shape_free_text": "Rises with rhabdomyolysis and can precede or amplify AKI.", "baseline_range": [0, 118], "peak_day_range": [0, 3], "peak_value_range": [200, 50000], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "shape_free_text": "May rise with rhabdomyolysis, acidosis, renal impairment, or co-ingestion.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 3], "peak_value_range": [5.0, 7.5], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "AKI from rhabdomyolysis, dehydration, hyperthermia, hypotension, or baseline renal disease.", "baseline_range": [0.5, 1.2], "peak_day_range": [1, 5], "peak_value_range": [1.2, 8.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "shape_free_text": "Rises with renal hypoperfusion, dehydration, catabolism, or AKI.", "baseline_range": [7, 20], "peak_day_range": [1, 5], "peak_value_range": [20, 120], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Can rise with muscle injury, hyperthermia, hypoxic liver injury, or co-ingestion.", "baseline_range": [10, 40], "peak_day_range": [0, 5], "peak_value_range": [40, 5000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "Can rise with hepatic injury, hyperthermia, shock, or co-ingestion.", "baseline_range": [7, 45], "peak_day_range": [0, 5], "peak_value_range": [45, 3000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 10], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "active_physical_restraint_activity", "category": "care_context", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Physical restraint or uncontrolled isometric activity during agitation. It can worsen hyperthermia and lactate and should not be modeled as treatment benefit.", "baseline_range": [0, 0.02], "peak_day_range": [0, 1], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0, 1], "decline_half_life_days": [0.1, 1], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "enteral_cyproheptadine_delivery_feasibility", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Ability to deliver cyproheptadine orally or by nasogastric tube. Low values weaken cyproheptadine effect because no parenteral form is routinely available.", "baseline_range": [0.8, 1.0], "peak_day_range": [0, 1], "peak_value_range": [0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "sedation_airway_protection_need_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Need for deep sedation, intubation, paralysis, or ICU airway protection due to severe agitation, low GCS, seizure, respiratory failure, or extreme hyperthermia.", "baseline_range": [0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "life_threatening_hyperthermia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of uncontrolled muscle-driven hyperthermia causing organ injury, usually when temperature is above about 40 C with rigidity, clonus, agitation, or seizure.", "baseline_range": [0.000001, 0.00001], "peak_day_range": [0, 2], "peak_value_range": [0.005, 0.6], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "rhabdomyolysis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of clinically important rhabdomyolysis from sustained neuromuscular activity, seizure, rigidity, hyperthermia, or restraint.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 3], "peak_value_range": [0.002, 0.5], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "seizure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of seizure or recurrent seizure requiring urgent sedation/airway management.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 2], "peak_value_range": [0.001, 0.4], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.25, 3], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of AKI from myoglobin, dehydration, hyperthermia, shock, or nephrotoxic/co-ingestion context.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [1, 5], "peak_value_range": [0.002, 0.4], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 14], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of DIC-like coagulopathy in extreme hyperthermia, severe rhabdomyolysis, shock, or multiorgan injury.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 5], "peak_value_range": [0.001, 0.3], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of respiratory failure from coma, aspiration, severe acidosis, hypoxemia, ARDS, sedatives, or co-ingestion.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 3], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "need_for_mechanical_ventilation_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Daily hazard of intubation or ongoing invasive ventilation for airway protection, deep sedation/paralysis, respiratory failure, or severe neurologic toxicity.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 2], "peak_value_range": [0.001, 0.6], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Lifespan outcome hazard emerging from uncontrolled hyperthermia, seizure, rhabdomyolysis, AKI, DIC, respiratory failure, shock, aspiration, and severe co-ingestion. Mild cases have very low hazard after prompt drug cessation.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 5], "peak_value_range": [0.00002, 0.25], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "clonus_activity", "target_axis_id": "hyperreflexia_activity", "relationship": "source_up_target_up", "coupling_type": "noise_correlation", "correlation_range": [0.5, 0.9], "phase": "whole_course", "clinical_rationale": "Clonus and hyperreflexia are jointly driven by neuromuscular hyperexcitability.", "knowledge_confidence": "high"},
+    {"source_axis_id": "tremor_activity", "target_axis_id": "hyperreflexia_activity", "relationship": "source_up_target_up", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "phase": "whole_course", "clinical_rationale": "Tremor plus hyperreflexia is a common diagnostic pairing.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "life_threatening_hyperthermia_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "phase": "severe", "clinical_rationale": "Extreme temperature directly increases hyperthermia organ-injury hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "muscle_rigidity_activity", "target_axis_id": "life_threatening_hyperthermia_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "phase": "severe", "clinical_rationale": "Rigidity increases heat generation and limits heat dissipation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_physical_restraint_activity", "target_axis_id": "serum_lactate", "relationship": "source_up_increases_target", "coupling_type": "drift", "correlation_range": [0.3, 0.7], "phase": "severe", "clinical_rationale": "Restraint and isometric struggle raise lactate and heat.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_creatine_kinase", "target_axis_id": "rhabdomyolysis_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "phase": "severe", "clinical_rationale": "High CK is the main lab correlate of rhabdomyolysis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_myoglobin", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "phase": "severe", "clinical_rationale": "Myoglobin release causes pigment nephropathy risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_lactate", "target_axis_id": "serum_bicarbonate", "relationship": "source_up_target_down", "coupling_type": "noise_correlation", "correlation_range": [-0.8, -0.4], "phase": "severe", "clinical_rationale": "Lactic acidosis lowers bicarbonate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "rhabdomyolysis_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "phase": "severe", "clinical_rationale": "Rhabdomyolysis transitions to AKI through myoglobin and volume depletion.", "knowledge_confidence": "high"},
+    {"source_axis_id": "life_threatening_hyperthermia_hazard", "target_axis_id": "dic_hazard", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.2, 0.6], "phase": "severe", "clinical_rationale": "Extreme hyperthermia can produce DIC-like coagulopathy.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "seizure_hazard", "target_axis_id": "acute_respiratory_failure_hazard", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.2, 0.7], "phase": "severe", "clinical_rationale": "Seizures can cause aspiration, coma, or need for airway protection.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "need_for_mechanical_ventilation_hazard", "target_axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "phase": "severe", "clinical_rationale": "Ventilation requirement marks severe toxicity or co-ingestion and raises short-term mortality risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.7], "phase": "severe", "clinical_rationale": "AKI reduces physiologic reserve and can require renal replacement therapy.", "knowledge_confidence": "high"},
+    {"source_axis_id": "life_threatening_hyperthermia_hazard", "target_axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "phase": "severe", "clinical_rationale": "Uncontrolled hyperthermia is the central lethal pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "phase": "severe", "clinical_rationale": "DIC contributes to bleeding, thrombosis, organ failure, and death.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "stop_serotonergic_agents",
+      "drug_class": "causative_exposure_removal",
+      "mode": "reshape_landscape",
+      "required_context_axes": ["serotonergic_agent_exposure_activity", "days_since_serotonergic_change_or_overdose", "serotonergic_clearance_impairment_activity", "monoamine_oxidase_inhibition_activity"],
+      "effect_modifiers": [
+        {"axis_id": "serotonergic_clearance_impairment_activity", "condition": "high", "effect": "slows_response", "factor_range": [0.4, 0.9], "clinical_rationale": "Long half-life drugs, renal/hepatic impairment, or CYP interactions prolong toxicity after stopping agents."},
+        {"axis_id": "monoamine_oxidase_inhibition_activity", "condition": "high", "effect": "slows_or_prolongs_context", "factor_range": [0.3, 0.9], "clinical_rationale": "MAO inhibition can prolong vulnerability and requires avoiding serotonergic re-challenge."}
+      ],
+      "trajectory_modifications": {
+        "serotonergic_agent_exposure_activity": {"peak_value_factor": [0.0, 0.3], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.25, 3]},
+        "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY": {"peak_value_factor": [0.05, 0.6], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [0.25, 5]},
+        "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY": {"peak_value_factor": [0.2, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 3]},
+        "M_SS_AUTONOMIC_SYMPATHETIC_INSTABILITY": {"peak_value_factor": [0.2, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 3]},
+        "mortality_hazard_in_D-SEROTONIN-SYNDROME": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 7]}
+      },
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [1, 30],
+      "failure_modes": ["unrecognized long half-life or active metabolite", "continued hidden serotonergic exposure", "severe overdose already driving complications", "co-ingestion or infection contributing to toxicity"],
+      "side_effects": [],
+      "context_specific_role": "Removes the upstream drug/toxin pressure so receptor activity and downstream neuromuscular/autonomic fields can decay.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "benzodiazepine_sedation",
+      "drug_class": "gabaergic_sedation_anticonvulsant",
+      "mode": "modulate_sigma",
+      "required_context_axes": ["agitation_activity", "seizure_activity", "body_temperature", "heart_rate", "respiratory_rate", "sedation_airway_protection_need_activity"],
+      "effect_modifiers": [
+        {"axis_id": "sedation_airway_protection_need_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1.0], "clinical_rationale": "Deep sedation can require airway monitoring or intubation."},
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "changes_risk", "factor_range": [0.5, 1.0], "clinical_rationale": "Respiratory compromise changes benzodiazepine safety context."}
+      ],
+      "trajectory_modifications": {
+        "M_SS_MENTAL_STATUS_EXCITATION": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.1, 1]},
+        "agitation_activity": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 1]},
+        "seizure_activity": {"peak_value_factor": [0.05, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 1]},
+        "seizure_hazard": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [0.1, 1]},
+        "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [0.25, 2]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.25, 2]}
+      },
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 1],
+      "failure_modes": ["insufficient dose for severe rigidity", "respiratory depression without airway support", "ongoing serotonergic exposure", "co-ingestion requiring toxicology-specific therapy"],
+      "side_effects": [
+        {"axis_id": "sedation_airway_protection_need_activity", "direction": "up", "magnitude_range": [0.05, 0.5], "interpretation": "Sedation can increase airway monitoring needs."},
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Respiratory depression can lower oxygen saturation in vulnerable patients."}
+      ],
+      "context_specific_role": "Reduces agitation, seizure activity, muscle heat generation, and autonomic noise while drug clearance or receptor blockade takes effect.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "active_external_cooling",
+      "drug_class": "temperature_state_control",
+      "mode": "push_state",
+      "required_context_axes": ["body_temperature", "life_threatening_hyperthermia_hazard", "muscle_rigidity_activity", "serum_lactate"],
+      "effect_modifiers": [
+        {"axis_id": "body_temperature", "condition": "very_high", "effect": "strengthens_context_need", "factor_range": [1.5, 6.0], "clinical_rationale": "Severe hyperthermia needs active cooling rather than antipyretic-only management."},
+        {"axis_id": "muscle_rigidity_activity", "condition": "high", "effect": "requires_parallel_muscle_control", "factor_range": [0.5, 1.0], "clinical_rationale": "Cooling alone is weaker if rigidity and clonus continue generating heat."}
+      ],
+      "trajectory_modifications": {
+        "body_temperature": {"peak_value_factor": [0.92, 0.98], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.05, 0.5]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.05, 0.5]},
+        "M_SS_MULTIORGAN_COMPLICATION_CASCADE": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 3]},
+        "mortality_hazard_in_D-SEROTONIN-SYNDROME": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]}
+      },
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 0.5],
+      "failure_modes": ["ongoing muscle rigidity", "delayed recognition", "inadequate sedation or paralysis when needed"],
+      "side_effects": [
+        {"axis_id": "muscle_rigidity_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Shivering can worsen muscle activity unless sedation is adequate."}
+      ],
+      "context_specific_role": "Directly lowers temperature and hyperthermia hazard while neuromuscular activity is controlled by sedation, receptor blockade, or paralysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cyproheptadine_enteral",
+      "drug_class": "serotonin_receptor_antagonist",
+      "mode": "reshape_landscape",
+      "required_context_axes": ["M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "clonus_activity", "body_temperature", "enteral_cyproheptadine_delivery_feasibility", "mental_status_abnormality_activity"],
+      "effect_modifiers": [
+        {"axis_id": "enteral_cyproheptadine_delivery_feasibility", "condition": "low", "effect": "weakens_or_prevents", "factor_range": [0.0, 0.5], "clinical_rationale": "Cyproheptadine is generally enteral, so oral or NG access matters."},
+        {"axis_id": "serotonergic_overdose_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.0, 2.0], "clinical_rationale": "Large receptor agonist burden can justify receptor antagonism while drug levels fall."}
+      ],
+      "trajectory_modifications": {
+        "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 3]},
+        "M_SS_NEUROMUSCULAR_HYPEREXCITABILITY": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 3]},
+        "clonus_activity": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [0.25, 2]},
+        "tremor_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 2]},
+        "diaphoresis_sweats_activity": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.25, 2]},
+        "body_temperature": {"peak_value_factor": [0.95, 0.99], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.25, 2]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.25, 3]},
+        "mortality_hazard_in_D-SEROTONIN-SYNDROME": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 7]}
+      },
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [0.25, 2],
+      "failure_modes": ["no enteral access", "late use after complications have accumulated", "ongoing serotonergic exposure", "sedation limiting neurologic assessment"],
+      "side_effects": [
+        {"axis_id": "mental_status_abnormality_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Sedation or anticholinergic effects can complicate mental status interpretation."},
+        {"axis_id": "diarrhea_activity", "direction": "down", "magnitude_range": [0, 0.3], "interpretation": "Antiserotonergic/anticholinergic effect may reduce GI hyperactivity."}
+      ],
+      "context_specific_role": "Enteral serotonin receptor antagonism that can lower clonus/autonomic activity while upstream drug exposure is removed.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "intubation_deep_sedation_neuromuscular_paralysis",
+      "drug_class": "icu_airway_sedation_paralysis_support",
+      "mode": "push_state",
+      "required_context_axes": ["glasgow_coma_scale_score", "need_for_mechanical_ventilation_hazard", "life_threatening_hyperthermia_hazard", "muscle_rigidity_activity", "acute_respiratory_failure_hazard", "sedation_airway_protection_need_activity"],
+      "effect_modifiers": [
+        {"axis_id": "life_threatening_hyperthermia_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.5, 5.0], "clinical_rationale": "Extreme hyperthermia from rigidity may require paralysis plus active cooling."},
+        {"axis_id": "glasgow_coma_scale_score", "condition": "low", "effect": "strengthens_context_need", "factor_range": [1.5, 5.0], "clinical_rationale": "Low GCS requires airway protection independent of serotonin-specific therapy."}
+      ],
+      "trajectory_modifications": {
+        "sedation_airway_protection_need_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 5]},
+        "muscle_rigidity_activity": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.1, 1]},
+        "M_SS_MUSCLE_HEAT_RHABDOMYOLYSIS_CASCADE": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 2]},
+        "body_temperature": {"peak_value_factor": [0.93, 0.98], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 1]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 2]},
+        "need_for_mechanical_ventilation_hazard": {"peak_value_factor": [0.7, 1.2], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-SEROTONIN-SYNDROME": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0.5, 7],
+      "failure_modes": ["delayed airway control", "ventilator complications", "ongoing serotonin exposure or co-ingestion", "paralysis without adequate sedation"],
+      "side_effects": [
+        {"axis_id": "need_for_mechanical_ventilation_hazard", "direction": "up", "magnitude_range": [0.1, 0.5], "interpretation": "The intervention creates ongoing ventilator exposure even while reducing heat and airway hazard."},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.05], "interpretation": "Ventilator-associated complications are possible."}
+      ],
+      "context_specific_role": "ICU support vector that stops muscle heat generation, protects airway, and enables controlled cooling in severe or refractory toxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_fluids_and_rhabdomyolysis_renal_protection",
+      "drug_class": "renal_volume_support",
+      "mode": "push_state",
+      "required_context_axes": ["rhabdomyolysis_hazard", "serum_creatine_kinase", "serum_myoglobin", "serum_creatinine", "acute_kidney_injury_hazard", "serum_potassium"],
+      "effect_modifiers": [
+        {"axis_id": "acute_kidney_injury_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Rhabdomyolysis-associated AKI risk requires volume and urine-output support when tolerated."},
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1.0], "clinical_rationale": "Fluid strategy must avoid pulmonary edema when respiratory failure is active."}
+      ],
+      "trajectory_modifications": {
+        "rhabdomyolysis_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 10]},
+        "serum_creatinine": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [2, 14]},
+        "serum_potassium": {"peak_value_factor": [0.8, 0.98], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 3]},
+        "mortality_hazard_in_D-SEROTONIN-SYNDROME": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0, 0.25],
+      "carryover_after_stop_days": [0.5, 7],
+      "failure_modes": ["oliguric renal failure requiring renal replacement therapy", "fluid overload or pulmonary edema", "uncontrolled ongoing muscle injury"],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 4], "interpretation": "Excess fluid can worsen oxygenation in vulnerable patients."}
+      ],
+      "context_specific_role": "Preserves renal perfusion and lowers pigment nephropathy transition risk while the muscle injury source is controlled.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_serotonergic_drug_start_dose_increase_or_interaction",
+      "category": "exposure_prior",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 50],
+          "trajectory_modulation": "Raises prior probability and gates the onset timing of serotonin syndrome without itself being a severity grade.",
+          "axis_response_modulation": [
+            {"axis_id": "serotonergic_agent_exposure_activity", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Exposure is directly observed."},
+            {"axis_id": "days_since_serotonergic_change_or_overdose", "effect": "lower_compatible_value", "magnitude_factor_range": [0.1, 0.5], "clinical_rationale": "Recent change within hours to days fits the syndrome timing."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "serotonergic_polypharmacy_or_opioid_stimulant_coexposure",
+      "category": "exposure_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 20],
+          "trajectory_modulation": "Increases serotonergic burden and can intensify autonomic, neurologic, and mental status axes.",
+          "axis_response_modulation": [
+            {"axis_id": "serotonergic_polypharmacy_burden", "effect": "higher_baseline", "magnitude_factor_range": [2, 8], "clinical_rationale": "Multiple active agents are the observed risk context."},
+            {"axis_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4], "clinical_rationale": "Combined pharmacodynamic serotonergic effects raise receptor activity."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "monoamine_oxidase_inhibition_or_linezolid_context",
+      "category": "exposure_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 20],
+          "trajectory_modulation": "Raises interaction risk and can prolong vulnerability after serotonergic drug exposure.",
+          "axis_response_modulation": [
+            {"axis_id": "monoamine_oxidase_inhibition_activity", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "MAO inhibition is directly observed."},
+            {"axis_id": "M_SS_EXCESS_SEROTONERGIC_RECEPTOR_ACTIVITY", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5], "clinical_rationale": "Reduced serotonin metabolism amplifies receptor activity."}
+          ],
+          "treatment_effect_modulation": {
+            "stop_serotonergic_agents": "requires stopping both serotonergic and MAO-inhibiting contributors and avoiding serotonergic re-challenge during the vulnerability window"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "overdose_or_high_body_burden",
+      "category": "dose_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 30],
+          "trajectory_modulation": "Increases peak receptor activity, mental status toxicity, and duration when long half-life agents are involved.",
+          "axis_response_modulation": [
+            {"axis_id": "serotonergic_overdose_activity", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Overdose is directly observed."},
+            {"axis_id": "mental_status_abnormality_activity", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5], "clinical_rationale": "Large ingestions often alter consciousness."},
+            {"axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "effect": "higher_peak", "magnitude_factor_range": [1.2, 6], "clinical_rationale": "Overdose increases severe toxicity and co-ingestion hazard."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "advanced_age_renal_hepatic_impairment_or_cyp_interaction",
+      "category": "host_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 3],
+          "trajectory_modulation": "Does not prove the syndrome, but prolongs exposure and lowers reserve during toxicity.",
+          "axis_response_modulation": [
+            {"axis_id": "serotonergic_clearance_impairment_activity", "effect": "higher_baseline", "magnitude_factor_range": [3, 20], "clinical_rationale": "Clearance impairment or CYP interaction is the observed host/drug context."},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "Lower reserve increases AKI vulnerability."},
+            {"axis_id": "mortality_hazard_in_D-SEROTONIN-SYNDROME", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "Older or organ-impaired patients tolerate hyperthermia and toxicity less well."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "physical_restraint_uncontrolled_agitation_or_seizure",
+      "category": "care_course_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 1],
+          "trajectory_modulation": "Does not prove serotonin syndrome but intensifies heat, lactate, acidosis, and rhabdomyolysis risk.",
+          "axis_response_modulation": [
+            {"axis_id": "active_physical_restraint_activity", "effect": "higher_baseline", "magnitude_factor_range": [5, 50], "clinical_rationale": "Physical restraint or struggle is directly observed."},
+            {"axis_id": "life_threatening_hyperthermia_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6], "clinical_rationale": "Isometric activity worsens heat generation."},
+            {"axis_id": "serum_lactate", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6], "clinical_rationale": "Sustained muscle work raises lactate."}
+          ],
+          "treatment_effect_modulation": {
+            "benzodiazepine_sedation": "strengthens context need",
+            "intubation_deep_sedation_neuromuscular_paralysis": "strengthens context need when hyperthermia or rigidity is severe"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "dopamine_antagonist_exposure_or_neuroleptic_malignant_syndrome_context",
+      "category": "mimic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.3, 1],
+          "trajectory_modulation": "Raises mimic/OOD pressure; do not delete serotonin-compatible clonus or exposure evidence if present.",
+          "axis_response_modulation": [
+            {"axis_id": "muscle_rigidity_activity", "effect": "higher_baseline", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "NMS can produce rigidity and fever but usually lacks clonus/hyperreflexia predominance."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Preserve medication and toxin chronology exactly: agent list, dose change, overdose amount, interacting drug addition, and time from change to symptoms.",
+    "Use clonus, hyperreflexia, tremor, myoclonus, rigidity, agitation, diaphoresis, diarrhea, fever, tachycardia, hypertension, lactate, CK, myoglobin, creatinine, potassium, and bicarbonate as ordinary ranking evidence when available.",
+    "Store Hunter criteria conclusion, final paper diagnosis, negative CT, negative cultures, NMS exclusion, and toxicology-consult agreement as confirmatory/context evidence with use_in_ranking:false when they are diagnostic conclusions rather than raw presentation findings.",
+    "Avoid antipyretic-only semantics for severe hyperthermia; temperature is driven by muscle activity and needs sedation, cooling, and sometimes paralysis.",
+    "Avoid physical restraint when possible because it increases heat and lactate; control agitation with benzodiazepines, sedation, and monitored care.",
+    "Trend vital signs, neurologic findings, CK, myoglobin, creatinine, urine output, electrolytes, bicarbonate, lactate, liver enzymes, coagulation studies, and respiratory status in moderate to severe toxicity.",
+    "Treat infection, NMS, anticholinergic toxicity, sympathomimetic toxicity, withdrawal, seizure disorder, and metabolic encephalopathy through their own evidence rather than deleting overlapping fever or mental-status data.",
+    "Escalate to ICU-level support for severe hyperthermia, rapidly rising CK/myoglobin, seizure, GCS depression, airway compromise, respiratory failure, severe acidosis, AKI, DIC, or unstable hemodynamics."
+  ],
+  "quality_notes": [
+    "The disease-specific input used for this distillation is only the disease name: Serotonin syndrome.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-SEROTONIN-SYNDROME.",
+    "Event hazards are used for hyperthermia, seizure, rhabdomyolysis, AKI, DIC, respiratory failure, mechanical ventilation, and mortality pathway components.",
+    "No prohibited treatment-ranking label fields are used.",
+    "All treatment trajectory_modifications are dicts keyed by mechanism or axis id.",
+    "All risk_factors[*].modulation values are dicts keyed by context state."
+  ]
+}
