@@ -485,14 +485,21 @@ def background_axes_for_case(background_axes, case, candidate):
 def load_case(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     observations = {}
+
+    def add_observation(axis_id, value, unit):
+        if not axis_id or value is None or axis_id in observations:
+            return
+        observations[axis_id] = {"value": float(value), "unit": unit}
+
     for obs in data.get("observations", []):
-        axis_id = obs.get("axis_id")
-        if not axis_id or obs.get("value") is None:
-            continue
-        observations[axis_id] = {"value": float(obs["value"]), "unit": obs.get("unit")}
+        add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
+
+    for obs in data.get("course_observations", []):
+        add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
 
     for traj in data.get("lab_trajectories", []):
         axis_id = traj.get("axis_id")
+        add_observation(axis_id, traj.get("value"), traj.get("unit"))
         numeric = [o for o in (traj.get("observations") or []) if o.get("value") is not None]
         if not axis_id or not numeric or axis_id in observations:
             continue
