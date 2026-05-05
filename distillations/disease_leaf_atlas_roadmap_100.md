@@ -90,31 +90,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-COCCIDIOIDOMYCOSIS | Coccidioidomycosis |
 | D-LEISHMANIASIS-VISCERAL | Visceral leishmaniasis |
 | D-NONTYPHOID-SALMONELLA-BACTEREMIA | Nontyphoidal Salmonella bacteremia |
+| D-ALL | Acute lymphoblastic leukemia |
+| D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection |
+| D-LYME-DISEASE | Lyme disease |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-ALL | Acute lymphoblastic leukemia | hematologic fever/cytopenia/leukostasis mimic |
-| 2 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection | common fever-arthritis/tenosynovitis mimic around septic arthritis |
-| 3 | D-DISSEMINATED-LYME | Disseminated Lyme disease | common arthralgia/neurologic/cardiac fever mimic |
-| 4 | D-SECONDARY-SYPHILIS | Secondary syphilis | common rash/fever/lymphadenopathy mimic |
-| 5 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis | fever/inflammation chondritis mimic of vasculitis and infection |
-| 6 | D-CAR-T-CRS | CAR-T cytokine release syndrome | critical post-cellular-therapy fever/shock/HLH mimic |
-| 7 | D-HEAT-STROKE | Heat stroke | critical hyperthermia, DIC, liver injury, and sepsis mimic |
-| 8 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome | critical drug-induced hyperthermia and rigidity mimic |
-| 9 | D-SEROTONIN-SYNDROME | Serotonin syndrome | critical serotonergic hyperthermia/autonomic mimic |
-| 10 | D-THYROID-STORM | Thyroid storm | critical endocrine fever, tachyarrhythmia, and shock mimic |
-| 11 | D-ACUTE-LIVER-FAILURE | Acute liver failure | critical coagulopathy/encephalopathy fever mimic |
-| 12 | D-ADRENAL-CRISIS | Adrenal crisis | critical endocrine shock and infection mimic |
-| 13 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
-| 14 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
-| 15 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia | critical hyperthermia, rigidity, acidosis, and rhabdomyolysis mimic |
-| 16 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
-| 17 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
-| 18 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy | critical TMA mimic of TTP, HUS, sepsis-DIC, and malignant hypertension |
-| 19 | D-EVANS-SYNDROME | Evans syndrome | immune cytopenia fever mimic near SLE, AIHA, TTP, and lymphoma |
-| 20 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
+| 1 | D-SECONDARY-SYPHILIS | Secondary syphilis | common rash/fever/lymphadenopathy mimic |
+| 2 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis | fever/inflammation chondritis mimic of vasculitis and infection |
+| 3 | D-CAR-T-CRS | CAR-T cytokine release syndrome | critical post-cellular-therapy fever/shock/HLH mimic |
+| 4 | D-HEAT-STROKE | Heat stroke | critical hyperthermia, DIC, liver injury, and sepsis mimic |
+| 5 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome | critical drug-induced hyperthermia and rigidity mimic |
+| 6 | D-SEROTONIN-SYNDROME | Serotonin syndrome | critical serotonergic hyperthermia/autonomic mimic |
+| 7 | D-THYROID-STORM | Thyroid storm | critical endocrine fever, tachyarrhythmia, and shock mimic |
+| 8 | D-ACUTE-LIVER-FAILURE | Acute liver failure | critical coagulopathy/encephalopathy fever mimic |
+| 9 | D-ADRENAL-CRISIS | Adrenal crisis | critical endocrine shock and infection mimic |
+| 10 | D-ACUTE-PANCREATITIS | Acute pancreatitis | common abdominal fever/SIRS/sepsis mimic |
+| 11 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis | critical drug fever/rash/mucosal failure mimic |
+| 12 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia | critical hyperthermia, rigidity, acidosis, and rhabdomyolysis mimic |
+| 13 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
+| 14 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
+| 15 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy | critical TMA mimic of TTP, HUS, sepsis-DIC, and malignant hypertension |
+| 16 | D-EVANS-SYNDROME | Evans syndrome | immune cytopenia fever mimic near SLE, AIHA, TTP, and lymphoma |
+| 17 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
+| 18 | D-DERMATOMYOSITIS | Dermatomyositis | common fever/rash/myositis/ILD mimic of infection, AOSD, and malignancy |
+| 19 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
+| 20 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
 
 ## Candidate Pool Toward 100
 
@@ -157,7 +160,7 @@ Prioritize diseases that are either common, critical, or both.
 | D-VERTEBRAL-OSTEOMYELITIS | Vertebral osteomyelitis |
 | D-SEPTIC-ARTHRITIS | Septic arthritis |
 | D-HSV-ENCEPHALITIS | HSV encephalitis |
-| D-DISSEMINATED-LYME | Disseminated Lyme disease |
+| D-LYME-DISEASE | Lyme disease |
 | D-SECONDARY-SYPHILIS | Secondary syphilis |
 | D-DISSEMINATED-GONOCOCCAL-INFECTION | Disseminated gonococcal infection |
 

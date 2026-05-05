@@ -157,7 +157,13 @@ HEALTHY_OVERRIDES = {
     "urine_output": {"unit": "mL/kg/hr", "baseline_range": (0.5, 1.5), "log_scale": False},
     "white_blood_cell_count": {"unit": "10^9/L", "baseline_range": (4.0, 10.0), "log_scale": False},
     "absolute_neutrophil_count": {"unit": "10^9/L", "baseline_range": (2.0, 7.0), "log_scale": False},
+    "neutrophil_fraction": {"unit": "percent", "baseline_range": (40.0, 75.0), "log_scale": False},
+    "lymphocyte_fraction": {"unit": "percent", "baseline_range": (20.0, 45.0), "log_scale": False},
+    "monocyte_fraction": {"unit": "percent", "baseline_range": (2.0, 10.0), "log_scale": False},
+    "eosinophil_fraction": {"unit": "percent", "baseline_range": (0.0, 6.0), "log_scale": False},
+    "basophil_fraction": {"unit": "percent", "baseline_range": (0.0, 2.0), "log_scale": False},
     "hemoglobin": {"unit": "g/dL", "baseline_range": (12.0, 17.0), "log_scale": False},
+    "hematocrit": {"unit": "percent", "baseline_range": (36.0, 50.0), "log_scale": False},
     "platelet_count": {"unit": "10^9/L", "baseline_range": (150.0, 350.0), "log_scale": False},
     "serum_crp": {"unit": "mg/L", "baseline_range": (0.2, 5.0), "log_scale": True},
     "erythrocyte_sedimentation_rate": {"unit": "mm_per_hr", "baseline_range": (0.0, 20.0), "log_scale": False},
@@ -165,6 +171,15 @@ HEALTHY_OVERRIDES = {
     "serum_lactate": {"unit": "mmol/L", "baseline_range": (0.5, 2.0), "log_scale": False},
     "serum_creatinine": {"unit": "mg/dL", "baseline_range": (0.6, 1.2), "log_scale": False},
     "blood_urea_nitrogen": {"unit": "mg/dL", "baseline_range": (7.0, 20.0), "log_scale": False},
+    "serum_sodium": {"unit": "mmol/L", "baseline_range": (135.0, 145.0), "log_scale": False},
+    "serum_potassium": {"unit": "mmol/L", "baseline_range": (3.5, 5.0), "log_scale": False},
+    "serum_chloride": {"unit": "mmol/L", "baseline_range": (98.0, 107.0), "log_scale": False},
+    "serum_bicarbonate": {"unit": "mmol/L", "baseline_range": (22.0, 29.0), "log_scale": False},
+    "serum_calcium": {"unit": "mg/dL", "baseline_range": (8.5, 10.5), "log_scale": False},
+    "serum_magnesium": {"unit": "mg/dL", "baseline_range": (1.7, 2.4), "log_scale": False},
+    "serum_phosphate": {"unit": "mg/dL", "baseline_range": (2.5, 4.5), "log_scale": False},
+    "thyroid_stimulating_hormone": {"unit": "mIU/L", "baseline_range": (0.4, 4.5), "log_scale": False},
+    "left_ventricular_ejection_fraction": {"unit": "percent", "baseline_range": (55.0, 70.0), "log_scale": False},
     "serum_ferritin": {"unit": "ng/mL", "baseline_range": (20.0, 250.0), "log_scale": True},
     "serum_ldh": {"unit": "U/L", "baseline_range": (120.0, 240.0), "log_scale": True},
     "serum_ast": {"unit": "U/L", "baseline_range": (10.0, 40.0), "log_scale": False},
@@ -420,6 +435,17 @@ def build_background_axes(manifolds, master_axes):
             "ranges": [],
         })
 
+    for axis_id, meta in HEALTHY_OVERRIDES.items():
+        by_axis.setdefault(axis_id, {
+            "axis_id": axis_id,
+            "category": "background_measurement",
+            "unit": meta.get("unit"),
+            "log_scale": bool(meta.get("log_scale", False)),
+            "axis_role": "measurement",
+            "parent_axis_id": None,
+            "ranges": [],
+        })
+
     background = {}
     for axis_id, entry in by_axis.items():
         override = HEALTHY_OVERRIDES.get(axis_id) or v5_background.BASE_MEASURE_OVERRIDES.get(axis_id)
@@ -468,7 +494,7 @@ def build_background_axes(manifolds, master_axes):
 
 def fallback_axis_from_observation(axis_id, obs):
     unit = obs.get("unit")
-    if norm_unit(unit) not in ("severityscore01", "probability01", "relativeactivity01"):
+    if norm_unit(unit) not in ("severityscore01", "probability01", "relativeactivity01", "presentabsent01"):
         return None
     return {
         "axis_id": axis_id,
@@ -579,6 +605,10 @@ def background_axes_for_case(background_axes, case, candidate):
     return adjusted
 
 
+def case_item_rankable(item):
+    return item.get("use_in_ranking") is not False
+
+
 def load_case(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     observations = {}
@@ -589,15 +619,25 @@ def load_case(path):
         observations[axis_id] = {"value": float(value), "unit": unit}
 
     for obs in data.get("observations", []):
+        if not case_item_rankable(obs):
+            continue
         add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
 
     for obs in data.get("course_observations", []):
+        if not case_item_rankable(obs):
+            continue
         add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
 
     for traj in data.get("lab_trajectories", []):
+        if not case_item_rankable(traj):
+            continue
         axis_id = traj.get("axis_id")
         add_observation(axis_id, traj.get("value"), traj.get("unit"))
-        numeric = [o for o in (traj.get("observations") or []) if o.get("value") is not None]
+        numeric = [
+            o
+            for o in ((traj.get("observations") or []) + (traj.get("time_series") or []))
+            if o.get("value") is not None and case_item_rankable(o)
+        ]
         if not axis_id or not numeric or axis_id in observations:
             continue
         first = sorted(numeric, key=lambda o: float(o.get("day", 0)))[0]
@@ -747,6 +787,8 @@ def auto_demographic_context(case, disease):
 def case_risk_context(case, disease):
     ctx = []
     for item in case.get("risk_context", []):
+        if not case_item_rankable(item):
+            continue
         applies = item.get("applies_to")
         if applies is None or disease in applies or "*" in applies:
             ctx.append(item)
