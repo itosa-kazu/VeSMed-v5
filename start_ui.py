@@ -74,6 +74,9 @@ DISEASE_NAME_OVERRIDES = {
     "D-MALARIA-FALCIPARUM": "Plasmodium falciparum malaria",
     "D-AML": "Acute myeloid leukemia",
     "D-APL": "Acute promyelocytic leukemia",
+    "D-STAPH-AUREUS-BACTEREMIA": "Staphylococcus aureus bacteremia",
+    "D-NOCARDIOSIS": "Nocardiosis",
+    "D-BARTONELLA-ENDOCARDITIS": "Bartonella infective endocarditis",
 }
 
 
