@@ -65,6 +65,15 @@ DISEASE_NAME_OVERRIDES = {
     "D-PYOGENIC-LIVER-ABSCESS": "Pyogenic liver abscess",
     "D-PJP-PNEUMONIA": "Pneumocystis jirovecii pneumonia",
     "D-CANDIDEMIA": "Candidemia",
+    "D-INVASIVE-ASPERGILLOSIS": "Invasive aspergillosis",
+    "D-ACUTE-HIV": "Acute HIV retroviral syndrome",
+    "D-CMV-MONO": "Cytomegalovirus mononucleosis-like illness",
+    "D-BRUCELLOSIS": "Brucellosis",
+    "D-Q-FEVER": "Q fever",
+    "D-RICKETTSIOSIS-SCRUB-TYPHUS": "Scrub typhus / rickettsiosis",
+    "D-MALARIA-FALCIPARUM": "Plasmodium falciparum malaria",
+    "D-AML": "Acute myeloid leukemia",
+    "D-APL": "Acute promyelocytic leukemia",
 }
 
 

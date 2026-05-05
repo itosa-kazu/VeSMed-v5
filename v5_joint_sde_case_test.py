@@ -58,6 +58,10 @@ def env_csv(name):
     return [part.strip() for part in raw.split(",") if part.strip()]
 
 
+MANIFOLD_FILTER = env_csv("VESMED_MANIFOLD_FILTER")
+MANIFOLD_EXCLUDE = env_csv("VESMED_MANIFOLD_EXCLUDE")
+
+
 def distillation_disease_id(path, data):
     disease = (data.get("disease") or "").strip()
     if disease:
@@ -103,6 +107,10 @@ def discover_manifold_paths(distill_dir=DISTILL_DIR):
             continue
         disease_id = distillation_disease_id(path, data)
         if not disease_id:
+            continue
+        if MANIFOLD_FILTER and not any(token in disease_id or token in path.name for token in MANIFOLD_FILTER):
+            continue
+        if MANIFOLD_EXCLUDE and any(token in disease_id or token in path.name for token in MANIFOLD_EXCLUDE):
             continue
         if disease_id in paths:
             raise ValueError(f"Duplicate disease distillation id {disease_id!r}: {paths[disease_id]} and {path}")
