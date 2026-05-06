@@ -1,0 +1,785 @@
+{
+  "disease": "D-ACUTE-PANCREATITIS",
+  "disease_name": "Acute pancreatitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": "Pure disease-name leaf distillation for the full clinical spectrum of Acute pancreatitis. Gallstone, alcohol, hypertriglyceridemia, drug, ERCP, hypercalcemia, trauma, genetic, autoimmune, infectious, obstructive, and idiopathic contexts are represented only as risk/context axes, mechanism gates, treatment modifiers, or case evidence; they are not part of the disease name.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AP_UPSTREAM_TRIGGER_CONTEXT",
+      "display_name": "Upstream pancreatitis trigger context",
+      "clinical_meaning": "Observed or hidden initiating context that increases acinar stress or pancreatic duct pressure. This is a context gate spanning biliary, alcohol/toxin, hypertriglyceridemic, drug, ERCP/instrumentation, hypercalcemic, traumatic, obstructive, infectious, autoimmune, genetic, and idiopathic presentations without making subtypes in the disease name.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [-30, 0],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.2, 60],
+      "decline_half_life_days": [1, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX",
+      "display_name": "Pancreatic ductal obstruction, pressure, and reflux",
+      "clinical_meaning": "Transient or persistent obstruction at the ampulla, pancreatic duct, or periampullary region raises ductal pressure, impairs outflow, and can promote bile reflux or ductal injury.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [-3, 2],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 14],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION",
+      "display_name": "Acinar cell injury and premature zymogen activation",
+      "clinical_meaning": "Acinar calcium overload, mitochondrial injury, oxidative stress, direct toxin injury, ductal stress, and lysosomal-colocalization activate trypsin and other digestive enzymes inside the pancreas.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY",
+      "display_name": "Lipotoxic, metabolic, and microcirculatory injury",
+      "clinical_meaning": "Severe triglyceride burden, free fatty acids, hypercalcemia, diabetes/DKA physiology, ischemia, and microvascular dysfunction injure acini and endothelium and can make enzyme assays misleading.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [-7, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA",
+      "display_name": "Local pancreatic inflammation and edema",
+      "clinical_meaning": "Intrapancreatic enzyme activation drives acinar edema, peripancreatic fat inflammation, vascular permeability, pain mediator release, and early fluid collections.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION",
+      "display_name": "Visceral pain, vomiting, ileus, and neuroinflammation",
+      "clinical_meaning": "Pancreatic capsular stretch, peritoneal irritation, inflammatory mediators, ileus, gastric distension, and visceral nociception create epigastric or diffuse pain, radiation to the back, nausea, vomiting, tenderness, and distension.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [0.2, 14],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK",
+      "display_name": "Third spacing, hypovolemia, and capillary leak",
+      "clinical_meaning": "Retroperitoneal inflammation and systemic permeability shift intravascular fluid into peripancreatic and peritoneal spaces, raising hematocrit, BUN, tachycardia, AKI risk, and shock susceptibility.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.05, 1.0],
+      "plateau_duration_days": [0.2, 7],
+      "decline_half_life_days": [0.5, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Pancreatitis systemic inflammatory response",
+      "clinical_meaning": "Cytokine, complement, DAMP, neutrophil, endothelial, and coagulation activation create fever or hypothermia, leukocytosis, high CRP, tachycardia, tachypnea, vasodilation, ARDS risk, and organ dysfunction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.05, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE",
+      "display_name": "Necrosis, collection, and infection cascade",
+      "clinical_meaning": "Microcirculatory failure, enzyme injury, and severe inflammation can cause pancreatic or peripancreatic necrosis, acute necrotic collections, infected necrosis, abscess, hemorrhage, pseudocyst, or walled-off necrosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.005],
+      "peak_day_range": [2, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE",
+      "display_name": "Persistent organ failure cascade",
+      "clinical_meaning": "Severe SIRS, hypovolemia, shock, respiratory failure, AKI, acidosis, infected necrosis, abdominal compartment physiology, bleeding, and frailty accumulate into near-term death risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.003],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AP_RECOVERY_RESOLUTION_CAPACITY",
+      "display_name": "Recovery, trigger removal, and exocrine rest capacity",
+      "clinical_meaning": "Trigger removal, adequate perfusion, preserved organ reserve, nutrition tolerance, and absence of necrosis allow edema resolution, falling enzymes, restored gut function, and low recurrence risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.4, 1.0],
+      "peak_day_range": [1, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [2, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_AP_UPSTREAM_TRIGGER_CONTEXT", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "initiation", "clinical_rationale": "Diverse AP triggers converge on acinar injury and intrapancreatic enzyme activation.", "knowledge_confidence": "high"},
+    {"source_id": "gallstone_or_biliary_sludge_context_probability", "target_id": "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 3], "phase": "trigger", "clinical_rationale": "Transient ampullary obstruction or common-bile-duct stone/sludge can raise ductal pressure.", "knowledge_confidence": "high"},
+    {"source_id": "biliary_obstruction_context_probability", "target_id": "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 2], "phase": "trigger", "clinical_rationale": "Observed cholestasis or duct dilation supports an obstructive trigger context.", "knowledge_confidence": "high"},
+    {"source_id": "post_ercp_pancreatic_duct_injury_context_probability", "target_id": "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 1], "phase": "iatrogenic_trigger", "clinical_rationale": "Instrumentation can cause papillary edema, hydrostatic injury, contrast injury, and ductal obstruction.", "knowledge_confidence": "high"},
+    {"source_id": "alcohol_pancreatic_toxicity_context_probability", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 30], "phase": "trigger_or_background", "clinical_rationale": "Alcohol can sensitize acini, alter secretion, and predispose to enzyme activation.", "knowledge_confidence": "high"},
+    {"source_id": "drug_induced_pancreatitis_context_probability", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 30], "phase": "trigger", "clinical_rationale": "Drug toxicity, hypersensitivity, ductal effects, or metabolic adverse effects can trigger AP.", "knowledge_confidence": "medium"},
+    {"source_id": "serum_triglycerides", "target_id": "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 3], "phase": "trigger", "clinical_rationale": "Very high triglycerides and chylomicronemia increase lipotoxic and microvascular pancreatic injury.", "knowledge_confidence": "high"},
+    {"source_id": "serum_calcium", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 7], "phase": "trigger", "clinical_rationale": "Hypercalcemia can increase intrapancreatic trypsin activation and acinar stress.", "knowledge_confidence": "high"},
+    {"source_id": "serum_glucose", "target_id": "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 3], "phase": "context_dependent", "clinical_rationale": "Severe hyperglycemia and DKA physiology often coexist with high triglycerides and worsened dehydration.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "initiation", "clinical_rationale": "Ductal obstruction and reflux promote acinar injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY", "target_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "initiation", "clinical_rationale": "Metabolic and microvascular injury converge on acinar damage.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "target_id": "serum_lipase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Pancreatic acinar injury releases lipase into blood, though values can be normal or falsely low in selected contexts.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "target_id": "serum_amylase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Acinar injury releases amylase; it is less specific and may normalize earlier or be interfered with by hypertriglyceridemia.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "target_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Activated enzymes and acinar injury initiate local pancreatic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "pancreatic_edema_or_enlargement_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "imaging_context", "clinical_rationale": "Edematous pancreatitis enlarges the gland on imaging.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "peripancreatic_fat_stranding_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "imaging_context", "clinical_rationale": "Peripancreatic inflammation produces fat stranding.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "peripancreatic_fluid_collection_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "early_to_peak", "clinical_rationale": "Capillary leak and inflammation can produce acute peripancreatic fluid collections.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Local inflammation drives pain, vomiting, tenderness, and ileus.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Epigastric or diffuse abdominal pain is common in AP.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "target_id": "epigastric_pain_radiating_to_back_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Classic AP pain often radiates to the back.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Visceral inflammation and ileus frequently cause nausea and vomiting.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "target_id": "abdominal_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Inflammation produces epigastric or diffuse tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION", "target_id": "ileus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "presentation_to_peak", "clinical_rationale": "Retroperitoneal inflammation can impair gut motility.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "Local capillary leak and retroperitoneal inflammation shift fluid out of the vascular space.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "hematocrit", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "Hemoconcentration reflects third spacing and inadequate intravascular volume.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "BUN rises with hypovolemia and renal hypoperfusion and is a prognostic marker.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Renal hypoperfusion and inflammatory injury can raise creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Pain, hypovolemia, fever, and SIRS produce tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Severe fluid loss and vasodilation can reduce perfusion pressure.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early_peak", "clinical_rationale": "Local inflammation can spill over into SIRS.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Inflammation or infection can cause fever; severe shock or frailty can blunt fever.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "SIRS produces leukocytosis, though immune context may modify it.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 4], "phase": "early_to_peak", "clinical_rationale": "CRP rises after inflammatory cytokine signaling and helps track severity.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Pain, fever, acidosis, pleural irritation, and respiratory failure raise respiratory rate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Shock and systemic inflammation can raise lactate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "AP can cause pleural effusion, atelectasis, ARDS, aspiration, and ventilatory failure.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Hypovolemia and inflammatory shock increase AKI hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Vasodilation, third spacing, pain, and sepsis can cause shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Severe inflammation and shock can activate coagulation and DIC-like physiology.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "SIRS severity drives organ failure persistence.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY", "target_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 14], "phase": "severe", "clinical_rationale": "Microvascular injury and lipotoxicity can worsen necrosis risk.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "target_id": "pancreatic_necrosis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 14], "phase": "severe", "clinical_rationale": "Severe pancreatic injury can progress from edema to necrosis.", "knowledge_confidence": "high"},
+    {"source_id": "pancreatic_necrosis_hazard", "target_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Necrosis is the substrate for infected necrosis and late collections.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE", "target_id": "pancreatic_necrosis_extent", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 21], "phase": "imaging_context", "clinical_rationale": "CT/MRI necrosis extent tracks the necrosis mechanism.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE", "target_id": "infected_pancreatic_necrosis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [5, 42], "phase": "late_complication", "clinical_rationale": "Necrotic tissue can become infected, especially with persistent organ failure or gut translocation.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_NECROSIS_COLLECTION_INFECTION_CASCADE", "target_id": "pancreatic_pseudocyst_or_walled_off_necrosis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [14, 60], "phase": "late_complication", "clinical_rationale": "Collections may mature into pseudocyst or walled-off necrosis.", "knowledge_confidence": "medium"},
+    {"source_id": "biliary_obstruction_context_probability", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "axis_to_axis", "lag_days_range": [0, 3], "phase": "biliary_context", "clinical_rationale": "Biliary obstruction may raise bilirubin in biliary-context AP.", "knowledge_confidence": "high"},
+    {"source_id": "biliary_obstruction_context_probability", "target_id": "serum_alkaline_phosphatase", "effect_on_target": "increase", "edge_type": "axis_to_axis", "lag_days_range": [0, 7], "phase": "biliary_context", "clinical_rationale": "Cholestatic enzymes rise with persistent biliary obstruction.", "knowledge_confidence": "medium"},
+    {"source_id": "cholangitis_or_active_biliary_sepsis_context_probability", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 2], "phase": "severe_biliary_context", "clinical_rationale": "Cholangitis adds septic shock risk independent of pancreatic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "infected_pancreatic_necrosis_hazard", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 3], "phase": "late_severe", "clinical_rationale": "Infected necrosis can cause septic shock.", "knowledge_confidence": "high"},
+    {"source_id": "acute_respiratory_failure_hazard", "target_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Respiratory failure is one component of persistent organ failure.", "knowledge_confidence": "high"},
+    {"source_id": "acute_kidney_injury_hazard", "target_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "AKI adds acid-base, volume, and critical-care risk.", "knowledge_confidence": "high"},
+    {"source_id": "circulatory_collapse_shock_hazard", "target_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE", "effect_on_target": "increase", "edge_type": "event_to_mechanism", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Shock sustains multi-organ failure.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE", "target_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Death in AP emerges through persistent organ failure and complications.", "knowledge_confidence": "high"},
+    {"source_id": "infected_pancreatic_necrosis_hazard", "target_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 14], "phase": "late_severe", "clinical_rationale": "Infected necrosis is a major late death pathway.", "knowledge_confidence": "high"},
+    {"source_id": "M_AP_RECOVERY_RESOLUTION_CAPACITY", "target_id": "M_AP_LOCAL_PANCREATIC_INFLAMMATION_EDEMA", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 14], "phase": "recovery", "clinical_rationale": "Recovery lowers local edema and inflammation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AP_RECOVERY_RESOLUTION_CAPACITY", "target_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "effect_on_target": "decrease", "edge_type": "mechanism_to_outcome", "lag_days_range": [1, 30], "phase": "recovery", "clinical_rationale": "Trigger removal, perfusion, nutrition, and organ reserve reduce death risk.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "gallstone_or_biliary_sludge_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed or suspected gallstone, microlithiasis, biliary sludge, prior biliary colic, cholelithiasis, or gallbladder context.", "baseline_range": [0, 0.1], "peak_day_range": [-365, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "biliary_obstruction_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Current common-bile-duct stone/sludge, cholestasis, duct dilation, jaundice, or persistent obstruction context relevant to ERCP.", "baseline_range": [0, 0.05], "peak_day_range": [-3, 3], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "cholangitis_or_active_biliary_sepsis_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Fever, jaundice, cholestasis, bacteremia, hypotension, mental-status change, or source evidence suggesting active cholangitis with AP.", "baseline_range": [0, 0.01], "peak_day_range": [-3, 3], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "high"},
+    {"axis_id": "alcohol_pancreatic_toxicity_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent heavy alcohol exposure, chronic alcohol use disorder, or alcohol-associated pancreatitis context.", "baseline_range": [0, 0.08], "peak_day_range": [-30, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "hypertriglyceridemia_pancreatitis_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Severe hypertriglyceridemia or chylomicronemia context, especially with diabetes/DKA, obesity, pregnancy, medications, or familial lipid disorder.", "baseline_range": [0, 0.02], "peak_day_range": [-30, 3], "peak_value_range": [0, 1], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "drug_induced_pancreatitis_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Medication or toxin context temporally compatible with pancreatitis after excluding more common triggers.", "baseline_range": [0, 0.01], "peak_day_range": [-60, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "post_ercp_pancreatic_duct_injury_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent ERCP, sphincter manipulation, pancreatic duct injection, ampullary intervention, or pancreatic instrumentation context.", "baseline_range": [0, 0.005], "peak_day_range": [-2, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "pancreatic_duct_obstruction_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pancreatic duct obstruction or flow impairment from tumor, stricture, stone, pancreas divisum, papillary stenosis, or external compression.", "baseline_range": [0, 0.02], "peak_day_range": [-365, 0], "peak_value_range": [0, 1], "plateau_duration_days": [7, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Epigastric, periumbilical, right upper quadrant, left upper quadrant, or diffuse abdominal pain in AP; may be absent or muted in neuropathy, altered mental status, or atypical presentations.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "epigastric_pain_radiating_to_back_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Classic deep epigastric pain radiating through to the back.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea, vomiting, retching, poor oral intake, or inability to tolerate food.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.1, 1], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Epigastric, right upper quadrant, periumbilical, or diffuse abdominal tenderness, guarding, rebound, or peritonism.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0, 1], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_distension_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abdominal distension from ileus, ascites, gastric distension, collections, or abdominal compartment physiology.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "ileus_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reduced bowel sounds, gastric distension, ileus, or bowel dysmotility accompanying pancreatic inflammation.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Body temperature; can be normal, febrile from SIRS/infection, or low in shock/frailty.", "baseline_range": [36.2, 37.5], "peak_day_range": [0, 7], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate increased by pain, hypovolemia, fever, SIRS, acidosis, or shock.", "baseline_range": [55, 100], "peak_day_range": [0, 3], "peak_value_range": [80, 160], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate increased by pain, fever, metabolic acidosis, pleural effusion, ARDS, or respiratory failure.", "baseline_range": [12, 20], "peak_day_range": [0, 5], "peak_value_range": [18, 45], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; may be high from pain or low with hypovolemia/shock.", "baseline_range": [90, 140], "peak_day_range": [0, 5], "peak_value_range": [70, 180], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Perfusion pressure reflecting hypovolemia, vasodilation, and vasopressor need.", "baseline_range": [70, 105], "peak_day_range": [0, 5], "peak_value_range": [45, 120], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pulse oximetry oxygen saturation; can fall with pleural effusion, atelectasis, ARDS, aspiration, or shock.", "baseline_range": [95, 100], "peak_day_range": [0, 7], "peak_value_range": [70, 100], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Leukocytosis or leukopenia from SIRS, infection, stress, or immune context.", "baseline_range": [4, 10], "peak_day_range": [0, 7], "peak_value_range": [8, 30], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "CRP rises after inflammatory signaling and supports severity tracking rather than etiology.", "baseline_range": [0, 5], "peak_day_range": [1, 4], "peak_value_range": [20, 400], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "serum_lipase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum lipase, usually elevated above three times the upper reference limit in AP but can be normal or only mildly elevated in atypical timing, assay interference, hypertriglyceridemia, or extensive injury.", "baseline_range": [0, 60], "peak_day_range": [0, 3], "peak_value_range": [80, 20000], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_amylase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum amylase, often elevated early but less specific than lipase and more prone to early normalization or hypertriglyceridemia assay interference.", "baseline_range": [15, 110], "peak_day_range": [0, 2], "peak_value_range": [80, 5000], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "serum_triglycerides", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum triglyceride concentration; very high values can trigger pancreatitis and interfere with enzyme assays.", "baseline_range": [40, 150], "peak_day_range": [-7, 3], "peak_value_range": [150, 15000], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "serum_calcium", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum calcium; hypercalcemia can be a pancreatitis trigger, while hypocalcemia can emerge in severe AP from fat saponification and critical illness.", "baseline_range": [8.6, 10.2], "peak_day_range": [-14, 7], "peak_value_range": [6.0, 15.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_glucose", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum glucose; stress hyperglycemia, diabetes, DKA, pancreatic endocrine injury, and steroid/insulin treatment all modulate it.", "baseline_range": [70, 110], "peak_day_range": [0, 5], "peak_value_range": [60, 700], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_sodium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum sodium; can be low from hyperglycemia, pseudohyponatremia in extreme hypertriglyceridemia, hypovolemia, or fluid shifts.", "baseline_range": [135, 145], "peak_day_range": [0, 5], "peak_value_range": [115, 150], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum potassium altered by vomiting, DKA, insulin, renal failure, acidosis, and critical illness.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 5], "peak_value_range": [2.5, 7.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "arterial_ph", "category": "lab_value", "unit": "pH", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial or venous pH reflecting DKA, lactic acidosis, renal failure, respiratory compensation, or shock.", "baseline_range": [7.35, 7.45], "peak_day_range": [0, 3], "peak_value_range": [6.9, 7.55], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Bicarbonate falls with metabolic acidosis from DKA, shock, renal failure, and lactate.", "baseline_range": [22, 29], "peak_day_range": [0, 3], "peak_value_range": [5, 30], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "anion_gap", "category": "lab_value", "unit": "mEq/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Anion gap elevation from ketoacidosis, lactate, renal failure, or toxin context.", "baseline_range": [4, 12], "peak_day_range": [0, 3], "peak_value_range": [12, 40], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lactate rises with shock, sepsis, hypoperfusion, seizure, or severe acidosis.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 3], "peak_value_range": [1, 15], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BUN rises with hypovolemia and renal injury and is a severity signal in AP.", "baseline_range": [7, 20], "peak_day_range": [0, 5], "peak_value_range": [15, 100], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Creatinine rises with AKI, CKD background, shock, hypovolemia, or renal hypoperfusion.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.7, 8.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "hematocrit", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hematocrit can rise with hemoconcentration and fall with bleeding, dilution, or chronic anemia.", "baseline_range": [36, 50], "peak_day_range": [0, 3], "peak_value_range": [30, 58], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin helps interpret hemoconcentration, hemorrhage, dilution, and baseline anemia.", "baseline_range": [12, 17], "peak_day_range": [0, 5], "peak_value_range": [8, 18], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelets can fall in severe inflammation, DIC, sepsis, or bleeding contexts.", "baseline_range": [150, 400], "peak_day_range": [0, 14], "peak_value_range": [30, 600], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "knowledge_confidence": "low"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST may rise with biliary obstruction, alcohol/toxin context, hepatic injury, or systemic shock.", "baseline_range": [10, 40], "peak_day_range": [0, 5], "peak_value_range": [10, 1000], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT elevation, especially early and marked, supports biliary or hepatic context but is not required for AP.", "baseline_range": [7, 55], "peak_day_range": [0, 5], "peak_value_range": [10, 1000], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin may rise with biliary obstruction, cholangitis, hepatic dysfunction, or hemolysis.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.3, 20], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Alkaline phosphatase rises with biliary obstruction or cholangitis context.", "baseline_range": [40, 130], "peak_day_range": [0, 14], "peak_value_range": [40, 1000], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_gamma_glutamyl_transferase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "GGT rises with biliary obstruction, alcohol context, hepatic injury, or cholestasis.", "baseline_range": [5, 60], "peak_day_range": [0, 14], "peak_value_range": [20, 1500], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "pancreatic_edema_or_enlargement_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging evidence of pancreatic enlargement, interstitial edema, or swollen gland.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "peripancreatic_fat_stranding_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging evidence of peripancreatic inflammatory fat stranding.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "peripancreatic_fluid_collection_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging or exam evidence of acute peripancreatic fluid, ascites, or collection related to AP.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "pancreatic_necrosis_extent", "category": "imaging_measurement", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Proportion or qualitative extent of pancreatic/peripancreatic necrosis on contrast CT, MRI, EUS, operative findings, or pathology.", "baseline_range": [0, 0], "peak_day_range": [2, 21], "peak_value_range": [0, 1], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 180], "knowledge_confidence": "high"},
+    {"axis_id": "pancreatic_necrosis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of clinically meaningful pancreatic or peripancreatic necrosis.", "baseline_range": [0.00005, 0.001], "peak_day_range": [1, 14], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "infected_pancreatic_necrosis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of infected necrosis, pancreatic abscess, gas in necrotic collection, positive culture, or sepsis from necrosis.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [5, 42], "peak_value_range": [0.001, 0.6], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pancreatic_pseudocyst_or_walled_off_necrosis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Late hazard of pseudocyst, walled-off necrosis, persistent collection, gastric outlet obstruction, or duct leak.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [14, 60], "peak_value_range": [0.001, 0.4], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI hazard from hypovolemia, shock, inflammation, abdominal compartment physiology, contrast, or baseline kidney disease.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 7], "peak_value_range": [0.005, 0.8], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Respiratory failure hazard from ARDS, pleural effusion, atelectasis, aspiration, pain splinting, shock, or sedation.", "baseline_range": [0.0001, 0.002], "peak_day_range": [0, 7], "peak_value_range": [0.005, 0.8], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Shock hazard from hypovolemia, vasodilatory SIRS, bleeding, sepsis, abdominal compartment physiology, or cardiopulmonary failure.", "baseline_range": [0.00005, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.003, 0.8], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_compartment_syndrome_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of intra-abdominal hypertension or abdominal compartment syndrome in severe AP with edema, fluid, ileus, or over-resuscitation.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [1, 14], "peak_value_range": [0.001, 0.4], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "DIC-like coagulation failure hazard during severe AP, shock, sepsis, or infected necrosis.", "baseline_range": [0.00005, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Major bleeding hazard from hemorrhagic pancreatitis, pseudoaneurysm, procedure, anticoagulation, DIC, or GI bleeding.", "baseline_range": [0.00005, 0.001], "peak_day_range": [0, 30], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [2, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "enteral_feeding_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ability to use oral or tube enteral nutrition safely given pain, vomiting, ileus, shock, aspiration risk, and procedural context.", "baseline_range": [0.7, 1.0], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "oral_intake_tolerance_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical tolerance of oral intake without worsening pain, vomiting, ileus, or aspiration risk.", "baseline_range": [0.8, 1.0], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "ercp_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Technical and clinical feasibility of ERCP/biliary decompression given anatomy, anticoagulation, shock, and expertise.", "baseline_range": [0.5, 1.0], "peak_day_range": [0, 3], "peak_value_range": [0, 1], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "cholecystectomy_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Surgical feasibility for cholecystectomy after biliary-context AP given inflammation, anesthesia risk, organ failure, and local complications.", "baseline_range": [0.5, 1.0], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "pancreatic_collection_drainage_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Feasibility of endoscopic, percutaneous, or surgical step-up drainage/debridement for infected necrosis or symptomatic collection.", "baseline_range": [0.2, 1.0], "peak_day_range": [5, 60], "peak_value_range": [0, 1], "plateau_duration_days": [3, 180], "decline_half_life_days": [14, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "fluid_overload_or_heart_failure_context_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Risk that fluid resuscitation worsens pulmonary edema, heart failure, renal congestion, or abdominal compartment physiology.", "baseline_range": [0, 0.05], "peak_day_range": [-365, 7], "peak_value_range": [0, 1], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard emerging from AP severity, persistent organ failure, infected necrosis, shock, respiratory failure, AKI, bleeding, frailty, and recovery capacity.", "baseline_range": [0.00001, 0.0003], "peak_day_range": [0, 30], "peak_value_range": [0.0002, 0.8], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "serum_lipase", "target_axis_id": "serum_amylase", "relationship": "shared_acinar_enzyme_release", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.85], "lag_days_range": [0, 1], "phase": "early_peak", "effect_direction": "positive_correlation", "clinical_rationale": "Both enzymes usually rise from acinar injury but differ in timing and specificity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_triglycerides", "target_axis_id": "serum_amylase", "relationship": "hypertriglyceridemia_assay_interference", "coupling_type": "mixed", "correlation_range": [0.2, 0.7], "lag_days_range": [0, 1], "phase": "hypertriglyceridemic_context", "effect_direction": "source_up_can_make_target_falsely_low", "clinical_rationale": "Very high triglycerides can interfere with amylase measurement and obscure pancreatic enzyme elevation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_triglycerides", "target_axis_id": "serum_lipase", "relationship": "hypertriglyceridemia_assay_or_phenotype_modulation", "coupling_type": "mixed", "correlation_range": [0.1, 0.6], "lag_days_range": [0, 1], "phase": "hypertriglyceridemic_context", "effect_direction": "source_up_can_blunt_or_decouple_target", "clinical_rationale": "HTG pancreatitis can present with normal or unexpectedly modest lipase despite imaging-proven pancreatitis.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "abdominal_pain_activity", "target_axis_id": "nausea_vomiting_activity", "relationship": "visceral_inflammation_symptom_cluster", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Pain and nausea/vomiting commonly arise from the same visceral inflammatory state.", "knowledge_confidence": "high"},
+    {"source_axis_id": "abdominal_pain_activity", "target_axis_id": "abdominal_tenderness_activity", "relationship": "pain_tenderness_cluster", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Patient-reported pain and exam tenderness usually track local inflammation, with exceptions in neuropathy or altered mental status.", "knowledge_confidence": "high"},
+    {"source_axis_id": "blood_urea_nitrogen", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "azotemia_to_aki_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 3], "phase": "early_severity", "effect_direction": "source_up_increases_target", "clinical_rationale": "Rising BUN reflects hypovolemia and renal injury risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_to_aki_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 3], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Creatinine rise signals established renal dysfunction.", "knowledge_confidence": "high"},
+    {"source_axis_id": "hematocrit", "target_axis_id": "circulatory_collapse_shock_hazard", "relationship": "hemoconcentration_to_shock", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 2], "phase": "early", "effect_direction": "source_up_increases_target", "clinical_rationale": "Hemoconcentration marks third spacing and inadequate intravascular volume.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "low_perfusion_to_aki", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 5], "phase": "severe", "effect_direction": "source_down_increases_target", "clinical_rationale": "Renal hypoperfusion increases AKI hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "oxygen_saturation", "target_axis_id": "acute_respiratory_failure_hazard", "relationship": "hypoxemia_to_respiratory_failure", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 2], "phase": "severe", "effect_direction": "source_down_increases_target", "clinical_rationale": "Hypoxemia is a direct respiratory-failure signal.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pancreatic_necrosis_extent", "target_axis_id": "infected_pancreatic_necrosis_hazard", "relationship": "necrosis_extent_to_infection", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [3, 30], "phase": "late_complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "Greater necrosis creates more substrate for infection.", "knowledge_confidence": "high"},
+    {"source_axis_id": "infected_pancreatic_necrosis_hazard", "target_axis_id": "circulatory_collapse_shock_hazard", "relationship": "infected_necrosis_to_shock", "coupling_type": "event_transition", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 3], "phase": "late_severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Infected necrosis can drive septic shock.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pancreatic_necrosis_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "relationship": "necrosis_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [1, 30], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Necrotizing pancreatitis increases organ failure and infection risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "infected_pancreatic_necrosis_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "relationship": "infected_necrosis_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 14], "phase": "late_severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Infected necrosis is a major late death pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_respiratory_failure_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "relationship": "respiratory_failure_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 7], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Respiratory failure is a core persistent organ-failure death path.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "relationship": "aki_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 14], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "AKI adds metabolic, volume, and critical-care risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 7], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Shock is a dominant early death pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "biliary_obstruction_context_probability", "target_axis_id": "serum_bilirubin_total", "relationship": "biliary_obstruction_to_bilirubin", "coupling_type": "drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 3], "phase": "biliary_context", "effect_direction": "source_up_increases_target", "clinical_rationale": "Biliary obstruction raises bilirubin when persistent.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "goal_directed_isotonic_crystalloid_resuscitation",
+      "drug_class": "fluid_resuscitation",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "perfusion_and_third_spacing_control",
+      "required_context_axes": ["heart_rate", "mean_arterial_pressure", "blood_urea_nitrogen", "hematocrit", "serum_creatinine", "oxygen_saturation", "fluid_overload_or_heart_failure_context_activity"],
+      "effect_modifiers": [
+        {"axis_id": "fluid_overload_or_heart_failure_context_activity", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.3, 0.8], "clinical_rationale": "Heart failure, renal congestion, or pulmonary edema narrows the safe fluid window."},
+        {"axis_id": "blood_urea_nitrogen", "condition": "high_or_rising", "effect": "strengthens_context_need", "factor_range": [1.2, 3.0], "clinical_rationale": "Rising BUN suggests hypovolemia and higher benefit from careful resuscitation."}
+      ],
+      "failure_modes": ["late_after_established_organ_failure", "under_resuscitation_with_persistent_hemoconcentration", "over_resuscitation_with_pulmonary_edema_or_abdominal_compartment_syndrome", "unrecognized_cardiac_or_renal_limit"],
+      "trajectory_modifications": {
+        "M_AP_THIRD_SPACING_HYPOVOLEMIA_CAPILLARY_LEAK": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.2, 5]},
+        "blood_urea_nitrogen": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 7]},
+        "serum_creatinine": {"peak_value_factor": [0.65, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 14]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 10]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "heart_rate", "direction": "down", "magnitude_range": [5, 35], "unit": "beats_per_min"}
+      ],
+      "sigma_modulation": {"axes": ["heart_rate", "mean_arterial_pressure", "blood_urea_nitrogen", "serum_creatinine"], "factor": [0.5, 0.85], "clinical_rationale": "Close fluid titration reduces uncontrolled perfusion volatility."},
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.15], "interpretation": "Excess fluids can worsen pulmonary edema or ARDS physiology."},
+        {"axis_id": "abdominal_compartment_syndrome_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Over-resuscitation can increase intra-abdominal pressure in severe AP."}
+      ],
+      "context_specific_role": "Reduces early hypovolemia and renal/shock death pathways while requiring volume-overload context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "analgesia_antiemetic_and_gut_function_support",
+      "drug_class": "symptom_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "pain_vomiting_control",
+      "required_context_axes": ["abdominal_pain_activity", "nausea_vomiting_activity", "ileus_activity", "respiratory_rate", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "ileus_activity", "condition": "high", "effect": "requires_parallel_gut_strategy", "factor_range": [0.7, 1.2], "clinical_rationale": "Opioids and ileus require careful titration and bowel monitoring."},
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "toxicity_limited", "factor_range": [0.5, 0.9], "clinical_rationale": "Sedating analgesia can worsen hypotension in unstable patients."}
+      ],
+      "failure_modes": ["undertreated_pain_driving_tachycardia", "opioid_excess_with_sedation_or_ileus", "persistent_vomiting_without_nutrition_or_decompression_plan"],
+      "trajectory_modifications": {
+        "M_AP_PAIN_ILEUS_VISCERAL_NEUROINFLAMMATION": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.1, 3]},
+        "abdominal_pain_activity": {"peak_value_factor": [0.35, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.05, 2]},
+        "nausea_vomiting_activity": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.05, 2]},
+        "heart_rate": {"peak_value_factor": [0.85, 0.98], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.1, 3]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.85, 0.98], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "abdominal_pain_activity", "direction": "down", "magnitude_range": [0.2, 0.8], "unit": "severity_score_0_1"},
+        {"axis_id": "nausea_vomiting_activity", "direction": "down", "magnitude_range": [0.2, 0.8], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "ileus_activity", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "Opioids can worsen ileus or nausea in some patients."},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.05], "interpretation": "Sedation can reduce airway protection in frail or critically ill patients."}
+      ],
+      "context_specific_role": "Controls symptom-driven physiologic stress but does not reshape the upstream pancreatic injury alone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "early_oral_or_enteral_nutrition_as_tolerated",
+      "drug_class": "nutrition_and_gut_barrier_support",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "gut_barrier_and_recovery_support",
+      "required_context_axes": ["oral_intake_tolerance_activity", "enteral_feeding_feasibility", "nausea_vomiting_activity", "ileus_activity", "circulatory_collapse_shock_hazard", "infected_pancreatic_necrosis_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "enteral_feeding_feasibility", "condition": "low", "effect": "weakens_or_prevents", "factor_range": [0, 0.5], "clinical_rationale": "Shock, severe ileus, or high aspiration risk prevents safe enteral delivery."},
+        {"axis_id": "oral_intake_tolerance_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 1.8], "clinical_rationale": "Tolerated oral feeding supports faster recovery in mild or improving AP."}
+      ],
+      "failure_modes": ["feeding_during_uncontrolled_vomiting_or_shock", "prolonged_unnecessary_npo_state", "aspiration_risk_without_tube_strategy", "inadequate_caloric_delivery_in_severe_course"],
+      "trajectory_modifications": {
+        "M_AP_RECOVERY_RESOLUTION_CAPACITY": {"peak_value_factor": [1.05, 1.35], "plateau_duration_factor": [0.8, 1.2], "decline_half_life_days": [3, 30]},
+        "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 0.95], "decline_half_life_days": [2, 14]},
+        "infected_pancreatic_necrosis_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [7, 60]},
+        "oral_intake_tolerance_activity": {"peak_value_factor": [1.05, 1.3], "plateau_duration_factor": [0.7, 1.2], "decline_half_life_days": [1, 14]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [3, 30]}
+      },
+      "onset_delay_days": [0.2, 2],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "nausea_vomiting_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Premature oral intake can worsen symptoms in patients not yet tolerating feeding."}
+      ],
+      "context_specific_role": "Promotes recovery and gut-barrier integrity when tolerated; route and timing are determined by observed GI and shock axes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hypertriglyceridemia_metabolic_control_with_insulin",
+      "drug_class": "triglyceride_lowering_metabolic_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "lipotoxic_trigger_control",
+      "required_context_axes": ["serum_triglycerides", "serum_glucose", "anion_gap", "serum_potassium", "arterial_ph", "hypertriglyceridemia_pancreatitis_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "serum_triglycerides", "condition": "very_high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Extreme triglyceride elevation is the direct modifiable lipotoxic driver."},
+        {"axis_id": "serum_potassium", "condition": "low_or_falling", "effect": "toxicity_limited", "factor_range": [0.4, 0.9], "clinical_rationale": "Insulin can shift potassium intracellularly and worsen hypokalemia."}
+      ],
+      "failure_modes": ["hypoglycemia_or_hypokalemia", "insufficient_monitoring", "uncontrolled_non_lipid_trigger", "late_necrotizing_course_after_lipotoxic_trigger_already_resolved"],
+      "trajectory_modifications": {
+        "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 5]},
+        "serum_triglycerides": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 4]},
+        "serum_glucose": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 2]},
+        "anion_gap": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.2, 3]},
+        "pancreatic_necrosis_hazard": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]}
+      },
+      "push_targets": [
+        {"axis_id": "serum_triglycerides", "direction": "down", "magnitude_range": [500, 10000], "unit": "mg/dL"},
+        {"axis_id": "serum_glucose", "direction": "down", "magnitude_range": [50, 400], "unit": "mg/dL"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0, 3],
+      "side_effects": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0, 1.5], "interpretation": "Insulin can cause hypokalemia."},
+        {"axis_id": "serum_glucose", "direction": "down", "magnitude_range": [0, 80], "interpretation": "Insulin can cause hypoglycemia if not monitored."}
+      ],
+      "context_specific_role": "Directly lowers lipotoxic and DKA/metabolic trigger axes when hypertriglyceridemia is observed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "therapeutic_plasma_exchange_for_extreme_triglyceride_context",
+      "drug_class": "extracorporeal_lipoprotein_removal",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rapid_lipotoxic_load_reduction",
+      "required_context_axes": ["serum_triglycerides", "circulatory_collapse_shock_hazard", "acute_kidney_injury_hazard", "major_bleeding_hazard", "pancreatic_collection_drainage_feasibility"],
+      "effect_modifiers": [
+        {"axis_id": "serum_triglycerides", "condition": "extreme_or_refractory", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Very high or slowly falling triglycerides increase the value of rapid removal."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.4, 0.9], "clinical_rationale": "Catheter placement and anticoagulation/replacement fluid can worsen bleeding risk."}
+      ],
+      "failure_modes": ["limited_availability", "vascular_access_or_hemodynamic_instability", "rebound_triglycerides_without_metabolic_control", "bleeding_or_plasma_reaction"],
+      "trajectory_modifications": {
+        "serum_triglycerides": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.05, 1]},
+        "M_AP_LIPOTOXIC_METABOLIC_MICROCIRCULATORY_INJURY": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 5]},
+        "pancreatic_necrosis_hazard": {"peak_value_factor": [0.55, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]}
+      },
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 20], "interpretation": "Extracorporeal therapy can cause hemodynamic instability."},
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Catheter and anticoagulation exposure can add bleeding risk."}
+      ],
+      "context_specific_role": "Optional rapid triglyceride-removal vector when observed lipid burden and severity justify extracorporeal treatment.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "ercp_biliary_decompression_when_obstruction_or_cholangitis_context_active",
+      "drug_class": "endoscopic_biliary_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "obstruction_or_cholangitis_control",
+      "required_context_axes": ["biliary_obstruction_context_probability", "cholangitis_or_active_biliary_sepsis_context_probability", "serum_bilirubin_total", "serum_alkaline_phosphatase", "ercp_feasibility"],
+      "effect_modifiers": [
+        {"axis_id": "cholangitis_or_active_biliary_sepsis_context_probability", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.5, 5.0], "clinical_rationale": "Active cholangitis creates an urgent source-control lane."},
+        {"axis_id": "ercp_feasibility", "condition": "low", "effect": "weakens_or_prevents", "factor_range": [0, 0.6], "clinical_rationale": "Anatomy, anticoagulation, instability, or expertise can prevent ERCP."}
+      ],
+      "failure_modes": ["no_active_obstruction", "failed_cannulation_or_altered_anatomy", "procedure_induced_pancreatic_or_bleeding_complication", "source_not_biliary"],
+      "trajectory_modifications": {
+        "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX": {"peak_value_factor": [0.15, 0.65], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.1, 3]},
+        "biliary_obstruction_context_probability": {"peak_value_factor": [0.05, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.2, 5]},
+        "cholangitis_or_active_biliary_sepsis_context_probability": {"peak_value_factor": [0.15, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 7]},
+        "serum_bilirubin_total": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 10]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.5, 14]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.45, 0.9], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [1, 21]}
+      },
+      "onset_delay_days": [0.1, 2],
+      "carryover_after_stop_days": [3, 90],
+      "side_effects": [
+        {"axis_id": "post_ercp_pancreatic_duct_injury_context_probability", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "ERCP can itself provoke pancreatic duct injury."},
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Sphincterotomy or intervention can add bleeding risk."}
+      ],
+      "context_specific_role": "Removes an active biliary obstruction/cholangitis vector when those context axes are present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "interval_or_index_admission_cholecystectomy_when_biliary_context_present",
+      "drug_class": "biliary_recurrence_prevention_source_control",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "recurrence_prevention_after_biliary_context",
+      "required_context_axes": ["gallstone_or_biliary_sludge_context_probability", "cholecystectomy_feasibility", "pancreatic_necrosis_hazard", "circulatory_collapse_shock_hazard", "acute_respiratory_failure_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "cholecystectomy_feasibility", "condition": "low", "effect": "weakens_or_delays", "factor_range": [0, 0.7], "clinical_rationale": "Severe AP, organ failure, or hostile inflammation may delay surgery."},
+        {"axis_id": "gallstone_or_biliary_sludge_context_probability", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Observed gallstones/sludge increase recurrence-prevention value."}
+      ],
+      "failure_modes": ["non_biliary_trigger", "operative_risk_too_high_during_severe_pancreatitis", "retained_common_duct_stone_without_decompression", "recurrent_biliary_event_before_surgery"],
+      "trajectory_modifications": {
+        "gallstone_or_biliary_sludge_context_probability": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [7, 90]},
+        "M_AP_DUCTAL_OBSTRUCTION_PRESSURE_REFLUX": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [7, 90]},
+        "M_AP_UPSTREAM_TRIGGER_CONTEXT": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [14, 180]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.85, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [14, 180]}
+      },
+      "onset_delay_days": [1, 60],
+      "carryover_after_stop_days": [90, 3650],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.05], "interpretation": "Surgery adds perioperative bleeding risk."},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.06], "interpretation": "Anesthesia and postoperative course can stress respiratory reserve."}
+      ],
+      "context_specific_role": "Longer-horizon recurrence-prevention vector when gallstone/sludge context is present and operative timing is safe.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "antibiotics_for_infected_necrosis_cholangitis_or_extrapancreatic_infection_context",
+      "drug_class": "antimicrobial_context_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "infection_context_control",
+      "required_context_axes": ["infected_pancreatic_necrosis_hazard", "cholangitis_or_active_biliary_sepsis_context_probability", "white_blood_cell_count", "body_temperature", "circulatory_collapse_shock_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "infected_pancreatic_necrosis_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Infected necrosis is an antimicrobial and source-control context."},
+        {"axis_id": "cholangitis_or_active_biliary_sepsis_context_probability", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Cholangitis requires antimicrobial therapy plus decompression when feasible."}
+      ],
+      "failure_modes": ["sterile_pancreatitis_without_infection_context", "poor_pancreatic_necrosis_penetration", "resistant_pathogen", "lack_of_source_control_for_infected_necrosis_or_cholangitis"],
+      "trajectory_modifications": {
+        "infected_pancreatic_necrosis_hazard": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 21]},
+        "cholangitis_or_active_biliary_sepsis_context_probability": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 14]},
+        "M_AP_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [2, 21]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 21]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "drug_induced_pancreatitis_context_probability", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Some antibiotics can rarely contribute to drug-induced pancreatitis or intolerance."}
+      ],
+      "context_specific_role": "Acts only through infection-context axes, avoiding routine sterile-pancreatitis antimicrobial benefit.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "step_up_drainage_or_debridement_for_infected_necrosis_or_symptomatic_collection",
+      "drug_class": "pancreatic_collection_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "necrosis_collection_source_control",
+      "required_context_axes": ["infected_pancreatic_necrosis_hazard", "pancreatic_pseudocyst_or_walled_off_necrosis_hazard", "peripancreatic_fluid_collection_activity", "pancreatic_collection_drainage_feasibility", "circulatory_collapse_shock_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "infected_pancreatic_necrosis_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.3, 5.0], "clinical_rationale": "Infected necrosis makes source control more consequential."},
+        {"axis_id": "pancreatic_collection_drainage_feasibility", "condition": "low", "effect": "weakens_or_delays", "factor_range": [0, 0.7], "clinical_rationale": "Immature collections, unsafe anatomy, or instability can delay intervention."}
+      ],
+      "failure_modes": ["too_early_before_collection_matures_when_not_forced_by_sepsis", "incomplete_drainage_or_necrosis_removal", "bleeding_fistula_or_perforation", "sterile_collection_without_symptoms"],
+      "trajectory_modifications": {
+        "infected_pancreatic_necrosis_hazard": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [3, 30]},
+        "pancreatic_pseudocyst_or_walled_off_necrosis_hazard": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [7, 60]},
+        "peripancreatic_fluid_collection_activity": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [7, 60]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 21]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [3, 60]}
+      },
+      "onset_delay_days": [1, 30],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Drainage or debridement can injure vessels or provoke bleeding."},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Procedural sedation/anesthesia can stress respiratory reserve."}
+      ],
+      "context_specific_role": "Source-control vector for infected necrosis or symptomatic mature collections, not routine early AP care.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "icu_organ_support_for_severe_pancreatitis",
+      "drug_class": "critical_care_support",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "organ_failure_containment",
+      "required_context_axes": ["acute_respiratory_failure_hazard", "acute_kidney_injury_hazard", "circulatory_collapse_shock_hazard", "oxygen_saturation", "mean_arterial_pressure", "serum_lactate"],
+      "effect_modifiers": [
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 4.0], "clinical_rationale": "Oxygen, ventilation, and airway care reduce respiratory death paths."},
+        {"axis_id": "acute_kidney_injury_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 4.0], "clinical_rationale": "Renal replacement and electrolyte control matter when AKI is active."},
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 4.0], "clinical_rationale": "Vasopressor, monitoring, and rescue decisions matter during shock."}
+      ],
+      "failure_modes": ["late_after_irreversible_multiorgan_failure", "does_not_remove_biliary_or_infected_necrosis_source", "line_ventilator_or_dialysis_complications"],
+      "trajectory_modifications": {
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 14]},
+        "oxygen_saturation": {"peak_value_factor": [1.02, 1.12], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 5]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.5, 21]},
+        "M_AP_PERSISTENT_ORGAN_FAILURE_CASCADE": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]},
+        "mortality_hazard_in_D-ACUTE-PANCREATITIS": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 60]}
+      },
+      "push_targets": [
+        {"axis_id": "oxygen_saturation", "direction": "up", "magnitude_range": [2, 25], "unit": "percent"},
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 40], "unit": "mmHg"},
+        {"axis_id": "serum_potassium", "direction": "toward_normal", "magnitude_range": [0.3, 3], "unit": "mmol/L"}
+      ],
+      "sigma_modulation": {"axes": ["heart_rate", "mean_arterial_pressure", "oxygen_saturation", "serum_potassium", "serum_glucose"], "factor": [0.45, 0.85], "clinical_rationale": "ICU monitoring and rescue reduce uncontrolled physiologic volatility."},
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 3],
+      "side_effects": [
+        {"axis_id": "infected_pancreatic_necrosis_hazard", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Invasive devices and ICU exposure can add infection risk."},
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.05], "interpretation": "Procedures, anticoagulation, and lines can increase bleeding risk."}
+      ],
+      "context_specific_role": "Contains organ-failure volatility while source, metabolic, nutrition, and local pancreatic vectors are addressed.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "gallstone_or_biliary_sludge_context",
+      "category": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 12],
+          "axis_response_modulation": [
+            {"axis_id": "gallstone_or_biliary_sludge_context_probability", "effect": "higher_baseline", "magnitude_factor_range": [5, 50], "clinical_rationale": "Observed biliary stone/sludge context directly raises the context axis."},
+            {"axis_id": "biliary_obstruction_context_probability", "effect": "higher_peak_when_obstruction_present", "magnitude_factor_range": [1.2, 5], "clinical_rationale": "Biliary pancreatitis can involve transient or persistent obstruction."},
+            {"axis_id": "serum_alt", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5], "clinical_rationale": "Early ALT can rise in biliary-context AP."}
+          ],
+          "treatment_effect_modulation": {
+            "ercp_biliary_decompression_when_obstruction_or_cholangitis_context_active": "stronger when obstruction or cholangitis axes are active",
+            "interval_or_index_admission_cholecystectomy_when_biliary_context_present": "stronger for recurrence prevention when operative timing is feasible"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "heavy_alcohol_exposure_or_alcohol_use_disorder",
+      "category": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "alcohol_pancreatic_toxicity_context_probability", "effect": "higher_baseline", "magnitude_factor_range": [5, 50], "clinical_rationale": "Observed alcohol context raises the trigger-context axis."},
+            {"axis_id": "serum_gamma_glutamyl_transferase", "effect": "higher_baseline_or_peak", "magnitude_factor_range": [1.1, 5], "clinical_rationale": "Alcohol context often raises GGT independent of AP severity."}
+          ],
+          "treatment_effect_modulation": {
+            "interval_or_index_admission_cholecystectomy_when_biliary_context_present": "weaker when biliary context is absent"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "severe_hypertriglyceridemia_or_chylomicronemia",
+      "category": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 20],
+          "axis_response_modulation": [
+            {"axis_id": "serum_triglycerides", "effect": "higher_peak", "magnitude_factor_range": [5, 100], "clinical_rationale": "The trigger is directly measured as triglyceride burden."},
+            {"axis_id": "serum_amylase", "effect": "assay_blunting_possible", "magnitude_factor_range": [0.1, 1.0], "clinical_rationale": "Hypertriglyceridemia can interfere with amylase assays."},
+            {"axis_id": "serum_lipase", "effect": "decoupled_or_blunted_possible", "magnitude_factor_range": [0.1, 1.2], "clinical_rationale": "HTG AP can have normal or modest enzyme levels despite imaging-confirmed AP."}
+          ],
+          "treatment_effect_modulation": {
+            "hypertriglyceridemia_metabolic_control_with_insulin": "stronger when triglycerides are very high or DKA/hyperglycemia coexists",
+            "therapeutic_plasma_exchange_for_extreme_triglyceride_context": "stronger when triglycerides are extreme, refractory, or severe organ failure is present"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_dka_or_severe_hyperglycemia_context",
+      "category": "metabolic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 5],
+          "axis_response_modulation": [
+            {"axis_id": "serum_glucose", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8], "clinical_rationale": "DKA and diabetes raise glucose independent of AP."},
+            {"axis_id": "anion_gap", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5], "clinical_rationale": "DKA raises anion gap and acidosis axes."},
+            {"axis_id": "abdominal_pain_activity", "effect": "may_be_blunted_by_neuropathy", "magnitude_factor_range": [0.0, 1.0], "clinical_rationale": "Diabetic autonomic/visceral neuropathy can blunt pancreatic pain."}
+          ],
+          "treatment_effect_modulation": {
+            "hypertriglyceridemia_metabolic_control_with_insulin": "stronger and more directly indicated when DKA or severe hyperglycemia is active"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "post_ercp_or_pancreatic_instrumentation_context",
+      "category": "iatrogenic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 15],
+          "axis_response_modulation": [
+            {"axis_id": "post_ercp_pancreatic_duct_injury_context_probability", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Recent instrumentation directly raises the context axis."},
+            {"axis_id": "serum_lipase", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5], "clinical_rationale": "Post-procedure AP often has enzyme rise after instrumentation."}
+          ],
+          "treatment_effect_modulation": {
+            "ercp_biliary_decompression_when_obstruction_or_cholangitis_context_active": "requires stricter context because ERCP can worsen pancreatic duct injury"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hypercalcemia_context",
+      "category": "metabolic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 8],
+          "axis_response_modulation": [
+            {"axis_id": "serum_calcium", "effect": "higher_peak", "magnitude_factor_range": [1.1, 1.8], "clinical_rationale": "Hypercalcemia is directly measured."},
+            {"axis_id": "M_AP_ACINAR_CELL_INJURY_ZYMOGEN_ACTIVATION", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2], "clinical_rationale": "Calcium can promote zymogen activation."}
+          ],
+          "treatment_effect_modulation": {
+            "goal_directed_isotonic_crystalloid_resuscitation": "may also help hypercalcemia volume depletion, but calcium-specific therapy belongs to the upstream condition context"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "older_age_frailty_or_major_comorbidity",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.3],
+          "axis_response_modulation": [
+            {"axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6], "clinical_rationale": "Older frail patients tolerate SIRS, surgery, and organ failure poorly."},
+            {"axis_id": "acute_respiratory_failure_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3], "clinical_rationale": "Reduced respiratory reserve increases failure risk."}
+          ],
+          "treatment_effect_modulation": {
+            "goal_directed_isotonic_crystalloid_resuscitation": "narrower safe window due to cardiac and renal reserve",
+            "interval_or_index_admission_cholecystectomy_when_biliary_context_present": "more dependent on operative feasibility"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "baseline_chronic_kidney_disease_or_single_kidney",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.2],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_baseline", "magnitude_factor_range": [1.5, 6], "clinical_rationale": "Baseline kidney disease shifts creatinine background."},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "Limited renal reserve increases AKI susceptibility."}
+          ],
+          "treatment_effect_modulation": {
+            "goal_directed_isotonic_crystalloid_resuscitation": "requires tighter monitoring of overload and renal response",
+            "icu_organ_support_for_severe_pancreatitis": "stronger when AKI or electrolyte instability appears"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "suspected_or_confirmed_infected_necrosis_context",
+      "category": "complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "infected_pancreatic_necrosis_hazard", "effect": "higher_peak", "magnitude_factor_range": [5, 50], "clinical_rationale": "Observed infection context directly raises the event hazard."},
+            {"axis_id": "circulatory_collapse_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6], "clinical_rationale": "Infected necrosis increases septic shock risk."}
+          ],
+          "treatment_effect_modulation": {
+            "antibiotics_for_infected_necrosis_cholangitis_or_extrapancreatic_infection_context": "stronger when infection context is active",
+            "step_up_drainage_or_debridement_for_infected_necrosis_or_symptomatic_collection": "stronger when infected necrosis or symptomatic collection is present and drainage is feasible"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "pregnancy_or_estrogen_context",
+      "category": "host_or_trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_triglycerides", "effect": "higher_baseline_or_peak", "magnitude_factor_range": [1.2, 10], "clinical_rationale": "Pregnancy and estrogen can raise triglycerides and AP risk."},
+            {"axis_id": "mortality_hazard_in_D-ACUTE-PANCREATITIS", "effect": "context_dependent", "magnitude_factor_range": [0.8, 3], "clinical_rationale": "Maternal-fetal physiology and treatment constraints change risk."}
+          ],
+          "treatment_effect_modulation": {
+            "hypertriglyceridemia_metabolic_control_with_insulin": "stronger when triglyceride-mediated context is active",
+            "therapeutic_plasma_exchange_for_extreme_triglyceride_context": "may become more relevant when extreme triglycerides threaten maternal-fetal outcomes"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Serial reassessment of pain, vomiting, oral intake, urine output, heart rate, blood pressure, oxygenation, BUN, creatinine, hematocrit, glucose, calcium, triglycerides when relevant, liver tests, and inflammatory markers.",
+    "Avoid deleting atypical evidence: acute pancreatitis can occur with absent abdominal pain or normal amylase/lipase, especially in hypertriglyceridemia, atypical timing, or neuropathy contexts.",
+    "Use imaging, ERCP findings, surgery, pathology, and final etiology as context or confirmatory evidence unless explicitly modeling a diagnostic workflow that has access to them.",
+    "Evaluate biliary obstruction or cholangitis context with bilirubin, ALT/AST, ALP/GGT, duct dilation, fever, bacteremia, and shock; source-control decisions should emerge from context axes.",
+    "Monitor for severe AP complications: persistent organ failure, ARDS/respiratory failure, AKI, shock, DIC, abdominal compartment syndrome, necrosis, infected necrosis, hemorrhage, pseudocyst, and walled-off necrosis.",
+    "For hypertriglyceridemia context, trend triglycerides and glucose/electrolytes during insulin-based therapy; long-term lipid control and trigger management are recurrence-prevention context.",
+    "Nutrition support should preserve gut barrier and recovery capacity while respecting observed oral/enteral tolerance, ileus, vomiting, aspiration risk, and shock.",
+    "Procedure timing should be driven by active context axes: ERCP for active obstruction/cholangitis context, drainage for infected necrosis or symptomatic collections, cholecystectomy for biliary recurrence prevention when feasible."
+  ],
+  "quality_checks": [
+    "Only one derived_hazard axis is present: mortality_hazard_in_D-ACUTE-PANCREATITIS.",
+    "No treatment carries direct clinical-ordering label fields.",
+    "All treatment trajectory_modifications are dictionaries keyed by mechanism or axis id.",
+    "All risk_factors modulation fields are dictionaries.",
+    "Disease-name scope is pure: Acute pancreatitis; etiologies are represented only as context axes and modifiers."
+  ]
+}

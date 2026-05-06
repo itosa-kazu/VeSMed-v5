@@ -1,0 +1,653 @@
+{
+  "disease": "D-MALIGNANT-HYPERTHERMIA",
+  "disease_name": "Malignant hyperthermia",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope_note": "Disease-specific medical input is limited to the disease name: Malignant hyperthermia. Volatile anesthetic exposure, succinylcholine exposure, RYR1/CACNA1S/STAC3 susceptibility, anesthesia setting, delayed recognition, severity, mimics, and confirmatory testing are represented only as context axes, treatment modifiers, risk factors, case evidence, mechanisms, event hazards, or non-ranking confirmatory evidence.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION",
+      "display_name": "Skeletal muscle calcium release dysregulation",
+      "clinical_meaning": "Excess open probability or abnormal regulation of skeletal-muscle calcium release channels creates uncontrolled myoplasmic calcium after a compatible activating context in a susceptible host.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.25, 1],
+      "plateau_duration_days": [0.02, 2],
+      "decline_half_life_days": [0.05, 1],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE",
+      "display_name": "Sustained skeletal muscle contracture",
+      "clinical_meaning": "Uncontrolled calcium cycling produces masseter spasm, generalized rigidity or contracture, high ATP consumption, muscle heat generation, and early myocyte stress.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [0.02, 2],
+      "decline_half_life_days": [0.05, 1],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION",
+      "display_name": "Hypermetabolic CO2 and heat production",
+      "clinical_meaning": "Skeletal muscle ATP turnover and oxygen consumption accelerate, causing rapidly rising CO2 production, hypercapnia despite ventilation, tachycardia, tachypnea, and hyperthermia.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 0.35],
+      "peak_value_range": [0.25, 1],
+      "plateau_duration_days": [0.02, 2],
+      "decline_half_life_days": [0.05, 1],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT",
+      "display_name": "Respiratory-metabolic acidosis and electrolyte shift",
+      "clinical_meaning": "CO2 retention, lactic acid production, ATP depletion, cell membrane injury, potassium release, calcium shifts, and renal impairment create mixed acidosis, hyperkalemia, hypocalcemia, and arrhythmia vulnerability.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.01],
+      "peak_day_range": [0, 0.5],
+      "peak_value_range": [0.15, 1],
+      "plateau_duration_days": [0.05, 3],
+      "decline_half_life_days": [0.1, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN",
+      "display_name": "Rhabdomyolysis and membrane breakdown",
+      "clinical_meaning": "Sustained contracture, heat, ATP depletion, and membrane injury release CK, myoglobin, potassium, LDH, AST, and ALT, with myoglobinuria and pigment nephropathy risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.005],
+      "peak_day_range": [0.1, 2],
+      "peak_value_range": [0.1, 1],
+      "plateau_duration_days": [0.3, 7],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_CARDIORESPIRATORY_INSTABILITY",
+      "display_name": "Cardiorespiratory instability",
+      "clinical_meaning": "Hypercapnia, acidosis, hyperkalemia, catecholamine stress, vasodilation, anesthetic exposure, and myocardial oxygen demand create hypertension or hypotension, shock, malignant arrhythmia, and ventilation failure risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.005],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.05, 1],
+      "plateau_duration_days": [0.05, 3],
+      "decline_half_life_days": [0.2, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_MH_MULTIORGAN_INJURY_CASCADE",
+      "display_name": "Multiorgan injury cascade",
+      "clinical_meaning": "Uncontrolled hyperthermia, rhabdomyolysis, acidosis, shock, hyperkalemia, hypoxemia, and coagulopathy accumulate into AKI, DIC, acute liver injury, cerebral injury, respiratory failure, recrudescence, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.002],
+      "peak_day_range": [0.2, 3],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [0, 10],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "volatile_anesthetic_exposure_activity", "target_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 0.25], "phase": "initiation", "clinical_rationale": "Volatile anesthetic exposure can activate susceptible skeletal muscle calcium release machinery.", "knowledge_confidence": "high"},
+    {"source_id": "succinylcholine_exposure_activity", "target_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 0.1], "phase": "initiation", "clinical_rationale": "Depolarizing neuromuscular blocker exposure can rapidly amplify abnormal calcium release in susceptible muscle.", "knowledge_confidence": "high"},
+    {"source_id": "mh_susceptibility_context_probability", "target_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "effect_on_target": "increase", "edge_type": "context_to_mechanism", "lag_days_range": [0, 0], "phase": "background", "clinical_rationale": "Genetic or syndromic susceptibility raises the probability that a compatible exposure enters the malignant hyperthermia vector field.", "knowledge_confidence": "high"},
+    {"source_id": "trigger_agent_discontinuation_adequacy", "target_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "effect_on_target": "decrease", "edge_type": "context_to_mechanism", "lag_days_range": [0, 0.1], "phase": "treatment", "clinical_rationale": "Removal of activating agents reduces ongoing calcium-release drive.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "target_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.05], "phase": "early", "clinical_rationale": "Myoplasmic calcium excess directly causes contracture and rigidity.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE", "target_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.1], "phase": "early", "clinical_rationale": "Sustained contraction consumes ATP and oxygen and produces heat and CO2.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.25], "phase": "early_peak", "clinical_rationale": "CO2 accumulation and lactate production create mixed acidosis and amplify potassium shift.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE", "target_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Contracture and ATP depletion injure myocytes, releasing CK and myoglobin.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.5], "phase": "early_peak", "clinical_rationale": "Acidosis and potassium shifts destabilize cardiac and ventilatory physiology.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "M_MH_MULTIORGAN_INJURY_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0.2, 3], "phase": "peak_late", "clinical_rationale": "Pigment load, tissue injury, and electrolyte release drive AKI, liver enzyme elevation, and coagulopathy.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "target_id": "M_MH_MULTIORGAN_INJURY_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "peak_late", "clinical_rationale": "Shock, arrhythmia, hypoxemia, and ventilation failure propagate organ injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE", "target_id": "masseter_spasm_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.05], "phase": "early", "clinical_rationale": "Masseter spasm can be an early manifestation of contracture, especially around airway management.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE", "target_id": "generalized_muscle_rigidity_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.1], "phase": "whole_course", "clinical_rationale": "Sustained calcium-mediated contraction produces rigidity or contracture.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "end_tidal_carbon_dioxide", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.1], "phase": "early", "clinical_rationale": "Increased CO2 production often appears as rising EtCO2 despite increased ventilation.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "arterial_paco2", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.2], "phase": "early_peak", "clinical_rationale": "CO2 production can exceed ventilation, raising PaCO2.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.5], "phase": "early_peak", "clinical_rationale": "Muscle hypermetabolism generates heat; temperature can lag behind EtCO2.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.2], "phase": "early_peak", "clinical_rationale": "Hypermetabolism, hypercapnia, catecholamines, and heat raise heart rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.2], "phase": "early_peak", "clinical_rationale": "Spontaneous tachypnea or ventilator escalation reflects excess CO2 production and acidosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "arterial_ph", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "early_peak", "clinical_rationale": "Mixed respiratory and metabolic acidosis lowers arterial pH.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "base_excess", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "early_peak", "clinical_rationale": "Lactic and metabolic acid burden lowers base excess.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "serum_bicarbonate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.5], "phase": "early_peak", "clinical_rationale": "Bicarbonate is consumed or falls with metabolic acidosis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "early_peak", "clinical_rationale": "Anaerobic skeletal muscle metabolism and shock raise lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "serum_potassium", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.5], "phase": "early_peak", "clinical_rationale": "Muscle membrane injury, acidosis, and AKI release or retain potassium.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_ACIDOSIS_ELECTROLYTE_SHIFT", "target_id": "serum_calcium", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Calcium shifts and treatment can produce hypocalcemia during acute episodes.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0.1, 2], "phase": "peak", "clinical_rationale": "Myocyte injury releases CK, often peaking hours to days after onset.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "serum_myoglobin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Myoglobin rises early with muscle membrane breakdown.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "urine_myoglobin_positivity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Filtered myoglobin appears in urine when rhabdomyolysis is significant.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "hemoglobinuria_dark_urine_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Dark or red-tinged urine can reflect myoglobinuria during rhabdomyolysis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0.2, 2], "phase": "peak", "clinical_rationale": "Tissue and muscle injury release LDH.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0.2, 2], "phase": "peak", "clinical_rationale": "AST can rise from skeletal muscle injury and hepatic stress.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_RHABDOMYOLYSIS_MEMBRANE_BREAKDOWN", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0.5, 3], "phase": "peak_late", "clinical_rationale": "ALT rises with hepatic injury and sometimes severe muscle injury.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_MULTIORGAN_INJURY_CASCADE", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0.5, 3], "phase": "peak_late", "clinical_rationale": "Pigment nephropathy, shock, and AKI raise creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "target_id": "mean_arterial_pressure", "effect_on_target": "bidirectional", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Sympathetic activation may raise pressure early, while anesthetic vasodilation, acidosis, shock, or arrest can lower MAP.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "peak_late", "clinical_rationale": "Hypoventilation, respiratory failure, pulmonary edema, shock, or ICU complications can lower oxygenation.", "knowledge_confidence": "medium"},
+    {"source_id": "body_temperature", "target_id": "life_threatening_hyperthermia_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 0.2], "phase": "early_peak", "clinical_rationale": "Extreme or rapidly rising temperature directly increases injury risk.", "knowledge_confidence": "high"},
+    {"source_id": "serum_creatine_kinase", "target_id": "rhabdomyolysis_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 0.5], "phase": "peak", "clinical_rationale": "Marked CK elevation signals clinically important rhabdomyolysis.", "knowledge_confidence": "high"},
+    {"source_id": "serum_potassium", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "axis_to_event", "lag_days_range": [0, 0.1], "phase": "early_peak", "clinical_rationale": "Hyperkalemia can cause life-threatening arrhythmia.", "knowledge_confidence": "high"},
+    {"source_id": "arterial_ph", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "decrease", "edge_type": "axis_to_event", "lag_days_range": [0, 0.2], "phase": "early_peak", "clinical_rationale": "Severe acidemia worsens arrhythmia and myocardial instability.", "knowledge_confidence": "high"},
+    {"source_id": "rhabdomyolysis_hazard", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "event_to_event", "lag_days_range": [0, 3], "phase": "peak_late", "clinical_rationale": "Myoglobin pigment load and hypovolemia drive AKI.", "knowledge_confidence": "high"},
+    {"source_id": "life_threatening_hyperthermia_hazard", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "event_to_event", "lag_days_range": [0.2, 3], "phase": "peak_late", "clinical_rationale": "Extreme heat and tissue injury can trigger coagulopathy and DIC.", "knowledge_confidence": "medium"},
+    {"source_id": "life_threatening_hyperthermia_hazard", "target_id": "acute_liver_failure_hazard", "effect_on_target": "increase", "edge_type": "event_to_event", "lag_days_range": [0.5, 3], "phase": "peak_late", "clinical_rationale": "Severe hyperthermia, shock, and rhabdomyolysis can injure the liver.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "phase": "peak_late", "clinical_rationale": "Respiratory failure can arise from ventilation failure, pulmonary edema, shock, or required deep sedation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_MH_CARDIORESPIRATORY_INSTABILITY", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Acidosis, hyperkalemia, anesthesia, and heat stress can lead to shock or arrest physiology.", "knowledge_confidence": "high"},
+    {"source_id": "life_threatening_hyperthermia_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Uncontrolled hyperthermia is a major short-term death pathway.", "knowledge_confidence": "high"},
+    {"source_id": "cardiac_arrhythmia_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 0.5], "phase": "early_peak", "clinical_rationale": "Arrhythmia and arrest can cause rapid death.", "knowledge_confidence": "high"},
+    {"source_id": "circulatory_collapse_shock_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 1], "phase": "early_peak", "clinical_rationale": "Shock propagates acidosis, organ failure, and death.", "knowledge_confidence": "high"},
+    {"source_id": "acute_kidney_injury_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0.5, 5], "phase": "peak_late", "clinical_rationale": "AKI increases hyperkalemia, acidosis, and critical illness risk.", "knowledge_confidence": "high"},
+    {"source_id": "dic_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0.5, 5], "phase": "peak_late", "clinical_rationale": "DIC increases bleeding, thrombosis, and multiorgan failure risk.", "knowledge_confidence": "medium"},
+    {"source_id": "acute_respiratory_failure_hazard", "target_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 3], "phase": "peak_late", "clinical_rationale": "Respiratory failure or inability to ventilate worsens survival.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "volatile_anesthetic_exposure_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed exposure intensity to volatile anesthetic agents; context axis, not a disease name constraint.", "baseline_range": [0, 0.02], "peak_day_range": [0, 0], "peak_value_range": [0, 1], "plateau_duration_days": [0, 1], "decline_half_life_days": [0, 0.2], "knowledge_confidence": "high"},
+    {"axis_id": "succinylcholine_exposure_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed depolarizing neuromuscular blocker exposure; context axis, not a disease name constraint.", "baseline_range": [0, 0.01], "peak_day_range": [0, 0], "peak_value_range": [0, 1], "plateau_duration_days": [0, 0.1], "decline_half_life_days": [0, 0.05], "knowledge_confidence": "high"},
+    {"axis_id": "mh_susceptibility_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Family history, prior episode, contracture testing, pathogenic genetic result, or congenital myopathy context suggesting susceptibility; confirmatory tests should be marked non-ranking in cases when used as final diagnosis evidence.", "baseline_range": [0, 0.02], "peak_day_range": [0, 0], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3650], "decline_half_life_days": [3650, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "ryr1_related_myopathy_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Syndromic or myopathic phenotype compatible with malignant hyperthermia susceptibility, such as core myopathy or King-Denborough-like context.", "baseline_range": [0, 0.01], "peak_day_range": [0, 0], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3650], "decline_half_life_days": [3650, 36500], "knowledge_confidence": "medium"},
+    {"axis_id": "trigger_agent_discontinuation_adequacy", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Completeness and speed of removing activating anesthetic context and switching to a non-triggering circuit/anesthesia plan.", "baseline_range": [0, 0.05], "peak_day_range": [0, 0.1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.5, 2], "knowledge_confidence": "high"},
+    {"axis_id": "dantrolene_availability", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Immediate access to adequate dantrolene dose and staff able to prepare and administer it.", "baseline_range": [0, 1], "peak_day_range": [0, 0], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "time_to_dantrolene_minutes", "category": "treatment_modifier", "unit": "minutes", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Delay from recognition or compatible crisis physiology to dantrolene administration.", "baseline_range": [0, 300], "peak_day_range": [0, 0], "peak_value_range": [0, 300], "plateau_duration_days": [0, 0], "decline_half_life_days": [0, 0], "knowledge_confidence": "high"},
+    {"axis_id": "end_tidal_carbon_dioxide", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "EtCO2 during anesthesia or ventilation; unexplained rise despite increasing minute ventilation is an early malignant hyperthermia signal.", "baseline_range": [30, 45], "peak_day_range": [0, 0.25], "peak_value_range": [45, 140], "plateau_duration_days": [0.01, 1], "decline_half_life_days": [0.02, 0.5], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Core or perioperative temperature; can be normal early and then rise rapidly.", "baseline_range": [36, 37.5], "peak_day_range": [0, 0.5], "peak_value_range": [37.5, 44.5], "plateau_duration_days": [0.02, 2], "decline_half_life_days": [0.02, 0.5], "knowledge_confidence": "high"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Sinus tachycardia or tachyarrhythmia from hypermetabolism, hypercapnia, catecholamines, and shock.", "baseline_range": [55, 100], "peak_day_range": [0, 0.3], "peak_value_range": [100, 180], "plateau_duration_days": [0.02, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Spontaneous tachypnea or ventilator rate escalation driven by CO2 production and acidosis.", "baseline_range": [10, 20], "peak_day_range": [0, 0.3], "peak_value_range": [18, 40], "plateau_duration_days": [0.02, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "May rise with sympathetic surge or fall with shock, anesthetic vasodilation, or acidosis.", "baseline_range": [95, 140], "peak_day_range": [0, 1], "peak_value_range": [70, 230], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.05, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Perfusion pressure; severe episodes can show shock or vasopressor need.", "baseline_range": [70, 105], "peak_day_range": [0, 1], "peak_value_range": [45, 150], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.05, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Can remain preserved with ventilation or fall with respiratory failure, pulmonary edema, shock, or ICU complications.", "baseline_range": [95, 100], "peak_day_range": [0, 3], "peak_value_range": [55, 100], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "masseter_spasm_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Jaw stiffness or masseter spasm around airway management; may be present without generalized rigidity.", "baseline_range": [0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 1], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "generalized_muscle_rigidity_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Generalized rigidity or contracture; may be absent or masked by nondepolarizing paralysis.", "baseline_range": [0, 0.03], "peak_day_range": [0, 0.25], "peak_value_range": [0, 1], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "clinical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Agitation, anxiety, stupor, delayed emergence, or encephalopathy during or after crisis; nonspecific but important for severity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "shivering_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Postoperative shivering or tremor-like activity; nonspecific but can accompany emerging hypermetabolic physiology.", "baseline_range": [0, 0.1], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 1], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "low"},
+    {"axis_id": "arterial_ph", "category": "lab_value", "unit": "pH", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mixed respiratory and metabolic acidosis; early pH can be profoundly low in fulminant crisis.", "baseline_range": [7.35, 7.45], "peak_day_range": [0, 0.5], "peak_value_range": [6.8, 7.35], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "arterial_paco2", "category": "lab_value", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial CO2; rises when CO2 production exceeds ventilation.", "baseline_range": [35, 45], "peak_day_range": [0, 0.25], "peak_value_range": [45, 120], "plateau_duration_days": [0.01, 1], "decline_half_life_days": [0.02, 0.5], "knowledge_confidence": "high"},
+    {"axis_id": "arterial_pao2", "category": "lab_value", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial oxygen tension under the reported oxygen/ventilation context.", "baseline_range": [75, 120], "peak_day_range": [0, 3], "peak_value_range": [40, 500], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.05, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "base_excess", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Base excess/base deficit; negative values reflect metabolic acidosis burden.", "baseline_range": [-2.5, 2.5], "peak_day_range": [0, 0.5], "peak_value_range": [-20, -2], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Metabolic component of acid-base status; may be low in severe acidosis or affected by bicarbonate therapy.", "baseline_range": [21, 28], "peak_day_range": [0, 1], "peak_value_range": [8, 26], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lactic acidosis from hypermetabolism, contracture, and shock.", "baseline_range": [0.5, 2], "peak_day_range": [0, 0.5], "peak_value_range": [2, 20], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "serum_potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hyperkalemia from muscle breakdown, acidosis, and AKI; may be modified by treatment.", "baseline_range": [3.5, 5.1], "peak_day_range": [0, 1], "peak_value_range": [4.5, 8], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "serum_calcium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Total or ionized calcium depending on source; hypocalcemia can appear during crisis or treatment.", "baseline_range": [2.1, 2.6], "peak_day_range": [0, 2], "peak_value_range": [1.4, 2.2], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "CK rise from rhabdomyolysis; may peak after the initial hypercapnic and thermal crisis.", "baseline_range": [40, 200], "peak_day_range": [0.2, 3], "peak_value_range": [1000, 150000], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_myoglobin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum myoglobin rises early in severe muscle injury.", "baseline_range": [0, 100], "peak_day_range": [0, 2], "peak_value_range": [200, 5000], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "urine_myoglobin_positivity", "category": "lab_value", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Positive urine myoglobin or clinically inferred myoglobinuria when explicitly reported.", "baseline_range": [0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobinuria_dark_urine_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dark, red, sanguineous, cola-colored, or myoglobin-stained urine during crisis; not specific for myoglobin unless source states it.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI marker from pigment nephropathy, shock, and critical illness.", "baseline_range": [0.5, 1.2], "peak_day_range": [0.5, 5], "peak_value_range": [1.1, 6], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Renal perfusion and AKI marker.", "baseline_range": [8, 25], "peak_day_range": [0.5, 5], "peak_value_range": [20, 100], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "low"},
+    {"axis_id": "serum_ldh", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Tissue injury marker from muscle and organ injury.", "baseline_range": [120, 250], "peak_day_range": [0.2, 3], "peak_value_range": [300, 3000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST from muscle breakdown and liver injury.", "baseline_range": [10, 40], "peak_day_range": [0.2, 3], "peak_value_range": [80, 3000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT from liver injury or severe systemic injury.", "baseline_range": [7, 55], "peak_day_range": [0.5, 4], "peak_value_range": [60, 1000], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Stress leukocytosis, postoperative inflammation, infection overlap, or tissue injury response.", "baseline_range": [4, 11], "peak_day_range": [0, 3], "peak_value_range": [8, 45], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Can fall with DIC, dilution, bleeding, infection, or critical illness overlap.", "baseline_range": [150, 400], "peak_day_range": [0.5, 5], "peak_value_range": [20, 250], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "low"},
+    {"axis_id": "severe_liver_disease_or_dantrolene_hepatotoxicity_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Baseline or emerging hepatic vulnerability that changes dantrolene toxicity monitoring without replacing acute crisis treatment logic.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "life_threatening_hyperthermia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Risk of immediate thermal organ injury from extreme or rapidly rising temperature.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 0.5], "peak_value_range": [0.02, 1], "plateau_duration_days": [0, 2], "decline_half_life_days": [0.05, 1], "knowledge_confidence": "high"},
+    {"axis_id": "rhabdomyolysis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Clinically consequential muscle breakdown risk.", "baseline_range": [0.0001, 0.002], "peak_day_range": [0, 2], "peak_value_range": [0.02, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI risk from myoglobin, shock, hyperthermia, and critical illness.", "baseline_range": [0.0005, 0.01], "peak_day_range": [0.5, 5], "peak_value_range": [0.02, 0.8], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "cardiac_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Arrhythmia risk from hyperkalemia, acidosis, catecholamines, heat, and hypoxemia.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 1], "peak_value_range": [0.01, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Shock or arrest risk from acidosis, arrhythmia, anesthetic context, hyperthermia, and multiorgan injury.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 1], "peak_value_range": [0.02, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Respiratory support or failure risk from ventilation failure, pulmonary edema, shock, severe acidosis, or deep sedation.", "baseline_range": [0.0002, 0.005], "peak_day_range": [0, 3], "peak_value_range": [0.01, 0.8], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Coagulopathy/DIC risk from heat, tissue injury, shock, or critical illness overlap.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0.5, 5], "peak_value_range": [0.005, 0.5], "plateau_duration_days": [0, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_liver_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Severe hepatic injury or failure risk from hyperthermia, hypoperfusion, rhabdomyolysis, and DIC.", "baseline_range": [0.0001, 0.002], "peak_day_range": [0.5, 5], "peak_value_range": [0.001, 0.4], "plateau_duration_days": [0, 10], "decline_half_life_days": [2, 14], "knowledge_confidence": "low"},
+    {"axis_id": "need_for_mechanical_ventilation_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Need for airway control or mechanical ventilation from operative context, sedation, respiratory failure, severe acidosis, or neurologic impairment.", "baseline_range": [0.0001, 0.005], "peak_day_range": [0, 2], "peak_value_range": [0.01, 0.9], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "recrudescence_hazard_in_malignant_hyperthermia", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Risk of recurrent malignant hyperthermia physiology after initial control, especially after severe episode, inadequate dantrolene duration, or residual trigger exposure.", "baseline_range": [0.0001, 0.005], "peak_day_range": [0, 2], "peak_value_range": [0.005, 0.2], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard for malignant hyperthermia, emergent from uncontrolled hyperthermia, arrhythmia, shock, respiratory failure, AKI, DIC, and multiorgan failure.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 3], "peak_value_range": [0.005, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "end_tidal_carbon_dioxide", "target_axis_id": "arterial_paco2", "relationship": "source_tracks_target", "coupling_type": "mixed", "correlation_range": [0.5, 0.9], "effect_direction": "source_up_tracks_target_up", "phase": "early_peak", "clinical_rationale": "EtCO2 and PaCO2 are linked by CO2 production and ventilation, with divergence possible during ventilation changes or shock.", "knowledge_confidence": "high"},
+    {"source_axis_id": "end_tidal_carbon_dioxide", "target_axis_id": "body_temperature", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [0.3, 0.8], "effect_direction": "source_up_precedes_target_up", "phase": "early", "clinical_rationale": "Rising CO2 may precede obvious temperature rise.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.2, 0.7], "effect_direction": "same_direction", "phase": "whole_course", "clinical_rationale": "Heat and catecholamine stress commonly raise heart rate together.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "generalized_muscle_rigidity_activity", "target_axis_id": "serum_creatine_kinase", "relationship": "source_leads_target", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "effect_direction": "source_up_increases_target_later", "phase": "peak", "clinical_rationale": "Rigidity and contracture precede CK rise.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatine_kinase", "target_axis_id": "rhabdomyolysis_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "effect_direction": "source_up_increases_target", "phase": "peak", "clinical_rationale": "Marked CK elevation represents the rhabdomyolysis event pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "rhabdomyolysis_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "effect_direction": "source_up_increases_target", "phase": "peak_late", "clinical_rationale": "Myoglobinuria and pigment load raise AKI risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_potassium", "target_axis_id": "cardiac_arrhythmia_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "effect_direction": "source_up_increases_target", "phase": "early_peak", "clinical_rationale": "Hyperkalemia is a direct arrhythmia driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "arterial_ph", "target_axis_id": "cardiac_arrhythmia_hazard", "relationship": "source_down_increases_target", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.3], "effect_direction": "source_down_increases_target", "phase": "early_peak", "clinical_rationale": "Acidemia potentiates arrhythmia and hemodynamic collapse.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "serum_lactate", "relationship": "inverse_perfusion_coupling", "coupling_type": "mixed", "correlation_range": [-0.7, -0.2], "effect_direction": "source_down_increases_target", "phase": "early_peak", "clinical_rationale": "Shock and hypoperfusion raise lactate, but muscle hypermetabolism can raise lactate independently.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "life_threatening_hyperthermia_hazard", "target_axis_id": "dic_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.2, 0.7], "effect_direction": "source_up_increases_target", "phase": "peak_late", "clinical_rationale": "Extreme heat and tissue injury can evolve into coagulopathy.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "life_threatening_hyperthermia_hazard", "target_axis_id": "acute_liver_failure_hazard", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.1, 0.6], "effect_direction": "source_up_increases_target", "phase": "peak_late", "clinical_rationale": "Severe heat injury and shock can precipitate liver injury.", "knowledge_confidence": "low"},
+    {"source_axis_id": "cardiac_arrhythmia_hazard", "target_axis_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "relationship": "event_to_outcome", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "effect_direction": "source_up_increases_target", "phase": "whole_course", "clinical_rationale": "Arrhythmia is one of the fastest death pathways in malignant hyperthermia.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "stop_triggering_agents_and_switch_to_nontriggering_anesthesia",
+      "drug_class": "trigger_removal_and_anesthetic_context_control",
+      "mode": "reshape_landscape",
+      "required_context_axes": ["volatile_anesthetic_exposure_activity", "succinylcholine_exposure_activity", "trigger_agent_discontinuation_adequacy", "end_tidal_carbon_dioxide", "body_temperature"],
+      "effect_modifiers": [
+        {"axis_id": "volatile_anesthetic_exposure_activity", "condition": "present_or_recent", "effect": "strengthens", "factor_range": [1.2, 4], "clinical_rationale": "Benefit depends on stopping ongoing volatile exposure."},
+        {"axis_id": "trigger_agent_discontinuation_adequacy", "condition": "low", "effect": "weakens", "factor_range": [0, 0.7], "clinical_rationale": "Residual vapor, circuit contamination, or continued trigger exposure sustains upstream drive."}
+      ],
+      "failure_modes": ["delayed_recognition", "continued_trigger_exposure", "contaminated_breathing_circuit", "insufficient_nontriggering_anesthesia_depth"],
+      "trajectory_modifications": {
+        "volatile_anesthetic_exposure_activity": {"peak_value_factor": [0, 0.2], "plateau_duration_factor": [0.1, 0.4], "decline_half_life_days": [0.01, 0.1]},
+        "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.05, 0.5]},
+        "end_tidal_carbon_dioxide": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.05, 0.5]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.2, 2]}
+      },
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0.1, 1],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "variable", "magnitude_range": [0, 20], "interpretation": "Anesthetic transition and vasoactive treatment can destabilize blood pressure."}
+      ],
+      "context_specific_role": "Removes the observed activating context and enables all other therapies to reshape the calcium-driven crisis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dantrolene_iv",
+      "drug_class": "skeletal_muscle_ryr1_calcium_release_inhibitor",
+      "mode": "reshape_landscape",
+      "required_context_axes": ["dantrolene_availability", "time_to_dantrolene_minutes", "masseter_spasm_activity", "generalized_muscle_rigidity_activity", "end_tidal_carbon_dioxide", "body_temperature", "serum_potassium"],
+      "effect_modifiers": [
+        {"axis_id": "dantrolene_availability", "condition": "low", "effect": "weakens_or_prevents", "factor_range": [0, 0.5], "clinical_rationale": "No adequate drug supply or preparation capacity prevents mechanism-level rescue."},
+        {"axis_id": "time_to_dantrolene_minutes", "condition": "long_delay", "effect": "weakens", "factor_range": [0.3, 0.9], "clinical_rationale": "Late treatment allows organ injury to accumulate before calcium release is inhibited."},
+        {"axis_id": "severe_liver_disease_or_dantrolene_hepatotoxicity_risk_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1], "clinical_rationale": "Dantrolene can cause hepatotoxicity, but acute crisis benefit may dominate with monitoring."}
+      ],
+      "failure_modes": ["delayed_or_insufficient_dose", "continued_trigger_exposure", "late_multiorgan_failure", "recrudescence_after_under-treatment", "drug_unavailable"],
+      "trajectory_modifications": {
+        "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION": {"peak_value_factor": [0.1, 0.45], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.02, 0.3]},
+        "M_MH_SUSTAINED_SKELETAL_MUSCLE_CONTRACTURE": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.02, 0.3]},
+        "M_MH_HYPERMETABOLIC_CO2_HEAT_PRODUCTION": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.02, 0.5]},
+        "masseter_spasm_activity": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.02, 0.3]},
+        "generalized_muscle_rigidity_activity": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.02, 0.3]},
+        "end_tidal_carbon_dioxide": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.02, 0.5]},
+        "body_temperature": {"peak_value_factor": [0.9, 0.98], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.05, 0.5]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.05, 1]},
+        "recrudescence_hazard_in_malignant_hyperthermia": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 3]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 5]}
+      },
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0.2, 2],
+      "side_effects": [
+        {"axis_id": "generalized_muscle_rigidity_activity", "direction": "down", "magnitude_range": [0.2, 1], "interpretation": "Therapeutic effect can cause generalized weakness after crisis control."},
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 200], "interpretation": "Hepatic enzyme monitoring is relevant during repeated dosing or liver vulnerability."}
+      ],
+      "context_specific_role": "Direct mechanism-level inhibitor of abnormal skeletal-muscle calcium release during the acute vector field.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hyperventilation_100_percent_oxygen_and_clean_circuit",
+      "drug_class": "ventilation_and_oxygenation_support",
+      "mode": "push_state",
+      "required_context_axes": ["end_tidal_carbon_dioxide", "arterial_paco2", "arterial_ph", "oxygen_saturation", "need_for_mechanical_ventilation_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "end_tidal_carbon_dioxide", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 2], "clinical_rationale": "Hypercarbia is directly targeted by ventilation and high fresh gas flow."},
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "changes_response", "factor_range": [0.6, 1], "clinical_rationale": "Severe shock can impair EtCO2 interpretation and oxygen delivery despite ventilation."}
+      ],
+      "failure_modes": ["ongoing_muscle_co2_production", "insufficient_minute_ventilation", "circuit_trigger_contamination", "airway_or_lung_failure"],
+      "trajectory_modifications": {
+        "end_tidal_carbon_dioxide": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.01, 0.2]},
+        "arterial_paco2": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.02, 0.3]},
+        "arterial_ph": {"peak_value_factor": [1.01, 1.05], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.02, 0.5]},
+        "oxygen_saturation": {"peak_value_factor": [1.0, 1.08], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.02, 0.5]},
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.2, 3]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.2, 3]}
+      },
+      "push_targets": [
+        {"axis_id": "end_tidal_carbon_dioxide", "direction": "down", "magnitude_range": [10, 80], "unit": "mmHg"},
+        {"axis_id": "oxygen_saturation", "direction": "up", "magnitude_range": [1, 20], "unit": "%"}
+      ],
+      "onset_delay_days": [0, 0.02],
+      "carryover_after_stop_days": [0, 0.2],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 10], "interpretation": "High intrathoracic pressure or deep anesthesia can lower venous return."}
+      ],
+      "context_specific_role": "Rapidly controls hypercarbia and oxygen delivery while upstream calcium and trigger mechanisms are controlled.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "active_external_or_internal_cooling",
+      "drug_class": "temperature_state_control",
+      "mode": "push_state",
+      "required_context_axes": ["body_temperature", "life_threatening_hyperthermia_hazard", "active_cooling_adequacy", "generalized_muscle_rigidity_activity"],
+      "effect_modifiers": [
+        {"axis_id": "body_temperature", "condition": "rapidly_rising_or_high", "effect": "strengthens", "factor_range": [1.2, 5], "clinical_rationale": "Cooling benefit grows as temperature rises."},
+        {"axis_id": "generalized_muscle_rigidity_activity", "condition": "persistent_high", "effect": "requires_parallel_muscle_control", "factor_range": [0.5, 1], "clinical_rationale": "Cooling is weaker when untreated muscle contracture continues generating heat."}
+      ],
+      "failure_modes": ["ongoing_calcium_driven_heat_generation", "delayed_cooling", "overcooling_after_control", "skin_or_line_complications"],
+      "trajectory_modifications": {
+        "body_temperature": {"peak_value_factor": [0.88, 0.97], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.02, 0.3]},
+        "life_threatening_hyperthermia_hazard": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [0.02, 0.5]},
+        "M_MH_MULTIORGAN_INJURY_CASCADE": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 5]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "body_temperature", "direction": "down", "magnitude_range": [0.5, 6], "unit": "degC"}
+      ],
+      "onset_delay_days": [0, 0.02],
+      "carryover_after_stop_days": [0, 0.3],
+      "side_effects": [
+        {"axis_id": "shivering_activity", "direction": "up", "magnitude_range": [0, 0.3], "interpretation": "Cooling can trigger shivering unless anesthesia or sedation suppresses it."}
+      ],
+      "context_specific_role": "Direct state push lowering temperature and thermal event hazard while dantrolene and trigger removal stop heat production.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hyperkalemia_and_acidosis_correction",
+      "drug_class": "electrolyte_acid_base_rescue",
+      "mode": "push_state",
+      "required_context_axes": ["serum_potassium", "arterial_ph", "base_excess", "serum_bicarbonate", "cardiac_arrhythmia_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "serum_potassium", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 5], "clinical_rationale": "Hyperkalemia directly increases arrhythmia hazard."},
+        {"axis_id": "arterial_ph", "condition": "very_low", "effect": "strengthens", "factor_range": [1.2, 4], "clinical_rationale": "Severe acidemia destabilizes myocardium and worsens potassium shift."}
+      ],
+      "failure_modes": ["ongoing_rhabdomyolysis", "untreated_calcium_release", "renal_failure", "rebound_hyperkalemia", "hypoglycemia_after_insulin"],
+      "trajectory_modifications": {
+        "serum_potassium": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.02, 0.5]},
+        "arterial_ph": {"peak_value_factor": [1.01, 1.06], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.02, 0.5]},
+        "base_excess": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.02, 0.5]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.05, 1]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.2, 3]}
+      },
+      "push_targets": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0.5, 3], "unit": "mmol/L"},
+        {"axis_id": "arterial_ph", "direction": "up", "magnitude_range": [0.05, 0.3], "unit": "pH"}
+      ],
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "blood_glucose", "direction": "down", "magnitude_range": [0, 120], "interpretation": "Insulin treatment can cause hypoglycemia."},
+        {"axis_id": "serum_calcium", "direction": "up", "magnitude_range": [0, 0.5], "interpretation": "Calcium salts can transiently raise measured calcium while stabilizing myocardium."}
+      ],
+      "context_specific_role": "Prevents arrhythmia and shock pathways while rhabdomyolysis and calcium-release mechanisms are treated.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_fluids_diuresis_and_rhabdomyolysis_renal_protection",
+      "drug_class": "renal_volume_support",
+      "mode": "push_state",
+      "required_context_axes": ["rhabdomyolysis_hazard", "serum_creatine_kinase", "serum_myoglobin", "urine_myoglobin_positivity", "serum_creatinine", "acute_kidney_injury_hazard", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "rhabdomyolysis_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 4], "clinical_rationale": "Higher pigment load increases renal-protection value."},
+        {"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.5, 1], "clinical_rationale": "Fluid can worsen pulmonary edema or oxygenation."}
+      ],
+      "failure_modes": ["oliguric_aki", "fluid_overload", "ongoing_muscle_breakdown", "uncontrolled_shock", "electrolyte_rebound"],
+      "trajectory_modifications": {
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 10]},
+        "serum_creatinine": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [2, 14]},
+        "serum_potassium": {"peak_value_factor": [0.75, 0.95], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.5, 3]},
+        "rhabdomyolysis_hazard": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [0, 20], "unit": "mmHg"}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Excess fluid can worsen pulmonary edema in vulnerable patients."}
+      ],
+      "context_specific_role": "Supports perfusion and pigment clearance after the upstream calcium crisis is controlled.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "vasopressor_and_hemodynamic_support",
+      "drug_class": "critical_care_circulatory_support",
+      "mode": "push_state",
+      "required_context_axes": ["mean_arterial_pressure", "circulatory_collapse_shock_hazard", "serum_lactate", "cardiac_arrhythmia_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "strengthens", "factor_range": [1.2, 4], "clinical_rationale": "Hypotension directly threatens organ perfusion."},
+        {"axis_id": "cardiac_arrhythmia_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1], "clinical_rationale": "Catecholamines can worsen arrhythmia risk while supporting shock."}
+      ],
+      "failure_modes": ["untreated_acidosis_or_hyperkalemia", "ongoing_trigger_exposure", "catecholamine_arrhythmia", "refractory_shock"],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.05, 1]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.2, 3]},
+        "serum_lactate": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.2, 2]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.5, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [10, 45], "unit": "mmHg"}
+      ],
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {"axis_id": "cardiac_arrhythmia_hazard", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Catecholamines may increase arrhythmia susceptibility in acidemic or hyperkalemic patients."}
+      ],
+      "context_specific_role": "Perfusion support for shock physiology while definitive mechanism control is applied.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "renal_replacement_therapy",
+      "drug_class": "renal_organ_support",
+      "mode": "push_state",
+      "required_context_axes": ["acute_kidney_injury_hazard", "serum_creatinine", "serum_potassium", "serum_bicarbonate", "serum_lactate", "rhabdomyolysis_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "serum_potassium", "condition": "high_or_refractory", "effect": "strengthens", "factor_range": [1.2, 4], "clinical_rationale": "Dialysis or CRRT directly treats refractory hyperkalemia."},
+        {"axis_id": "mean_arterial_pressure", "condition": "low_or_unstable", "effect": "changes_modality", "factor_range": [0.6, 1], "clinical_rationale": "CRRT is often better tolerated than intermittent dialysis during shock."}
+      ],
+      "failure_modes": ["delayed_access", "hemodynamic_instability", "ongoing_rhabdomyolysis", "filter_clotting", "catheter_complications"],
+      "trajectory_modifications": {
+        "serum_potassium": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.05, 0.8]},
+        "serum_bicarbonate": {"peak_value_factor": [1.05, 1.5], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.1, 2]},
+        "serum_creatinine": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 10]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [2, 14]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.4, 1], "decline_half_life_days": [0.2, 3]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0.5, 3], "unit": "mmol/L"},
+        {"axis_id": "serum_bicarbonate", "direction": "up", "magnitude_range": [2, 10], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0, 0.3],
+      "carryover_after_stop_days": [0.2, 2],
+      "side_effects": [
+        {"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 15], "interpretation": "Intermittent dialysis or ultrafiltration can worsen hypotension."},
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Catheter placement and anticoagulation can add bleeding risk."}
+      ],
+      "context_specific_role": "Organ support for refractory electrolyte, acid-base, volume, and AKI consequences after severe rhabdomyolysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "icu_monitoring_and_recrudescence_prevention",
+      "drug_class": "critical_care_monitoring_and_recurrence_control",
+      "mode": "modulate_sigma",
+      "required_context_axes": ["recrudescence_hazard_in_malignant_hyperthermia", "body_temperature", "end_tidal_carbon_dioxide", "serum_potassium", "serum_creatine_kinase", "cardiac_arrhythmia_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "recrudescence_hazard_in_malignant_hyperthermia", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 3], "clinical_rationale": "Ongoing observation and repeated rescue reduce missed recurrence."},
+        {"axis_id": "serum_creatine_kinase", "condition": "very_high_or_rising", "effect": "strengthens_context_need", "factor_range": [1.1, 2], "clinical_rationale": "Delayed rhabdomyolysis and electrolyte injury require serial monitoring."}
+      ],
+      "failure_modes": ["premature_discharge_or_deescalation", "missed_recrudescence", "delayed_lab_followup", "unavailable_dantrolene_repeat_dose"],
+      "trajectory_modifications": {
+        "recrudescence_hazard_in_malignant_hyperthermia": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 3]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [0.5, 3]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 10]},
+        "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.5, 1], "decline_half_life_days": [1, 10]}
+      },
+      "sigma_modulation": {"axes": ["body_temperature", "end_tidal_carbon_dioxide", "heart_rate", "mean_arterial_pressure", "serum_potassium", "arterial_ph"], "factor": [0.45, 0.85], "clinical_rationale": "Continuous ICU monitoring and rapid rescue reduce uncontrolled volatility."},
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {"axis_id": "need_for_mechanical_ventilation_hazard", "direction": "variable", "magnitude_range": [0, 0.1], "interpretation": "ICU care may involve ventilation exposure, but monitoring also reduces preventable death risk."}
+      ],
+      "context_specific_role": "Controls delayed hazards after the acute crisis, especially recrudescence, CK/myoglobin peak, potassium rebound, AKI, and arrhythmia.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "mh_susceptibility_genetic_family_or_prior_episode_context",
+      "category": "host_susceptibility_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 100],
+          "trajectory_modulation": "Greatly raises prior probability when compatible physiology occurs; does not replace presentation evidence.",
+          "axis_response_modulation": [
+            {"axis_id": "mh_susceptibility_context_probability", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Susceptibility evidence changes the host prior."},
+            {"axis_id": "M_MH_SKELETAL_MUSCLE_CALCIUM_RELEASE_DYSREGULATION", "effect": "higher_peak_after_context", "magnitude_factor_range": [1.5, 5], "clinical_rationale": "Susceptible muscle enters the calcium-release field more readily after compatible activation."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "volatile_anesthetic_exposure",
+      "category": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 30],
+          "trajectory_modulation": "Raises compatibility of rising EtCO2, hyperthermia, and rhabdomyolysis with the malignant hyperthermia vector field.",
+          "axis_response_modulation": [
+            {"axis_id": "volatile_anesthetic_exposure_activity", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Exposure is directly observed."},
+            {"axis_id": "end_tidal_carbon_dioxide", "effect": "higher_compatibility_when_rising", "magnitude_factor_range": [1.1, 3], "clinical_rationale": "Unexplained hypercarbia during volatile exposure is highly informative."}
+          ],
+          "treatment_effect_modulation": {
+            "stop_triggering_agents_and_switch_to_nontriggering_anesthesia": "stronger_when_ongoing_exposure"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "succinylcholine_exposure",
+      "category": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 20],
+          "trajectory_modulation": "Can sharpen early onset with masseter spasm, rigidity, and hyperkalemia, especially with concurrent volatile exposure.",
+          "axis_response_modulation": [
+            {"axis_id": "succinylcholine_exposure_activity", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Exposure is directly observed."},
+            {"axis_id": "masseter_spasm_activity", "effect": "higher_peak", "magnitude_factor_range": [1.3, 5], "clinical_rationale": "Masseter spasm after depolarizing blockade is a recognized early lane."},
+            {"axis_id": "serum_potassium", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2], "clinical_rationale": "Depolarization and muscle injury can accentuate hyperkalemia."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ryr1_related_myopathy_or_king_denborough_like_features",
+      "category": "host_susceptibility_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 30],
+          "trajectory_modulation": "Syndromic myopathy context raises susceptibility prior and may increase rigidity or baseline CK.",
+          "axis_response_modulation": [
+            {"axis_id": "ryr1_related_myopathy_context_probability", "effect": "higher_baseline", "magnitude_factor_range": [10, 100], "clinical_rationale": "Dysmorphism, congenital ptosis, myopathy, or core disease features can indicate susceptibility context."},
+            {"axis_id": "serum_creatine_kinase", "effect": "higher_baseline_or_peak", "magnitude_factor_range": [1, 3], "clinical_rationale": "Some myopathy contexts alter CK reserve or response."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "prior_uneventful_anesthetic_exposure",
+      "category": "history_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.7, 1.1],
+          "trajectory_modulation": "Does not exclude malignant hyperthermia; penetrance and expression are incomplete.",
+          "axis_response_modulation": [
+            {"axis_id": "mh_susceptibility_context_probability", "effect": "does_not_zero_prior", "magnitude_factor_range": [0.7, 1.1], "clinical_rationale": "Prior uneventful anesthesia should not erase current compatible physiology."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_recognition_or_delayed_dantrolene",
+      "category": "care_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 1.2],
+          "trajectory_modulation": "Does not prove disease but worsens accumulated organ injury once the vector field is active.",
+          "axis_response_modulation": [
+            {"axis_id": "time_to_dantrolene_minutes", "effect": "higher_baseline", "magnitude_factor_range": [2, 20], "clinical_rationale": "Delay is directly observed."},
+            {"axis_id": "serum_creatine_kinase", "effect": "higher_peak", "magnitude_factor_range": [1.2, 6], "clinical_rationale": "Longer uncontrolled contracture increases rhabdomyolysis."},
+            {"axis_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect": "higher_peak", "magnitude_factor_range": [1.3, 5], "clinical_rationale": "Delay allows acidosis, hyperkalemia, shock, and organ injury to accumulate."}
+          ],
+          "treatment_effect_modulation": {
+            "dantrolene_iv": "weaker_after_late_multiorgan_injury_but_still_mechanistically_active",
+            "icu_monitoring_and_recrudescence_prevention": "stronger_context_need"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "baseline_renal_impairment_or_low_renal_reserve",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 1.5],
+          "trajectory_modulation": "Amplifies hyperkalemia and AKI consequences without double-counting if a CKD disease manifold exists.",
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_background_or_peak", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "Lower renal reserve raises creatinine and potassium vulnerability."},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4], "clinical_rationale": "Pigment load is less tolerated."},
+            {"axis_id": "cardiac_arrhythmia_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.1, 3], "clinical_rationale": "Potassium clearance is impaired."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "cardiopulmonary_frailty_or_advanced_age",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 1.5],
+          "trajectory_modulation": "Lowers reserve during acidosis, shock, ventilation, and fluid therapy.",
+          "axis_response_modulation": [
+            {"axis_id": "acute_respiratory_failure_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3], "clinical_rationale": "Lower respiratory reserve increases ventilation hazard."},
+            {"axis_id": "circulatory_collapse_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3], "clinical_rationale": "Lower cardiac reserve worsens acidosis and catecholamine stress."},
+            {"axis_id": "mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4], "clinical_rationale": "Frailty increases short-term critical illness mortality."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "prolonged_surgery_high_body_mass_or_high_heat_retention_context",
+      "category": "care_or_host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 2],
+          "trajectory_modulation": "May delay recognition and increase heat retention or ventilation complexity.",
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "higher_or_later_peak", "magnitude_factor_range": [1.02, 1.08], "clinical_rationale": "Heat retention can make hyperthermia more persistent."},
+            {"axis_id": "end_tidal_carbon_dioxide", "effect": "higher_ventilation_pressure", "magnitude_factor_range": [1.1, 2], "clinical_rationale": "Ventilation complexity can obscure excess CO2 production."}
+          ]
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "severe_liver_disease_or_dantrolene_hepatotoxicity_risk",
+      "category": "treatment_toxicity_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 1],
+          "trajectory_modulation": "Does not cause malignant hyperthermia, but changes treatment toxicity monitoring.",
+          "axis_response_modulation": [
+            {"axis_id": "serum_alt", "effect": "higher_background_or_toxicity_signal", "magnitude_factor_range": [1.2, 5], "clinical_rationale": "Dantrolene and shock/liver stress require enzyme monitoring."}
+          ],
+          "treatment_effect_modulation": {
+            "dantrolene_iv": "hepatotoxicity_monitoring_required_but_not_a_reason_to_withhold_during_life_threatening_crisis"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Preserve the exact anesthesia and medication chronology as context: agents, doses when reported, timing from induction or recovery, ventilation settings, EtCO2 trend, temperature site, and when treatment started.",
+    "Use presentation physiology as ordinary ranking evidence: unexplained EtCO2 rise, arterial PaCO2, pH, base excess, lactate, temperature, tachycardia, rigidity or masseter spasm, potassium, CK, myoglobin, creatinine, AST/ALT/LDH, urine color, and organ support needs.",
+    "Store Larach clinical grading score, final paper diagnosis, genetic testing, caffeine-halothane contracture testing, and dramatic dantrolene response as confirmatory or context evidence with use_in_ranking:false in case JSON.",
+    "Do not treat antipyretics as causal therapy; temperature is driven by skeletal muscle hypermetabolism and requires trigger removal, dantrolene, cooling, ventilation, and metabolic support.",
+    "Trend CK and myoglobin after initial control because the rhabdomyolysis peak can lag behind EtCO2 and temperature control.",
+    "Monitor and treat hyperkalemia, acidemia, hypocalcemia, hypoglycemia after insulin, renal injury, arrhythmia, DIC/coagulopathy, liver injury, and respiratory failure.",
+    "Continue ICU-level observation after apparent control for recurrence, potassium rebound, delayed AKI, and delayed CK/myoglobin peak.",
+    "After recovery, document malignant hyperthermia susceptibility precautions, family counseling context, and future anesthesia avoidance of triggering agents outside ordinary presentation ranking."
+  ],
+  "quality_notes": [
+    "The disease-specific medical input used for this distillation is only the disease name: Malignant hyperthermia.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-MALIGNANT-HYPERTHERMIA.",
+    "Volatile anesthetics, succinylcholine, and RYR1-related context are represented only as context axes, treatment modifiers, or risk factors.",
+    "No hard-coded treatment ranking label fields are used.",
+    "All treatments have trajectory_modifications as dicts keyed by axis or mechanism id.",
+    "All risk_factors have modulation as dicts keyed by context state."
+  ]
+}
