@@ -1,0 +1,593 @@
+{
+  "disease": "D-PULMONARY-EMBOLISM",
+  "disease_id": "D-PULMONARY-EMBOLISM",
+  "disease_name": "Pulmonary embolism",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Pulmonary embolism",
+    "leaf_granularity": "First-layer clinical disease leaf for pulmonary embolism across acute thrombotic pulmonary arterial obstruction. Massive, intermediate-risk, low-risk, provoked, unprovoked, recurrent, pregnancy-associated, cancer-associated, catheter-associated, fat, air, septic, tumor embolism, and chronic thromboembolic pulmonary hypertension contexts are represented as risk, context, event, treatment-modifier, or future subtype axes rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume symptoms, vitals, gas exchange, D-dimer, cardiac strain biomarkers, ECG/echo/duplex/CTPA/VQ evidence, and initial pulmonary infarction or pleural findings when those data are available at the chosen evidence stage. Final diagnosis, thrombophilia workup, long-term outcome, clot resolution, and treatment response remain confirmatory or non-ranking unless a separate post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PE_VENOUS_THROMBUS_FORMATION",
+      "display_name": "Venous thrombus formation",
+      "clinical_meaning": "Deep venous or right-heart thrombus forms under venous stasis, endothelial injury, hypercoagulability, malignancy, estrogen/pregnancy, inflammatory, catheter, or inherited/acquired thrombophilia contexts.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-21, 2],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [1, 120],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION",
+      "display_name": "Embolization and pulmonary arterial occlusion",
+      "clinical_meaning": "Thrombus embolizes to one or more pulmonary arteries, creating anatomic filling defects and reducing perfusion in affected vascular beds.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA",
+      "display_name": "Ventilation-perfusion mismatch and hypoxemia",
+      "clinical_meaning": "Perfusion obstruction creates dead-space ventilation, regional hypoperfusion, tachypnea, respiratory alkalosis, hypoxemia, dyspnea, and respiratory distress in susceptible patients.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 21],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD",
+      "display_name": "Pulmonary vascular resistance and right-ventricular afterload",
+      "clinical_meaning": "Mechanical obstruction, hypoxic vasoconstriction, and vasoactive mediators raise pulmonary vascular resistance and acutely increase right-ventricular afterload.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 21],
+      "decline_half_life_days": [1, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT",
+      "display_name": "Right-ventricular failure and low-output shock",
+      "clinical_meaning": "Acute right-ventricular pressure overload can produce dilation, septal shift, reduced left-sided filling, hypotension, syncope, obstructive shock, cardiac arrest, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.05, 14],
+      "decline_half_life_days": [0.5, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION",
+      "display_name": "Pulmonary infarction and pleural inflammation",
+      "clinical_meaning": "Distal emboli with impaired collateral flow can cause infarction, pleuritic pain, hemoptysis, small pleural effusion, and wedge-shaped peripheral opacity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_FIBRINOLYSIS_AND_CARDIAC_STRAIN_BIOMARKERS",
+      "display_name": "Fibrinolysis and cardiac strain biomarker response",
+      "clinical_meaning": "Fibrin turnover raises D-dimer while right-ventricular stretch and ischemia can raise BNP/NT-proBNP and troponin in proportion to strain and reserve.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 21],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING",
+      "display_name": "Recurrence and chronic thromboembolic remodeling",
+      "clinical_meaning": "Persistent thrombus, recurrent embolization, and organized vascular obstruction can create recurrent VTE hazard or later chronic thromboembolic pulmonary hypertension.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [7, 365],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [30, 3650],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_PE_VENOUS_THROMBUS_FORMATION", "target_id": "deep_venous_thrombosis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-14, 0], "phase": "pre_embolic_or_concurrent", "clinical_rationale": "Many pulmonary emboli arise from clinically or sonographically apparent lower-extremity DVT.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VENOUS_THROMBUS_FORMATION", "target_id": "limb_swelling_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-14, 0], "phase": "pre_embolic_or_concurrent", "clinical_rationale": "Symptomatic leg pain or swelling can accompany the source DVT.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VENOUS_THROMBUS_FORMATION", "target_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "transition_to_pe", "clinical_rationale": "Venous thrombus can detach and embolize to the pulmonary arterial tree.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "ctpa_pulmonary_arterial_filling_defect_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "diagnostic_imaging", "clinical_rationale": "Pulmonary arterial thrombus is visualized as an intraluminal contrast filling defect on CTPA.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "pulmonary_embolic_burden_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "diagnostic_imaging", "clinical_rationale": "More occluded vascular beds produce higher observed embolic burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "central_pulmonary_embolus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "diagnostic_imaging", "clinical_rationale": "Central clot location is one possible expression of pulmonary arterial occlusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "segmental_subsegmental_embolus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "diagnostic_imaging", "clinical_rationale": "Segmental or subsegmental clot location is another possible expression of pulmonary arterial occlusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "ventilation_perfusion_mismatch_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Perfusion defects with preserved ventilation create V/Q mismatch.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Vascular obstruction is the upstream driver of dead-space ventilation and hypoxemia.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "Dead-space ventilation and hypoxemia commonly manifest as dyspnea.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "dyspnea_respiratory_distress_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Severe gas-exchange strain can produce visible respiratory distress.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Hypoxemia lowers pulse oximetry, though saturation may be normal in smaller or compensated PE.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Tachypnea is a frequent physiologic response to dead-space ventilation.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "arterial_paco2", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Hyperventilation commonly lowers PaCO2.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "target_id": "arterial_ph", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Respiratory alkalosis can occur early from hyperventilation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "target_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Occluded pulmonary vascular beds acutely raise pulmonary vascular resistance.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "target_id": "pulmonary_hypertension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "Acute afterload elevation can be seen as elevated pulmonary pressure on echo.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "target_id": "right_ventricular_dilation_activity_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "Right-ventricular pressure overload causes dilation.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "target_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "RV afterload produces echocardiographic or CT signs of RV strain.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "target_id": "interventricular_septal_flattening_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "RV pressure overload can flatten or bow the septum toward the LV.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "target_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "severe_course", "clinical_rationale": "Severe RV afterload can outstrip RV reserve and reduce LV preload.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Low cardiac output and obstructive shock lower systolic pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Obstructive shock lowers MAP.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute_or_shock", "clinical_rationale": "Tachycardia reflects adrenergic compensation and RV strain.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "syncope_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Transient low cerebral perfusion or arrhythmia can cause syncope.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "RV failure is the core pathway into PE-related obstructive shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "catastrophic_course", "clinical_rationale": "Extreme RV failure can deteriorate into pulseless electrical activity or arrest.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "shock", "clinical_rationale": "Low-output shock increases lactate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION", "target_id": "chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "infarction_or_pleural", "clinical_rationale": "Pulmonary infarction and pleural irritation can produce chest pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION", "target_id": "pleuritic_chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "infarction_or_pleural", "clinical_rationale": "PE chest pain is often pleuritic when peripheral infarction or pleural irritation is present.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION", "target_id": "hemoptysis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "infarction_or_pleural", "clinical_rationale": "Peripheral infarction can cause hemoptysis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION", "target_id": "pulmonary_infarction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "infarction_or_pleural", "clinical_rationale": "Infarction can become visible as wedge-shaped opacity or parenchymal infarct.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_PULMONARY_INFARCTION_PLEURAL_INFLAMMATION", "target_id": "pleural_effusion_presence", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "infarction_or_pleural", "clinical_rationale": "Small pleural effusions commonly accompany PE or infarction.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PE_FIBRINOLYSIS_AND_CARDIAC_STRAIN_BIOMARKERS", "target_id": "d_dimer", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Cross-linked fibrin breakdown raises D-dimer, though small, delayed, or already treated PE can have low values.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_FIBRINOLYSIS_AND_CARDIAC_STRAIN_BIOMARKERS", "target_id": "serum_troponin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "rv_strain", "clinical_rationale": "RV strain and ischemia can raise troponin.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_FIBRINOLYSIS_AND_CARDIAC_STRAIN_BIOMARKERS", "target_id": "brain_natriuretic_peptide", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "rv_strain", "clinical_rationale": "RV stretch can raise BNP.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING", "target_id": "recurrent_venous_thromboembolism_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [7, 365], "phase": "post_acute_or_uncontrolled_risk", "clinical_rationale": "Ongoing hypercoagulability or inadequate anticoagulation increases recurrence risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING", "target_id": "chronic_thromboembolic_pulmonary_hypertension_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [30, 3650], "phase": "late_course", "clinical_rationale": "Organized unresolved thrombus can produce chronic thromboembolic pulmonary hypertension.", "knowledge_confidence": "medium"},
+    {"source_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "target_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "PE-related obstructive shock is a major immediate mortality pathway.", "knowledge_confidence": "high"},
+    {"source_id": "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "target_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 1], "phase": "catastrophic_course", "clinical_rationale": "Cardiac arrest from PE carries high short-term mortality.", "knowledge_confidence": "high"},
+    {"source_id": "acute_respiratory_failure_hazard", "target_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "phase": "severe_course", "clinical_rationale": "Respiratory failure worsens survival in PE, especially with limited cardiopulmonary reserve.", "knowledge_confidence": "high"},
+    {"source_id": "major_bleeding_hazard", "target_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "phase": "treatment_or_context_bleeding", "clinical_rationale": "Major anticoagulation- or thrombolysis-associated bleeding can be fatal or force undertreatment.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Subjective dyspnea or shortness of breath from V/Q mismatch, hypoxemia, or RV strain; can be absent in atypical PE.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "dyspnea_respiratory_distress_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "dyspnea_activity", "shape_free_text": "Visible respiratory distress, increased work of breathing, or severe air hunger.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 10], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chest pain from pleural irritation, pulmonary infarction, RV ischemia, or nonspecific cardiopulmonary strain.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "pleuritic_chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "chest_pain_activity", "shape_free_text": "Pain worsened by inspiration or cough, reflecting peripheral infarction or pleural inflammation.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "hemoptysis_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Hemoptysis from pulmonary infarction or hemorrhagic peripheral embolic injury; absent in many PE cases.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "syncope_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Syncope from transient obstructive shock, arrhythmia, or severe RV outflow limitation.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 3], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "syncope_presyncope_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Near-syncope, lightheadedness, or collapse tendency from PE-related low output.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 7], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "limb_swelling_pain_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Calf or leg pain, swelling, or tenderness suggesting source venous thrombosis.", "baseline_range": [0.0, 0.04], "peak_day_range": [-14, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate; tachycardia can reflect PE, hypoxemia, pain, or shock.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [70, 180], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate; tachypnea is common but may be absent.", "baseline_range": [12, 20], "peak_day_range": [0, 2], "peak_value_range": [14, 40], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pulse oximetry oxygen saturation; ranges from normal to severely low depending on embolic burden and reserve.", "baseline_range": [95, 100], "peak_day_range": [0, 2], "peak_value_range": [70, 100], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; may be normal or low with obstructive shock.", "baseline_range": [100, 140], "peak_day_range": [0, 2], "peak_value_range": [50, 150], "plateau_duration_days": [0.02, 7], "decline_half_life_days": [0.1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values mark obstructive shock physiology.", "baseline_range": [70, 105], "peak_day_range": [0, 2], "peak_value_range": [35, 110], "plateau_duration_days": [0.02, 7], "decline_half_life_days": [0.1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Body temperature; PE can be afebrile or cause low-grade fever, but high fever suggests competing infection/inflammation.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 7], "peak_value_range": [36.0, 38.5], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug/mL_FEU", "log_scale": true, "axis_role": "measurement", "shape_free_text": "D-dimer from fibrin turnover; often elevated but can be low in small, delayed, anticoagulated, or atypical cases.", "baseline_range": [0.05, 0.5], "peak_day_range": [0, 5], "peak_value_range": [0.1, 20], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "arterial_pao2", "category": "lab_value", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial oxygen tension; low with hypoxemia but can be near normal.", "baseline_range": [80, 105], "peak_day_range": [0, 2], "peak_value_range": [40, 105], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "arterial_paco2", "category": "lab_value", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial carbon dioxide tension; often low from hyperventilation and may rise in fatigue or severe comorbidity.", "baseline_range": [35, 45], "peak_day_range": [0, 2], "peak_value_range": [20, 45], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "arterial_ph", "category": "lab_value", "unit": "pH", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial pH; respiratory alkalosis can raise pH early, while shock acidosis may lower it.", "baseline_range": [7.35, 7.45], "peak_day_range": [0, 2], "peak_value_range": [7.30, 7.58], "plateau_duration_days": [0.05, 7], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_troponin", "category": "lab_value", "unit": "ng/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Troponin as RV strain or ischemia marker; can be normal in low-risk PE and high with RV injury or competing ACS.", "baseline_range": [1, 14], "peak_day_range": [0, 3], "peak_value_range": [10, 3000], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "brain_natriuretic_peptide", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BNP as a marker of ventricular stretch in RV strain; baseline is affected by age, renal function, and chronic heart disease.", "baseline_range": [5, 100], "peak_day_range": [0, 3], "peak_value_range": [50, 5000], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Lactate rises with PE-related shock or tissue hypoperfusion.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [0.7, 10], "plateau_duration_days": [0.05, 7], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "ctpa_pulmonary_arterial_filling_defect_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "CT pulmonary angiography evidence of pulmonary arterial intraluminal filling defects.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.2, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pulmonary_embolic_burden_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "ctpa_pulmonary_arterial_filling_defect_activity", "shape_free_text": "Overall anatomic thrombus burden across main, lobar, segmental, and subsegmental pulmonary arteries.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.2, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "central_pulmonary_embolus_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "ctpa_pulmonary_arterial_filling_defect_activity", "shape_free_text": "Main pulmonary artery, right/left pulmonary artery, central, or saddle embolic involvement.", "baseline_range": [0.0, 0.002], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "segmental_subsegmental_embolus_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "ctpa_pulmonary_arterial_filling_defect_activity", "shape_free_text": "Segmental or subsegmental pulmonary artery embolic involvement.", "baseline_range": [0.0, 0.003], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "ventilation_perfusion_mismatch_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "V/Q mismatch or perfusion defect consistent with pulmonary vascular obstruction.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.2, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pulmonary_infarction_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pulmonary infarction, Hampton-hump-like wedge opacity, or peripheral infarct pattern downstream of embolic occlusion.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [5, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "pleural_effusion_presence", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pleural effusion present on imaging; PE-associated effusions are often small and may be ipsilateral, contralateral, or migratory.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "deep_venous_thrombosis_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Compression ultrasound, duplex, or clinical evidence of lower-extremity deep venous thrombosis; absence does not exclude PE.", "baseline_range": [0.0, 0.03], "peak_day_range": [-14, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 120], "knowledge_confidence": "high"},
+    {"axis_id": "venous_thrombosis_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Venous thrombosis in proximal leg, distal calf, pelvic, catheter, or right-heart sources.", "baseline_range": [0.0, 0.03], "peak_day_range": [-14, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 120], "knowledge_confidence": "high"},
+    {"axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Echocardiographic or CT pattern of acute RV strain, including McConnell sign, reduced RV systolic function, septal shift, or RV/LV enlargement.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 21], "decline_half_life_days": [1, 45], "knowledge_confidence": "high"},
+    {"axis_id": "right_ventricular_dilation_activity_in_D-PULMONARY-EMBOLISM", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "shape_free_text": "Right ventricular or right atrial dilation from acute pressure overload.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 21], "decline_half_life_days": [1, 45], "knowledge_confidence": "high"},
+    {"axis_id": "interventricular_septal_flattening_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "shape_free_text": "Septal flattening or leftward septal shift from RV pressure overload.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "pulmonary_hypertension_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Elevated pulmonary artery pressure on echo or catheter data during PE or chronic thromboembolic disease.", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 3650], "decline_half_life_days": [1, 365], "knowledge_confidence": "high"},
+    {"axis_id": "right_heart_thrombus_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Right-heart thrombus in transit or intracardiac thrombus visualized by echocardiography or CT.", "baseline_range": [0.0, 0.002], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 14], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of PE-related obstructive shock from RV failure and low LV filling.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 3], "peak_value_range": [0.001, 1.0], "plateau_duration_days": [0.02, 7], "decline_half_life_days": [0.2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of PE-related cardiac arrest, often pulseless electrical activity or sudden collapse.", "baseline_range": [0.0000005, 0.00002], "peak_day_range": [0, 2], "peak_value_range": [0.0005, 0.8], "plateau_duration_days": [0.0, 3], "decline_half_life_days": [0.1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of respiratory failure requiring high-flow oxygen, noninvasive ventilation, intubation, or ECMO.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 3], "peak_value_range": [0.001, 0.6], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "high"},
+    {"axis_id": "recurrent_venous_thromboembolism_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of recurrent DVT or PE under persistent risk, inadequate anticoagulation, or high thrombotic burden.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 365], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "chronic_thromboembolic_pulmonary_hypertension_hazard_in_D-PULMONARY-EMBOLISM", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of later chronic thromboembolic pulmonary hypertension after unresolved or recurrent embolic obstruction.", "baseline_range": [0.0000001, 0.00001], "peak_day_range": [30, 3650], "peak_value_range": [0.00001, 0.01], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of clinically important bleeding from anticoagulation, thrombolysis, invasive catheter therapy, trauma, coagulopathy, thrombocytopenia, or active bleeding lesions.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.4], "plateau_duration_days": [0.1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "intracranial_hemorrhage_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of intracranial hemorrhage, especially under thrombolysis, anticoagulation, recent stroke, trauma, hypertension, or intracranial lesions.", "baseline_range": [0.0000001, 0.00001], "peak_day_range": [0, 14], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0.1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "procedure_related_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of clinically important bleeding from catheter access, surgical embolectomy, ECMO cannulation, vascular injury, or periprocedural anticoagulation.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.25], "plateau_duration_days": [0.0, 14], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "high"},
+    {"axis_id": "therapeutic_anticoagulation_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Context probability that therapeutic anticoagulation can be given without prohibitive active bleeding or procedure constraint.", "baseline_range": [0.8, 1.0], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "knowledge_confidence": "high"},
+    {"axis_id": "thrombolysis_bleeding_risk_context", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Context probability of major bleeding or contraindication relevant to systemic or catheter-directed thrombolysis.", "baseline_range": [0.0, 0.1], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "knowledge_confidence": "high"},
+    {"axis_id": "renal_function_treatment_constraint", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Renal dysfunction context that affects CTPA contrast use, LMWH/DOAC dosing, and bleeding risk.", "baseline_range": [0.0, 0.1], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard for D-PULMONARY-EMBOLISM, driven by obstructive shock, cardiac arrest, refractory hypoxemia, severe comorbidity, recurrence, and treatment-limiting bleeding. Not a separate death manifold.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 7], "peak_value_range": [0.0005, 1.0], "plateau_duration_days": [0.02, 30], "decline_half_life_days": [0.5, 60], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "deep_venous_thrombosis_activity", "target_axis_id": "ctpa_pulmonary_arterial_filling_defect_activity", "relationship": "source_thrombus_supports_embolus", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "correlation_range": [0.25, 0.65], "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "DVT and PE often coexist, but absence of visible DVT does not exclude PE.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pulmonary_embolic_burden_activity", "target_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "relationship": "burden_to_rv_strain", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "phase": "acute_course", "clinical_rationale": "Higher embolic burden tends to raise RV afterload and strain.", "knowledge_confidence": "high"},
+    {"source_axis_id": "central_pulmonary_embolus_activity", "target_axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "central_clot_to_shock_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Central clot location raises risk of hemodynamic compromise, though shock also depends on reserve.", "knowledge_confidence": "high"},
+    {"source_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "target_axis_id": "serum_troponin", "relationship": "rv_strain_biomarker_cluster", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 2], "phase": "rv_strain", "clinical_rationale": "Troponin tends to rise when RV strain is substantial.", "knowledge_confidence": "high"},
+    {"source_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "target_axis_id": "brain_natriuretic_peptide", "relationship": "rv_stretch_biomarker_cluster", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "correlation_range": [0.3, 0.75], "lag_days_range": [0, 2], "phase": "rv_strain", "clinical_rationale": "BNP tends to rise with RV stretch.", "knowledge_confidence": "high"},
+    {"source_axis_id": "right_ventricular_dilation_activity_in_D-PULMONARY-EMBOLISM", "target_axis_id": "interventricular_septal_flattening_activity", "relationship": "rv_pressure_overload_cluster", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "correlation_range": [0.4, 0.85], "lag_days_range": [0, 1], "phase": "rv_strain", "clinical_rationale": "RV dilation and septal flattening often appear together under pressure overload.", "knowledge_confidence": "high"},
+    {"source_axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "target_axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "rv_failure_to_shock", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Severe RV strain can transition into obstructive shock.", "knowledge_confidence": "high"},
+    {"source_axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "target_axis_id": "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "shock_to_arrest", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "phase": "catastrophic_course", "clinical_rationale": "Untreated or refractory obstructive shock can deteriorate into arrest.", "knowledge_confidence": "high"},
+    {"source_axis_id": "oxygen_saturation", "target_axis_id": "dyspnea_respiratory_distress_activity", "relationship": "hypoxemia_to_distress", "coupling_type": "mixed", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Lower saturation often increases respiratory distress, though dyspnea can occur with normal saturation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "respiratory_rate", "target_axis_id": "arterial_paco2", "relationship": "tachypnea_to_hypocapnia", "coupling_type": "mixed", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 1], "phase": "acute_course", "clinical_rationale": "Hyperventilation lowers PaCO2 unless fatigue or chronic lung disease intervenes.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "pulmonary_infarction_activity", "target_axis_id": "pleuritic_chest_pain_activity", "relationship": "infarction_to_pleuritic_pain", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "phase": "infarction_or_pleural", "clinical_rationale": "Peripheral infarction can irritate pleura and cause inspiratory pain.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pulmonary_infarction_activity", "target_axis_id": "pleural_effusion_presence", "relationship": "infarction_to_effusion", "coupling_type": "mixed", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 5], "phase": "infarction_or_pleural", "clinical_rationale": "Pulmonary infarction and inflammatory mediator release can produce small effusions.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "d_dimer", "target_axis_id": "pulmonary_embolic_burden_activity", "relationship": "fibrin_turnover_partial_burden_marker", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "correlation_range": [0.1, 0.55], "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "D-dimer tends to rise with thrombus burden but is nonspecific and can be normal in selected cases.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "therapeutic_anticoagulation_feasibility", "target_axis_id": "recurrent_venous_thromboembolism_hazard", "relationship": "anticoagulation_unavailable_to_recurrence", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 30], "phase": "treatment_context", "clinical_rationale": "Inability to anticoagulate increases recurrent VTE risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "major_bleeding_hazard", "target_axis_id": "intracranial_hemorrhage_hazard", "relationship": "major_bleeding_to_ich", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "phase": "bleeding_context", "clinical_rationale": "Global major bleeding hazard includes transition to intracranial hemorrhage under thrombolysis or anticoagulation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "major_bleeding_hazard", "target_axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "bleeding_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "phase": "bleeding_context", "clinical_rationale": "Major bleeding can directly kill or limit PE therapy.", "knowledge_confidence": "high"},
+    {"source_axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "target_axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "phase": "severe_course", "clinical_rationale": "Shock is the dominant acute PE mortality pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "target_axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "relationship": "arrest_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "phase": "catastrophic_course", "clinical_rationale": "Arrest sharply increases short-term mortality.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "unfractionated_heparin_therapeutic_anticoagulation",
+      "display_name": "Unfractionated heparin therapeutic anticoagulation",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "anticoagulation",
+      "mechanistic_targets": ["M_PE_VENOUS_THROMBUS_FORMATION", "M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING"],
+      "trajectory_modifications": {
+        "recurrent_venous_thromboembolism_hazard": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 30]},
+        "pulmonary_embolic_burden_activity": {"peak_value_factor": [0.8, 1.0], "decline_half_life_days": [7, 60]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [1, 30]}
+      },
+      "required_context_axes": ["therapeutic_anticoagulation_feasibility", "major_bleeding_hazard", "renal_function_treatment_constraint"],
+      "effect_modifiers": [
+        {"axis_id": "therapeutic_anticoagulation_feasibility", "condition": "low", "effect": "weakens_or_precludes", "factor_range": [0.0, 0.5], "clinical_rationale": "Active major bleeding or urgent procedure may prevent therapeutic anticoagulation."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.0], "clinical_rationale": "Heparin adds bleeding risk when baseline bleeding hazard is high."}
+      ],
+      "side_effects": [{"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.08], "interpretation": "Anticoagulation-related bleeding"}],
+      "clinical_rationale": "Rapidly titratable anticoagulation limits clot propagation and recurrence and is useful when procedures, instability, renal dysfunction, or rapid reversal are relevant.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "low_molecular_weight_heparin_therapeutic_anticoagulation",
+      "display_name": "Low-molecular-weight heparin therapeutic anticoagulation",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "anticoagulation",
+      "mechanistic_targets": ["M_PE_VENOUS_THROMBUS_FORMATION", "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING"],
+      "trajectory_modifications": {
+        "recurrent_venous_thromboembolism_hazard": {"peak_value_factor": [0.15, 0.55], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 30]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [1, 30]}
+      },
+      "required_context_axes": ["therapeutic_anticoagulation_feasibility", "renal_function_treatment_constraint", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "renal_function_treatment_constraint", "condition": "high", "effect": "dose_limited_or_weakens", "factor_range": [0.4, 0.9], "clinical_rationale": "Renal dysfunction changes accumulation and dosing safety."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.0], "clinical_rationale": "High bleeding hazard narrows usable anticoagulant intensity."}
+      ],
+      "side_effects": [{"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.06], "interpretation": "Anticoagulation-related bleeding"}],
+      "clinical_rationale": "Parenteral anticoagulation limits propagation and recurrence when renal function and bleeding context permit.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "direct_oral_anticoagulant_for_pe",
+      "display_name": "Direct oral anticoagulant for pulmonary embolism",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "oral_anticoagulation",
+      "mechanistic_targets": ["M_PE_VENOUS_THROMBUS_FORMATION", "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING"],
+      "trajectory_modifications": {
+        "recurrent_venous_thromboembolism_hazard": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 60]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.55, 0.95], "decline_half_life_days": [1, 60]}
+      },
+      "required_context_axes": ["therapeutic_anticoagulation_feasibility", "renal_function_treatment_constraint", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "renal_function_treatment_constraint", "condition": "high", "effect": "dose_limited_or_precludes", "factor_range": [0.2, 0.8], "clinical_rationale": "Renal dysfunction and drug interactions can constrain DOAC use."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.4, 1.0], "clinical_rationale": "Bleeding risk affects anticoagulant selection and intensity."}
+      ],
+      "side_effects": [{"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.06], "interpretation": "Anticoagulation-related bleeding"}],
+      "clinical_rationale": "Oral factor Xa or thrombin inhibition suppresses recurrence risk after acute PE when the patient can absorb and safely receive it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "vitamin_k_antagonist_transition",
+      "display_name": "Vitamin K antagonist transition",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "oral_anticoagulation",
+      "mechanistic_targets": ["M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING"],
+      "trajectory_modifications": {
+        "recurrent_venous_thromboembolism_hazard": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [2, 90]}
+      },
+      "required_context_axes": ["therapeutic_anticoagulation_feasibility", "major_bleeding_hazard"],
+      "effect_modifiers": [{"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.4, 1.0], "clinical_rationale": "Over-anticoagulation or labile INR raises bleeding risk."}],
+      "side_effects": [{"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.08], "interpretation": "Anticoagulation-related bleeding"}],
+      "clinical_rationale": "Longer-term anticoagulation option when monitoring, interactions, pregnancy context, renal context, cost, or antiphospholipid context make it coherent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "systemic_thrombolysis_alteplase",
+      "display_name": "Systemic thrombolysis with alteplase",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "reperfusion",
+      "mechanistic_targets": ["M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT"],
+      "trajectory_modifications": {
+        "pulmonary_embolic_burden_activity": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [0.2, 7]},
+        "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [0.2, 7]},
+        "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 5]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.2, 0.9], "decline_half_life_days": [0.2, 10]}
+      },
+      "required_context_axes": ["obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "thrombolysis_bleeding_risk_context", "major_bleeding_hazard", "intracranial_hemorrhage_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "The hemodynamic benefit is most consequential when shock hazard is high."},
+        {"axis_id": "thrombolysis_bleeding_risk_context", "condition": "high", "effect": "toxicity_limited_or_precludes", "factor_range": [0.0, 0.7], "clinical_rationale": "Recent stroke, intracranial lesion, trauma, surgery, or active bleeding can dominate net effect."}
+      ],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.02, 0.3], "interpretation": "Systemic thrombolysis bleeding risk"},
+        {"axis_id": "intracranial_hemorrhage_hazard", "direction": "up", "magnitude_range": [0.001, 0.06], "interpretation": "Intracranial hemorrhage risk under thrombolysis"}
+      ],
+      "clinical_rationale": "Systemic fibrinolysis rapidly reduces thrombus burden and RV afterload, with benefit and harm determined by shock physiology and bleeding context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "catheter_directed_thrombolysis_or_thrombectomy",
+      "display_name": "Catheter-directed thrombolysis or thrombectomy",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "reperfusion",
+      "mechanistic_targets": ["M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD"],
+      "trajectory_modifications": {
+        "pulmonary_embolic_burden_activity": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [0.2, 10]},
+        "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 10]},
+        "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [0.2, 7]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.3, 0.95], "decline_half_life_days": [0.5, 14]}
+      },
+      "required_context_axes": ["pulmonary_embolic_burden_activity", "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "thrombolysis_bleeding_risk_context", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "thrombolysis_bleeding_risk_context", "condition": "high", "effect": "changes_modality_or_dose", "factor_range": [0.3, 0.9], "clinical_rationale": "Bleeding risk can favor mechanical thrombectomy or lower local lytic exposure over systemic lysis."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.0], "clinical_rationale": "Access-site and lytic-related bleeding remain relevant."}
+      ],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.005, 0.15], "interpretation": "Access and lytic bleeding risk"},
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.08], "interpretation": "Vascular access or catheter complication risk"}
+      ],
+      "clinical_rationale": "Endovascular reperfusion can reduce clot burden and RV strain when anatomy, expertise, and bleeding context make it coherent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "surgical_pulmonary_embolectomy",
+      "display_name": "Surgical pulmonary embolectomy",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "reperfusion",
+      "mechanistic_targets": ["M_PE_EMBOLIZATION_AND_PULMONARY_ARTERIAL_OCCLUSION", "M_PE_PULMONARY_VASCULAR_RESISTANCE_RV_AFTERLOAD", "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT"],
+      "trajectory_modifications": {
+        "pulmonary_embolic_burden_activity": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [0.2, 14]},
+        "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [0.2, 10]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.25, 0.95], "decline_half_life_days": [0.5, 21]}
+      },
+      "required_context_axes": ["central_pulmonary_embolus_activity", "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "thrombolysis_bleeding_risk_context", "major_bleeding_hazard"],
+      "effect_modifiers": [{"axis_id": "thrombolysis_bleeding_risk_context", "condition": "high", "effect": "can_strengthen_relative_role", "factor_range": [0.8, 1.3], "clinical_rationale": "Surgery may remain a reperfusion option when lysis risk is prohibitive and surgical resources are available."}],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.01, 0.25], "interpretation": "Operative bleeding risk"},
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.005, 0.15], "interpretation": "Procedure-related bleeding"}
+      ],
+      "clinical_rationale": "Operative embolectomy mechanically removes obstructing clot when anatomy and patient context support surgical reperfusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "inferior_vena_cava_filter",
+      "display_name": "Inferior vena cava filter",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "embolization_prevention",
+      "mechanistic_targets": ["M_PE_VENOUS_THROMBUS_FORMATION", "M_PE_RECURRENCE_OR_CHRONIC_THROMBOEMBOLIC_REMODELING"],
+      "trajectory_modifications": {
+        "recurrent_venous_thromboembolism_hazard": {"peak_value_factor": [0.3, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [7, 365]}
+      },
+      "required_context_axes": ["therapeutic_anticoagulation_feasibility", "deep_venous_thrombosis_activity", "recurrent_venous_thromboembolism_hazard"],
+      "effect_modifiers": [{"axis_id": "therapeutic_anticoagulation_feasibility", "condition": "low", "effect": "strengthens_contextual_role", "factor_range": [1.0, 1.4], "clinical_rationale": "Filter benefit is most coherent when anticoagulation cannot be used or recurrent embolization occurs despite it."}],
+      "side_effects": [{"axis_id": "deep_venous_thrombosis_activity", "direction": "up", "magnitude_range": [0.0, 0.2], "interpretation": "Filter-associated thrombosis or DVT propagation risk"}],
+      "clinical_rationale": "A caval filter can reduce embolization from lower-extremity clot in selected anticoagulation-limited contexts but does not dissolve existing pulmonary thrombus.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "oxygen_therapy",
+      "display_name": "Oxygen therapy",
+      "mode": ["push_state"],
+      "treatment_lane": "supportive_oxygenation",
+      "mechanistic_targets": ["M_PE_VQ_MISMATCH_AND_HYPOXEMIA"],
+      "trajectory_modifications": {
+        "oxygen_saturation": {"peak_value_factor": [1.0, 1.15], "decline_half_life_days": [0.1, 3]},
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [0.1, 7]}
+      },
+      "required_context_axes": ["oxygen_saturation", "dyspnea_respiratory_distress_activity"],
+      "effect_modifiers": [{"axis_id": "acute_respiratory_failure_hazard", "condition": "high", "effect": "supportive_not_definitive", "factor_range": [0.6, 1.0], "clinical_rationale": "Oxygen improves hypoxemia but does not remove pulmonary vascular obstruction."}],
+      "clinical_rationale": "Supplemental oxygen raises arterial oxygen content while definitive clot-directed therapy acts on the embolic field.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "vasopressor_support_for_pe_shock",
+      "display_name": "Vasopressor support for PE shock",
+      "mode": ["push_state"],
+      "treatment_lane": "hemodynamic_support",
+      "mechanistic_targets": ["M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT"],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "decline_half_life_days": [0.05, 3]},
+        "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.5, 0.95], "decline_half_life_days": [0.1, 5]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.6, 0.98], "decline_half_life_days": [0.1, 7]}
+      },
+      "required_context_axes": ["mean_arterial_pressure", "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "serum_lactate"],
+      "effect_modifiers": [{"axis_id": "pulmonary_embolic_burden_activity", "condition": "high", "effect": "requires_reperfusion_for_durable_effect", "factor_range": [0.5, 1.0], "clinical_rationale": "Pressors support perfusion but cannot remove obstruction."}],
+      "clinical_rationale": "Vasopressors support coronary and systemic perfusion during PE-related obstructive shock while reperfusion or anticoagulation addresses the cause.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "mechanical_ventilation_or_noninvasive_ventilation",
+      "display_name": "Mechanical or noninvasive ventilation",
+      "mode": ["push_state", "modulate_sigma"],
+      "treatment_lane": "supportive_oxygenation",
+      "mechanistic_targets": ["M_PE_VQ_MISMATCH_AND_HYPOXEMIA", "M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT"],
+      "trajectory_modifications": {
+        "acute_respiratory_failure_hazard": {"peak_value_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 10]},
+        "oxygen_saturation": {"peak_value_factor": [1.0, 1.2], "decline_half_life_days": [0.1, 5]}
+      },
+      "required_context_axes": ["acute_respiratory_failure_hazard", "oxygen_saturation", "mean_arterial_pressure", "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM"],
+      "effect_modifiers": [{"axis_id": "right_ventricular_strain_activity_in_D-PULMONARY-EMBOLISM", "condition": "high", "effect": "hemodynamically_sensitive", "factor_range": [0.5, 1.0], "clinical_rationale": "Positive pressure can reduce venous return and worsen RV loading if not managed carefully."}],
+      "side_effects": [{"axis_id": "mean_arterial_pressure", "direction": "down", "magnitude_range": [0, 15], "interpretation": "Positive pressure may worsen preload and blood pressure in RV failure"}],
+      "clinical_rationale": "Ventilatory support treats respiratory failure but must be balanced against RV preload and pressure effects.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "ecmo_bridge_for_refractory_pe_shock",
+      "display_name": "ECMO bridge for refractory PE shock",
+      "mode": ["push_state", "modulate_sigma"],
+      "treatment_lane": "mechanical_circulatory_support",
+      "mechanistic_targets": ["M_PE_RIGHT_VENTRICULAR_FAILURE_LOW_OUTPUT", "M_PE_VQ_MISMATCH_AND_HYPOXEMIA"],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.5], "decline_half_life_days": [0.1, 7]},
+        "oxygen_saturation": {"peak_value_factor": [1.05, 1.25], "decline_half_life_days": [0.1, 7]},
+        "mortality_hazard_in_D-PULMONARY-EMBOLISM": {"peak_value_factor": [0.4, 0.95], "decline_half_life_days": [0.5, 14]}
+      },
+      "required_context_axes": ["obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "cardiac_arrest_hazard_in_D-PULMONARY-EMBOLISM", "major_bleeding_hazard"],
+      "effect_modifiers": [{"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.4, 1.0], "clinical_rationale": "Cannulation and circuit anticoagulation increase bleeding risk."}],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.01, 0.25], "interpretation": "Cannulation and anticoagulation bleeding risk"},
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.005, 0.2], "interpretation": "Cannulation complication risk"}
+      ],
+      "clinical_rationale": "Mechanical circulatory support can bridge refractory shock or arrest to reperfusion, anticoagulation, or recovery when resources and bleeding context allow.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_surgery_trauma_or_immobility_context",
+      "display_name": "Recent surgery, trauma, hospitalization, or immobility",
+      "risk_type": "prior_and_trajectory_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "deep_venous_thrombosis_activity", "effect": "higher_peak", "factor_range": [1.2, 3.0], "clinical_rationale": "Stasis and endothelial injury raise source DVT likelihood."},
+            {"axis_id": "therapeutic_anticoagulation_feasibility", "effect": "more_variable", "factor_range": [0.5, 1.2], "clinical_rationale": "Recent surgery or trauma can limit anticoagulation or thrombolysis."},
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_peak", "factor_range": [1.2, 5.0], "clinical_rationale": "Postoperative or traumatic bleeding context increases treatment bleeding risk."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "active_malignancy_context",
+      "display_name": "Active malignancy context",
+      "risk_type": "prior_and_recurrence_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "recurrent_venous_thromboembolism_hazard", "effect": "higher_peak", "factor_range": [1.5, 6.0], "clinical_rationale": "Cancer-associated thrombosis increases recurrence risk."},
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Tumor bleeding, thrombocytopenia, procedures, and drug interactions can increase bleeding."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "pregnancy_postpartum_or_estrogen_context",
+      "display_name": "Pregnancy, postpartum, or estrogen exposure context",
+      "risk_type": "prior_and_treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "deep_venous_thrombosis_activity", "effect": "higher_peak", "factor_range": [1.2, 3.0], "clinical_rationale": "Pregnancy and estrogenic contexts promote VTE."},
+            {"axis_id": "renal_function_treatment_constraint", "effect": "contextual_treatment_selection", "factor_range": [1.0, 1.0], "clinical_rationale": "Pregnancy changes imaging and anticoagulant selection context."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "prior_vte_or_thrombophilia_context",
+      "display_name": "Prior VTE or thrombophilia context",
+      "risk_type": "prior_and_recurrence_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 12.0],
+          "axis_response_modulation": [
+            {"axis_id": "recurrent_venous_thromboembolism_hazard", "effect": "higher_peak", "factor_range": [1.5, 8.0], "clinical_rationale": "Prior VTE and thrombophilia increase recurrence hazard."},
+            {"axis_id": "d_dimer", "effect": "more_variable", "factor_range": [0.7, 2.0], "clinical_rationale": "Baseline inflammatory or thrombotic context can alter D-dimer interpretation."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "chronic_cardiopulmonary_disease_or_frailty",
+      "display_name": "Chronic cardiopulmonary disease or frailty",
+      "risk_type": "axis_and_hazard_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": [
+            {"axis_id": "dyspnea_activity", "effect": "higher_baseline_and_more_variable", "factor_range": [1.2, 3.0], "clinical_rationale": "Baseline dyspnea can be high and PE presentation less specific."},
+            {"axis_id": "oxygen_saturation", "effect": "lower_baseline_or_lower_peak", "factor_range": [0.8, 1.0], "clinical_rationale": "Underlying lung or heart disease lowers reserve."},
+            {"axis_id": "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Reduced RV or pulmonary reserve increases hemodynamic risk for a given embolic burden."},
+            {"axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect": "higher_peak", "factor_range": [1.5, 6.0], "clinical_rationale": "Frailty and cardiopulmonary disease worsen survival."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "renal_impairment_context",
+      "display_name": "Renal impairment context",
+      "risk_type": "treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.4],
+          "axis_response_modulation": [
+            {"axis_id": "renal_function_treatment_constraint", "effect": "higher_peak", "factor_range": [1.0, 1.0], "clinical_rationale": "Renal impairment affects contrast imaging and anticoagulant choice."},
+            {"axis_id": "brain_natriuretic_peptide", "effect": "higher_baseline", "factor_range": [1.5, 6.0], "clinical_rationale": "Renal dysfunction can raise BNP independent of acute RV strain."},
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Renal dysfunction increases anticoagulant accumulation and bleeding risk."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "active_bleeding_recent_stroke_or_intracranial_lesion_context",
+      "display_name": "Active bleeding, recent stroke, trauma, or intracranial lesion context",
+      "risk_type": "treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.2],
+          "axis_response_modulation": [
+            {"axis_id": "therapeutic_anticoagulation_feasibility", "effect": "lower_peak", "factor_range": [0.0, 0.5], "clinical_rationale": "Bleeding or CNS risk can preclude anticoagulation."},
+            {"axis_id": "thrombolysis_bleeding_risk_context", "effect": "higher_peak", "factor_range": [1.0, 1.0], "clinical_rationale": "Thrombolysis harm rises with active or recent bleeding-risk contexts."},
+            {"axis_id": "intracranial_hemorrhage_hazard", "effect": "higher_peak", "factor_range": [2.0, 20.0], "clinical_rationale": "Intracranial risk factors strongly increase ICH hazard under lysis or anticoagulation."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "age",
+      "display_name": "Age context",
+      "risk_type": "prior_and_hazard_modifier",
+      "modulation": {
+        "older_adult": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect": "higher_peak", "factor_range": [1.5, 6.0], "clinical_rationale": "Older age worsens PE reserve and bleeding risk."},
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Age increases anticoagulation and thrombolysis bleeding hazard."}
+          ]
+        },
+        "young_adult": {
+          "P_disease_ratio": [0.5, 1.2],
+          "axis_response_modulation": [
+            {"axis_id": "mortality_hazard_in_D-PULMONARY-EMBOLISM", "effect": "lower_peak", "factor_range": [0.3, 0.9], "clinical_rationale": "Young patients usually have greater cardiopulmonary reserve if clot burden is not massive."}
+          ]
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "serial_hemodynamic_and_oxygenation_monitoring", "description": "Track blood pressure, heart rate, oxygen saturation, respiratory rate, urine output, lactate, and clinical work of breathing during acute PE."},
+    {"care_id": "risk_stage_with_echo_ct_biomarkers_and_bleeding_context", "description": "Use echo/CT RV strain, troponin/BNP, shock markers, clot burden, and bleeding-risk context as state axes rather than fixed treatment labels."},
+    {"care_id": "avoid_excessive_positive_pressure_or_fluid_in_rv_failure", "description": "Balance oxygenation, preload, vasopressors, and ventilation carefully when RV failure is active."},
+    {"care_id": "evaluate_source_dvt_and_recurrence_context", "description": "Assess lower-extremity/pelvic/catheter thrombosis and ongoing hypercoagulable context to inform recurrence hazard."},
+    {"care_id": "plan_anticoagulation_duration_and_follow_up", "description": "After acute stabilization, reassess provoking context, bleeding risk, recurrence risk, symptoms, and evidence of chronic thromboembolic disease."}
+  ],
+  "ontology_notes": [
+    "Pulmonary embolism here is the first-layer disease leaf. Massive, submassive, provoked, unprovoked, recurrent, and chronic thromboembolic contexts are not encoded in the disease name.",
+    "CTPA, V/Q, echo, duplex, and D-dimer evidence may be rankable when the case is explicitly a post-imaging or post-lab evidence-stage test; final diagnosis and response to therapy remain non-ranking.",
+    "Anticoagulation and thrombolysis effects are represented through recurrent VTE, embolic burden, RV strain, shock, major bleeding, ICH, and mortality hazards rather than treatment labels."
+  ]
+}
+

@@ -1,0 +1,602 @@
+{
+  "disease": "D-ACUTE-CHOLECYSTITIS",
+  "disease_id": "D-ACUTE-CHOLECYSTITIS",
+  "disease_name": "Acute cholecystitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute cholecystitis",
+    "leaf_granularity": "First-layer clinical disease leaf for the full acute cholecystitis spectrum. Calculous, acalculous, emphysematous, gangrenous, perforated, pregnancy-associated, elderly, diabetic, immunocompromised, postoperative, and high-surgical-risk presentations remain risk, context, source-control, event, or future subtype axes rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume RUQ or epigastric pain, Murphy sign, fever or inflammatory labs, cholestatic/hepatocellular labs, and ultrasound/CT/MR imaging evidence. Operative findings, histopathology, culture species or susceptibility, final paper diagnosis, treatment response, and follow-up outcomes remain confirmatory or non-ranking unless a separate post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS",
+      "display_name": "Cystic duct obstruction or gallbladder stasis",
+      "clinical_meaning": "Gallstone, sludge, cystic-duct edema, gallbladder neck impaction, dysmotility, critical illness, ischemia, or prolonged fasting obstructs gallbladder emptying and traps bile.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-3, 1],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE",
+      "display_name": "Gallbladder distension and pressure injury",
+      "clinical_meaning": "Obstructed or poorly emptying gallbladder accumulates bile and mucus, raising intraluminal pressure and stretching visceral afferents.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_CHEMICAL_MUCOSAL_INJURY",
+      "display_name": "Chemical mucosal injury from concentrated bile",
+      "clinical_meaning": "Concentrated bile, lysolecithin, bile salts, and mucosal edema irritate the gallbladder wall and amplify sterile inflammation even before overt infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_AC_BACTERIAL_SUPPURATION",
+      "display_name": "Bacterial invasion and suppurative inflammation",
+      "clinical_meaning": "Stasis and wall injury permit enteric bacterial proliferation or secondary infection, driving neutrophilic inflammation, pus, and sepsis risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION",
+      "display_name": "Local peritoneal and hepatic-bed inflammation",
+      "clinical_meaning": "Inflamed gallbladder serosa irritates adjacent peritoneum and hepatic bed, producing focal tenderness, Murphy sign, pericholecystic fluid, and fat stranding.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_MURAL_ISCHEMIA_GANGRENE",
+      "display_name": "Mural ischemia and gangrenous transformation",
+      "clinical_meaning": "Persistent pressure, thrombosis, vascular disease, diabetes, or critical illness compromises gallbladder-wall perfusion and can progress to necrosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [1, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [2, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic inflammatory response",
+      "clinical_meaning": "Local gallbladder inflammation, bacterial products, and complications drive fever, leukocytosis, CRP elevation, tachycardia, hypotension, and organ dysfunction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS",
+      "display_name": "Perforation, abscess, or bile peritonitis cascade",
+      "clinical_meaning": "Gangrene or uncontrolled inflammation breaches the gallbladder wall, causing contained pericholecystic abscess, hepatic/subcapsular abscess, free perforation, or bile peritonitis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [1, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 60],
+      "decline_half_life_days": [2, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AC_SOURCE_CONTROL_RESOLUTION",
+      "display_name": "Gallbladder source-control resolution",
+      "clinical_meaning": "Drainage or cholecystectomy decompresses the gallbladder, removes the septic/inflammatory focus, and allows inflammatory and hazard axes to decline.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [30, 3650],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "cholelithiasis_sludge_context_probability", "target_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [-365, 1], "phase": "trigger", "clinical_rationale": "Gallstones or sludge are the commonest obstructive trigger for acute cholecystitis.", "knowledge_confidence": "high"},
+    {"source_id": "impacted_gallbladder_neck_stone_activity", "target_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [-3, 1], "phase": "trigger", "clinical_rationale": "A nonmobile stone at the neck or cystic duct directly blocks gallbladder drainage.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "target_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "Blocked emptying causes bile/mucus retention and gallbladder distension.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "target_id": "M_AC_CHEMICAL_MUCOSAL_INJURY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Stagnant concentrated bile injures the mucosa and recruits inflammation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "target_id": "M_AC_BACTERIAL_SUPPURATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "infection", "clinical_rationale": "Stasis and mucosal injury support secondary bacterial growth.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "M_AC_MURAL_ISCHEMIA_GANGRENE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 7], "phase": "complication", "clinical_rationale": "Persistent distension can impair mural perfusion and cause gangrenous change.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_CHEMICAL_MUCOSAL_INJURY", "target_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "local_inflammation", "clinical_rationale": "Mucosal and mural inflammation extends to serosa and adjacent peritoneum.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_BACTERIAL_SUPPURATION", "target_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "local_inflammation", "clinical_rationale": "Suppurative infection increases local edema, fluid, and fat stranding.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_BACTERIAL_SUPPURATION", "target_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Bacterial products and cytokines drive fever, leukocytosis, CRP, and sepsis physiology.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_MURAL_ISCHEMIA_GANGRENE", "target_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "complication", "clinical_rationale": "Necrotic gallbladder wall is prone to perforation and abscess formation.", "knowledge_confidence": "high"},
+    {"source_id": "source_control_adequacy", "target_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 1], "phase": "treatment_response", "clinical_rationale": "Effective drainage or cholecystectomy creates the resolution vector.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "target_id": "M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "treatment_response", "clinical_rationale": "Drainage or gallbladder removal resolves the obstructed infected reservoir.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "target_id": "M_AC_BACTERIAL_SUPPURATION", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "treatment_response", "clinical_rationale": "Source control lowers bacterial burden in the gallbladder focus.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "target_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "treatment_response", "clinical_rationale": "Source control and drainage reduce ongoing leakage or abscess progression.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "cystic_duct_obstruction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "early", "clinical_rationale": "Distension and obstructive context are the clinical expression of cystic duct blockage.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "gallbladder_distension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "Intraluminal pressure produces distended gallbladder on imaging.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "gallbladder_hydrops_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "early", "clinical_rationale": "Prolonged obstruction can form hydropic gallbladder.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Visceral distension causes steady upper abdominal pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "right_upper_quadrant_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Gallbladder pain classically localizes to the right upper quadrant.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "epigastric_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Early or atypical gallbladder pain can be epigastric.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_GALLBLADDER_DISTENSION_PRESSURE", "target_id": "referred_biliary_pain_radiation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Diaphragmatic or biliary visceral referral can radiate to the back or right shoulder.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "abdominal_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Serosal inflammation causes focal abdominal tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "right_upper_quadrant_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Inflamed gallbladder under the liver produces RUQ tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "murphy_sign_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Palpation during inspiration contacts an inflamed gallbladder and arrests inspiration.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "sonographic_murphy_sign_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "imaging", "clinical_rationale": "Probe pressure over the inflamed gallbladder reproduces focal tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "gallbladder_wall_thickening_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "imaging", "clinical_rationale": "Inflamed edematous gallbladder wall thickens on US/CT/MR.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "gallbladder_wall_thickness_mm", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "imaging", "clinical_rationale": "Wall edema increases measured gallbladder-wall thickness.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "gallbladder_wall_hyperemia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "imaging", "clinical_rationale": "Acute inflammation can increase Doppler wall hyperemia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "pericholecystic_fluid_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "imaging", "clinical_rationale": "Serosal inflammation and edema produce pericholecystic fluid.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "pericholecystic_fat_stranding_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "imaging", "clinical_rationale": "Inflamed gallbladder irritates surrounding fat and hepatic bed.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "peritoneal_signs_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "complication", "clinical_rationale": "Progressive local or diffuse inflammation causes guarding or rebound.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Inflammatory cytokines may produce fever, though fever can be absent.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Systemic inflammation raises measured temperature in many cases.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Pain, fever, hypovolemia, and sepsis can cause tachycardia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "systemic", "clinical_rationale": "Neutrophilic inflammation often raises WBC but can be normal in early or immunomodulated presentations.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "systemic", "clinical_rationale": "Acute bacterial or sterile neutrophilic inflammation increases neutrophil fraction.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 4], "phase": "systemic", "clinical_rationale": "CRP rises with gallbladder inflammation and complicated disease.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "biliary_context", "clinical_rationale": "Edema or concurrent duct stone can cause mild hyperbilirubinemia in some cholecystitis cases.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "serum_alkaline_phosphatase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "biliary_context", "clinical_rationale": "Biliary irritation or concurrent obstruction can raise alkaline phosphatase.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "biliary_context", "clinical_rationale": "AST may rise with biliary obstruction, adjacent hepatic inflammation, or systemic injury.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "biliary_context", "clinical_rationale": "ALT may rise with biliary obstruction or adjacent hepatic inflammation.", "knowledge_confidence": "medium"},
+    {"source_id": "biliary_obstruction_activity", "target_id": "common_bile_duct_diameter_mm", "effect_on_target": "increase", "edge_type": "axis_to_axis", "lag_days_range": [0, 3], "phase": "biliary_context", "clinical_rationale": "Common duct obstruction dilates the duct; this is a context axis for concurrent choledocholithiasis or cholangitis.", "knowledge_confidence": "high"},
+    {"source_id": "biliary_obstruction_activity", "target_id": "serum_bilirubin_direct", "effect_on_target": "increase", "edge_type": "axis_to_axis", "lag_days_range": [0, 3], "phase": "biliary_context", "clinical_rationale": "Extrahepatic obstruction raises direct bilirubin.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_LOCAL_PERITONEAL_INFLAMMATION", "target_id": "serum_lipase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "adjacent_pancreatic_or_biliary_context", "clinical_rationale": "Gallstone passage or adjacent inflammation can produce mild to moderate lipase elevation without making pancreatitis part of the disease name.", "knowledge_confidence": "low"},
+    {"source_id": "M_AC_MURAL_ISCHEMIA_GANGRENE", "target_id": "gallbladder_gangrene_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Mural ischemia produces necrotic or gangrenous gallbladder findings.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_MURAL_ISCHEMIA_GANGRENE", "target_id": "gallbladder_gangrene_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Ongoing ischemia raises daily risk of gangrenous conversion.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "gallbladder_perforation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Wall breach appears as discontinuity, communication, free leakage, or surgical/pathologic perforation.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Uncontrolled ischemic or necrotic wall injury increases daily perforation risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "pericholecystic_abscess_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "phase": "complication", "clinical_rationale": "Contained perforation or suppuration can form pericholecystic abscess.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "subcapsular_hepatic_abscess_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "phase": "complication", "clinical_rationale": "Hepatic-bed spread or transhepatic perforation can produce hepatic or subcapsular abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "bile_peritonitis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Free bile leak causes chemical and infectious peritonitis.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "progression_to_septic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Uncontrolled complicated gallbladder infection can progress to septic shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "target_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 7], "phase": "outcome", "clinical_rationale": "Perforation, abscess, bile peritonitis, and shock raise lifespan mortality hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "target_id": "source_control_adequacy", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "treatment_response", "clinical_rationale": "Successful drainage or gallbladder removal increases source-control adequacy.", "knowledge_confidence": "high"},
+    {"source_id": "M_AC_SOURCE_CONTROL_RESOLUTION", "target_id": "source_control_need", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "treatment_response", "clinical_rationale": "After the gallbladder focus is controlled, ongoing source-control need falls.", "knowledge_confidence": "high"},
+    {"source_id": "active_antibiotic_coverage_probability", "target_id": "M_AC_BACTERIAL_SUPPURATION", "effect_on_target": "decrease", "edge_type": "axis_to_mechanism", "lag_days_range": [0, 2], "phase": "treatment_response", "clinical_rationale": "Active antimicrobial coverage reduces susceptible bacterial burden but does not decompress an obstructed gallbladder.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "cholelithiasis_sludge_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed or suspected gallstone, biliary sludge, microlithiasis, gallbladder neck stone, or prior biliary colic context.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "impacted_gallbladder_neck_stone_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cholelithiasis_sludge_context_probability", "shape_free_text": "Nonmobile stone or sludge impacted at the gallbladder neck or cystic duct.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 90], "knowledge_confidence": "high"},
+    {"axis_id": "cystic_duct_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Functional or anatomic cystic duct obstruction driving gallbladder decompression need.", "baseline_range": [0.0, 0.03], "peak_day_range": [-2, 2], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_distension_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Distended or hydropic gallbladder on ultrasound, CT, or MR.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_hydrops_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "gallbladder_distension_activity", "shape_free_text": "Mucocele or hydropic gallbladder from persistent cystic-duct obstruction.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "gallbladder_wall_thickening_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Gallbladder wall edema or thickening compatible with acute inflammation.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_wall_thickness_mm", "category": "imaging_finding", "unit": "mm", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "gallbladder_wall_thickening_activity", "shape_free_text": "Measured gallbladder-wall thickness; values above about 3 mm support wall edema but are not specific alone.", "baseline_range": [1.0, 3.0], "peak_day_range": [0, 5], "peak_value_range": [2.0, 12.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_wall_hyperemia_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "gallbladder_wall_thickening_activity", "shape_free_text": "Doppler or contrast evidence of hyperemic inflamed gallbladder wall.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "pericholecystic_fluid_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pericholecystic fluid or edema surrounding the gallbladder.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "pericholecystic_fat_stranding_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Inflammatory fat stranding around the gallbladder or hepatic bed on CT/MR.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Upper abdominal pain from gallbladder distension or inflammation.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "right_upper_quadrant_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Pain localizing to the right upper quadrant.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "epigastric_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Epigastric pain presentation of gallbladder inflammation.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "referred_biliary_pain_radiation_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Back or right-shoulder radiation from biliary visceral or diaphragmatic referral.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea or vomiting accompanying biliary pain.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "anorexia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reduced appetite with acute upper abdominal inflammation.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_tenderness_activity", "category": "physical_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abdominal tenderness on examination.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "right_upper_quadrant_tenderness_activity", "category": "physical_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_tenderness_activity", "shape_free_text": "Tenderness localized to the right upper quadrant or gallbladder fossa.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "murphy_sign_activity", "category": "physical_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "right_upper_quadrant_tenderness_activity", "shape_free_text": "Inspiratory arrest or marked pain during palpation of the gallbladder region.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "sonographic_murphy_sign_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "right_upper_quadrant_tenderness_activity", "shape_free_text": "Maximal tenderness when the ultrasound probe compresses the gallbladder.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "peritoneal_signs_activity", "category": "physical_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Guarding, rebound, rigidity, or diffuse peritoneal irritation.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reported or documented fever as part of systemic inflammatory response.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured body temperature.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 3], "peak_value_range": [36.8, 39.5], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate, raised by pain, fever, hypovolemia, or sepsis.", "baseline_range": [60, 90], "peak_day_range": [0, 3], "peak_value_range": [70, 140], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure, lower in severe sepsis, dehydration, hemorrhage, or frailty.", "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [70, 150], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure as a perfusion state marker.", "baseline_range": [70, 100], "peak_day_range": [0, 7], "peak_value_range": [50, 105], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "x10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Leukocyte count; can be normal early or in atypical/immune-modulated cases.", "baseline_range": [4.0, 10.0], "peak_day_range": [0, 4], "peak_value_range": [4.0, 28.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Neutrophil percentage in acute inflammatory response.", "baseline_range": [40, 75], "peak_day_range": [0, 4], "peak_value_range": [55, 95], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein, often elevated with acute inflammation and higher in complicated disease.", "baseline_range": [0.2, 5.0], "peak_day_range": [0, 5], "peak_value_range": [5.0, 300.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin; usually normal or mildly elevated unless concurrent duct obstruction, cholangitis, liver injury, or severe inflammation exists.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.2, 6.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_direct", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Direct bilirubin as a marker of cholestatic or common-duct obstruction context.", "baseline_range": [0.0, 0.3], "peak_day_range": [0, 7], "peak_value_range": [0.0, 4.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Alkaline phosphatase; can be normal, mildly elevated, or higher with biliary obstruction.", "baseline_range": [40, 130], "peak_day_range": [0, 14], "peak_value_range": [40, 700], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST can rise with biliary obstruction, adjacent hepatic inflammation, or systemic injury.", "baseline_range": [10, 40], "peak_day_range": [0, 7], "peak_value_range": [10, 1000], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT can rise with biliary obstruction or adjacent hepatic inflammation.", "baseline_range": [7, 55], "peak_day_range": [0, 7], "peak_value_range": [7, 1000], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lipase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lipase is usually normal in isolated cholecystitis but may be mildly or moderately elevated with gallstone passage, adjacent inflammation, or overlapping pancreatic irritation.", "baseline_range": [0, 60], "peak_day_range": [0, 5], "peak_value_range": [0, 1000], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "common_bile_duct_diameter_mm", "category": "imaging_finding", "unit": "mm", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Common bile duct diameter; dilation supports concurrent choledocholithiasis or obstruction context.", "baseline_range": [2, 6], "peak_day_range": [0, 7], "peak_value_range": [2, 20], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "biliary_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Concurrent common-bile-duct obstruction context; relevant to ERCP and cholangitis mimic/comorbidity, not required for acute cholecystitis.", "baseline_range": [0.0, 0.03], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "gallbladder_gangrene_activity", "category": "imaging_or_pathology_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging, operative, or pathology evidence of gangrenous gallbladder wall necrosis.", "baseline_range": [0.0, 0.005], "peak_day_range": [1, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 90], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_perforation_activity", "category": "imaging_or_pathology_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Wall discontinuity, contrast/fluid communication, free perforation, or operative/pathology evidence of perforation.", "baseline_range": [0.0, 0.002], "peak_day_range": [1, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [2, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pericholecystic_abscess_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Contained pericholecystic abscess or phlegmon around the gallbladder.", "baseline_range": [0.0, 0.002], "peak_day_range": [1, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 90], "knowledge_confidence": "high"},
+    {"axis_id": "subcapsular_hepatic_abscess_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Hepatic-bed, intrahepatic, or subcapsular abscess/phlegmon from gallbladder inflammation or perforation.", "baseline_range": [0.0, 0.001], "peak_day_range": [1, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "bile_peritonitis_activity", "category": "clinical_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical or imaging evidence of bile leak causing chemical/infected peritonitis.", "baseline_range": [0.0, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for gallbladder decompression, drainage, cholecystectomy, or complication drainage.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of achieved source control after drainage or cholecystectomy.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that antimicrobial regimen covers likely biliary organisms given microbiology, local resistance, allergy, and source context.", "baseline_range": [0.0, 0.2], "peak_day_range": [-1, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "cholecystectomy_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Technical and physiologic feasibility of laparoscopic or open cholecystectomy given anatomy, shock, pregnancy, anticoagulation, frailty, and surgical resources.", "baseline_range": [0.4, 1.0], "peak_day_range": [-3, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 90], "decline_half_life_days": [7, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "percutaneous_cholecystostomy_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Feasibility of image-guided gallbladder drainage given anatomy, coagulopathy, interventional access, and gallbladder distension.", "baseline_range": [0.3, 0.95], "peak_day_range": [-3, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 90], "decline_half_life_days": [7, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "pregnancy_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Current pregnancy context affecting gallstone risk, imaging, anesthesia, antibiotics, and procedural timing.", "baseline_range": [0.0, 0.03], "peak_day_range": [-280, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 280], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "high_surgical_risk_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "High anesthesia or operative risk from frailty, organ failure, anticoagulation, severe cardiopulmonary disease, hostile abdomen, or late pregnancy.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "beta_lactam_allergy_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinically meaningful beta-lactam allergy context modifying antibiotic choices.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reduced kidney function or dialysis context requiring antimicrobial and contrast dose adjustment.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "anticoagulation_bleeding_risk_context", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Therapeutic anticoagulation, coagulopathy, or thrombocytopenia context increasing procedural bleeding risk.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "gallbladder_gangrene_hazard_in_D-ACUTE-CHOLECYSTITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of gallbladder-wall ischemic necrosis or gangrenous conversion.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [1, 7], "peak_value_range": [0.001, 0.2], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of gallbladder perforation from necrosis, severe infection, or delayed source control.", "baseline_range": [0.000005, 0.0003], "peak_day_range": [1, 14], "peak_value_range": [0.0005, 0.15], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [2, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pericholecystic_abscess_hazard_in_D-ACUTE-CHOLECYSTITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of pericholecystic, hepatic-bed, or subcapsular abscess formation.", "baseline_range": [0.000005, 0.0003], "peak_day_range": [2, 21], "peak_value_range": [0.0005, 0.12], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "bile_peritonitis_hazard_in_D-ACUTE-CHOLECYSTITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of free bile leak or diffuse bile peritonitis after wall breach or procedural complication.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 14], "peak_value_range": [0.0002, 0.1], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "progression_to_septic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of progression to septic shock physiology from uncontrolled biliary or intra-abdominal infection.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.12], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily death hazard emergent from age, frailty, diabetes, critical illness, pregnancy context, gangrene, perforation, abscess, bile peritonitis, septic shock, delayed source control, and treatment complications.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 21], "peak_value_range": [0.00001, 0.12], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 120], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "cholelithiasis_sludge_context_probability", "target_axis_id": "cystic_duct_obstruction_activity", "relationship": "stone_or_sludge_obstructs_cystic_duct", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Stone or sludge context increases cystic duct obstruction probability.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cystic_duct_obstruction_activity", "target_axis_id": "gallbladder_distension_activity", "relationship": "obstruction_to_distension", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Obstructed gallbladder drainage causes distension.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gallbladder_wall_thickening_activity", "target_axis_id": "gallbladder_wall_thickness_mm", "relationship": "finding_measurement_coherence", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 0], "clinical_rationale": "Qualitative wall thickening and measured thickness represent the same imaging feature at different granularity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gallbladder_wall_thickening_activity", "target_axis_id": "pericholecystic_fluid_activity", "relationship": "edema_and_fluid_cluster", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.25, 0.8], "lag_days_range": [0, 2], "clinical_rationale": "Wall edema and pericholecystic fluid often co-occur but either can be absent.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "pericholecystic_fluid_activity", "target_axis_id": "pericholecystic_fat_stranding_activity", "relationship": "pericholecystic_inflammation_cluster", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.25, 0.8], "lag_days_range": [0, 2], "clinical_rationale": "Pericholecystic fluid and fat stranding are related expressions of local inflammation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "right_upper_quadrant_pain_activity", "target_axis_id": "right_upper_quadrant_tenderness_activity", "relationship": "pain_site_matches_tenderness_site", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "clinical_rationale": "RUQ pain and RUQ tenderness tend to co-vary.", "knowledge_confidence": "high"},
+    {"source_axis_id": "murphy_sign_activity", "target_axis_id": "sonographic_murphy_sign_activity", "relationship": "manual_and_sonographic_murphy_coherence", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.3, 0.85], "lag_days_range": [0, 1], "clinical_rationale": "Both features reflect focal gallbladder tenderness, although one can be absent.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "neutrophil_fraction", "relationship": "neutrophilic_leukocytosis", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.25, 0.75], "lag_days_range": [0, 1], "clinical_rationale": "Inflammatory leukocytosis is often neutrophil-predominant.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "systemic_inflammation_cluster", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.2, 0.7], "lag_days_range": [0, 2], "clinical_rationale": "WBC and CRP are related but timing and immune modulation can decouple them.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_bilirubin_total", "target_axis_id": "serum_alkaline_phosphatase", "relationship": "cholestatic_lab_cluster", "coupling_type": "noise_correlation", "effect_direction": "positive_correlation", "correlation_range": [0.25, 0.75], "lag_days_range": [0, 3], "clinical_rationale": "Cholestatic context can raise bilirubin and alkaline phosphatase together.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "biliary_obstruction_activity", "target_axis_id": "common_bile_duct_diameter_mm", "relationship": "obstruction_to_duct_dilation", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "clinical_rationale": "Persistent common-duct obstruction dilates the common bile duct.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gallbladder_gangrene_activity", "target_axis_id": "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS", "relationship": "gangrene_to_perforation_risk", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "Necrotic wall is prone to perforation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gallbladder_perforation_activity", "target_axis_id": "pericholecystic_abscess_hazard_in_D-ACUTE-CHOLECYSTITIS", "relationship": "contained_perforation_to_abscess", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "Contained wall breach can seed an abscess.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gallbladder_perforation_activity", "target_axis_id": "bile_peritonitis_hazard_in_D-ACUTE-CHOLECYSTITIS", "relationship": "free_perforation_to_bile_peritonitis", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Free perforation leaks bile into the peritoneum.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericholecystic_abscess_activity", "target_axis_id": "progression_to_septic_shock_hazard", "relationship": "abscess_to_septic_shock_risk", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "clinical_rationale": "Undrained abscess can progress to septic shock.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "bile_peritonitis_activity", "target_axis_id": "progression_to_septic_shock_hazard", "relationship": "peritonitis_to_shock_risk", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Diffuse bile/infected peritonitis raises septic shock hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "clinical_rationale": "Shock is a major driver of death hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "relationship": "source_control_reduces_outcome_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 7], "clinical_rationale": "Effective source control reduces ongoing inflammatory and septic death hazard.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "laparoscopic_cholecystectomy",
+      "display_name": "Laparoscopic cholecystectomy",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "gallbladder_source_control",
+      "mechanistic_targets": ["M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "M_AC_BACTERIAL_SUPPURATION", "M_AC_MURAL_ISCHEMIA_GANGRENE", "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS", "M_AC_SOURCE_CONTROL_RESOLUTION"],
+      "required_context_axes": ["source_control_need", "cholecystectomy_feasibility", "pregnancy_context_probability", "high_surgical_risk_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "cholecystectomy_feasibility", "condition": "low", "effect": "weakens_or_delays", "factor_range": [0.0, 0.7], "clinical_rationale": "Unsafe anesthesia, hostile anatomy, or absent surgical access can delay operative control."},
+        {"axis_id": "high_surgical_risk_context_probability", "condition": "high", "effect": "weakens_or_delays", "factor_range": [0.0, 0.8], "clinical_rationale": "High procedural risk can shift the source-control vector toward drainage."},
+        {"axis_id": "pregnancy_context_probability", "condition": "high", "effect": "changes_perioperative_context", "factor_range": [0.6, 1.2], "clinical_rationale": "Pregnancy changes positioning, imaging, anesthesia, and fetal monitoring context."}
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {"peak_value_factor": [1.0, 1.2], "decline_half_life_days": [30, 3650]},
+        "source_control_need": {"peak_value_factor": [0.0, 0.5], "decline_half_life_days": [7, 365]},
+        "cystic_duct_obstruction_activity": {"peak_value_factor": [0.0, 0.4], "decline_half_life_days": [7, 365]},
+        "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [7, 365]},
+        "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.15, 0.9], "decline_half_life_days": [7, 90]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 1.0], "onset_days_range": [0, 1], "duration_days_range": [7, 365]},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 2], "duration_days_range": [7, 365]},
+        {"axis_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "direction": "down", "magnitude_range": [0.1, 0.8], "onset_days_range": [0, 3], "duration_days_range": [7, 90]}
+      ],
+      "clinical_rationale": "Removal of the inflamed gallbladder provides definitive source control when operative conditions permit."
+    },
+    {
+      "treatment_id": "open_cholecystectomy_or_conversion",
+      "display_name": "Open cholecystectomy or conversion",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "gallbladder_source_control",
+      "mechanistic_targets": ["M_AC_SOURCE_CONTROL_RESOLUTION", "M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS"],
+      "required_context_axes": ["source_control_need", "gallbladder_gangrene_activity", "gallbladder_perforation_activity", "cholecystectomy_feasibility"],
+      "effect_modifiers": [
+        {"axis_id": "gallbladder_gangrene_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.1, 2.0], "clinical_rationale": "Gangrenous or hostile anatomy can require a wider operative approach."},
+        {"axis_id": "anticoagulation_bleeding_risk_context", "condition": "high", "effect": "weakens_or_delays", "factor_range": [0.0, 0.8], "clinical_rationale": "Bleeding risk may require reversal or alternate temporizing drainage."}
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {"peak_value_factor": [1.0, 1.2], "decline_half_life_days": [30, 3650]},
+        "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [7, 365]},
+        "bile_peritonitis_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.05, 0.6], "decline_half_life_days": [7, 365]},
+        "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.2, 0.9], "decline_half_life_days": [7, 90]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 1.0], "onset_days_range": [0, 1], "duration_days_range": [7, 365]},
+        {"axis_id": "bile_peritonitis_activity", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [0, 3], "duration_days_range": [7, 90]}
+      ],
+      "clinical_rationale": "Open operation or conversion can control severe gangrenous, perforated, or anatomically unsafe disease."
+    },
+    {
+      "treatment_id": "percutaneous_cholecystostomy",
+      "display_name": "Percutaneous cholecystostomy",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "gallbladder_source_control",
+      "mechanistic_targets": ["M_AC_CYSTIC_DUCT_OBSTRUCTION_OR_STASIS", "M_AC_BACTERIAL_SUPPURATION", "M_AC_SOURCE_CONTROL_RESOLUTION"],
+      "required_context_axes": ["source_control_need", "percutaneous_cholecystostomy_feasibility", "high_surgical_risk_context_probability", "pregnancy_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "percutaneous_cholecystostomy_feasibility", "condition": "low", "effect": "weakens_or_blocks", "factor_range": [0.0, 0.5], "clinical_rationale": "Non-distended gallbladder, unsafe access, or coagulopathy can block safe drainage."},
+        {"axis_id": "high_surgical_risk_context_probability", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 3.0], "clinical_rationale": "Drainage becomes more useful when operation is unsafe or needs delay."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.0, 2.0], "clinical_rationale": "Drainage is only useful when the gallbladder source remains active."}
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {"peak_value_factor": [0.6, 1.0], "decline_half_life_days": [7, 180]},
+        "cystic_duct_obstruction_activity": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [2, 60]},
+        "gallbladder_distension_activity": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [1, 30]},
+        "M_AC_BACTERIAL_SUPPURATION": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [2, 30]},
+        "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.3, 0.95], "decline_half_life_days": [3, 60]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.8], "onset_days_range": [0, 1], "duration_days_range": [7, 180]},
+        {"axis_id": "gallbladder_distension_activity", "direction": "down", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [2, 60]}
+      ],
+      "clinical_rationale": "Image-guided gallbladder drainage decompresses the gallbladder and temporizes source control when immediate cholecystectomy is unsafe or deferred."
+    },
+    {
+      "treatment_id": "ceftriaxone_plus_metronidazole",
+      "display_name": "Ceftriaxone plus metronidazole",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibiotic_coverage",
+      "mechanistic_targets": ["M_AC_BACTERIAL_SUPPURATION", "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "beta_lactam_allergy_context_probability", "renal_dose_adjustment_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 2.5], "clinical_rationale": "Coverage must match likely or proven biliary organisms."},
+        {"axis_id": "beta_lactam_allergy_context_probability", "condition": "high", "effect": "weakens_or_blocks", "factor_range": [0.0, 0.5], "clinical_rationale": "Severe allergy can require a different regimen."}
+      ],
+      "trajectory_modifications": {
+        "M_AC_BACTERIAL_SUPPURATION": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [1, 7]},
+        "white_blood_cell_count": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "serum_crp": {"peak_value_factor": [0.5, 0.95], "decline_half_life_days": [2, 14]},
+        "progression_to_septic_shock_hazard": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [1, 14]}
+      },
+      "clinical_rationale": "Enteric gram-negative plus anaerobic coverage reduces bacterial and systemic inflammatory vectors while source control addresses obstruction."
+    },
+    {
+      "treatment_id": "piperacillin_tazobactam",
+      "display_name": "Piperacillin-tazobactam",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibiotic_coverage",
+      "mechanistic_targets": ["M_AC_BACTERIAL_SUPPURATION", "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "beta_lactam_allergy_context_probability", "renal_dose_adjustment_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 3.0], "clinical_rationale": "Broad biliary coverage is useful when likely organisms are susceptible."},
+        {"axis_id": "renal_dose_adjustment_context_probability", "condition": "high", "effect": "requires_dose_adjustment", "factor_range": [0.6, 1.0], "clinical_rationale": "Kidney dysfunction changes exposure and toxicity risk."}
+      ],
+      "trajectory_modifications": {
+        "M_AC_BACTERIAL_SUPPURATION": {"peak_value_factor": [0.15, 0.75], "decline_half_life_days": [1, 7]},
+        "serum_crp": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [2, 14]},
+        "progression_to_septic_shock_hazard": {"peak_value_factor": [0.15, 0.75], "decline_half_life_days": [1, 14]}
+      },
+      "clinical_rationale": "Broad-spectrum beta-lactam/beta-lactamase inhibitor coverage can reduce biliary infection vectors in severe or healthcare-exposed contexts."
+    },
+    {
+      "treatment_id": "carbapenem_for_resistant_or_severe_context",
+      "display_name": "Carbapenem for resistant or severe context",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibiotic_coverage",
+      "mechanistic_targets": ["M_AC_BACTERIAL_SUPPURATION", "M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "progression_to_septic_shock_hazard", "renal_dose_adjustment_context_probability"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 3.0], "clinical_rationale": "Benefit depends on resistant-organism probability or susceptibility context."},
+        {"axis_id": "renal_dose_adjustment_context_probability", "condition": "high", "effect": "requires_dose_adjustment", "factor_range": [0.6, 1.0], "clinical_rationale": "Kidney dysfunction changes dosing and neurotoxicity risk."}
+      ],
+      "trajectory_modifications": {
+        "M_AC_BACTERIAL_SUPPURATION": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [1, 7]},
+        "progression_to_septic_shock_hazard": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [1, 14]},
+        "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS": {"peak_value_factor": [0.3, 0.95], "decline_half_life_days": [2, 30]}
+      },
+      "clinical_rationale": "Carbapenem coverage can reshape the bacterial vector when resistant Enterobacterales or severe sepsis context is active."
+    },
+    {
+      "treatment_id": "ercp_for_concurrent_bile_duct_obstruction",
+      "display_name": "ERCP for concurrent common-bile-duct obstruction",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "bile_duct_source_control",
+      "mechanistic_targets": ["M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "required_context_axes": ["biliary_obstruction_activity", "common_bile_duct_diameter_mm", "serum_bilirubin_total"],
+      "effect_modifiers": [
+        {"axis_id": "biliary_obstruction_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "ERCP addresses common-duct obstruction, not isolated cystic-duct obstruction."},
+        {"axis_id": "anticoagulation_bleeding_risk_context", "condition": "high", "effect": "weakens_or_delays", "factor_range": [0.0, 0.8], "clinical_rationale": "Sphincterotomy or instrumentation bleeding risk may require mitigation."}
+      ],
+      "trajectory_modifications": {
+        "biliary_obstruction_activity": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [0.5, 14]},
+        "serum_bilirubin_total": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [1, 14]},
+        "serum_alkaline_phosphatase": {"peak_value_factor": [0.3, 0.9], "decline_half_life_days": [2, 30]}
+      },
+      "push_targets": [
+        {"axis_id": "biliary_obstruction_activity", "direction": "down", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [3, 90]}
+      ],
+      "clinical_rationale": "Endoscopic duct clearance is a separate vector for concurrent choledocholithiasis or cholangitis context."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "gallstones_or_biliary_sludge",
+      "display_name": "Gallstones or biliary sludge",
+      "risk_type": "prior_and_trajectory_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [4.0, 30.0],
+          "axis_response_modulation": [
+            {"axis_id": "cholelithiasis_sludge_context_probability", "effect": "higher_baseline", "factor_range": [5.0, 50.0], "clinical_rationale": "Observed stones or sludge directly raises the context axis."},
+            {"axis_id": "cystic_duct_obstruction_activity", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Stone or sludge context increases obstruction probability."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "pregnancy_or_estrogen_state",
+      "display_name": "Pregnancy or estrogen-associated biliary stasis",
+      "risk_type": "prior_and_treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "pregnancy_context_probability", "effect": "higher_baseline", "factor_range": [10.0, 50.0], "clinical_rationale": "Current pregnancy directly sets the treatment and risk context."},
+            {"axis_id": "cholelithiasis_sludge_context_probability", "effect": "higher_baseline", "factor_range": [1.5, 5.0], "clinical_rationale": "Pregnancy increases gallbladder stasis and sludge/stone formation."}
+          ],
+          "treatment_effect_modulation": {
+            "percutaneous_cholecystostomy": "may gain relative utility when late gestation, multiple gestation, or operative access risk is high",
+            "laparoscopic_cholecystectomy": "requires pregnancy-aware anesthesia, positioning, and fetal/obstetric planning"
+          }
+        }
+      }
+    },
+    {
+      "factor": "obesity_or_metabolic_syndrome",
+      "display_name": "Obesity, diabetes, dyslipidemia, or metabolic syndrome",
+      "risk_type": "prior_probability",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "cholelithiasis_sludge_context_probability", "effect": "higher_baseline", "factor_range": [1.2, 4.0], "clinical_rationale": "Metabolic risk increases cholesterol stone formation."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "older_age_diabetes_or_vascular_disease",
+      "display_name": "Older age, diabetes, or vascular disease",
+      "risk_type": "trajectory_and_hazard_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "fever_history_activity", "effect": "blunted_response", "factor_range": [0.3, 0.9], "clinical_rationale": "Older or diabetic patients can have muted fever."},
+            {"axis_id": "white_blood_cell_count", "effect": "more_variable", "factor_range": [0.7, 1.8], "clinical_rationale": "Inflammatory labs can be normal or delayed."},
+            {"axis_id": "gallbladder_gangrene_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.5, 4.0], "clinical_rationale": "Microvascular disease and delayed recognition increase gangrene risk."},
+            {"axis_id": "mortality_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.5, 6.0], "clinical_rationale": "Comorbidity and frailty reduce reserve during sepsis or surgery."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "critical_illness_or_prolonged_fasting",
+      "display_name": "Critical illness, trauma, burns, TPN, or prolonged fasting",
+      "risk_type": "trajectory_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "cholelithiasis_sludge_context_probability", "effect": "may_be_low_despite_disease", "factor_range": [0.0, 1.0], "clinical_rationale": "Acalculous presentations may lack stones while maintaining gallbladder stasis and ischemia."},
+            {"axis_id": "gallbladder_gangrene_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.5, 5.0], "clinical_rationale": "Hypoperfusion and stasis increase necrosis risk."},
+            {"axis_id": "percutaneous_cholecystostomy_feasibility", "effect": "higher_context_value_when_surgery_unsafe", "factor_range": [1.0, 3.0], "clinical_rationale": "Bedside drainage may be important when operation is unsafe."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "immunosuppression_or_chronic_steroid_exposure",
+      "display_name": "Immunosuppression or chronic steroid exposure",
+      "risk_type": "axis_response_and_hazard_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "fever_history_activity", "effect": "blunted_response", "factor_range": [0.2, 0.8], "clinical_rationale": "Immune suppression can reduce fever."},
+            {"axis_id": "white_blood_cell_count", "effect": "more_variable", "factor_range": [0.5, 2.0], "clinical_rationale": "Steroids and marrow state can distort WBC response."},
+            {"axis_id": "progression_to_septic_shock_hazard", "effect": "higher_peak", "factor_range": [1.2, 3.0], "clinical_rationale": "Reduced immune containment increases severe infection risk."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "delayed_presentation_or_failed_conservative_management",
+      "display_name": "Delayed presentation or failure to improve",
+      "risk_type": "event_hazard_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "gallbladder_gangrene_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.5, 5.0], "clinical_rationale": "Longer untreated obstruction increases ischemia risk."},
+            {"axis_id": "gallbladder_perforation_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.5, 5.0], "clinical_rationale": "Necrosis and delayed source control increase perforation risk."},
+            {"axis_id": "pericholecystic_abscess_hazard_in_D-ACUTE-CHOLECYSTITIS", "effect": "higher_peak", "factor_range": [1.2, 4.0], "clinical_rationale": "Contained complications become more likely over time."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "anticoagulation_coagulopathy_or_bleeding_risk",
+      "display_name": "Anticoagulation, coagulopathy, or bleeding risk",
+      "risk_type": "treatment_effect_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.0],
+          "axis_response_modulation": [
+            {"axis_id": "anticoagulation_bleeding_risk_context", "effect": "higher_baseline", "factor_range": [5.0, 50.0], "clinical_rationale": "Therapeutic anticoagulation or coagulopathy directly raises procedural bleeding context."},
+            {"axis_id": "cholecystectomy_feasibility", "effect": "lower_context_value", "factor_range": [0.2, 0.9], "clinical_rationale": "Bleeding risk can delay or alter procedural planning."}
+          ],
+          "treatment_effect_modulation": {
+            "laparoscopic_cholecystectomy": "requires bleeding-risk mitigation before operation when feasible",
+            "percutaneous_cholecystostomy": "also requires safe access and coagulation planning"
+          }
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "nil_per_os_and_surgical_preparation",
+      "display_name": "NPO, IV access, and procedural preparation",
+      "mode": ["push_state"],
+      "mechanistic_targets": ["M_AC_SOURCE_CONTROL_RESOLUTION"],
+      "trajectory_modifications": [
+        {"axis_id": "cholecystectomy_feasibility", "direction": "up", "magnitude_range": [0.1, 0.4], "onset_days_range": [0, 1], "duration_days_range": [0.5, 7]}
+      ],
+      "clinical_rationale": "Preparation supports safe anesthesia, imaging, drainage, or operation."
+    },
+    {
+      "care_id": "intravenous_crystalloid_resuscitation",
+      "display_name": "Intravenous crystalloid resuscitation",
+      "mode": ["push_state"],
+      "mechanistic_targets": ["M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "heart_rate", "direction": "down", "magnitude_range": [0.0, 0.3], "onset_days_range": [0, 1], "duration_days_range": [0.5, 7]},
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [0.0, 0.4], "onset_days_range": [0, 1], "duration_days_range": [0.5, 7]},
+        {"axis_id": "progression_to_septic_shock_hazard", "direction": "down", "magnitude_range": [0.0, 0.3], "onset_days_range": [0, 1], "duration_days_range": [0.5, 7]}
+      ],
+      "clinical_rationale": "Fluids support perfusion in vomiting, dehydration, sepsis, or perioperative states."
+    },
+    {
+      "care_id": "opioid_or_nonopioid_analgesia",
+      "display_name": "Analgesia",
+      "mode": ["push_state", "modulate_sigma"],
+      "mechanistic_targets": ["M_AC_GALLBLADDER_DISTENSION_PRESSURE", "M_AC_LOCAL_PERITONEAL_INFLAMMATION"],
+      "trajectory_modifications": [
+        {"axis_id": "abdominal_pain_activity", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [0, 0.5], "duration_days_range": [0.2, 3]},
+        {"axis_id": "heart_rate", "direction": "down", "magnitude_range": [0.0, 0.2], "onset_days_range": [0, 0.5], "duration_days_range": [0.2, 3]}
+      ],
+      "clinical_rationale": "Pain control lowers distress and sympathetic activation without removing the inflammatory source."
+    },
+    {
+      "care_id": "antiemetic_and_electrolyte_monitoring",
+      "display_name": "Antiemetic therapy and electrolyte monitoring",
+      "mode": ["push_state"],
+      "mechanistic_targets": ["M_AC_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "nausea_vomiting_activity", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [0, 0.5], "duration_days_range": [0.2, 5]}
+      ],
+      "clinical_rationale": "Antiemetics and electrolyte monitoring reduce vomiting-related dehydration and perioperative risk."
+    },
+    {
+      "care_id": "serial_exam_labs_and_imaging_reassessment",
+      "display_name": "Serial exam, labs, and imaging reassessment",
+      "mode": ["push_state"],
+      "mechanistic_targets": ["M_AC_PERFORATION_ABSCESS_BILE_PERITONITIS"],
+      "trajectory_modifications": [
+        {"axis_id": "source_control_need", "direction": "up", "magnitude_range": [0.0, 0.2], "onset_days_range": [0, 1], "duration_days_range": [0.5, 14]}
+      ],
+      "clinical_rationale": "Reassessment detects gangrene, perforation, abscess, or failed conservative response as evolving state evidence."
+    }
+  ]
+}
+

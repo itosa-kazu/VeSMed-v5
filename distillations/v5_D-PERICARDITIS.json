@@ -1,0 +1,520 @@
+{
+  "disease": "D-PERICARDITIS",
+  "disease_name": "Acute pericarditis",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute pericarditis",
+    "leaf_granularity": "first-layer clinical disease leaf for acute inflammatory pericardial disease, without splitting by idiopathic, viral, purulent, tuberculous, uremic, post-cardiac-injury, malignant, autoimmune, traumatic, radiation, or myopericarditis context",
+    "subtype_policy": "Etiology, microbial proof, uremia, malignancy, trauma/procedure exposure, purulence, tamponade, myocardial spillover, recurrence, and constriction are represented as mechanisms, context axes, event hazards, treatment modifiers, or future related leaves, not as disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use pleuritic or positional chest pain, pericardial friction rub, fever/inflammatory markers, diffuse ST elevation, PR depression, low-voltage/electrical alternans patterns, troponin magnitude, echocardiographic pericardial effusion, and tamponade physiology when these are available at presentation or early diagnostic evaluation. Pericardial fluid culture/cytology, etiologic serology, final cause adjudication, treatment response, and long-term outcome should remain confirmatory or non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PER_TRIGGER_CONTEXT",
+      "display_name": "Pericardial inflammatory trigger context",
+      "clinical_meaning": "A viral or idiopathic inflammatory trigger, bacterial or tuberculous infection, uremia, autoimmune disease, malignancy, trauma, radiation, medication, or post-cardiac/procedural injury creates the context for acute pericardial inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-14, 2],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_PERICARDIAL_INFLAMMATION",
+      "display_name": "Acute fibrinous pericardial inflammation",
+      "clinical_meaning": "Inflammation of the parietal and visceral pericardium produces pleuritic and positional pain, pericardial friction rub, fever, leukocytosis, and CRP/ESR elevation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_EPICARDIAL_ECG_INJURY",
+      "display_name": "Epicardial electrical injury current",
+      "clinical_meaning": "Inflammation at the epicardial surface alters repolarization and atrial currents, producing diffuse concave ST elevation, PR depression, later T-wave inversion, and sometimes mild troponin release from myopericardial spillover.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [0.5, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_EFFUSION_ACCUMULATION",
+      "display_name": "Inflammatory pericardial fluid accumulation",
+      "clinical_meaning": "Pericardial vascular permeability and impaired drainage produce new or enlarging pericardial effusion, cardiomegaly, low voltage, dyspnea, orthopnea, and pleural effusion when serositis is broader.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_TAMPONADE_PHYSIOLOGY",
+      "display_name": "Tamponade hemodynamic constraint",
+      "clinical_meaning": "Rapid or large effusion raises intrapericardial pressure, impairs diastolic filling, causes tachycardia, hypotension, jugular venous distension, distant heart sounds, pulsus paradoxus, right-sided chamber collapse, shock, and death risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 10],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 14],
+      "decline_half_life_days": [0.1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION",
+      "display_name": "Suppurative or high-risk infectious pericardial inflammation",
+      "clinical_meaning": "Bacterial, tuberculous, fungal, or contiguous thoracic infection can produce high fever, very high inflammatory markers, purulent fluid, loculation, recurrent effusion, tamponade, and higher mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [-3, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [2, 60],
+      "decline_half_life_days": [2, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PER_RECURRENCE_CONSTRICTION_TRANSITION",
+      "display_name": "Recurrence or constrictive transition",
+      "clinical_meaning": "Persistent inflammation, inadequate drainage, autoimmune disease, tuberculosis, purulent infection, or premature withdrawal of anti-inflammatory control can lead to recurrent pericarditis or later constrictive physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [7, 90],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_PER_TRIGGER_CONTEXT", "target_id": "M_PER_PERICARDIAL_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [-3, 5], "rationale": "Acute pericarditis begins when a trigger activates pericardial inflammation.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "M_PER_EPICARDIAL_ECG_INJURY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "rationale": "Inflammation near the epicardial surface drives the characteristic ECG injury current.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "M_PER_EFFUSION_ACCUMULATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 10], "rationale": "Pericardial inflammation increases permeability and fluid accumulation.", "confidence": "high"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "M_PER_TAMPONADE_PHYSIOLOGY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "rationale": "Large or rapidly accumulating effusion can impair filling and cause tamponade.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "M_PER_PERICARDIAL_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "rationale": "Purulent and other high-risk infectious contexts intensify pericardial inflammation.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "M_PER_EFFUSION_ACCUMULATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "rationale": "Infectious pericarditis commonly produces large or loculated effusions.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "M_PER_RECURRENCE_CONSTRICTION_TRANSITION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [7, 60], "rationale": "Persistent inflammation can create recurrent or constrictive downstream geometry.", "confidence": "medium"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "M_PER_RECURRENCE_CONSTRICTION_TRANSITION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [7, 90], "rationale": "Purulent, tuberculous, fungal, and inadequately drained effusions increase constriction risk.", "confidence": "high"},
+
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "rationale": "Inflamed pericardium produces acute chest pain.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "pleuritic_chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "rationale": "Respiration and pleural/pericardial motion aggravate pain.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "positional_chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "rationale": "Supine worsening and sitting-forward relief are characteristic pericardial pain features.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "forward_leaning_chest_pain_relief_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "rationale": "Leaning forward can reduce pericardial stretch and pain.", "confidence": "medium"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "pericardial_friction_rub_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "rationale": "Fibrinous inflamed pericardial surfaces can generate a friction rub.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-2, 3], "rationale": "Systemic inflammation often produces fever.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-1, 3], "rationale": "Measured temperature rises with inflammatory pericarditis.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "rationale": "CRP is a common activity marker in acute pericardial inflammation.", "confidence": "high"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "rationale": "ESR rises with systemic inflammation.", "confidence": "medium"},
+    {"source_id": "M_PER_PERICARDIAL_INFLAMMATION", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "rationale": "Leukocytosis can accompany inflammatory or infectious pericarditis.", "confidence": "medium"},
+    {"source_id": "M_PER_EPICARDIAL_ECG_INJURY", "target_id": "diffuse_st_segment_elevation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "rationale": "Diffuse concave ST elevation is a characteristic ECG expression of epicardial inflammation.", "confidence": "high"},
+    {"source_id": "M_PER_EPICARDIAL_ECG_INJURY", "target_id": "pr_segment_depression_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "rationale": "Atrial epicardial involvement produces PR-segment depression.", "confidence": "high"},
+    {"source_id": "M_PER_EPICARDIAL_ECG_INJURY", "target_id": "ecg_t_wave_inversion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 14], "rationale": "T-wave inversion can follow the early ST/PR stage.", "confidence": "medium"},
+    {"source_id": "M_PER_EPICARDIAL_ECG_INJURY", "target_id": "serum_troponin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "rationale": "Troponin may be normal or mildly elevated from epicardial/myopericardial spillover.", "confidence": "medium"},
+    {"source_id": "M_PER_EPICARDIAL_ECG_INJURY", "target_id": "myocardial_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "rationale": "Marked troponin or myocardial dysfunction signals myopericardial extension.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "pericardial_effusion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "rationale": "Effusion is a direct imaging expression of fluid accumulation.", "confidence": "high"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "pericardial_effusion_size_mm", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "rationale": "Effusion activity maps to measurable diastolic echo/CT thickness.", "confidence": "high"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "cardiomegaly_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "rationale": "Large effusions can enlarge the cardiac silhouette.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "ecg_low_voltage_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "rationale": "Large effusion can dampen QRS voltage.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "ecg_electrical_alternans_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "rationale": "A swinging heart in large effusion can produce electrical alternans.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "rationale": "Effusion, pain, pleural involvement, or tamponade can produce dyspnea.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "orthopnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "rationale": "Large effusion and associated congestion can worsen supine breathing.", "confidence": "medium"},
+    {"source_id": "M_PER_EFFUSION_ACCUMULATION", "target_id": "pleural_effusion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "rationale": "Serositis or adjacent inflammation can create pleural effusion.", "confidence": "medium"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "pericardial_tamponade_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "rationale": "Hemodynamic compression is the event state of tamponade.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "right_ventricular_diastolic_collapse_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Right-sided chamber collapse is an echocardiographic tamponade sign.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "inferior_vena_cava_plethora_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Noncollapsing IVC reflects elevated right atrial pressure in tamponade.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "jugular_venous_distension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Raised venous pressure can distend neck veins.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "distant_heart_sounds_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Fluid and hemodynamic compromise can muffle heart sounds.", "confidence": "medium"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "pulsus_paradoxus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Tamponade exaggerates inspiratory systolic pressure fall.", "confidence": "medium"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Compensatory tachycardia maintains cardiac output.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Reduced filling lowers arterial pressure.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Reduced stroke volume lowers systolic pressure.", "confidence": "high"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Shock physiology can increase lactate.", "confidence": "medium"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "pericardial_drainage_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "rationale": "Hemodynamically significant effusion creates a drainage context.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "active_serious_infection_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-3, 3], "rationale": "Suppurative pericarditis is sustained by active infection.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "purulent_pericardial_fluid_activity", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 7], "rationale": "Purulence is usually proven after pericardial drainage or fluid sampling.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 7], "rationale": "Bacteremia may coexist but is post-microbiology evidence.", "confidence": "medium"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "rationale": "Purulent, loculated, traumatic, or malignant pericardial disease may require drainage or removal of the source.", "confidence": "high"},
+    {"source_id": "M_PER_RECURRENCE_CONSTRICTION_TRANSITION", "target_id": "recurrent_pericarditis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [7, 90], "rationale": "Persistent inflammation increases recurrence risk.", "confidence": "high"},
+    {"source_id": "M_PER_RECURRENCE_CONSTRICTION_TRANSITION", "target_id": "constrictive_pericarditis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [14, 365], "rationale": "Fibrosis and thickening can cause constrictive physiology.", "confidence": "medium"},
+    {"source_id": "M_PER_TAMPONADE_PHYSIOLOGY", "target_id": "mortality_hazard_in_D-PERICARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 1], "rationale": "Untreated tamponade can rapidly cause death.", "confidence": "high"},
+    {"source_id": "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION", "target_id": "mortality_hazard_in_D-PERICARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 7], "rationale": "Purulent and tuberculous pericarditis have higher mortality and complication risk.", "confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "finding"},
+    {"axis_id": "pleuritic_chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "satellite", "parent_axis_id": "chest_pain_activity"},
+    {"axis_id": "positional_chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "satellite", "parent_axis_id": "chest_pain_activity"},
+    {"axis_id": "forward_leaning_chest_pain_relief_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "satellite", "parent_axis_id": "chest_pain_activity"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 21], "axis_role": "finding"},
+    {"axis_id": "orthopnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 21], "axis_role": "satellite", "parent_axis_id": "dyspnea_activity"},
+    {"axis_id": "fever_history_activity", "category": "history", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-2, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "baseline_range": [36.0, 37.2], "peak_day_range": [-1, 5], "peak_value_range": [36.4, 40.5], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "pericardial_friction_rub_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 14], "axis_role": "finding"},
+    {"axis_id": "jugular_venous_distension_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 14], "axis_role": "finding"},
+    {"axis_id": "distant_heart_sounds_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 14], "axis_role": "finding"},
+    {"axis_id": "pulsus_paradoxus_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 14], "axis_role": "finding"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "baseline_range": [60.0, 90.0], "peak_day_range": [0, 7], "peak_value_range": [75.0, 150.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 10], "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "baseline_range": [12.0, 20.0], "peak_day_range": [0, 7], "peak_value_range": [14.0, 35.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 10], "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "baseline_range": [95.0, 100.0], "peak_day_range": [0, 7], "peak_value_range": [85.0, 100.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 10], "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [100.0, 140.0], "peak_day_range": [0, 7], "peak_value_range": [65.0, 140.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 10], "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [70.0, 100.0], "peak_day_range": [0, 7], "peak_value_range": [45.0, 100.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 10], "axis_role": "measurement"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "baseline_range": [4.0, 10.0], "peak_day_range": [0, 7], "peak_value_range": [3.0, 30.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "baseline_range": [0.2, 5.0], "peak_day_range": [0, 7], "peak_value_range": [10.0, 600.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 21], "axis_role": "measurement"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab", "unit": "mm_per_hr", "log_scale": false, "baseline_range": [0.0, 20.0], "peak_day_range": [1, 14], "peak_value_range": [20.0, 120.0], "plateau_duration_days": [3, 45], "decline_half_life_days": [7, 45], "axis_role": "measurement"},
+    {"axis_id": "serum_troponin", "category": "lab", "unit": "ng/L", "log_scale": true, "baseline_range": [1.0, 14.0], "peak_day_range": [0, 4], "peak_value_range": [1.0, 2000.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab", "unit": "U/L", "log_scale": true, "baseline_range": [30.0, 200.0], "peak_day_range": [0, 4], "peak_value_range": [30.0, 600.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 10], "axis_role": "measurement"},
+    {"axis_id": "serum_lactate", "category": "lab", "unit": "mmol/L", "log_scale": false, "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [0.5, 6.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.1, 3], "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab", "unit": "mg/dL", "log_scale": false, "baseline_range": [0.6, 1.2], "peak_day_range": [-365, 7], "peak_value_range": [0.6, 12.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "axis_role": "measurement"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab", "unit": "mg/dL", "log_scale": false, "baseline_range": [7.0, 20.0], "peak_day_range": [-365, 7], "peak_value_range": [7.0, 160.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "axis_role": "measurement"},
+    {"axis_id": "diffuse_st_segment_elevation_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 21], "axis_role": "finding"},
+    {"axis_id": "pr_segment_depression_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 21], "axis_role": "finding"},
+    {"axis_id": "ecg_t_wave_inversion_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [2, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "ecg_low_voltage_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [1, 30], "axis_role": "finding"},
+    {"axis_id": "ecg_electrical_alternans_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.005], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 14], "axis_role": "finding"},
+    {"axis_id": "pericardial_effusion_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [2, 90], "axis_role": "finding"},
+    {"axis_id": "pericardial_effusion_size_mm", "category": "imaging_measurement", "unit": "mm", "log_scale": false, "baseline_range": [0.0, 3.0], "peak_day_range": [0, 14], "peak_value_range": [0.0, 35.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [2, 90], "axis_role": "measurement", "parent_axis_id": "pericardial_effusion_activity"},
+    {"axis_id": "right_ventricular_diastolic_collapse_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 14], "axis_role": "satellite", "parent_axis_id": "pericardial_effusion_activity"},
+    {"axis_id": "inferior_vena_cava_plethora_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.1, 14], "axis_role": "satellite", "parent_axis_id": "pericardial_effusion_activity"},
+    {"axis_id": "cardiomegaly_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [2, 90], "axis_role": "finding"},
+    {"axis_id": "pleural_effusion_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [2, 90], "axis_role": "finding"},
+    {"axis_id": "pulmonary_edema_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 21], "axis_role": "finding"},
+    {"axis_id": "cough_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "axis_role": "finding"},
+    {"axis_id": "purulent_sputum_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "axis_role": "satellite", "parent_axis_id": "cough_activity"},
+    {"axis_id": "post_pericardial_injury_context_probability", "category": "context", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 365], "axis_role": "measurement"},
+    {"axis_id": "procedure_related_pericardial_injury_context_probability", "category": "context", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [-30, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 365], "axis_role": "measurement"},
+    {"axis_id": "active_serious_infection_activity", "category": "context", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-7, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [1, 30], "axis_role": "finding"},
+    {"axis_id": "purulent_pericardial_fluid_activity", "category": "diagnostic_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 45], "axis_role": "finding"},
+    {"axis_id": "pericardial_fluid_bacterial_culture_positivity_probability", "category": "diagnostic_finding", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 45], "axis_role": "measurement"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 1.0], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "source_control_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [0.5, 30], "axis_role": "measurement"},
+    {"axis_id": "pericardial_drainage_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 45], "decline_half_life_days": [0.1, 30], "axis_role": "measurement"},
+    {"axis_id": "nsaid_renal_gastrointestinal_bleeding_risk_context", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 3650], "axis_role": "measurement"},
+    {"axis_id": "colchicine_use_limitation_context", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 3650], "axis_role": "measurement"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "axis_role": "measurement"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 14], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [0.1, 30], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "procedure_related_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 7], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "finding"},
+    {"axis_id": "myocardial_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 7], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "pericardial_tamponade_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 14], "peak_value_range": [0.0001, 0.4], "plateau_duration_days": [0.05, 14], "decline_half_life_days": [0.05, 14], "axis_role": "finding"},
+    {"axis_id": "recurrent_pericarditis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [7, 90], "peak_value_range": [0.0005, 0.04], "plateau_duration_days": [14, 365], "decline_half_life_days": [14, 365], "axis_role": "finding"},
+    {"axis_id": "constrictive_pericarditis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.0001], "peak_day_range": [14, 365], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "axis_role": "finding"},
+    {"axis_id": "mortality_hazard_in_D-PERICARDITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.000005, 0.08], "plateau_duration_days": [0.05, 30], "decline_half_life_days": [0.5, 45], "axis_role": "finding"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "chest_pain_activity", "target_axis_id": "pleuritic_chest_pain_activity", "relationship": "pericardial_pain_phenotype", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Typical pericardial chest pain is often pleuritic, but non-pleuritic pain can occur.", "knowledge_confidence": "high"},
+    {"source_axis_id": "chest_pain_activity", "target_axis_id": "positional_chest_pain_activity", "relationship": "pericardial_pain_position_dependence", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Pain worsened by supine position and improved by sitting forward often travels with pericardial pain.", "knowledge_confidence": "high"},
+    {"source_axis_id": "fever_history_activity", "target_axis_id": "body_temperature", "relationship": "fever_internal_consistency", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Reported fever and measured temperature often move together.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "white_blood_cell_count", "relationship": "inflammatory_marker_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 3], "phase": "acute_inflammation", "effect_direction": "positive_correlation", "clinical_rationale": "Inflammatory markers often co-elevate, especially in infectious contexts.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "diffuse_st_segment_elevation_activity", "target_axis_id": "pr_segment_depression_activity", "relationship": "pericarditis_ecg_stage_i_pattern", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "early_ecg", "effect_direction": "positive_correlation", "clinical_rationale": "Diffuse ST elevation and PR depression commonly coexist but either can be subtle or absent.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diffuse_st_segment_elevation_activity", "target_axis_id": "serum_troponin", "relationship": "epicardial_ecg_to_myopericardial_spillover", "coupling_type": "noise_correlation", "correlation_range": [0.1, 0.5], "lag_days_range": [0, 2], "phase": "early_ecg", "effect_direction": "positive_correlation", "clinical_rationale": "Troponin can rise when epicardial inflammation spills into adjacent myocardium, but isolated pericarditis may have normal troponin.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "pericardial_effusion_activity", "target_axis_id": "pericardial_effusion_size_mm", "relationship": "effusion_activity_size_consistency", "coupling_type": "drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 1], "phase": "effusion", "effect_direction": "source_up_increases_target", "clinical_rationale": "Higher effusion activity should correspond to larger measured effusion thickness.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_effusion_size_mm", "target_axis_id": "pericardial_tamponade_hazard", "relationship": "large_or_rapid_effusion_to_tamponade", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 2], "phase": "effusion_to_tamponade", "effect_direction": "source_up_increases_target", "clinical_rationale": "Larger effusions, especially rapid ones, increase tamponade risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_tamponade_hazard", "target_axis_id": "right_ventricular_diastolic_collapse_activity", "relationship": "tamponade_echo_chamber_collapse", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "tamponade", "effect_direction": "source_up_increases_target", "clinical_rationale": "Tamponade physiology causes right-sided chamber collapse.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_tamponade_hazard", "target_axis_id": "inferior_vena_cava_plethora_activity", "relationship": "tamponade_venous_pressure", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "tamponade", "effect_direction": "source_up_increases_target", "clinical_rationale": "Tamponade raises venous pressure and reduces IVC collapse.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_tamponade_hazard", "target_axis_id": "mean_arterial_pressure", "relationship": "tamponade_to_hypotension", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "tamponade", "effect_direction": "source_up_decreases_target", "clinical_rationale": "Worsening tamponade reduces arterial pressure.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_tamponade_hazard", "target_axis_id": "heart_rate", "relationship": "tamponade_compensatory_tachycardia", "coupling_type": "drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "phase": "tamponade", "effect_direction": "source_up_increases_target", "clinical_rationale": "Tachycardia is a common compensatory response.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pericardial_tamponade_hazard", "target_axis_id": "mortality_hazard_in_D-PERICARDITIS", "relationship": "tamponade_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 1], "phase": "critical_event", "effect_direction": "source_up_increases_target", "clinical_rationale": "Untreated tamponade is the dominant acute mortality path.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_serious_infection_activity", "target_axis_id": "pericardial_tamponade_hazard", "relationship": "infectious_pericarditis_to_large_effusion_tamponade", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 7], "phase": "infectious_effusion", "effect_direction": "source_up_increases_target", "clinical_rationale": "Purulent and other high-risk infectious cases are more likely to develop large effusion or tamponade.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_serious_infection_activity", "target_axis_id": "mortality_hazard_in_D-PERICARDITIS", "relationship": "infectious_pericarditis_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 7], "phase": "infectious_critical", "effect_direction": "source_up_increases_target", "clinical_rationale": "Purulent and uncontrolled infectious pericarditis increases death risk beyond isolated idiopathic disease.", "knowledge_confidence": "high"},
+    {"source_axis_id": "purulent_pericardial_fluid_activity", "target_axis_id": "constrictive_pericarditis_hazard", "relationship": "purulent_fluid_to_constriction", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [14, 365], "phase": "late_complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "Purulent/fibrinous inflammation can organize into constrictive disease.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "major_bleeding_hazard", "target_axis_id": "mortality_hazard_in_D-PERICARDITIS", "relationship": "bleeding_complication_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.7], "lag_days_range": [0, 7], "phase": "procedure_safety", "effect_direction": "source_up_increases_target", "clinical_rationale": "Bleeding risk from anticoagulation or drainage procedures affects outcome.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "anti_inflammatory_nsaid_or_high_dose_aspirin",
+      "treatment_name": "NSAID or high-dose aspirin anti-inflammatory therapy",
+      "mode": "reshape_landscape",
+      "role": "reduce_pericardial_inflammation_and_pain_when_tolerated",
+      "required_context_axes": ["chest_pain_activity", "pleuritic_chest_pain_activity", "serum_crp", "serum_creatinine", "nsaid_renal_gastrointestinal_bleeding_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.1, 0.7], "clinical_rationale": "Kidney dysfunction limits NSAID exposure."},
+        {"axis_id": "nsaid_renal_gastrointestinal_bleeding_risk_context", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.1, 0.7], "clinical_rationale": "GI bleeding, anticoagulation, or renal toxicity risk limits NSAIDs."},
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "requires_parallel_infection_management", "factor_range": [0.4, 1.0], "clinical_rationale": "Anti-inflammatory treatment alone does not control purulent pericarditis."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_PERICARDIAL_INFLAMMATION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 14]},
+        "chest_pain_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.2, 7]},
+        "serum_crp": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 14]}
+      },
+      "failure_modes": ["unrecognized_tamponade", "purulent_or_tuberculous_context_without_source_control", "renal_or_gastrointestinal_toxicity"]
+    },
+    {
+      "treatment_id": "colchicine_anti_recurrence_control",
+      "treatment_name": "Colchicine anti-inflammatory and anti-recurrence control",
+      "mode": "reshape_landscape",
+      "role": "reduce_persistent_pericardial_inflammation_and_recurrence_hazard_when_tolerated",
+      "required_context_axes": ["serum_crp", "recurrent_pericarditis_hazard", "colchicine_use_limitation_context", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "colchicine_use_limitation_context", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.1, 0.7], "clinical_rationale": "GI intolerance, drug interactions, cytopenias, or hepatic/renal risk can limit colchicine."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "dose_limited", "factor_range": [0.2, 0.8], "clinical_rationale": "Renal impairment requires dose adjustment or avoidance."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_PERICARDIAL_INFLAMMATION": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 21]},
+        "M_PER_RECURRENCE_CONSTRICTION_TRANSITION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 120]},
+        "recurrent_pericarditis_hazard": {"peak_value_factor": [0.25, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 120]}
+      },
+      "failure_modes": ["intolerance_or_drug_interaction", "uncontrolled_purulent_or_malignant_effusion", "advanced_renal_or_hepatic_dysfunction"]
+    },
+    {
+      "treatment_id": "pericardiocentesis_or_pericardial_drainage",
+      "treatment_name": "Pericardiocentesis or pericardial drainage",
+      "mode": "push_state",
+      "role": "relieve_tamponade_or_large_symptomatic_effusion_and_obtain_fluid_when_needed",
+      "required_context_axes": ["pericardial_effusion_activity", "pericardial_effusion_size_mm", "pericardial_tamponade_hazard", "mean_arterial_pressure", "pericardial_drainage_need"],
+      "effect_modifiers": [
+        {"axis_id": "pericardial_tamponade_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.5, 6.0], "clinical_rationale": "Tamponade physiology makes drainage trajectory-changing."},
+        {"axis_id": "procedure_related_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.5], "clinical_rationale": "Coagulopathy or anticoagulation raises procedural bleeding risk."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Purulent or loculated effusion needs drainage for source control."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_EFFUSION_ACCUMULATION": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.1, 7]},
+        "M_PER_TAMPONADE_PHYSIOLOGY": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.05, 0.4], "decline_half_life_days": [0.05, 3]},
+        "pericardial_effusion_activity": {"peak_value_factor": [0.05, 0.5], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.1, 14]},
+        "pericardial_tamponade_hazard": {"peak_value_factor": [0.02, 0.35], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [0.05, 5]},
+        "mortality_hazard_in_D-PERICARDITIS": {"peak_value_factor": [0.15, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 14]}
+      },
+      "toxicity_axis_effects": [
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.0, 0.04], "interpretation": "Needle or surgical drainage carries bleeding and cardiac injury risk."}
+      ],
+      "failure_modes": ["loculated_or_thick_purulent_fluid_not_drained", "reaccumulation_without_catheter_or_window", "procedural_bleeding_or_cardiac_injury"]
+    },
+    {
+      "treatment_id": "surgical_pericardial_window_or_pericardiotomy",
+      "treatment_name": "Surgical pericardial window or pericardiotomy",
+      "mode": "push_state",
+      "role": "provide_durable_drainage_or_source_control_for_recurrent_loculated_purulent_malignant_or_traumatic_effusion",
+      "required_context_axes": ["pericardial_effusion_activity", "source_control_need", "pericardial_drainage_need", "purulent_pericardial_fluid_activity", "procedure_related_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.5, 6.0], "clinical_rationale": "Surgery is more useful when drainage is incomplete or source removal is needed."},
+        {"axis_id": "procedure_related_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.4, 1.4], "clinical_rationale": "Surgical exposure increases bleeding and perioperative risk."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_EFFUSION_ACCUMULATION": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [0.1, 14]},
+        "M_PER_TAMPONADE_PHYSIOLOGY": {"peak_value_factor": [0.03, 0.35], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [0.05, 7]},
+        "source_control_need": {"peak_value_factor": [0.05, 0.5], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [0.5, 21]},
+        "constrictive_pericarditis_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [14, 365]}
+      },
+      "toxicity_axis_effects": [
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.0, 0.06], "interpretation": "Open or surgical drainage increases procedural bleeding risk."}
+      ],
+      "failure_modes": ["operative_risk_exceeds_benefit", "ongoing_infection_without_active_antimicrobial_coverage", "underlying_malignant_or_autoimmune_driver_persists"]
+    },
+    {
+      "treatment_id": "pathogen_directed_antimicrobial_management",
+      "treatment_name": "Pathogen-directed antimicrobial management",
+      "mode": "reshape_landscape",
+      "role": "reduce_infectious_pericardial_driver_when_bacterial_tuberculous_or_fungal_context_is_supported",
+      "required_context_axes": ["active_serious_infection_activity", "purulent_pericardial_fluid_activity", "blood_culture_positivity_probability", "pericardial_fluid_bacterial_culture_positivity_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens_context_effect", "factor_range": [1.2, 5.0], "clinical_rationale": "Antimicrobial effect depends on active coverage of the organism."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.4, 1.2], "clinical_rationale": "Antibiotics alone may fail if purulent fluid remains undrained."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_SUPPURATIVE_OR_HIGH_RISK_INFECTION": {"peak_value_factor": [0.15, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [1, 21]},
+        "M_PER_PERICARDIAL_INFLAMMATION": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 21]},
+        "serum_crp": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 21]},
+        "mortality_hazard_in_D-PERICARDITIS": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 45]}
+      },
+      "failure_modes": ["inactive_antibiotic_or_wrong_pathogen", "no_drainage_of_purulent_or_loculated_effusion", "delayed_tuberculous_or_fungal_recognition"]
+    },
+    {
+      "treatment_id": "contextual_corticosteroid_or_immunomodulatory_control",
+      "treatment_name": "Contextual corticosteroid or immunomodulatory control",
+      "mode": "reshape_landscape",
+      "role": "reduce_pericardial_inflammation_when_autoimmune_uremic_post_injury_or_nsaid_limited_context_supports_it",
+      "required_context_axes": ["serum_crp", "active_serious_infection_activity", "nsaid_renal_gastrointestinal_bleeding_risk_context", "recurrent_pericarditis_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "toxicity_limited_or_delayed", "factor_range": [0.05, 0.6], "clinical_rationale": "Immunosuppression can worsen uncontrolled infection."},
+        {"axis_id": "recurrent_pericarditis_hazard", "condition": "high", "effect": "context_dependent", "factor_range": [0.7, 1.8], "clinical_rationale": "Steroids can reduce inflammation but may increase recurrence if tapered quickly."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_PERICARDIAL_INFLAMMATION": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 30]},
+        "serum_crp": {"peak_value_factor": [0.25, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 21]},
+        "chest_pain_activity": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 14]}
+      },
+      "failure_modes": ["uncontrolled_infection", "recurrence_after_rapid_taper", "underlying_malignancy_or_tuberculosis_not_addressed"]
+    },
+    {
+      "treatment_id": "uremia_correction_or_dialysis_intensification",
+      "treatment_name": "Uremia correction or dialysis intensification",
+      "mode": "reshape_landscape",
+      "role": "reduce_uremic_pericardial_trigger_when_renal_failure_context_is_present",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "renal_dose_adjustment_need", "pericardial_effusion_activity"],
+      "effect_modifiers": [
+        {"axis_id": "blood_urea_nitrogen", "condition": "high", "effect": "strengthens_context_effect", "factor_range": [1.2, 4.0], "clinical_rationale": "Uremic burden is the modifiable driver in uremic pericarditis."}
+      ],
+      "trajectory_modifications": {
+        "M_PER_TRIGGER_CONTEXT": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [2, 30]},
+        "M_PER_PERICARDIAL_INFLAMMATION": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 30]},
+        "pericardial_effusion_activity": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [3, 45]}
+      },
+      "failure_modes": ["nonuremic_driver", "hemodynamic_instability_or_tamponade_needing_drainage", "dialysis_anticoagulation_bleeding_risk"]
+    },
+    {
+      "treatment_id": "monitoring_activity_restriction_and_serial_echo",
+      "treatment_name": "Monitoring, activity restriction, and serial echocardiography",
+      "mode": "push_state",
+      "role": "detect_effusion_progression_tamponade_or_myocardial_spillover_and_reduce_exertional_risk",
+      "required_context_axes": ["pericardial_effusion_activity", "pericardial_tamponade_hazard", "serum_troponin", "diffuse_st_segment_elevation_activity"],
+      "trajectory_modifications": {
+        "pericardial_tamponade_hazard": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 30]},
+        "myocardial_injury_hazard": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 30]},
+        "mortality_hazard_in_D-PERICARDITIS": {"peak_value_factor": [0.75, 0.98], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 30]}
+      },
+      "failure_modes": ["rapid_tamponade_without_escalation", "missed_myocarditis_or_acs_mimic", "lack_of_followup_for_large_effusion"]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_viral_or_flu_like_illness",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "fever_history_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.4]},
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.0, 2.0]},
+            {"axis_id": "diffuse_st_segment_elevation_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.8]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "post_cardiac_or_thoracic_injury_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "post_pericardial_injury_context_probability", "effect": "higher_peak", "magnitude_factor_range": [2.0, 8.0]},
+            {"axis_id": "pericardial_effusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 2.5]},
+            {"axis_id": "procedure_related_bleeding_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "treatment_effect_modulation": {"pericardiocentesis_or_pericardial_drainage": "context_depends_on_effusion_or_tamponade", "surgical_pericardial_window_or_pericardiotomy": "stronger_if_foreign_body_or_source_removal_needed"}
+        }
+      }
+    },
+    {
+      "factor": "recent_thoracoabdominal_procedure_or_ablation_near_pericardium",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "procedure_related_pericardial_injury_context_probability", "effect": "higher_peak", "magnitude_factor_range": [2.0, 8.0]},
+            {"axis_id": "pericardial_effusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 2.0]},
+            {"axis_id": "diffuse_st_segment_elevation_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.8]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "active_bacterial_infection_or_purulent_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.15]},
+            {"axis_id": "white_blood_cell_count", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.5]},
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.5, 4.0]},
+            {"axis_id": "pericardial_tamponade_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "mortality_hazard_in_D-PERICARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "treatment_effect_modulation": {"pathogen_directed_antimicrobial_management": "stronger_if_active_coverage_and_drainage_present", "pericardiocentesis_or_pericardial_drainage": "stronger_if_purulent_or_tamponade"}
+        }
+      }
+    },
+    {
+      "factor": "immunosuppression_diabetes_or_malignancy",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "active_serious_infection_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "pericardial_effusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]},
+            {"axis_id": "mortality_hazard_in_D-PERICARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "chronic_kidney_disease_or_uremia",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_baseline", "magnitude_factor_range": [1.5, 8.0]},
+            {"axis_id": "blood_urea_nitrogen", "effect": "higher_baseline", "magnitude_factor_range": [1.5, 8.0]},
+            {"axis_id": "pericardial_effusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]}
+          ],
+          "treatment_effect_modulation": {"uremia_correction_or_dialysis_intensification": "stronger_if_uremic_burden_high", "anti_inflammatory_nsaid_or_high_dose_aspirin": "nsaid_toxicity_limited"}
+        }
+      }
+    },
+    {
+      "factor": "systemic_autoimmune_or_autoinflammatory_disease_activity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]},
+            {"axis_id": "pleural_effusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]},
+            {"axis_id": "recurrent_pericarditis_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "treatment_effect_modulation": {"contextual_corticosteroid_or_immunomodulatory_control": "stronger_if_infection_is_absent_or_controlled"}
+        }
+      }
+    },
+    {
+      "factor": "large_effusion_or_subacute_course",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "pericardial_effusion_size_mm", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "pericardial_tamponade_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "pericardial_drainage_need", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "anticoagulation_or_bleeding_risk",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "procedure_related_bleeding_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "treatment_effect_modulation": {"pericardiocentesis_or_pericardial_drainage": "procedural_bleeding_risk_higher", "anti_inflammatory_nsaid_or_high_dose_aspirin": "toxicity_limited"}
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "serial_ecg_troponin_and_inflammatory_marker_monitoring", "description": "Track ECG stage, troponin magnitude, CRP/ESR, fever, and symptom trajectory to detect myopericardial spillover or nonresponse."},
+    {"care_id": "echocardiography_for_effusion_and_tamponade_surveillance", "description": "Use echocardiography to follow effusion size, chamber collapse, IVC plethora, and hemodynamic risk."},
+    {"care_id": "hemodynamic_monitoring_when_large_effusion_or_tamponade_possible", "description": "Monitor blood pressure, heart rate, oxygenation, urine output, lactate, and clinical shock signs when effusion is large or rapidly changing."},
+    {"care_id": "avoid_strenuous_activity_during_active_inflammation_or_myocardial_spillover", "description": "Limit exertion while pain, CRP, ECG instability, or troponin elevation persists."},
+    {"care_id": "post_workup_etiology_pathway", "description": "After presentation ranking, pursue cause-specific workup such as cultures, tuberculosis testing, autoimmune evaluation, renal/uremic assessment, malignancy evaluation, or procedural injury review as clinically indicated."}
+  ],
+  "quality_notes": [
+    "The disease name is deliberately pure: Acute pericarditis. Viral, idiopathic, purulent, tuberculous, uremic, malignant, autoimmune, traumatic, radiation, and myopericarditis contexts are not disease-name qualifiers.",
+    "Only mortality_hazard_in_D-PERICARDITIS uses category derived_hazard.",
+    "No banned clinical-decision label fields or single-case override fields are used.",
+    "Pericardial fluid culture/cytology, etiologic serology, final cause adjudication, treatment response, and long-term outcome are represented as confirmatory/post-workup evidence in case files unless explicitly rankable."
+  ]
+}
+

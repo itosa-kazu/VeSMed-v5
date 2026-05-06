@@ -144,31 +144,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-TRAPS | TNF receptor-associated periodic syndrome |
 | D-CAPS | Cryopyrin-associated periodic syndrome |
 | D-APLASTIC-ANEMIA | Aplastic anemia |
+| D-PULMONARY-EMBOLISM | Pulmonary embolism |
+| D-PERICARDITIS | Acute pericarditis |
+| D-ACUTE-CHOLECYSTITIS | Acute cholecystitis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
-| 2 | D-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
-| 3 | D-ACUTE-CHOLECYSTITIS | Acute cholecystitis | common fever/RUQ pain source-control disease near cholangitis and sepsis |
-| 4 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
-| 5 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
-| 6 | D-LUNG-ABSCESS | Lung abscess | fever, pneumonia, aspiration, malignancy, and source-control mimic |
-| 7 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
-| 8 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
-| 9 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
-| 10 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
-| 11 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
-| 12 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis | common scrotal pain/fever GU infection mimic near prostatitis, STI, and UTI |
-| 13 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
-| 14 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
-| 15 | D-SEPTIC-ABORTION | Septic abortion | critical pelvic fever/sepsis mimic near PID, postpartum endometritis, and TOA |
-| 16 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
-| 17 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
-| 18 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
-| 19 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
-| 20 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
+| 1 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
+| 2 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
+| 3 | D-LUNG-ABSCESS | Lung abscess | fever, pneumonia, aspiration, malignancy, and source-control mimic |
+| 4 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
+| 5 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
+| 6 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
+| 7 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
+| 8 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
+| 9 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis | common scrotal pain/fever GU infection mimic near prostatitis, STI, and UTI |
+| 10 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
+| 11 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
+| 12 | D-SEPTIC-ABORTION | Septic abortion | critical pelvic fever/sepsis mimic near PID, postpartum endometritis, and TOA |
+| 13 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
+| 14 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
+| 15 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
+| 16 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
+| 17 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
+| 18 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis | critical encephalitis/meningitis mimic near HSV, autoimmune encephalitis, and stroke |
+| 19 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
+| 20 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
 
 ## Candidate Pool Toward 200
 

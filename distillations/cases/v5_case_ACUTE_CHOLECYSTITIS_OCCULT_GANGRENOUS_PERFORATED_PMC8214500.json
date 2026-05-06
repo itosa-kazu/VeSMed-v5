@@ -1,0 +1,102 @@
+{
+  "case_id": "ACUTE_CHOLECYSTITIS_OCCULT_GANGRENOUS_PERFORATED_PMC8214500",
+  "source_pmid": "34164250",
+  "source_pmcid": "PMC8214500",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8214500/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8214500/fullTextXML",
+  "disease_label_per_paper": "Occult perforated gangrenous gallbladder found on MRCP",
+  "expected_manifold": "D-ACUTE-CHOLECYSTITIS",
+  "demographics": {
+    "age": 69,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "69-year-old man with hypertension, hyperlipidemia, type 2 diabetes, and recent right pontine infarct arrived from rehabilitation as a stroke alert after fall and altered mental status.",
+    "He reported right-sided/right upper quadrant abdominal pain rated 3/10 that had started about four weeks earlier.",
+    "He was hemodynamically stable and did not meet SIRS criteria; exam showed mild right upper quadrant tenderness.",
+    "Labs included WBC 11.8 thousand/mL, alkaline phosphatase 259 U/L, AST 259 U/L, lipase 721 U/L, and CRP 18 mg/dL.",
+    "Ultrasound showed acute cholecystitis with pericholecystic fluid; CT showed acute cholecystitis with fluid communication with the liver but no abscess.",
+    "MRCP within the early hospitalization showed perforated gangrenous cholecystitis with subcapsular abscess/phlegmonous change."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "older_age", "category": "gangrene_risk_context", "source_text_value": "69-year-old male"},
+    {"factor": "type_2_diabetes", "category": "gangrene_and_atypical_presentation_risk", "source_text_value": "past medical history of type 2 diabetes"},
+    {"factor": "recent_cerebrovascular_accident_rehabilitation", "category": "frailty_delayed_presentation_context", "source_text_value": "recent right pontine infarct and rehabilitation stay"},
+    {"factor": "delayed_pain_history", "category": "delayed_presentation_context", "source_text_value": "right quadrant pain started four weeks ago"}
+  ],
+  "observations": [
+    {"axis_id": "abdominal_pain_activity", "value": 0.35, "unit": "severity_score_0_1", "source_text_value": "right quadrant pain 3 out of 10", "use_in_ranking": true},
+    {"axis_id": "right_upper_quadrant_pain_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "right quadrant pain; physical exam mild right upper quadrant tenderness", "use_in_ranking": true},
+    {"axis_id": "abdominal_tenderness_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "mild tenderness on his right upper quadrant", "use_in_ranking": true},
+    {"axis_id": "right_upper_quadrant_tenderness_activity", "value": 0.55, "unit": "severity_score_0_1", "source_text_value": "mild tenderness on his right upper quadrant", "use_in_ranking": true},
+    {"axis_id": "white_blood_cell_count", "value": 11.8, "unit": "x10^9/L", "source_text_value": "white blood cell count of 11.8 thousand/mL", "use_in_ranking": true},
+    {"axis_id": "serum_alkaline_phosphatase", "value": 259.0, "unit": "U/L", "source_text_value": "alkaline phosphatase 259 U/L", "use_in_ranking": true},
+    {"axis_id": "serum_ast", "value": 259.0, "unit": "U/L", "source_text_value": "aspartate aminotransferase 259 U/L", "use_in_ranking": true},
+    {"axis_id": "serum_lipase", "value": 721.0, "unit": "U/L", "source_text_value": "lipase 721 U/L", "use_in_ranking": true},
+    {"axis_id": "serum_crp", "value": 180.0, "unit": "mg/L", "source_text_value": "C-reactive protein 18 mg/dL", "conversion_note": "18 mg/dL converted to 180 mg/L.", "use_in_ranking": true},
+    {"axis_id": "gallbladder_gangrene_activity", "value": 0.95, "unit": "relative_activity_0_1", "source_text_value": "MRCP showed perforated gangrenous cholecystitis", "use_in_ranking": true},
+    {"axis_id": "gallbladder_perforation_activity", "value": 0.95, "unit": "relative_activity_0_1", "source_text_value": "MRCP showed perforated gangrenous cholecystitis", "use_in_ranking": true},
+    {"axis_id": "pericholecystic_abscess_activity", "value": 0.85, "unit": "relative_activity_0_1", "source_text_value": "subjacent right upper quadrant and subcapsular abscesses/phlegmonous change", "use_in_ranking": true},
+    {"axis_id": "subcapsular_hepatic_abscess_activity", "value": 0.85, "unit": "relative_activity_0_1", "source_text_value": "subcapsular abscesses/phlegmonous change", "use_in_ranking": true},
+    {"axis_id": "source_control_need", "value": 1.0, "unit": "relative_activity_0_1", "source_text_value": "perforated gangrenous cholecystitis with abscess prompted emergent operation", "use_in_ranking": true}
+  ],
+  "imaging": [
+    {
+      "modality": "ultrasound_liver_gallbladder",
+      "day": 0,
+      "finding": "Ultrasound consistent with acute cholecystitis, with thickened gallbladder wall and pericholecystic fluid.",
+      "source_text_value": "abdominal ultrasound showed AC with pericholecystic fluid; figure showed thickened gallbladder wall and pericholecystic fluid",
+      "mapped_axis_ids": ["gallbladder_wall_thickening_activity", "pericholecystic_fluid_activity"],
+      "value": 0.9,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
+    },
+    {
+      "modality": "ct_abdomen_pelvis_with_contrast",
+      "day": 0,
+      "finding": "CT showed dilated and inflamed gallbladder consistent with acute cholecystitis and fluid communication with liver but no abscess.",
+      "source_text_value": "CT abdomen and pelvis with contrast showed AC with fluid communication with the liver, but no abscess",
+      "mapped_axis_ids": ["gallbladder_distension_activity", "gallbladder_wall_thickening_activity", "gallbladder_perforation_activity"],
+      "value": 0.8,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
+    },
+    {
+      "modality": "mrcp",
+      "day": 1,
+      "finding": "MRCP showed perforated gangrenous cholecystitis with subcapsular abscess/phlegmonous change.",
+      "source_text_value": "MRCP showed perforated gangrenous cholecystitis with subcapsular abscess",
+      "mapped_axis_ids": ["gallbladder_gangrene_activity", "gallbladder_perforation_activity", "pericholecystic_abscess_activity", "subcapsular_hepatic_abscess_activity"],
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
+    }
+  ],
+  "diagnostics": [
+    {"test": "sirs_assessment", "day": 0, "source_text_value": "hemodynamically stable and did not meet SIRS criteria", "use_in_ranking": false},
+    {"test": "hepatitis_panel", "day": 0, "source_text_value": "hepatitis panel was negative", "use_in_ranking": false},
+    {"test": "syncope_and_stroke_workup", "day": 0, "source_text_value": "syncope and stroke workup was unremarkable", "use_in_ranking": false}
+  ],
+  "procedures": [
+    {"procedure": "emergent_laparoscopic_cholecystectomy", "day": 1, "source_text_value": "patient underwent an emergent laparoscopic cholecystectomy", "use_in_ranking": false},
+    {"procedure": "jackson_pratt_drain", "day": 1, "source_text_value": "Jackson Pratt drain placed and later removed during two-week follow-up", "use_in_ranking": false}
+  ],
+  "confirmatory_findings": [
+    {"finding": "Intraoperative and histopathology reports confirmed gangrenous cholecystitis", "axis_id": "operative_pathology_confirmation", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "intraoperative and histopathology reports both confirmed GC", "use_in_ranking": false},
+    {"finding": "Advanced operative disease with non-identifiable planes", "axis_id": "operative_severity_confirmation", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "non-identifiable surgical planes with an indistinct cystic duct and artery indicating advanced disease", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    "broadened antibiotics",
+    "emergent laparoscopic cholecystectomy",
+    "Jackson Pratt drain"
+  ],
+  "outcome": {
+    "survival_status": "survived",
+    "source_text_value": "no postoperative complications; JP drain removed at two-week outpatient follow-up"
+  },
+  "quality_warnings": [
+    "MRCP was diagnostic imaging obtained before operation within the early hospitalization and is retained as rankable evidence for an imaging-enriched stage.",
+    "Intraoperative/pathology confirmation, postoperative course, and final paper diagnosis are non-ranking."
+  ]
+}

@@ -694,6 +694,34 @@ Follow-up after generic evidence/runtime fixes:
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
 
+## 2026-05-07 New Batch Memory: PE / Pericarditis / Acute Cholecystitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-PULMONARY-EMBOLISM`: pulmonary embolism.
+  - `D-PERICARDITIS`: acute pericarditis.
+  - `D-ACUTE-CHOLECYSTITIS`: acute cholecystitis.
+- New real PMC/PubMed cases:
+  - `D-PULMONARY-EMBOLISM`: `PMC9912511` / PMID `36759780`, `PMC5128386` / PMID `27920878`, `PMC6392842` / PMID `29851836`.
+  - `D-PERICARDITIS`: `PMC3331659` / PMID `22942636`, `PMC6198527` / PMID `30348082`, `PMC8224196` / PMID `34219937`.
+  - `D-ACUTE-CHOLECYSTITIS`: `PMC2729472` / PMID `19707473`, `PMC8921967` / PMID `35350677`, `PMC8214500` / PMID `34164250`.
+- Ontology repair from this batch: composite axis names were normalized to umbrella single-concept names:
+  - `central_or_saddle_pulmonary_embolus_activity` -> `central_pulmonary_embolus_activity`.
+  - `right_atrial_or_ventricular_thrombus_activity` -> `right_heart_thrombus_activity`.
+  - `post_cardiac_or_thoracic_injury_context_probability` -> `post_pericardial_injury_context_probability`.
+  - `colchicine_intolerance_or_toxicity_risk_context` -> `colchicine_use_limitation_context`.
+  - `gallstone_or_biliary_sludge_context_probability` -> `cholelithiasis_sludge_context_probability`.
+  - `pain_radiation_to_back_or_right_shoulder_activity` -> `referred_biliary_pain_radiation_activity`.
+- PE boundary rule: massive/submassive/provoked/unprovoked/saddle/right-heart-thrombus presentations are severity/location/context axes or future subtype, not disease-name qualifiers. CTPA/VQ/echo/duplex findings can be rankable when available as diagnostic-stage evidence; final diagnosis, treatment response, and long-term outcome remain confirmatory/non-ranking.
+- Pericarditis boundary rule: viral/idiopathic/purulent/tuberculous/uremic/post-procedure/myopericarditis remain context/event/risk axes or future related leaves. Positional pleuritic chest pain, rub, diffuse ST elevation, PR depression, inflammatory labs, effusion, and tamponade physiology can be rankable when available.
+- Acute cholecystitis boundary rule: calculous/acalculous/emphysematous/gangrenous/perforated presentations stay as spectrum/context/event/source-control axes or future subtype. Ultrasound/CT gallbladder findings can be rankable when presentation-stage imaging is available; operative pathology and treatment response stay confirmatory/non-ranking.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-BRAIN-ABSCESS`.
+- Focused new-batch/near-neighbor fast grid (`PULMONARY_EMBOLISM,PERICARDITIS,ACUTE_CHOLECYSTITIS,ACUTE_PANCREATITIS`) loaded 14 cases; single-manifold validation was `13/13 PASS`; the only focused failure was the intentionally single-disabled `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` combo.
+- Full current-atlas fast grid after this batch:
+  - 354 case JSON files loaded.
+  - Single-manifold validation `349/351 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
 ## 2026-05-06 New Batch Memory: Polymyositis / Drug Fever / Alcoholic Hepatitis
 
 - The next loop again used one `xhigh` worker per disease, with disjoint write scopes:

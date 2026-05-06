@@ -1,0 +1,70 @@
+{
+  "case_id": "PERICARDITIS_RFA_HEAT_INJURY_PMC6198527",
+  "source_pmid": "30348082",
+  "source_pmcid": "PMC6198527",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6198527/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6198527/fullTextXML",
+  "disease_label_per_paper": "Acute pericarditis following radiofrequency ablation of a metastatic liver tumor",
+  "expected_manifold": "D-PERICARDITIS",
+  "demographics": {
+    "age": 56,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "56-year-old man with hypopharyngeal squamous cell carcinoma and metastatic liver tumor underwent radiofrequency ablation of a segment II liver lesion adjacent to the pericardium.",
+    "The next day he developed new-onset chest pain, paroxysmal atrial fibrillation with rapid ventricular response, fever, and chills.",
+    "Physical examination revealed a friction rub.",
+    "ECG showed diffuse ST elevation except in aVR and V1; baseline ECG had been normal.",
+    "WBC was 10,300/uL, CRP 19.8 mg/dL, CK 202 U/L, CK-MB 0.6 ng/mL, and troponin-I 0.013 ng/mL.",
+    "Echocardiography showed new small pericardial effusion about 1.12 cm without tamponade."
+  ],
+  "snapshot_day": 1,
+  "risk_context": [
+    {"factor": "recent_thoracoabdominal_procedure_or_ablation_near_pericardium", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "repeat radiofrequency ablation of a segment II liver tumor adjacent to the parietal pericardium"},
+    {"factor": "post_cardiac_or_thoracic_injury_context", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "heat penetration and stimulation after RFA was favored"}
+  ],
+  "observations": [
+    {"axis_id": "procedure_related_pericardial_injury_context_probability", "value": 1.0, "unit": "probability_0_1", "source_text_value": "RFA for a liver tumor in S2 segment adjacent to the parietal pericardium"},
+    {"axis_id": "post_pericardial_injury_context_probability", "value": 0.85, "unit": "probability_0_1", "source_text_value": "acute pericarditis due to heat penetration and stimulation was favored"},
+    {"axis_id": "chest_pain_activity", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "new-onset chest pain developed"},
+    {"axis_id": "pleuritic_chest_pain_activity", "value": 0.9, "unit": "severity_score_0_1", "source_text_value": "Pleuritic chest pain developed on the day after radiofrequency catheter ablation"},
+    {"axis_id": "fever_history_activity", "value": 0.9, "unit": "severity_score_0_1", "source_text_value": "Fever and chills were also noted"},
+    {"axis_id": "pericardial_friction_rub_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "physical examination revealed friction rub"},
+    {"axis_id": "diffuse_st_segment_elevation_activity", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "ECG showed diffuse ST elevation except for leads AVR and V1"},
+    {"axis_id": "pericardial_effusion_activity", "value": 0.5, "unit": "severity_score_0_1", "source_text_value": "echocardiography showed a small amount of pericardial effusion"},
+    {"axis_id": "pericardial_effusion_size_mm", "value": 11.2, "unit": "mm", "source_text_value": "pericardial effusion with a maximal depth of about 1.12 cm", "conversion_note": "1.12 cm converted to 11.2 mm."},
+    {"axis_id": "pericardial_tamponade_hazard", "value": 0.0001, "unit": "events_per_day", "source_text_value": "without signs of tamponade"},
+    {"axis_id": "cardiomegaly_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "chest X-ray showed a water-drop appearance"},
+    {"axis_id": "pleural_effusion_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "chest X-ray showed ... left pleural effusion"}
+  ],
+  "lab_trajectories": [
+    {"axis_id": "white_blood_cell_count", "time_day": 1, "value": 10.3, "unit": "10^9/L", "source_text_value": "WBC 10300/L", "conversion_note": "Text likely reports 10,300/uL; encoded as 10.3 x10^9/L."},
+    {"axis_id": "serum_crp", "time_day": 1, "value": 198.0, "unit": "mg/L", "source_text_value": "CRP 19.8 mg/dL", "conversion_note": "CRP 19.8 mg/dL converted to 198 mg/L."},
+    {"axis_id": "serum_troponin", "time_day": 1, "value": 13.0, "unit": "ng/L", "source_text_value": "troponin-I 0.013 ng/mL", "conversion_note": "0.013 ng/mL converted to 13 ng/L."},
+    {"axis_id": "serum_creatine_kinase", "time_day": 1, "value": 202, "unit": "U/L", "source_text_value": "CK 202 U/L"},
+    {"axis_id": "serum_crp", "time_day": 4, "value": 83.57, "unit": "mg/L", "source_text_value": "CRP 8.357 mg/dL three days later", "conversion_note": "Course value retained but not used before day-1 value by current loader."}
+  ],
+  "diagnostics": [
+    {"time_day": 1, "test": "electrocardiography", "axis_id": "diffuse_st_segment_elevation_activity", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "Diffuse ST segment elevation except for lead V1 and aVR during chest pain"},
+    {"time_day": 1, "test": "transthoracic_echocardiography", "axis_id": "pericardial_effusion_activity", "value": 0.5, "unit": "severity_score_0_1", "source_text_value": "small amount of pericardial effusion with a maximal depth of about 1.12 cm without signs of tamponade"},
+    {"time_day": 1, "test": "chest_xray", "axis_id": "pleural_effusion_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "Chest X-ray showed a water-drop appearance and left pleural effusion"}
+  ],
+  "confirmatory_findings": [
+    {"finding": "Heat injury after RFA favored as cause", "source_text_value": "Acute pericarditis due to heat penetration and stimulation was favored.", "use_in_ranking": false},
+    {"finding": "One-month follow-up showed no pericardial effusion and ST segments normalized", "source_text_value": "There was no pericardial effusion and the ST segments had totally returned to baseline 1 month later.", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    {"name": "aspirin", "use_in_ranking": false, "source_text_value": "treated with aspirin 100 mg"},
+    {"name": "diclofenac", "use_in_ranking": false, "source_text_value": "diclofenac 100 mg per day"}
+  ],
+  "outcome": {
+    "status": "symptoms_and_ecg_improved_with_anti_inflammatory_treatment",
+    "source_text_value": "Three days later, the ST segment elevations had mostly returned to baseline; symptoms improved and inflammatory markers declined.",
+    "use_in_ranking": false
+  },
+  "quality_warnings": [
+    "RFA heat injury is retained as context, not as a disease-name qualifier.",
+    "Treatment response and one-month echo/ECG normalization are confirmatory/non-ranking."
+  ]
+}
+
