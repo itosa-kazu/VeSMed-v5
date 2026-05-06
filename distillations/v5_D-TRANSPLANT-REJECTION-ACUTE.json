@@ -1,0 +1,550 @@
+{
+  "disease": "D-TRANSPLANT-REJECTION-ACUTE",
+  "disease_name": "Acute transplant rejection",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute transplant rejection",
+    "leaf_granularity": "first-layer clinical disease leaf for acute immune-mediated solid-organ allograft rejection, without splitting by graft organ, T-cell-mediated rejection, antibody-mediated rejection, mixed rejection, early, late, Banff grade, or severity phenotype",
+    "subtype_policy": "Kidney, liver, heart, lung, pancreas, cellular, antibody-mediated, mixed, sensitization, and immunosuppression contexts are represented as mechanisms, context axes, risk factors, treatment modifiers, and organ-specific response axes, not as disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use transplant context, time from transplant, recent immunosuppression underexposure or reduction when known, fever or systemic illness when present, and organ-specific allograft dysfunction. Biopsy Banff/pathology, C4d, donor-specific antibody, molecular rejection score, donor-derived cell-free DNA, final adjudication, treatment response, and outcome should be confirmatory or non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {"mechanism_id": "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION", "display_name": "Alloreactive T-cell activation", "clinical_meaning": "Recipient T cells recognize donor alloantigens and drive interstitial, endothelial, ductal, bronchial, or myocardial inflammatory injury depending on graft organ.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [1, 60], "peak_value_range": [0.25, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "display_name": "Donor-specific antibody and complement endothelial injury", "clinical_meaning": "Donor-specific or non-HLA antibodies injure graft microvasculature through endothelial activation, complement deposition, C4d-positive or C4d-negative AMR, thrombosis, edema, and ischemic parenchymal stress.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "display_name": "Graft microvascular inflammation and edema", "clinical_meaning": "Endothelialitis, capillaritis, venulitis, tissue edema, and microvascular congestion reduce perfusion and create swelling, tenderness, congestion, or impaired organ function.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [1, 21], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "display_name": "Allograft parenchymal cell injury", "clinical_meaning": "Tubular, hepatocellular, biliary epithelial, cardiomyocyte, or airway/alveolar injury causes organ-specific laboratory and physiologic dysfunction.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 30], "peak_value_range": [0.15, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "display_name": "Systemic inflammatory stress", "clinical_meaning": "Acute rejection may produce fever, malaise, inflammatory markers, vasoplegia, or stress physiology, but fever and leukocytosis can be absent under immunosuppression.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"mechanism_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "display_name": "Kidney allograft dysfunction", "clinical_meaning": "Renal allograft rejection causes rising creatinine, proteinuria, hematuria, oliguria, allograft tenderness, or dialysis need, with biopsy defining the rejection phenotype.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "display_name": "Liver allograft dysfunction", "clinical_meaning": "Liver allograft rejection causes aminotransferase, cholestatic, synthetic, vascular-flow, encephalopathy, lactate, and acute liver failure phenotypes depending on severity and AMR versus cellular balance.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "display_name": "Heart allograft dysfunction", "clinical_meaning": "Cardiac allograft rejection causes systolic or diastolic dysfunction, low output, congestion, arrhythmia, troponin or natriuretic peptide elevation, and cardiogenic shock.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "display_name": "Lung allograft dysfunction", "clinical_meaning": "Lung allograft rejection can cause dyspnea, cough, falling FEV1, hypoxemia, new infiltrates, pleural effusion, or respiratory failure after infection and other mimics are considered.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"mechanism_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "display_name": "Severe graft failure and multiorgan decompensation", "clinical_meaning": "Uncontrolled rejection can progress to irreversible graft failure, shock, dialysis, respiratory failure, retransplant need, and death.", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.005], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"}
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION", "target_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "target_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "target_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION", "target_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+
+    {"source_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "target_id": "hypotension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+
+    {"source_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "target_id": "allograft_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_GRAFT_MICROVASCULAR_INFLAMMATION_EDEMA", "target_id": "allograft_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "target_id": "donor_specific_antibody_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 30], "confidence": "high"},
+    {"source_id": "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "target_id": "c4d_deposition_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "donor_derived_cell_free_dna_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_PARENCHYMAL_CELL_INJURY", "target_id": "allograft_biopsy_rejection_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "kidney_allograft_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "urine_protein_creatinine_ratio", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "proteinuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "hematuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "oliguria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_KIDNEY_ALLOGRAFT_DYSFUNCTION", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "confidence": "high"},
+
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "liver_allograft_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "hepatic_encephalopathy_grade", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_LIVER_ALLOGRAFT_DYSFUNCTION", "target_id": "acute_liver_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "confidence": "high"},
+
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "heart_allograft_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "brain_natriuretic_peptide", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "left_ventricular_ejection_fraction", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "cardiac_index", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "pulmonary_capillary_wedge_pressure", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "pulmonary_edema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "cardiogenic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_ATR_HEART_ALLOGRAFT_DYSFUNCTION", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "confidence": "medium"},
+
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "lung_allograft_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "forced_expiratory_volume_1_percent_predicted", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "new_pulmonary_infiltrate_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_ATR_LUNG_ALLOGRAFT_DYSFUNCTION", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "confidence": "medium"},
+
+    {"source_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "target_id": "graft_loss_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "target_id": "renal_replacement_therapy_need_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "target_id": "retransplantation_need_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "confidence": "high"},
+    {"source_id": "M_ATR_SEVERE_GRAFT_FAILURE_MULTIORGAN", "target_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 14], "confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "solid_organ_transplant_context", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Patient has a transplanted solid-organ allograft that can be rejected.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [1, 1], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "kidney_allograft_context", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "solid_organ_transplant_context", "shape_free_text": "Kidney allograft is the relevant graft context.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "liver_allograft_context", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "solid_organ_transplant_context", "shape_free_text": "Liver allograft is the relevant graft context.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "heart_allograft_context", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "solid_organ_transplant_context", "shape_free_text": "Heart allograft is the relevant graft context.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "lung_allograft_context", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "solid_organ_transplant_context", "shape_free_text": "Lung allograft is the relevant graft context.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "post_transplant_time_days", "category": "context_measurement", "unit": "days", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "solid_organ_transplant_context", "shape_free_text": "Elapsed days from transplant to the acute allograft dysfunction presentation; acute rejection can occur early or late.", "baseline_range": [0, 0], "peak_day_range": [-3650, 0], "peak_value_range": [1, 3650], "plateau_duration_days": [1, 36500], "decline_half_life_days": [365, 36500], "knowledge_confidence": "high"},
+    {"axis_id": "immunosuppression_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Intensity of maintenance or recent transplant immunosuppression exposure.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 36500], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "underimmunosuppression_or_nonadherence_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Medication nonadherence, low trough, interrupted therapy, or deliberate reduction that increases alloimmune activity.", "baseline_range": [0, 0.02], "peak_day_range": [-90, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "recent_immunosuppression_reduction_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent reduction or withholding of immunosuppression for infection, malignancy, toxicity, pregnancy, or procedural reasons.", "baseline_range": [0, 0.02], "peak_day_range": [-90, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 120], "knowledge_confidence": "medium"},
+
+    {"axis_id": "allograft_dysfunction_activity", "category": "qualitative", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Any new graft dysfunction unexplained by baseline chronic disease, infection, vascular obstruction, ischemia, or drug toxicity.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "allograft_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Tenderness over a graft, most often kidney; can be absent in many rejection episodes.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Fever history during acute rejection; common in severe inflammatory or liver rejection but absent in many kidney and heart episodes.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 1.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature; may be normal despite acute rejection under immunosuppression.", "baseline_range": [36.2, 37.2], "peak_day_range": [0, 7], "peak_value_range": [36.5, 40.5], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachycardia from fever, shock, heart allograft dysfunction, anemia, or stress physiology.", "baseline_range": [55, 95], "peak_day_range": [0, 7], "peak_value_range": [70, 140], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachypnea from pulmonary edema, respiratory allograft dysfunction, shock, acidosis, or systemic illness.", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [16, 36], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; severe cardiac or liver rejection can present with low pressure or shock.", "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [70, 140], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values indicate shock or low-output state.", "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [45, 95], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "hypotension_activity", "category": "vital_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Persistent hypotension or shock physiology from severe graft dysfunction, vasoplegia, or low output.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Inflammatory marker that may rise in rejection but is nonspecific and often infection-confounded.", "baseline_range": [0.2, 5], "peak_day_range": [0, 14], "peak_value_range": [2, 200], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+
+    {"axis_id": "kidney_allograft_dysfunction_activity", "category": "organ_dysfunction", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "kidney_allograft_context", "shape_free_text": "New kidney allograft dysfunction with rising creatinine, proteinuria, hematuria, oliguria, or tenderness.", "baseline_range": [0, 0.02], "peak_day_range": [0, 45], "peak_value_range": [0, 1], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Creatinine rises in kidney allograft rejection and can also rise from severe heart or liver allograft failure with hypoperfusion.", "baseline_range": [0.6, 1.6], "peak_day_range": [0, 45], "peak_value_range": [1.2, 8.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "urine_protein_creatinine_ratio", "category": "lab_value", "unit": "mg_per_mg", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "proteinuria_activity", "shape_free_text": "Urine protein-to-creatinine ratio; can rise in kidney allograft rejection, glomerular injury, or chronic allograft disease.", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 45], "peak_value_range": [0.15, 5.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "proteinuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Proteinuria as kidney allograft injury evidence.", "baseline_range": [0, 0.05], "peak_day_range": [0, 45], "peak_value_range": [0, 1], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "hematuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Hematuria can occur with kidney allograft inflammation but is not required and overlaps infection or glomerulonephritis.", "baseline_range": [0, 0.03], "peak_day_range": [0, 45], "peak_value_range": [0, 0.9], "plateau_duration_days": [1, 120], "decline_half_life_days": [7, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "oliguria_activity", "category": "renal_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reduced urine output from severe renal graft dysfunction or low-output multiorgan failure.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for clinically significant AKI from renal allograft rejection or severe graft-failure shock physiology.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 30], "peak_value_range": [0.01, 0.5], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"axis_id": "renal_replacement_therapy_need_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dialysis or renal replacement need from severe renal dysfunction, acidosis, hyperkalemia, or volume overload.", "baseline_range": [0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+
+    {"axis_id": "liver_allograft_dysfunction_activity", "category": "organ_dysfunction", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "liver_allograft_context", "shape_free_text": "New liver allograft dysfunction with hepatocellular, cholestatic, synthetic, vascular, encephalopathic, or ALF phenotype.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST elevation from liver allograft hepatocellular injury; severe AMR/ischemic graft injury can cause high values.", "baseline_range": [10, 40], "peak_day_range": [0, 14], "peak_value_range": [60, 10000], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT elevation from liver allograft hepatocellular injury.", "baseline_range": [7, 55], "peak_day_range": [0, 14], "peak_value_range": [60, 10000], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Cholestatic enzyme response from bile duct injury or biliary/vascular complications.", "baseline_range": [35, 120], "peak_day_range": [0, 30], "peak_value_range": [60, 1000], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin elevation from cholestatic or severe hepatocellular liver allograft dysfunction.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 30], "peak_value_range": [1.0, 30], "plateau_duration_days": [0, 120], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "ratio", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR rises when liver allograft synthetic failure develops.", "baseline_range": [0.9, 1.2], "peak_day_range": [0, 14], "peak_value_range": [1.1, 6.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "hepatic_encephalopathy_grade", "category": "neurologic_measurement", "unit": "grade_0_4", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hepatic encephalopathy grade during liver allograft failure.", "baseline_range": [0, 0], "peak_day_range": [0, 14], "peak_value_range": [0, 4], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "lactic_acidosis_activity", "category": "lab_pattern", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Lactate elevation or acidosis from severe liver graft failure, cardiogenic shock, or multiorgan hypoperfusion.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "acute_liver_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for acute liver failure from severe liver allograft rejection.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.01, 0.8], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "high"},
+
+    {"axis_id": "heart_allograft_dysfunction_activity", "category": "organ_dysfunction", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "heart_allograft_context", "shape_free_text": "New heart allograft dysfunction with systolic failure, low output, congestion, arrhythmia, or shock.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dyspnea from heart or lung allograft dysfunction, pulmonary edema, or respiratory failure.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Fatigue or malaise from systemic inflammation, heart failure, renal failure, or liver dysfunction.", "baseline_range": [0, 0.1], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 90], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "cough_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Cough may accompany lung allograft rejection or pulmonary congestion in heart allograft failure.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abdominal pain can reflect hepatic congestion, liver graft dysfunction, gut edema, or nonspecific systemic illness.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "low"},
+    {"axis_id": "lower_extremity_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Peripheral edema from heart allograft failure, renal dysfunction, or liver dysfunction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "jugular_venous_pressure_cm_h2o", "category": "physical_measurement", "unit": "cmH2O", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Elevated jugular venous pressure from heart allograft failure or volume overload.", "baseline_range": [3, 8], "peak_day_range": [0, 14], "peak_value_range": [8, 25], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "pulmonary_crackles_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Bibasilar crackles from pulmonary edema, congestion, infection, or lung allograft dysfunction.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "pulmonary_edema_activity", "category": "imaging_or_physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pulmonary vascular congestion or edema from heart allograft dysfunction or severe volume overload.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "cardiomegaly_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Cardiomegaly or enlarged cardiac silhouette in heart allograft dysfunction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "low"},
+    {"axis_id": "brain_natriuretic_peptide", "category": "lab_value", "unit": "pg/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BNP rises with heart allograft dysfunction, congestion, and wall stress.", "baseline_range": [5, 100], "peak_day_range": [0, 14], "peak_value_range": [300, 10000], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "left_ventricular_ejection_fraction", "category": "measurement", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "LVEF can drop acutely in cardiac allograft rejection with graft dysfunction.", "baseline_range": [55, 70], "peak_day_range": [0, 14], "peak_value_range": [5, 50], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"axis_id": "cardiac_index", "category": "hemodynamic_measurement", "unit": "L_min_m2", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Cardiac index falls in severe heart allograft dysfunction and cardiogenic shock.", "baseline_range": [2.5, 4.2], "peak_day_range": [0, 7], "peak_value_range": [0.8, 2.2], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "cardiac_output", "category": "hemodynamic_measurement", "unit": "L_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Cardiac output falls during severe heart allograft dysfunction.", "baseline_range": [4.0, 8.0], "peak_day_range": [0, 7], "peak_value_range": [1.5, 4.5], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "pulmonary_capillary_wedge_pressure", "category": "hemodynamic_measurement", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "PCWP rises with left-sided allograft failure and congestion.", "baseline_range": [6, 12], "peak_day_range": [0, 14], "peak_value_range": [14, 35], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "right_atrial_pressure", "category": "hemodynamic_measurement", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Right atrial pressure rises with right-sided or biventricular allograft dysfunction and congestion.", "baseline_range": [2, 8], "peak_day_range": [0, 14], "peak_value_range": [10, 25], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Bicarbonate falls with shock-related metabolic acidosis, renal failure, or severe liver failure.", "baseline_range": [22, 29], "peak_day_range": [0, 7], "peak_value_range": [8, 20], "plateau_duration_days": [0, 21], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "ecg_low_voltage_activity", "category": "ecg_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Low voltage ECG can accompany cardiac allograft dysfunction, edema, effusion, or severe illness.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "low"},
+    {"axis_id": "cardiogenic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for cardiogenic shock from cardiac allograft rejection.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.01, 0.8], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "high"},
+    {"axis_id": "cardiac_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for atrial or ventricular arrhythmia during cardiac allograft rejection.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.4], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium"},
+
+    {"axis_id": "lung_allograft_dysfunction_activity", "category": "organ_dysfunction", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "lung_allograft_context", "shape_free_text": "New lung allograft dysfunction with dyspnea, cough, falling FEV1, hypoxemia, infiltrates, or respiratory failure.", "baseline_range": [0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"axis_id": "forced_expiratory_volume_1_percent_predicted", "category": "pulmonary_function_measurement", "unit": "percent_predicted", "log_scale": false, "axis_role": "measurement", "shape_free_text": "FEV1 percent predicted can drop in lung allograft rejection.", "baseline_range": [70, 110], "peak_day_range": [0, 30], "peak_value_range": [25, 85], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Oxygen saturation can fall in lung allograft rejection, pulmonary edema, or shock.", "baseline_range": [95, 100], "peak_day_range": [0, 14], "peak_value_range": [60, 99], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "new_pulmonary_infiltrate_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "New infiltrates may appear in lung allograft rejection but also overlap infection and edema.", "baseline_range": [0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for oxygen or ventilatory failure from lung rejection or pulmonary edema during severe heart rejection.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.5], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium"},
+
+    {"axis_id": "donor_specific_antibody_activity", "category": "confirmatory_or_post_workup_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "DSA or compatible antibody evidence for AMR; confirmatory/post-workup unless explicitly testing that mode.", "baseline_range": [0, 0.02], "peak_day_range": [-30, 30], "peak_value_range": [0, 1], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "donor_derived_cell_free_dna_fraction", "category": "confirmatory_or_post_workup_lab", "unit": "percent", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Donor-derived cell-free DNA fraction rises with allograft injury and rejection but is not presentation-only evidence unless specifically available in the test mode.", "baseline_range": [0.0, 0.5], "peak_day_range": [0, 14], "peak_value_range": [0.5, 10], "plateau_duration_days": [0, 60], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "allograft_biopsy_rejection_activity", "category": "confirmatory_pathology", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Biopsy evidence of acute rejection by organ-specific pathology criteria; confirmatory/post-workup.", "baseline_range": [0, 0], "peak_day_range": [0, 14], "peak_value_range": [1, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "biopsy_microvascular_inflammation_activity", "category": "confirmatory_pathology", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Microvascular inflammation, endothelialitis, capillaritis, or venulitis on allograft biopsy; confirmatory/post-workup.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "c4d_deposition_activity", "category": "confirmatory_pathology", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "C4d deposition in graft capillaries or portal microvasculature supporting AMR; confirmatory/post-workup.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "graft_loss_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard for irreversible allograft failure or loss.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 90], "peak_value_range": [0.005, 0.6], "plateau_duration_days": [0, 365], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "retransplantation_need_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need to evaluate urgent retransplantation or graft replacement when rejection causes irreversible graft failure.", "baseline_range": [0, 0.002], "peak_day_range": [0, 90], "peak_value_range": [0, 1], "plateau_duration_days": [0, 365], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Disease-specific lifespan mortality hazard from acute transplant rejection through shock, organ failure, graft loss, infection/treatment complications, and unavailable salvage.", "baseline_range": [0.00005, 0.001], "peak_day_range": [0, 90], "peak_value_range": [0.001, 0.2], "plateau_duration_days": [0, 180], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "solid_organ_transplant_context", "target_axis_id": "allograft_dysfunction_activity", "relationship": "required_context_for_allograft_dysfunction", "coupling_type": "mixed", "correlation_range": [0.7, 1.0], "lag_days_range": [0, 0], "phase": "all_course", "effect_direction": "context_enables_target", "clinical_rationale": "Allograft dysfunction is meaningful only when a transplanted graft exists.", "knowledge_confidence": "high"},
+    {"source_axis_id": "underimmunosuppression_or_nonadherence_activity", "target_axis_id": "allograft_dysfunction_activity", "relationship": "underimmunosuppression_to_rejection_expression", "coupling_type": "hazard_drift", "correlation_range": [0.3, 0.8], "lag_days_range": [1, 30], "phase": "trigger_to_peak", "effect_direction": "source_up_increases_target", "clinical_rationale": "Underexposure raises alloimmune activation, but rejection can occur despite therapeutic levels.", "knowledge_confidence": "high"},
+    {"source_axis_id": "donor_specific_antibody_activity", "target_axis_id": "biopsy_microvascular_inflammation_activity", "relationship": "dsa_to_microvascular_inflammation", "coupling_type": "drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 14], "phase": "amr", "effect_direction": "source_up_increases_target", "clinical_rationale": "AMR often couples DSA with microvascular inflammation, though C4d-negative and DSA-negative patterns exist.", "knowledge_confidence": "high"},
+    {"source_axis_id": "kidney_allograft_dysfunction_activity", "target_axis_id": "serum_creatinine", "relationship": "renal_graft_dysfunction_to_creatinine", "coupling_type": "drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 7], "phase": "renal_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Rising creatinine is a major kidney allograft dysfunction signal.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_to_aki_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 3], "phase": "renal_or_shock", "effect_direction": "source_up_increases_target", "clinical_rationale": "Marked creatinine rise represents AKI hazard in graft or multiorgan failure.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_ast", "target_axis_id": "serum_alt", "relationship": "hepatocellular_injury_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 2], "phase": "liver_rejection", "effect_direction": "positive_correlation", "clinical_rationale": "AST and ALT rise together from hepatocellular allograft injury.", "knowledge_confidence": "high"},
+    {"source_axis_id": "prothrombin_time_inr", "target_axis_id": "acute_liver_failure_hazard", "relationship": "inr_to_liver_failure", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 2], "phase": "severe_liver_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "INR elevation marks loss of liver synthetic reserve.", "knowledge_confidence": "high"},
+    {"source_axis_id": "hepatic_encephalopathy_grade", "target_axis_id": "acute_liver_failure_hazard", "relationship": "encephalopathy_to_alf", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 1], "phase": "severe_liver_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Encephalopathy is an acute liver failure defining event when synthetic dysfunction is present.", "knowledge_confidence": "high"},
+    {"source_axis_id": "left_ventricular_ejection_fraction", "target_axis_id": "cardiogenic_shock_hazard", "relationship": "low_lvef_to_shock", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 2], "phase": "heart_rejection", "effect_direction": "source_down_increases_target", "clinical_rationale": "Severe LVEF reduction in heart allograft rejection drives shock risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiac_index", "target_axis_id": "cardiogenic_shock_hazard", "relationship": "low_cardiac_index_to_shock", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 1], "phase": "heart_rejection", "effect_direction": "source_down_increases_target", "clinical_rationale": "Low measured cardiac index is direct low-output physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pulmonary_capillary_wedge_pressure", "target_axis_id": "pulmonary_edema_activity", "relationship": "filling_pressure_to_congestion", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 2], "phase": "heart_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Elevated filling pressure causes pulmonary congestion and dyspnea.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "shock_to_aki", "coupling_type": "event_transition", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 5], "phase": "severe_heart_or_liver_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Low-output or distributive shock can cause renal hypoperfusion and dialysis need.", "knowledge_confidence": "high"},
+    {"source_axis_id": "graft_loss_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "relationship": "graft_loss_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 30], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Irreversible graft loss raises mortality risk, especially for heart, liver, lung, and unavailable retransplant contexts.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_liver_failure_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "relationship": "alf_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 7], "phase": "severe_liver_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Acute liver failure from rejection can be rapidly fatal without rescue or retransplantation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 3], "phase": "severe_heart_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Cardiogenic shock in cardiac allograft rejection is a major acute mortality pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_respiratory_failure_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE", "relationship": "respiratory_failure_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.85], "lag_days_range": [0, 7], "phase": "severe_lung_or_heart_rejection", "effect_direction": "source_up_increases_target", "clinical_rationale": "Respiratory failure from lung allograft rejection or pulmonary edema raises mortality hazard.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "maintenance_immunosuppression_reoptimization",
+      "treatment_name": "Maintenance immunosuppression re-optimization",
+      "mode": "modulate_theta",
+      "role": "restore_antirejection_exposure_and_reduce_alloimmune_drive",
+      "required_context_axes": ["solid_organ_transplant_context", "underimmunosuppression_or_nonadherence_activity", "recent_immunosuppression_reduction_activity", "immunosuppression_activity"],
+      "effect_modifiers": [
+        {"axis_id": "active_infection_hazard", "condition": "high", "effect": "toxicity_or_competing_risk_increases", "factor_range": [0.4, 1.4], "clinical_rationale": "Escalating immunosuppression can worsen uncontrolled infection; transplant teams balance both risks."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "calcineurin_toxicity_limited", "factor_range": [0.5, 1.2], "clinical_rationale": "Calcineurin inhibitor exposure may need adjustment when nephrotoxicity or renal dysfunction is present."}
+      ],
+      "trajectory_modifications": {
+        "underimmunosuppression_or_nonadherence_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [2, 30]},
+        "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [3, 60]}
+      },
+      "failure_modes": ["active_infection_limits_escalation", "drug_toxicity_or_nephrotoxicity", "ongoing_nonadherence_or_malabsorption", "already_irreversible_graft_injury"]
+    },
+    {
+      "treatment_id": "high_dose_intravenous_glucocorticoids",
+      "treatment_name": "High-dose intravenous glucocorticoids",
+      "mode": "reshape_landscape",
+      "role": "rapidly_suppress_cellular_and_mixed_rejection_inflammation",
+      "required_context_axes": ["allograft_dysfunction_activity", "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION", "allograft_biopsy_rejection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "uncontrolled_infection_activity", "condition": "high", "effect": "toxicity_or_competing_risk_increases", "factor_range": [0.3, 1.3], "clinical_rationale": "Steroids can worsen uncontrolled infection and may blur mimic evaluation."},
+        {"axis_id": "serum_glucose", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.7, 1.3], "clinical_rationale": "Steroids worsen hyperglycemia and infection susceptibility."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 30]},
+        "M_ATR_SYSTEMIC_INFLAMMATORY_STRESS": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 21]},
+        "allograft_dysfunction_activity": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [3, 60]}
+      },
+      "failure_modes": ["antibody_dominant_or_steroid_refractory_rejection", "infection_unmasked_or_worsened", "diabetes_or_neuropsychiatric_toxicity"]
+    },
+    {
+      "treatment_id": "lymphocyte_depleting_therapy",
+      "treatment_name": "Lymphocyte-depleting therapy",
+      "mode": "reshape_landscape",
+      "role": "suppress_moderate_to_severe_or_steroid_refractory_cellular_rejection",
+      "required_context_axes": ["M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION", "allograft_dysfunction_activity", "allograft_biopsy_rejection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "lymphocyte_count", "condition": "very_low", "effect": "toxicity_limited", "factor_range": [0.4, 1.0], "clinical_rationale": "Severe baseline lymphopenia raises infectious toxicity."},
+        {"axis_id": "active_cmv_replication_activity", "condition": "high", "effect": "toxicity_or_competing_risk_increases", "factor_range": [0.4, 1.4], "clinical_rationale": "T-cell depletion can worsen CMV and other opportunistic infections."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_ALLOREACTIVE_T_CELL_ACTIVATION": {"peak_value_factor": [0.1, 0.55], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [3, 90]},
+        "M_ATR_PARENCHYMAL_CELL_INJURY": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [7, 120]}
+      },
+      "toxicity_axis_effects": [
+        {"axis_id": "opportunistic_infection_hazard", "direction": "up", "magnitude_range": [0.01, 0.2], "interpretation": "Lymphocyte depletion raises CMV, fungal, viral, and bacterial infection risk."}
+      ],
+      "failure_modes": ["antibody_dominant_rejection_without_parallel_amr_therapy", "profound_infection_risk", "cytopenias_or_serum_sickness"]
+    },
+    {
+      "treatment_id": "plasma_exchange_intravenous_immunoglobulin",
+      "treatment_name": "Plasma exchange plus intravenous immunoglobulin",
+      "mode": "reshape_landscape",
+      "role": "remove_or_neutralize_pathogenic_antibodies_in_antibody_mediated_or_mixed_rejection",
+      "required_context_axes": ["donor_specific_antibody_activity", "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "allograft_dysfunction_activity", "c4d_deposition_activity"],
+      "effect_modifiers": [
+        {"axis_id": "donor_specific_antibody_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "AMR benefit depends on antibody-mediated biology."},
+        {"axis_id": "hemodynamic_instability_activity", "condition": "high", "effect": "requires_critical_care_delivery", "factor_range": [0.5, 1.2], "clinical_rationale": "Severe shock requires parallel organ support during antibody removal."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 30]},
+        "donor_specific_antibody_activity": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 60]},
+        "graft_loss_hazard": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [7, 120]}
+      },
+      "failure_modes": ["non_antibody_mediated_rejection", "rapid_rebound_antibody_without_b_cell_or_plasma_cell_control", "bleeding_line_or_hemodynamic_complications"]
+    },
+    {
+      "treatment_id": "b_cell_depletion_rituximab",
+      "treatment_name": "B-cell depletion",
+      "mode": "reshape_landscape",
+      "role": "reduce_new_antibody_generation_in_amr_or_mixed_rejection",
+      "required_context_axes": ["donor_specific_antibody_activity", "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY"],
+      "effect_modifiers": [
+        {"axis_id": "active_hepatitis_b_reactivation_risk", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.2, 1.0], "clinical_rationale": "Anti-CD20 therapy requires viral reactivation risk management."},
+        {"axis_id": "hypogammaglobulinemia_activity", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.2], "clinical_rationale": "B-cell depletion can worsen humoral immune deficiency."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY": {"peak_value_factor": [0.45, 0.9], "plateau_duration_factor": [0.5, 0.95], "decline_half_life_days": [14, 180]},
+        "donor_specific_antibody_activity": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [14, 365]}
+      },
+      "failure_modes": ["plasma_cell_dominant_antibody_production", "delayed_onset_relative_to_shock", "viral_reactivation_or_hypogammaglobulinemia"]
+    },
+    {
+      "treatment_id": "plasma_cell_directed_proteasome_inhibition",
+      "treatment_name": "Plasma-cell-directed proteasome inhibition",
+      "mode": "reshape_landscape",
+      "role": "target_plasma_cell_rich_or_refractory_antibody_mediated_rejection",
+      "required_context_axes": ["donor_specific_antibody_activity", "allograft_biopsy_rejection_activity", "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY"],
+      "effect_modifiers": [
+        {"axis_id": "plasma_cell_rich_rejection_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Proteasome inhibitors are most biologically aligned with plasma-cell-rich or antibody-refractory patterns."},
+        {"axis_id": "peripheral_neuropathy_activity", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.4, 1.0], "clinical_rationale": "Bortezomib can worsen neuropathy."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY": {"peak_value_factor": [0.2, 0.75], "plateau_duration_factor": [0.3, 0.85], "decline_half_life_days": [7, 120]},
+        "donor_specific_antibody_activity": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [14, 180]},
+        "graft_loss_hazard": {"peak_value_factor": [0.4, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [14, 180]}
+      },
+      "failure_modes": ["late_irreversible_chronic_graft_injury", "cytopenia_neuropathy_or_infection", "non_plasma_cell_mediated_rejection"]
+    },
+    {
+      "treatment_id": "complement_inhibition_for_refractory_amr",
+      "treatment_name": "Complement inhibition for refractory AMR",
+      "mode": "reshape_landscape",
+      "role": "reduce_complement_mediated_microvascular_injury_in_severe_or_refractory_amr_context",
+      "required_context_axes": ["c4d_deposition_activity", "donor_specific_antibody_activity", "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY", "graft_loss_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "c4d_deposition_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Complement-mediated microvascular injury is the intended target."},
+        {"axis_id": "meningococcal_vaccination_or_prophylaxis_context", "condition": "absent", "effect": "toxicity_increases", "factor_range": [0.2, 1.0], "clinical_rationale": "Terminal complement blockade increases meningococcal and encapsulated bacterial risk."}
+      ],
+      "trajectory_modifications": {
+        "M_ATR_DSA_COMPLEMENT_ENDOTHELIAL_INJURY": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [3, 90]},
+        "biopsy_microvascular_inflammation_activity": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [14, 180]}
+      },
+      "failure_modes": ["non_complement_dominant_injury", "encapsulated_bacterial_infection", "delayed_use_after_irreversible_graft_failure"]
+    },
+    {
+      "treatment_id": "organ_specific_graft_failure_support",
+      "treatment_name": "Organ-specific graft-failure support",
+      "mode": "push_state",
+      "role": "stabilize_perfusion_oxygenation_volume_coagulation_and_metabolic_state_while_rejection_therapy_takes_effect",
+      "required_context_axes": ["cardiogenic_shock_hazard", "acute_liver_failure_hazard", "acute_kidney_injury_hazard", "acute_respiratory_failure_hazard", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "cardiogenic_shock_hazard", "condition": "high", "effect": "requires_hemodynamic_support", "factor_range": [1.2, 6.0], "clinical_rationale": "Shock physiology determines need for pressors, inotropes, and monitoring."},
+        {"axis_id": "acute_liver_failure_hazard", "condition": "high", "effect": "requires_liver_failure_support", "factor_range": [1.2, 5.0], "clinical_rationale": "ALF needs ICU, coagulation, glucose, ammonia, airway, and transplant rescue planning."}
+      ],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.1, 7]},
+        "hypotension_activity": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 7]},
+        "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 60]}
+      },
+      "failure_modes": ["does_not_stop_alloimmune_injury", "late_irreversible_graft_failure", "support_complications_or_infection"]
+    },
+    {
+      "treatment_id": "temporary_mechanical_circulatory_support",
+      "treatment_name": "Temporary mechanical circulatory support",
+      "mode": "push_state",
+      "role": "bridge_cardiac_allograft_rejection_with_cardiogenic_shock_to_recovery_or_advanced_therapy",
+      "required_context_axes": ["heart_allograft_context", "cardiogenic_shock_hazard", "left_ventricular_ejection_fraction", "cardiac_index", "lactic_acidosis_activity"],
+      "effect_modifiers": [
+        {"axis_id": "cardiogenic_shock_hazard", "condition": "very_high", "effect": "strengthens_context_need", "factor_range": [1.5, 8.0], "clinical_rationale": "Persistent shock despite inotropes is the context where MCS changes survival trajectory."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.5, 1.3], "clinical_rationale": "Cannulation and anticoagulation increase bleeding risk."}
+      ],
+      "trajectory_modifications": {
+        "cardiogenic_shock_hazard": {"peak_value_factor": [0.15, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 14]},
+        "lactic_acidosis_activity": {"peak_value_factor": [0.2, 0.75], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 7]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 30]},
+        "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 90]}
+      },
+      "toxicity_axis_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.01, 0.2], "interpretation": "Temporary MCS requires vascular access and anticoagulation."}
+      ],
+      "failure_modes": ["delayed_escalation_after_irreversible_multiorgan_failure", "vascular_or_bleeding_complications", "ongoing_rejection_not_suppressed"]
+    },
+    {
+      "treatment_id": "renal_replacement_therapy_for_rejection_complications",
+      "treatment_name": "Renal replacement therapy for rejection complications",
+      "mode": "push_state",
+      "role": "manage_uremia_acidosis_hyperkalemia_volume_overload_or_ammonia_context_when_kidney_or_multiorgan_failure_is_active",
+      "required_context_axes": ["renal_replacement_therapy_need_activity", "acute_kidney_injury_hazard", "serum_creatinine", "serum_bicarbonate", "acute_liver_failure_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "renal_replacement_therapy_need_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [1.2, 6.0], "clinical_rationale": "RRT benefit requires renal or metabolic indication."}
+      ],
+      "trajectory_modifications": {
+        "serum_bicarbonate": {"peak_value_factor": [1.05, 1.5], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.1, 7]},
+        "lactic_acidosis_activity": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 7]},
+        "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [1, 60]}
+      },
+      "failure_modes": ["does_not_restore_irreversibly_rejected_graft", "hypotension_or_line_complication", "ongoing_rejection_or_shock"]
+    },
+    {
+      "treatment_id": "urgent_retransplant_or_graft_replacement_evaluation",
+      "treatment_name": "Urgent retransplant or graft replacement evaluation",
+      "mode": "push_state",
+      "role": "rescue_irreversible_life_sustaining_graft_failure_when_organ_replacement_is_feasible",
+      "required_context_axes": ["graft_loss_hazard", "retransplantation_need_activity", "acute_liver_failure_hazard", "cardiogenic_shock_hazard", "acute_respiratory_failure_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "retransplantation_need_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [1.5, 8.0], "clinical_rationale": "Replacement is relevant only when graft failure is severe and salvage is insufficient."},
+        {"axis_id": "active_infection_hazard", "condition": "high", "effect": "feasibility_limited", "factor_range": [0.2, 1.0], "clinical_rationale": "Uncontrolled infection can prevent or delay retransplant."}
+      ],
+      "trajectory_modifications": {
+        "graft_loss_hazard": {"peak_value_factor": [0.1, 0.8], "plateau_duration_factor": [0.2, 0.9], "decline_half_life_days": [1, 90]},
+        "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": {"peak_value_factor": [0.15, 0.85], "plateau_duration_factor": [0.2, 0.9], "decline_half_life_days": [1, 180]}
+      },
+      "failure_modes": ["organ_unavailable_or_patient_ineligible", "uncontrolled_infection_or_multiorgan_failure", "recurrence_of_sensitization_or_rejection_in_new_graft"]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "solid_organ_transplant",
+      "scope": "disease_prior_and_axis_expression",
+      "clinical_rationale": "Acute rejection requires a graft and may occur early after transplantation, after immunosuppression changes, or late with chronic sensitization/nonadherence.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [8, 40],
+          "axis_response_modulation": {
+            "solid_organ_transplant_context": "up",
+            "allograft_dysfunction_activity": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "kidney_allograft",
+      "scope": "organ_context",
+      "clinical_rationale": "Kidney allograft rejection expresses primarily as creatinine rise, proteinuria, hematuria, oliguria, tenderness, or dialysis need.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 8],
+          "axis_response_modulation": {
+            "kidney_allograft_context": "up",
+            "kidney_allograft_dysfunction_activity": "up",
+            "serum_creatinine": "up",
+            "proteinuria_activity": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "liver_allograft",
+      "scope": "organ_context",
+      "clinical_rationale": "Liver allograft rejection expresses as hepatocellular, cholestatic, synthetic, encephalopathic, and severe ALF phenotypes.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 8],
+          "axis_response_modulation": {
+            "liver_allograft_context": "up",
+            "liver_allograft_dysfunction_activity": "up",
+            "serum_ast": "up",
+            "serum_alt": "up",
+            "prothrombin_time_inr": "up",
+            "acute_liver_failure_hazard": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "heart_allograft",
+      "scope": "organ_context",
+      "clinical_rationale": "Heart allograft rejection expresses as systolic dysfunction, congestion, arrhythmia, low cardiac index, and cardiogenic shock.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 8],
+          "axis_response_modulation": {
+            "heart_allograft_context": "up",
+            "heart_allograft_dysfunction_activity": "up",
+            "left_ventricular_ejection_fraction": "down",
+            "brain_natriuretic_peptide": "up",
+            "cardiogenic_shock_hazard": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "lung_allograft",
+      "scope": "organ_context",
+      "clinical_rationale": "Lung allograft rejection expresses as dyspnea, cough, falling FEV1, hypoxemia, infiltrates, or respiratory failure.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 8],
+          "axis_response_modulation": {
+            "lung_allograft_context": "up",
+            "lung_allograft_dysfunction_activity": "up",
+            "forced_expiratory_volume_1_percent_predicted": "down",
+            "oxygen_saturation": "down",
+            "acute_respiratory_failure_hazard": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "underimmunosuppression_nonadherence_or_low_drug_exposure",
+      "scope": "mechanism_and_prior",
+      "clinical_rationale": "Missed medications, low troughs, malabsorption, drug interactions, or intentional reduction increase T-cell and antibody-mediated rejection risk.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 12],
+          "axis_response_modulation": {
+            "underimmunosuppression_or_nonadherence_activity": "up",
+            "allograft_dysfunction_activity": "up",
+            "donor_specific_antibody_activity": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "preformed_or_de_novo_donor_specific_antibody_sensitization",
+      "scope": "mechanism_and_treatment_response",
+      "clinical_rationale": "Prior transplant, pregnancy, transfusion, high HLA mismatch, positive crossmatch, or de novo DSA shifts phenotype toward AMR, microvascular inflammation, complement injury, and graft loss.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 15],
+          "axis_response_modulation": {
+            "donor_specific_antibody_activity": "up",
+            "c4d_deposition_activity": "up",
+            "biopsy_microvascular_inflammation_activity": "up",
+            "graft_loss_hazard": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "infection_malignancy_or_toxicity_forcing_immunosuppression_reduction",
+      "scope": "trigger_and_treatment_tradeoff",
+      "clinical_rationale": "Immunosuppression reduction can trigger rejection, while escalation can worsen infection, viral replication, malignancy, cytopenia, or drug toxicity.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": {
+            "recent_immunosuppression_reduction_activity": "up",
+            "underimmunosuppression_or_nonadherence_activity": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "prior_rejection_or_chronic_allograft_injury",
+      "scope": "trajectory_and_outcome",
+      "clinical_rationale": "Prior rejection, chronic graft dysfunction, donor-specific antibodies, or chronic allograft vasculopathy/nephropathy reduces reserve and raises graft-loss hazard during acute rejection.",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": {
+            "allograft_dysfunction_activity": "higher_peak",
+            "graft_loss_hazard": "up",
+            "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": "up"
+          }
+        }
+      }
+    },
+    {
+      "factor": "life_sustaining_graft_context",
+      "scope": "outcome",
+      "clinical_rationale": "Heart, liver, and lung graft failure generally has higher immediate mortality than isolated kidney graft failure unless retransplantation, mechanical support, dialysis, or other rescue is feasible.",
+      "modulation": {
+        "heart_liver_lung_allograft": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": {
+            "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": "up",
+            "retransplantation_need_activity": "up"
+          }
+        },
+        "kidney_allograft": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": {
+            "renal_replacement_therapy_need_activity": "up",
+            "mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE": "up"
+          }
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    "Coordinate early with the transplant organ team; acute rejection is a graft-context disease and treatment must balance rejection control against infection, drug toxicity, and graft reserve.",
+    "Preserve presentation evidence separately from post-workup confirmation: biopsy Banff/pathology, C4d, DSA, molecular diagnostics, dd-cfDNA, and final adjudication should not be consumed in presentation-only ranking.",
+    "Exclude and concurrently treat urgent mimics or co-drivers when clinically present: infection, vascular thrombosis or stenosis, ischemia-reperfusion injury, drug toxicity, recurrent primary disease, biliary/urinary obstruction, cardiac allograft vasculopathy, pulmonary edema, and chronic allograft dysfunction.",
+    "Use organ-specific monitoring: creatinine, urine protein and urine output for kidney; AST/ALT, bilirubin, INR, lactate, glucose, ammonia, encephalopathy, and Doppler/vascular assessment for liver; BNP/troponin, ECG, echo, hemodynamics, and rhythm monitoring for heart; spirometry, oxygenation, chest imaging, and bronchoscopy/infection evaluation for lung.",
+    "Provide ICU-level support when severe graft failure emerges: vasopressors/inotropes, mechanical circulatory support, ventilatory support, renal replacement therapy, coagulopathy/metabolic management, and retransplant evaluation when appropriate.",
+    "Monitor treatment toxicity: opportunistic infection, CMV/BK/EBV reactivation, cytopenias, hyperglycemia, nephrotoxicity, serum sickness, infusion reactions, hypogammaglobulinemia, neuropathy, complement-blockade infection risk, and bleeding or vascular complications from apheresis/MCS."
+  ],
+  "quality_notes": [
+    "The disease prompt scope is pure disease name: Acute transplant rejection. Graft organ and rejection mechanism are not disease-name qualifiers.",
+    "The only derived_hazard axis is mortality_hazard_in_D-TRANSPLANT-REJECTION-ACUTE.",
+    "DSA, C4d, Banff/pathology, biopsy, molecular score, and dd-cfDNA axes are included for post-workup structure but should remain non-ranking in presentation-only case JSON."
+  ]
+}

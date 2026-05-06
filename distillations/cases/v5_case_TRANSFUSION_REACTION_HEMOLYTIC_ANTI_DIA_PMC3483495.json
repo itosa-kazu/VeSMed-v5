@@ -1,0 +1,64 @@
+{
+  "case_id": "TRANSFUSION_REACTION_HEMOLYTIC_ANTI_DIA_PMC3483495",
+  "source_pmid": "23115689",
+  "source_pmcid": "PMC3483495",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3483495/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC3483495/fullTextXML",
+  "disease_label_per_paper": "Acute hemolytic transfusion reaction due to anti-Dia antibody",
+  "expected_manifold": "D-TRANSFUSION-REACTION-HEMOLYTIC",
+  "demographics": {
+    "age": 75,
+    "sex": "F"
+  },
+  "presentation_summary": [
+    "75-year-old woman undergoing staged total knee replacement; prior preoperative antibody screen and crossmatch were negative.",
+    "Packed RBC transfusion was started intraoperatively after blood loss greater than 800 mL.",
+    "Five minutes after one unit of packed RBCs had been transfused, red-colored urine suspicious for hemoglobinuria was observed while vital signs remained stable.",
+    "Urinalysis after the reaction showed 3+ blood, 0 RBC/HPF, and 2+ protein; post-operative hemoglobin was 8.7 g/dL and BUN/creatinine remained normal.",
+    "Independent blood center testing later identified anti-Dia antibody; this final blood bank result is confirmatory and non-ranking for presentation mode."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "recent_red_blood_cell_transfusion", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "transfusion of packed RBCs was started during surgery"},
+    {"factor": "symptom_onset_during_or_soon_after_transfusion", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "Five minutes after 1 unit of packed RBCs was transfused, red-colored urine was observed"},
+    {"factor": "general_anesthesia_or_sedation_during_transfusion", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "reaction occurred under general anesthesia during surgery"},
+    {"factor": "prior_transfusion_or_pregnancy_alloimmunization", "category": "possible", "value": 1, "use_in_ranking": true, "source_text_value": "history of previous operations and transfusion two weeks earlier"}
+  ],
+  "observations": [
+    {"axis_id": "recent_red_blood_cell_transfusion_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "transfusion of packed RBCs was started"},
+    {"axis_id": "transfusion_temporal_link_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "red-colored urine was observed five minutes after one unit of packed RBCs"},
+    {"axis_id": "acute_transfusion_reaction_symptom_cluster_activity", "value": 0.75, "unit": "severity_score_0_1", "source_text_value": "acute red-colored urine suspicious for hemoglobinuria during transfusion"},
+    {"axis_id": "hemoglobinuria_dark_urine_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "red-colored urine suspected as hemoglobinuria"},
+    {"axis_id": "urine_heme_positive_without_rbc_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "urinalysis showed 3+ blood and 0 RBC/HPF"},
+    {"axis_id": "body_temperature", "qualitative_value": "normal", "unit": "normal_flag_only", "source_text_value": "vital signs were stably maintained and normal"},
+    {"axis_id": "serum_creatinine", "qualitative_value": "normal", "unit": "normal_flag_only", "source_text_value": "BUN and creatinine level sustained in the normal range"},
+    {"axis_id": "blood_urea_nitrogen", "qualitative_value": "normal", "unit": "normal_flag_only", "source_text_value": "BUN and creatinine level sustained in the normal range"}
+  ],
+  "lab_trajectories": [
+    {"axis_id": "hemoglobin", "time_day": 0, "value": 8.7, "unit": "g/dL", "source_text_value": "hemoglobin level measured right after surgery was 8.7 g/dL"},
+    {"axis_id": "hemoglobinuria_dark_urine_activity", "time_day": 0, "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "red-colored urine sustained even in the recovery room"},
+    {"axis_id": "urine_heme_positive_without_rbc_activity", "time_day": 0, "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "urinalysis findings indicated 3+ blood, 0 RBC/HPF, and 2+ protein"}
+  ],
+  "diagnostics": [
+    {"time_day": 0, "test": "urinalysis", "axis_id": "hemoglobinuria_dark_urine_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "3+ blood, 0 RBC/HPF, 2+ protein"},
+    {"time_day": 0, "test": "urinalysis", "axis_id": "urine_heme_positive_without_rbc_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "3+ blood with 0 RBC/HPF"}
+  ],
+  "confirmatory_findings": [
+    {"finding": "DAT positive after the reaction", "axis_id": "direct_antiglobulin_test_activity", "value": 1.0, "unit": "relative_activity_0_1", "source_text_value": "IAT was negative while DAT was positive", "use_in_ranking": false},
+    {"finding": "Independent blood center identified anti-Dia antibody", "axis_id": "blood_bank_incompatibility_evidence_probability", "value": 1.0, "unit": "probability_0_1", "source_text_value": "anti-Dia antibody was identified in an unexpected antibody screening test", "use_in_ranking": false},
+    {"finding": "Paper diagnosis was acute hemolytic reaction due to anti-Dia antibody", "source_text_value": "we made a diagnosis of acute hemolytic reaction due to anti-Dia antibody", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    {"name": "transfusion_stopped_after_one_unit", "use_in_ranking": false, "source_text_value": "surgery was completed without further transfusion"},
+    {"name": "fluid_and_furosemide", "use_in_ranking": false, "source_text_value": "fluid was administered while 10 mg furosemide was injected"}
+  ],
+  "outcome": {
+    "status": "recovered_without_complications",
+    "source_text_value": "discharged without any complications",
+    "use_in_ranking": false
+  },
+  "quality_warnings": [
+    "Blood bank antibody identification and DAT are confirmatory/non-ranking.",
+    "The case occurred under anesthesia, so subjective fever/back pain evidence was not available; red urine and urinalysis are preserved as rankable presentation evidence."
+  ]
+}

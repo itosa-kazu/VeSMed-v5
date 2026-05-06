@@ -1,0 +1,507 @@
+{
+  "disease": "D-TRANSFUSION-REACTION-HEMOLYTIC",
+  "disease_name": "Acute hemolytic transfusion reaction",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute hemolytic transfusion reaction",
+    "leaf_granularity": "First-layer disease leaf for acute immune hemolysis caused by transfused red cells or red-cell-containing products, with clinical expression during transfusion or within the early post-transfusion window.",
+    "subtype_policy": "ABO-incompatible, minor-antigen alloantibody, complement-dominant, extravascular, intraoperative, obstetric, and massive-transfusion contexts are represented as mechanisms, context axes, and risk modifiers. FNHTR, TRALI, TACO, allergic/anaphylactic reaction, septic transfusion reaction, hyperhemolysis syndrome, and delayed hemolytic transfusion reaction are not part of this leaf and should be separate future manifolds or mimics.",
+    "ranking_note": "Presentation ranking may use recent transfusion exposure, timing during or shortly after transfusion, fever/chills, flank or back pain, hemoglobinuria or red-brown urine, jaundice, hemoglobin fall, LDH rise, low haptoglobin, bilirubin rise, AKI, shock, and DIC physiology. Final blood bank adjudication, repeat ABO/crossmatch, antibody identification, DAT/IAT, eluate, and compatibility investigation should be confirmatory or non-ranking unless explicitly available at the tested clinical stage."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AHTR_TRANSFUSED_RBC_ANTIGEN_EXPOSURE",
+      "display_name": "Transfused red-cell antigen exposure",
+      "clinical_meaning": "Transfused red cells or red-cell-containing components expose the recipient to donor RBC antigens during an active transfusion episode.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 0.1],
+      "peak_value_range": [0.7, 1.0],
+      "plateau_duration_days": [0.1, 2],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH",
+      "display_name": "Pre-existing compatibility mismatch",
+      "clinical_meaning": "Recipient anti-A/anti-B isoagglutinins or clinically significant alloantibodies bind antigens on transfused donor RBCs. This can reflect ABO error or minor-antigen incompatibility.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 0.2],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [0.2, 7],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS",
+      "display_name": "Complement-mediated intravascular hemolysis",
+      "clinical_meaning": "Antibody binding activates complement on transfused RBCs, causing abrupt intravascular lysis, free hemoglobin release, haptoglobin depletion, hemoglobinemia, hemoglobinuria, inflammatory mediator release, and renal tubular heme toxicity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [0.1, 7],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_FC_MEDIATED_EXTRAVASCULAR_CLEARANCE",
+      "display_name": "Fc-mediated extravascular clearance",
+      "clinical_meaning": "Some alloantibody reactions clear incompatible transfused cells through macrophages in spleen and liver, producing hemoglobin fall, bilirubin rise, LDH rise, jaundice, and variable hemoglobinuria.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.1, 0.8],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE",
+      "display_name": "Acute cytokine, pain, and autonomic response",
+      "clinical_meaning": "Complement fragments, hemolysis mediators, pain, anxiety, and inflammatory signaling produce fever, chills, rigors, back or flank pain, tachycardia, nausea, and sometimes hypotension during the reaction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.05, 3],
+      "decline_half_life_days": [0.2, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_HEME_PIGMENT_AKI",
+      "display_name": "Heme-pigment acute kidney injury",
+      "clinical_meaning": "Filtered free hemoglobin, heme toxicity, tubular casts, renal vasoconstriction, shock, and volume depletion can cause oliguria, anuria, creatinine rise, azotemia, metabolic acidosis, and dialysis need.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE",
+      "display_name": "Coagulation activation and shock cascade",
+      "clinical_meaning": "Severe intravascular hemolysis can activate coagulation, complement, nitric-oxide scavenging, endothelial injury, and systemic inflammation, producing DIC, bleeding, shock, respiratory decompensation, and multiorgan failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 14],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AHTR_OXYGEN_DELIVERY_STRESS",
+      "display_name": "Acute anemia oxygen-delivery stress",
+      "clinical_meaning": "Destruction of transfused RBCs and ongoing bleeding or anemia lower oxygen-carrying capacity and can produce tachycardia, dyspnea, ischemia, syncope, or higher mortality in low-reserve patients.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_AHTR_TRANSFUSED_RBC_ANTIGEN_EXPOSURE", "target_id": "recent_red_blood_cell_transfusion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "exposure", "clinical_rationale": "The disease cannot occur without a transfusion exposure, although transfusion alone is not sufficient for diagnosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_TRANSFUSED_RBC_ANTIGEN_EXPOSURE", "target_id": "transfusion_temporal_link_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Symptoms begin during or soon after transfusion in acute hemolytic reactions.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_TRANSFUSED_RBC_ANTIGEN_EXPOSURE", "target_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.1], "phase": "exposure", "clinical_rationale": "Mismatch becomes clinically active only when incompatible donor RBCs enter circulation.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "target_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.5], "phase": "intravascular_hemolysis", "clinical_rationale": "ABO and some alloantibodies can fix complement and lyse donor RBCs abruptly.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "target_id": "M_AHTR_FC_MEDIATED_EXTRAVASCULAR_CLEARANCE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "extravascular_hemolysis", "clinical_rationale": "Non-ABO alloantibodies can clear incompatible donor cells through macrophage Fc receptors.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "target_id": "blood_bank_incompatibility_evidence_probability", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Repeat blood grouping, crossmatch, antibody ID, eluate, or clerical investigation may identify the mismatch after the reaction.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "target_id": "direct_antiglobulin_test_activity", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 3], "phase": "post_workup", "clinical_rationale": "DAT may be positive when donor cells coated with IgG or complement remain detectable, but it can be negative after rapid destruction.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "acute_transfusion_reaction_symptom_cluster_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.5], "phase": "presentation", "clinical_rationale": "Abrupt hemolysis during transfusion produces the acute reaction cluster.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "plasma_free_hemoglobin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "intravascular_hemolysis", "clinical_rationale": "Intravascular donor RBC lysis releases free hemoglobin.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "hemoglobinuria_dark_urine_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "intravascular_hemolysis", "clinical_rationale": "Filtered free hemoglobin causes red, brown, or cola-colored urine.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "urine_heme_positive_without_rbc_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "intravascular_hemolysis", "clinical_rationale": "Dipstick heme with few or no RBCs supports pigmenturia rather than ordinary hematuria.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "serum_haptoglobin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "active_hemolysis", "clinical_rationale": "Free hemoglobin consumes circulating haptoglobin.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "active_hemolysis", "clinical_rationale": "LDH rises from intravascular red-cell destruction and tissue injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "hemoglobin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "active_hemolysis", "clinical_rationale": "Destruction of transfused RBCs and ongoing anemia lower measured hemoglobin.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "hematocrit", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "active_hemolysis", "clinical_rationale": "Hematocrit tracks hemoglobin loss.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_FC_MEDIATED_EXTRAVASCULAR_CLEARANCE", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "active_hemolysis", "clinical_rationale": "Heme catabolism from extravascular clearance raises bilirubin.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_FC_MEDIATED_EXTRAVASCULAR_CLEARANCE", "target_id": "serum_bilirubin_indirect", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "active_hemolysis", "clinical_rationale": "Indirect bilirubin rises with hemolysis.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_FC_MEDIATED_EXTRAVASCULAR_CLEARANCE", "target_id": "jaundice_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "active_hemolysis", "clinical_rationale": "Bilirubin rise can produce scleral icterus or jaundice.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Fever can be an early sign of AHTR, though it is not specific and overlaps FNHTR and sepsis.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Current measured temperature may be elevated early but can normalize by transfer or after treatment.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Chills or rigors are common acute transfusion-reaction symptoms.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "flank_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Flank pain is a classic hemolytic transfusion reaction symptom and may reflect renal capsular or ureteral pigment stress.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "back_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Back pain is a classic transfusion-reaction symptom.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "myalgia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Generalized aches can accompany the acute inflammatory reaction.", "knowledge_confidence": "low"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "headache_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Headache is nonspecific but reported in some acute reactions.", "knowledge_confidence": "low"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Fever, pain, anxiety, anemia, and shock can increase heart rate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Nausea, vomiting, or abdominal symptoms can occur in acute transfusion reactions but are nonspecific.", "knowledge_confidence": "low"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Heme pigment nephropathy and shock raise creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Azotemia rises with AKI and catabolic stress.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "urine_output_ml_per_day", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Oliguria or anuria reflects severe AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "anuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Anuria is a severe form of pigment or shock-associated AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "serum_bicarbonate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Renal failure and shock can produce metabolic acidosis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "arterial_ph", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Metabolic acidosis lowers arterial or venous pH.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "hemolysis_related_acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "renal_complication", "clinical_rationale": "Hemoglobinuria and heme toxicity specifically increase hemolysis-related AKI hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_HEME_PIGMENT_AKI", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "renal_complication", "clinical_rationale": "AHTR can produce clinically meaningful AKI or dialysis need.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "platelet_count", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "Coagulation activation or consumption can lower platelets in severe AHTR.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "DIC or consumptive coagulopathy can prolong PT/INR.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "activated_partial_thromboplastin_time", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "DIC can prolong aPTT.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "Severe intravascular hemolysis can trigger DIC.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "shock", "clinical_rationale": "Severe reactions can cause hypotension.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "phase": "shock", "clinical_rationale": "Complement, cytokines, DIC, and hemolysis can produce shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe_reaction", "clinical_rationale": "Respiratory decompensation can occur from shock, pulmonary edema, or competing transfusion reactions; it is not specific for AHTR.", "knowledge_confidence": "low"},
+    {"source_id": "M_AHTR_OXYGEN_DELIVERY_STRESS", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "anemia_or_shock", "clinical_rationale": "Anemia and shock can cause dyspnea.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_OXYGEN_DELIVERY_STRESS", "target_id": "fatigue_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "anemia", "clinical_rationale": "Acute anemia can cause weakness and fatigue.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_OXYGEN_DELIVERY_STRESS", "target_id": "pallor_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "anemia", "clinical_rationale": "Anemia can produce pallor.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "target_id": "major_bleeding_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "severe_dic", "clinical_rationale": "DIC can produce clinically important bleeding.", "knowledge_confidence": "medium"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "M_AHTR_HEME_PIGMENT_AKI", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "renal_complication", "clinical_rationale": "The larger the free-hemoglobin load, the higher the risk of pigment AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "M_AHTR_COAGULATION_AND_SHOCK_CASCADE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "severe_reaction", "clinical_rationale": "Complement and hemolysis mediators can activate coagulation and shock pathways.", "knowledge_confidence": "high"},
+    {"source_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "target_id": "M_AHTR_CYTOKINE_PAIN_FEVER_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Complement and hemolysis mediator release drives fever, pain, and autonomic symptoms.", "knowledge_confidence": "high"},
+    {"source_id": "hemolysis_related_acute_kidney_injury_hazard", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 14], "phase": "severe_reaction", "clinical_rationale": "Severe pigment AKI and dialysis need increase mortality and morbidity.", "knowledge_confidence": "high"},
+    {"source_id": "circulatory_collapse_shock_hazard", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "Shock is an early lethal pathway.", "knowledge_confidence": "high"},
+    {"source_id": "dic_hazard", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 7], "phase": "severe_reaction", "clinical_rationale": "DIC adds bleeding, thrombosis, and multiorgan failure risk.", "knowledge_confidence": "medium"},
+    {"source_id": "major_bleeding_hazard", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 7], "phase": "severe_dic", "clinical_rationale": "Major bleeding can be fatal or worsen shock.", "knowledge_confidence": "medium"},
+    {"source_id": "hemoglobin", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect_on_target": "decrease", "edge_type": "hazard_drift", "lag_days_range": [0, 7], "phase": "oxygen_delivery", "clinical_rationale": "Higher hemoglobin lowers oxygen-delivery failure risk; falling hemoglobin increases hazard.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "recent_red_blood_cell_transfusion_activity", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent transfusion of RBCs or a red-cell-containing product; exposure context, not proof of incompatibility.", "baseline_range": [0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0.7, 1], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [7, 30], "knowledge_confidence": "high"},
+    {"axis_id": "transfusion_temporal_link_activity", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "recent_red_blood_cell_transfusion_activity", "shape_free_text": "Symptoms or signs begin during transfusion or soon after transfusion; strongest when minutes to hours.", "baseline_range": [0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0.6, 1], "plateau_duration_days": [1, 14], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "acute_transfusion_reaction_symptom_cluster_activity", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Syndromic acute transfusion-reaction cluster with fever/chills, pain, dark urine, hypotension, or unexplained hemolysis.", "baseline_range": [0, 0.02], "peak_day_range": [0, 1], "peak_value_range": [0.3, 1], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "blood_bank_incompatibility_evidence_probability", "category": "diagnostic_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Post-workup probability that repeat typing, crossmatch, antibody ID, eluate, or clerical investigation supports incompatible transfused RBC exposure.", "baseline_range": [0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.5, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [365, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "direct_antiglobulin_test_activity", "category": "diagnostic_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "DAT can be positive if donor or patient red cells are coated with IgG or complement; negative DAT does not exclude AHTR after rapid donor-cell destruction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0, 1], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobinuria_dark_urine_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Red, brown, cola-colored, or visibly bloody urine in temporal association with hemolysis; may include hemoglobinuria or mixed hematuria.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "urine_heme_positive_without_rbc_activity", "category": "urine_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hemoglobinuria_dark_urine_activity", "shape_free_text": "Urinalysis heme strongly positive with few or no RBCs, supporting pigmenturia.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0, 1], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "plasma_free_hemoglobin", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Free hemoglobin in plasma during intravascular hemolysis.", "baseline_range": [0, 5], "peak_day_range": [0, 1], "peak_value_range": [20, 500], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin may fall or fail to rise after transfusion because transfused RBCs are destroyed; baseline anemia often precedes the transfusion.", "baseline_range": [12, 17], "peak_day_range": [0, 7], "peak_value_range": [3, 10], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "hematocrit", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hematocrit tracks hemoglobin fall.", "baseline_range": [36, 50], "peak_day_range": [0, 7], "peak_value_range": [10, 32], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ldh", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "LDH rises with hemolysis and tissue injury; abrupt high values support active hemolysis.", "baseline_range": [120, 240], "peak_day_range": [0, 3], "peak_value_range": [400, 6000], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_haptoglobin", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Low or undetectable haptoglobin from free hemoglobin binding.", "baseline_range": [30, 200], "peak_day_range": [0, 3], "peak_value_range": [0, 30], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin rises with hemolysis and may include direct fraction during critical illness.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 5], "peak_value_range": [1.2, 8], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_indirect", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Indirect bilirubin rises from heme catabolism.", "baseline_range": [0.1, 1.0], "peak_day_range": [0, 5], "peak_value_range": [0.8, 7], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_direct", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Direct bilirubin can rise with severe illness, hemolysis-associated hepatic stress, pregnancy/postoperative context, or mixed cholestasis; less specific than indirect bilirubin.", "baseline_range": [0, 0.4], "peak_day_range": [0, 7], "peak_value_range": [0.3, 3], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "jaundice_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Scleral icterus or jaundice during hemolysis.", "baseline_range": [0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.1, 1], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Subjective or documented fever during the acute reaction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature; can be elevated early but normal after transfer or under anesthesia.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 1], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors during acute reaction; overlaps FNHTR and sepsis.", "baseline_range": [0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "flank_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Flank pain during acute hemolytic transfusion reaction.", "baseline_range": [0, 0.03], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "back_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Back pain during transfusion reaction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "myalgia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Generalized aches or myalgia during systemic reaction; nonspecific.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low"},
+    {"axis_id": "headache_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Headache during transfusion reaction or AKI context; nonspecific.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea or vomiting during acute reaction; nonspecific.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0, 0.7], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachycardia may reflect fever, pain, shock, or anemia; normal heart rate does not exclude AHTR.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [70, 150], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "MAP may remain normal in mild cases or fall in severe shock.", "baseline_range": [70, 100], "peak_day_range": [0, 2], "peak_value_range": [35, 100], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate can rise with pain, fever, shock, pulmonary edema, or acidosis.", "baseline_range": [12, 20], "peak_day_range": [0, 3], "peak_value_range": [16, 36], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "low"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Oxygen saturation is often normal in isolated AHTR but can fall with shock, pulmonary edema, or a separate TRALI/TACO mimic.", "baseline_range": [95, 100], "peak_day_range": [0, 3], "peak_value_range": [65, 100], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "low"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Stress leukocytosis may occur but WBC is nonspecific.", "baseline_range": [4, 11], "peak_day_range": [0, 5], "peak_value_range": [4, 25], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 10], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelets may be normal, low from DIC/consumption, diluted, or affected by comorbid bleeding/surgery.", "baseline_range": [150, 350], "peak_day_range": [0, 7], "peak_value_range": [20, 250], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Creatinine rises with hemoglobinuric AKI or shock; may be normal in mild cases.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 10], "peak_value_range": [0.8, 14], "plateau_duration_days": [0, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "BUN rises with AKI, hypovolemia, catabolic stress, or bleeding.", "baseline_range": [7, 20], "peak_day_range": [0, 10], "peak_value_range": [10, 120], "plateau_duration_days": [0, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_output_ml_per_day", "category": "urine_measurement", "unit": "mL_per_day", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Daily urine output; low values encode oliguria/anuria from pigment AKI.", "baseline_range": [800, 2500], "peak_day_range": [0, 10], "peak_value_range": [0, 500], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "anuria_activity", "category": "urine_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical anuria or near-anuria after transfusion.", "baseline_range": [0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0, 21], "decline_half_life_days": [3, 45], "knowledge_confidence": "high"},
+    {"axis_id": "serum_sodium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Sodium may vary with AKI and volume status; not core-specific.", "baseline_range": [135, 145], "peak_day_range": [0, 10], "peak_value_range": [125, 150], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "serum_potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Potassium can rise with hemolysis, transfusion load, or AKI, but may be normal.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 10], "peak_value_range": [3.0, 7.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "low"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Low bicarbonate reflects metabolic acidosis from AKI or shock.", "baseline_range": [22, 29], "peak_day_range": [0, 10], "peak_value_range": [5, 30], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "arterial_ph", "category": "lab_value", "unit": "pH", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Arterial or venous pH can fall with metabolic acidosis from renal failure or shock.", "baseline_range": [7.35, 7.45], "peak_day_range": [0, 10], "peak_value_range": [6.9, 7.5], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR may be normal or prolonged if DIC develops.", "baseline_range": [0.9, 1.2], "peak_day_range": [0, 5], "peak_value_range": [0.9, 4.0], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "activated_partial_thromboplastin_time", "category": "lab_value", "unit": "seconds", "log_scale": false, "axis_role": "measurement", "shape_free_text": "aPTT may be normal or prolonged if DIC develops.", "baseline_range": [25, 38], "peak_day_range": [0, 5], "peak_value_range": [20, 120], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of DIC or clinically important consumptive coagulopathy from severe intravascular hemolysis.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 3], "peak_value_range": [0.001, 0.8], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of clinically important bleeding from DIC, surgery, obstetric hemorrhage, or anticoagulation context.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of hypotensive shock during severe reaction.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 2], "peak_value_range": [0.001, 0.8], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "high"},
+    {"axis_id": "hemolysis_related_acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI hazard specifically tied to intravascular hemolysis, hemoglobinuria, heme toxicity, and pigment casts.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 7], "peak_value_range": [0.001, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "General clinically meaningful AKI or dialysis hazard from AHTR, shock, pigment nephropathy, or baseline renal vulnerability.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 7], "peak_value_range": [0.001, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dyspnea from anemia, shock, volume overload, or a separate pulmonary transfusion mimic; nonspecific.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Weakness or fatigue from anemia or renal failure.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "pallor_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pallor from anemia.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 0.9], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "low"},
+    {"axis_id": "peripheral_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Peripheral edema from AKI, pregnancy, fluid loading, or volume overload; not specific for AHTR.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0, 0.8], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "low"},
+    {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan-only mortality hazard for acute hemolytic transfusion reaction, driven by shock, DIC, AKI, severe anemia, and multiorgan failure. This is the only derived hazard for this leaf.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.0001, 0.5], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 60], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "recent_red_blood_cell_transfusion_activity", "target_axis_id": "transfusion_temporal_link_activity", "relationship": "exposure_to_temporal_anchor", "coupling_type": "mixed", "effect_direction": "source_up_increases_target", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "The temporal anchor only has meaning when a transfusion exposure occurred.", "knowledge_confidence": "high"},
+    {"source_axis_id": "transfusion_temporal_link_activity", "target_axis_id": "hemoglobinuria_dark_urine_activity", "relationship": "reaction_timing_to_pigmenturia", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Dark urine during or soon after transfusion is a high-value AHTR signal.", "knowledge_confidence": "high"},
+    {"source_axis_id": "plasma_free_hemoglobin", "target_axis_id": "serum_haptoglobin", "relationship": "free_hemoglobin_consumes_haptoglobin", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "correlation_range": [-0.8, -0.4], "lag_days_range": [0, 1], "phase": "active_hemolysis", "clinical_rationale": "Free hemoglobin binds and depletes haptoglobin.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_haptoglobin", "target_axis_id": "hemoglobinuria_dark_urine_activity", "relationship": "low_haptoglobin_to_pigmenturia_context", "coupling_type": "mixed", "effect_direction": "source_down_increases_target", "correlation_range": [-0.7, -0.3], "lag_days_range": [0, 2], "phase": "intravascular_hemolysis", "clinical_rationale": "When haptoglobin is depleted, free hemoglobin is more likely to appear in urine.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_ldh", "target_axis_id": "serum_bilirubin_total", "relationship": "hemolysis_labs_move_together", "coupling_type": "noise_correlation", "effect_direction": "same_direction", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 3], "phase": "active_hemolysis", "clinical_rationale": "LDH and bilirubin are both downstream of hemolysis, though timing and compartments differ.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "hemoglobinuria_dark_urine_activity", "target_axis_id": "hemolysis_related_acute_kidney_injury_hazard", "relationship": "pigmenturia_to_pigment_aki", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Hemoglobinuria is the visible marker of pigment reaching renal tubules.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_to_aki_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 3], "phase": "renal_complication", "clinical_rationale": "Creatinine rise signals established AKI.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urine_output_ml_per_day", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "oliguria_to_aki_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "correlation_range": [-0.9, -0.4], "lag_days_range": [0, 3], "phase": "renal_complication", "clinical_rationale": "Oliguria or anuria increases AKI severity hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "circulatory_collapse_shock_hazard", "relationship": "low_map_to_shock", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "correlation_range": [-0.9, -0.4], "lag_days_range": [0, 1], "phase": "shock", "clinical_rationale": "Low MAP is central to shock physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "major_bleeding_hazard", "relationship": "dic_to_bleeding", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 3], "phase": "severe_reaction", "clinical_rationale": "Consumptive coagulopathy increases bleeding hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "hemolysis_related_acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "relationship": "aki_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.4, 0.9], "lag_days_range": [0, 14], "phase": "severe_reaction", "clinical_rationale": "Severe AKI and dialysis need worsen survival.", "knowledge_confidence": "high"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 7], "phase": "severe_reaction", "clinical_rationale": "Shock is a dominant early death pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "relationship": "dic_to_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "correlation_range": [0.3, 0.8], "lag_days_range": [0, 7], "phase": "severe_reaction", "clinical_rationale": "DIC adds fatal bleeding, thrombosis, and multiorgan failure risk.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "immediate_stop_transfusion_and_maintain_iv_access",
+      "treatment_name": "Immediate cessation of transfusion with IV access maintained",
+      "mode": "reshape_landscape",
+      "role": "remove ongoing incompatible antigen exposure and preserve resuscitation access",
+      "required_context_axes": ["recent_red_blood_cell_transfusion_activity", "transfusion_temporal_link_activity", "acute_transfusion_reaction_symptom_cluster_activity"],
+      "trajectory_modifications": {
+        "M_AHTR_TRANSFUSED_RBC_ANTIGEN_EXPOSURE": {"peak_value_factor": [0.0, 0.2], "plateau_duration_factor": [0.0, 0.3], "decline_half_life_days": [0.0, 0.2]},
+        "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH": {"peak_value_factor": [0.2, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 14]},
+        "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "failure_modes": ["delayed_recognition", "continued_incompatible_transfusion", "no parallel shock_or_renal_support"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "blood_bank_reaction_workup_and_compatible_product_control",
+      "treatment_name": "Blood bank reaction workup and compatible product control",
+      "mode": "reshape_landscape",
+      "role": "identify mismatch, quarantine implicated products, prevent repeat incompatible exposure, and guide antigen-negative compatible support",
+      "required_context_axes": ["blood_bank_incompatibility_evidence_probability", "direct_antiglobulin_test_activity", "recent_red_blood_cell_transfusion_activity"],
+      "trajectory_modifications": {
+        "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH": {"peak_value_factor": [0.1, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 30]},
+        "recent_red_blood_cell_transfusion_activity": {"peak_value_factor": [0.0, 0.5], "plateau_duration_factor": [0.0, 0.5], "decline_half_life_days": [1, 30]}
+      },
+      "failure_modes": ["workup_delayed_or_incomplete", "rare_antigen_not_in_screening_panel", "emergency_bleeding_requires_least_incompatible_support"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "isotonic_fluid_diuresis_and_renal_protection",
+      "treatment_name": "Isotonic fluid, diuresis strategy, and renal protection",
+      "mode": "push_state",
+      "role": "support renal perfusion and urine flow during pigment nephropathy risk while avoiding volume overload",
+      "required_context_axes": ["hemoglobinuria_dark_urine_activity", "serum_creatinine", "urine_output_ml_per_day", "hemolysis_related_acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Renal protection requires perfusion support when shock is present."},
+        {"axis_id": "oxygen_saturation", "condition": "low_or_pulmonary_edema_context", "effect": "toxicity_limited", "factor_range": [0.3, 0.9], "clinical_rationale": "Aggressive fluids can worsen pulmonary edema or TACO-like physiology."}
+      ],
+      "trajectory_modifications": {
+        "M_AHTR_HEME_PIGMENT_AKI": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 14]},
+        "hemolysis_related_acute_kidney_injury_hazard": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 21]},
+        "serum_creatinine": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [3, 45]}
+      },
+      "failure_modes": ["established_anuric_aki_needing_dialysis", "volume_overload", "ongoing_incompatible_exposure"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "hemodynamic_resuscitation_and_vasopressor_support",
+      "treatment_name": "Hemodynamic resuscitation and vasopressor support",
+      "mode": "push_state",
+      "role": "restore perfusion when hypotension or shock develops",
+      "required_context_axes": ["mean_arterial_pressure", "circulatory_collapse_shock_hazard", "serum_lactate", "urine_output_ml_per_day"],
+      "trajectory_modifications": {
+        "M_AHTR_COAGULATION_AND_SHOCK_CASCADE": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.2, 7]},
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.1, 3]},
+        "circulatory_collapse_shock_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.2, 7]},
+        "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "failure_modes": ["refractory_dic_or_multiorgan_failure", "volume_overload", "unrecognized_pulmonary_transfusion_mimic"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "renal_replacement_therapy_for_severe_aki",
+      "treatment_name": "Renal replacement therapy for severe AKI",
+      "mode": "push_state",
+      "role": "control uremia, electrolyte disturbance, acidosis, and volume overload when pigment AKI is severe",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "urine_output_ml_per_day", "serum_bicarbonate", "arterial_ph", "acute_kidney_injury_hazard"],
+      "trajectory_modifications": {
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [3, 45]},
+        "serum_bicarbonate": {"peak_value_factor": [1.05, 1.5], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 7]},
+        "arterial_ph": {"peak_value_factor": [1.01, 1.06], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 7]},
+        "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [3, 45]}
+      },
+      "failure_modes": ["late_irreversible_multiorgan_failure", "vascular_access_or_bleeding_complication", "does_not_stop_hemolysis"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "dic_and_bleeding_support",
+      "treatment_name": "DIC and bleeding support",
+      "mode": "push_state",
+      "role": "support coagulation and hemostasis when severe hemolysis triggers consumptive coagulopathy or bleeding",
+      "required_context_axes": ["dic_hazard", "major_bleeding_hazard", "platelet_count", "prothrombin_time_inr", "activated_partial_thromboplastin_time"],
+      "trajectory_modifications": {
+        "dic_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.5, 14]},
+        "major_bleeding_hazard": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 1.0], "decline_half_life_days": [0.5, 14]},
+        "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 21]}
+      },
+      "failure_modes": ["ongoing_intravascular_hemolysis", "uncontrolled_surgical_or_obstetric_bleeding", "thrombotic_dic_context"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "antigen_negative_compatible_rbc_support_when_needed",
+      "treatment_name": "Antigen-negative compatible RBC support when oxygen delivery requires transfusion",
+      "mode": "push_state",
+      "role": "restore oxygen delivery when anemia or bleeding remains dangerous after the implicated product is stopped",
+      "required_context_axes": ["hemoglobin", "blood_bank_incompatibility_evidence_probability", "M_AHTR_OXYGEN_DELIVERY_STRESS", "circulatory_collapse_shock_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "blood_bank_incompatibility_evidence_probability", "condition": "unresolved", "effect": "requires_least_incompatible_or_emergency_strategy", "factor_range": [0.3, 1.2], "clinical_rationale": "Compatible product selection depends on blood bank findings and urgency."}
+      ],
+      "trajectory_modifications": {
+        "hemoglobin": {"peak_value_factor": [1.1, 2.0], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 30]},
+        "M_AHTR_OXYGEN_DELIVERY_STRESS": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 14]},
+        "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 21]}
+      },
+      "failure_modes": ["repeat_incompatible_exposure", "delayed_transfusion_despite_critical_anemia", "volume_overload_or_pulmonary_mimic_context"],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_red_blood_cell_transfusion",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [10, 50],
+          "axis_response_modulation": [
+            {"axis_id": "recent_red_blood_cell_transfusion_activity", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "transfusion_temporal_link_activity", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]}
+          ],
+          "clinical_rationale": "Transfusion exposure is necessary but not sufficient; the temporal and hemolysis axes decide whether the exposure is explanatory."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "symptom_onset_during_or_soon_after_transfusion",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 30],
+          "axis_response_modulation": [
+            {"axis_id": "transfusion_temporal_link_activity", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "acute_transfusion_reaction_symptom_cluster_activity", "effect": "higher_peak", "magnitude_factor_range": [1.3, 2.5]}
+          ],
+          "clinical_rationale": "AHTR is an acute transfusion-timed process, but timing alone must not override absent hemolysis evidence."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "abo_incompatible_or_alloantibody_incompatible_unit_context",
+      "type": "diagnostic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 50],
+          "axis_response_modulation": [
+            {"axis_id": "blood_bank_incompatibility_evidence_probability", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "M_AHTR_COMPLEMENT_MEDIATED_INTRAVASCULAR_HEMOLYSIS", "effect": "higher_peak_if_complement_fixing", "magnitude_factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Confirmed incompatible unit or clinically significant antibody strongly supports this leaf when available at the tested stage."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_transfusion_or_pregnancy_alloimmunization",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "M_AHTR_PREEXISTING_COMPATIBILITY_MISMATCH", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.5]},
+            {"axis_id": "blood_bank_incompatibility_evidence_probability", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.0]}
+          ],
+          "clinical_rationale": "Prior antigen exposure increases probability of clinically significant alloantibodies."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "large_volume_or_rapid_incompatible_transfusion",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4],
+          "axis_response_modulation": [
+            {"axis_id": "plasma_free_hemoglobin", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "hemoglobinuria_dark_urine_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "hemolysis_related_acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "clinical_rationale": "Larger antigen and hemolysis load increases AKI, DIC, shock, and mortality risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "general_anesthesia_or_sedation_during_transfusion",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2],
+          "axis_response_modulation": [
+            {"axis_id": "fever_history_activity", "effect": "lower_observed_peak", "magnitude_factor_range": [0.3, 0.9]},
+            {"axis_id": "flank_pain_activity", "effect": "lower_observed_peak", "magnitude_factor_range": [0.0, 0.5]},
+            {"axis_id": "back_pain_activity", "effect": "lower_observed_peak", "magnitude_factor_range": [0.0, 0.5]},
+            {"axis_id": "hemoglobinuria_dark_urine_activity", "effect": "relatively_more_informative", "magnitude_factor_range": [1.0, 1.5]}
+          ],
+          "clinical_rationale": "Anesthesia masks subjective symptoms, so hemoglobinuria, hypotension, bleeding, and labs become more visible signals."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "baseline_renal_impairment_or_dehydration",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_baseline", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "hemolysis_related_acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Renal reserve and perfusion modify pigment-nephropathy severity."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "obstetric_or_peripartum_transfusion_context",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4],
+          "axis_response_modulation": [
+            {"axis_id": "major_bleeding_hazard", "effect": "higher_contextual_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "circulatory_collapse_shock_hazard", "effect": "higher_contextual_peak_if_bleeding", "magnitude_factor_range": [1.1, 3.0]},
+            {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect": "context_dependent", "magnitude_factor_range": [1.0, 3.0]}
+          ],
+          "clinical_rationale": "Obstetric bleeding and peripartum physiology modify volume, coagulation, and renal risk while remaining context rather than a separate disease name."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "limited_cardiopulmonary_reserve_or_coronary_disease",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2],
+          "axis_response_modulation": [
+            {"axis_id": "dyspnea_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "M_AHTR_OXYGEN_DELIVERY_STRESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "The same hemoglobin drop is less tolerated when baseline reserve is low."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "bedside_transfusion_reaction_protocol", "description": "Stop the transfusion, keep IV access with normal saline, verify patient and unit identity, notify transfusion medicine, return product/tubing, and send required blood and urine samples."},
+    {"care_id": "serial_hemolysis_and_renal_monitoring", "description": "Trend hemoglobin, plasma color or free hemoglobin when available, LDH, haptoglobin, total and indirect bilirubin, creatinine, BUN, electrolytes, acid-base status, urine color, urine heme/RBC pattern, and urine output."},
+    {"care_id": "hemodynamic_and_dic_monitoring", "description": "Monitor blood pressure, perfusion, oxygenation, lactate when available, platelet count, PT/INR, aPTT, fibrinogen, D-dimer, bleeding, and need for ICU-level support."},
+    {"care_id": "avoid_repeat_exposure", "description": "Quarantine implicated products and avoid further transfusion until transfusion medicine directs compatible, antigen-negative, or emergency least-incompatible strategy."},
+    {"care_id": "mimic_boundary", "description": "Evaluate fever-only, allergic symptoms, acute hypoxemia, pulmonary edema, bacterial contamination, and delayed hemolysis as possible FNHTR, allergic/anaphylactic reaction, TRALI, TACO, septic transfusion reaction, or DHTR rather than forcing them into this leaf."}
+  ],
+  "quality_notes": [
+    "Pure disease-name distillation: no subtype or mimic was included in the disease name.",
+    "No manually assigned clinical ranking-label fields are used.",
+    "Blood bank final adjudication axes are modeled as diagnostic context and should stay non-ranking in presentation-only case tests unless available at that stage.",
+    "The only derived_hazard axis is mortality_hazard_in_D-TRANSFUSION-REACTION-HEMOLYTIC."
+  ]
+}

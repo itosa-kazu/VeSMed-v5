@@ -120,31 +120,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-RHEUMATIC-FEVER | Acute rheumatic fever |
 | D-DIABETIC-KETOACIDOSIS | Diabetic ketoacidosis |
 | D-ACUTE-MYOCARDITIS | Acute myocarditis |
+| D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever |
+| D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction |
+| D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
-| 2 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
-| 3 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
-| 4 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
-| 5 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 6 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
-| 7 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
-| 8 | D-DRESS | Drug reaction with eosinophilia and systemic symptoms | drug fever/rash/eosinophilia/organ injury mimic distinct from SJS/TEN |
-| 9 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
-| 10 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
-| 11 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
-| 12 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
-| 13 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
-| 14 | D-CELLULITIS-ERYSIPELAS | Cellulitis / erysipelas | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
-| 15 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
-| 16 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
-| 17 | D-ACUTE-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
-| 18 | D-ACUTE-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
-| 19 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
-| 20 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
+| 1 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
+| 2 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
+| 3 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
+| 4 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
+| 5 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
+| 6 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
+| 7 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
+| 8 | D-CELLULITIS | Cellulitis | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
+| 9 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
+| 10 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
+| 11 | D-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
+| 12 | D-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
+| 13 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
+| 14 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
+| 15 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
+| 16 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
+| 17 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
+| 18 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
+| 19 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 20 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
 
 ## Candidate Pool Toward 200
 
@@ -231,7 +234,7 @@ Prioritize diseases that are either common, critical, or both.
 | disease_id | disease leaf |
 | --- | --- |
 | D-DRUG-FEVER | Simple drug fever |
-| D-DRESS | Drug reaction with eosinophilia and systemic symptoms |
+| D-DRUG-FEVER-DRESS | Drug reaction with eosinophilia and systemic symptoms |
 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis |
 | D-NEUROLEPTIC-MALIGNANT-SYNDROME | Neuroleptic malignant syndrome |
 | D-SEROTONIN-SYNDROME | Serotonin syndrome |

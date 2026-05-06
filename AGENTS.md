@@ -627,3 +627,24 @@ Follow-up after generic evidence/runtime fixes:
   - Full current-atlas fast grid (`VESMED_SCORE_MODE=grid`, `VESMED_TIME_GRID_N=21`, `VESMED_MAX_COMBO_SIZE=1`): 271 case JSON files loaded; single-manifold validation `266/268 PASS`; combo intentionally off (`0/2`).
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`): `2/2 PASS`, with `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
   - Remaining single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+
+## 2026-05-06 New Batch Memory: FMF / AHTR / Acute Transplant Rejection
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-FAMILIAL-MEDITERRANEAN-FEVER`: familial Mediterranean fever.
+  - `D-TRANSFUSION-REACTION-HEMOLYTIC`: acute hemolytic transfusion reaction.
+  - `D-TRANSPLANT-REJECTION-ACUTE`: acute transplant rejection.
+- New real PMC/PubMed cases:
+  - `D-FAMILIAL-MEDITERRANEAN-FEVER`: `PMC9445484`, `PMC3282977`, `PMC9751738`.
+  - `D-TRANSFUSION-REACTION-HEMOLYTIC`: `PMC3483495`, `PMC3055152`, `PMC8851284`.
+  - `D-TRANSPLANT-REJECTION-ACUTE`: `PMC11398963`, `PMC8790395`, `PMC8305082`.
+- FMF source rule: recurrent fever/serositis/acute abdomen/chest attacks/AA amyloid renal presentation can be rankable if observed. MEFV genetics, Tel-Hashomer adjudication, colchicine response, and final paper diagnosis stay confirmatory/non-ranking unless testing post-workup mode.
+- Acute hemolytic transfusion reaction source rule: keep this leaf distinct from FNHTR/TRALI/TACO/delayed hemolytic transfusion reaction. Final blood-bank adjudication, antibody ID, crossmatch, DAT/IAT, and treatment response are confirmatory/non-ranking unless the workflow explicitly has post-workup evidence.
+- Acute transplant rejection source rule: organ type is context, not part of first-layer disease name. Biopsy/Banff/pathology/C4d/DSA/MMDx/dd-cfDNA/final adjudication stay confirmatory/non-ranking for presentation-only tests. Do not hardcode "transplant = rejection"; infection, drug/CNI toxicity, vascular/obstructive graft complications, sepsis, ALF, myocarditis, and allograft vasculopathy remain real mimics.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-POLYMYOSITIS`. `D-DRESS` was removed as a duplicate candidate because the current active atlas already has `D-DRUG-FEVER-DRESS` for DRESS.
+- Focused new-batch fast grid (`FAMILIAL_MEDITERRANEAN_FEVER,TRANSFUSION_REACTION_HEMOLYTIC,TRANSPLANT_REJECTION_ACUTE`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 280 case JSON files loaded.
+  - Single-manifold validation `275/277 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
