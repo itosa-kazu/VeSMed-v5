@@ -671,6 +671,29 @@ Follow-up after generic evidence/runtime fixes:
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
 
+## 2026-05-07 New Batch Memory: TRAPS / CAPS / Aplastic Anemia
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-TRAPS`: TNF receptor-associated periodic syndrome.
+  - `D-CAPS`: cryopyrin-associated periodic syndrome.
+  - `D-APLASTIC-ANEMIA`: aplastic anemia.
+- New real PMC/PubMed cases:
+  - `D-TRAPS`: `PMC7606205` / PMID `33154839`, `PMC7865531` / PMID `33530412`, `PMC6441500` / PMID `31007959`.
+  - `D-CAPS`: `PMC9918341` / PMID `36765385`, `PMC11961156` / PMID `40171048`, `PMC4943435` / PMID `25766347`, `PMC12312474` / PMID `40757135`.
+  - `D-APLASTIC-ANEMIA`: `PMC3048477` / PMID `21324109`, `PMC9289335` / PMID `35860154`, `PMC7981752` / PMID `33768838`.
+- Autoinflammatory fever rule: TRAPS/CAPS/FMF/AOSD share fever, rash, myalgia/arthralgia, CRP/SAA/ferritin, serositis, and amyloidosis hazards. Do not make genotype or treatment response rankable in presentation mode. Family history, attack duration/frequency, trigger sensitivity, rash morphology, hearing/eye/CNS/bone findings, and SAA/amyloid organ damage can be rankable when actually observed at presentation.
+- CAPS ontology repair from this batch: composite axes were renamed to single-concept axes. `cold_or_stress_triggered_episode_activity_in_D-CAPS` became `trigger_sensitive_episode_activity_in_D-CAPS`; `biologic_hypersensitivity_or_injection_site_intolerance_activity` became `biologic_treatment_intolerance_activity`.
+- TRAPS ontology repair from this batch: `injection_reaction_or_biologic_access_barrier_context` became `biologic_treatment_persistence_barrier_context`.
+- Marrow-failure boundary rule: aplastic anemia presentation ranking should use CBC/reticulocyte/bleeding/infection evidence. Bone-marrow cellularity, PNH clone, cytogenetics, final diagnosis, treatment response, and long-term outcome stay confirmatory/non-ranking unless explicitly testing post-workup marrow-failure mode.
+- Derived CBC pattern rule added from regression: isolated severe thrombocytopenia is a real presentation-level derived lab pattern and must be structured when the case text says Hb/WBC/coagulation are preserved. `isolated_thrombocytopenia_activity` was added to `D-ITP` and `D-HEPARIN-INDUCED-THROMBOCYTOPENIA`, and ITP cases were structured with this observation. This is not an ITP-only patch; it is the fair counterpart to `pancytopenia_activity` in marrow-failure diseases.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-PULMONARY-EMBOLISM`.
+- Focused new-batch fast grid (`TRAPS,CAPS,APLASTIC_ANEMIA,ITP,HIT`) loaded 15 cases and was `15/15 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 345 case JSON files loaded.
+  - Single-manifold validation `340/342 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
 ## 2026-05-06 New Batch Memory: Polymyositis / Drug Fever / Alcoholic Hepatitis
 
 - The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
