@@ -1,4 +1,4 @@
-# VeSMed V5 Disease Leaf Atlas Roadmap to 100
+# VeSMed V5 Disease Leaf Atlas Roadmap to 200
 
 This roadmap is the source for the UI candidate dropdown. The first-layer
 distillation unit is a clinically stable disease leaf. Do not use broad umbrella
@@ -105,33 +105,39 @@ Prioritize diseases that are either common, critical, or both.
 | D-ACUTE-PANCREATITIS | Acute pancreatitis |
 | D-SJS-TEN | Stevens-Johnson syndrome / toxic epidermal necrolysis |
 | D-MALIGNANT-HYPERTHERMIA | Malignant hyperthermia |
+| D-AIHA | Autoimmune hemolytic anemia |
+| D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome |
+| D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy |
+| D-DERMATOMYOSITIS | Dermatomyositis |
+| D-EVANS-SYNDROME | Evans syndrome |
+| D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-AIHA | Autoimmune hemolytic anemia | common hemolysis/jaundice/cytopenia mimic near TMA and babesiosis |
-| 2 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome | critical diarrhea-associated TMA mimic |
-| 3 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy | critical TMA mimic of TTP, HUS, sepsis-DIC, and malignant hypertension |
-| 4 | D-EVANS-SYNDROME | Evans syndrome | immune cytopenia fever mimic near SLE, AIHA, TTP, and lymphoma |
-| 5 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
-| 6 | D-DERMATOMYOSITIS | Dermatomyositis | common fever/rash/myositis/ILD mimic of infection, AOSD, and malignancy |
-| 7 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
-| 8 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
-| 9 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
-| 10 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
-| 11 | D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia | critical thrombocytopenia/thrombosis mimic near TMA, DIC, and APS |
-| 12 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
-| 13 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
-| 14 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
-| 15 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
-| 16 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 17 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
-| 18 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
-| 19 | D-DRESS | Drug reaction with eosinophilia and systemic symptoms | drug fever/rash/eosinophilia/organ injury mimic distinct from SJS/TEN |
-| 20 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
+| 1 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
+| 2 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
+| 3 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
+| 4 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
+| 5 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
+| 6 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
+| 7 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
+| 8 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
+| 9 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
+| 10 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 11 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 12 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
+| 13 | D-DRESS | Drug reaction with eosinophilia and systemic symptoms | drug fever/rash/eosinophilia/organ injury mimic distinct from SJS/TEN |
+| 14 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
+| 15 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
+| 16 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
+| 17 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
+| 18 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
+| 19 | D-ANTI-GBM-DISEASE | Anti-glomerular basement membrane disease | critical pulmonary-renal syndrome mimic near ANCA vasculitis, SLE, and TMA |
+| 20 | D-SPINAL-EPIDURAL-ABSCESS | Spinal epidural abscess | critical fever/back-pain neurologic mimic near SAB and vertebral osteomyelitis |
 
-## Candidate Pool Toward 100
+## Candidate Pool Toward 200
 
 ### Infection
 
@@ -188,7 +194,6 @@ Prioritize diseases that are either common, critical, or both.
 | D-SARCOIDOSIS | Sarcoidosis |
 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis |
 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome |
-| D-DERMATOMYOSITIS | Dermatomyositis |
 | D-POLYMYOSITIS | Polymyositis |
 | D-RA-FLARE | Rheumatoid arthritis systemic flare |
 | D-SJOGREN-SYSTEMIC | Systemic Sjogren disease |
@@ -209,11 +214,9 @@ Prioritize diseases that are either common, critical, or both.
 | D-FEBRILE-NEUTROPENIA | Febrile neutropenia |
 | D-CAR-T-CRS | CAR-T cytokine release syndrome |
 | D-AIHA | Autoimmune hemolytic anemia |
-| D-EVANS-SYNDROME | Evans syndrome |
 | D-STEC-HUS | Shiga toxin-associated hemolytic uremic syndrome |
 | D-COMPLEMENT-MEDIATED-TMA | Complement-mediated thrombotic microangiopathy |
 | D-DIC | Disseminated intravascular coagulation |
-| D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia |
 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome |
 
 ### Drug / Toxicology / Endocrine / Critical Mimics
@@ -235,6 +238,144 @@ Prioritize diseases that are either common, critical, or both.
 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction |
 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction |
 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection |
+
+### Infection Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia |
+| D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia |
+| D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia |
+| D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia |
+| D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection |
+| D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection |
+| D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection |
+| D-RENAL-ABSCESS | Renal abscess |
+| D-PERINEPHRIC-ABSCESS | Perinephric abscess |
+| D-ACUTE-PROSTATITIS | Acute bacterial prostatitis |
+| D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis |
+| D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease |
+| D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess |
+| D-SEPTIC-ABORTION | Septic abortion |
+| D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis |
+| D-CELLULITIS | Cellulitis |
+| D-ERYSIPELAS | Erysipelas |
+| D-ORBITAL-CELLULITIS | Orbital cellulitis |
+| D-DIABETIC-FOOT-INFECTION | Diabetic foot infection |
+| D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection |
+| D-SPINAL-EPIDURAL-ABSCESS | Spinal epidural abscess |
+| D-BRAIN-ABSCESS | Brain abscess |
+| D-LUNG-ABSCESS | Lung abscess |
+| D-EMPYEMA | Pleural empyema |
+| D-ASPIRATION-PNEUMONIA | Aspiration pneumonia |
+| D-VIRAL-MENINGITIS | Viral meningitis |
+| D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis |
+| D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis |
+| D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease |
+| D-DENGUE | Dengue |
+| D-CHIKUNGUNYA | Chikungunya |
+| D-MEASLES | Measles |
+| D-ACUTE-HEPATITIS-A | Acute hepatitis A |
+| D-ACUTE-HEPATITIS-B | Acute hepatitis B |
+| D-ACUTE-HEPATITIS-E | Acute hepatitis E |
+| D-AMOEBIC-LIVER-ABSCESS | Amoebic liver abscess |
+| D-STRONGYLOIDES-HYPERINFECTION | Strongyloides hyperinfection |
+| D-TRICHINELLOSIS | Trichinellosis |
+
+### Rheumatology / Nephrology Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-ANTI-GBM-DISEASE | Anti-glomerular basement membrane disease |
+| D-IGA-VASCULITIS | IgA vasculitis |
+| D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis |
+| D-URTICARIAL-VASCULITIS | Urticarial vasculitis |
+| D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease |
+| D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS | Systemic sclerosis renal crisis |
+| D-POLYMYALGIA-RHEUMATICA | Polymyalgia rheumatica |
+| D-GOUT-FLARE | Gout flare |
+| D-CALCIUM-PYROPHOSPHATE-ARTHRITIS | Calcium pyrophosphate crystal arthritis |
+| D-REACTIVE-ARTHRITIS | Reactive arthritis |
+| D-PSORIATIC-ARTHRITIS-FLARE | Psoriatic arthritis flare |
+| D-ANKYLOSING-SPONDYLITIS-FLARE | Ankylosing spondylitis flare |
+| D-ULCERATIVE-COLITIS-SEVERE-FLARE | Severe ulcerative colitis flare |
+| D-CROHN-DISEASE-FLARE | Crohn disease flare |
+| D-MYOSITIS-ASSOCIATED-RAPIDLY-PROGRESSIVE-ILD | Myositis-associated rapidly progressive interstitial lung disease |
+| D-PRIMARY-CNS-VASCULITIS | Primary central nervous system vasculitis |
+
+### Hematology / Oncology Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-ITP | Immune thrombocytopenia |
+| D-APLASTIC-ANEMIA | Aplastic anemia |
+| D-PNH | Paroxysmal nocturnal hemoglobinuria |
+| D-G6PD-HEMOLYSIS | Glucose-6-phosphate dehydrogenase hemolysis |
+| D-COLD-AGGLUTININ-DISEASE | Cold agglutinin disease |
+| D-DRUG-INDUCED-IMMUNE-HEMOLYTIC-ANEMIA | Drug-induced immune hemolytic anemia |
+| D-HELLP-SYNDROME | HELLP syndrome |
+| D-PREECLAMPSIA-SEVERE | Severe preeclampsia |
+| D-HYPERTENSIVE-EMERGENCY-TMA | Hypertensive emergency-associated TMA |
+| D-DRUG-INDUCED-TMA | Drug-induced thrombotic microangiopathy |
+| D-SOLID-TUMOR-MARROW-INFILTRATION | Solid tumor marrow infiltration |
+| D-MULTIPLE-MYELOMA | Multiple myeloma |
+| D-PLASMA-CELL-LEUKEMIA | Plasma cell leukemia |
+| D-BURKITT-LYMPHOMA | Burkitt lymphoma |
+| D-ANGIOIMMUNOBLASTIC-T-CELL-LYMPHOMA | Angioimmunoblastic T-cell lymphoma |
+| D-EXTRANODAL-NK-T-CELL-LYMPHOMA | Extranodal NK/T-cell lymphoma |
+| D-PRIMARY-CNS-LYMPHOMA | Primary central nervous system lymphoma |
+| D-CASTLEMAN-DISEASE | Castleman disease |
+| D-TUMOR-LYSIS-SYNDROME | Tumor lysis syndrome |
+| D-GVHD-ACUTE | Acute graft-versus-host disease |
+| D-POST-TRANSPLANT-LYMPHOPROLIFERATIVE-DISORDER | Post-transplant lymphoproliferative disorder |
+
+### Cardio-Pulmonary / Critical Care Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-PULMONARY-EMBOLISM | Pulmonary embolism |
+| D-MYOCARDITIS | Myocarditis |
+| D-PERICARDITIS | Acute pericarditis |
+| D-ACUTE-DECOMPENSATED-HEART-FAILURE | Acute decompensated heart failure |
+| D-CARDIOGENIC-SHOCK | Cardiogenic shock |
+| D-AORTIC-DISSECTION | Aortic dissection |
+| D-TAKOTSUBO-CARDIOMYOPATHY | Takotsubo cardiomyopathy |
+| D-ACUTE-EOSINOPHILIC-PNEUMONIA | Acute eosinophilic pneumonia |
+| D-ORGANIZING-PNEUMONIA | Organizing pneumonia |
+| D-DIFFUSE-ALVEOLAR-HEMORRHAGE | Diffuse alveolar hemorrhage |
+| D-FAT-EMBOLISM-SYNDROME | Fat embolism syndrome |
+
+### Gastrointestinal / Hepatobiliary / Surgical Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-ACUTE-CHOLECYSTITIS | Acute cholecystitis |
+| D-APPENDICITIS | Acute appendicitis |
+| D-DIVERTICULITIS | Acute diverticulitis |
+| D-BOWEL-ISCHEMIA | Acute mesenteric ischemia |
+| D-PERFORATED-VISCUS | Perforated viscus |
+| D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis |
+| D-CIRRHOSIS-ACUTE-DECOMPENSATION | Acute decompensated cirrhosis |
+| D-ACETAMINOPHEN-TOXICITY | Acetaminophen toxicity |
+| D-BUDD-CHIARI-SYNDROME | Budd-Chiari syndrome |
+| D-WILSON-DISEASE-ACUTE-HEPATIC | Acute hepatic Wilson disease |
+
+### Endocrine / Metabolic / Toxicology Expansion
+
+| disease_id | disease leaf |
+| --- | --- |
+| D-DIABETIC-KETOACIDOSIS | Diabetic ketoacidosis |
+| D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state |
+| D-MYXEDEMA-COMA | Myxedema coma |
+| D-PHEOCHROMOCYTOMA-CRISIS | Pheochromocytoma crisis |
+| D-SALICYLATE-TOXICITY | Salicylate toxicity |
+| D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS | Metformin-associated lactic acidosis |
+| D-ALCOHOL-WITHDRAWAL-DELIRIUM | Alcohol withdrawal delirium |
+| D-OPIOID-WITHDRAWAL | Opioid withdrawal |
+| D-SYMPATHOMIMETIC-TOXIDROME | Sympathomimetic toxidrome |
+| D-ANTICHOLINERGIC-TOXIDROME | Anticholinergic toxidrome |
+| D-CARBON-MONOXIDE-POISONING | Carbon monoxide poisoning |
+| D-CYANIDE-POISONING | Cyanide poisoning |
 
 ## Operational Batch Rule
 

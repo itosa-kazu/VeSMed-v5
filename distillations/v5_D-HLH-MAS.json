@@ -1024,6 +1024,18 @@
       "conditionality": null,
       "clinical_rationale": "Pulmonary or airway involvement can cause cough.",
       "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "macrophage_activation_activity",
+      "target_id": "mental_status_abnormality_activity",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "clinical_rationale": "Cytokine storm, CNS involvement, shock, and metabolic derangement can cause encephalopathy in severe HLH/MAS.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axes": [
@@ -2076,28 +2088,28 @@
       "category": "physical_finding",
       "unit": "severity_score_0_1",
       "log_scale": false,
-      "shape_free_text": "Encephalopathy, irritability, lethargy from cytokine storm and CNS infiltration.",
+      "shape_free_text": "CNS HLH/MAS or severe systemic inflammation can produce encephalopathy or altered mental status.",
       "baseline_range": [
         0,
         0.05
       ],
       "peak_day_range": [
-        3,
+        0,
         21
       ],
       "peak_value_range": [
-        0.2,
-        0.9
+        0,
+        0.8
       ],
       "plateau_duration_days": [
-        3,
-        14
+        1,
+        21
       ],
       "decline_half_life_days": [
-        3,
-        14
+        7,
+        60
       ],
-      "knowledge_confidence": "high",
+      "knowledge_confidence": "medium",
       "axis_role": "finding"
     },
     {
@@ -2822,6 +2834,93 @@
         60
       ],
       "shape_free_text": "Dry or productive cough as a symptom axis; mechanism depends on pulmonary, airway, cardiac, or mediastinal involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "proximal_muscle_weakness_activity",
+      "category": "treatment_modifier",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        30,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "shape_free_text": "Trigger-context axis for dermatomyositis or inflammatory myopathy associated HLH/MAS; not a core HLH mechanism.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dermatomyositis_rash_activity",
+      "category": "treatment_modifier",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        30,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "shape_free_text": "Trigger-context axis for dermatomyositis-associated HLH/MAS; not a core HLH mechanism.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "arthritis_activity",
+      "category": "treatment_modifier",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        30,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "shape_free_text": "Rheumatic trigger/context activity that may accompany MAS/HLH presentations.",
       "knowledge_confidence": "medium"
     }
   ],
@@ -4507,6 +4606,47 @@
         }
       },
       "knowledge_confidence": "high"
+    },
+    {
+      "factor": "autoimmune_rheumatic_trigger",
+      "type": "categorical",
+      "modulation": {
+        "dermatomyositis": {
+          "P_disease_ratio": [
+            2,
+            10
+          ],
+          "trajectory_modulation": "Dermatomyositis is a recognized autoimmune/rheumatic trigger context for secondary HLH/MAS.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "proximal_muscle_weakness_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2,
+                5
+              ]
+            },
+            {
+              "axis_id": "dermatomyositis_rash_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2,
+                5
+              ]
+            },
+            {
+              "axis_id": "arthritis_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                4
+              ]
+            }
+          ],
+          "knowledge_confidence": "medium"
+        }
+      },
+      "knowledge_confidence": "medium"
     }
   ],
   "supportive_care": [

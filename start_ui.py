@@ -23,7 +23,7 @@ DISTILL_DIR.mkdir(exist_ok=True)
 CASE_DIR = DISTILL_DIR / "cases"
 CASE_DIR.mkdir(exist_ok=True)
 MASTER_PATH = ROOT / "master_axes.json"
-ROADMAP_PATH = DISTILL_DIR / "disease_leaf_atlas_roadmap_100.md"
+ROADMAP_PATH = DISTILL_DIR / "disease_leaf_atlas_roadmap_200.md"
 PORT = 8765
 
 

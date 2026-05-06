@@ -138,6 +138,8 @@ COMBO_LOG_PENALTY = -2.0
 MAX_COMBO_SIZE = env_int("VESMED_MAX_COMBO_SIZE", 2)
 CASE_FILTER = env_csv("VESMED_CASE_FILTER")
 ONLY_COMBO_CASES = env_bool("VESMED_ONLY_COMBO_CASES", False)
+SCORE_MODE = os.environ.get("VESMED_SCORE_MODE", "mc").strip().lower()
+TIME_GRID_N = max(env_int("VESMED_TIME_GRID_N", 31), 1)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
@@ -358,6 +360,18 @@ def normalize_mechanism_edge(raw):
     return edge
 
 
+def apply_treatment_modifier_context_defaults(axis):
+    if axis.get("category") != "treatment_modifier":
+        return axis
+    if axis.get("peak_value_range") is None or axis.get("peak_day_range") is not None:
+        return axis
+    axis = dict(axis)
+    axis["peak_day_range"] = [-365.0, 0.0]
+    axis["plateau_duration_days"] = axis.get("plateau_duration_days") or [30.0, 3650.0]
+    axis["decline_half_life_days"] = axis.get("decline_half_life_days") or [30.0, 365.0]
+    return axis
+
+
 def load_manifold(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     axes = {}
@@ -375,17 +389,22 @@ def load_manifold(path):
             axis[key] = parse_interval(axis.get(key))
         if axis["baseline_range"] is None:
             continue
+        axis = apply_treatment_modifier_context_defaults(axis)
         axes[axis["axis_id"]] = axis
     mechanism_edges = []
     for raw in (data.get("mechanism_edges") or []) + (data.get("causal_edges") or []):
         edge = normalize_mechanism_edge(raw)
         if edge is not None:
             mechanism_edges.append(edge)
+    mechanism_edges_by_target = {}
+    for edge in mechanism_edges:
+        mechanism_edges_by_target.setdefault(edge.get("target_axis_id"), []).append(edge)
     return {
         "disease": data.get("disease", path.stem),
         "axes": axes,
         "latent_mechanisms": data.get("latent_mechanisms") or [],
         "mechanism_edges": mechanism_edges,
+        "mechanism_edges_by_target": mechanism_edges_by_target,
         "axis_couplings": data.get("axis_couplings") or [],
         "risk_factors": data.get("risk_factors") or [],
         "treatments": data.get("treatments") or [],
@@ -511,6 +530,22 @@ def fallback_axis_from_observation(axis_id, obs):
 
 
 MAPPED_EVIDENCE_SECTIONS = ("imaging", "pathology", "procedures", "diagnostics", "physical_exam", "microbiology")
+DIRECT_AXIS_SECTION_SKIP = {
+    "demographics",
+    "risk_context",
+    "lab_trajectories",
+    "observations",
+    "course_observations",
+    *MAPPED_EVIDENCE_SECTIONS,
+}
+NON_RANKING_SECTION_PREFIXES = (
+    "confirmatory",
+    "actual_treatment",
+    "outcome",
+    "follow_up",
+    "treatment",
+    "supportive",
+)
 
 
 def mapped_axis_ids(item):
@@ -586,22 +621,79 @@ def infer_mapped_observation(item, axis_id):
     return 1.0, "severity_score_0_1"
 
 
+def infer_direct_observation(axis_id, value, unit, qualitative_value=None):
+    if value is not None:
+        return value, unit
+    if qualitative_value is None:
+        return None
+
+    q = str(qualitative_value).strip().lower()
+    if not q:
+        return None
+    normalized_unit = norm_unit(unit)
+    if axis_id == "body_temperature":
+        if any(token in q for token in ("afebrile", "denied_fever", "no_fever")):
+            return 36.8, unit or "degC"
+        if any(token in q for token in ("high_grade_fever", "hyperpyrexia")):
+            return 39.0, unit or "degC"
+        if "fever" in q or "febrile" in q:
+            return 38.5, unit or "degC"
+
+    if normalized_unit in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+        if mapped_item_is_negative({"source_text_value": q}):
+            return 0.0, unit
+        return 1.0, unit
+
+    if q in ("normal", "within_normal_limits", "within_reference_range"):
+        override = HEALTHY_OVERRIDES.get(axis_id) or v5_background.BASE_MEASURE_OVERRIDES.get(axis_id)
+        if override:
+            return midpoint(override.get("baseline_range")), unit or override.get("unit")
+    return None
+
+
+def iter_direct_axis_section_items(data):
+    for section, records in data.items():
+        if section in DIRECT_AXIS_SECTION_SKIP:
+            continue
+        if any(section.startswith(prefix) for prefix in NON_RANKING_SECTION_PREFIXES):
+            continue
+        if not isinstance(records, list):
+            continue
+        for item in records:
+            if isinstance(item, dict) and item.get("axis_id"):
+                yield section, item
+
+
 def background_axes_for_case(background_axes, case, candidate):
-    adjusted = v5_background.adjust_background_axes(
-        background_axes,
-        case,
-        tuple(candidate),
-        BACKGROUND_MODIFIERS,
-        CONDITION_SCOPE,
-        convert_value,
-    )
-    adjusted = dict(adjusted)
+    """Return risk-adjusted background axes needed by this case/candidate.
+
+    The full master/background ontology is now thousands of axes. Case ranking
+    only needs observed axes, so adjusting the entire ontology for every
+    candidate turns the regression into mostly repeated background bookkeeping.
+    """
+    candidate = tuple(candidate)
+    cache = case.setdefault("_background_axes_cache", {})
+    if candidate in cache:
+        return cache[candidate]
+
+    context = v5_background.background_context_for_case(case)
+    adjusted = {}
     for axis_id, obs in case.get("observations_by_axis", {}).items():
-        if axis_id in adjusted:
+        axis = background_axes.get(axis_id)
+        if axis is not None:
+            adjusted[axis_id] = v5_background.apply_background_modifiers_to_axis(
+                axis,
+                context,
+                candidate,
+                BACKGROUND_MODIFIERS,
+                CONDITION_SCOPE,
+                convert_value,
+            )
             continue
         fallback = fallback_axis_from_observation(axis_id, obs)
         if fallback is not None:
             adjusted[axis_id] = fallback
+    cache[candidate] = adjusted
     return adjusted
 
 
@@ -621,18 +713,27 @@ def load_case(path):
     for obs in data.get("observations", []):
         if not case_item_rankable(obs):
             continue
-        add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
+        inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
+        if inferred is not None:
+            value, unit = inferred
+            add_observation(obs.get("axis_id"), value, unit)
 
     for obs in data.get("course_observations", []):
         if not case_item_rankable(obs):
             continue
-        add_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"))
+        inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
+        if inferred is not None:
+            value, unit = inferred
+            add_observation(obs.get("axis_id"), value, unit)
 
     for traj in data.get("lab_trajectories", []):
         if not case_item_rankable(traj):
             continue
         axis_id = traj.get("axis_id")
-        add_observation(axis_id, traj.get("value"), traj.get("unit"))
+        inferred = infer_direct_observation(axis_id, traj.get("value"), traj.get("unit"), traj.get("qualitative_value"))
+        if inferred is not None:
+            value, unit = inferred
+            add_observation(axis_id, value, unit)
         numeric = [
             o
             for o in ((traj.get("observations") or []) + (traj.get("time_series") or []))
@@ -657,6 +758,15 @@ def load_case(path):
                 value, unit = inferred
                 add_observation(axis_id, value, unit)
 
+    for _section, item in iter_direct_axis_section_items(data):
+        if not case_item_rankable(item):
+            continue
+        inferred = infer_direct_observation(item.get("axis_id"), item.get("value"), item.get("unit"), item.get("qualitative_value"))
+        if inferred is None:
+            continue
+        value, unit = inferred
+        add_observation(item.get("axis_id"), value, unit)
+
     data["observations_by_axis"] = observations
     return data
 
@@ -665,6 +775,8 @@ def sample_uniform(rng, interval):
     lo, hi = interval
     if lo == hi:
         return lo
+    if rng is None:
+        return 0.5 * (lo + hi)
     return float(rng.uniform(lo, hi))
 
 
@@ -687,7 +799,12 @@ def inferred_t_max(manifold):
 
 
 def disease_t_max(disease, manifold):
-    return T_MAX_BY_DISEASE.get(disease, inferred_t_max(manifold))
+    override = T_MAX_BY_DISEASE.get(disease)
+    if override is not None:
+        return override
+    if "_t_max" not in manifold:
+        manifold["_t_max"] = inferred_t_max(manifold)
+    return manifold["_t_max"]
 
 
 def sample_mu_and_baseline(axis, t, rng):
@@ -720,6 +837,9 @@ def sample_mu_and_baseline(axis, t, rng):
 
 
 def axis_sigma(axis):
+    cached = axis.get("_axis_sigma")
+    if cached is not None:
+        return cached
     ranges = [axis.get("baseline_range"), axis.get("peak_value_range")]
     values = []
     for interval in ranges:
@@ -732,11 +852,21 @@ def axis_sigma(axis):
         logs = [math.log10(max(v, 1e-12)) for v in values if v > 0]
         if not logs:
             return 0.5
-        return max((max(logs) - min(logs)) / 6.0, 0.15)
+        sigma = max((max(logs) - min(logs)) / 6.0, 0.15)
+        axis["_axis_sigma"] = sigma
+        return sigma
 
     spread = max(values) - min(values)
-    typical = max(abs(float(np.median(values))), 1.0)
-    return max(spread / 6.0, 0.08 * typical, 1e-6)
+    ordered = sorted(float(v) for v in values)
+    mid = len(ordered) // 2
+    if len(ordered) % 2:
+        median = ordered[mid]
+    else:
+        median = 0.5 * (ordered[mid - 1] + ordered[mid])
+    typical = max(abs(median), 1.0)
+    sigma = max(spread / 6.0, 0.08 * typical, 1e-6)
+    axis["_axis_sigma"] = sigma
+    return sigma
 
 
 def transform(axis, value):
@@ -808,7 +938,10 @@ def matched_risk_payload(manifold, context):
     for rf in manifold["risk_factors"]:
         factor = rf.get("factor")
         for category, mod in (rf.get("modulation") or {}).items():
-            if (factor, category) not in by_key and not risk_factor_present_match(factor, category, by_factor):
+            if (
+                (factor, category) not in by_key
+                and not risk_factor_present_match(factor, category, by_factor)
+            ):
                 continue
             p_ratio = midpoint(mod.get("P_disease_ratio"), 1.0)
             if p_ratio > 0:
@@ -1020,6 +1153,15 @@ def combo_anchor_penalty(case, candidate):
     return penalty, support
 
 
+def is_bounded_0_1_axis(axis):
+    return norm_unit(axis.get("unit")) in (
+        "presentabsent01",
+        "probability01",
+        "relativeactivity01",
+        "severityscore01",
+    )
+
+
 def apply_axis_modulations(axis_id, axis, mu, baseline, sigma, mods, rng):
     for mod in mods:
         effect = mod.get("effect")
@@ -1047,7 +1189,10 @@ def apply_axis_modulations(axis_id, axis, mu, baseline, sigma, mods, rng):
             if factor > 1.0:
                 factor = 1.0 / factor
             mu = baseline + min(max(factor, 0.05), 1.0) * (mu - baseline)
-    if axis.get("log_scale"):
+    if is_bounded_0_1_axis(axis):
+        mu = clamp01(mu)
+        baseline = clamp01(baseline)
+    elif axis.get("log_scale"):
         mu = max(mu, 1e-12)
     elif axis_id not in ("body_temperature",):
         mu = max(mu, 0.0)
@@ -1063,6 +1208,9 @@ def eval_axis(axis_id, candidate, manifolds, background_axes):
 
 
 def mechanism_edges_to(manifold, target_axis_id):
+    indexed = manifold.get("mechanism_edges_by_target")
+    if indexed is not None:
+        return indexed.get(target_axis_id, [])
     return [
         edge
         for edge in manifold.get("mechanism_edges", [])
@@ -1348,6 +1496,35 @@ def mvn_logpdf(x, mu, sigmas, corr):
     return float("-inf")
 
 
+def use_grid_scoring():
+    return SCORE_MODE in {"grid", "fast", "deterministic"}
+
+
+def iter_candidate_time_samples(candidate, manifolds, rng):
+    if use_grid_scoring():
+        for i in range(TIME_GRID_N):
+            q = (i + 0.5) / TIME_GRID_N
+            yield {
+                disease: float(q * disease_t_max(disease, manifolds[disease]))
+                for disease in candidate
+            }, None
+        return
+
+    for _ in range(N_MC):
+        yield {
+            disease: float(rng.uniform(0.0, disease_t_max(disease, manifolds[disease])))
+            for disease in candidate
+        }, rng
+
+
+def iter_background_samples(rng):
+    if use_grid_scoring():
+        yield None
+        return
+    for _ in range(N_MC):
+        yield rng
+
+
 def score_candidate(case, candidate, manifolds, background_axes):
     background_axes = background_axes_for_case(background_axes, case, candidate)
     rng = np.random.default_rng(deterministic_seed(candidate + (case.get("case_id"),)))
@@ -1372,21 +1549,17 @@ def score_candidate(case, candidate, manifolds, background_axes):
         log_prior += lp
 
     corr = build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes)
-    log_joint = np.zeros(N_MC)
+    log_joint = []
     best = None
     best_lp = float("-inf")
 
-    for i in range(N_MC):
-        t_by_disease = {
-            disease: float(rng.uniform(0.0, disease_t_max(disease, manifolds[disease])))
-            for disease in candidate
-        }
+    for t_by_disease, sample_rng in iter_candidate_time_samples(candidate, manifolds, rng):
         x = []
         mu = []
         sigmas = []
         contrib_meta = []
         for axis_id in axis_ids:
-            endpoint = combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_axes, risk_payloads, rng)
+            endpoint = combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_axes, risk_payloads, sample_rng)
             if endpoint is None:
                 continue
             axis, mu_value, sigma, source = endpoint
@@ -1397,7 +1570,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
             contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, source))
 
         lp = mvn_logpdf(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr) + log_prior
-        log_joint[i] = lp
+        log_joint.append(lp)
         if lp > best_lp:
             best_lp = lp
             best = {
@@ -1408,7 +1581,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
                 "meta": contrib_meta,
             }
 
-    log_marginal = float(logsumexp(log_joint) - math.log(N_MC))
+    log_marginal = float(logsumexp(log_joint) - math.log(len(log_joint)))
     return {
         "candidate": "+".join(candidate),
         "candidate_tuple": candidate,
@@ -1437,18 +1610,18 @@ def score_background_null(case, background_axes):
         return None
 
     corr = build_corr(axis_ids, tuple(), {}, {}, background_axes)
-    log_joint = np.zeros(N_MC)
+    log_joint = []
     best = None
     best_lp = float("-inf")
 
-    for i in range(N_MC):
+    for sample_rng in iter_background_samples(rng):
         x = []
         mu = []
         sigmas = []
         contrib_meta = []
         for axis_id in axis_ids:
             axis = background_axes[axis_id]
-            mu_value, _ = sample_mu_and_baseline(axis, -1.0, rng)
+            mu_value, _ = sample_mu_and_baseline(axis, -1.0, sample_rng)
             obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
             x.append(transform(axis, obs_value))
             mu.append(transform(axis, mu_value))
@@ -1456,7 +1629,7 @@ def score_background_null(case, background_axes):
             contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, axis.get("_source", "base_measure_background")))
 
         lp = mvn_logpdf(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr)
-        log_joint[i] = lp
+        log_joint.append(lp)
         if lp > best_lp:
             best_lp = lp
             best = {
@@ -1466,7 +1639,7 @@ def score_background_null(case, background_axes):
                 "meta": contrib_meta,
             }
 
-    log_marginal = float(logsumexp(log_joint) - math.log(N_MC))
+    log_marginal = float(logsumexp(log_joint) - math.log(len(log_joint)))
     return {
         "candidate": "background_only",
         "candidate_tuple": tuple(),
@@ -1515,6 +1688,10 @@ def main():
         f"N_MC={N_MC}, seed={SEED}, combo_penalty={COMBO_LOG_PENALTY}, "
         f"combo_anchor_threshold={COMBO_ANCHOR_THRESHOLD}"
     )
+    if use_grid_scoring():
+        lines.append(f"Score mode: {SCORE_MODE} time_grid_n={TIME_GRID_N} (deterministic midpoint parameter sampling)")
+    else:
+        lines.append(f"Score mode: {SCORE_MODE} monte_carlo_samples={N_MC}")
     lines.append("Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.")
     lines.append(f"Manifold discovery: {len(MANIFOLD_PATHS)} root distillation files from {DISTILL_DIR / 'v5_*.json'}")
     lines.append(f"Candidate sets: singles={len(manifolds)}, total_ranked={len(candidates)}, max_combo_size={MAX_COMBO_SIZE}")

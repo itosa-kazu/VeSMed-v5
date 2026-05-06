@@ -266,6 +266,7 @@ PoC 阶段接受 QOL 缺失；QOL 是未来第二维。
 - OPQRST 属于同一原则：先有症状是否存在的主变量，再把 onset/provocation/quality/radiation/severity/timing 作为卫星变量；没有完成拆分前可以保留旧的 compact activity axis，但不能为了排名删除原文证据。
 - **缺 axis 时允许补 ontology**：如果 audit 发现某个 disease manifold 漏了真实、重要、符合实际医学的临床 axis，agent 可以直接补进该 disease 的 `axes`，并同步补 `mechanism_edges` / case structured observations / `master_axes.json`。这不是排名补丁；禁止为了让某个 case 过而发明不存在或不稳定的特征、删除证据、调窄竞品疾病范围。补完必须跑相关 case 与全量回归，报告是否引入退化。
 - **新增 axis 必须横向公平审查**：给某个 disease / disease family 补 axis 时，必须同时检查当前 atlas 里的竞争病和近邻 mimic 是否也应医学真实地拥有该 axis 或其 parent axis / satellite。该补的同步补，不该有的明确不补；不能只给目标病增加解释力、让其他真实也会出现该证据的疾病被不公平扣分。横向补轴仍必须符合真实医学，不能为了“公平”把不存在或极罕见、非稳定的特征硬塞进别的病。
+- **补轴不是单病补丁**：任何因为 real case 失败而发现的漏轴，都要先判断这是目标病独有、某个疾病家族共有，还是多个 mimic 都应拥有。若是 family/near-neighbor 共有轴，必须同步补到医学上真实相关的竞争 manifold；若只给失败目标病补而不补其他同样会出现该证据的病，本质上就是变相过拟合，禁止这样做。
 
 当前 `start_ui.py` 会在保存 distillation 时自动 rebuild `master_axes.json`。
 
@@ -476,3 +477,89 @@ distillations/joint_sde_treatment_result.txt
 - `C:\Users\wangw\Desktop\VeSMed-v3\.claude-memory\project_v5_per_disease_full_stack.md`
 - `C:\Users\wangw\Desktop\VeSMed-v3\.claude-memory\project_v5_axis_ontology_registry.md`
 - `C:\Users\wangw\Desktop\VeSMed-v3\.claude-memory\project_v5_emergent_first_line.md`
+
+## 2026-05-06 Current-Atlas Regression Memory
+
+- Full current-atlas regression must not default to large Monte Carlo over every case and every disease. With 88 manifolds and 240 real cases, naive single-disease scoring at `N_MC=1000` means ~21M candidate samples before combo expansion. This is too slow for routine regression.
+- `v5_joint_sde_case_test.py` now supports fast deterministic full-regression mode:
+  - `VESMED_SCORE_MODE=grid`
+  - `VESMED_TIME_GRID_N=21`
+  - `VESMED_MAX_COMBO_SIZE=1`
+- Use the fast grid mode as the routine whole-atlas smoke test. Use high-MC mode only for focused failures, close top-2 cases, and small new-disease batches.
+- The 2026-05-06 full current-atlas fast regression loaded 240 case JSON files. Single-manifold validation was `223/238 PASS`; one combo case was not expected to pass because combo scoring was intentionally off; one case had no expected label.
+- Current priority failures to audit without hardpatching:
+  - `AIHA_EBV_COLD_PMC12004763`: expected `D-AIHA`, got `D-BABESIOSIS`
+  - `AIHA_PEMBROLIZUMAB_PMC6827724`: expected `D-AIHA`, got `D-ALL`
+  - `BABESIOSIS_OVERWHELMING_PARASITEMIA_PMC7585322`: expected `D-BABESIOSIS`, got `D-MALARIA-FALCIPARUM`
+  - `CMV_MONO_POST_SPLENECTOMY_PMC10860906`: expected `D-CMV-MONO`, got `D-STEC-HUS`
+  - `COMPLEMENT_MEDIATED_TMA_APS_ANTIGBM_OVERLAP_PMC10448002`: expected `D-COMPLEMENT-MEDIATED-TMA`, got `D-CATASTROPHIC-APS`
+  - `COMPLEMENT_MEDIATED_TMA_SEVERE_PANCOLITIS_NEURO_PMC3262387`: expected `D-COMPLEMENT-MEDIATED-TMA`, got `D-ALL`
+  - `COVID19_HEMOPTYSIS_HEMATURIA_PMC8355942`: expected `D-COVID19-ACUTE`, got `D-ADENOVIRUS-INFECTION`
+  - `HISTOPLASMOSIS_DISSEMINATED_AIDS_BONE_MARROW_PMC10040219`: expected `D-HISTOPLASMOSIS-DISSEMINATED`, got `D-ADENOVIRUS-INFECTION`
+  - `HLH_MAS_DERMATOMYOSITIS_PMC7281037`: expected `D-HLH-MAS`, got `D137`
+  - `HODGKIN_AOSD_MASK_PMC4847271`: expected `D-HODGKIN-LYMPHOMA`, got `D-ALCL`
+  - `IVLBCL_PULMONARY_RANDOM_SKIN_BIOPSY_PMC3962888`: expected `D-IVLBCL`, got `D-LEGIONELLA-PNEUMONIA`
+  - `PJP_RA_ABATACEPT_PMC4182847`: expected `D-PJP-PNEUMONIA`, got `D-ADENOVIRUS-INFECTION`
+  - `PJP_RENAL_TRANSPLANT_HYPERCALCEMIA_PMC11024830`: expected `D-PJP-PNEUMONIA`, got `D-NOCARDIOSIS`
+  - `STAPH_AUREUS_BACTEREMIA_CERVICAL_MYELITIS_OSTEOMYELITIS_PMC5444316`: expected `D-STAPH-AUREUS-BACTEREMIA`, got `D-BRUCELLOSIS`
+  - `VERTEBRAL_OSTEOMYELITIS_CAMPYLOBACTER_PSOAS_PMC11002916`: expected `D-VERTEBRAL-OSTEOMYELITIS`, got `D-CLOSTRIDIOIDES-DIFFICILE-SEVERE`
+- Audit these failures by evidence flow first: case JSON structured evidence -> `load_case` consumed axes -> expected manifold axes/mechanism_edges -> stealing manifold axes/mechanism_edges. Do not delete evidence, narrow a competing disease, or add disease-specific ranking rules to make a case pass.
+
+Follow-up after generic evidence/runtime fixes:
+
+- Two generic fixes were added before further disease-specific work:
+  - Clamp bounded 0-1 axes (`present_absent_0_1`, `probability_0_1`, `relative_activity_0_1`, `severity_score_0_1`) after risk modulation. This fixed impossible values such as asplenia/immunosuppression activity becoming >1.
+  - Let `load_case` consume explicit `axis_id` records from nonstandard rankable sections while still excluding `confirmatory_*`, actual treatment, outcome, follow-up, and treatment sections. It also handles safe qualitative values such as `high_grade_fever` and `normal`.
+- After these fixes, full current-atlas fast regression improved to `225/238 PASS` in single-manifold validation. The two recovered cases were:
+  - `BABESIOSIS_OVERWHELMING_PARASITEMIA_PMC7585322`
+  - `VERTEBRAL_OSTEOMYELITIS_CAMPYLOBACTER_PSOAS_ABSCESS_PMC11002916`
+- Remaining 13 failures should be treated as audit targets, not patch targets:
+  - AIHA triggered by EBV or immune-checkpoint inhibitor: likely trigger/combo context and risk-context ontology issues, not pure AIHA manifold failure alone.
+  - CMV mono after splenectomy: post-splenectomy/severe CMV context versus STEC-HUS mimic; confirmatory CMV evidence remains excluded.
+  - Complement-mediated TMA overlap cases: one is true APS/anti-GBM overlap; one is bloody diarrhea/pancolitis TMA and naturally mimics STEC-HUS.
+  - COVID hemoptysis/hematuria: presentation-only overlaps adenovirus; SARS-CoV-2 PCR is confirmatory and excluded.
+  - Disseminated histoplasmosis in AIDS: likely AIDS/OI risk-context matching plus disseminated histoplasmosis GI/septic-shock axis coverage issue.
+  - HLH/MAS with dermatomyositis: close margin versus AOSD; likely needs dermatomyositis trigger/combo handling and/or pure-prompt HLH refresh.
+  - Hodgkin vs ALCL: lymphoma subtype presentation-only family-cluster issue; do not force subtype without biopsy/IHC context.
+  - IVLBCL pulmonary case: pulmonary infection mimic with high procalcitonin; likely needs IVLBCL pulmonary/B-symptom axis audit, but biopsy remains confirmatory.
+  - PJP cases: likely immunosuppression/risk-context ontology mismatch and treatment_modifier/context axes being mishandled in diagnostic likelihood.
+- SAB cervical myelitis/osteomyelitis: likely combo `D-STAPH-AUREUS-BACTEREMIA + D-VERTEBRAL-OSTEOMYELITIS` and missing SAB metastatic CNS/spinal inflammatory axes.
+
+2026-05-06 follow-up after principled axis/runtime fixes:
+
+- Do not use broad fuzzy runtime semantic matching for risk factors by default. It caused over-broad prior/risk modulation and did not materially fix the focused failures. Risk modifiers should match exact structured risk context or controlled `present`-style category semantics unless a future ontology layer makes synonymy explicit.
+- `treatment_modifier` axes are host/treatment context axes, not ordinary disease-course peaks. If a distillation contains such an axis but omits its time structure, `v5_joint_sde_case_test.py` now treats it as a persistent context axis by default (`peak_day_range=[-365,0]`, long plateau/decline) while still excluding it from disease `t_max` inference. This avoids the false behavior where high immunosuppression or renal dose-adjustment context is scored as impossible merely because the JSON omitted boilerplate timing.
+- Horizontal fairness audit was applied before fixing PJP/SAB: ESR was added across pneumonia/OI/bacteremia competitors where medically real, and SAB metastatic CNS/spinal axes were added to `D-STAPH-AUREUS-BACTEREMIA` instead of making a case-specific ranking rule.
+- Full current-atlas fast regression after these fixes: 240 case JSON files loaded; single-manifold validation `229/238 PASS`; combo case intentionally off in that full run. Separate combo check with `VESMED_MAX_COMBO_SIZE=2` and `VESMED_ONLY_COMBO_CASES=1` was `1/1 PASS` (`D137+D-TTP`).
+- Recovered from the 13 post-loader failures: `COVID19_HEMOPTYSIS_HEMATURIA`, both PJP cases, and `STAPH_AUREUS_BACTEREMIA_CERVICAL_MYELITIS_OSTEOMYELITIS`.
+- Remaining 9 single failures:
+  - `AIHA_EBV_COLD_PMC12004763`: expected `D-AIHA`, got `D-BABESIOSIS`
+  - `AIHA_PEMBROLIZUMAB_PMC6827724`: expected `D-AIHA`, got `D-ALL`
+  - `CMV_MONO_POST_SPLENECTOMY_PMC10860906`: expected `D-CMV-MONO`, got `D-STEC-HUS`
+  - `COMPLEMENT_MEDIATED_TMA_APS_ANTIGBM_OVERLAP_PMC10448002`: expected `D-COMPLEMENT-MEDIATED-TMA`, got `D-CATASTROPHIC-APS`
+  - `COMPLEMENT_MEDIATED_TMA_SEVERE_PANCOLITIS_NEURO_PMC3262387`: expected `D-COMPLEMENT-MEDIATED-TMA`, got `D-STEC-HUS`
+  - `HISTOPLASMOSIS_DISSEMINATED_AIDS_BONE_MARROW_PMC10040219`: expected `D-HISTOPLASMOSIS-DISSEMINATED`, got `D-ADENOVIRUS-INFECTION`
+  - `HLH_MAS_DERMATOMYOSITIS_PMC7281037`: expected `D-HLH-MAS`, got `D137`
+  - `HODGKIN_AOSD_MASK_PMC4847271`: expected `D-HODGKIN-LYMPHOMA`, got `D-ALCL`
+  - `IVLBCL_PULMONARY_RANDOM_SKIN_BIOPSY_PMC3962888`: expected `D-IVLBCL`, got `D-LEGIONELLA-PNEUMONIA`
+- Lymphoma presentation-only rule is accepted by the user: if the case lacks biopsy/IHC/flow/cytogenetics evidence in the ranking set, a lymphoma subtype case may be considered family-level acceptable when lymphoma-family leaves occupy the top cluster. Once subtype-specific pathology/immunophenotype/genetics evidence is included, the exact subtype leaf should be expected to rank first.
+
+## 2026-05-06 Fail Repair + New Leaf Memory
+
+- Fail 修复最高原则：不能为了测试结果删除 evidence、窄化竞品 disease、或加 runtime 诊断标签补丁。先查 `case JSON -> load_case consumed axes -> expected manifold axes/mechanism_edges -> stealing manifold axes/mechanism_edges`，只能做通用 runtime、本体、真实医学轴和横向公平补轴。
+- 本轮 9 个残余 single fail 经过医学真实轴补充后，full current-atlas fast regression 从 `229/238 PASS` 提升到 `237/238 PASS`；唯一剩余为 `HODGKIN_AOSD_MASK_PMC4847271` 被 `D-ALCL` 抢走，按 lymphoma presentation-only family-cluster 原则接受。
+- 新增三片 disease leaf，并各配 1 个真实 PMC case：
+  - `D-DERMATOMYOSITIS`: case `DERMATOMYOSITIS_RESPIRATORY_MUSCLE_WEAKNESS_PMC12831999` / PMID `41589189` / PMC `PMC12831999`
+  - `D-EVANS-SYNDROME`: case `EVANS_SYNDROME_PERICARDIAL_EFFUSION_PMC11330688` / PMID `39156320` / PMC `PMC11330688`
+  - `D-HEPARIN-INDUCED-THROMBOCYTOPENIA`: case `HIT_DVT_HEPARIN_PMC3279506` / PMID `22312443` / PMC `PMC3279506`
+- Evans 初测被 `D-ALL` 抢走的根因不是诊断标签，而是 axis ontology 混单位：`reticulocyte_count` 同时被用作 absolute count (`10^9/L`) 和 percentage (`percent`)。修复原则已锁：
+  - `reticulocyte_count` = absolute reticulocyte count, unit `10^9/L`
+  - `reticulocyte_percentage` = reticulocyte percentage, unit `percent`
+  - 两者不能互相 convert；没有 RBC count 时不能从一个硬算另一个。
+  - 对真实会改变网织红细胞反应的近邻病，必须横向公平补另一种报告形式，而不是只补目标 disease。
+- TTP-SLE 回归被 `D-COMPLEMENT-MEDIATED-TMA` 抢走时，根因是 TTP 有 `anti_adamts13_igg_inhibitor_titer`，但 case 结构化为 `anti_adamts13_antibody_positivity_probability`，两者没有接上。修复原则：诊断 context finding 和 quantitative measurement 可以是 parent/child 或相邻 axis；真实临床同一证据族必须在 disease manifold 中有可消费路径。
+- TMA 家族横向补轴原则：给 `D-TTP` 补黄疸、AST/ALT、WBC/ANC、anti-ADAMTS13 positivity 时，同步审查 `D-COMPLEMENT-MEDIATED-TMA`、`D-STEC-HUS`、`D-CATASTROPHIC-APS`。凡是微血管病性溶血/缺血/系统炎症真实会出现的轴，也要给近邻病补；不能只给目标病增加解释力。
+- 本轮最终回归结果：
+  - Full current-atlas fast grid (`VESMED_SCORE_MODE=grid`, `VESMED_TIME_GRID_N=21`, `VESMED_MAX_COMBO_SIZE=1`): 243 case JSON loaded; single-manifold validation `240/241 PASS`; combo intentionally off.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`): `1/1 PASS`, `AOSD_TTP_CONCURRENT_PMC7523203` ranks `D137+D-TTP`.
+  - Remaining single fail: `HODGKIN_AOSD_MASK_PMC4847271` expected `D-HODGKIN-LYMPHOMA`, best `D-ALCL`; accepted as lymphoma-family presentation-only ambiguity unless subtype pathology/IHC/flow/genetics is used as ranking evidence.

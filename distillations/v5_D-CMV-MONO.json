@@ -903,16 +903,16 @@
         35
       ],
       "peak_value_range": [
-        0.6,
-        1
+        0.7,
+        1.0
       ],
       "plateau_duration_days": [
         7,
-        45
+        60
       ],
       "decline_half_life_days": [
-        7,
-        28
+        14,
+        120
       ],
       "knowledge_confidence": "high",
       "axis_role": "finding"
@@ -990,16 +990,16 @@
         35
       ],
       "peak_value_range": [
-        5,
-        25
+        3,
+        60
       ],
       "plateau_duration_days": [
         7,
         60
       ],
       "decline_half_life_days": [
-        21,
-        90
+        14,
+        120
       ],
       "knowledge_confidence": "high",
       "axis_role": "measurement"
@@ -1678,26 +1678,26 @@
       "category": "physical_finding",
       "unit": "severity_score_0_1",
       "log_scale": false,
-      "shape_free_text": "Can occur with hepatitis, splenic involvement, or gastrointestinal CMV involvement.",
+      "shape_free_text": "Abdominal pain reflects hepatitis, mesenteric/reticuloendothelial inflammation, or CMV gastrointestinal involvement.",
       "baseline_range": [
         0,
         0.05
       ],
       "peak_day_range": [
-        10,
+        7,
         45
       ],
       "peak_value_range": [
-        0,
-        0.55
+        0.1,
+        0.9
       ],
       "plateau_duration_days": [
-        3,
-        30
+        7,
+        60
       ],
       "decline_half_life_days": [
-        7,
-        45
+        14,
+        120
       ],
       "knowledge_confidence": "medium",
       "axis_role": "finding"
@@ -1707,26 +1707,26 @@
       "category": "physical_finding",
       "unit": "severity_score_0_1",
       "log_scale": false,
-      "shape_free_text": "Diarrhea may occur in mono-like CMV and becomes more prominent with gastrointestinal involvement.",
+      "shape_free_text": "Diarrhea can occur in severe CMV mononucleosis-like illness or CMV gastrointestinal involvement, especially with impaired host context.",
       "baseline_range": [
         0,
         0.05
       ],
       "peak_day_range": [
-        10,
+        7,
         45
       ],
       "peak_value_range": [
-        0,
-        0.65
+        0.2,
+        1.0
       ],
       "plateau_duration_days": [
-        3,
-        30
+        7,
+        60
       ],
       "decline_half_life_days": [
-        7,
-        45
+        14,
+        120
       ],
       "knowledge_confidence": "medium",
       "axis_role": "finding"
@@ -1794,28 +1794,28 @@
       "category": "imaging_finding",
       "unit": "relative_extent_0_1",
       "log_scale": false,
-      "shape_free_text": "Pulmonary infiltrates are not a routine feature of uncomplicated CMV mono-like illness but may occur in tissue-invasive CMV or coincident pneumonia.",
+      "shape_free_text": "Pulmonary infiltrates are usually absent in uncomplicated mono but can appear with CMV pneumonitis or severe systemic CMV disease.",
       "baseline_range": [
         0,
         0.02
       ],
       "peak_day_range": [
-        14,
+        7,
         60
       ],
       "peak_value_range": [
         0,
-        0.35
+        0.8
       ],
       "plateau_duration_days": [
-        5,
-        30
-      ],
-      "decline_half_life_days": [
-        10,
+        3,
         60
       ],
-      "knowledge_confidence": "low",
+      "decline_half_life_days": [
+        14,
+        120
+      ],
+      "knowledge_confidence": "medium",
       "axis_role": "finding"
     },
     {
@@ -2192,6 +2192,35 @@
       ],
       "knowledge_confidence": "high",
       "axis_role": "measurement"
+    },
+    {
+      "axis_id": "oral_thrush_activity",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        30,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "shape_free_text": "Oral thrush is a structured host-context clue for advanced cellular immunodeficiency or Candida overgrowth; it is not a disease-specific mechanism for this leaf.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axis_couplings": [
@@ -3087,7 +3116,8 @@
             1.2,
             3
           ],
-          "trajectory_modulation": "Transmission through saliva, genital secretions, and other body fluids supports primary adult infection."
+          "trajectory_modulation": "Compatible exposure context modestly raises CMV prior without acting as confirmatory evidence.",
+          "knowledge_confidence": "low"
         },
         "recent_blood_transfusion": {
           "P_disease_ratio": [
@@ -3105,30 +3135,11 @@
       "modulation": {
         "remote_splenectomy": {
           "P_disease_ratio": [
-            1.5,
-            5
+            2,
+            8
           ],
-          "trajectory_modulation": "Post-splenectomy CMV mononucleosis can show prolonged fever and extreme T-cell lymphoproliferative leukocytosis.",
-          "axis_response_modulation": [
-            {
-              "axis_id": "white_blood_cell_count",
-              "effect": "higher_peak",
-              "magnitude_factor_range": [
-                2,
-                5
-              ],
-              "clinical_rationale": "Published post-splenectomy cases can reach WBC values far above ordinary CMV mono-like illness."
-            },
-            {
-              "axis_id": "absolute_lymphocyte_count",
-              "effect": "higher_peak",
-              "magnitude_factor_range": [
-                2,
-                5
-              ],
-              "clinical_rationale": "Loss of splenic immune regulation can amplify reactive T-cell expansion."
-            }
-          ]
+          "trajectory_modulation": "Asplenia or hyposplenia can increase severity of systemic viral presentations and distort leukocyte response; it is context, not a CMV subtype.",
+          "knowledge_confidence": "medium"
         }
       },
       "knowledge_confidence": "medium"
