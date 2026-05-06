@@ -3,8 +3,11 @@
   "source_pmid": "37377620",
   "source_pmcid": "PMC10291989",
   "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10291989/",
-  "disease_label_per_paper": "Acute pancreatitis secondary to hypertriglyceridemia presenting as sepsis without abdominal pain",
-  "expected_manifold": "D-ACUTE-PANCREATITIS",
+  "disease_label_per_paper": "Acute pancreatitis secondary to hypertriglyceridemia presenting as sepsis without abdominal pain, with concurrent diabetic ketoacidosis",
+  "expected_manifolds": [
+    "D-ACUTE-PANCREATITIS",
+    "D-DIABETIC-KETOACIDOSIS"
+  ],
   "demographics": {
     "age": 32,
     "sex": "M"
@@ -61,7 +64,10 @@
       "day": 0,
       "finding": "Diffuse peripancreatic edema compatible with acute pancreatitis without a well-defined fluid collection.",
       "source_text_value": "CT without contrast revealed diffuse peri-pancreatic edema compatible with acute pancreatitis",
-      "use_in_ranking": false
+      "mapped_axis_ids": ["peripancreatic_fat_stranding_activity"],
+      "value": 0.8,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
     }
   ],
   "confirmatory_findings": [
@@ -82,7 +88,8 @@
   },
   "quality_warnings": [
     "The absent abdominal pain and absent tenderness are retained as ranking evidence rather than deleted.",
-    "CT and paper diagnosis are confirmatory evidence with use_in_ranking:false.",
+    "CT peripancreatic edema is rankable imaging evidence; paper diagnosis remains confirmatory evidence with use_in_ranking:false.",
+    "This is modeled as a true AP + DKA combined-manifold case: CT/lipase/triglycerides support AP, while glucose, anion gap, bicarbonate, pH, ketonuria, and HbA1c support DKA.",
     "No exact HR/RR or lactate value was provided; tachycardia/tachypnea and normal lactate are stored qualitatively."
   ]
 }

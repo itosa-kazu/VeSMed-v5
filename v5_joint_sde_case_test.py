@@ -143,10 +143,44 @@ TIME_GRID_N = max(env_int("VESMED_TIME_GRID_N", 31), 1)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
+GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
+GENERIC_ANCHOR_SCORE_CAP = 4.0
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
 DRIFT_COUPLING_TYPES = {"drift", "hazard_drift", "event_transition", "mixed"}
 LATENT_MECHANISM_CATEGORY = "latent_mechanism"
+
+
+GENERIC_ANCHOR_EXCLUDED_CATEGORIES = {
+    "derived_hazard",
+    LATENT_MECHANISM_CATEGORY,
+    "vital",
+}
+
+GENERIC_ANCHOR_LOW_SPECIFICITY_AXES = {
+    "body_temperature",
+    "heart_rate",
+    "respiratory_rate",
+    "systolic_blood_pressure",
+    "diastolic_blood_pressure",
+    "mean_arterial_pressure",
+    "oxygen_saturation",
+    "white_blood_cell_count",
+    "absolute_neutrophil_count",
+    "neutrophil_fraction",
+    "lymphocyte_fraction",
+    "serum_crp",
+    "erythrocyte_sedimentation_rate",
+    "serum_ldh",
+    "serum_albumin",
+    "serum_creatinine",
+    "blood_urea_nitrogen",
+    "serum_sodium",
+    "serum_potassium",
+    "serum_chloride",
+}
+
+_AXIS_MANIFOLD_FREQUENCY_CACHE = {}
 
 
 HEALTHY_OVERRIDES = {
@@ -1075,7 +1109,104 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
     return sorted(axis_ids)
 
 
-def component_anchor_support(case, disease):
+def axis_manifold_frequency(manifolds):
+    cache_key = tuple(manifolds)
+    cached = _AXIS_MANIFOLD_FREQUENCY_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+    freq = {}
+    for manifold in manifolds.values():
+        for axis_id, axis in manifold["axes"].items():
+            if axis.get("category") == "derived_hazard":
+                continue
+            freq[axis_id] = freq.get(axis_id, 0) + 1
+    _AXIS_MANIFOLD_FREQUENCY_CACHE[cache_key] = freq
+    return freq
+
+
+def observed_axis_activity_against_disease(axis_id, axis, obs, background_axis):
+    peak = parse_interval(axis.get("peak_value_range"))
+    baseline = parse_interval(axis.get("baseline_range"))
+    if peak is None or baseline is None:
+        return 0.0
+    try:
+        obs_value = observation_value_for_axis(obs, axis, axis_id)
+        baseline_mid = midpoint(baseline)
+        peak_mid = midpoint(peak, baseline_mid)
+        z_obs = transform(axis, obs_value)
+        z_base = transform(axis, baseline_mid)
+        z_peak = transform(axis, peak_mid)
+    except Exception:
+        return 0.0
+
+    span = z_peak - z_base
+    if abs(span) < 1e-6:
+        return 0.0
+    progress = (z_obs - z_base) / span
+    if progress <= 0.0:
+        return 0.0
+
+    bg_axis = background_axis or axis
+    try:
+        bg_mid = midpoint(parse_interval(bg_axis.get("baseline_range")) or baseline, baseline_mid)
+        z_bg = transform(axis, convert_value(bg_mid, bg_axis.get("unit"), axis.get("unit"), axis_id))
+    except Exception:
+        z_bg = z_base
+    bg_span = abs(z_obs - z_bg) / max(abs(span), 1e-6)
+    return clamp01(min(progress, bg_span))
+
+
+def generic_component_anchor_support(case, disease, manifolds, background_axes):
+    """Use disease-owned, high-specificity observed axes as combo anchors.
+
+    This is intentionally conservative. It does not say "this disease should
+    win"; it only asks whether adding this vector field has independent evidence
+    beyond generic fever/inflammation/vital-sign noise.
+    """
+    manifold = manifolds[disease]
+    freq = axis_manifold_frequency(manifolds)
+    max_freq = max(3, int(math.ceil(len(manifolds) * GENERIC_ANCHOR_MAX_AXIS_FRACTION)))
+    score = 0.0
+
+    for axis_id, obs in case["observations_by_axis"].items():
+        axis = manifold["axes"].get(axis_id)
+        if axis is None:
+            continue
+        category = str(axis.get("category") or "").strip().lower()
+        if category in GENERIC_ANCHOR_EXCLUDED_CATEGORIES:
+            continue
+        if axis_id in GENERIC_ANCHOR_LOW_SPECIFICITY_AXES:
+            continue
+        axis_freq = freq.get(axis_id, 0)
+        if axis_freq > max_freq:
+            continue
+        activity = observed_axis_activity_against_disease(axis_id, axis, obs, background_axes.get(axis_id))
+        if activity < 0.45:
+            continue
+
+        if axis_freq <= 2:
+            specificity = 1.25
+        elif axis_freq <= 5:
+            specificity = 1.0
+        else:
+            specificity = 0.7
+
+        if "imaging" in category or "pathology" in category or "microbiology" in category:
+            category_weight = 1.25
+        elif category == "treatment_modifier":
+            category_weight = 0.65
+        elif "lab" in category:
+            category_weight = 0.85
+        else:
+            category_weight = 0.75
+
+        score += min(activity * specificity * category_weight, 1.5)
+        if score >= GENERIC_ANCHOR_SCORE_CAP:
+            return GENERIC_ANCHOR_SCORE_CAP
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def component_anchor_support(case, disease, manifolds, background_axes):
     """Require disease-specific evidence before allowing a combo to turn on.
 
     Without this, a broad second manifold can overfit generic fever/CRP/WBC axes.
@@ -1139,13 +1270,16 @@ def component_anchor_support(case, disease):
         if ldh is not None and hb is not None and ldh >= 500 and hb <= 10:
             score += 1.0
 
-    return score
+    return max(score, generic_component_anchor_support(case, disease, manifolds, background_axes))
 
 
-def combo_anchor_penalty(case, candidate):
+def combo_anchor_penalty(case, candidate, manifolds, background_axes):
     if len(candidate) <= 1:
         return 0.0, {}
-    support = {disease: component_anchor_support(case, disease) for disease in candidate}
+    support = {
+        disease: component_anchor_support(case, disease, manifolds, background_axes)
+        for disease in candidate
+    }
     penalty = 0.0
     for value in support.values():
         if value < COMBO_ANCHOR_THRESHOLD:
@@ -1534,7 +1668,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
         return None
 
     risk_payloads = {}
-    anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate)
+    anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate, manifolds, background_axes)
     log_prior = COMBO_LOG_PENALTY * (len(candidate) - 1) + anchor_penalty
     for disease in candidate:
         axis_mods, coupling_mods, lp = matched_risk_payload(

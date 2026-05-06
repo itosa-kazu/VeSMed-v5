@@ -1,0 +1,67 @@
+{
+  "case_id": "ACUTE_MYOCARDITIS_ADOLESCENT_STEMI_MIMIC_PMC9128271",
+  "source_pmid": "35610586",
+  "source_pmcid": "PMC9128271",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9128271/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9128271/fullTextXML",
+  "disease_label_per_paper": "Coronary artery spasm due to acute myocarditis in an adolescent",
+  "expected_manifold": "D-ACUTE-MYOCARDITIS",
+  "demographics": {
+    "age": 15,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "15-year-old boy developed sudden repeated left parasternal chest pain after a 3-day flu-like illness.",
+    "He later developed chest pain with dyspnea and presented to the emergency room.",
+    "Vitals at transfer included blood pressure 110/70 mmHg, heart rate 86 bpm, respiratory rate 15/min, temperature 38.5 C, and oxygen saturation 99% on room air.",
+    "ECG showed ST-segment elevation in inferior and precordial leads; high-sensitivity troponin I rose to 21,538.68 pg/mL.",
+    "Echocardiography showed LVEF 66.04% with very mild anteroseptal hypokinesis."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "recent_viral_or_flu_like_illness", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "following a 3-day history of flu-like illness"},
+    {"factor": "adolescent_age_context", "category": "present", "value": 1, "use_in_ranking": true, "source_text_value": "15-year-old boy"}
+  ],
+  "observations": [
+    {"axis_id": "viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "3-day history of flu-like illness"},
+    {"axis_id": "chest_pain_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "sudden-onset repeated chest pain"},
+    {"axis_id": "dyspnea_activity", "value": 0.6, "unit": "severity_score_0_1", "source_text_value": "he experienced chest pain and dyspnea 18 hours later"},
+    {"axis_id": "fever_history_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "body temperature was 38.5 C"},
+    {"axis_id": "body_temperature", "value": 38.5, "unit": "degC", "source_text_value": "body temperature was 38.5 C"},
+    {"axis_id": "heart_rate", "value": 86, "unit": "beats_per_min", "source_text_value": "heart rate was 86 bpm"},
+    {"axis_id": "respiratory_rate", "value": 15, "unit": "breaths_per_min", "source_text_value": "respiratory rate was 15/min"},
+    {"axis_id": "oxygen_saturation", "value": 99, "unit": "percent", "source_text_value": "oxygen saturation at room air was 99%"},
+    {"axis_id": "systolic_blood_pressure", "value": 110, "unit": "mmHg", "source_text_value": "blood pressure was 110/70 mmHg"},
+    {"axis_id": "mean_arterial_pressure", "value": 83.3, "unit": "mmHg", "source_text_value": "blood pressure was 110/70 mmHg", "conversion_note": "MAP estimated as (110 + 2*70) / 3 = 83.3 mmHg."},
+    {"axis_id": "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "ECG showed ST-segment elevation in inferior and precordial leads"},
+    {"axis_id": "acs_mimic_activity_in_D-ACUTE-MYOCARDITIS", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "findings mimicked ST-segment elevation myocardial infarction"},
+    {"axis_id": "myocardial_regional_wall_motion_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "value": 0.2, "unit": "severity_score_0_1", "source_text_value": "very mild anteroseptal hypokinesis"},
+    {"axis_id": "left_ventricular_ejection_fraction", "value": 66.04, "unit": "percent", "source_text_value": "normal left ventricular ejection fraction (66.04%)"}
+  ],
+  "lab_trajectories": [
+    {"axis_id": "serum_troponin", "time_day": 0, "value": 21538.68, "unit": "ng/L", "source_text_value": "high sensitive-Troponin I increased to 21,538.68 pg/mL", "conversion_note": "1 pg/mL equals 1 ng/L."},
+    {"axis_id": "serum_creatine_kinase", "time_day": 0, "value": 363.2, "unit": "ng/mL", "source_text_value": "myoglobin was elevated at 363.2 ng/mL", "use_in_ranking": false}
+  ],
+  "diagnostics": [
+    {"time_day": 0, "test": "electrocardiogram", "axis_id": "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "ST-segment elevation in inferior lead (II, III, aVF), and precordial leads"},
+    {"time_day": 0, "test": "transthoracic_echocardiography", "axis_id": "left_ventricular_ejection_fraction", "value": 66.04, "unit": "percent", "source_text_value": "normal left ventricular ejection fraction (66.04%)"},
+    {"time_day": 0, "test": "chest_xray", "result": "normal_heart_size_clear_lung_fields", "source_text_value": "chest X-ray revealed normal heart size and clear lung fields", "use_in_ranking": false}
+  ],
+  "confirmatory_findings": [
+    {"finding": "Coronary angiography showed normal coronary arteries", "source_text_value": "coronary angiography ... revealed normal coronary arteries", "use_in_ranking": false},
+    {"finding": "Cardiac MRI showed myocardial edema and subepicardial enhancement", "mapped_axis_ids": ["cmr_myocardial_edema_activity_in_D-ACUTE-MYOCARDITIS", "cmr_nonischemic_lge_activity_in_D-ACUTE-MYOCARDITIS"], "source_text_value": "cardiac MRI showed myocardial edema and subepicardial enhancement in the anterolateral and infero-lateral wall", "use_in_ranking": false},
+    {"finding": "Final diagnosis in paper was acute myocarditis with coronary spasm", "source_text_value": "findings were consistent with acute myocarditis and coronary artery spasm", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    {"name": "intravenous_immunoglobulin_two_days", "use_in_ranking": false, "source_text_value": "Treatment with immunoglobulin for 2 days improved his condition"}
+  ],
+  "outcome": {
+    "status": "discharged_day_12_with_symptom_and_ecg_resolution",
+    "source_text_value": "discharged on the 12th day with complete resolution of symptoms and normalization of electrocardiogram findings",
+    "use_in_ranking": false
+  },
+  "quality_warnings": [
+    "Normal coronary angiography and CMR final read are confirmatory and non-ranking.",
+    "The case is an ACS/STEMI mimic; this is retained as rankable presentation morphology, not as a disease-name qualifier."
+  ]
+}

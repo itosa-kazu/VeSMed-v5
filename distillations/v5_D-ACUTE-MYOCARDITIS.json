@@ -1,0 +1,569 @@
+{
+  "disease": "D-ACUTE-MYOCARDITIS",
+  "disease_name": "Acute myocarditis",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute myocarditis",
+    "leaf_granularity": "first-layer clinical disease leaf for acute inflammatory myocardial injury, without splitting by viral, bacterial, fulminant, immune-checkpoint-inhibitor, eosinophilic, giant-cell, vaccine-associated, or autoimmune trigger subtype",
+    "subtype_policy": "Triggers and severity phenotypes are represented as latent mechanisms, context axes, risk factors, and treatment-effect modifiers, not as disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use prodrome, fever, chest pain, dyspnea, palpitations, syncope/presyncope, shock physiology, troponin/CK, ECG changes, echocardiographic systolic dysfunction, pulmonary edema, and arrhythmia/conduction findings. CMR Lake Louise final read, endomyocardial biopsy/autopsy histology, viral PCR/serology, coronary angiography excluding ACS, treatment response, and outcome should be confirmatory or non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AM_TRIGGERED_MYOCARDIAL_IMMUNE_ACTIVATION",
+      "display_name": "Triggered myocardial immune activation",
+      "clinical_meaning": "A viral, bacterial, toxin/drug, vaccine-associated, immune-checkpoint-inhibitor, eosinophilic, giant-cell, or systemic autoimmune context activates myocardial innate and adaptive inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-14, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic inflammatory or infectious prodrome",
+      "clinical_meaning": "The trigger can produce fever, pharyngitis or upper respiratory symptoms, gastrointestinal symptoms, leukocytosis or leukopenia, high CRP, tachycardia, and malaise before or during cardiac presentation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-14, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA",
+      "display_name": "Myocardial inflammation and interstitial edema",
+      "clinical_meaning": "Inflammatory cell infiltration and edema in the myocardium alter repolarization, regional mechanics, myocardial strain, and CMR edema/LGE patterns.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS",
+      "display_name": "Cardiomyocyte injury and necrosis",
+      "clinical_meaning": "Direct injury and immune-mediated myocyte necrosis release troponin, CK, LDH, and produce ECG patterns that can mimic acute coronary syndrome.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION",
+      "display_name": "Epicardial and pericardial irritation",
+      "clinical_meaning": "Subepicardial inflammation and adjacent pericardial involvement can cause sharp or pleuritic chest pain, positional pain, diffuse ST/T changes, and small pericardial effusion.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE",
+      "display_name": "Acute ventricular dysfunction and heart failure",
+      "clinical_meaning": "Myocardial edema, myocyte injury, cytokine-mediated contractile depression, or fulminant inflammation can reduce LVEF, raise natriuretic peptide, cause pulmonary edema, dyspnea, low output, and end-organ hypoperfusion.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 10],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 45],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION",
+      "display_name": "Inflammatory conduction-system involvement",
+      "clinical_meaning": "Inflammation or edema involving the AV node, His-Purkinje system, or nodal blood supply can produce PR prolongation, second- or third-degree AV block, bradycardia, dizziness, syncope, or pacing need.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 21],
+      "decline_half_life_days": [1, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY",
+      "display_name": "Arrhythmogenic electrical instability",
+      "clinical_meaning": "Inflammation, necrosis, edema, autonomic stress, electrolyte disturbance, or scar substrate can provoke ectopy, ventricular tachycardia, atrial arrhythmia, malignant arrhythmia, or cardiac arrest.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 21],
+      "decline_half_life_days": [0.5, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN",
+      "display_name": "Fulminant low-output shock and multiorgan injury",
+      "clinical_meaning": "A severe acute inflammatory myocardial process can progress quickly to cardiogenic shock, respiratory failure from pulmonary edema, AKI, lactate elevation, need for mechanical circulatory support, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 21],
+      "decline_half_life_days": [1, 60],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_AM_TRIGGERED_MYOCARDIAL_IMMUNE_ACTIVATION", "target_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [-7, 3], "confidence": "high"},
+    {"source_id": "M_AM_TRIGGERED_MYOCARDIAL_IMMUNE_ACTIVATION", "target_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "target_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "confidence": "medium"},
+
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-7, 2], "confidence": "high"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-3, 2], "confidence": "high"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-14, 1], "confidence": "high"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "sore_throat_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-10, 1], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "cough_rhinorrhea_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-10, 1], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-5, 3], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "medium"},
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "heart_rate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "medium"},
+
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "serum_troponin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "myocardial_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "ecg_t_wave_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "high"},
+    {"source_id": "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS", "target_id": "acs_mimic_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "high"},
+
+    {"source_id": "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION", "target_id": "chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION", "target_id": "pleuritic_chest_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "medium"},
+    {"source_id": "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION", "target_id": "pericardial_effusion_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "confidence": "medium"},
+
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "myocardial_strain_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "myocardial_regional_wall_motion_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "cmr_myocardial_edema_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA", "target_id": "cmr_nonischemic_lge_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 30], "confidence": "high"},
+
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "myocardial_dysfunction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "left_ventricular_ejection_fraction", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "left_ventricular_dilation_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "nt_pro_bnp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "pulmonary_edema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "cardiomegaly_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_AM_SYSTOLIC_DYSFUNCTION_HEART_FAILURE", "target_id": "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "confidence": "high"},
+
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "bradycardia_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "syncope_presyncope_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "confidence": "medium"},
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "high_grade_av_block_hazard_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "confidence": "high"},
+    {"source_id": "M_AM_CONDUCTION_SYSTEM_INFLAMMATION", "target_id": "temporary_pacing_need_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "confidence": "high"},
+
+    {"source_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "target_id": "palpitations_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "target_id": "ventricular_tachycardia_activity_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "confidence": "high"},
+    {"source_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "confidence": "high"},
+    {"source_id": "M_AM_ARRHYTHMOGENIC_INSTABILITY", "target_id": "malignant_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "confidence": "high"},
+
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "confidence": "high"},
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "cardiogenic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 1], "confidence": "high"},
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "confidence": "medium"},
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "acute_respiratory_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 2], "confidence": "medium"},
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_AM_FULMINANT_SHOCK_MULTIORGAN", "target_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS", "category": "history", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-14, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "cough_rhinorrhea_activity_in_D-ACUTE-MYOCARDITIS", "category": "history", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-14, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 14], "axis_role": "satellite", "parent_axis_id": "viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS"},
+    {"axis_id": "fever_history_activity", "category": "history", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "baseline_range": [36.0, 37.2], "peak_day_range": [-3, 3], "peak_value_range": [36.5, 40.5], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "sore_throat_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-10, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 7], "axis_role": "finding"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-5, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 7], "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "baseline_range": [4.0, 10.0], "peak_day_range": [0, 7], "peak_value_range": [3.0, 25.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 10], "axis_role": "measurement"},
+    {"axis_id": "neutrophil_fraction", "category": "lab", "unit": "percent", "log_scale": false, "baseline_range": [40, 75], "peak_day_range": [0, 7], "peak_value_range": [40, 95], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 10], "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "baseline_range": [0.2, 5.0], "peak_day_range": [0, 7], "peak_value_range": [5, 400], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+
+    {"axis_id": "chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "finding"},
+    {"axis_id": "pleuritic_chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "axis_role": "satellite", "parent_axis_id": "chest_pain_activity"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "axis_role": "finding"},
+    {"axis_id": "palpitations_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "syncope_presyncope_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 14], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "diaphoresis_sweats_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 7], "axis_role": "finding"},
+
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "baseline_range": [55, 100], "peak_day_range": [0, 7], "peak_value_range": [45, 220], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "baseline_range": [10, 22], "peak_day_range": [0, 7], "peak_value_range": [12, 60], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "baseline_range": [95, 100], "peak_day_range": [0, 7], "peak_value_range": [65, 100], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [95, 145], "peak_day_range": [0, 7], "peak_value_range": [50, 160], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [35, 115], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+
+    {"axis_id": "serum_troponin", "category": "lab", "unit": "ng/L", "log_scale": true, "baseline_range": [1, 14], "peak_day_range": [0, 4], "peak_value_range": [50, 100000], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab", "unit": "U/L", "log_scale": true, "baseline_range": [20, 200], "peak_day_range": [0, 5], "peak_value_range": [200, 10000], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 10], "axis_role": "measurement"},
+    {"axis_id": "serum_ldh", "category": "lab", "unit": "U/L", "log_scale": true, "baseline_range": [120, 240], "peak_day_range": [0, 7], "peak_value_range": [240, 3000], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "nt_pro_bnp", "category": "lab", "unit": "pg/mL", "log_scale": true, "baseline_range": [5, 300], "peak_day_range": [0, 10], "peak_value_range": [300, 50000], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 30], "axis_role": "measurement"},
+    {"axis_id": "serum_lactate", "category": "lab", "unit": "mmol/L", "log_scale": false, "baseline_range": [0.5, 2.0], "peak_day_range": [0, 3], "peak_value_range": [0.8, 15.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.2, 3], "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab", "unit": "mg/dL", "log_scale": true, "baseline_range": [0.4, 1.3], "peak_day_range": [0, 14], "peak_value_range": [0.5, 6.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "axis_role": "measurement"},
+    {"axis_id": "serum_potassium", "category": "lab", "unit": "mmol/L", "log_scale": false, "baseline_range": [3.5, 5.0], "peak_day_range": [0, 7], "peak_value_range": [2.8, 7.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "axis_role": "measurement"},
+
+    {"axis_id": "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "category": "ecg", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 7], "decline_half_life_days": [0.2, 14], "axis_role": "finding"},
+    {"axis_id": "ecg_t_wave_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "category": "ecg", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 21], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "acs_mimic_activity_in_D-ACUTE-MYOCARDITIS", "category": "clinical_pattern", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 10], "decline_half_life_days": [0.5, 21], "axis_role": "finding"},
+    {"axis_id": "atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "category": "ecg", "unit": "ordinal_0_to_3", "log_scale": false, "baseline_range": [0, 0], "peak_day_range": [0, 7], "peak_value_range": [0, 3], "plateau_duration_days": [0.0, 21], "decline_half_life_days": [1, 90], "axis_role": "measurement"},
+    {"axis_id": "bradycardia_activity_in_D-ACUTE-MYOCARDITIS", "category": "ecg", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 14], "decline_half_life_days": [0.5, 30], "axis_role": "finding"},
+    {"axis_id": "ventricular_tachycardia_activity_in_D-ACUTE-MYOCARDITIS", "category": "ecg", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 7], "decline_half_life_days": [0.2, 30], "axis_role": "finding"},
+
+    {"axis_id": "myocardial_strain_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 30], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "myocardial_regional_wall_motion_abnormality_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 30], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "myocardial_dysfunction_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.0, 45], "decline_half_life_days": [7, 180], "axis_role": "finding"},
+    {"axis_id": "left_ventricular_ejection_fraction", "category": "measurement", "unit": "percent", "log_scale": false, "baseline_range": [55, 70], "peak_day_range": [0, 10], "peak_value_range": [10, 70], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [7, 180], "axis_role": "measurement"},
+    {"axis_id": "left_ventricular_dilation_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [14, 180], "axis_role": "finding"},
+    {"axis_id": "pulmonary_edema_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 21], "axis_role": "finding"},
+    {"axis_id": "cardiomegaly_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 120], "axis_role": "finding"},
+    {"axis_id": "pericardial_effusion_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [3, 60], "axis_role": "finding"},
+    {"axis_id": "cmr_myocardial_edema_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [14, 180], "axis_role": "finding"},
+    {"axis_id": "cmr_nonischemic_lge_activity_in_D-ACUTE-MYOCARDITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 3650], "axis_role": "finding"},
+
+    {"axis_id": "myocardial_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 4], "peak_value_range": [0.01, 0.8], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 14], "axis_role": "measurement"},
+    {"axis_id": "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00005, 0.002], "peak_day_range": [0, 10], "peak_value_range": [0.003, 0.9], "plateau_duration_days": [0.2, 45], "decline_half_life_days": [2, 90], "axis_role": "measurement"},
+    {"axis_id": "high_grade_av_block_hazard_in_D-ACUTE-MYOCARDITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 7], "peak_value_range": [0.002, 0.8], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [0.5, 90], "axis_role": "measurement"},
+    {"axis_id": "temporary_pacing_need_in_D-ACUTE-MYOCARDITIS", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "cardiac_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 7], "peak_value_range": [0.003, 0.9], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [0.5, 90], "axis_role": "measurement"},
+    {"axis_id": "malignant_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.002, 0.8], "plateau_duration_days": [0.0, 14], "decline_half_life_days": [0.5, 90], "axis_role": "measurement"},
+    {"axis_id": "cardiogenic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00005, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.002, 0.9], "plateau_duration_days": [0.0, 21], "decline_half_life_days": [0.5, 60], "axis_role": "measurement"},
+    {"axis_id": "acute_respiratory_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 7], "peak_value_range": [0.002, 0.7], "plateau_duration_days": [0.1, 21], "decline_half_life_days": [1, 60], "axis_role": "measurement"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.5], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 60], "axis_role": "measurement"},
+    {"axis_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00002, 0.0005], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.7], "plateau_duration_days": [0.1, 30], "decline_half_life_days": [2, 90], "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "fever_history_activity", "target_axis_id": "body_temperature", "relationship": "febrile_prodrome_internal_consistency", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "prodrome", "effect_direction": "positive_correlation", "clinical_rationale": "Reported fever and measured temperature often move together but may differ after antipyretics.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "white_blood_cell_count", "relationship": "systemic_inflammation_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 3], "phase": "prodrome_to_peak", "effect_direction": "positive_correlation", "clinical_rationale": "Inflammatory markers are commonly co-elevated, but viral and immune contexts may dissociate them.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "chest_pain_activity", "target_axis_id": "serum_troponin", "relationship": "myocardial_injury_chest_pain_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.2, 0.6], "lag_days_range": [0, 2], "phase": "infarct_mimic", "effect_direction": "positive_correlation", "clinical_rationale": "Chest pain and troponin often coexist in infarct-like myocarditis but either can be absent.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_troponin", "target_axis_id": "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "relationship": "troponin_to_ecg_injury_pattern", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.7], "lag_days_range": [0, 1], "phase": "acute_injury", "effect_direction": "positive_correlation", "clinical_rationale": "Myocyte injury can produce ST/T abnormalities, but ECG sensitivity is incomplete.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_troponin", "target_axis_id": "myocardial_injury_hazard", "relationship": "troponin_to_injury_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "acute_injury", "effect_direction": "source_up_increases_target", "clinical_rationale": "Marked troponin elevation represents active myocardial injury.", "knowledge_confidence": "high"},
+    {"source_axis_id": "left_ventricular_ejection_fraction", "target_axis_id": "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS", "relationship": "low_ef_to_heart_failure", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 3], "phase": "dysfunction", "effect_direction": "source_down_increases_target", "clinical_rationale": "Reduced LVEF raises acute heart failure risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "left_ventricular_ejection_fraction", "target_axis_id": "cardiogenic_shock_hazard", "relationship": "low_ef_to_shock", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 2], "phase": "fulminant", "effect_direction": "source_down_increases_target", "clinical_rationale": "Very low systolic reserve can progress to low-output shock.", "knowledge_confidence": "high"},
+    {"source_axis_id": "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS", "target_axis_id": "pulmonary_edema_activity", "relationship": "heart_failure_to_pulmonary_congestion", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 2], "phase": "decompensation", "effect_direction": "source_up_increases_target", "clinical_rationale": "Acute heart failure can cause pulmonary edema and congestion.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pulmonary_edema_activity", "target_axis_id": "dyspnea_activity", "relationship": "congestion_to_dyspnea", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "decompensation", "effect_direction": "source_up_increases_target", "clinical_rationale": "Pulmonary congestion is a direct dyspnea driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "target_axis_id": "bradycardia_activity_in_D-ACUTE-MYOCARDITIS", "relationship": "av_block_to_bradycardia", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "conduction", "effect_direction": "source_up_increases_target", "clinical_rationale": "High-grade AV block commonly produces symptomatic bradycardia.", "knowledge_confidence": "high"},
+    {"source_axis_id": "atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "target_axis_id": "high_grade_av_block_hazard_in_D-ACUTE-MYOCARDITIS", "relationship": "av_block_degree_to_high_grade_block_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 1], "phase": "conduction", "effect_direction": "source_up_increases_target", "clinical_rationale": "Second- and third-degree block define a high-grade block event state.", "knowledge_confidence": "high"},
+    {"source_axis_id": "high_grade_av_block_hazard_in_D-ACUTE-MYOCARDITIS", "target_axis_id": "cardiogenic_shock_hazard", "relationship": "block_to_low_output_shock", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 1], "phase": "unstable_conduction", "effect_direction": "source_up_increases_target", "clinical_rationale": "Complete AV block can cause low-output hypotension even when LVEF is near preserved.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ventricular_tachycardia_activity_in_D-ACUTE-MYOCARDITIS", "target_axis_id": "malignant_arrhythmia_hazard", "relationship": "vt_to_malignant_arrhythmia", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 1], "phase": "electrical_instability", "effect_direction": "source_up_increases_target", "clinical_rationale": "Ventricular tachycardia is a direct marker of malignant arrhythmia hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiac_arrhythmia_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "relationship": "arrhythmia_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Unstable arrhythmia can lead to sudden death.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 3], "phase": "fulminant", "effect_direction": "source_up_increases_target", "clinical_rationale": "Cardiogenic shock is a major acute mortality pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "shock_to_aki", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 5], "phase": "fulminant", "effect_direction": "source_up_increases_target", "clinical_rationale": "Low cardiac output and congestion can cause AKI.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "acute_respiratory_failure_hazard", "relationship": "shock_and_congestion_to_respiratory_failure", "coupling_type": "event_transition", "correlation_range": [0.4, 0.8], "lag_days_range": [0, 3], "phase": "fulminant", "effect_direction": "source_up_increases_target", "clinical_rationale": "Pulmonary edema, shock, and ventilatory fatigue can require respiratory support.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "activity_restriction_and_telemetry_monitoring",
+      "treatment_name": "Activity restriction and rhythm/hemodynamic monitoring",
+      "mode": "push_state",
+      "role": "risk_reduction_and_detection_of_decompensation",
+      "required_context_axes": ["serum_troponin", "st_segment_elevation_activity_in_D-ACUTE-MYOCARDITIS", "cardiac_arrhythmia_hazard", "left_ventricular_ejection_fraction"],
+      "trajectory_modifications": {
+        "malignant_arrhythmia_hazard": {"peak_value_factor": [0.6, 0.9], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [1, 30]},
+        "mortality_hazard_in_D-ACUTE-MYOCARDITIS": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 30]}
+      },
+      "failure_modes": ["unrecognized_fulminant_deterioration", "continued_exertion_during_active_inflammation", "no_telemetry_when_high_grade_block_or_vt_present"]
+    },
+    {
+      "treatment_id": "heart_failure_and_congestion_support",
+      "treatment_name": "Heart failure and pulmonary congestion support",
+      "mode": "push_state",
+      "role": "reduce_congestion_and_support_ventricular_loading_conditions",
+      "required_context_axes": ["dyspnea_activity", "pulmonary_edema_activity", "left_ventricular_ejection_fraction", "nt_pro_bnp", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "dose_limited", "factor_range": [0.2, 0.8], "clinical_rationale": "Hypotension limits vasodilators and aggressive diuresis."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.4, 0.9], "clinical_rationale": "AKI or CKD reduces tolerance for diuresis and renin-angiotensin blockade."}
+      ],
+      "trajectory_modifications": {
+        "pulmonary_edema_activity": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 7]},
+        "dyspnea_activity": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 7]},
+        "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 21]}
+      },
+      "failure_modes": ["overdiuresis_in_low_output_state", "renal_worsening", "unaddressed_inflammation_or_arrhythmia"]
+    },
+    {
+      "treatment_id": "inotropes_vasopressors_invasive_hemodynamic_support",
+      "treatment_name": "Inotropes, vasopressors, and invasive hemodynamic support",
+      "mode": "push_state",
+      "role": "restore_perfusion_during_low_output_or_mixed_shock",
+      "required_context_axes": ["mean_arterial_pressure", "cardiogenic_shock_hazard", "serum_lactate", "left_ventricular_ejection_fraction", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "cardiac_arrhythmia_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.6, 1.2], "clinical_rationale": "Catecholamines may worsen tachyarrhythmia while improving perfusion."},
+        {"axis_id": "left_ventricular_ejection_fraction", "condition": "very_low", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Low LVEF increases the need for contractile and perfusion support."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_FULMINANT_SHOCK_MULTIORGAN": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 7]},
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.1, 3]},
+        "serum_lactate": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.1, 3]},
+        "cardiogenic_shock_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.2, 7]}
+      },
+      "failure_modes": ["catecholamine_arrhythmia", "delayed_mechanical_support_when_shock_persists", "sepsis_or_hypovolemia_context_not_addressed"]
+    },
+    {
+      "treatment_id": "temporary_or_escalated_mechanical_circulatory_support",
+      "treatment_name": "Temporary mechanical circulatory support",
+      "mode": "push_state",
+      "role": "bridge_through_fulminant_myocardial_recovery_or_to_advanced_therapy",
+      "required_context_axes": ["cardiogenic_shock_hazard", "left_ventricular_ejection_fraction", "serum_lactate", "mean_arterial_pressure", "acute_respiratory_failure_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "cardiogenic_shock_hazard", "condition": "very_high", "effect": "strengthens_context_need", "factor_range": [1.5, 6.0], "clinical_rationale": "Persistent shock is the main context where mechanical support changes trajectory."},
+        {"axis_id": "malignant_arrhythmia_hazard", "condition": "high", "effect": "requires_parallel_rhythm_rescue", "factor_range": [0.8, 1.4], "clinical_rationale": "Circulatory support does not alone stabilize refractory ventricular arrhythmia."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_FULMINANT_SHOCK_MULTIORGAN": {"peak_value_factor": [0.15, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 5]},
+        "cardiogenic_shock_hazard": {"peak_value_factor": [0.15, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.1, 7]},
+        "mortality_hazard_in_D-ACUTE-MYOCARDITIS": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 30]}
+      },
+      "toxicity_axis_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.0, 0.15], "interpretation": "Cannulation and anticoagulation increase bleeding risk."}
+      ],
+      "failure_modes": ["late_escalation_after_irreversible_multiorgan_failure", "vascular_or_bleeding_complications", "unresolved_trigger_or_inflammation"]
+    },
+    {
+      "treatment_id": "arrhythmia_rescue_and_defibrillation_readiness",
+      "treatment_name": "Arrhythmia rescue and defibrillation readiness",
+      "mode": "push_state",
+      "role": "reduce sudden electrical death risk during active myocarditis",
+      "required_context_axes": ["ventricular_tachycardia_activity_in_D-ACUTE-MYOCARDITIS", "cardiac_arrhythmia_hazard", "malignant_arrhythmia_hazard", "serum_potassium"],
+      "effect_modifiers": [
+        {"axis_id": "ventricular_tachycardia_activity_in_D-ACUTE-MYOCARDITIS", "condition": "present", "effect": "required_for_effect", "factor_range": [1.5, 5.0], "clinical_rationale": "Antiarrhythmic and defibrillation benefit depends on active or threatened ventricular arrhythmia."},
+        {"axis_id": "serum_potassium", "condition": "abnormal", "effect": "requires_parallel_correction", "factor_range": [0.6, 1.4], "clinical_rationale": "Electrolyte disturbance must be corrected to stabilize rhythm."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_ARRHYTHMOGENIC_INSTABILITY": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.1, 7]},
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 7]},
+        "malignant_arrhythmia_hazard": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 7]}
+      },
+      "failure_modes": ["proarrhythmia_from_drug_choice", "unrecognized_ongoing_myocardial_inflammation", "no_escalation_to_circulatory_support_if_arrhythmia_causes_shock"]
+    },
+    {
+      "treatment_id": "temporary_pacing_for_high_grade_av_block",
+      "treatment_name": "Temporary pacing for high-grade atrioventricular block",
+      "mode": "push_state",
+      "role": "restore_rate_and_perfusion_when conduction block causes bradycardia or low output",
+      "required_context_axes": ["atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "bradycardia_activity_in_D-ACUTE-MYOCARDITIS", "syncope_presyncope_activity", "mean_arterial_pressure", "temporary_pacing_need_in_D-ACUTE-MYOCARDITIS"],
+      "effect_modifiers": [
+        {"axis_id": "atrioventricular_block_degree_in_D-ACUTE-MYOCARDITIS", "condition": "high", "effect": "required_for_effect", "factor_range": [1.5, 6.0], "clinical_rationale": "Pacing benefit is concentrated in high-grade block or symptomatic bradycardia."}
+      ],
+      "trajectory_modifications": {
+        "bradycardia_activity_in_D-ACUTE-MYOCARDITIS": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.0, 2]},
+        "syncope_presyncope_activity": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.0, 2]},
+        "cardiogenic_shock_hazard": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.1, 7]}
+      },
+      "failure_modes": ["block_is_absent_or_mild", "permanent_conduction_damage_needing_longer_term_pacing", "infection_or_device_complication"]
+    },
+    {
+      "treatment_id": "trigger_directed_antimicrobial_or_antiviral_management",
+      "treatment_name": "Trigger-directed antimicrobial or antiviral management",
+      "mode": "reshape_landscape",
+      "role": "reduce infectious trigger burden when a treatable pathogen or source is present",
+      "required_context_axes": ["viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS", "blood_culture_positivity_probability", "active_antibiotic_coverage_probability", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens_if_bacterial_context", "factor_range": [1.2, 4.0], "clinical_rationale": "Antibiotic effect depends on true treatable bacterial coverage."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.5, 1.3], "clinical_rationale": "Uncontrolled bacteremia source can sustain inflammatory myocardial injury."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_TRIGGERED_MYOCARDIAL_IMMUNE_ACTIVATION": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 14]},
+        "M_AM_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 7]}
+      },
+      "failure_modes": ["noninfectious_or_postinfectious_myocarditis", "inactive_antimicrobial_coverage", "diagnostic_culture_or_serology_not_available_early"]
+    },
+    {
+      "treatment_id": "contextual_immunomodulation",
+      "treatment_name": "Contextual immunomodulation",
+      "mode": "reshape_landscape",
+      "role": "reduce immune-mediated myocardial inflammation when immune, eosinophilic, giant-cell, ICI, or severe pediatric inflammatory context supports it",
+      "required_context_axes": ["immune_checkpoint_inhibitor_exposure_activity", "systemic_autoimmune_disease_activity", "peripheral_eosinophilia_activity", "cmr_myocardial_edema_activity_in_D-ACUTE-MYOCARDITIS", "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA"],
+      "effect_modifiers": [
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "toxicity_limited_or_delayed", "factor_range": [0.1, 0.8], "clinical_rationale": "Immunosuppression can worsen uncontrolled infection."},
+        {"axis_id": "immune_checkpoint_inhibitor_exposure_activity", "condition": "present", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "ICI myocarditis is an immune-mediated context where immunomodulation can be disease-reshaping."},
+        {"axis_id": "peripheral_eosinophilia_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Eosinophilic myocarditis is often steroid-responsive when infection is excluded or controlled."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_MYOCARDIAL_INFLAMMATION_EDEMA": {"peak_value_factor": [0.2, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 21]},
+        "M_AM_CARDIOMYOCYTE_INJURY_NECROSIS": {"peak_value_factor": [0.3, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 21]},
+        "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [2, 60]}
+      },
+      "failure_modes": ["unrecognized_bacterial_or_fungal_infection", "late_irreversible_fibrosis_or_necrosis", "insufficient_context_for_immune_subtype"]
+    },
+    {
+      "treatment_id": "myopericarditis_pain_and_pericardial_inflammation_control",
+      "treatment_name": "Myopericarditis pain and pericardial inflammation control",
+      "mode": "reshape_landscape",
+      "role": "reduce epicardial/pericardial pain and inflammation when pericardial features dominate and ventricular dysfunction is not severe",
+      "required_context_axes": ["chest_pain_activity", "pleuritic_chest_pain_activity", "pericardial_effusion_activity_in_D-ACUTE-MYOCARDITIS", "left_ventricular_ejection_fraction", "serum_creatinine"],
+      "effect_modifiers": [
+        {"axis_id": "left_ventricular_ejection_fraction", "condition": "low", "effect": "toxicity_limited", "factor_range": [0.2, 0.8], "clinical_rationale": "NSAID-style pain strategies may be less attractive in significant heart failure."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "toxicity_limited", "factor_range": [0.1, 0.7], "clinical_rationale": "Renal dysfunction limits NSAID exposure."}
+      ],
+      "trajectory_modifications": {
+        "M_AM_PERICARDIAL_EPICARDIAL_IRRITATION": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 14]},
+        "chest_pain_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.2, 7]},
+        "pleuritic_chest_pain_activity": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.2, 7]}
+      },
+      "failure_modes": ["fulminant_myocardial_dysfunction", "renal_injury", "does_not_treat_arrhythmia_or_shock"]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_viral_or_flu_like_illness",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "viral_prodrome_activity_in_D-ACUTE-MYOCARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "body_temperature", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.15]},
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.0, 2.0]}
+          ],
+          "treatment_effect_modulation": {"trigger_directed_antimicrobial_or_antiviral_management": "only_if_treatable_pathogen_or_source_is_identified"}
+        }
+      }
+    },
+    {
+      "factor": "recent_pharyngitis_tonsillitis",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "sore_throat_activity", "effect": "higher_peak", "magnitude_factor_range": [1.5, 3.0]},
+            {"axis_id": "white_blood_cell_count", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.6]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "gram_negative_bacteremia_or_sepsis_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "higher_peak", "magnitude_factor_range": [1.0, 1.2]},
+            {"axis_id": "white_blood_cell_count", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.5]},
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.5, 4.0]},
+            {"axis_id": "mean_arterial_pressure", "effect": "lower_peak", "magnitude_factor_range": [0.6, 0.95]},
+            {"axis_id": "cardiogenic_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]}
+          ],
+          "treatment_effect_modulation": {"trigger_directed_antimicrobial_or_antiviral_management": "stronger_if_active_coverage_and_source_control_are_present"}
+        }
+      }
+    },
+    {
+      "factor": "infant_or_young_child",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "dyspnea_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.5]},
+            {"axis_id": "pulmonary_edema_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "cardiogenic_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "immune_checkpoint_inhibitor_exposure",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_troponin", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "cardiac_arrhythmia_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "mortality_hazard_in_D-ACUTE-MYOCARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "treatment_effect_modulation": {"contextual_immunomodulation": "stronger_contextual_effect"}
+        }
+      }
+    },
+    {
+      "factor": "systemic_autoimmune_disease_activity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_crp", "effect": "higher_peak", "magnitude_factor_range": [1.0, 2.5]},
+            {"axis_id": "pericardial_effusion_activity_in_D-ACUTE-MYOCARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]}
+          ],
+          "treatment_effect_modulation": {"contextual_immunomodulation": "stronger_if_infection_is_controlled_or_absent"}
+        }
+      }
+    },
+    {
+      "factor": "eosinophilia_or_hypersensitivity_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_troponin", "effect": "higher_peak", "magnitude_factor_range": [1.0, 3.0]},
+            {"axis_id": "heart_failure_hazard_in_D-ACUTE-MYOCARDITIS", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0]}
+          ],
+          "treatment_effect_modulation": {"contextual_immunomodulation": "stronger_contextual_effect"}
+        }
+      }
+    },
+    {
+      "factor": "baseline_structural_heart_disease_or_cardiomyopathy",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "left_ventricular_ejection_fraction", "effect": "lower_baseline", "magnitude_factor_range": [0.4, 0.9]},
+            {"axis_id": "nt_pro_bnp", "effect": "higher_baseline", "magnitude_factor_range": [1.5, 8.0]},
+            {"axis_id": "cardiogenic_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "treatment_effect_modulation": {"temporary_or_escalated_mechanical_circulatory_support": "lower_threshold_if_shock_develops"}
+        }
+      }
+    },
+    {
+      "factor": "chronic_kidney_disease_or_renal_dysfunction",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_baseline", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "nt_pro_bnp", "effect": "higher_baseline", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "treatment_effect_modulation": {"heart_failure_and_congestion_support": "renal_tolerance_limited", "myopericarditis_pain_and_pericardial_inflammation_control": "nsaid_toxicity_limited"}
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "continuous_ecg_and_hemodynamic_monitoring", "description": "Continuous ECG, blood pressure, oxygenation, urine output, lactate, and serial cardiac biomarker monitoring during active or unstable disease."},
+    {"care_id": "avoid_exercise_during_active_myocardial_injury", "description": "Avoid strenuous exercise during active inflammation and biomarker/ECG instability."},
+    {"care_id": "serial_echocardiography_when_dysfunction_or_shock_present", "description": "Repeat echocardiography to track ventricular function, effusion, congestion, and recovery or worsening."},
+    {"care_id": "electrolyte_and_renal_optimization", "description": "Correct potassium, magnesium, renal perfusion, and acid-base problems that amplify arrhythmia and shock risk."},
+    {"care_id": "post_workup_confirmatory_pathway", "description": "CMR, coronary evaluation, endomyocardial biopsy, viral/immune testing, and trigger search can refine context after presentation ranking."}
+  ],
+  "quality_notes": [
+    "The disease name is deliberately trigger-agnostic. Viral, bacterial, fulminant, ICI, eosinophilic, autoimmune, and vaccine-associated contexts are mechanisms or modifiers.",
+    "No first_line, preferred, guideline_recommended, diagnosis_should_be, or single-case label fields are used.",
+    "CMR and biopsy axes exist for post-workup structure but should be kept non-ranking in presentation-only case JSON unless the test mode explicitly includes confirmatory evidence."
+  ]
+}

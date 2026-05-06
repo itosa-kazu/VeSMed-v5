@@ -604,3 +604,26 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `257/259 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remains `1/1 PASS` with `AOSD_TTP_CONCURRENT_PMC7523203` ranking `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: ARF / DKA / Acute Myocarditis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-RHEUMATIC-FEVER`: acute rheumatic fever.
+  - `D-DIABETIC-KETOACIDOSIS`: diabetic ketoacidosis.
+  - `D-ACUTE-MYOCARDITIS`: acute myocarditis.
+- New real PMC/PubMed cases:
+  - `D-RHEUMATIC-FEVER`: `PMC4867803`, `PMC6239074`, `PMC6374571`.
+  - `D-DIABETIC-KETOACIDOSIS`: `PMC3962942`, `PMC7380362`, `PMC8818290`.
+  - `D-ACUTE-MYOCARDITIS`: `PMC5329895`, `PMC9128271`, `PMC6946433`, `PMC5304557`.
+- ARF source rule: chorea-only or delayed-heavy sources can be real ARF, but should not be used to pull the first-layer acute ARF leaf away from fever/arthritis/carditis/rash presentations unless the test objective is specifically delayed neurologic ARF.
+- DKA source rule: euglycemic DKA, COVID-triggered DKA, pancreatitis/HTG overlap, and severe electrolyte complications are contexts/spectrum within `D-DIABETIC-KETOACIDOSIS`; do not put those qualifiers in the disease name or prompt.
+- Acute myocarditis source rule: sepsis-associated myocarditis and STEMI/ACS mimics are legitimate presentation cases, but blood/urine culture speciation, normal coronary angiography, CMR final read, biopsy/autopsy, and treatment response must stay confirmatory/non-ranking unless testing post-workup diagnosis.
+- Focused new-batch fast grid (`RHEUMATIC_FEVER,DIABETIC_KETOACIDOSIS,ACUTE_MYOCARDITIS`) loaded 10 cases and was `10/10 PASS`.
+- UI roadmap default after this batch is `D-FAMILIAL-MEDITERRANEAN-FEVER`; completed leaves are filtered out of roadmap presets by the server.
+- AP/DKA overlap rule from regression: `ACUTE_PANCREATITIS_HTG_DKA_NO_PAIN_PMC10291989` is not a pure AP single-manifold case. It has CT/lipase/triglyceride evidence for AP and glucose/anion gap/bicarbonate/pH/ketone/HbA1c evidence for DKA, so it is modeled as `D-ACUTE-PANCREATITIS + D-DIABETIC-KETOACIDOSIS`. Do not delete the DKA evidence or force AP single ranking to pass.
+- Combo anchor runtime principle: combo eligibility can no longer be hand-coded only for AOSD/sepsis/TTP. `v5_joint_sde_case_test.py` now adds a conservative generic anchor score from disease-owned, high-specificity observed axes while still ignoring generic fever/vitals/inflammation. This is a general mechanism for future true combined manifolds, not a disease-specific AP/DKA patch.
+- Horizontal case evidence repair applied to acute pancreatitis cases: rankable imaging findings such as peripancreatic fat stranding, pancreatic edema/enlargement, and peripancreatic fluid collection are mapped into structured axes where the original paper provides them. Final paper diagnosis and treatment response remain non-ranking confirmatory evidence.
+- Final ARF/DKA/myocarditis batch regression:
+  - Full current-atlas fast grid (`VESMED_SCORE_MODE=grid`, `VESMED_TIME_GRID_N=21`, `VESMED_MAX_COMBO_SIZE=1`): 271 case JSON files loaded; single-manifold validation `266/268 PASS`; combo intentionally off (`0/2`).
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`): `2/2 PASS`, with `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+  - Remaining single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
