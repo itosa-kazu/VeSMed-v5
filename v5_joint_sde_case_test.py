@@ -435,6 +435,7 @@ def load_manifold(path):
         mechanism_edges_by_target.setdefault(edge.get("target_axis_id"), []).append(edge)
     return {
         "disease": data.get("disease", path.stem),
+        "distillation_scope": data.get("distillation_scope") or {},
         "axes": axes,
         "latent_mechanisms": data.get("latent_mechanisms") or [],
         "mechanism_edges": mechanism_edges,
@@ -1801,6 +1802,19 @@ def candidate_tuples(labels):
     return singles + pairs
 
 
+def candidate_allowed_for_case(case, candidate, manifolds):
+    """Apply case-stage eligibility for leaves that require post-workup evidence."""
+    case_stage = case.get("diagnostic_stage")
+    for disease in candidate:
+        scope = manifolds[disease].get("distillation_scope") or {}
+        if not isinstance(scope, dict):
+            continue
+        required_stage = scope.get("candidate_requires_diagnostic_stage")
+        if required_stage and case_stage != required_stage:
+            return False
+    return True
+
+
 def main():
     manifolds = {label: load_manifold(path) for label, path in MANIFOLD_PATHS.items()}
     background_axes = build_background_axes(manifolds, load_master_axes())
@@ -1864,6 +1878,8 @@ def main():
 
         scores = []
         for cand in candidates:
+            if not candidate_allowed_for_case(case, cand, manifolds):
+                continue
             score = score_candidate(case, cand, manifolds, background_axes)
             if score is not None:
                 scores.append(score)

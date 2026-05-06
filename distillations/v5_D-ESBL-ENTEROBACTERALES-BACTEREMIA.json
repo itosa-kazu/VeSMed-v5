@@ -1,0 +1,733 @@
+{
+  "disease": "D-ESBL-ENTEROBACTERALES-BACTEREMIA",
+  "disease_id": "D-ESBL-ENTEROBACTERALES-BACTEREMIA",
+  "disease_name": "ESBL Enterobacterales bacteremia",
+  "schema_version": "v5_full_clinical_stack_2026_05",
+  "distillation_scope": {
+    "disease_name_input": "ESBL Enterobacterales bacteremia",
+    "first_layer_leaf": true,
+    "candidate_requires_diagnostic_stage": "post_microbiology_resistance_phenotype",
+    "scope_note": "A bloodstream infection syndrome caused by Enterobacterales with an ESBL phenotype. Species, source, shock state, healthcare exposure, host immune status, and carbapenem resistance are represented as axes, risk factors, treatment modifiers, or future related leaves rather than as disease-name qualifiers."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN",
+      "display_name": "Viable ESBL Enterobacterales bloodstream burden",
+      "clinical_meaning": "Density and persistence of viable ESBL-producing Enterobacterales in the bloodstream after seeding from urinary, biliary, intra-abdominal, catheter, pulmonary, or occult sources.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.45, 0.95],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE",
+      "display_name": "ESBL beta-lactam hydrolysis and resistance phenotype",
+      "clinical_meaning": "Plasmid-mediated or chromosomal ESBL activity that hydrolyzes extended-spectrum cephalosporins and aztreonam, often co-traveling with fluoroquinolone, aminoglycoside, or TMP-SMX resistance determinants.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 0],
+      "peak_value_range": [0.7, 1],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING",
+      "display_name": "Primary-source seeding into blood",
+      "clinical_meaning": "Release of Enterobacterales from a tissue reservoir or device into blood; activity is sustained by obstruction, abscess, infected catheter, infected endovascular material, or inadequate drainage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.4, 1],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE",
+      "display_name": "Gram-negative innate cytokine response",
+      "clinical_meaning": "LPS and other PAMP-triggered TLR/complement activation producing fever, rigors, tachycardia, tachypnea, neutrophil mobilization, and endothelial activation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.45, 0.95],
+      "plateau_duration_days": [1, 5],
+      "decline_half_life_days": [1, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_ACUTE_PHASE_RESPONSE",
+      "display_name": "IL-6 acute-phase response",
+      "clinical_meaning": "Hepatic acute-phase reprogramming that raises CRP, procalcitonin, fibrinogen early, ferritin variably, and lowers albumin during systemic inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [1, 4],
+      "peak_value_range": [0.45, 0.9],
+      "plateau_duration_days": [2, 7],
+      "decline_half_life_days": [2, 6],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY",
+      "display_name": "Vasodilatory shock and endothelial leak",
+      "clinical_meaning": "Sepsis-associated vasodilation, capillary leak, myocardial depression, and microcirculatory dysfunction producing hypotension, lactate elevation, oxygenation impairment, and shock progression.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.25, 0.95],
+      "plateau_duration_days": [0.5, 5],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS",
+      "display_name": "Sepsis-induced coagulopathy and microthrombosis",
+      "clinical_meaning": "Endothelial tissue-factor activation, platelet consumption, fibrinolysis dysregulation, and microvascular thrombosis that may evolve into overt DIC.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [1, 4],
+      "peak_value_range": [0.2, 0.85],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [2, 8],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_ORGAN_DYSFUNCTION",
+      "display_name": "Septic organ dysfunction",
+      "clinical_meaning": "Kidney, liver, brain, lung, and metabolic injury from hypoperfusion, inflammatory endothelial injury, mitochondrial dysfunction, and delayed active therapy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.25, 0.95],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [3, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING",
+      "display_name": "Persistent bacteremia and metastatic seeding",
+      "clinical_meaning": "Ongoing positive blood cultures and hematogenous seeding of endovascular material, valves, vertebrae, kidney, liver, or soft-tissue abscesses, especially when source control or active therapy is delayed.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [2, 10],
+      "peak_value_range": [0.1, 0.8],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [4, 21],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT",
+      "display_name": "Host clearance impairment",
+      "clinical_meaning": "Reduced bacterial clearance or blunted inflammatory display from neutropenia, transplant immunosuppression, ESRD/hemodialysis, diabetes, advanced age, cirrhosis, or critical illness.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.1],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "clinical_rationale": "A tissue or device nidus seeds Enterobacterales into blood.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "active_antibiotic_coverage_probability", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "clinical_rationale": "ESBL enzymes make many empiric cephalosporin or aztreonam regimens inactive.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "ceftriaxone_susceptibility_probability", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "clinical_rationale": "Ceftriaxone non-susceptibility is a core phenotypic consequence of ESBL production.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "cefepime_susceptibility_probability", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "clinical_rationale": "Cefepime MIC may appear low in some isolates but ESBL phenotype creates inoculum and failure risk in serious bacteremia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "esbl_phenotype_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "clinical_rationale": "Confirmed ESBL phenotype is the microbiology evidence that distinguishes this resistance leaf from ordinary Enterobacterales bacteremia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "esbl_risk_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "clinical_rationale": "Prior colonization, recent antibiotics, and healthcare exposure raise the posterior probability that the bloodstream isolate is ESBL-producing.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "initial_inactive_antibiotic_exposure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Resistance often manifests clinically as persistent fever or bacteremia under inactive empiric therapy.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "target_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 4], "clinical_rationale": "Delayed active therapy prolongs inflammatory and ischemic injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Higher viable bloodstream burden increases the probability that blood cultures are positive.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "target_id": "gram_negative_bacteremia_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Enterobacterales bacteremia is gram-negative bacteremia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "target_id": "blood_culture_bacterial_load", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "High bloodstream burden shortens time to positivity and increases quantitative culture signal when measured.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "target_id": "esbl_enterobacterales_bacteremia_persistence_days", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "clinical_rationale": "Inadequate therapy or uncontrolled focus extends the duration of positive cultures.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "urinary_source_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Urinary tract is the most common source of ESBL Enterobacterales bacteremia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "biliary_source_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Biliary obstruction or cholangitis can seed ESBL Enterobacterales into blood.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "intra_abdominal_source_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Intra-abdominal infection and abscess are important sources and high-inoculum contexts.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "catheter_source_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Vascular or urinary devices can serve as an ESBL Enterobacterales source.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Obstruction, abscess, infected line, or infected prosthetic material require drainage, decompression, or removal.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Before drainage or line removal, the source remains uncontrolled.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever is common but may be absent in older or immunosuppressed hosts.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Cytokine release raises measured temperature.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Bacteremia frequently presents with chills or rigors from pyrogenic cytokines.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever, catecholamines, and sepsis physiology produce tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Sepsis, fever, and metabolic acidosis raise respiratory rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Myeloid demargination and marrow release commonly produce leukocytosis; severe or immunosuppressed cases may be leukopenic.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Bacterial bloodstream infection usually drives neutrophilia unless marrow response is impaired.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "target_id": "band_neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Severe bacterial infection can produce a left shift.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_ACUTE_PHASE_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 3], "clinical_rationale": "IL-6 acute-phase signaling drives CRP elevation.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ACUTE_PHASE_RESPONSE", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Bacterial sepsis often raises procalcitonin, particularly in bloodstream infection and shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ACUTE_PHASE_RESPONSE", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "clinical_rationale": "Inflammation, capillary leak, and illness reduce serum albumin.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Distributive vasodilation lowers MAP.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Shock physiology can lower systolic pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Hypoperfusion and impaired oxygen extraction raise lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "target_id": "progression_to_septic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [0, 2], "clinical_rationale": "High vasodilatory shock activity is the event hazard for shock progression.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Septic AKI and urinary obstruction raise creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "AKI, dehydration, and catabolism raise BUN.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "urine_output", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Shock or obstructive urinary source may reduce urine output.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Septic encephalopathy and uremia can produce confusion or somnolence.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [0, 3], "clinical_rationale": "Renal hypoperfusion and inflammatory tubular injury raise AKI hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS", "target_id": "platelet_count", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 4], "clinical_rationale": "Sepsis-induced platelet consumption lowers platelet count.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 4], "clinical_rationale": "Consumptive coagulopathy prolongs PT/INR.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS", "target_id": "d_dimer", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 4], "clinical_rationale": "Fibrin formation and breakdown raise D-dimer.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS", "target_id": "dic_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [1, 4], "clinical_rationale": "Coagulopathy activity is the mechanistic bridge to overt DIC.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING", "target_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 7], "clinical_rationale": "Failure to clear cultures reflects persistent bloodstream infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING", "target_id": "metastatic_abscess_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [2, 14], "clinical_rationale": "Persistent bacteremia can seed deep abscesses, vertebrae, or other metastatic foci.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING", "target_id": "infective_endocarditis_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [2, 21], "clinical_rationale": "Endocarditis is uncommon but important with prosthetic valves, persistent bacteremia, or hemodialysis access.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT", "target_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "clinical_rationale": "Impaired host clearance allows higher or longer bloodstream burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT", "target_id": "white_blood_cell_count", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Neutropenia, marrow suppression, or immunosuppression can blunt leukocytosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT", "target_id": "body_temperature", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "context_dependent", "clinical_rationale": "Older adults and immunosuppressed hosts may have low or absent fever despite bacteremia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "target_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [0, 3], "clinical_rationale": "Organ dysfunction is the dominant near-term driver of death.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "target_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [0, 2], "clinical_rationale": "Septic shock sharply raises early mortality.", "knowledge_confidence": "high"},
+    {"source_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING", "target_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [2, 14], "clinical_rationale": "Persistent bacteremia and metastatic complications prolong hazard after the initial sepsis window.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Rises with bloodstream seeding and falls after active therapy plus source control.", "baseline_range": [0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.45, 0.95], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_ESBL_HYDROLYSIS_RESISTANCE", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Stable pathogen phenotype that lowers extended-spectrum cephalosporin activity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 0], "peak_value_range": [0.7, 1], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_PRIMARY_SOURCE_SEEDING", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Source or device seeding activity sustained by obstruction, abscess, infected catheter, or poor drainage.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.4, 1], "plateau_duration_days": [1, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Fast systemic inflammatory response from bacteremia.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.45, 0.95], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_ACUTE_PHASE_RESPONSE", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Acute-phase protein response that lags fever by hours to days.", "baseline_range": [0, 0.05], "peak_day_range": [1, 4], "peak_value_range": [0.45, 0.9], "plateau_duration_days": [2, 7], "decline_half_life_days": [2, 6], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_VASODILATORY_SHOCK_ENDOTHELIAL_INJURY", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Distributive shock and endothelial leak activity.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.25, 0.95], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_COAGULOPATHY_MICROTHROMBOSIS", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Sepsis-induced coagulopathy activity.", "baseline_range": [0, 0.03], "peak_day_range": [1, 4], "peak_value_range": [0.2, 0.85], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 8], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_ORGAN_DYSFUNCTION", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Multi-organ dysfunction from sepsis and delayed active therapy.", "baseline_range": [0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.25, 0.95], "plateau_duration_days": [1, 10], "decline_half_life_days": [3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Persistent culture positivity and downstream metastatic focus formation.", "baseline_range": [0, 0.03], "peak_day_range": [2, 10], "peak_value_range": [0.1, 0.8], "plateau_duration_days": [3, 30], "decline_half_life_days": [4, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT", "category": "latent_mechanism", "unit": "relative_activity_0_1", "log_scale": false, "shape_free_text": "Background host impairment that increases persistence and may blunt fever/WBC response.", "baseline_range": [0, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.1, 0.9], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Historical fever common in bacteremia but may be blunted.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.5, 1], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature may be normal, febrile, or rarely hypothermic in severe sepsis.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 2], "peak_value_range": [37.8, 40.5], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Bacteremia often causes chills or rigors.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.3, 1], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "malaise_fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nonspecific systemic illness activity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.3, 0.9], "plateau_duration_days": [2, 10], "decline_half_life_days": [2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachycardia from fever, sepsis, and shock.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [95, 150], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachypnea from sepsis, fever, acidosis, or lung injury.", "baseline_range": [12, 20], "peak_day_range": [0, 2], "peak_value_range": [20, 35], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "May fall in shock but can be normal or high early.", "baseline_range": [100, 140], "peak_day_range": [0, 2], "peak_value_range": [70, 130], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Falls with distributive shock.", "baseline_range": [70, 100], "peak_day_range": [0, 2], "peak_value_range": [45, 80], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Usually preserved unless pneumonia, ARDS, pulmonary edema, or shock is present.", "baseline_range": [95, 100], "peak_day_range": [0, 4], "peak_value_range": [85, 98], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_output", "category": "vital_sign", "unit": "mL/kg/hr", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Falls with septic AKI or obstructive urinary source.", "baseline_range": [0.5, 1.5], "peak_day_range": [0, 3], "peak_value_range": [0.05, 0.8], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Leukocytosis common; leukopenia possible in severe or immune-blunted disease.", "baseline_range": [4, 10], "peak_day_range": [0, 3], "peak_value_range": [11, 30], "plateau_duration_days": [1, 6], "decline_half_life_days": [2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Usually elevated by bacterial myeloid response unless neutropenic or suppressed.", "baseline_range": [2, 7], "peak_day_range": [0, 3], "peak_value_range": [8, 26], "plateau_duration_days": [1, 6], "decline_half_life_days": [2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "band_neutrophil_fraction", "category": "lab_value", "unit": "fraction", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Left shift may be present during acute bacteremia.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.05, 0.35], "plateau_duration_days": [1, 4], "decline_half_life_days": [2, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Usually reflects baseline comorbidity, dilution, bleeding, or chronic disease rather than the bacteremia mechanism itself.", "baseline_range": [12, 17], "peak_day_range": [1, 10], "peak_value_range": [7, 14], "plateau_duration_days": [2, 14], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "May decrease with sepsis-induced coagulopathy.", "baseline_range": [150, 350], "peak_day_range": [1, 5], "peak_value_range": [30, 180], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 10], "knowledge_confidence": "high"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Rises with hypoperfusion and impaired oxygen extraction.", "baseline_range": [0.5, 2], "peak_day_range": [0, 2], "peak_value_range": [2, 10], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [0.5, 2], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Falls with lactic acidosis or renal dysfunction.", "baseline_range": [22, 29], "peak_day_range": [0, 3], "peak_value_range": [8, 22], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Rises with AKI, CKD baseline, obstructive uropathy, or nephrotoxic exposure.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 5], "peak_value_range": [1.2, 8], "plateau_duration_days": [2, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Rises with AKI, volume depletion, or catabolic illness.", "baseline_range": [7, 20], "peak_day_range": [0, 5], "peak_value_range": [20, 120], "plateau_duration_days": [2, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Often markedly elevated in bacteremia.", "baseline_range": [0.2, 5], "peak_day_range": [1, 4], "peak_value_range": [50, 350], "plateau_duration_days": [2, 7], "decline_half_life_days": [2, 6], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Often elevated in gram-negative bacteremia, shock, and renal dysfunction.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.5, 100], "plateau_duration_days": [1, 5], "decline_half_life_days": [1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Falls with systemic inflammation, capillary leak, malnutrition, or liver disease.", "baseline_range": [3.5, 5], "peak_day_range": [1, 7], "peak_value_range": [1.5, 3.5], "plateau_duration_days": [3, 14], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "May rise with cholangitis source, sepsis cholestasis, or hepatic dysfunction.", "baseline_range": [0.2, 1.2], "peak_day_range": [1, 5], "peak_value_range": [1.2, 10], "plateau_duration_days": [2, 10], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Mild to marked increase with hypoperfusion, cholangitis, or underlying liver disease.", "baseline_range": [10, 40], "peak_day_range": [0, 4], "peak_value_range": [40, 1000], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Mild to marked increase with hypoperfusion, cholangitis, or underlying liver disease.", "baseline_range": [10, 40], "peak_day_range": [0, 4], "peak_value_range": [40, 1000], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Can rise with DIC, liver dysfunction, or anticoagulant exposure.", "baseline_range": [0.9, 1.2], "peak_day_range": [1, 5], "peak_value_range": [1.2, 4], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug/mL_FEU", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Rises with sepsis-induced coagulation and DIC.", "baseline_range": [0, 0.5], "peak_day_range": [1, 5], "peak_value_range": [1, 60], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_fibrinogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Can rise as an acute-phase reactant early and fall in consumptive DIC.", "baseline_range": [200, 400], "peak_day_range": [1, 5], "peak_value_range": [120, 700], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "sofa_score", "category": "lab_value", "unit": "points", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Composite organ dysfunction severity.", "baseline_range": [0, 1], "peak_day_range": [0, 5], "peak_value_range": [2, 18], "plateau_duration_days": [1, 10], "decline_half_life_days": [3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Confusion, lethargy, or encephalopathy from sepsis or organ dysfunction.", "baseline_range": [0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.2, 1], "plateau_duration_days": [1, 7], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that blood culture is positive; confirmatory for bacteremia when available.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.6, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "gram_negative_bacteremia_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Posterior that positive blood culture represents gram-negative bacteremia.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.6, 1], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 4], "knowledge_confidence": "high"},
+    {"axis_id": "esbl_phenotype_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that the Enterobacterales bloodstream isolate has an ESBL phenotype by susceptibility pattern, ESBL confirmatory testing, or ESBL gene detection.", "baseline_range": [0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.7, 1], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "pathogen_identification_confidence", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Confidence in species-level or molecular pathogen identification.", "baseline_range": [0, 0], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "blood_culture_bacterial_load", "category": "microbiology", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "blood_culture_positivity_probability", "shape_free_text": "Relative load or time-to-positivity proxy for bloodstream burden.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1], "plateau_duration_days": [0, 5], "decline_half_life_days": [1, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "esbl_enterobacterales_bacteremia_persistence_days", "category": "microbiology", "unit": "days", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "blood_culture_positivity_probability", "shape_free_text": "Duration of documented positive blood cultures after index culture.", "baseline_range": [0, 0], "peak_day_range": [1, 10], "peak_value_range": [1, 14], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "category": "microbiology", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "blood_culture_positivity_probability", "shape_free_text": "Persistent culture positivity or recurrent bacteremia despite therapy.", "baseline_range": [0, 0.02], "peak_day_range": [2, 10], "peak_value_range": [0.2, 1], "plateau_duration_days": [2, 21], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urinary_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Urinary tract source probability from symptoms, urinalysis, imaging, obstruction, or urine culture context.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "biliary_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Biliary source probability from jaundice, cholestatic labs, imaging, or drainage context.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "intra_abdominal_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Intra-abdominal source probability including abscess, perforation, peritonitis, or postoperative source.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "pulmonary_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pulmonary source probability; less common for ESBL Enterobacterales bacteremia but important in healthcare-associated pneumonia.", "baseline_range": [0, 0.03], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "catheter_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Vascular catheter source probability.", "baseline_range": [0, 0.03], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "infected_catheter_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Posterior that a catheter is infected and requires removal or exchange.", "baseline_range": [0, 0.02], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "drainable_focus_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abscess, obstruction, infected collection, or infected device that can be drained or removed.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for drainage, decompression, catheter removal, or other source-control intervention.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Rises after adequate source-control intervention.", "baseline_range": [0, 0.1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "obstructive_pyelonephritis_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "urinary_source_probability", "shape_free_text": "Obstructive pyelonephritis source-control context.", "baseline_range": [0, 0.02], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "urinary_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "urinary_source_probability", "shape_free_text": "Hydronephrosis, stone, retention, or blocked urinary drainage.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "biliary_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "biliary_source_probability", "shape_free_text": "Stone, stricture, stent occlusion, or mass causing biliary obstruction.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "intra_abdominal_abscess_activity", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "intra_abdominal_source_probability", "shape_free_text": "Intra-abdominal abscess or infected collection extent.", "baseline_range": [0, 0.02], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "esbl_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pre-culture risk for ESBL phenotype from prior ESBL colonization, recent broad-spectrum antibiotics, healthcare exposure, travel, recurrent UTI, or local epidemiology.", "baseline_range": [0, 0.1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "healthcare_associated_resistance_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent hospitalization, long-term care, dialysis, invasive devices, or broad antibiotic exposure raising resistance probability.", "baseline_range": [0, 0.1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "ceftriaxone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that ceftriaxone is active; typically low in ESBL phenotype.", "baseline_range": [0.6, 0.95], "peak_value_range": [0, 0.2], "knowledge_confidence": "high"},
+    {"axis_id": "cefepime_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that cefepime provides reliable activity in serious bloodstream infection.", "baseline_range": [0.5, 0.9], "peak_value_range": [0, 0.6], "knowledge_confidence": "high"},
+    {"axis_id": "piperacillin_tazobactam_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that piperacillin-tazobactam is active enough for this bloodstream infection context.", "baseline_range": [0.3, 0.9], "peak_value_range": [0, 0.9], "knowledge_confidence": "high"},
+    {"axis_id": "carbapenem_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of susceptibility to carbapenems as a class.", "baseline_range": [0.8, 1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "meropenem_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of meropenem susceptibility.", "baseline_range": [0.8, 1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "fluoroquinolone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of ciprofloxacin or levofloxacin susceptibility; discordance can occur in serious ESBL infection.", "baseline_range": [0.1, 0.5], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of TMP-SMX susceptibility.", "baseline_range": [0.1, 0.6], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "aminoglycoside_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of amikacin, gentamicin, or tobramycin susceptibility.", "baseline_range": [0.4, 0.9], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Posterior that current antimicrobial regimen is active against the bloodstream isolate.", "baseline_range": [0, 0.2], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "initial_inactive_antibiotic_exposure_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Delay or exposure to inactive empiric therapy before active coverage.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "carbapenem_resistance_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Risk that carbapenemase or porin/efflux mechanisms reduce carbapenem activity; boundary signal for CRE-related leaves.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "pseudomonas_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Risk that the bloodstream syndrome may require non-fermenter coverage rather than ESBL Enterobacterales-only coverage.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "ceftazidime_avibactam_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that ceftazidime-avibactam is active when carbapenem resistance or intolerance changes treatment context.", "baseline_range": [0.5, 0.95], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "qtc_prolongation_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Baseline or drug-interaction risk for QTc prolongation relevant to fluoroquinolone utility.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for antimicrobial renal dose adjustment.", "baseline_range": [0, 0.1], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of anaphylaxis or severe cutaneous adverse reaction to beta-lactams.", "baseline_range": [0, 0.03], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "severe_renal_impairment_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Advanced CKD, ESRD, dialysis, or severe AKI affecting drug dosing and toxicity.", "baseline_range": [0, 0.08], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "progression_to_septic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of progression to shock or persistent vasopressor-dependent shock.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 2], "peak_value_range": [0.02, 0.4], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI event hazard from shock, obstruction, sepsis, or nephrotoxins.", "baseline_range": [0.0001, 0.002], "peak_day_range": [0, 4], "peak_value_range": [0.02, 0.25], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "ards_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ARDS event hazard in severe sepsis or pneumonia source.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 5], "peak_value_range": [0.005, 0.12], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Overt DIC event hazard.", "baseline_range": [0.0001, 0.001], "peak_day_range": [1, 5], "peak_value_range": [0.005, 0.18], "plateau_duration_days": [1, 7], "decline_half_life_days": [3, 14], "knowledge_confidence": "high"},
+    {"axis_id": "metastatic_abscess_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of deep abscess, vertebral osteomyelitis/epidural abscess, renal/hepatic abscess, or other metastatic focus after persistent bacteremia.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [2, 14], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "infective_endocarditis_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of endocarditis, especially with prosthetic valve, hemodialysis access, endovascular device, or persistent bacteremia.", "baseline_range": [0.00001, 0.0003], "peak_day_range": [2, 21], "peak_value_range": [0.0005, 0.05], "plateau_duration_days": [7, 42], "decline_half_life_days": [14, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard highest with septic shock, delayed active therapy, organ dysfunction, uncontrolled source, carbapenem resistance, or frailty.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 4], "peak_value_range": [0.01, 0.25], "plateau_duration_days": [1, 10], "decline_half_life_days": [3, 21], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 0], "clinical_rationale": "Fever and tachycardia co-move through cytokine and sympathetic tone.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_lactate", "target_axis_id": "mean_arterial_pressure", "relationship": "inverse_shock_relationship", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 1], "clinical_rationale": "Rising lactate and falling MAP jointly express septic shock physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "hypoperfusion_to_aki", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Hypotension increases AKI hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "esbl_enterobacterales_bacteremia_persistence_days", "relationship": "source_control_shortens_persistence", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 3], "clinical_rationale": "Adequate drainage/removal shortens culture persistence.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_antibiotic_coverage_probability", "target_axis_id": "esbl_enterobacterales_bacteremia_persistence_days", "relationship": "active_coverage_shortens_persistence", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 2], "clinical_rationale": "Active therapy rapidly reduces viable bacteremia when source control is adequate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "initial_inactive_antibiotic_exposure_activity", "target_axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "relationship": "delayed_active_therapy_increases_mortality", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [1, 4], "clinical_rationale": "Delay to active therapy worsens survival in severe ESBL bacteremia.", "knowledge_confidence": "high"},
+    {"source_axis_id": "platelet_count", "target_axis_id": "dic_hazard", "relationship": "thrombocytopenia_marks_dic_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Falling platelets are part of sepsis-induced coagulopathy and DIC risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "d_dimer", "target_axis_id": "dic_hazard", "relationship": "fibrinolysis_marks_dic_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "High D-dimer reflects fibrin turnover and DIC physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_aki_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Rising creatinine marks and predicts AKI event state.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urinary_obstruction_activity", "target_axis_id": "source_control_need", "relationship": "obstruction_requires_decompression", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "clinical_rationale": "Obstruction is a source-control target.", "knowledge_confidence": "high"},
+    {"source_axis_id": "biliary_obstruction_activity", "target_axis_id": "source_control_need", "relationship": "biliary_obstruction_requires_drainage", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "clinical_rationale": "Biliary obstruction sustains bacteremia until drainage.", "knowledge_confidence": "high"},
+    {"source_axis_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "target_axis_id": "infective_endocarditis_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "relationship": "persistence_to_endocarditis_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [2, 14], "clinical_rationale": "Persistent bacteremia increases concern for endovascular infection.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "target_axis_id": "metastatic_abscess_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "relationship": "persistence_to_metastatic_abscess", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [2, 14], "clinical_rationale": "Ongoing bacteremia can seed deep foci.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "serum_procalcitonin", "relationship": "shared_acute_phase_noise", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Both acute-phase markers co-vary but are driven by upstream mechanisms rather than each other.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "relationship": "shock_event_to_mortality_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Shock transition sharply raises near-term mortality hazard.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "meropenem_iv",
+      "drug_class": "carbapenem",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["carbapenem_susceptibility_probability", "meropenem_susceptibility_probability", "carbapenem_resistance_risk_activity", "severe_renal_impairment_activity", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "meropenem_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Microbiologic activity is required for pathogen killing."},
+        {"axis_id": "carbapenem_resistance_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.05, 0.4], "clinical_rationale": "Carbapenemase or combined porin/efflux mechanisms reduce carbapenem effect."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "High-inoculum abscess, obstruction, catheter, or device source cannot be reliably sterilized by antibiotics alone."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0, 0.5], "clinical_rationale": "Severe beta-lactam reaction history may preclude carbapenem use or require specialist-supervised administration."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Dose adjustment is needed to avoid neurotoxicity while preserving exposure."}
+      ],
+      "failure_modes": ["carbapenemase-producing Enterobacterales", "undrained high-inoculum focus", "renal underdosing or toxicity-limited dosing"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.2, 0.55], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [0.5, 2]},
+        "M_ESBL_EB_INNATE_CYTOKINE_RESPONSE": {"peak_value_factor": [0.45, 0.8], "decline_half_life_days": [1, 3]},
+        "M_ESBL_EB_ORGAN_DYSFUNCTION": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [3, 10]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "seizure_activity", "direction": "up", "magnitude_range": [0, 0.08], "interpretation": "Rare neurotoxicity, higher with renal impairment or CNS disease."},
+        {"axis_id": "secondary_infection_hazard", "direction": "up", "magnitude_range": [0.002, 0.02], "interpretation": "Selection pressure and C. difficile risk."}
+      ],
+      "context_specific_role": "Broad carbapenem option when ESBL bacteremia is severe, source is uncertain, Pseudomonas co-coverage is needed, or ertapenem exposure may be inadequate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "ertapenem_iv",
+      "drug_class": "carbapenem",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["carbapenem_susceptibility_probability", "pseudomonas_risk_activity", "carbapenem_resistance_risk_activity", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Ertapenem requires carbapenem-susceptible Enterobacterales."},
+        {"axis_id": "pseudomonas_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.1, 0.4], "clinical_rationale": "Ertapenem lacks Pseudomonas activity if the syndrome may not be limited to Enterobacterales."},
+        {"axis_id": "carbapenem_resistance_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.05, 0.4], "clinical_rationale": "CRE risk reduces expected carbapenem activity."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "High-inoculum source still needs drainage or removal."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Renal dosing is required."}
+      ],
+      "failure_modes": ["Pseudomonas or Acinetobacter co-pathogen", "carbapenemase production", "critical illness pharmacokinetic underexposure", "undrained focus"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.25, 0.8], "decline_half_life_days": [0.5, 2.5]},
+        "M_ESBL_EB_ACUTE_PHASE_RESPONSE": {"peak_value_factor": [0.5, 0.85], "decline_half_life_days": [2, 5]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "secondary_infection_hazard", "direction": "up", "magnitude_range": [0.001, 0.015], "interpretation": "Broad-spectrum selection pressure."}
+      ],
+      "context_specific_role": "Narrower once-daily carbapenem option for susceptible ESBL Enterobacterales bacteremia when non-fermenter coverage is not needed and exposure is reliable.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "imipenem_cilastatin_iv",
+      "drug_class": "carbapenem",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["carbapenem_susceptibility_probability", "carbapenem_resistance_risk_activity", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Pathogen must be carbapenem susceptible."},
+        {"axis_id": "carbapenem_resistance_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.05, 0.4], "clinical_rationale": "CRE mechanisms reduce imipenem activity."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Renal impairment increases neurotoxicity risk."}
+      ],
+      "failure_modes": ["carbapenemase production", "renal toxicity or neurotoxicity-limited dosing", "undrained source"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.25, 0.65], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 3]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "seizure_activity", "direction": "up", "magnitude_range": [0, 0.12], "interpretation": "Higher seizure signal than meropenem in susceptible hosts."}
+      ],
+      "context_specific_role": "Carbapenem alternative when local dosing, susceptibility, and toxicity context support use.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "piperacillin_tazobactam_iv",
+      "drug_class": "anti_pseudomonal_beta_lactam_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["piperacillin_tazobactam_susceptibility_probability", "esbl_risk_activity", "source_control_need", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "piperacillin_tazobactam_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.7, 1], "clinical_rationale": "In vitro susceptibility is needed but may not fully predict bloodstream efficacy."},
+        {"axis_id": "esbl_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.25, 0.75], "clinical_rationale": "Serious ESBL bacteremia has higher failure concern under piperacillin-tazobactam, especially with high inoculum."},
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "weakens", "factor_range": [0.2, 0.6], "clinical_rationale": "Shock makes marginal activity less acceptable in the forward simulation."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "High-inoculum source worsens beta-lactam/beta-lactamase inhibitor reliability."}
+      ],
+      "failure_modes": ["high inoculum ESBL bacteremia", "elevated MIC near breakpoint", "source not controlled", "coexisting AmpC or carbapenemase"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.5, 1.0], "plateau_duration_factor": [0.6, 1.2], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 0.6], "interpretation": "AKI signal, especially with concurrent vancomycin or shock."}
+      ],
+      "context_specific_role": "Potential empiric or de-escalation candidate only when susceptibility, severity, inoculum, and source-control context make effective coverage plausible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cefepime_iv",
+      "drug_class": "fourth_generation_cephalosporin",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["cefepime_susceptibility_probability", "esbl_risk_activity", "source_control_need", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "cefepime_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.4, 0.8], "clinical_rationale": "Low MIC may retain some activity but ESBL inoculum effect remains important."},
+        {"axis_id": "esbl_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.1, 0.5], "clinical_rationale": "ESBL hydrolysis and inoculum effect reduce cefepime reliability in bloodstream infection."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "High-inoculum sources magnify failure risk."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Renal impairment increases neurotoxicity risk."}
+      ],
+      "failure_modes": ["ESBL inoculum effect", "MIC near breakpoint", "sepsis shock", "renal toxicity-limited dosing"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.65, 1.1], "plateau_duration_factor": [0.8, 1.4], "decline_half_life_days": [2, 7]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "mental_status_abnormality_activity", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "Cefepime neurotoxicity risk, especially with renal impairment."}
+      ],
+      "context_specific_role": "Empiric exposure or unusual susceptibility context; forward outcome should penalize unreliable activity when ESBL probability and severity are high.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "ceftazidime_avibactam_iv",
+      "drug_class": "cephalosporin_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["ceftazidime_avibactam_susceptibility_probability", "carbapenem_resistance_risk_activity", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "ceftazidime_avibactam_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Activity requires susceptibility to this agent."},
+        {"axis_id": "carbapenem_resistance_risk_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 2.0], "clinical_rationale": "Carbapenem resistance shifts need toward active non-carbapenem beta-lactam/beta-lactamase inhibitor options when susceptible."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "Source control remains necessary for high-inoculum foci."}
+      ],
+      "failure_modes": ["metallo-beta-lactamase without aztreonam partner", "resistance emergence during prolonged therapy", "undrained source"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.25, 0.65], "plateau_duration_factor": [0.3, 0.85], "decline_half_life_days": [0.5, 3]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 0.4], "interpretation": "Dose adjustment and renal monitoring are needed."}
+      ],
+      "context_specific_role": "Active option when ESBL bacteremia crosses into carbapenem-resistance or intolerance contexts and susceptibility supports use.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "amikacin_or_gentamicin_iv",
+      "drug_class": "aminoglycoside",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["aminoglycoside_susceptibility_probability", "severe_renal_impairment_activity", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "aminoglycoside_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Susceptibility is required for bactericidal activity."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.2, 0.7], "clinical_rationale": "Renal impairment sharply increases nephrotoxicity and ototoxicity risk."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "May temporarily add activity while definitive beta-lactam coverage is clarified."}
+      ],
+      "failure_modes": ["monotherapy in high-inoculum bacteremia", "AKI or ESRD toxicity", "subtherapeutic exposure"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 4]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 2], "interpretation": "Nephrotoxicity risk increases with duration, shock, and baseline CKD."},
+        {"axis_id": "hearing_loss_presence", "direction": "up", "magnitude_range": [0, 0.3], "interpretation": "Ototoxicity risk with repeated dosing or high exposure."}
+      ],
+      "context_specific_role": "Short-course adjunct or selected definitive component when susceptibility and toxicity context support it.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "fluoroquinolone_oral_or_iv",
+      "drug_class": "fluoroquinolone",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["fluoroquinolone_susceptibility_probability", "active_antibiotic_coverage_probability", "source_control_adequacy", "qtc_prolongation_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "fluoroquinolone_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Susceptibility is required and should be interpreted cautiously in serious ESBL infection."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Stepdown is more plausible after clinical response and adequate source control."},
+        {"axis_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "condition": "high", "effect": "weakens", "factor_range": [0.2, 0.6], "clinical_rationale": "Persistent bacteremia argues against marginal oral or lower-barrier therapy."},
+        {"axis_id": "qtc_prolongation_risk_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "QT prolongation risk changes treatment utility."}
+      ],
+      "failure_modes": ["undetected quinolone resistance mutation", "persistent bacteremia", "poor source control", "QT or tendon/CNS toxicity"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.1], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "qtc_prolongation_risk_activity", "direction": "up", "magnitude_range": [0, 0.25], "interpretation": "QT risk and drug interactions can limit use."}
+      ],
+      "context_specific_role": "Oral or IV continuation candidate only when isolate, patient stability, source control, and toxicity context support reliable exposure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "trimethoprim_sulfamethoxazole_oral_or_iv",
+      "drug_class": "folate_pathway_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["trimethoprim_sulfamethoxazole_susceptibility_probability", "severe_renal_impairment_activity", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Susceptibility is required."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Continuation therapy is more plausible after source control and clearance."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Renal impairment raises hyperkalemia, creatinine rise, and dosing concerns."}
+      ],
+      "failure_modes": ["resistance", "renal toxicity or hyperkalemia", "deep uncontrolled focus", "absorption problems"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.45, 0.9], "plateau_duration_factor": [0.5, 1.1], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 0.6], "interpretation": "Creatinine can rise from trimethoprim effect or true renal injury."},
+        {"axis_id": "serum_potassium", "direction": "up", "magnitude_range": [0, 1.5], "interpretation": "Hyperkalemia risk in CKD, ACEi/ARB, or high-dose therapy."}
+      ],
+      "context_specific_role": "Selected continuation option after susceptibility, clearance, and source control are established.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "source_control_drainage_decompression_or_device_removal",
+      "drug_class": "procedure_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "drainable_focus_probability", "infected_catheter_probability"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "required_for_effect", "factor_range": [1, 1], "clinical_rationale": "Procedure benefit exists when there is a removable or drainable nidus."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.5], "clinical_rationale": "Adequate source control shortens bacteremia and improves organ recovery."},
+        {"axis_id": "drainable_focus_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.0], "clinical_rationale": "Drainable foci respond to source control."},
+        {"axis_id": "infected_catheter_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 2.0], "clinical_rationale": "Catheter removal can rapidly reduce bloodstream seeding."}
+      ],
+      "failure_modes": ["no accessible focus", "incomplete drainage", "delayed decompression", "retained infected prosthetic material"],
+      "trajectory_modifications": {
+        "M_ESBL_EB_PRIMARY_SOURCE_SEEDING": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.25, 2]},
+        "M_ESBL_EB_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 3]},
+        "M_ESBL_EB_PERSISTENCE_METASTATIC_SEEDING": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8]}
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [7, 60],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Procedure bleeding risk depends on anatomy and coagulopathy."}
+      ],
+      "context_specific_role": "Drainage, decompression, catheter removal, infected-device management, or operative source control when a persistent source is present.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "prior_esbl_colonization_or_infection",
+      "type": "resistance_acquisition",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3, 15],
+          "axis_response_modulation": [
+            {"axis_id": "esbl_risk_activity", "direction": "up", "factor_range": [3, 10]},
+            {"axis_id": "ceftriaxone_susceptibility_probability", "direction": "down", "factor_range": [0.05, 0.4]},
+            {"axis_id": "initial_inactive_antibiotic_exposure_activity", "direction": "up", "factor_range": [1.5, 4]}
+          ],
+          "trajectory_modulation": "Raises ESBL prior and the chance that standard cephalosporin empiric therapy is inactive."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_broad_spectrum_antibiotic_exposure",
+      "type": "resistance_acquisition",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6],
+          "axis_response_modulation": [
+            {"axis_id": "healthcare_associated_resistance_risk_activity", "direction": "up", "factor_range": [2, 6]},
+            {"axis_id": "esbl_risk_activity", "direction": "up", "factor_range": [1.5, 5]},
+            {"axis_id": "carbapenem_resistance_risk_activity", "direction": "up", "factor_range": [1.2, 4]}
+          ],
+          "trajectory_modulation": "Selects resistant Enterobacterales and increases empiric-coverage uncertainty."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "healthcare_exposure_long_term_care_dialysis_or_recent_hospitalization",
+      "type": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "healthcare_associated_resistance_risk_activity", "direction": "up", "factor_range": [2, 8]},
+            {"axis_id": "catheter_source_probability", "direction": "up", "factor_range": [1.5, 6]},
+            {"axis_id": "carbapenem_resistance_risk_activity", "direction": "up", "factor_range": [1.2, 5]}
+          ],
+          "trajectory_modulation": "Raises MDR/ESBL prior and device/source-control probability."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "urinary_obstruction_instrumentation_or_recurrent_uti",
+      "type": "source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_source_probability", "direction": "up", "factor_range": [2, 8]},
+            {"axis_id": "urinary_obstruction_activity", "direction": "up", "factor_range": [1.5, 8]},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.2, 4]}
+          ],
+          "trajectory_modulation": "Makes urinary-source bacteremia and decompression needs more likely."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "biliary_or_intra_abdominal_obstruction_abscess_or_postoperative_source",
+      "type": "source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 6],
+          "axis_response_modulation": [
+            {"axis_id": "biliary_source_probability", "direction": "up", "factor_range": [1.5, 8]},
+            {"axis_id": "intra_abdominal_source_probability", "direction": "up", "factor_range": [1.5, 8]},
+            {"axis_id": "drainable_focus_probability", "direction": "up", "factor_range": [1.5, 8]},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.5, 8]},
+            {"axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [1.1, 3]}
+          ],
+          "trajectory_modulation": "Raises high-inoculum persistent source and delayed-clearance risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "immunosuppression_neutropenia_solid_organ_transplant_or_high_dose_steroids",
+      "type": "host_clearance",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "M_ESBL_EB_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [2, 8]},
+            {"axis_id": "white_blood_cell_count", "direction": "down", "factor_range": [0, 0.7]},
+            {"axis_id": "body_temperature", "direction": "down", "factor_range": [0.4, 0.9]},
+            {"axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [1.3, 5]}
+          ],
+          "coupling_modulation": [
+            {"source_axis_id": "body_temperature", "target_axis_id": "serum_crp", "effect": "weakens", "factor_range": [0.4, 0.9]}
+          ],
+          "trajectory_modulation": "Raises persistence and mortality while allowing muted fever/WBC signal."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_mellitus_or_chronic_kidney_disease",
+      "type": "host_comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_source_probability", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "severe_renal_impairment_activity", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.2, 4]}
+          ],
+          "trajectory_modulation": "Raises urinary complications and AKI/toxicity risk; CKD baseline should be handled by background modifiers when no CKD manifold is active."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_age_frailty_or_high_baseline_severity",
+      "type": "host_vulnerability",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "direction": "down", "factor_range": [0.5, 0.95]},
+            {"axis_id": "mental_status_abnormality_activity", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [1.5, 6]}
+          ],
+          "trajectory_modulation": "Increases organ dysfunction and death risk and may obscure fever."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prosthetic_valve_endovascular_device_or_hemodialysis_access",
+      "type": "metastatic_focus_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 4],
+          "axis_response_modulation": [
+            {"axis_id": "infective_endocarditis_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [2, 12]},
+            {"axis_id": "persistent_bacteremia_activity_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.2, 5]}
+          ],
+          "trajectory_modulation": "Raises persistence and endovascular complication hazard."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "carbapenemase_endemic_exposure_or_known_cre_colonization",
+      "type": "resistance_boundary_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.7, 2],
+          "axis_response_modulation": [
+            {"axis_id": "carbapenem_resistance_risk_activity", "direction": "up", "factor_range": [3, 12]},
+            {"axis_id": "carbapenem_susceptibility_probability", "direction": "down", "factor_range": [0.05, 0.6]},
+            {"axis_id": "mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA", "direction": "up", "factor_range": [1.5, 5]}
+          ],
+          "trajectory_modulation": "Boundary signal that the case may need a CRE/carbapenemase-related manifold or treatment modifier rather than ordinary ESBL assumptions."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "early_sepsis_recognition_and_repeat_cultures", "mode": "monitoring", "target_axes": ["blood_culture_positivity_probability", "esbl_enterobacterales_bacteremia_persistence_days", "serum_lactate", "sofa_score"], "clinical_role": "Defines culture clearance and severity trajectory without using species identity as a diagnosis label.", "knowledge_confidence": "high"},
+    {"care_id": "hemodynamic_resuscitation_and_vasopressors", "mode": "push_state", "target_axes": ["mean_arterial_pressure", "serum_lactate", "urine_output", "progression_to_septic_shock_hazard"], "clinical_role": "Supports perfusion while antibiotics and source control reshape the disease trajectory.", "knowledge_confidence": "high"},
+    {"care_id": "renal_support_and_antimicrobial_dose_optimization", "mode": "modulate_theta", "target_axes": ["serum_creatinine", "urine_output", "renal_dose_adjustment_need", "severe_renal_impairment_activity"], "clinical_role": "Maintains exposure and reduces toxicity in AKI/CKD/ESRD.", "knowledge_confidence": "high"},
+    {"care_id": "source_imaging_and_source_control_coordination", "mode": "reshape_landscape", "target_axes": ["source_control_need", "source_control_adequacy", "drainable_focus_probability", "infected_catheter_probability"], "clinical_role": "Finds and removes persistent reservoirs such as obstruction, abscess, or infected catheter.", "knowledge_confidence": "high"},
+    {"care_id": "de_escalation_and_oral_continuation_assessment", "mode": "reshape_landscape", "target_axes": ["active_antibiotic_coverage_probability", "fluoroquinolone_susceptibility_probability", "trimethoprim_sulfamethoxazole_susceptibility_probability", "source_control_adequacy"], "clinical_role": "Moves to narrower or oral therapy only when susceptibility, clearance, stability, and source-control context support it.", "knowledge_confidence": "medium"}
+  ],
+  "quality_notes": [
+    "The only derived_hazard axis is mortality_hazard_in_D-ESBL-ENTEROBACTERALES-BACTEREMIA.",
+    "Species, source, shock state, healthcare association, and host immunosuppression are not disease-name qualifiers.",
+    "Ceftriaxone/cefepime/piperacillin-tazobactam/carbapenem susceptibility are treatment modifiers, not diagnosis labels.",
+    "Carbapenemase risk is represented as a boundary modifier; a CRE-specific disease leaf may be needed for high-carbapenem-resistance cases."
+  ]
+}

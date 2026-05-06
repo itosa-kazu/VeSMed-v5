@@ -649,6 +649,28 @@ Follow-up after generic evidence/runtime fixes:
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
 
+## 2026-05-07 New Batch Memory: ESBL Bacteremia / CLABSI / HHS
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ESBL-ENTEROBACTERALES-BACTEREMIA`: ESBL Enterobacterales bacteremia.
+  - `D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION`: central line-associated bloodstream infection.
+  - `D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE`: hyperosmolar hyperglycemic state.
+- New real PMC/PubMed cases:
+  - `D-ESBL-ENTEROBACTERALES-BACTEREMIA`: `PMC6312905` / PMID `30600660`, `PMC6092525` / PMID `30128293`, `PMC8365431` / PMID `34429959`.
+  - `D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION`: `PMC8464211` / PMID `34603589`, `PMC10704788` / PMID `38062360`, `PMC12763422` / PMID `41487767`.
+  - `D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE`: `PMC8984746` / PMID `34670070`, `PMC4241748` / PMID `25431711`, `PMC7158592` / PMID `32300498`.
+- Resistance-phenotype leaf rule: ESBL bacteremia is not a presentation-only diagnosis. It requires post-microbiology resistance-phenotype evidence. Runtime now supports `distillation_scope.candidate_requires_diagnostic_stage`; `D-ESBL-ENTEROBACTERALES-BACTEREMIA` is only eligible when the case has `diagnostic_stage: "post_microbiology_resistance_phenotype"`. This avoids forcing ordinary sepsis presentations into ESBL while allowing ESBL phenotype, ceftriaxone non-susceptibility, and carbapenem susceptibility to be rankable in explicit post-microbiology tests.
+- Legacy case migration: `SEPSIS_ECOLI_PMC6312905_APN_bacteremia` was reclassified to `D-ESBL-ENTEROBACTERALES-BACTEREMIA` because the paper diagnosis and structured observations explicitly identify persistent ESBL-producing E. coli bacteremia; the newer ESBL case from the same PMCID is the better structured version, but both now test the same post-microbiology resistance leaf.
+- CLABSI source rule: keep this leaf separate from organism-level bacteremia leaves and source organisms. Central-line presence, differential time to positivity, catheter-tip culture, exit-site/tunnel infection, persistent bacteremia, septic thrombophlebitis, septic embolization, and line removal/source control can be rankable when available. Organism species, susceptibility, and treatment response remain confirmatory/non-ranking unless testing post-workup mode.
+- HHS boundary rule: first-layer HHS remains pure. Mixed DKA/HHS, T1DM adolescent HHS, ODS, rhabdomyolysis, stroke, sepsis trigger, and renal failure are context/event axes or future combo/subtype, not disease-name qualifiers.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-TRAPS`.
+- Focused new-batch fast grid (`ESBL_ENTEROBACTERALES_BACTEREMIA,CENTRAL_LINE_ASSOCIATED_BLOODSTREAM_INFECTION,HYPEROSMOLAR_HYPERGLYCEMIC_STATE`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 335 case JSON files loaded.
+  - Single-manifold validation `330/332 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
 ## 2026-05-06 New Batch Memory: Polymyositis / Drug Fever / Alcoholic Hepatitis
 
 - The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
