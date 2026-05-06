@@ -583,3 +583,24 @@ Follow-up after generic evidence/runtime fixes:
   - 252 cases loaded; single-manifold validation `248/250 PASS`; combo intentionally off.
   - Single fails: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL` (accepted mimic exposure), and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL` (accepted lymphoma-family presentation-only ambiguity).
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remains `1/1 PASS` with `AOSD_TTP_CONCURRENT_PMC7523203` ranking `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: RA flare / Sickle ACS / SEA
+
+- The next 3-disease loop used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-RA-FLARE`: rheumatoid arthritis systemic flare.
+  - `D-SICKLE-CELL-ACUTE-CHEST`: sickle cell acute chest syndrome.
+  - `D-SPINAL-EPIDURAL-ABSCESS`: spinal epidural abscess.
+- Each new disease leaf has 3 real PMC/PubMed case JSON files:
+  - `D-RA-FLARE`: `PMC8009616`, `PMC12547289`, `PMC11110478`.
+  - `D-SICKLE-CELL-ACUTE-CHEST`: `PMC10897885`, `PMC6733779`, `PMC6378019`.
+  - `D-SPINAL-EPIDURAL-ABSCESS`: `PMC6092525`, `PMC7568137`, `PMC9062902`.
+- RA flare source selection rule from this batch: do not label Felty syndrome, immune-checkpoint-inhibitor induced arthritis, or unrelated RA comorbidity papers as ordinary `D-RA-FLARE` cases just to reach a case count. Use clean RA flare cases or defer the leaf.
+- Sickle cell acute chest syndrome is trigger-agnostic at first-layer leaf level. Infection, VOC, fat embolism, COVID trigger, and undiagnosed HbSC/SCD context stay as mechanisms/risk context, not separate prompt qualifiers.
+- Spinal epidural abscess rankable evidence may include presentation MRI pattern and early microbiology context, but operative aspirate culture, final susceptibility, and treatment response should remain confirmatory/non-ranking unless testing a post-workup mode.
+- UI roadmap policy was tightened: `parse_roadmap_presets()` now filters out disease ids that already have `distillations/v5_*.json`; completed leaves appear through the distilled-atlas dropdown, not as future roadmap candidates. Default next UI roadmap candidate is `D-RHEUMATIC-FEVER`.
+- Focused new-batch fast grid (`RA_FLARE,SICKLE_CELL_ACUTE_CHEST,SPINAL_EPIDURAL_ABSCESS`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 261 case JSON files loaded.
+  - Single-manifold validation `257/259 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remains `1/1 PASS` with `AOSD_TTP_CONCURRENT_PMC7523203` ranking `D137+D-TTP`.

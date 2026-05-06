@@ -335,11 +335,17 @@ def parse_roadmap_presets():
     """Read the roadmap markdown and expose disease-leaf candidates to the UI.
 
     The current atlas audit table is intentionally ignored; only the "Next 20"
-    and candidate-pool sections are selectable roadmap presets.
+    and candidate-pool sections are selectable roadmap presets. Diseases that
+    already have a distillation file are filtered out because they are exposed
+    by the distilled-atlas dropdown.
     """
     if not ROADMAP_PATH.exists():
         return []
 
+    distilled_ids = {
+        path.stem.removeprefix("v5_")
+        for path in DISTILL_DIR.glob("v5_*.json")
+    }
     section_group = None
     items = []
     seen = set()
@@ -371,6 +377,8 @@ def parse_roadmap_presets():
         if not disease_id or not disease_name:
             continue
         if not (disease_id.startswith("D-") or disease_id == "D137"):
+            continue
+        if disease_id in distilled_ids:
             continue
         if disease_id in seen:
             continue

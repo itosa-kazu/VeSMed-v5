@@ -1,0 +1,1419 @@
+{
+  "disease": "D-RA-FLARE",
+  "disease_name": "Rheumatoid arthritis systemic flare",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+      "display_name": "Autoreactive B/T cell and autoantibody activity",
+      "clinical_meaning": "Reactivation of rheumatoid autoimmunity with RF/ACPA-associated immune activation, antigen presentation, macrophage recruitment, and systemic flare potential.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.05, 0.25],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.45, 0.95],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "display_name": "Inflammatory synovitis and tenosynovitis",
+      "clinical_meaning": "Activated synovial macrophages, fibroblast-like synoviocytes, T cells, B cells, and neutrophil-rich effusions drive swollen painful joints, morning stiffness, and inflammatory synovial fluid.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.02, 0.15],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "display_name": "IL-6/TNF acute phase inflammatory activity",
+      "clinical_meaning": "Cytokine amplification from IL-6, TNF, IL-1, IL-17, and macrophage pathways drives CRP/ESR elevation, fever, fatigue, anemia of inflammation, and reactive thrombocytosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.02, 0.12],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 0.95],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "display_name": "Extra-articular serosal and lung inflammatory activity",
+      "clinical_meaning": "Systemic RA inflammation can flare as rheumatoid pleuritis, pleural effusion, pneumonitis, or acute exacerbation of RA-associated interstitial lung disease.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [1, 30],
+      "peak_value_range": [0.15, 0.85],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY",
+      "display_name": "Cartilage and bone erosion activity",
+      "clinical_meaning": "Persistent synovitis activates osteoclasts, matrix metalloproteinases, pannus invasion, and structural damage risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [30, 365],
+      "peak_value_range": [0.15, 0.75],
+      "plateau_duration_days": [90, 730],
+      "decline_half_life_days": [90, 730],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_TREATMENT_HOST_SUSCEPTIBILITY_ACTIVITY",
+      "display_name": "Treatment and host susceptibility context",
+      "clinical_meaning": "Baseline immunosuppression, glucocorticoid exposure, biologics, age, and lung disease shape infection risk, muted inflammatory markers, and respiratory reserve during a flare.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+      "target_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "RA autoimmunity sustains macrophage and fibroblast-like synoviocyte activation in involved joints.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+      "target_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 14],
+      "phase": "flare",
+      "clinical_rationale": "Autoimmune reactivation amplifies TNF, IL-6, IL-1, and IL-17 pathways.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+      "target_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 90],
+      "phase": "systemic_flare",
+      "clinical_rationale": "Systemic RA can involve pleura and lung parenchyma during flares, especially in seropositive or established disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [30, 365],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Persistent synovitis drives erosive joint damage through pannus and osteoclast pathways.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "arthritis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "flare",
+      "clinical_rationale": "Objective synovitis is the core clinical expression of an articular RA flare.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "arthralgia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "flare",
+      "clinical_rationale": "Synovial inflammation causes joint pain and tenderness.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "joint_swelling_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "flare",
+      "clinical_rationale": "Synovitis and effusion produce visible or palpable swelling.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "morning_stiffness_duration_minutes",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "flare",
+      "clinical_rationale": "Inflammatory arthritis prolongs morning stiffness.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "drainable_joint_effusion_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "large_joint_flare",
+      "clinical_rationale": "Large-joint RA flares can produce drainable effusions that mimic septic arthritis or PJI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "synovial_fluid_wbc_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "large_joint_flare",
+      "clinical_rationale": "Inflammatory RA effusions can have thousands to tens of thousands of leukocytes per microliter.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "synovial_fluid_neutrophil_fraction",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "large_joint_flare",
+      "clinical_rationale": "Active inflammatory effusions may be neutrophil-predominant, although cultures and crystal analysis remain diagnostic workup context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+      "target_id": "matrix_metalloproteinase_3",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [3, 30],
+      "phase": "active_synovitis",
+      "clinical_rationale": "MMP-3 is a synovial inflammation and joint-damage activity marker used in some RA cohorts.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "flare",
+      "clinical_rationale": "IL-6 is a dominant driver of hepatic CRP production in active RA.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "erythrocyte_sedimentation_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 14],
+      "phase": "flare",
+      "clinical_rationale": "ESR rises with fibrinogen and immunoglobulin changes in systemic inflammatory RA activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_flare",
+      "clinical_rationale": "Systemic RA flares may cause low-grade fever; high persistent fever should remain a mimic exposure for infection or autoinflammatory disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_flare",
+      "clinical_rationale": "Qualitative fever history can reflect systemic inflammatory activity when exact temperature is absent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "fatigue_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "flare",
+      "clinical_rationale": "Cytokine activity contributes to fatigue and malaise during RA flares.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_flare",
+      "clinical_rationale": "Inflammation and glucocorticoid exposure can produce mild leukocytosis; marked leukocytosis remains a mimic exposure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "platelet_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [3, 21],
+      "phase": "flare",
+      "clinical_rationale": "Reactive thrombocytosis tracks inflammatory burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [14, 90],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Anemia of inflammation can accompany persistent systemic RA activity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+      "target_id": "rheumatoid_factor_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [30, 3650],
+      "phase": "background_disease_context",
+      "clinical_rationale": "RF positivity supports RA biology but is not a short-term flare gauge and should not be used as presentation-only confirmatory evidence unless explicitly allowed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "pleural_effusion_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 30],
+      "phase": "extra_articular_flare",
+      "clinical_rationale": "Rheumatoid pleuritis can produce exudative pleural effusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "pleural_effusion_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 30],
+      "phase": "extra_articular_flare",
+      "clinical_rationale": "Pleural effusion extent tracks serosal inflammation burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "pulmonary_flare",
+      "clinical_rationale": "Pleural effusion, pneumonitis, or ILD exacerbation can cause dyspnea.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "ground_glass_opacity_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "phase": "pulmonary_flare",
+      "clinical_rationale": "RA-associated pneumonitis or ILD exacerbation can show ground-glass opacities, but infection must remain a major mimic.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "interstitial_lung_disease_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "pulmonary_flare",
+      "clinical_rationale": "RA-ILD activity can become clinically visible during systemic flares.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "pulmonary_flare",
+      "clinical_rationale": "Severe pulmonary RA activity may impair gas exchange.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY",
+      "target_id": "respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 14],
+      "phase": "severe_pulmonary_flare",
+      "clinical_rationale": "Acute RA-ILD exacerbation or large effusion can progress to respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY",
+      "target_id": "severe_joint_damage_hazard_in_D-RA-FLARE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [30, 365],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Uncontrolled synovitis raises structural damage and disability risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_TREATMENT_HOST_SUSCEPTIBILITY_ACTIVITY",
+      "target_id": "serious_infection_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 30],
+      "phase": "treatment_context",
+      "clinical_rationale": "Age, steroids, biologics, JAK inhibitors, and comorbidity raise serious infection hazard during flare treatment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "respiratory_failure_hazard",
+      "target_id": "mortality_hazard_in_D-RA-FLARE",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 7],
+      "phase": "severe_pulmonary_flare",
+      "clinical_rationale": "Respiratory failure is the main short-term death pathway in severe systemic RA pulmonary flare.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "serious_infection_hazard",
+      "target_id": "mortality_hazard_in_D-RA-FLARE",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 14],
+      "phase": "treatment_context",
+      "clinical_rationale": "Serious infection or missed infection increases mortality during immunosuppressive flare treatment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-RA-FLARE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 30],
+      "phase": "severe_systemic_flare",
+      "clinical_rationale": "Most RA flares have low short-term mortality; extreme systemic cytokine activity can contribute to organ-level risk.",
+      "knowledge_confidence": "low"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "arthritis_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Objective inflammatory arthritis burden, including tender/swollen joints or clinically active synovitis.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "arthralgia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Subjective joint pain or tenderness during a flare.",
+      "baseline_range": [0, 0.1],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "joint_swelling_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Visible or palpable swelling from synovitis or effusion.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "satellite",
+      "parent_axis_id": "arthritis_activity"
+    },
+    {
+      "axis_id": "morning_stiffness_duration_minutes",
+      "category": "physical_finding",
+      "unit": "minutes",
+      "log_scale": false,
+      "shape_free_text": "Duration of inflammatory morning stiffness.",
+      "baseline_range": [0, 15],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [30, 240],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement",
+      "parent_axis_id": "arthritis_activity"
+    },
+    {
+      "axis_id": "drainable_joint_effusion_probability",
+      "category": "imaging_finding",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Probability that an inflamed joint has an effusion large enough to aspirate or show clearly on ultrasound.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "medium",
+      "axis_role": "satellite",
+      "parent_axis_id": "arthritis_activity"
+    },
+    {
+      "axis_id": "synovial_fluid_wbc_count",
+      "category": "lab_value",
+      "unit": "cells_per_uL",
+      "log_scale": true,
+      "shape_free_text": "Inflammatory synovial-fluid leukocyte count in an RA effusion; can overlap septic arthritis cutoffs and must be interpreted with culture/crystal context.",
+      "baseline_range": [0, 200],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [1500, 50000],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement",
+      "parent_axis_id": "arthritis_activity"
+    },
+    {
+      "axis_id": "synovial_fluid_neutrophil_fraction",
+      "category": "lab_value",
+      "unit": "percent",
+      "log_scale": false,
+      "shape_free_text": "Neutrophil fraction in inflammatory RA synovial fluid.",
+      "baseline_range": [0, 25],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [20, 85],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement",
+      "parent_axis_id": "synovial_fluid_wbc_count"
+    },
+    {
+      "axis_id": "matrix_metalloproteinase_3",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "shape_free_text": "MMP-3 activity marker reflecting synovial inflammation and joint destruction biology in RA.",
+      "baseline_range": [10, 120],
+      "peak_day_range": [7, 60],
+      "peak_value_range": [80, 800],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "CRP elevation from IL-6-driven acute phase activity; may be muted by IL-6 blockade.",
+      "baseline_range": [0.2, 5],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [5, 225],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "erythrocyte_sedimentation_rate",
+      "category": "lab_value",
+      "unit": "mm_per_hr",
+      "log_scale": false,
+      "shape_free_text": "ESR elevation reflecting systemic inflammatory RA activity.",
+      "baseline_range": [0, 25],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [25, 120],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "shape_free_text": "Usually normal or low-grade fever; marked fever should keep infection, Still disease, HLH/MAS, and other mimics competitive.",
+      "baseline_range": [36.4, 37.3],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [36.8, 38.8],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "category": "clinical_course_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Qualitative fever or feverishness during systemic flare.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Fatigue, malaise, or systemic sickness feeling during inflammatory activity.",
+      "baseline_range": [0, 0.15],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "May be normal or mildly high from inflammation or glucocorticoids; leukopenia suggests drug toxicity, Felty syndrome, SLE, viral infection, or marrow disease.",
+      "baseline_range": [4, 10],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [4, 18],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Neutrophils may be normal or mildly high, especially with glucocorticoids.",
+      "baseline_range": [2, 7],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [2.5, 15],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Anemia of inflammation may accompany persistent systemic RA activity.",
+      "baseline_range": [12, 16],
+      "peak_day_range": [14, 90],
+      "peak_value_range": [8.5, 13],
+      "plateau_duration_days": [30, 180],
+      "decline_half_life_days": [30, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Reactive thrombocytosis may track inflammation; thrombocytopenia suggests alternative or comorbid processes.",
+      "baseline_range": [150, 350],
+      "peak_day_range": [7, 60],
+      "peak_value_range": [220, 750],
+      "plateau_duration_days": [14, 120],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "rheumatoid_factor_activity",
+      "category": "qualitative",
+      "unit": "probability_0_1_positive",
+      "log_scale": false,
+      "shape_free_text": "RF positivity is a chronic RA context marker, not a short-term flare marker.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [30, 3650],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [365, 3650],
+      "decline_half_life_days": [365, 3650],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "pleural_effusion_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Rheumatoid pleuritis or systemic serositis activity producing pleural effusion.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [1, 30],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "pleural_effusion_extent",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Extent of pleural effusion from rheumatoid pleuritis or inflammatory serositis.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [1, 30],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "satellite",
+      "parent_axis_id": "pleural_effusion_activity"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Dyspnea from pleural effusion, pneumonitis, or RA-ILD exacerbation.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "ground_glass_opacity_extent",
+      "category": "imaging",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Ground-glass opacity burden during RA pneumonitis or ILD exacerbation; infection remains a key mimic.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "interstitial_lung_disease_extent",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "RA-associated ILD activity or acute exacerbation extent.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "shape_free_text": "Oxygen saturation can fall in severe pulmonary RA flare.",
+      "baseline_range": [95, 100],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [80, 98],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "respiratory_failure_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Respiratory failure risk from RA-ILD exacerbation, pneumonitis, or large pleural effusion.",
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0005, 0.35],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serious_infection_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Serious infection risk from immunosuppression and missed infectious mimics during flare management.",
+      "baseline_range": [0.00001, 0.001],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0002, 0.08],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "severe_joint_damage_hazard_in_D-RA-FLARE",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Hazard of structural damage or function loss from persistent uncontrolled inflammatory synovitis.",
+      "baseline_range": [0.000001, 0.00005],
+      "peak_day_range": [30, 365],
+      "peak_value_range": [0.0001, 0.05],
+      "plateau_duration_days": [30, 730],
+      "decline_half_life_days": [60, 730],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-RA-FLARE",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Disease-specific lifespan hazard for RA systemic flare, mainly mediated by respiratory failure, serious infection, severe frailty, and rare extreme systemic inflammation.",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.00002, 0.12],
+      "plateau_duration_days": [3, 120],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "arthritis_activity",
+      "target_axis_id": "joint_swelling_activity",
+      "relationship": "shared_synovitis_burden",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.5, 0.9],
+      "phase": "articular_flare",
+      "clinical_rationale": "Tender/swollen joint burden and visible swelling usually move together in active synovitis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arthritis_activity",
+      "target_axis_id": "morning_stiffness_duration_minutes",
+      "relationship": "inflammatory_stiffness",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.3, 0.8],
+      "phase": "articular_flare",
+      "clinical_rationale": "Morning stiffness tends to rise with inflammatory arthritis activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "joint_swelling_activity",
+      "target_axis_id": "drainable_joint_effusion_probability",
+      "relationship": "large_joint_effusion",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.3, 0.8],
+      "phase": "large_joint_flare",
+      "clinical_rationale": "Swollen large joints are more likely to have drainable effusions.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_crp",
+      "target_axis_id": "erythrocyte_sedimentation_rate",
+      "relationship": "acute_phase_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.4, 0.8],
+      "phase": "systemic_flare",
+      "clinical_rationale": "CRP and ESR often track systemic inflammatory burden, with ESR lagging and being affected by anemia and immunoglobulins.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_crp",
+      "target_axis_id": "platelet_count",
+      "relationship": "acute_phase_thrombocytosis",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.2, 0.6],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Reactive thrombocytosis can accompany sustained acute-phase activity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_crp",
+      "target_axis_id": "hemoglobin",
+      "relationship": "inflammation_anemia_inverse",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [-0.6, -0.2],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Sustained inflammatory activity may reduce hemoglobin through anemia of inflammation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "pleural_effusion_activity",
+      "target_axis_id": "dyspnea_activity",
+      "relationship": "serositis_to_dyspnea",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.3, 0.8],
+      "phase": "extra_articular_flare",
+      "clinical_rationale": "Rheumatoid pleural effusion can cause dyspnea.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "interstitial_lung_disease_extent",
+      "target_axis_id": "oxygen_saturation",
+      "relationship": "ild_extent_to_hypoxemia",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [0.2, 0.8],
+      "lag_days_range": [0, 14],
+      "phase": "pulmonary_flare",
+      "clinical_rationale": "Active ILD extent can lower oxygen saturation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "interstitial_lung_disease_extent",
+      "target_axis_id": "respiratory_failure_hazard",
+      "relationship": "ild_to_respiratory_failure",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.3, 8.0],
+      "activation_threshold_range": [0.35, 0.75],
+      "lag_days_range": [0, 14],
+      "phase": "severe_pulmonary_flare",
+      "clinical_rationale": "Severe RA-ILD exacerbation can progress to respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-RA-FLARE",
+      "relationship": "respiratory_failure_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 12.0],
+      "activation_threshold_range": [0.005, 0.1],
+      "lag_days_range": [0, 7],
+      "phase": "severe_pulmonary_flare",
+      "clinical_rationale": "Respiratory failure is a plausible short-term death pathway in severe systemic RA pulmonary flare.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serious_infection_hazard",
+      "target_axis_id": "mortality_hazard_in_D-RA-FLARE",
+      "relationship": "infection_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 10.0],
+      "activation_threshold_range": [0.002, 0.05],
+      "lag_days_range": [0, 14],
+      "phase": "treatment_context",
+      "clinical_rationale": "Serious infection or missed infection while immunosuppressed can dominate short-term risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arthritis_activity",
+      "target_axis_id": "severe_joint_damage_hazard_in_D-RA-FLARE",
+      "relationship": "persistent_synovitis_damage",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.2, 6.0],
+      "activation_threshold_range": [0.5, 0.9],
+      "lag_days_range": [30, 365],
+      "phase": "persistent_flare",
+      "clinical_rationale": "Longstanding uncontrolled synovitis drives structural damage and disability.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "short_course_systemic_glucocorticoids",
+      "display_name": "Short-course systemic glucocorticoids",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS",
+        "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY"
+      ],
+      "clinical_role": "Rapid suppression of systemic inflammatory and synovitis activity while longer-acting DMARD changes take effect.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0.5, 3],
+          "effect_scale_range": [0.25, 0.75],
+          "clinical_rationale": "Glucocorticoids rapidly suppress cytokine and acute-phase activity."
+        },
+        {
+          "target_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 7],
+          "effect_scale_range": [0.2, 0.65],
+          "clinical_rationale": "Glucocorticoids reduce synovitis and joint swelling."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [1, 14],
+          "effect_scale_range": [0.05, 0.35],
+          "clinical_rationale": "Systemic steroids increase infection risk in susceptible hosts."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.3, 1.5],
+          "clinical_rationale": "When infection is likely, immunosuppression can worsen outcome and an infectious manifold should remain competitive."
+        }
+      ]
+    },
+    {
+      "treatment_id": "intra_articular_glucocorticoid_injection",
+      "display_name": "Intra-articular glucocorticoid injection",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "arthritis_activity",
+        "joint_swelling_activity",
+        "drainable_joint_effusion_probability"
+      ],
+      "clinical_role": "Local control for a dominant inflamed joint after infection and crystal disease have been reasonably excluded.",
+      "trajectory_modifications": [
+        {
+          "target_id": "arthritis_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0.5, 7],
+          "effect_scale_range": [0.25, 0.8],
+          "clinical_rationale": "Local steroid reduces joint inflammation."
+        },
+        {
+          "target_id": "joint_swelling_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 7],
+          "effect_scale_range": [0.2, 0.75],
+          "clinical_rationale": "Effusion and swelling can improve after local inflammation is suppressed."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "contraindicates_until_infection_excluded",
+          "factor_range": [0.0, 0.3],
+          "clinical_rationale": "Injecting an infected joint is unsafe; culture/clinical context must be handled outside disease ranking."
+        }
+      ]
+    },
+    {
+      "treatment_id": "nsaids_or_analgesic_bridge",
+      "display_name": "NSAIDs or analgesic bridge",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "arthralgia_activity",
+        "arthritis_activity"
+      ],
+      "clinical_role": "Symptom relief for pain and stiffness when renal, bleeding, cardiovascular, and gastrointestinal context allows.",
+      "trajectory_modifications": [
+        {
+          "target_id": "arthralgia_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0.2, 3],
+          "effect_scale_range": [0.15, 0.5],
+          "clinical_rationale": "NSAIDs reduce inflammatory pain but do not reshape the autoimmune manifold enough for sustained control."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "restart_or_optimize_methotrexate",
+      "display_name": "Restart or optimize methotrexate",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS",
+        "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY"
+      ],
+      "clinical_role": "Rebuilds disease-modifying control after undertreatment or inadequate csDMARD exposure.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 60],
+          "effect_scale_range": [0.15, 0.55],
+          "clinical_rationale": "Methotrexate reduces RA autoimmune and synovial activity over weeks."
+        },
+        {
+          "target_id": "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [30, 120],
+          "effect_scale_range": [0.1, 0.45],
+          "clinical_rationale": "Sustained disease modification lowers structural damage hazard."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "hydroxychloroquine_or_sulfasalazine",
+      "display_name": "Hydroxychloroquine or sulfasalazine",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS"
+      ],
+      "clinical_role": "Lower-intensity disease modification or combination csDMARD support.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_INFLAMMATORY_SYNOVITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [21, 90],
+          "effect_scale_range": [0.05, 0.35],
+          "clinical_rationale": "Effect is slower and milder than biologic or JAK inhibition."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "tnf_inhibitor",
+      "display_name": "TNF inhibitor",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS",
+        "M_RA_CARTILAGE_BONE_DAMAGE_ACTIVITY"
+      ],
+      "clinical_role": "Biologic cytokine control for active synovitis and inflammatory burden when context supports use.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [3, 30],
+          "effect_scale_range": [0.2, 0.65],
+          "clinical_rationale": "TNF blockade reduces systemic and synovial cytokine activity."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.02, 0.25],
+          "clinical_rationale": "TNF blockade increases serious and granulomatous infection susceptibility."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "Active or high-probability infection weakens biologic benefit."
+        }
+      ]
+    },
+    {
+      "treatment_id": "il6_receptor_blockade",
+      "display_name": "IL-6 receptor blockade",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+        "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY"
+      ],
+      "clinical_role": "Suppresses IL-6-driven acute-phase and systemic inflammatory activity; CRP may become pharmacologically muted.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 21],
+          "effect_scale_range": [0.25, 0.8],
+          "clinical_rationale": "IL-6 blockade directly reduces IL-6 acute-phase signaling."
+        },
+        {
+          "target_id": "serum_crp",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 7],
+          "effect_scale_range": [0.4, 0.95],
+          "clinical_rationale": "CRP can fall because IL-6 signaling is blocked, even if other inflammatory axes remain active."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.02, 0.25],
+          "clinical_rationale": "Biologic immunosuppression increases infection risk and can mask CRP response."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "High infection risk or active infection changes the expected net vector field."
+        }
+      ]
+    },
+    {
+      "treatment_id": "jak_inhibitor",
+      "display_name": "JAK inhibitor",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+        "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS"
+      ],
+      "clinical_role": "Broad cytokine pathway suppression for active RA flare biology.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_IL6_TNF_ACUTE_PHASE_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 14],
+          "effect_scale_range": [0.25, 0.75],
+          "clinical_rationale": "JAK inhibition suppresses multiple cytokine pathways involved in flare amplification."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.03, 0.35],
+          "clinical_rationale": "JAK inhibition increases serious infection and viral reactivation risk."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "Infection risk and frailty strongly shape the net effect."
+        }
+      ]
+    },
+    {
+      "treatment_id": "abatacept",
+      "display_name": "Abatacept",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+        "M_RA_INFLAMMATORY_SYNOVITIS",
+        "M_RA_EXTRA_ARTICULAR_SEROSAL_LUNG_ACTIVITY"
+      ],
+      "clinical_role": "T-cell costimulation modulation for autoimmune synovitis and some systemic RA activity contexts.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 60],
+          "effect_scale_range": [0.15, 0.55],
+          "clinical_rationale": "Abatacept dampens T-cell costimulation and downstream synovitis."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.3, 1.0],
+          "clinical_rationale": "Infectious mimics and immunosuppression context constrain use."
+        }
+      ]
+    },
+    {
+      "treatment_id": "rituximab",
+      "display_name": "Rituximab",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY"
+      ],
+      "clinical_role": "B-cell depletion for seropositive or refractory autoimmune RA activity.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_RA_AUTOREACTIVE_B_T_CELL_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [21, 90],
+          "effect_scale_range": [0.15, 0.6],
+          "clinical_rationale": "B-cell depletion reduces autoantibody-supporting RA immune activity over weeks."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [14, 180],
+          "effect_scale_range": [0.02, 0.3],
+          "clinical_rationale": "B-cell depletion can raise infection risk, especially with hypogammaglobulinemia or prior immunosuppression."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "oxygen_and_respiratory_support",
+      "display_name": "Oxygen and respiratory support",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "oxygen_saturation",
+        "respiratory_failure_hazard"
+      ],
+      "clinical_role": "Support gas exchange during pulmonary RA flare while immune-directed treatment takes effect.",
+      "trajectory_modifications": [
+        {
+          "target_id": "oxygen_saturation",
+          "effect_on_target": "increase",
+          "onset_days_range": [0, 1],
+          "effect_scale_range": [0.2, 0.9],
+          "clinical_rationale": "Supplemental oxygen or ventilatory support directly improves oxygenation when hypoxemia is present."
+        },
+        {
+          "target_id": "respiratory_failure_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0, 2],
+          "effect_scale_range": [0.15, 0.7],
+          "clinical_rationale": "Respiratory support reduces immediate hypoxemic risk but does not treat the underlying inflammatory lung process."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "respiratory_failure_hazard",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [1.0, 5.0],
+          "clinical_rationale": "Supportive respiratory care matters most when respiratory failure risk is active."
+        }
+      ]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "established_seropositive_rheumatoid_arthritis",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 12.0],
+          "axis_response_modulation": {
+            "rheumatoid_factor_activity": {"peak_value_factor": [1.5, 4.0]},
+            "severe_joint_damage_hazard_in_D-RA-FLARE": {"peak_value_factor": [1.1, 2.5]}
+          },
+          "clinical_rationale": "Established seropositive RA raises the prior that a compatible inflammatory arthritis episode is an RA flare."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_dmard_interruption_or_undertreatment",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "axis_response_modulation": {
+            "arthritis_activity": {"peak_value_factor": [1.1, 1.8]},
+            "serum_crp": {"peak_value_factor": [1.1, 2.0]}
+          },
+          "clinical_rationale": "Medication interruption or undertreatment can unmask synovitis and acute-phase activity."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "preexisting_ra_associated_interstitial_lung_disease",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": {
+            "interstitial_lung_disease_extent": {"peak_value_factor": [1.4, 4.0]},
+            "ground_glass_opacity_extent": {"peak_value_factor": [1.2, 3.5]},
+            "respiratory_failure_hazard": {"peak_value_factor": [1.5, 6.0]},
+            "mortality_hazard_in_D-RA-FLARE": {"peak_value_factor": [1.2, 4.0]}
+          },
+          "clinical_rationale": "Known RA-ILD increases pulmonary flare severity and respiratory reserve risk."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "older_age_or_frailty",
+      "type": "continuous",
+      "modulation": {
+        "older_adult": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": {
+            "serious_infection_hazard": {"peak_value_factor": [1.5, 4.0]},
+            "respiratory_failure_hazard": {"peak_value_factor": [1.2, 3.0]},
+            "mortality_hazard_in_D-RA-FLARE": {"peak_value_factor": [1.4, 5.0]}
+          },
+          "clinical_rationale": "Older age and frailty raise complications from infection, pulmonary disease, and immunosuppression."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "current_glucocorticoid_or_biologic_immunosuppression",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.9, 2.0],
+          "axis_response_modulation": {
+            "serious_infection_hazard": {"peak_value_factor": [1.5, 5.0]},
+            "white_blood_cell_count": {"peak_value_factor": [0.8, 1.6]}
+          },
+          "clinical_rationale": "Immunosuppression shapes infection risk and can alter inflammatory marker expression."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "il6_blockade_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": {
+            "serum_crp": {"peak_value_factor": [0.05, 0.4]},
+            "body_temperature": {"peak_value_factor": [0.7, 1.0]},
+            "serious_infection_hazard": {"peak_value_factor": [1.2, 3.0]}
+          },
+          "clinical_rationale": "IL-6 blockade can mute CRP and fever even when non-CRP disease activity is present."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "joint_aspiration_for_large_effusion_context",
+      "clinical_role": "Obtains synovial fluid cell count, crystals, and cultures when a large effusion could be septic arthritis, crystal disease, Lyme arthritis, or PJI mimic."
+    },
+    {
+      "care_id": "exclude_infection_or_crystal_mimic_before_intensifying_immunosuppression",
+      "clinical_role": "Preserves diagnostic safety because RA flare and infection can share high CRP, synovial leukocytosis, and joint swelling."
+    },
+    {
+      "care_id": "physical_therapy_and_function_support",
+      "clinical_role": "Maintains range of motion and function after acute pain and inflammation are controlled."
+    },
+    {
+      "care_id": "pulmonary_monitoring_and_oxygen_support",
+      "clinical_role": "Monitor oxygenation and imaging when dyspnea, pleural effusion, or ILD activity is present."
+    }
+  ]
+}
