@@ -690,3 +690,25 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `294/296 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: ITP / Cellulitis / SBP
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ITP`: immune thrombocytopenia.
+  - `D-CELLULITIS`: cellulitis.
+  - `D-SPONTANEOUS-BACTERIAL-PERITONITIS`: spontaneous bacterial peritonitis.
+- New real PMC/PubMed cases:
+  - `D-ITP`: `PMC10628603` / PMID `37942396`, `PMC5960737` / PMID `29854891`, `PMC6340514` / PMID `30659003`.
+  - `D-CELLULITIS`: `PMC2804019` / PMID `20062550`, `PMC11759070` / PMID `39867156`, `PMC12228951` / PMID `40621324`.
+  - `D-SPONTANEOUS-BACTERIAL-PERITONITIS`: `PMC7249951` / PMID `32481254`, `PMC8383539` / PMID `34434317`, `PMC8175418` / PMID `34104612`.
+- ITP source rule: keep first-layer ITP separate from TTP, DIC, HIT, leukemia/marrow failure, Evans syndrome, SLE-related thrombocytopenia, drug-induced thrombocytopenia, and pregnancy-specific thrombocytopenia. Bone marrow, platelet antibody testing, exclusion workup, treatment response, and final paper diagnosis stay confirmatory/non-ranking unless testing post-workup mode.
+- Cellulitis source rule: keep cellulitis separate from erysipelas, necrotizing fasciitis, septic arthritis, osteomyelitis, DVT, vasculitis, contact dermatitis, toxic shock syndrome, and organism-level bacteremia leaves. Blood culture species, susceptibility, final source adjudication, operative findings, and treatment response stay confirmatory/non-ranking for presentation-only tests.
+- SBP source rule: keep spontaneous bacterial peritonitis separate from secondary peritonitis, cholangitis, pyelonephritis, acute decompensated cirrhosis without SBP, and organism-specific sepsis. Ascitic PMN/WBC/culture evidence can be rankable when it is presentation paracentesis data; culture species, final source exclusion, and treatment response remain confirmatory/non-ranking unless testing post-workup mode.
+- SBP axis-coupling note: ascitic total WBC, neutrophil fraction, and absolute PMN count are a parent/derived measurement triangle. Couplings should keep them numerically coherent without turning the PMN threshold into a hard diagnosis label.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-ASPIRATION-PNEUMONIA`.
+- Focused new-batch fast grid (`ITP,CELLULITIS,SPONTANEOUS_BACTERIAL_PERITONITIS`) loaded 12 matching cases and was `12/12 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 308 case JSON files loaded.
+  - Single-manifold validation `303/305 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

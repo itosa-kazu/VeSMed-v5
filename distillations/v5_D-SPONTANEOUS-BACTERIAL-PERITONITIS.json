@@ -1,0 +1,550 @@
+{
+  "disease": "D-SPONTANEOUS-BACTERIAL-PERITONITIS",
+  "disease_id": "D-SPONTANEOUS-BACTERIAL-PERITONITIS",
+  "disease_name": "Spontaneous bacterial peritonitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Spontaneous bacterial peritonitis",
+    "leaf_granularity": "First-layer clinical disease leaf for spontaneous infection of ascitic fluid without a surgically treatable intra-abdominal source. Cirrhosis acute decompensation, secondary peritonitis, cholangitis, pyelonephritis, organism-specific sepsis, and hepatorenal syndrome remain context, mimic, complication, or future leaves rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume ascites, abdominal pain or tenderness, fever or blunted fever, inflammatory markers, portal-hypertensive ascites context, and initial diagnostic paracentesis cell counts when those are available at presentation. Ascitic culture species, susceptibility, secondary-source exclusion, final adjudication, and treatment response should stay confirmatory/non-ranking unless a post-workup mode explicitly uses them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT",
+      "display_name": "Portal-hypertensive ascites with low opsonic defense",
+      "clinical_meaning": "Ascitic fluid formed in portal-hypertensive or severe hepatic dysfunction contexts often has low complement, low protein, impaired opsonic activity, and poor bacterial clearance. This is the permissive fluid compartment for SBP, not the cirrhosis leaf itself.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_CIRRHOTIC_IMMUNE_DYSFUNCTION",
+      "display_name": "Cirrhosis-associated immune dysfunction",
+      "clinical_meaning": "Portal-systemic shunting, impaired Kupffer-cell clearance, neutrophil dysfunction, low complement, malnutrition, alcohol-associated immune dysfunction, malignancy, diabetes, or immunosuppression reduce containment of translocated organisms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-90, 0],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_INTESTINAL_BACTERIAL_TRANSLOCATION",
+      "display_name": "Enteric bacterial translocation",
+      "clinical_meaning": "Gut dysbiosis, bowel edema, slowed motility, increased permeability, GI bleeding, proton-pump inhibitor exposure, hospitalization, or antibiotic pressure allow enteric bacteria to cross the intestinal barrier and reach mesenteric nodes, blood, and ascitic fluid.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-7, 2],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN",
+      "display_name": "Viable bacterial burden in ascitic fluid",
+      "clinical_meaning": "Monomicrobial infection of ascitic fluid by enteric gram-negative bacilli, streptococci, enterococci, or less common organisms. Burden drives culture positivity and sustains peritoneal inflammation when antibiotic coverage is inactive.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.35, 0.98],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION",
+      "display_name": "Neutrophilic peritoneal inflammation",
+      "clinical_meaning": "Bacterial PAMPs in ascites trigger local complement, cytokine, macrophage, and neutrophil recruitment, producing ascitic PMN elevation, abdominal pain, tenderness, ileus, and sometimes peritoneal signs.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION",
+      "display_name": "Systemic innate inflammatory response",
+      "clinical_meaning": "Peritoneal infection and bacteremia risk drive IL-6, TNF, IL-1, acute-phase response, fever or blunted fever, leukocyte changes, CRP/procalcitonin rise, tachycardia, and malaise.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION",
+      "display_name": "Hemodynamic, renal, and hepatic decompensation cascade",
+      "clinical_meaning": "Inflammation in decompensated liver disease worsens vasodilation, effective arterial underfilling, capillary leak, renal hypoperfusion, encephalopathy, coagulopathy, shock physiology, and death risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE",
+      "display_name": "Antimicrobial mismatch or resistant/unusual pathogen activity",
+      "clinical_meaning": "Nosocomial acquisition, prior antibiotics, prophylaxis, enterococci, Listeria, resistant gram-negatives, or rare organisms can make standard beta-lactam coverage inactive and prolong ascitic bacterial burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "target_id": "ascites_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-365, 0], "phase": "background_to_presentation", "clinical_rationale": "SBP requires an ascitic fluid compartment in usual adult presentations.", "confidence": "high"},
+    {"source_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "target_id": "portal_hypertension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-365, 0], "phase": "context", "clinical_rationale": "High-SAAG portal hypertensive physiology is the common substrate for ascites in SBP.", "confidence": "high"},
+    {"source_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "target_id": "serum_ascites_albumin_gradient", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "paracentesis", "clinical_rationale": "Most adult SBP occurs in high-SAAG ascites.", "confidence": "high"},
+    {"source_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "target_id": "ascitic_fluid_total_protein", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "paracentesis", "clinical_rationale": "Low ascitic protein is a risk context for poor opsonic activity.", "confidence": "high"},
+    {"source_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 7], "phase": "background_to_peak", "clinical_rationale": "Low albumin reflects hepatic reserve, inflammation, dilution, and ascites risk.", "confidence": "high"},
+    {"source_id": "M_SBP_CIRRHOTIC_IMMUNE_DYSFUNCTION", "target_id": "M_SBP_INTESTINAL_BACTERIAL_TRANSLOCATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "initiation", "clinical_rationale": "Cirrhotic immune dysfunction and shunting lower containment of translocated bacteria.", "confidence": "high"},
+    {"source_id": "M_SBP_INTESTINAL_BACTERIAL_TRANSLOCATION", "target_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "initiation", "clinical_rationale": "Translocated organisms seed ascitic fluid or bloodstream and establish infection.", "confidence": "high"},
+    {"source_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "target_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Ascitic bacteria drive neutrophil recruitment.", "confidence": "high"},
+    {"source_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "target_id": "ascitic_fluid_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [1, 4], "phase": "diagnostic_workup", "clinical_rationale": "Culture positivity follows viable ascitic bacterial burden but is often delayed and can be negative.", "confidence": "high"},
+    {"source_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 2], "phase": "bacteremic_context", "clinical_rationale": "A subset of SBP has concurrent bacteremia.", "confidence": "medium"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "ascitic_fluid_total_wbc_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "paracentesis", "clinical_rationale": "Peritoneal inflammation raises total ascitic leukocytes.", "confidence": "high"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "ascitic_fluid_pmn_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "paracentesis", "clinical_rationale": "Ascitic PMN elevation is the core immediate diagnostic signal.", "confidence": "high"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "ascitic_fluid_neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "paracentesis", "clinical_rationale": "SBP is typically neutrophil-predominant, though atypical organisms or immunosuppression may blunt this.", "confidence": "high"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Peritoneal inflammation commonly produces diffuse abdominal pain, though painless cases occur.", "confidence": "high"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "diffuse_abdominal_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Tenderness tracks peritoneal inflammation and may be focal or diffuse.", "confidence": "high"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "peritoneal_signs_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe_or_mimic_boundary", "clinical_rationale": "Guarding or rebound can occur but strong surgical-abdomen signs also raise secondary peritonitis concern.", "confidence": "medium"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "ascitic_fluid_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "paracentesis", "clinical_rationale": "Inflamed ascites may have elevated LDH; very high values also raise secondary peritonitis concern.", "confidence": "medium"},
+    {"source_id": "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION", "target_id": "ascitic_fluid_glucose", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "paracentesis", "clinical_rationale": "Bacterial metabolism and inflammation can lower ascitic glucose; very low glucose suggests broader source evaluation.", "confidence": "medium"},
+    {"source_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "target_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Local infection and bacteremia risk trigger systemic inflammatory response.", "confidence": "high"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Fever is common but may be absent in older, cirrhotic, or immunosuppressed patients.", "confidence": "high"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Measured temperature may rise modestly or markedly.", "confidence": "high"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Chills or rigors can accompany bacteremia or cytokine surge.", "confidence": "medium"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Fever, pain, hypovolemia, and infection raise heart rate.", "confidence": "medium"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Fever, acidosis, ascites restriction, or shock can raise respiratory rate.", "confidence": "medium"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Leukocytosis is common but may be absent in advanced cirrhosis or marrow suppression.", "confidence": "high"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Peripheral neutrophil predominance often accompanies bacterial infection.", "confidence": "medium"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Peripheral ANC can rise with bacterial inflammation.", "confidence": "medium"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "CRP rises in bacterial peritoneal infection.", "confidence": "high"},
+    {"source_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Procalcitonin may rise in SBP and bacteremia, but is variable in cirrhosis.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Inflammation and cirrhotic vasodilation can lower blood pressure.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Effective arterial underfilling or septic physiology can lower MAP.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "SBP can precipitate AKI or hepatorenal physiology.", "confidence": "high"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "blood_urea_nitrogen", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "Renal hypoperfusion, catabolism, or GI bleeding may raise BUN.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "serum_sodium", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 7], "phase": "cirrhosis_decompensation", "clinical_rationale": "Hyponatremia marks decompensated ascites physiology and lower reserve.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 7], "phase": "hepatic_reserve", "clinical_rationale": "Coagulopathy reflects hepatic reserve and severity of decompensation.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 7], "phase": "hepatic_reserve", "clinical_rationale": "Bilirubin often reflects underlying or worsened hepatic decompensation in SBP cases.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Infection, renal failure, ammonia handling, sedatives, or shock can precipitate encephalopathy.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "renal_complication", "clinical_rationale": "SBP is a classic precipitant of AKI and hepatorenal physiology.", "confidence": "high"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "A subset progresses to septic or cirrhotic circulatory collapse.", "confidence": "medium"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "hepatic_encephalopathy_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "SBP can precipitate encephalopathy in decompensated liver disease.", "confidence": "high"},
+    {"source_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE", "target_id": "active_antibiotic_coverage_probability", "effect_on_target": "decrease", "edge_type": "treatment_context", "lag_days_range": [0, 0], "phase": "treatment", "clinical_rationale": "Resistance or unusual pathogen context lowers active coverage probability.", "confidence": "high"},
+    {"source_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE", "target_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "effect_on_target": "increase", "edge_type": "treatment_context", "lag_days_range": [0, 3], "phase": "treatment", "clinical_rationale": "Listeria, enterococci, resistant gram-negatives, or healthcare-associated contexts can make third-generation cephalosporins unreliable.", "confidence": "high"},
+    {"source_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE", "target_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 7], "phase": "persistent_or_nonresponse", "clinical_rationale": "Inactive therapy prolongs viable bacterial burden.", "confidence": "high"},
+    {"source_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "target_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "outcome", "clinical_rationale": "Renal failure, shock, encephalopathy, hepatic reserve, and uncontrolled infection dominate mortality.", "confidence": "high"},
+    {"source_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE", "target_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 14], "phase": "outcome", "clinical_rationale": "Delayed active therapy or persistent infection worsens survival.", "confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "ascites_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical, ultrasound, CT, or paracentesis-confirmed ascites with abdominal distension, shifting dullness, or fluid wave.", "baseline_range": [0, 0.03], "peak_day_range": [-365, 0], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "portal_hypertension_activity", "category": "derived_clinical_activity", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Portal-hypertensive context from high-SAAG ascites, varices, splenomegaly, collaterals, portal vein obstruction, or cirrhosis imaging.", "baseline_range": [0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "serum_ascites_albumin_gradient", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Serum-ascites albumin gradient; high values support portal-hypertensive ascites substrate.", "baseline_range": [0, 1.0], "peak_day_range": [0, 0], "peak_value_range": [1.1, 3.5], "plateau_duration_days": [7, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_total_protein", "category": "lab_value", "unit": "g/dL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Ascitic total protein; low protein marks reduced opsonic activity, though SBP can occur at higher protein in immunocompromised or virulent-organism contexts.", "baseline_range": [2.5, 4.5], "peak_day_range": [0, 0], "peak_value_range": [0.2, 2.5], "plateau_duration_days": [7, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Ascitic albumin level used with serum albumin to compute SAAG.", "baseline_range": [1.0, 3.5], "peak_day_range": [0, 0], "peak_value_range": [0.1, 1.5], "plateau_duration_days": [7, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "ascitic_fluid_total_wbc_count", "category": "lab_value", "unit": "cells_per_uL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Total leukocyte count in ascitic fluid from diagnostic paracentesis.", "baseline_range": [1, 250], "peak_day_range": [0, 3], "peak_value_range": [300, 20000], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_pmn_count", "category": "lab_value", "unit": "cells_per_uL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Absolute polymorphonuclear neutrophil count in ascitic fluid; the main immediate paracentesis signal for SBP.", "baseline_range": [1, 100], "peak_day_range": [0, 3], "peak_value_range": [250, 15000], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Neutrophil percentage in ascitic fluid cell count.", "baseline_range": [0, 20], "peak_day_range": [0, 3], "peak_value_range": [50, 98], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_culture_positivity_probability", "category": "diagnostic_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "ascites_activity", "shape_free_text": "Probability that ascitic fluid culture later grows a pathogen; often delayed and not required for immediate diagnosis.", "baseline_range": [0, 0.02], "peak_day_range": [1, 4], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "ascitic_fluid_glucose", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Ascitic glucose may be lower with infection; very low values raise secondary peritonitis or malignancy/TB context.", "baseline_range": [70, 120], "peak_day_range": [0, 3], "peak_value_range": [20, 100], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "ascitic_fluid_ldh", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "ascites_activity", "shape_free_text": "Ascitic LDH rises with peritoneal inflammation; marked elevation may suggest secondary peritonitis or malignant/TB mimics.", "baseline_range": [20, 150], "peak_day_range": [0, 3], "peak_value_range": [100, 2000], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Diffuse or generalized abdominal pain, discomfort, or pain worsened by movement. Absence does not exclude SBP.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "diffuse_abdominal_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Diffuse abdominal tenderness on exam during ascitic fluid infection.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "peritoneal_signs_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Guarding, rebound, rigid abdomen, or peritoneal signs. Strong or progressive findings should trigger secondary peritonitis evaluation.", "baseline_range": [0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0, 0.8], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Subjective or documented fever history in SBP presentation.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature; SBP may be febrile, low-grade, afebrile, or hypothermic depending host reserve.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 3], "peak_value_range": [36.8, 40.5], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills, shaking chills, or rigors during ascitic fluid infection or bacteremia.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate during SBP presentation.", "baseline_range": [60, 90], "peak_day_range": [0, 3], "peak_value_range": [70, 150], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate may rise with fever, ascites restriction, acidosis, or shock.", "baseline_range": [12, 20], "peak_day_range": [0, 3], "peak_value_range": [14, 34], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic pressure; may be preserved or low with severe SBP.", "baseline_range": [100, 140], "peak_day_range": [0, 3], "peak_value_range": [70, 140], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values mark shock or cirrhotic circulatory failure.", "baseline_range": [70, 100], "peak_day_range": [0, 3], "peak_value_range": [50, 100], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Peripheral WBC count; may be high, normal, or low depending cirrhosis, hypersplenism, marrow reserve, and infection severity.", "baseline_range": [4, 10], "peak_day_range": [0, 3], "peak_value_range": [2, 35], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Peripheral neutrophil percentage during bacterial inflammatory response.", "baseline_range": [40, 75], "peak_day_range": [0, 3], "peak_value_range": [50, 95], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Peripheral absolute neutrophil count.", "baseline_range": [2, 7], "peak_day_range": [0, 3], "peak_value_range": [1, 30], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin reflects background cirrhosis, GI bleeding, inflammation, hypersplenism, or renal disease rather than SBP-specific injury.", "baseline_range": [12, 16], "peak_day_range": [-30, 7], "peak_value_range": [6, 15], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 90], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Platelet count may be low from portal hypertension/hypersplenism or critical illness; not specific to SBP.", "baseline_range": [150, 350], "peak_day_range": [-365, 7], "peak_value_range": [30, 400], "plateau_duration_days": [7, 3650], "decline_half_life_days": [7, 180], "knowledge_confidence": "low"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "CRP rises with SBP systemic inflammation and other infection/inflammation mimics.", "baseline_range": [0.2, 5], "peak_day_range": [0, 3], "peak_value_range": [10, 300], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin may rise in bacterial SBP or bacteremia but is not universally measured.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.2, 50], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum albumin often low in decompensated ascites and severe inflammation.", "baseline_range": [3.5, 5.0], "peak_day_range": [-30, 7], "peak_value_range": [1.0, 3.5], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin reflects hepatic reserve/decompensation context and can worsen during infection.", "baseline_range": [0.3, 1.2], "peak_day_range": [-30, 7], "peak_value_range": [1.0, 30], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "jaundice_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Visible jaundice or scleral icterus reflecting liver disease context; not SBP-specific.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST may be abnormal from underlying liver disease, infection, hypoperfusion, or alcohol-associated context.", "baseline_range": [10, 40], "peak_day_range": [-30, 7], "peak_value_range": [20, 500], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "low"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT may be abnormal from underlying liver disease, infection, hypoperfusion, or drug injury context.", "baseline_range": [7, 56], "peak_day_range": [-30, 7], "peak_value_range": [20, 500], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "low"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALP may be abnormal from liver disease; marked cholestatic obstruction remains a mimic/context.", "baseline_range": [40, 120], "peak_day_range": [-30, 7], "peak_value_range": [60, 600], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "low"},
+    {"axis_id": "serum_gamma_glutamyl_transferase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "GGT may reflect alcohol-associated or cholestatic liver context.", "baseline_range": [5, 60], "peak_day_range": [-30, 7], "peak_value_range": [30, 1000], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 90], "knowledge_confidence": "low"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR reflects hepatic synthetic reserve and severity context.", "baseline_range": [0.9, 1.2], "peak_day_range": [-30, 7], "peak_value_range": [1.0, 4.5], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_sodium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hyponatremia is common in advanced ascites and predicts lower reserve.", "baseline_range": [135, 145], "peak_day_range": [-30, 7], "peak_value_range": [118, 145], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Creatinine rises with SBP-associated AKI, hepatorenal physiology, dehydration, or baseline CKD.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.5, 8.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BUN rises with renal hypoperfusion, catabolism, GI bleeding, or renal dysfunction.", "baseline_range": [7, 20], "peak_day_range": [0, 7], "peak_value_range": [10, 120], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Confusion, lethargy, encephalopathy, or coma precipitated or worsened by infection, renal dysfunction, sedatives, or liver decompensation.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "peripheral_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Peripheral or pedal edema from portal-hypertensive, renal, cardiac, or hypoalbuminemic context.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [3, 180], "decline_half_life_days": [7, 90], "knowledge_confidence": "low"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "diagnostic_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of concurrent bacteremia in SBP; culture species identity is post-workup context.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that current antibiotic regimen covers the causative SBP organism at adequate exposure.", "baseline_range": [0.4, 0.8], "peak_day_range": [-1, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "ceftriaxone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that the pathogen is susceptible to ceftriaxone or similar third-generation cephalosporin.", "baseline_range": [0.5, 0.9], "peak_day_range": [-1, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that standard cephalosporin coverage is inactive because of Listeria, enterococcus, resistant gram-negative organisms, or another unusual pathogen.", "baseline_range": [0.03, 0.2], "peak_day_range": [-1, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "ampicillin_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that ampicillin or ampicillin-sulbactam covers a gram-positive SBP pathogen such as Listeria or susceptible enterococcus.", "baseline_range": [0.05, 0.4], "peak_day_range": [-1, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "fluoroquinolone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that ciprofloxacin or levofloxacin covers the causative organism.", "baseline_range": [0.3, 0.8], "peak_day_range": [-1, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "carbapenem_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that carbapenem therapy covers a resistant or healthcare-associated SBP pathogen.", "baseline_range": [0.4, 0.9], "peak_day_range": [-1, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for renal dose adjustment or drug-level monitoring because of AKI, CKD, dialysis, or high nephrotoxicity risk.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of severe immediate beta-lactam reaction affecting antibiotic selection.", "baseline_range": [0, 0.02], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "volume_overload_or_pulmonary_edema_risk_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Risk context limiting albumin or crystalloid administration due to pulmonary edema, heart failure, or severe volume overload.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of AKI or hepatorenal physiology triggered by SBP and decompensated ascites.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.15], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of septic or cirrhotic circulatory collapse during SBP.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 3], "peak_value_range": [0.0005, 0.12], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatic_encephalopathy_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of new or worsened hepatic encephalopathy precipitated by SBP.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan mortality hazard for spontaneous bacterial peritonitis emerging from renal failure, shock, encephalopathy, hepatic reserve, active coverage, and persistent ascitic infection.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.20], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "ascites_activity", "target_axis_id": "serum_ascites_albumin_gradient", "relationship": "ascites_to_saag_context", "coupling_type": "drift", "correlation_range": [0.35, 0.75], "lag_days_range": [0, 0], "phase": "paracentesis", "effect_direction": "source_up_increases_target", "clinical_rationale": "Portal-hypertensive ascites is usually high-SAAG.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_albumin", "target_axis_id": "ascites_activity", "relationship": "low_albumin_to_ascites", "coupling_type": "mixed", "correlation_range": [0.25, 0.7], "lag_days_range": [-30, 7], "phase": "background", "effect_direction": "source_down_increases_target", "clinical_rationale": "Low oncotic pressure and liver disease support ascites formation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "portal_hypertension_activity", "target_axis_id": "ascites_activity", "relationship": "portal_hypertension_to_ascites", "coupling_type": "drift", "correlation_range": [0.5, 0.95], "lag_days_range": [-365, 0], "phase": "background", "effect_direction": "source_up_increases_target", "clinical_rationale": "Portal hypertension drives ascites formation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ascitic_fluid_total_wbc_count", "target_axis_id": "ascitic_fluid_pmn_count", "relationship": "ascitic_wbc_to_pmn_count", "coupling_type": "noise_correlation", "correlation_range": [0.55, 0.95], "lag_days_range": [0, 0], "phase": "paracentesis", "effect_direction": "positive_correlation", "clinical_rationale": "Ascitic PMNs are a major component of elevated ascitic leukocytes in SBP.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ascitic_fluid_total_wbc_count", "target_axis_id": "ascitic_fluid_neutrophil_fraction", "relationship": "ascitic_wbc_neutrophil_fraction_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.65], "lag_days_range": [0, 0], "phase": "paracentesis", "effect_direction": "positive_correlation", "clinical_rationale": "Neutrophilic ascitic inflammation raises both the total ascitic leukocyte count and the neutrophil fraction, keeping the WBC/PMN/fraction covariance triangle numerically coherent.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ascitic_fluid_neutrophil_fraction", "target_axis_id": "ascitic_fluid_pmn_count", "relationship": "neutrophil_fraction_to_pmn_count", "coupling_type": "mixed", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 0], "phase": "paracentesis", "effect_direction": "source_up_increases_target", "clinical_rationale": "Higher neutrophil fraction raises absolute PMN count for a given total cell count.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ascitic_fluid_pmn_count", "target_axis_id": "abdominal_pain_activity", "relationship": "ascitic_pmn_to_pain", "coupling_type": "drift", "correlation_range": [0.25, 0.65], "lag_days_range": [0, 2], "phase": "presentation", "effect_direction": "source_up_increases_target", "clinical_rationale": "Peritoneal neutrophilic inflammation often produces abdominal pain but can be asymptomatic.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "ascitic_fluid_pmn_count", "target_axis_id": "diffuse_abdominal_tenderness_activity", "relationship": "ascitic_pmn_to_tenderness", "coupling_type": "drift", "correlation_range": [0.25, 0.7], "lag_days_range": [0, 2], "phase": "presentation", "effect_direction": "source_up_increases_target", "clinical_rationale": "Tenderness generally tracks local peritoneal inflammation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "serum_crp", "relationship": "fever_crp_inflammatory_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.2, 0.65], "lag_days_range": [0, 3], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Fever and CRP often rise together, but cirrhosis can blunt fever.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "wbc_crp_inflammatory_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.7], "lag_days_range": [0, 3], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Peripheral leukocytosis and CRP are shared systemic inflammatory outputs.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_to_aki_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.95], "lag_days_range": [0, 3], "phase": "renal_complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "Creatinine rise is the observed renal injury signal.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "relationship": "aki_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.95], "lag_days_range": [0, 7], "phase": "outcome", "effect_direction": "source_up_increases_target", "clinical_rationale": "Renal failure strongly worsens SBP survival.", "knowledge_confidence": "high"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 3], "phase": "outcome", "effect_direction": "source_up_increases_target", "clinical_rationale": "Shock or severe circulatory failure increases early mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "hepatic_encephalopathy_hazard", "target_axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "relationship": "encephalopathy_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.85], "lag_days_range": [0, 7], "phase": "outcome", "effect_direction": "source_up_increases_target", "clinical_rationale": "Encephalopathy marks low reserve and aspiration/ICU risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "active_antibiotic_coverage_probability", "target_axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "relationship": "active_coverage_lowers_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.8], "lag_days_range": [1, 7], "phase": "treatment_response", "effect_direction": "source_up_decreases_target", "clinical_rationale": "Active therapy lowers persistent infection and complication hazards.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "diagnostic_paracentesis_and_ascitic_culture",
+      "treatment_name": "Diagnostic paracentesis with ascitic cell count and culture",
+      "mode": "reshape_landscape",
+      "role": "measurement_and_context_gate_for_therapy",
+      "required_context_axes": ["ascites_activity", "ascitic_fluid_pmn_count", "ascitic_fluid_culture_positivity_probability"],
+      "effect_modifiers": [
+        {"axis_id": "ascites_activity", "condition": "present", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Paracentesis is meaningful when ascites is present."}
+      ],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.0, 1.2], "plateau_duration_factor": [1.0, 1.2], "decline_half_life_days": [1, 7]}
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "ceftriaxone_or_cefotaxime_iv",
+      "treatment_name": "Ceftriaxone or cefotaxime IV",
+      "mode": "reshape_landscape",
+      "role": "broad_enteric_gram_negative_and_streptococcal_coverage_when_context_supports_activity",
+      "required_context_axes": ["ceftriaxone_susceptibility_probability", "active_antibiotic_coverage_probability", "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "ceftriaxone_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Effect depends on active coverage."},
+        {"axis_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "condition": "high", "effect": "weakens", "factor_range": [0, 0.5], "clinical_rationale": "Listeria, enterococcus, or resistant gram-negative contexts can fail cephalosporins."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "contraindicates_or_requires_alternative", "factor_range": [0, 0.4], "clinical_rationale": "Severe beta-lactam reactions constrain use."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN": {"peak_value_factor": [0.2, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_SBP_NEUTROPHILIC_PERITONEAL_INFLAMMATION": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 4]},
+        "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS": {"peak_value_factor": [0.45, 0.9], "decline_half_life_days": [3, 30]}
+      },
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 3],
+      "failure_modes": ["cephalosporin_inactive_pathogen", "resistant_healthcare_associated_pathogen", "severe_beta_lactam_reaction", "missed_secondary_peritonitis"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "piperacillin_tazobactam_iv",
+      "treatment_name": "Piperacillin-tazobactam IV",
+      "mode": "reshape_landscape",
+      "role": "broader_enteric_and_some_enterococcal_coverage_when severity_or_healthcare_context_supports_it",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "renal_dose_adjustment_need", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dose_adjustment", "clinical_rationale": "Renal impairment changes dosing and toxicity."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "contraindicates_or_requires_alternative", "factor_range": [0, 0.4], "clinical_rationale": "Severe beta-lactam reactions constrain use."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.25, 0.85], "decline_half_life_days": [0.5, 5]},
+        "M_SBP_SYSTEMIC_INNATE_INFLAMMATION": {"peak_value_factor": [0.45, 0.85], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 3],
+      "failure_modes": ["resistant_pathogen", "subtherapeutic_dosing", "severe_beta_lactam_reaction", "missed_secondary_source"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "carbapenem_iv",
+      "treatment_name": "Carbapenem IV",
+      "mode": "reshape_landscape",
+      "role": "resistant_or_healthcare_associated_context_coverage_when_susceptibility_and_host_risk_support_activity",
+      "required_context_axes": ["carbapenem_susceptibility_probability", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need", "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS"],
+      "effect_modifiers": [
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Effect depends on susceptibility."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dose_adjustment", "clinical_rationale": "Renal impairment changes dosing."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN": {"peak_value_factor": [0.2, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 3],
+      "failure_modes": ["carbapenem_resistance", "subtherapeutic_dosing", "uncovered_listeria_or_enterococcus_context", "missed_secondary_source"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "ampicillin_or_ampicillin_sulbactam_iv",
+      "treatment_name": "Ampicillin or ampicillin-sulbactam IV",
+      "mode": "reshape_landscape",
+      "role": "gram_positive_unusual_pathogen_context_coverage",
+      "required_context_axes": ["ampicillin_susceptibility_probability", "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "ampicillin_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Effect depends on susceptible Listeria or enterococcus context."},
+        {"axis_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.0, 1.5], "clinical_rationale": "Ampicillin becomes relevant when cephalosporin-inactive pathogens are plausible."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.25, 0.85], "decline_half_life_days": [0.5, 5]},
+        "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 3],
+      "failure_modes": ["not_susceptible_or_wrong_pathogen_context", "renal_dose_error", "monotherapy_gap_for_polymicrobial_secondary_peritonitis"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "fluoroquinolone_iv_or_oral",
+      "treatment_name": "Ciprofloxacin or levofloxacin IV/oral",
+      "mode": "reshape_landscape",
+      "role": "susceptibility_dependent_option_or_step_down_context",
+      "required_context_axes": ["fluoroquinolone_susceptibility_probability", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "fluoroquinolone_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Effect depends on susceptibility."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dose_adjustment", "clinical_rationale": "Renal impairment raises toxicity and dosing complexity."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.35, 0.9], "decline_half_life_days": [1, 6]}
+      },
+      "onset_delay_days": [0.2, 2],
+      "carryover_after_stop_days": [0.5, 4],
+      "failure_modes": ["fluoroquinolone_resistance", "qt_cns_tendon_toxicity", "not_adequate_for_unstable_high_burden_context_without_susceptibility"],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "intravenous_albumin_for_renal_protection",
+      "treatment_name": "Intravenous albumin for renal protection",
+      "mode": "push_state",
+      "role": "reduce_effective_arterial_underfilling_and_renal_decompensation_risk",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "acute_kidney_injury_hazard", "volume_overload_or_pulmonary_edema_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.0, 1.4], "clinical_rationale": "Renal dysfunction increases potential renal-protective value."},
+        {"axis_id": "volume_overload_or_pulmonary_edema_risk_activity", "condition": "high", "effect": "requires_caution", "factor_range": [0.4, 1.0], "clinical_rationale": "Albumin can worsen pulmonary edema or overload in vulnerable patients."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 14]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [3, 30]},
+        "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [7, 60]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 7],
+      "failure_modes": ["severe_volume_overload", "pulmonary_edema", "late_or_absent_active_antibiotics"],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "repeat_paracentesis_for_nonresponse_or_uncertain_source",
+      "treatment_name": "Repeat paracentesis for nonresponse or uncertain source",
+      "mode": "reshape_landscape",
+      "role": "detect_persistent_pmn_burden_and_secondary_source_or_mismatch_context",
+      "required_context_axes": ["ascitic_fluid_pmn_count", "active_antibiotic_coverage_probability", "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS"],
+      "effect_modifiers": [
+        {"axis_id": "ascitic_fluid_pmn_count", "condition": "persistent_high", "effect": "strengthens_context_need", "factor_range": [1.0, 1.5], "clinical_rationale": "Persistent PMN elevation suggests nonresponse, mismatch, or secondary-source evaluation."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE": {"peak_value_factor": [0.8, 1.2], "decline_half_life_days": [1, 14]}
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "secondary_sbp_prophylaxis_after_recovery",
+      "treatment_name": "Secondary SBP prophylaxis after recovery",
+      "mode": "modulate_theta",
+      "role": "reduce_recurrent_sbp_risk_after_index_episode",
+      "required_context_axes": ["ascites_activity", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dose_adjustment_or_agent_selection", "clinical_rationale": "Renal dysfunction constrains prophylaxis selection."}
+      ],
+      "trajectory_modifications": {
+        "M_SBP_INTESTINAL_BACTERIAL_TRANSLOCATION": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [7, 60]}
+      },
+      "onset_delay_days": [1, 7],
+      "carryover_after_stop_days": [1, 14],
+      "failure_modes": ["resistance_selection", "drug_toxicity", "ongoing_uncontrolled_ascites_or_liver_failure"],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "cirrhosis_or_portal_hypertension_ascites_context",
+      "type": "substrate_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [4, 25],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "direction": "up", "factor_range": [2, 8]},
+            {"axis_id": "ascites_activity", "direction": "up", "factor_range": [1.5, 5]},
+            {"axis_id": "portal_hypertension_activity", "direction": "up", "factor_range": [2, 8]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.1, 3]}
+          ],
+          "trajectory_modulation": "Raises baseline susceptibility by providing ascitic substrate and low hepatic reserve."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "low_ascitic_protein_or_low_serum_albumin_context",
+      "type": "opsonic_defect",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_PORTAL_HYPERTENSIVE_ASCITES_OPSONIC_DEFECT", "direction": "up", "factor_range": [1.5, 6]},
+            {"axis_id": "ascitic_fluid_total_protein", "direction": "down", "factor_range": [0.4, 0.9]},
+            {"axis_id": "serum_albumin", "direction": "down", "factor_range": [0.5, 0.9]}
+          ],
+          "trajectory_modulation": "Low protein ascites lowers local bacterial clearance."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "gastrointestinal_bleeding_recent_hospitalization_or_prior_sbp_context",
+      "type": "translocation_and_recurrence",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_INTESTINAL_BACTERIAL_TRANSLOCATION", "direction": "up", "factor_range": [1.5, 6]},
+            {"axis_id": "M_SBP_ANTIMICROBIAL_MISMATCH_OR_RESISTANCE", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.2, 5]}
+          ],
+          "trajectory_modulation": "GI bleeding and healthcare exposure increase translocation and resistant/unusual pathogen probability."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "alcoholic_liver_disease_context",
+      "type": "host_reserve_and_immune_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_CIRRHOTIC_IMMUNE_DYSFUNCTION", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "serum_gamma_glutamyl_transferase", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.1, 3]}
+          ],
+          "trajectory_modulation": "Alcohol-associated liver disease can worsen immune dysfunction and reserve without becoming part of the SBP disease name."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "type": "host_clearance",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 4],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_CIRRHOTIC_IMMUNE_DYSFUNCTION", "direction": "up", "factor_range": [1.1, 3]},
+            {"axis_id": "M_SBP_SYSTEMIC_INNATE_INFLAMMATION", "direction": "up", "factor_range": [1.0, 2]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.1, 3]}
+          ],
+          "trajectory_modulation": "Diabetes increases infection susceptibility and worsens reserve while serum glucose remains background-context physiology."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "malignancy_chemotherapy_or_immunosuppression",
+      "type": "host_clearance",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 6],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_CIRRHOTIC_IMMUNE_DYSFUNCTION", "direction": "up", "factor_range": [1.5, 6]},
+            {"axis_id": "M_SBP_ASCITIC_FLUID_BACTERIAL_BURDEN", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "ascitic_fluid_neutrophil_fraction", "direction": "down", "factor_range": [0.6, 1.0]},
+            {"axis_id": "cephalosporin_inactive_pathogen_probability_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.2, 5]}
+          ],
+          "trajectory_modulation": "Immunosuppression increases unusual pathogens and can blunt inflammatory expression."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_adult_or_high_comorbidity_burden",
+      "type": "host_reserve",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "body_temperature", "effect": "blunted_response", "factor_range": [0.5, 1.0]},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.2, 4]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.5, 6]}
+          ],
+          "trajectory_modulation": "Older or multimorbid hosts can be afebrile and have higher complication risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "renal_dysfunction_at_presentation",
+      "type": "complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3],
+          "axis_response_modulation": [
+            {"axis_id": "M_SBP_HEMODYNAMIC_RENAL_DECOMPENSATION", "direction": "up", "factor_range": [1.5, 5]},
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.2, 5]},
+            {"axis_id": "renal_dose_adjustment_need", "direction": "up", "factor_range": [2, 10]},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.5, 6]},
+            {"axis_id": "mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS", "direction": "up", "factor_range": [1.5, 6]}
+          ],
+          "trajectory_modulation": "Renal dysfunction shifts SBP toward high mortality and constrains antibiotic/albumin decisions."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Treat this as a pure first-layer SBP leaf: ascitic fluid infection without a surgically treatable intra-abdominal source. Cirrhosis decompensation, organism identity, secondary peritonitis, cholangitis, pyelonephritis, organism-specific sepsis, and hepatorenal syndrome remain context, mimic, complication, or future leaves.",
+    "Do not hard-code culture species or susceptibility into presentation-only diagnosis ranking. Culture and susceptibility should modulate treatment once available.",
+    "Use diagnostic paracentesis cell count when it is available at presentation; culture species, secondary-source exclusion, final adjudication, and response to antibiotics remain confirmatory/non-ranking unless testing post-workup mode.",
+    "Evaluate secondary peritonitis when polymicrobial culture, very high protein/LDH, very low glucose, free air, abscess, focal surgical abdomen, or poor PMN decline suggests a surgically treatable source.",
+    "Renal protection, volume status, albumin use, vasopressors, and ICU monitoring should be driven by renal, circulatory, and respiratory axes rather than a fixed treatment label.",
+    "Reassess active antibiotic coverage if PMN count, fever, pain, renal dysfunction, or inflammatory markers fail to improve."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-SPONTANEOUS-BACTERIAL-PERITONITIS.",
+    "No treatment-rank or expected-diagnosis label fields are encoded.",
+    "Organism identity and secondary-source exclusion are intentionally modeled as context or confirmatory workup, not part of the disease name."
+  ]
+}

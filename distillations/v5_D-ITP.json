@@ -1,0 +1,1287 @@
+{
+  "disease": "D-ITP",
+  "disease_name": "Immune thrombocytopenia",
+  "distillation_scope": "Pure disease-name leaf distillation for immune thrombocytopenia. Triggers, pregnancy, systemic autoimmune disease, lymphoproliferative disease, infection, medication exposure, Evans syndrome, thrombotic microangiopathy, DIC, HIT, leukemia, and other mimics are context, risk, or separate disease leaves, not part of this first-layer disease name.",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ITP_PLATELET_TOLERANCE_LOSS",
+      "display_name": "Loss of immune tolerance to platelet and megakaryocyte antigens",
+      "clinical_meaning": "Autoreactive B-cell and T-cell activity targets platelet glycoproteins and sometimes megakaryocytes. This upstream immune state can be idiopathic or context-triggered without changing the first-layer disease identity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.45, 1],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+      "display_name": "Antiplatelet autoantibody opsonization",
+      "clinical_meaning": "IgG autoantibodies bind platelet surface glycoproteins such as GPIIb/IIIa or GPIb/IX, marking platelets for Fc receptor-mediated clearance. Antibody tests are imperfect and should not be required for presentation-only ranking.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.35, 1],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+      "display_name": "Splenic Fc-mediated platelet clearance",
+      "clinical_meaning": "Opsonized platelets are cleared mainly by splenic macrophages, producing isolated thrombocytopenia with otherwise preserved red-cell, white-cell, and coagulation parameters unless bleeding or another context is present.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.45, 1],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [2, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ITP_IMPAIRED_THROMBOPOIESIS",
+      "display_name": "Megakaryocyte injury and impaired platelet production",
+      "clinical_meaning": "Autoimmune attack on megakaryocytes and thrombopoietic signaling reduces platelet production despite normal or increased marrow megakaryocytes, explaining chronicity and incomplete response to clearance blockade in some patients.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.25, 0.9],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "display_name": "Thrombocytopenic mucocutaneous bleeding phenotype",
+      "clinical_meaning": "Very low platelet counts cause petechiae, purpura, ecchymoses, gingival or oral bleeding, epistaxis, menorrhagia, hematuria, and rare catastrophic internal or intracranial bleeding.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.4, 1],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ITP_SEVERE_BLEEDING_EVENT_RISK",
+      "display_name": "Severe bleeding event risk",
+      "clinical_meaning": "When platelet counts are extremely low, particularly with mucosal bleeding, older age, hypertension, trauma, procedures, pregnancy-delivery needs, or anticoagulant exposure, major bleeding and intracranial hemorrhage hazards rise.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.15, 0.85],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_ITP_PLATELET_TOLERANCE_LOSS",
+      "target_id": "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 60],
+      "phase": "whole_course",
+      "clinical_rationale": "Loss of platelet immune tolerance enables pathogenic antibody production.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_PLATELET_TOLERANCE_LOSS",
+      "target_id": "M_ITP_IMPAIRED_THROMBOPOIESIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 60],
+      "phase": "persistent_or_chronic_course",
+      "clinical_rationale": "Autoreactive cellular and humoral responses can impair megakaryocyte maturation and platelet release.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+      "target_id": "antiplatelet_antibody_positivity_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "diagnostic_workup",
+      "clinical_rationale": "Platelet autoantibody assays can detect the mechanism but have limited sensitivity and specificity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+      "target_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "IgG-coated platelets are cleared through Fc receptors on splenic macrophages.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Accelerated immune platelet clearance lowers circulating platelet count, often abruptly.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_IMPAIRED_THROMBOPOIESIS",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 21],
+      "phase": "persistent_or_refractory_course",
+      "clinical_rationale": "Reduced platelet production contributes to severe or chronic thrombocytopenia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_IMPAIRED_THROMBOPOIESIS",
+      "target_id": "bone_marrow_megakaryocyte_hyperplasia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "diagnostic_workup",
+      "clinical_rationale": "Bone marrow, when examined, may show normal cellularity with increased megakaryocytes rather than marrow failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "target_id": "petechiae_purpura_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Capillary bleeding produces petechiae and purpura when platelet counts are very low.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "target_id": "ecchymosis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Skin and mucosal bruising can be extensive in severe ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "target_id": "mucosal_bleeding_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Gingival, oral, nasal, urinary, gastrointestinal, or gynecologic bleeding reflects platelet-type hemostatic failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "target_id": "oral_hemorrhagic_bullae_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Oral hemorrhagic bullae and lip/oropharyngeal ecchymoses are high-specificity mucosal bleeding manifestations of profound thrombocytopenia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [0, 2],
+      "phase": "active_thrombocytopenia",
+      "conditionality": "stronger when platelet_count is below about 30 x 10^9/L, especially below 10 x 10^9/L",
+      "clinical_rationale": "The bleeding phenotype tracks the platelet nadir.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "platelet_count",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [0, 2],
+      "phase": "active_thrombocytopenia",
+      "conditionality": "active when platelet_count is extremely low or mucosal bleeding is present",
+      "clinical_rationale": "Major bleeding hazard rises as platelet count approaches single digits or mucosal bleeding is active.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ITP_SEVERE_BLEEDING_EVENT_RISK",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "severe_flare",
+      "clinical_rationale": "Host bleeding risk contexts convert severe thrombocytopenia into clinically important hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "major_bleeding_hazard",
+      "target_id": "intracranial_hemorrhage_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [0, 7],
+      "phase": "severe_flare",
+      "clinical_rationale": "Intracranial hemorrhage is rare but the most feared catastrophic bleeding event in ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "major_bleeding_hazard",
+      "target_id": "mortality_hazard_in_D-ITP",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [0, 7],
+      "phase": "severe_flare",
+      "clinical_rationale": "Life-threatening hemorrhage drives short-term ITP mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "intracranial_hemorrhage_hazard",
+      "target_id": "mortality_hazard_in_D-ITP",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [0, 3],
+      "phase": "catastrophic_bleeding",
+      "clinical_rationale": "Intracranial hemorrhage disproportionately drives fatal outcomes.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [150, 400],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [1, 80],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [2, 60],
+      "shape_free_text": "Isolated thrombocytopenia is the central measured axis; severe presentations are often below 20 and can reach 1-5 x10^9/L.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [4, 11],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [4, 12],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "shape_free_text": "Usually preserved; abnormal leukocytosis, leukopenia, or blasts should be explained by context or another leaf.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [12, 16.5],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [10.5, 16.5],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "shape_free_text": "Usually preserved unless bleeding, pregnancy hemodilution, iron deficiency, or another disease context is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "category": "lab_value",
+      "unit": "INR",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [0.9, 1.2],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.9, 1.2],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "shape_free_text": "Coagulation screen is generally normal in ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "activated_partial_thromboplastin_time",
+      "category": "lab_value",
+      "unit": "seconds",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [25, 40],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [25, 40],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "shape_free_text": "aPTT is generally normal in ITP unless another anticoagulant, factor, or inhibitor context exists.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [200, 450],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [180, 500],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "shape_free_text": "Fibrinogen is generally preserved in isolated ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "d_dimer",
+      "category": "lab_value",
+      "unit": "ug/mL_FEU",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.05, 0.5],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.05, 3],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "shape_free_text": "Usually normal; modest elevation can occur from pregnancy, inflammation, bleeding, age, or unrelated thrombosis context but is not a core ITP driver.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.2, 5],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.2, 15],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "shape_free_text": "Usually normal or only mildly elevated unless a trigger or mimic context is present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [36.2, 37.2],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [36.2, 37.8],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "shape_free_text": "Fever is not a core ITP feature; high fever should be explained by context or another disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [60, 90],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [60, 110],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "shape_free_text": "Usually normal unless bleeding anxiety, anemia, pregnancy, or another acute context is present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [12, 20],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [12, 22],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "shape_free_text": "Usually preserved in uncomplicated ITP.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [70, 100],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [65, 105],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 21],
+      "shape_free_text": "Hemodynamic instability is not expected unless hemorrhage or another acute disease is present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "petechiae_purpura_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 30],
+      "shape_free_text": "Petechiae and purpura are common mucocutaneous manifestations of severe thrombocytopenia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "ecchymosis_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 30],
+      "shape_free_text": "Easy bruising and ecchymoses can involve extremities, trunk, face, oral mucosa, or tongue.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mucosal_bleeding_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "shape_free_text": "Gingival/oral bleeding, epistaxis, menorrhagia, urinary, or gastrointestinal bleeding can occur, especially below 20-30 x10^9/L.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oral_hemorrhagic_bullae_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mucosal_bleeding_activity",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "shape_free_text": "Oral hemorrhagic bullae, lip bleeding blisters, or oropharyngeal ecchymoses are a satellite pattern of mucosal bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "splenomegaly_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0, 0.15],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [30, 365],
+      "shape_free_text": "Spleen is usually not enlarged in uncomplicated ITP; marked splenomegaly should be explained by another context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pathologic_lymphadenopathy_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0, 0.1],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [30, 365],
+      "shape_free_text": "Pathologic lymphadenopathy is not expected in primary uncomplicated ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "antiplatelet_antibody_positivity_probability",
+      "category": "diagnostic_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.3, 1],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [30, 365],
+      "shape_free_text": "Confirmatory/context axis only; platelet antibody assays are neither required nor fully sensitive.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bone_marrow_megakaryocyte_hyperplasia_activity",
+      "category": "diagnostic_context",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.3, 1],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [30, 365],
+      "shape_free_text": "Confirmatory/context axis when marrow is examined: normal cellularity with increased or preserved megakaryocytes supports peripheral destruction/production imbalance.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0005, 0.08],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "shape_free_text": "Major non-intracranial hemorrhage hazard rises with platelet single digits, mucosal bleeding, older age, hypertension, trauma, anticoagulants, procedures, or delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "intracranial_hemorrhage_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.0000001, 0.000002],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.00005, 0.01],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 14],
+      "shape_free_text": "Rare but high-consequence ITP event hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "thrombosis_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.00001, 0.0002],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.00002, 0.02],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [14, 180],
+      "shape_free_text": "ITP and its treatments can carry paradoxical thrombosis risk, especially with TPO receptor agonists, splenectomy, pregnancy, older age, or antiphospholipid context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "life_threatening_bleeding_context_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [0, 7],
+      "decline_half_life_days": [0.5, 7],
+      "shape_free_text": "Context axis for emergency hemostatic rescue, not a disease-course diagnostic label.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pregnancy_context_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 280],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [30, 280],
+      "decline_half_life_days": [14, 60],
+      "shape_free_text": "External host context that changes bleeding, delivery, and treatment feasibility; it is not part of the disease name.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rh_positive_nonsplenectomized_context_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.5],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [30, 365],
+      "shape_free_text": "Required context for anti-D immune globulin effect.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "chronic_refractory_itp_context_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [90, 365],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [60, 365],
+      "shape_free_text": "Context axis for persistent/chronic or treatment-resistant disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "infection_risk_activity",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 365],
+      "peak_value_range": [0, 1],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [7, 365],
+      "shape_free_text": "Context axis for immunosuppressive treatment toxicity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ITP",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.00002, 0.03],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 30],
+      "shape_free_text": "Lifespan outcome hazard for D-ITP. Driven mainly by major bleeding, intracranial hemorrhage, severe infection from therapy, or high-risk comorbidity context; death is not a separate manifold.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "petechiae_purpura_activity",
+      "relationship": "negative_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [-0.7, -0.4],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Skin petechiae and purpura track same-patient platelet nadir and recovery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "mucosal_bleeding_activity",
+      "relationship": "negative_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [-0.7, -0.4],
+      "phase": "active_thrombocytopenia",
+      "clinical_rationale": "Mucosal bleeding tends to intensify as platelets fall, but bleeding varies by local and host context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [-0.8, -0.5],
+      "effect_direction": "source_down_increases_target",
+      "phase": "severe_flare",
+      "clinical_rationale": "Major hemorrhage hazard rises nonlinearly at very low platelet counts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mucosal_bleeding_activity",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.4, 0.7],
+      "effect_direction": "source_up_increases_target",
+      "phase": "severe_flare",
+      "clinical_rationale": "Active mucosal bleeding is a warning phenotype for clinically significant bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "major_bleeding_hazard",
+      "target_axis_id": "intracranial_hemorrhage_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "event_transition",
+      "correlation_range": [0.3, 0.6],
+      "effect_direction": "source_up_increases_target",
+      "phase": "catastrophic_bleeding",
+      "clinical_rationale": "Systemic severe bleeding risk also raises the rare intracranial hemorrhage transition risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "intracranial_hemorrhage_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ITP",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [0.5, 0.9],
+      "effect_direction": "source_up_increases_target",
+      "phase": "catastrophic_bleeding",
+      "clinical_rationale": "Intracranial hemorrhage is the dominant acute fatal event in ITP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "prothrombin_time_inr",
+      "target_axis_id": "activated_partial_thromboplastin_time",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.2, 0.5],
+      "phase": "presentation_workup",
+      "clinical_rationale": "Both stay near baseline in isolated platelet-type bleeding; abnormal values should be explained by a coagulation context.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "systemic_corticosteroid_immunosuppression",
+      "display_name": "Systemic corticosteroid immunosuppression",
+      "drug": "prednisone_or_dexamethasone",
+      "drug_class": "glucocorticoid_immunosuppression",
+      "mode": "reshape_landscape",
+      "target_mechanisms": [
+        "M_ITP_PLATELET_TOLERANCE_LOSS",
+        "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+        "M_ITP_SPLENIC_FC_CLEARANCE"
+      ],
+      "required_context_axes": ["infection_risk_activity", "pregnancy_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "infection_risk_activity",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "High infection risk limits broad immunosuppression."
+        },
+        {
+          "axis_id": "pregnancy_context_probability",
+          "effect_if_high": "requires_maternal_fetal_risk_selection",
+          "clinical_rationale": "Steroids remain usable in pregnancy but hyperglycemia, hypertension, and delivery planning matter."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_PLATELET_TOLERANCE_LOSS",
+          "effect": "decrease",
+          "target_range": [0.1, 0.5],
+          "onset_days": [2, 14]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [30, 150],
+          "onset_days": [2, 14]
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "decrease",
+          "target_range": [0.00001, 0.01],
+          "onset_days": [2, 14]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.3],
+          "interpretation": "Dose and duration dependent infection and metabolic toxicity."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "intravenous_immunoglobulin",
+      "display_name": "Intravenous immunoglobulin",
+      "drug": "ivig",
+      "drug_class": "fc_receptor_blockade_immunomodulation",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_SPLENIC_FC_CLEARANCE", "M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE"],
+      "required_context_axes": ["life_threatening_bleeding_context_probability", "pregnancy_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "life_threatening_bleeding_context_probability",
+          "effect_if_high": "strengthens_rapid_platelet_rescue_value",
+          "clinical_rationale": "IVIG can raise platelets faster than steroid-only therapy."
+        },
+        {
+          "axis_id": "thrombosis_hazard",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "IVIG can increase thrombotic and viscosity-related risk in susceptible patients."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+          "effect": "decrease",
+          "target_range": [0.05, 0.4],
+          "onset_days": [0.5, 3]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [20, 150],
+          "onset_days": [0.5, 5]
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "decrease",
+          "target_range": [0.00001, 0.01],
+          "onset_days": [0.5, 5]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "thrombosis_hazard",
+          "direction": "up",
+          "magnitude_range": [1.2, 3],
+          "interpretation": "Thrombosis risk depends on age, vascular disease, pregnancy/postpartum, and dose."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "anti_d_immune_globulin",
+      "display_name": "Anti-D immune globulin",
+      "drug": "anti_d_immune_globulin",
+      "drug_class": "fc_receptor_diversion",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_SPLENIC_FC_CLEARANCE"],
+      "required_context_axes": ["rh_positive_nonsplenectomized_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "rh_positive_nonsplenectomized_context_probability",
+          "effect_if_high": "required_for_effect",
+          "clinical_rationale": "Anti-D requires Rh-positive red cells and an intact spleen."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+          "effect": "decrease",
+          "target_range": [0.1, 0.5],
+          "onset_days": [1, 5]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [20, 120],
+          "onset_days": [1, 7]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "hemoglobin",
+          "direction": "down",
+          "magnitude_range": [0.5, 2.5],
+          "interpretation": "Expected extravascular hemolysis; severe hemolysis is a limiting toxicity."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "thrombopoietin_receptor_agonist",
+      "display_name": "Thrombopoietin receptor agonist",
+      "drug": "eltrombopag_romiplostim_or_avatrombopag",
+      "drug_class": "thrombopoiesis_stimulation",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_IMPAIRED_THROMBOPOIESIS"],
+      "required_context_axes": ["chronic_refractory_itp_context_probability", "thrombosis_hazard"],
+      "effect_modifiers": [
+        {
+          "axis_id": "chronic_refractory_itp_context_probability",
+          "effect_if_high": "strengthens_context_fit",
+          "clinical_rationale": "TPO receptor agonists are mainly used for persistent, chronic, or refractory disease or when rapid durable production support is needed."
+        },
+        {
+          "axis_id": "thrombosis_hazard",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "Thrombosis risk must be considered during platelet production stimulation."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_IMPAIRED_THROMBOPOIESIS",
+          "effect": "decrease_functional_impact",
+          "target_range": [0.05, 0.4],
+          "onset_days": [5, 21]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [30, 250],
+          "onset_days": [5, 21]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "thrombosis_hazard",
+          "direction": "up",
+          "magnitude_range": [1.2, 4],
+          "interpretation": "Risk increases with excess platelet rise and baseline vascular risk."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "rituximab_b_cell_depletion",
+      "display_name": "Rituximab B-cell depletion",
+      "drug": "rituximab",
+      "drug_class": "anti_cd20_b_cell_depletion",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_PLATELET_TOLERANCE_LOSS", "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION"],
+      "required_context_axes": ["chronic_refractory_itp_context_probability", "infection_risk_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "chronic_refractory_itp_context_probability",
+          "effect_if_high": "strengthens_context_fit",
+          "clinical_rationale": "B-cell depletion is most useful when autoimmune persistence or relapse dominates."
+        },
+        {
+          "axis_id": "infection_risk_activity",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "HBV reactivation, hypogammaglobulinemia, and opportunistic infection risk modify benefit."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_ANTIPLATELET_AUTOANTIBODY_OPSONIZATION",
+          "effect": "decrease",
+          "target_range": [0.05, 0.4],
+          "onset_days": [21, 90]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [30, 200],
+          "onset_days": [21, 90]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.4],
+          "interpretation": "B-cell depletion raises viral reactivation and infection risk."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "fostamatinib_syk_inhibition",
+      "display_name": "Fostamatinib SYK inhibition",
+      "drug": "fostamatinib",
+      "drug_class": "spleen_tyrosine_kinase_inhibition",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_SPLENIC_FC_CLEARANCE"],
+      "required_context_axes": ["chronic_refractory_itp_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "chronic_refractory_itp_context_probability",
+          "effect_if_high": "strengthens_context_fit",
+          "clinical_rationale": "SYK inhibition is a non-production strategy for persistent immune platelet destruction."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+          "effect": "decrease",
+          "target_range": [0.1, 0.5],
+          "onset_days": [14, 60]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [30, 150],
+          "onset_days": [14, 60]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [2, 15],
+          "interpretation": "Hypertension and diarrhea can limit treatment."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "splenectomy",
+      "display_name": "Splenectomy",
+      "drug": "splenectomy",
+      "drug_class": "surgical_immunomodulation",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_ITP_SPLENIC_FC_CLEARANCE"],
+      "required_context_axes": ["chronic_refractory_itp_context_probability", "infection_risk_activity", "thrombosis_hazard", "pregnancy_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "chronic_refractory_itp_context_probability",
+          "effect_if_high": "strengthens_context_fit",
+          "clinical_rationale": "Durable removal of the main clearance organ is considered when chronic disease requires definitive rescue."
+        },
+        {
+          "axis_id": "infection_risk_activity",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "Lifelong postsplenectomy infection risk requires vaccination and education."
+        },
+        {
+          "axis_id": "pregnancy_context_probability",
+          "effect_if_high": "requires_strict_timing_selection",
+          "clinical_rationale": "If unavoidable in pregnancy, timing and obstetric risk dominate feasibility."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "M_ITP_SPLENIC_FC_CLEARANCE",
+          "effect": "decrease",
+          "target_range": [0, 0.25],
+          "onset_days": [3, 30]
+        },
+        {
+          "axis_id": "platelet_count",
+          "effect": "increase",
+          "target_range": [50, 400],
+          "onset_days": [3, 30]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "infection_risk_activity",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.3],
+          "interpretation": "Encapsulated organism sepsis risk persists lifelong."
+        },
+        {
+          "axis_id": "thrombosis_hazard",
+          "direction": "up",
+          "magnitude_range": [1.2, 4],
+          "interpretation": "Portal and systemic thrombosis risk increases around and after surgery."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "emergency_platelet_transfusion_with_itp_rescue",
+      "display_name": "Emergency platelet transfusion with ITP rescue therapy",
+      "drug": "platelet_transfusion_with_ivig_and_steroids",
+      "drug_class": "hemostatic_rescue",
+      "mode": "push_state",
+      "target_mechanisms": ["M_ITP_SEVERE_BLEEDING_EVENT_RISK"],
+      "required_context_axes": ["life_threatening_bleeding_context_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "life_threatening_bleeding_context_probability",
+          "effect_if_high": "required_for_effect",
+          "clinical_rationale": "Platelets are rapidly destroyed in active ITP and are reserved for life-threatening bleeding or urgent procedures with concurrent disease-directed rescue."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "platelet_count",
+          "effect": "transient_increase",
+          "target_range": [20, 80],
+          "onset_days": [0, 0.2]
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "decrease",
+          "target_range": [0.0001, 0.02],
+          "onset_days": [0, 1]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "thrombosis_hazard",
+          "direction": "up",
+          "magnitude_range": [1, 2],
+          "interpretation": "Risk depends on active bleeding context, dose, and prothrombotic host state."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "antifibrinolytic_and_local_hemostasis",
+      "display_name": "Antifibrinolytic and local hemostasis",
+      "drug": "tranexamic_acid_or_local_hemostatic_measures",
+      "drug_class": "supportive_hemostasis",
+      "mode": "push_state",
+      "target_mechanisms": ["M_ITP_MUCOCUTANEOUS_BLEEDING_PHENOTYPE"],
+      "required_context_axes": ["mucosal_bleeding_activity", "thrombosis_hazard"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mucosal_bleeding_activity",
+          "effect_if_high": "strengthens_local_symptom_control_value",
+          "clinical_rationale": "Antifibrinolytic and local pressure measures are most useful for oral, nasal, gynecologic, or procedural mucosal bleeding."
+        },
+        {
+          "axis_id": "thrombosis_hazard",
+          "effect_if_high": "reduces_net_benefit",
+          "clinical_rationale": "High thrombosis risk limits systemic antifibrinolytic use."
+        }
+      ],
+      "trajectory_modifications": [
+        {
+          "axis_id": "mucosal_bleeding_activity",
+          "effect": "decrease",
+          "target_range": [0, 0.4],
+          "onset_days": [0, 0.5]
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "decrease",
+          "target_range": [0.00001, 0.02],
+          "onset_days": [0, 1]
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "thrombosis_hazard",
+          "direction": "up",
+          "magnitude_range": [1, 2],
+          "interpretation": "Usually small but context dependent."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "sex",
+      "type": "categorical",
+      "modulation": {
+        "female": {
+          "P_disease_ratio": [1.2, 2.5],
+          "trajectory_modulation": "Adult ITP has a modest female predominance."
+        },
+        "male": {
+          "P_disease_ratio": [0.7, 1.1]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pregnancy_or_peripartum_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 8],
+          "axis_response_modulation": {
+            "pregnancy_context_probability": "up",
+            "major_bleeding_hazard": "up_if_delivery_or_severe_thrombocytopenia",
+            "thrombosis_hazard": "up_postpartum"
+          },
+          "treatment_effect_modulation": {
+            "intravenous_immunoglobulin": "strengthens_when_rapid_safe_platelet_rise_needed",
+            "systemic_corticosteroid_immunosuppression": "context_dependent"
+          },
+          "clinical_rationale": "Pregnancy is a host context that changes management and mimic differential but does not change the first-layer disease identity."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_infection_or_vaccination_trigger_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6],
+          "axis_response_modulation": {
+            "serum_crp": "up_context_dependent",
+            "body_temperature": "up_context_dependent"
+          },
+          "clinical_rationale": "Infection or vaccination may temporally trigger ITP, especially in children or acute presentations."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "systemic_autoimmune_or_lymphoproliferative_context",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 12],
+          "axis_response_modulation": {
+            "pathologic_lymphadenopathy_presence": "context_dependent",
+            "splenomegaly_presence": "context_dependent",
+            "white_blood_cell_count": "context_dependent"
+          },
+          "clinical_rationale": "These contexts can coexist with or secondarily drive ITP; if the context itself is an active disease manifold it should be modeled separately rather than double-counted."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_age_or_hypertension_bleeding_risk_context",
+      "type": "mixed",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": {
+            "major_bleeding_hazard": "up",
+            "intracranial_hemorrhage_hazard": "up",
+            "mortality_hazard_in_D-ITP": "up"
+          },
+          "clinical_rationale": "The same platelet nadir carries higher fatal bleeding risk in older adults or patients with vascular fragility."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "anticoagulant_or_antiplatelet_exposure_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.2],
+          "axis_response_modulation": {
+            "mucosal_bleeding_activity": "up",
+            "major_bleeding_hazard": "up"
+          },
+          "treatment_effect_modulation": {
+            "antifibrinolytic_and_local_hemostasis": "context_dependent",
+            "emergency_platelet_transfusion_with_itp_rescue": "strengthens_when_life_threatening"
+          },
+          "clinical_rationale": "Antithrombotic drugs do not cause the ITP manifold but alter bleeding expression and rescue choices."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "chronic_or_refractory_course_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 3],
+          "axis_response_modulation": {
+            "chronic_refractory_itp_context_probability": "up",
+            "M_ITP_IMPAIRED_THROMBOPOIESIS": "up"
+          },
+          "treatment_effect_modulation": {
+            "thrombopoietin_receptor_agonist": "strengthens",
+            "rituximab_b_cell_depletion": "strengthens",
+            "fostamatinib_syk_inhibition": "strengthens",
+            "splenectomy": "context_dependent"
+          },
+          "clinical_rationale": "Persistent or refractory course changes mechanism weights and treatment vector fields but not the disease leaf name."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Trend CBC with platelet count, hemoglobin, and smear review; follow bleeding symptoms rather than platelet number alone.",
+    "Preserve initial presentation evidence separately from confirmatory exclusion workup: marrow, platelet antibody tests, secondary-cause tests, and treatment response should not be used for presentation-only ranking.",
+    "Assess mucosal, urinary, gastrointestinal, gynecologic, retinal, neurologic, and traumatic bleeding; escalate urgently for headache, neurologic change, major bleeding, or platelet single digits with mucosal bleeding.",
+    "Avoid medications that impair platelet function when possible, and review anticoagulant or antiplatelet exposure as a bleeding modifier.",
+    "Use local hemostatic measures and antifibrinolytic support for mucosal bleeding when thrombosis context permits.",
+    "Plan pregnancy, delivery, anesthesia, and neonatal platelet monitoring with obstetrics and hematology when pregnancy context is present.",
+    "Screen for infection, systemic autoimmune disease, lymphoproliferative disease, liver disease, drug exposure, thrombotic microangiopathy, consumptive coagulopathy, and marrow disease as confirmatory/context evaluation without encoding those mimics into the ITP disease name.",
+    "Before prolonged steroids, rituximab, or splenectomy, address vaccination, HBV risk, infection prophylaxis, glucose, bone, blood pressure, and postsplenectomy fever education."
+  ]
+}

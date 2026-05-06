@@ -1,0 +1,617 @@
+{
+  "disease": "D-CELLULITIS",
+  "disease_id": "D-CELLULITIS",
+  "disease_name": "Cellulitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Cellulitis",
+    "leaf_granularity": "First-layer disease leaf for acute non-necrotizing infection of dermis, subcutaneous tissue, and superficial soft tissue, independent of organism, anatomic limb, portal, or severity context.",
+    "boundary_policy": "Erysipelas, orbital cellulitis, necrotizing fasciitis, septic arthritis, osteomyelitis, deep abscess as a primary disease, DVT, vasculitis, contact dermatitis, toxic shock syndrome, and organism-level bacteremia are mimics, complications, contexts, or future leaves. They are not appended to the disease name.",
+    "ranking_note": "Presentation ranking should use observed erythema, warmth, edema, tenderness, local extent, lymphangitis or regional lymphadenitis, fever history, vital signs, CBC, CRP/ESR/PCT, lactate, renal injury, lymphedema/venous disease/skin break context, and imaging evidence of superficial subcutaneous edema when available. Culture species, susceptibility, final source adjudication, debridement pathology, and treatment response are confirmatory or post-workup context."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_CELLULITIS_SKIN_BARRIER_ENTRY",
+      "display_name": "Skin barrier entry and superficial inoculation",
+      "clinical_meaning": "Breakdown of skin defense from trauma, wound, fissure, toe-web maceration, ulcer, injection, edema-related skin fragility, or an initially unapparent portal allows organisms to enter dermis and subcutaneous tissue.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-7, 1],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN",
+      "display_name": "Dermal and subcutaneous viable pathogen burden",
+      "clinical_meaning": "Viable organisms in dermis, subcutaneous tissue, lymphatics, or a contiguous superficial wound drive local inflammation, expansion, and occasional bloodstream spillover. Organism identity is contextual rather than part of this leaf.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.35, 0.95],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION",
+      "display_name": "Local innate inflammation and vascular permeability",
+      "clinical_meaning": "Neutrophil, macrophage, complement, cytokine, vasodilatory, and endothelial permeability response produces poorly demarcated erythema, warmth, edema, tenderness, and progressive skin/soft-tissue extent.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.45, 0.98],
+      "plateau_duration_days": [2, 14],
+      "decline_half_life_days": [2, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION",
+      "display_name": "Lymphatic or venous stasis amplification",
+      "clinical_meaning": "Lymphedema, chronic venous insufficiency, obesity-related edema, previous cellulitis, or lymphatic damage traps inflammatory fluid and weakens local clearance, amplifying edema, local extent, recurrence, and slow resolution.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-30, 3],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER",
+      "display_name": "Systemic inflammatory spillover",
+      "clinical_meaning": "Local infection can spill into systemic cytokine physiology with fever, chills, tachycardia, leukocyte response, CRP/ESR/PCT rise, malaise, delirium, hypotension, lactate elevation, or organ dysfunction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 6],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_HOST_CLEARANCE_IMPAIRMENT",
+      "display_name": "Host clearance impairment",
+      "clinical_meaning": "Diabetes, CKD, nephrotic syndrome, corticosteroids, transplant or other immunosuppression, malignancy, advanced age, peripheral vascular disease, and chronic wounds impair local and systemic control.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION",
+      "display_name": "Purulent or drainable abscess transition",
+      "clinical_meaning": "Some cellulitis presentations develop or reveal focal pus, pustules, bullae with exudate, or subcutaneous collection requiring drainage. This is source-control context within cellulitis unless a separate deep abscess disease is being tested.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 10],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD",
+      "display_name": "Deep spread or necrotizing transition hazard",
+      "clinical_meaning": "A minority of presentations initially considered cellulitis progress to deep fascia, muscle, necrotizing soft-tissue infection, compartment threat, or surgical emergency. The hazard should be represented without relabeling ordinary cellulitis as necrotizing disease.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY",
+      "display_name": "Inactive, delayed, or poorly delivered therapy",
+      "clinical_meaning": "Delay, resistant or unexpected organism, poor tissue penetration in ischemic/edematous tissue, underdosing, allergy-limited therapy, renal dosing errors, or missed source control prolong local burden and systemic spillover.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_CELLULITIS_SKIN_BARRIER_ENTRY", "target_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Barrier failure is the entry route into dermis and subcutaneous tissue.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_HOST_CLEARANCE_IMPAIRMENT", "target_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Impaired host clearance allows higher and more persistent superficial burden.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 7], "rationale": "Edema and lymphatic damage lower local clearance and increase recurrence.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "target_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Local organisms trigger innate inflammatory response.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "peripheral_skin_soft_tissue_infection_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Cellulitis appears as localized skin and soft tissue inflammation.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 3], "rationale": "Greater local inflammation expands involved skin area.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_erythema_extent_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Vasodilation and capillary leak produce erythema.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_warmth_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Local hyperemia produces warmth.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_edema_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Inflammatory permeability produces edema.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_tenderness_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Inflammatory mediators and tissue pressure produce pain and tenderness.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "localized_pain_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Cellulitis commonly causes localized pain.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "limb_swelling_pain_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Extremity cellulitis often presents with painful swelling.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_subcutaneous_edema_imaging_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "CT or MRI may show superficial subcutaneous edema without deep gas or bone/joint disease.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION", "target_id": "cellulitis_lymphangitis_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Superficial lymphatic involvement produces streaking or regional adenitis.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "lymphedema_or_chronic_edema_context_activity", "effect_on_target": "up", "edge_type": "risk_context", "lag_days_range": [0, 0], "rationale": "Chronic edema is an observed background context and amplifier.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "cellulitis_edema_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 7], "rationale": "Edema background magnifies cellulitis swelling.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "target_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Higher local burden increases systemic inflammatory spillover.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "fever_history_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Systemic spillover produces fever history or chills.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "body_temperature", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Pyrogenic cytokines raise measured temperature, though older or immunosuppressed hosts may be blunted.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "chills_rigors_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Chills or rigors can accompany severe cellulitis.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "heart_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Fever, pain, hypovolemia, or sepsis physiology raises heart rate.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "respiratory_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Fever, pain, acidosis, or shock can raise respiratory rate.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "systolic_blood_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Severe systemic spillover can cause vasodilation or shock.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "mean_arterial_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Shock physiology lowers MAP.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "malaise_fatigue_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 3], "rationale": "Systemic inflammatory illness causes malaise.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "altered_mental_status_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Severe infection, fever, hypotension, or metabolic injury can cause delirium or lethargy.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "white_blood_cell_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Leukocytosis is common in bacterial cellulitis, though response can be blunted.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "absolute_neutrophil_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Neutrophilic response tracks bacterial inflammation.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_crp", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "CRP rises with cellulitis severity and systemic inflammation.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [1, 7], "rationale": "ESR may rise in skin and soft-tissue infection.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_procalcitonin", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "PCT can rise in severe bacterial cellulitis or bacteremic presentations.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_lactate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Hypoperfusion or severe sepsis physiology raises lactate.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_creatinine", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Shock, dehydration, CKD background, or nephrotoxic exposures can raise creatinine.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "blood_urea_nitrogen", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "AKI, dehydration, and catabolic stress raise BUN.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION", "target_id": "cellulitis_purulent_drainage_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Purulent drainage reflects pus-forming transition or wound involvement.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION", "target_id": "cellulitis_bullae_or_pustular_exudate_activity_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Bullae, pustules, or exudate can occur in severe superficial infection.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION", "target_id": "drainable_abscess_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Localized pus can become a drainable abscess.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD", "target_id": "soft_tissue_pain_out_of_proportion_activity", "effect_on_target": "up", "edge_type": "warning_signal", "lag_days_range": [0, 3], "rationale": "Pain out of proportion raises concern for deep or necrotizing transition.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD", "target_id": "necrotizing_soft_tissue_infection_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Deep spread hazard maps to necrotizing soft-tissue infection event risk.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "target_id": "blood_culture_positivity_probability", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 1], "rationale": "Higher burden and systemic spillover raise chance of positive blood cultures; species identity remains confirmatory unless testing post-workup.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN", "target_id": "cellulitis_bacteremia_hazard_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "rationale": "Cellulitis can be complicated by bloodstream infection.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "rationale": "Hypotension, lactate, and systemic spillover increase shock hazard.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Shock and inflammatory injury raise AKI hazard.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "active_antibiotic_coverage_probability", "effect_on_target": "down", "edge_type": "treatment_context", "lag_days_range": [0, 0], "rationale": "Inactive or delayed therapy lowers active coverage.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "initial_inactive_antibiotic_exposure_activity", "effect_on_target": "up", "edge_type": "treatment_context", "lag_days_range": [0, 7], "rationale": "Failure of initial regimen is captured as treatment context rather than a case label.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION", "target_id": "source_control_need", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Abscess, purulence, foreign material, or necrotic tissue can require drainage or procedure.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD", "target_id": "source_control_need", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Deep or necrotizing concern requires surgical assessment and possible source control.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "mortality_hazard_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Most cellulitis is survivable, but shock, organ dysfunction, and frailty raise mortality hazard.", "confidence": "high"},
+    {"source_id": "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD", "target_id": "mortality_hazard_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Unrecognized deep progression raises mortality hazard.", "confidence": "medium"},
+    {"source_id": "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "mortality_hazard_in_D-CELLULITIS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [1, 7], "rationale": "Delayed active therapy and uncontrolled source worsen severe cellulitis outcomes.", "confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "peripheral_skin_soft_tissue_infection_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Integrated visible peripheral skin and soft-tissue infection activity.", "baseline_range": [0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [2, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Extent of involved cellulitic skin and superficial subcutaneous tissue.", "baseline_range": [0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.25, 1.0], "plateau_duration_days": [2, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_erythema_extent_in_D-CELLULITIS", "category": "physical_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Poorly demarcated erythema extent in the involved skin.", "baseline_range": [0, 0.02], "peak_day_range": [0, 4], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [2, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_warmth_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Local warmth in the cellulitic region.", "baseline_range": [0, 0.02], "peak_day_range": [0, 4], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [2, 10], "decline_half_life_days": [2, 8], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Inflammatory swelling or edema associated with cellulitis.", "baseline_range": [0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [2, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_tenderness_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Tenderness or pain localized to cellulitic skin and soft tissue.", "baseline_range": [0, 0.03], "peak_day_range": [0, 4], "peak_value_range": [0.25, 0.95], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "localized_pain_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Localized pain at the affected site.", "baseline_range": [0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "limb_swelling_pain_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Combined limb swelling and pain pattern.", "baseline_range": [0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [2, 21], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "cellulitis_lymphangitis_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Lymphangitic streaking or regional lymphadenitis associated with cellulitis.", "baseline_range": [0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.75], "plateau_duration_days": [1, 10], "decline_half_life_days": [2, 8], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_purulent_drainage_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Purulent or non-purulent drainage from a wound within the cellulitic region.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_bullae_or_pustular_exudate_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Bullae, blistering, pustular exudate, or superficial drainage in severe cellulitis.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_purpura_activity_in_D-CELLULITIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "Purpuric or hemorrhagic surface change within cellulitic skin; raises severity and mimic concern but can occur in severe cellulitis.", "baseline_range": [0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_subcutaneous_edema_imaging_activity_in_D-CELLULITIS", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "shape_free_text": "CT/MRI/ultrasound evidence of superficial subcutaneous edema or fat stranding without deep gas, bone, joint, or primary fascial disease.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [2, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "lymphedema_or_chronic_edema_context_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Background lymphedema or chronic limb edema that predisposes to cellulitis and prolonged swelling.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "skin_barrier_break_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed or likely skin break, wound, abrasion, fissure, ulcer, injection site, or maceration serving as portal.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "chronic_wound_or_ulcer_context_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chronic wound, ulcer, denuded skin, or draining superficial defect in the affected region.", "baseline_range": [0, 0.03], "peak_day_range": [-365, 0], "peak_value_range": [0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured body temperature.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 3], "peak_value_range": [37.0, 40.5], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reported fever or feverishness before or at presentation.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors accompanying systemic inflammation.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate.", "baseline_range": [60, 90], "peak_day_range": [0, 3], "peak_value_range": [85, 140], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate.", "baseline_range": [12, 20], "peak_day_range": [0, 3], "peak_value_range": [16, 32], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure.", "baseline_range": [100, 140], "peak_day_range": [0, 3], "peak_value_range": [75, 130], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "diastolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Diastolic blood pressure.", "baseline_range": [60, 90], "peak_day_range": [0, 3], "peak_value_range": [35, 85], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure.", "baseline_range": [70, 100], "peak_day_range": [0, 3], "peak_value_range": [50, 95], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Oxygen saturation; usually preserved unless severe shock, respiratory failure, or comorbidity is present.", "baseline_range": [95, 100], "peak_day_range": [0, 3], "peak_value_range": [88, 100], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "low"},
+    {"axis_id": "malaise_fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Malaise, weakness, or systemic unwellness.", "baseline_range": [0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "altered_mental_status_activity", "category": "neurologic", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Delirium, lethargy, confusion, or impaired consciousness from severe systemic illness.", "baseline_range": [0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0, 0.8], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "White blood cell count.", "baseline_range": [4, 10], "peak_day_range": [0, 3], "peak_value_range": [6, 35], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Absolute neutrophil count.", "baseline_range": [2, 7], "peak_day_range": [0, 3], "peak_value_range": [4, 30], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein.", "baseline_range": [0.2, 5], "peak_day_range": [1, 5], "peak_value_range": [20, 350], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab", "unit": "mm_per_hr", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Erythrocyte sedimentation rate.", "baseline_range": [0, 20], "peak_day_range": [1, 7], "peak_value_range": [20, 100], "plateau_duration_days": [3, 21], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_procalcitonin", "category": "lab", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.1, 10], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum lactate.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [1.0, 6.0], "plateau_duration_days": [0.2, 3], "decline_half_life_days": [0.2, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin; not a primary cellulitis driver but useful for host reserve and differential context.", "baseline_range": [12, 17], "peak_day_range": [0, 5], "peak_value_range": [8, 17], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 30], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelet count; may fall in severe systemic infection.", "baseline_range": [150, 350], "peak_day_range": [0, 5], "peak_value_range": [80, 350], "plateau_duration_days": [1, 10], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum creatinine, interpreted with renal background.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.6, 8.5], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Blood urea nitrogen, interpreted with renal background.", "baseline_range": [7, 20], "peak_day_range": [0, 7], "peak_value_range": [10, 120], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_albumin", "category": "lab", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum albumin; low levels indicate inflammation, nephrotic/liver/nutrition context, or capillary leak.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 7], "peak_value_range": [1.2, 4.5], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_sodium", "category": "lab", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum sodium.", "baseline_range": [135, 145], "peak_day_range": [0, 5], "peak_value_range": [128, 145], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "low"},
+    {"axis_id": "serum_potassium", "category": "lab", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum potassium; mainly treatment and renal context.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 7], "peak_value_range": [3.0, 6.0], "plateau_duration_days": [1, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "low"},
+    {"axis_id": "soft_tissue_pain_out_of_proportion_activity", "category": "warning_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pain disproportionate to visible cellulitis; high values raise deep/necrotizing concern.", "baseline_range": [0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0, 0.9], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "drainable_abscess_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": false, "axis_role": "finding", "shape_free_text": "Daily hazard of discovering or developing drainable purulent collection in the affected soft tissue.", "baseline_range": [0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.2], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "necrotizing_soft_tissue_infection_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": false, "axis_role": "finding", "shape_free_text": "Daily hazard of necrotizing soft-tissue infection emerging from or being recognized among cellulitis-like presentations.", "baseline_range": [0, 0.002], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.15], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_bacteremia_hazard_in_D-CELLULITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": false, "axis_role": "finding", "shape_free_text": "Daily hazard that cellulitis is accompanied by bloodstream infection.", "baseline_range": [0, 0.003], "peak_day_range": [0, 4], "peak_value_range": [0.0, 0.18], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that blood cultures are positive if obtained; species identity is confirmatory for presentation-only tests.", "baseline_range": [0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": false, "axis_role": "finding", "shape_free_text": "Daily hazard of septic shock physiology in severe cellulitis.", "baseline_range": [0, 0.002], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.25], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": false, "axis_role": "finding", "shape_free_text": "Daily hazard of AKI from shock, dehydration, renal background, or nephrotoxic exposures.", "baseline_range": [0, 0.005], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.25], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for drainage, debridement, surgical exploration, foreign material management, or wound care beyond antibiotics.", "baseline_range": [0, 0.05], "peak_day_range": [0, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of drainage, debridement, wound management, or procedural source control when required.", "baseline_range": [0, 0.1], "peak_day_range": [0, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability current antimicrobial regimen has active coverage and adequate exposure for the cellulitis pathogen context.", "baseline_range": [0.2, 0.8], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "initial_inactive_antibiotic_exposure_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Extent of early exposure to a regimen later shown or suspected to be inactive.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0, 1], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "mrsa_risk_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Context increasing probability of MRSA-active therapy need, such as purulence, prior MRSA, injection drug use, penetrating trauma, or high local prevalence.", "baseline_range": [0, 0.1], "peak_value_range": [0, 1], "knowledge_confidence": "medium"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History or context of severe immediate beta-lactam reaction limiting beta-lactam therapy.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for renal antimicrobial dosing adjustment or nephrotoxicity caution.", "baseline_range": [0, 0.05], "peak_value_range": [0, 1], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-CELLULITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Lifespan outcome hazard for cellulitis, driven by shock, organ dysfunction, deep transition, host frailty, and delayed control. This is the only derived hazard in D-CELLULITIS.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 7], "peak_value_range": [0.00002, 0.08], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "target_axis_id": "cellulitis_erythema_extent_in_D-CELLULITIS", "relationship": "shared_local_inflammation", "coupling_type": "noise_correlation", "effect_direction": "same_direction", "lag_days_range": [0, 1], "clinical_rationale": "Local extent and erythema usually move together.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "target_axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "relationship": "shared_local_inflammation", "coupling_type": "noise_correlation", "effect_direction": "same_direction", "lag_days_range": [0, 1], "clinical_rationale": "Inflammatory extent and swelling are correlated.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "target_axis_id": "cellulitis_tenderness_activity_in_D-CELLULITIS", "relationship": "tissue_pressure_pain", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Swelling raises local tissue pressure and tenderness.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "lymphedema_or_chronic_edema_context_activity", "target_axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "relationship": "background_amplifies_local_edema", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "Chronic edema makes cellulitis swelling more extensive and slower to resolve.", "knowledge_confidence": "high"},
+    {"source_axis_id": "skin_barrier_break_activity", "target_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "relationship": "portal_enables_local_infection", "coupling_type": "drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 5], "clinical_rationale": "A visible or likely portal supports local infection activity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "serum_crp", "relationship": "acute_phase_correlation", "coupling_type": "noise_correlation", "effect_direction": "same_direction", "lag_days_range": [0, 3], "clinical_rationale": "Fever and CRP are common systemic inflammatory readouts.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "systemic_inflammation_correlation", "coupling_type": "noise_correlation", "effect_direction": "same_direction", "lag_days_range": [0, 3], "clinical_rationale": "Leukocytosis and CRP often rise together, though either may be blunted.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "source_control_need", "target_axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "relationship": "uncontrolled_source_worsens_systemic_risk", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 5], "clinical_rationale": "Undrained pus, necrotic tissue, or unaddressed wound can sustain systemic illness.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "relationship": "source_control_reduces_systemic_risk", "coupling_type": "hazard_drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [0, 5], "clinical_rationale": "Adequate source control lowers ongoing shock risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "shock_to_aki", "coupling_type": "event_transition", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 5], "clinical_rationale": "Shock raises AKI event risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-CELLULITIS", "relationship": "organ_failure_to_lifespan_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "AKI is a major severity marker in complicated cellulitis.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "necrotizing_soft_tissue_infection_hazard", "target_axis_id": "mortality_hazard_in_D-CELLULITIS", "relationship": "deep_transition_to_lifespan_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 5], "clinical_rationale": "Deep or necrotizing progression markedly increases mortality hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "target_axis_id": "mortality_hazard_in_D-CELLULITIS", "relationship": "shock_to_lifespan_hazard", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "clinical_rationale": "Shock is the main early mortality driver in cellulitis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_antibiotic_coverage_probability", "target_axis_id": "cellulitis_involved_skin_area_activity_in_D-CELLULITIS", "relationship": "active_therapy_reduces_local_burden", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [1, 5], "clinical_rationale": "Active therapy should shrink erythema and local burden over days.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "oral_anti_streptococcal_beta_lactam",
+      "drug_class": "oral_beta_lactam",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity", "mrsa_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.15], "clinical_rationale": "Clinical effect requires active coverage and adequate exposure."},
+        {"axis_id": "mrsa_risk_activity", "condition": "high", "effect": "weakens_if_no_mrsa_activity", "factor_range": [0.3, 0.8], "clinical_rationale": "Purulent or MRSA-risk contexts may need MRSA-active coverage."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0, 0.4], "clinical_rationale": "Severe beta-lactam reaction can limit use."}
+      ],
+      "failure_modes": ["inactive coverage", "unrecognized abscess", "poor adherence", "severe edema or ischemia lowering delivery"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN": {"peak_value_factor": [0.25, 0.65], "plateau_duration_factor": [0.25, 0.8], "decline_half_life_days": [1, 4]},
+        "M_CELLULITIS_LOCAL_INNATE_INFLAMMATION": {"peak_value_factor": [0.45, 0.85], "decline_half_life_days": [2, 6]},
+        "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [0.5, 3]}
+      },
+      "onset_delay_days": [0.5, 2.0],
+      "carryover_after_stop_days": [0.5, 3.0],
+      "side_effects": [
+        {"axis_id": "diarrhea_activity", "direction": "up", "magnitude_range": [0, 0.3], "interpretation": "Antibiotic-associated diarrhea can occur."}
+      ],
+      "context_specific_role": "Oral active therapy for clinically stable cellulitis when absorption and coverage context are adequate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_beta_lactam_cellulitis_coverage",
+      "drug_class": "intravenous_beta_lactam",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "IV beta-lactam benefit depends on active coverage and exposure."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dose_adjustment", "clinical_rationale": "Renal dysfunction changes dosing and toxicity."}
+      ],
+      "failure_modes": ["coverage gap", "severe beta-lactam reaction", "uncontrolled abscess or wound", "delayed reassessment"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 3]},
+        "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.4, 0.85], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [0.5, 3]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.5, 3.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 0.8], "interpretation": "Renal toxicity risk depends on agent, shock, and host context."}
+      ],
+      "context_specific_role": "Parenteral active therapy for systemic signs, rapidly progressive local disease, absorption concerns, or high-risk host context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "mrsa_active_antimicrobial_option",
+      "drug_class": "anti_mrsa_antimicrobial",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["mrsa_risk_activity", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "mrsa_risk_activity", "condition": "high", "effect": "strengthens_relative_role", "factor_range": [1.0, 1.4], "clinical_rationale": "Purulence, prior MRSA, injection drug use, or failure context increases value of MRSA-active coverage."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "weakens", "factor_range": [0.2, 0.7], "clinical_rationale": "MRSA-active agent must cover the actual pathogen context."}
+      ],
+      "failure_modes": ["non-MRSA pathogen without adequate streptococcal coverage", "renal toxicity or marrow toxicity depending agent", "unrecognized abscess"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN": {"peak_value_factor": [0.25, 0.7], "plateau_duration_factor": [0.25, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.2, 1.5],
+      "carryover_after_stop_days": [0.5, 3.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 1.5], "interpretation": "Some MRSA-active regimens require renal monitoring."}
+      ],
+      "context_specific_role": "Coverage lane for purulent or MRSA-risk cellulitis contexts; not a semantic rank label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "broad_empiric_severe_ssti_coverage",
+      "drug_class": "broad_spectrum_empiric_antimicrobial_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "necrotizing_soft_tissue_infection_hazard", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Shock or critical illness increases need for broad active early coverage while context clarifies."},
+        {"axis_id": "necrotizing_soft_tissue_infection_hazard", "condition": "high", "effect": "requires_parallel_surgical_assessment", "clinical_rationale": "Broad antimicrobials do not replace surgery for necrotizing transition."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.2], "clinical_rationale": "Empiric regimen helps only if it covers the true pathogen context."}
+      ],
+      "failure_modes": ["coverage gap", "toxicity", "missed source control", "delayed narrowing after confirmatory data"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN": {"peak_value_factor": [0.2, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [0.5, 4]}
+      },
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.5, 2.0],
+      "side_effects": [
+        {"axis_id": "renal_dose_adjustment_need", "direction": "up", "magnitude_range": [0, 0.4], "interpretation": "Broad regimens often require renal dosing and toxicity review."}
+      ],
+      "context_specific_role": "Initial active-coverage bundle for unstable or high-risk severe cellulitis while source, depth, and organism context are clarified.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "incision_drainage_or_abscess_source_control",
+      "drug_class": "procedure_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["drainable_abscess_hazard", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "drainable_abscess_hazard", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.3], "clinical_rationale": "Procedure helps only when pus or collection is present or likely."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Incomplete drainage leaves ongoing burden."}
+      ],
+      "failure_modes": ["no drainable collection", "incomplete drainage", "missed deep disease"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_PURULENT_OR_ABSCESS_TRANSITION": {"peak_value_factor": [0.15, 0.5], "plateau_duration_factor": [0.15, 0.6], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_DERMAL_SUBCUTANEOUS_BURDEN": {"peak_value_factor": [0.3, 0.75], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0, 1.0],
+      "carryover_after_stop_days": [7, 60],
+      "side_effects": [
+        {"axis_id": "localized_pain_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Procedure can transiently increase local pain."}
+      ],
+      "context_specific_role": "Drainage lane when abscess or purulence is present; not needed for simple nonpurulent cellulitis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "surgical_exploration_or_debridement_for_deep_transition",
+      "drug_class": "surgical_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["necrotizing_soft_tissue_infection_hazard", "soft_tissue_pain_out_of_proportion_activity", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "necrotizing_soft_tissue_infection_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "High deep transition hazard increases value of urgent exploration or debridement."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Incomplete debridement fails to control deep infection."}
+      ],
+      "failure_modes": ["low true deep disease probability", "delayed operation", "incomplete debridement", "operative instability"],
+      "trajectory_modifications": {
+        "M_CELLULITIS_DEEP_OR_NECROTIZING_TRANSITION_HAZARD": {"peak_value_factor": [0.1, 0.45], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.5, 4]},
+        "M_CELLULITIS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.45, 0.85], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 1.0], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0, 1.0],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [
+        {"axis_id": "hemoglobin", "direction": "down", "magnitude_range": [0, 2.0], "interpretation": "Operative blood loss risk depends on extent and coagulopathy."}
+      ],
+      "context_specific_role": "Surgical lane for high deep-spread or necrotizing hazard; keeps the mimic boundary explicit rather than changing the disease name.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "limb_elevation_compression_and_skin_care",
+      "drug_class": "local_supportive_care_bundle",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["cellulitis_edema_activity_in_D-CELLULITIS", "lymphedema_or_chronic_edema_context_activity", "skin_barrier_break_activity"],
+      "effect_modifiers": [
+        {"axis_id": "lymphedema_or_chronic_edema_context_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Edema control and skin care matter most when chronic edema is present."}
+      ],
+      "failure_modes": ["arterial insufficiency limiting compression", "poor wound access", "untreated active infection burden"],
+      "push_targets": [
+        {"axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "direction": "down", "magnitude_range": [0.05, 0.35], "unit": "severity_score_0_1"},
+        {"axis_id": "skin_barrier_break_activity", "direction": "down", "magnitude_range": [0.05, 0.3], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0.5, 3.0],
+      "carryover_after_stop_days": [1, 30],
+      "side_effects": [
+        {"axis_id": "localized_pain_activity", "direction": "up", "magnitude_range": [0, 0.1], "interpretation": "Compression can worsen pain if arterial flow is poor or edema is tense."}
+      ],
+      "context_specific_role": "Supportive local vector field for edema reduction, recurrence prevention, and portal control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hemodynamic_resuscitation",
+      "drug_class": "fluid_and_critical_care_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["mean_arterial_pressure", "serum_lactate", "cellulitis_septic_shock_hazard_in_D-CELLULITIS"],
+      "effect_modifiers": [
+        {"axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Shock context increases the physiologic benefit of resuscitation."}
+      ],
+      "failure_modes": ["under-resuscitation", "fluid overload", "no antimicrobial or source-control correction"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 25], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.5, 4.0], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Fluid overload can worsen oxygenation in susceptible patients."}
+      ],
+      "context_specific_role": "Critical-care support for hypotension or lactate elevation; does not sterilize tissue infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "vasopressor_support",
+      "drug_class": "vasopressor",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["mean_arterial_pressure", "cellulitis_septic_shock_hazard_in_D-CELLULITIS"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Vasopressors are physiologic support when MAP remains low despite appropriate volume context."}
+      ],
+      "failure_modes": ["source remains uncontrolled", "ischemic adverse effects", "arrhythmia"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [10, 30], "unit": "mmHg"}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [
+        {"axis_id": "limb_ischemia_or_necrotic_ulcer_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "High-dose vasopressors can worsen limb ischemia in vulnerable hosts."}
+      ],
+      "context_specific_role": "Hemodynamic support for shock physiology while antimicrobial and source-control vectors address the cause.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "lymphedema_or_chronic_edema",
+      "type": "host_and_local_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "lymphedema_or_chronic_edema_context_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Chronic edema is a major cellulitis predisposition and amplifier."},
+            {"axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "direction": "up", "factor_range": [1.3, 3.0], "clinical_rationale": "Cellulitis swelling is more extensive and persistent in lymphedema."},
+            {"axis_id": "mortality_hazard_in_D-CELLULITIS", "direction": "up", "factor_range": [1.1, 2.0], "clinical_rationale": "Severe lymphedema can raise sepsis and wound-care complexity."}
+          ],
+          "trajectory_modulation": "Amplifies local extent, recurrence risk, and slow edema resolution."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "skin_barrier_break_wound_ulcer_or_injection",
+      "type": "portal_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "skin_barrier_break_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Visible skin break or wound is a portal for cellulitis."},
+            {"axis_id": "chronic_wound_or_ulcer_context_activity", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Chronic wounds support persistence and polymicrobial context."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Wounds and ulcers may require local care or debridement."}
+          ],
+          "trajectory_modulation": "Raises portal strength and may increase source-control need."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "type": "host_clearance",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_CELLULITIS_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "Diabetes impairs local immune and wound defense."},
+            {"axis_id": "chronic_wound_or_ulcer_context_activity", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Diabetes increases ulcer and wound context."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.1, 2.5], "clinical_rationale": "Diabetes raises renal vulnerability during severe infection."}
+          ],
+          "trajectory_modulation": "Shifts toward persistent local infection and higher complication vulnerability."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ckd_nephrotic_syndrome_or_renal_impairment",
+      "type": "host_and_treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_CELLULITIS_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Renal disease and nephrotic syndrome impair host defense."},
+            {"axis_id": "renal_dose_adjustment_need", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Renal impairment changes antimicrobial dosing and toxicity."},
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.2, 8.0], "clinical_rationale": "Renal background shifts creatinine base measure."}
+          ],
+          "trajectory_modulation": "Raises host vulnerability and treatment complexity; renal labs require background adjustment."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "corticosteroid_or_other_immunosuppression",
+      "type": "host_clearance",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_CELLULITIS_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Immunosuppression weakens local containment."},
+            {"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.6, 1.2], "clinical_rationale": "Fever can be absent or mild despite severe cellulitis."},
+            {"axis_id": "white_blood_cell_count", "direction": "up_or_down", "factor_range": [0.5, 2.5], "clinical_rationale": "Steroids and host state distort WBC response."}
+          ],
+          "trajectory_modulation": "Can blunt fever while increasing severity and unusual organism context."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "advanced_age_or_high_comorbidity_burden",
+      "type": "host_reserve",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "cellulitis_septic_shock_hazard_in_D-CELLULITIS", "direction": "up", "factor_range": [1.2, 3.0], "clinical_rationale": "Older or frail hosts have lower reserve for systemic infection."},
+            {"axis_id": "mortality_hazard_in_D-CELLULITIS", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "Age and comorbidity raise mortality for the same local burden."},
+            {"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.6, 1.2], "clinical_rationale": "Fever can be less prominent in older adults."}
+          ],
+          "trajectory_modulation": "Raises shock and mortality hazard while allowing atypical vital signs."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "peripheral_vascular_disease_or_venous_insufficiency",
+      "type": "local_clearance_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "cellulitis_edema_activity_in_D-CELLULITIS", "direction": "up", "factor_range": [1.2, 2.5], "clinical_rationale": "Venous or arterial disease increases edema and wound persistence."},
+            {"axis_id": "skin_barrier_break_activity", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Vascular disease predisposes to ulcers and skin breaks."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Ischemic tissue and chronic wounds may require local care."}
+          ],
+          "trajectory_modulation": "Amplifies local tissue compromise and prolongs recovery."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_active_antibiotics_or_missed_source_control",
+      "type": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.4],
+          "axis_response_modulation": [
+            {"axis_id": "initial_inactive_antibiotic_exposure_activity", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Delayed or inactive therapy prolongs burden."},
+            {"axis_id": "M_CELLULITIS_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Treatment mismatch is a disease-course modifier."},
+            {"axis_id": "mortality_hazard_in_D-CELLULITIS", "direction": "up", "factor_range": [1.1, 2.5], "clinical_rationale": "Delay worsens severe complicated cellulitis."}
+          ],
+          "trajectory_modulation": "Prolongs local and systemic inflammatory activity until active therapy and source control are achieved."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Mark and serially examine the erythema border, warmth, tenderness, edema, bullae/purpura, and pain trajectory; reassess rapidly if pain becomes disproportionate or systemic physiology worsens.",
+    "Measure vital signs, mental status, urine output, CBC with differential, CRP or ESR, creatinine/BUN, electrolytes, lactate when unstable, and procalcitonin when severe bacterial sepsis context is being assessed.",
+    "Look for portal and recurrence contexts: wounds, ulcers, toe-web maceration, tinea pedis, injection sites, trauma, chronic edema, lymphedema, venous insufficiency, diabetes, CKD, immunosuppression, and peripheral vascular disease.",
+    "Use imaging when diagnosis or depth is uncertain: ultrasound for abscess, CT/MRI for deep extension, gas, foreign body, osteomyelitis, septic arthritis, or vascular mimic. Imaging findings remain evidence, not disease-name qualifiers.",
+    "Keep blood culture species, wound culture species, susceptibility, final source adjudication, biopsy, and treatment response in confirmatory or post-workup context for presentation-only diagnosis.",
+    "Treat severe systemic physiology with fluids, vasopressors, oxygen/ventilatory support, renal support, glucose control, analgesia, and ICU monitoring as needed while definitive antimicrobial/source-control vectors are applied.",
+    "Control edema and portals after the acute phase: elevation, compression when vascular status permits, wound care, skin hygiene, treatment of tinea/maceration, and lymphedema/venous care to reduce recurrence.",
+    "Do not hard-fix cellulitis against mimics by deleting true presentation evidence. Necrotizing fasciitis, erysipelas, septic arthritis, osteomyelitis, DVT, vasculitis, contact dermatitis, bacteremia leaves, and toxic shock syndrome remain valid competing manifolds when their own observed evidence is present."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-CELLULITIS.",
+    "No direct treatment-rank or diagnosis-rank labels are encoded.",
+    "Organism identity and susceptibility are treatment or confirmatory context, not part of the Cellulitis disease name."
+  ]
+}
