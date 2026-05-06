@@ -1,0 +1,1470 @@
+{
+  "disease": "D-ANTI-GBM-DISEASE",
+  "disease_name": "Anti-glomerular basement membrane disease",
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+      "display_name": "Anti-basement-membrane autoimmunity",
+      "clinical_meaning": "Autoimmunity targeting basement membrane antigens injures glomerular and alveolar capillary basement membranes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.55,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        21,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "display_name": "Crescentic glomerulonephritis",
+      "clinical_meaning": "Necrotizing crescentic GN produces hematuria, proteinuria, rapidly rising creatinine, uremia, and dialysis need.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.55,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        21,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "display_name": "Diffuse alveolar hemorrhage",
+      "clinical_meaning": "Alveolar capillary injury causes hemoptysis, anemia, ground-glass opacities, hypoxemia, and respiratory failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.55,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        21,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "display_name": "Pulmonary-renal systemic inflammation",
+      "clinical_meaning": "Combined pulmonary and renal capillaritis produces fever, CRP/ESR, leukocytosis, and acute illness.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.55,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14,
+        90
+      ],
+      "decline_half_life_days": [
+        21,
+        180
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+      "target_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Anti-basement membrane injury in glomeruli produces crescentic GN.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+      "target_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Alveolar basement membrane injury causes pulmonary hemorrhage when lung involvement is expressed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+      "target_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Active capillary injury drives systemic inflammatory illness.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "hemoptysis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases hemoptysis_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases dyspnea_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "cough_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases cough_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE decreases oxygen_saturation in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases respiratory_rate in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases heart_rate in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "ground_glass_opacity_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases ground_glass_opacity_extent in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "pulmonary_opacity_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases pulmonary_opacity_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "diffuse_alveolar_hemorrhage_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases diffuse_alveolar_hemorrhage_hazard in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Diffuse alveolar hemorrhage and inflammatory illness lower hemoglobin through blood loss and anemia of inflammation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+      "target_id": "mortality_hazard_in_D-ANTI-GBM-DISEASE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE increases mortality_hazard_in_D-ANTI-GBM-DISEASE in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "hematuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases hematuria_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "proteinuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases proteinuria_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "active_urinary_sediment_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases active_urinary_sediment_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases serum_creatinine in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "blood_urea_nitrogen",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases blood_urea_nitrogen in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "serum_potassium",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases serum_potassium in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "metabolic_acidosis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases metabolic_acidosis_activity in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "dialysis_requirement_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Crescentic glomerulonephritis raises the hazard of requiring renal replacement therapy through uremia, hyperkalemia, acidosis, oliguria, or volume overload.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "serum_albumin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Proteinuria and systemic inflammation can lower serum albumin.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+      "target_id": "mortality_hazard_in_D-ANTI-GBM-DISEASE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS increases mortality_hazard_in_D-ANTI-GBM-DISEASE in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_PULMONARY_RENAL_INFLAMMATION increases body_temperature in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_PULMONARY_RENAL_INFLAMMATION increases serum_crp in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "target_id": "erythrocyte_sedimentation_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_PULMONARY_RENAL_INFLAMMATION increases erythrocyte_sedimentation_rate in this disease course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AGBM_PULMONARY_RENAL_INFLAMMATION",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "M_AGBM_PULMONARY_RENAL_INFLAMMATION increases white_blood_cell_count in this disease course.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "hemoptysis_activity",
+      "category": "qualitative",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Hemoptysis is the classic pulmonary hemorrhage symptom, though it may vary.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "category": "qualitative",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Dyspnea reflects DAH, anemia, or respiratory failure.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "cough_activity",
+      "category": "qualitative",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Cough may accompany pulmonary hemorrhage.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "shape_free_text": "Severe alveolar hemorrhage can cause profound hypoxemia.",
+      "baseline_range": [
+        95,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        50,
+        94
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "shape_free_text": "Tachypnea tracks pulmonary involvement.",
+      "baseline_range": [
+        12,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        20,
+        40
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "shape_free_text": "Tachycardia follows hypoxemia, anemia, and systemic illness.",
+      "baseline_range": [
+        60,
+        90
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        90,
+        140
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "ground_glass_opacity_extent",
+      "category": "imaging",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Diffuse or patchy ground-glass opacities are common in alveolar hemorrhage.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "pulmonary_opacity_activity",
+      "category": "imaging",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Bilateral opacities on X-ray/CT reflect DAH or related lung injury.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "diffuse_alveolar_hemorrhage_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Active DAH creates acute respiratory failure and death risk.",
+      "baseline_range": [
+        0,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.02,
+        0.6
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hematuria_activity",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Microscopic or gross hematuria reflects glomerular injury.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "proteinuria_activity",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Proteinuria is common and may be nephrotic range in atypical cases.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "active_urinary_sediment_activity",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "RBCs/casts and active sediment support glomerulonephritis.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "Creatinine may be normal in lung-dominant cases or rise rapidly with crescentic GN.",
+      "baseline_range": [
+        0.6,
+        1.2
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.8,
+        10.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "BUN rises with renal failure.",
+      "baseline_range": [
+        7,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        20,
+        120
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "shape_free_text": "Hyperkalemia can accompany severe renal failure.",
+      "baseline_range": [
+        3.5,
+        5.0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        4.5,
+        7.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "metabolic_acidosis_activity",
+      "category": "lab_value",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Acidosis appears with renal failure or critical illness.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "dialysis_requirement_hazard",
+      "category": "event_hazard",
+      "unit": "hazard_per_day",
+      "log_scale": true,
+      "shape_free_text": "Hazard of requiring renal replacement therapy for uremia, hyperkalemia, acidosis, oliguria, or volume overload.",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.01,
+        0.6
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Anemia may result from alveolar bleeding and inflammation.",
+      "baseline_range": [
+        12,
+        16
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        5.5,
+        12.5
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Leukocytosis can accompany inflammation or stress.",
+      "baseline_range": [
+        4,
+        10
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        8,
+        25
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "CRP often rises in active pulmonary-renal inflammation.",
+      "baseline_range": [
+        0.2,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        10,
+        180
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "erythrocyte_sedimentation_rate",
+      "category": "lab_value",
+      "unit": "mm_per_hr",
+      "log_scale": false,
+      "shape_free_text": "ESR is often elevated.",
+      "baseline_range": [
+        0,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        30,
+        120
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Albumin may be reduced by inflammation or proteinuria.",
+      "baseline_range": [
+        3.5,
+        5.0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        2.0,
+        3.5
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "shape_free_text": "Fever may occur during inflammatory pulmonary-renal presentations.",
+      "baseline_range": [
+        36.5,
+        37.3
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        37.5,
+        39.8
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "anti_gbm_antibody_positivity_probability",
+      "category": "diagnostic_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Circulating anti-GBM antibodies are diagnostic when positive, but atypical cases may be seronegative.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.5,
+        0.98
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "linear_gbm_igg_staining_activity",
+      "category": "diagnostic_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Linear IgG staining on renal biopsy is a defining pathologic pattern.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.5,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ANTI-GBM-DISEASE",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Mortality is driven by DAH, renal failure, infection, and delayed treatment.",
+      "baseline_range": [
+        5e-05,
+        0.0008
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.003,
+        0.12
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "ground_glass_opacity_extent",
+      "target_axis_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "coupling_type": "drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "More alveolar opacity from hemorrhage lowers oxygenation."
+    },
+    {
+      "source_axis_id": "serum_creatinine",
+      "target_axis_id": "dialysis_requirement_hazard",
+      "effect_on_target": "increase",
+      "coupling_type": "drift",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "clinical_rationale": "Worsening renal failure raises the hazard of dialysis-requiring uremia, hyperkalemia, acidosis, oliguria, or volume overload."
+    },
+    {
+      "source_axis_id": "diffuse_alveolar_hemorrhage_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ANTI-GBM-DISEASE",
+      "effect_on_target": "increase",
+      "coupling_type": "hazard_drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "Life-threatening DAH drives short-term mortality."
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "plasma_exchange",
+      "display_name": "Plasma exchange",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+        "diffuse_alveolar_hemorrhage_hazard"
+      ],
+      "clinical_role": "Removes pathogenic antibody and is most urgent when DAH or salvageable kidney disease is present.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Removes pathogenic antibody and is most urgent when DAH or salvageable kidney disease is present."
+        },
+        {
+          "target_id": "diffuse_alveolar_hemorrhage_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Removes pathogenic antibody and is most urgent when DAH or salvageable kidney disease is present."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "high_dose_glucocorticoids_plus_cyclophosphamide",
+      "display_name": "High-dose glucocorticoids plus cyclophosphamide",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+        "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+        "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE"
+      ],
+      "clinical_role": "Suppresses new antibody production and inflammatory injury.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_AGBM_ANTIBASEMENT_MEMBRANE_AUTOIMMUNITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Suppresses new antibody production and inflammatory injury."
+        },
+        {
+          "target_id": "M_AGBM_CRESCENTIC_GLOMERULONEPHRITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Suppresses new antibody production and inflammatory injury."
+        },
+        {
+          "target_id": "M_AGBM_DIFFUSE_ALVEOLAR_HEMORRHAGE",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Suppresses new antibody production and inflammatory injury."
+        }
+      ],
+      "effect_modifiers": []
+    },
+    {
+      "treatment_id": "renal_replacement_therapy",
+      "display_name": "Renal replacement therapy",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "dialysis_requirement_hazard",
+        "serum_potassium",
+        "metabolic_acidosis_activity"
+      ],
+      "clinical_role": "Supports severe renal failure, hyperkalemia, acidosis, or uremia.",
+      "trajectory_modifications": [
+        {
+          "target_id": "dialysis_requirement_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Supports severe renal failure, hyperkalemia, acidosis, or uremia."
+        },
+        {
+          "target_id": "serum_potassium",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Supports severe renal failure, hyperkalemia, acidosis, or uremia."
+        },
+        {
+          "target_id": "metabolic_acidosis_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [
+            1,
+            7
+          ],
+          "effect_scale_range": [
+            0.25,
+            0.7
+          ],
+          "clinical_rationale": "Supports severe renal failure, hyperkalemia, acidosis, or uremia."
+        }
+      ],
+      "effect_modifiers": []
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "smoking_or_pulmonary_irritant_exposure",
+      "type": "host_risk_context",
+      "clinical_meaning": "Smoking and inhalational exposures increase lung hemorrhage expression in anti-GBM disease.",
+      "modulation": {
+        "host_risk_context": {
+          "P_disease_ratio": [
+            1.2,
+            3.0
+          ],
+          "trajectory_modulation": "Smoking or inhalational irritants make pulmonary hemorrhage more likely to be clinically expressed in anti-GBM disease.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "diffuse_alveolar_hemorrhage_hazard",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                2.5
+              ]
+            },
+            {
+              "axis_id": "hemoptysis_activity",
+              "direction": "up",
+              "factor_range": [
+                1.1,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "ground_glass_opacity_extent",
+              "direction": "up",
+              "factor_range": [
+                1.1,
+                2.0
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "oxygen_ventilation_and_dialysis_support",
+      "clinical_role": "Support hypoxemia and renal failure while antibody-directed therapy acts."
+    }
+  ]
+}

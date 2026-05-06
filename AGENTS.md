@@ -125,6 +125,10 @@ LLM 只蒸数字和结构，不蒸临床判断标签。不要加入 `first_line`
 
 所有被派去做 disease distillation、axis ontology audit、real PMC case expansion、医学结构化或治疗语义补全的 subagent，默认必须使用 `reasoning_effort: "xhigh"`。这是质量优先的铁律；除非用户明确要求降级，或任务完全是非医学、非质量关键的机械操作，否则不要用 `high` / `medium` / `low`。
 
+新增 disease leaf 时默认采用 **one disease, one agent**：每个新病单独派一个 `xhigh` agent 负责该病的 distillation / ontology audit / real case 结构化与质量审查，写入范围按 disease 文件和对应 case 文件隔离，避免多个 agent 修改同一 disease 造成冲突。
+
+扩展 atlas 的当前目标是 200 个 disease leaves。新增 disease 时优先 common + critical；每个 disease leaf 原则上配套至少 3 个真实 PMC/PubMed real cases，除非确实找不到，不能只新增 disease JSON 而没有病例压测。
+
 ### Disease Leaf Granularity
 
 第一层 disease manifold 必须蒸到“临床流形稳定、医生能独立假设”的具体 disease leaf，不用过宽 umbrella 诊断。
@@ -563,3 +567,19 @@ Follow-up after generic evidence/runtime fixes:
   - Full current-atlas fast grid (`VESMED_SCORE_MODE=grid`, `VESMED_TIME_GRID_N=21`, `VESMED_MAX_COMBO_SIZE=1`): 243 case JSON loaded; single-manifold validation `240/241 PASS`; combo intentionally off.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`): `1/1 PASS`, `AOSD_TTP_CONCURRENT_PMC7523203` ranks `D137+D-TTP`.
   - Remaining single fail: `HODGKIN_AOSD_MASK_PMC4847271` expected `D-HODGKIN-LYMPHOMA`, best `D-ALCL`; accepted as lymphoma-family presentation-only ambiguity unless subtype pathology/IHC/flow/genetics is used as ranking evidence.
+
+## 2026-05-06 New Batch Memory: ASyS / Kawasaki / Anti-GBM
+
+- 新增 disease leaf 必须执行 one disease, one agent：本轮分别用 3 个 `xhigh` worker 审查 `D-ANTISYNTHETASE-SYNDROME`、`D-KAWASAKI-DISEASE`、`D-ANTI-GBM-DISEASE`，每个 agent 只负责自己的 disease JSON 和 3 个 PMC case JSON。
+- 新增 3 个 common/critical disease leaves，各配 3 个真实 PMC/PubMed cases：
+  - `D-ANTISYNTHETASE-SYNDROME`: `PMC6679997` / PMID `31376837`, `PMC10515292` / PMID `37746430`, `PMC11046532` / PMID `36697016`
+  - `D-KAWASAKI-DISEASE`: `PMC5341178` / PMID `28274249`, `PMC5878266` / PMID `29593004`, `PMC7296651` / PMID `32539746`
+  - `D-ANTI-GBM-DISEASE`: `PMC2475522` / PMID `18590526`, `PMC5175522` / PMID `28028414`, `PMC6357502` / PMID `30704432`
+- Case evidence rule reinforced: all real presentation information must be preserved and rankable when it is a true observed presentation finding. Do not remove inconvenient evidence such as mediastinal/hilar lymphadenopathy just to make the expected disease rank first.
+- Confirmatory evidence rule reinforced: final diagnosis, biopsy/pathology, serology that is only available as confirmatory diagnosis context, and follow-up outcomes remain in `confirmatory_findings` or non-ranking sections with `use_in_ranking:false` unless the test objective explicitly includes post-workup diagnostic evidence.
+- Antisynthetase PMC10515292 is an accepted presentation-only mimic exposure: the real case has fever/weight loss, oxygen-requiring ILD, and large mediastinal/hilar lymphadenopathy; when anti-Jo1 and biopsy are excluded, `D-DLBCL` ranks first. Do not hard-fix by deleting lymphadenopathy, adding ASyS-specific lymphoma-like nodes only for this case, or ranking anti-Jo1 by default. If a future mode includes diagnostic workup evidence, anti-Jo1/biopsy can be consumed there.
+- Full current-atlas fast grid after this batch:
+  - `VESMED_SCORE_MODE=grid`, `VESMED_TIME_GRID_N=21`, `VESMED_MAX_COMBO_SIZE=1`
+  - 252 cases loaded; single-manifold validation `248/250 PASS`; combo intentionally off.
+  - Single fails: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL` (accepted mimic exposure), and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL` (accepted lymphoma-family presentation-only ambiguity).
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remains `1/1 PASS` with `AOSD_TTP_CONCURRENT_PMC7523203` ranking `D137+D-TTP`.

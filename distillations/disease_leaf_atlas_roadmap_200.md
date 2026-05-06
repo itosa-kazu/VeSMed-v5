@@ -111,31 +111,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-DERMATOMYOSITIS | Dermatomyositis |
 | D-EVANS-SYNDROME | Evans syndrome |
 | D-HEPARIN-INDUCED-THROMBOCYTOPENIA | Heparin-induced thrombocytopenia |
+| D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome |
+| D-KAWASAKI-DISEASE | Kawasaki disease |
+| D-ANTI-GBM-DISEASE | Anti-glomerular basement membrane disease |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome | fever, ILD, myositis, arthritis, and mechanic-hand mimic of infection/rheumatology disease |
-| 2 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
-| 3 | D-KAWASAKI-DISEASE | Kawasaki disease | fever/rash/mucocutaneous pediatric mimic of MIS, sepsis, and vasculitis |
-| 4 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
-| 5 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
-| 6 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
-| 7 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
-| 8 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
-| 9 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
-| 10 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 11 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
-| 12 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
-| 13 | D-DRESS | Drug reaction with eosinophilia and systemic symptoms | drug fever/rash/eosinophilia/organ injury mimic distinct from SJS/TEN |
-| 14 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
-| 15 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
-| 16 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
-| 17 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
-| 18 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
-| 19 | D-ANTI-GBM-DISEASE | Anti-glomerular basement membrane disease | critical pulmonary-renal syndrome mimic near ANCA vasculitis, SLE, and TMA |
-| 20 | D-SPINAL-EPIDURAL-ABSCESS | Spinal epidural abscess | critical fever/back-pain neurologic mimic near SAB and vertebral osteomyelitis |
+| 1 | D-RA-FLARE | Rheumatoid arthritis systemic flare | common inflammatory fever/polyarthritis mimic of infection and vasculitis |
+| 2 | D-RHEUMATIC-FEVER | Acute rheumatic fever | fever, migratory arthritis, carditis, rash, and post-streptococcal mimic |
+| 3 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever | recurrent fever and serositis mimic of infection, AOSD, and autoinflammation |
+| 4 | D-SICKLE-CELL-ACUTE-CHEST | Sickle cell acute chest syndrome | critical fever, hypoxemia, chest pain, and infection/PE mimic |
+| 5 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction | critical fever, hemolysis, shock, DIC, and sepsis mimic |
+| 6 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection | common/critical post-transplant fever and organ dysfunction mimic |
+| 7 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
+| 8 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 9 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 10 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
+| 11 | D-DRESS | Drug reaction with eosinophilia and systemic symptoms | drug fever/rash/eosinophilia/organ injury mimic distinct from SJS/TEN |
+| 12 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
+| 13 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
+| 14 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
+| 15 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
+| 16 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
+| 17 | D-SPINAL-EPIDURAL-ABSCESS | Spinal epidural abscess | critical fever/back-pain neurologic mimic near SAB and vertebral osteomyelitis |
+| 18 | D-CELLULITIS-ERYSIPELAS | Cellulitis / erysipelas | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
+| 19 | D-DIABETIC-KETOACIDOSIS | Diabetic ketoacidosis | critical metabolic mimic with fever/infection triggers, tachypnea, dehydration, and shock overlap |
+| 20 | D-ACUTE-MYOCARDITIS | Acute myocarditis | critical fever/chest pain/dyspnea/tachycardia mimic near sepsis, viral illness, and shock |
 
 ## Candidate Pool Toward 200
 
@@ -193,12 +196,10 @@ Prioritize diseases that are either common, critical, or both.
 | D-IGG4-RELATED-DISEASE | IgG4-related disease |
 | D-SARCOIDOSIS | Sarcoidosis |
 | D-RELAPSING-POLYCHONDRITIS | Relapsing polychondritis |
-| D-ANTISYNTHETASE-SYNDROME | Antisynthetase syndrome |
 | D-POLYMYOSITIS | Polymyositis |
 | D-RA-FLARE | Rheumatoid arthritis systemic flare |
 | D-SJOGREN-SYSTEMIC | Systemic Sjogren disease |
 | D-CATASTROPHIC-APS | Catastrophic antiphospholipid syndrome |
-| D-KAWASAKI-DISEASE | Kawasaki disease |
 | D-RHEUMATIC-FEVER | Acute rheumatic fever |
 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever |
 | D-TRAPS | TNF receptor-associated periodic syndrome |
@@ -286,7 +287,6 @@ Prioritize diseases that are either common, critical, or both.
 
 | disease_id | disease leaf |
 | --- | --- |
-| D-ANTI-GBM-DISEASE | Anti-glomerular basement membrane disease |
 | D-IGA-VASCULITIS | IgA vasculitis |
 | D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis |
 | D-URTICARIAL-VASCULITIS | Urticarial vasculitis |
