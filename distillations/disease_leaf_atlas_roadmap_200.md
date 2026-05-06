@@ -135,31 +135,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia |
 | D-APPENDICITIS | Acute appendicitis |
 | D-DIVERTICULITIS | Acute diverticulitis |
+| D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease |
+| D-ACUTE-PROSTATITIS | Acute bacterial prostatitis |
+| D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
-| 2 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
-| 3 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
-| 4 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
-| 5 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
-| 6 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
-| 7 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 8 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
-| 9 | D-APLASTIC-ANEMIA | Aplastic anemia | critical pancytopenia and fever/neutropenia mimic near leukemia and marrow failure |
-| 10 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
-| 11 | D-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
-| 12 | D-ACUTE-CHOLECYSTITIS | Acute cholecystitis | common fever/RUQ pain source-control disease near cholangitis and sepsis |
-| 13 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
-| 14 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
-| 15 | D-LUNG-ABSCESS | Lung abscess | fever, pneumonia, aspiration, malignancy, and source-control mimic |
-| 16 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
-| 17 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
-| 18 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
-| 19 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
-| 20 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
+| 1 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
+| 2 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
+| 3 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
+| 4 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 5 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 6 | D-APLASTIC-ANEMIA | Aplastic anemia | critical pancytopenia and fever/neutropenia mimic near leukemia and marrow failure |
+| 7 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
+| 8 | D-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
+| 9 | D-ACUTE-CHOLECYSTITIS | Acute cholecystitis | common fever/RUQ pain source-control disease near cholangitis and sepsis |
+| 10 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
+| 11 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
+| 12 | D-LUNG-ABSCESS | Lung abscess | fever, pneumonia, aspiration, malignancy, and source-control mimic |
+| 13 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
+| 14 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
+| 15 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
+| 16 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
+| 17 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
+| 18 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis | common scrotal pain/fever GU infection mimic near prostatitis, STI, and UTI |
+| 19 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
+| 20 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
 
 ## Candidate Pool Toward 200
 

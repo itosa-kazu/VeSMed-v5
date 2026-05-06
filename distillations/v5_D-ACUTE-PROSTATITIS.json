@@ -1,0 +1,2043 @@
+{
+  "disease": "D-ACUTE-PROSTATITIS",
+  "disease_id": "D-ACUTE-PROSTATITIS",
+  "disease_name": "Acute bacterial prostatitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute bacterial prostatitis",
+    "leaf_granularity": "First-layer clinical disease leaf for the full acute bacterial prostatitis spectrum. Prostatic abscess, post-instrumentation disease, post-trauma disease, ESBL or MRSA pathogen context, urinary retention, urosepsis, elderly or immunocompromised hosts, and STI-associated presentations remain risk, context, pathogen, treatment-modifier, source-control, event, or future subtype axes rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume fever, lower urinary tract symptoms, pelvic/perineal/suprapubic pain, DRE findings, inflammatory labs, urinalysis, PSA when measured during the acute episode, and presentation imaging. Final culture species, susceptibility, operative drainage culture, final paper diagnosis, treatment response, and follow-up outcome remain confirmatory or non-ranking unless a separate post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ABP_ASCENDING_URETHRAL_OR_INTRAPROSTATIC_REFLUX",
+      "display_name": "Ascending urethral infection or intraprostatic urinary reflux",
+      "clinical_meaning": "Uropathogens or sexually transmitted organisms enter the posterior urethra and reflux into prostatic ducts; catheterization, biopsy, obstruction, sexual exposure, and trauma can increase this gateway activity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-3, 1],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "display_name": "Active bacterial burden in prostatic ducts and parenchyma",
+      "clinical_meaning": "Replicating bacteria within acini, ducts, and inflamed prostatic tissue drive bacteriuria, persistent infection, and need for antimicrobial activity with adequate prostatic exposure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "display_name": "Acute neutrophilic prostatic inflammation",
+      "clinical_meaning": "Neutrophilic edema, glandular and stromal inflammation, and capsular irritation produce tender or boggy prostate, pelvic/perineal pain, dysuria, PSA leakage, and local imaging inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [2, 21],
+      "decline_half_life_days": [3, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "display_name": "Bladder-neck edema and acute outflow obstruction",
+      "clinical_meaning": "Inflamed swollen prostate and bladder-neck spasm cause hesitancy, incomplete voiding, urinary retention, high residual volume, and drainage needs.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "display_name": "Systemic innate inflammatory response",
+      "clinical_meaning": "Local bacterial infection and tissue injury drive fever, chills, tachycardia, leukocytosis, neutrophilia, CRP/procalcitonin rise, malaise, nausea, and sepsis physiology when severe.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "display_name": "Prostatic suppuration and abscess formation",
+      "clinical_meaning": "Persistent bacterial burden, impaired drainage, diabetes, immunosuppression, virulent organisms, or delayed/ineffective therapy can convert inflamed prostate tissue into microabscesses or drainable prostatic abscesses.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "display_name": "Bacteremia, urosepsis, and metastatic dissemination",
+      "clinical_meaning": "Organisms can enter the bloodstream from infected prostate or, less often, seed the prostate hematogenously; this drives hypotension, lactate rise, organ dysfunction, and metastatic abscess risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE",
+      "display_name": "Source-control failure or inadequate urinary/prostatic drainage",
+      "clinical_meaning": "Undrained abscess, persistent urinary retention, obstructed bladder outlet, or lack of active antibiotic coverage sustains infection despite treatment.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [1, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [2, 60],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "urinary_obstruction_activity",
+      "target_id": "M_ABP_ASCENDING_URETHRAL_OR_INTRAPROSTATIC_REFLUX",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [-30, 1],
+      "phase": "initiation",
+      "clinical_rationale": "Urinary stasis and high residual volume facilitate intraprostatic reflux and bacterial persistence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "recent_genitourinary_instrumentation_context_probability",
+      "target_id": "M_ABP_ASCENDING_URETHRAL_OR_INTRAPROSTATIC_REFLUX",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [-14, 1],
+      "phase": "initiation",
+      "clinical_rationale": "Catheters, cystoscopy, prostate biopsy, and prostate manipulation can directly inoculate or reflux organisms into prostatic ducts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ASCENDING_URETHRAL_OR_INTRAPROSTATIC_REFLUX",
+      "target_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "phase": "initiation",
+      "clinical_rationale": "Entry into prostatic ducts precedes active bacterial proliferation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "phase": "local_inflammation",
+      "clinical_rationale": "Bacterial proliferation elicits neutrophilic prostatic inflammation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "phase": "local_inflammation",
+      "clinical_rationale": "Edema and pain at the prostate/bladder neck impair voiding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "phase": "systemic_response",
+      "clinical_rationale": "Bacterial products and local tissue inflammation trigger systemic inflammatory response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [1, 7],
+      "phase": "complication",
+      "clinical_rationale": "Persistent bacterial burden can coalesce neutrophilic foci into abscesses.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "target_id": "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 3],
+      "phase": "complication",
+      "clinical_rationale": "Retention and obstruction prevent urinary clearance and sustain infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 7],
+      "phase": "complication",
+      "clinical_rationale": "A drainable abscess is a persistent nidus if not drained or sterilized.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 5],
+      "phase": "systemic_response",
+      "clinical_rationale": "Severe bacterial prostatitis can produce bacteremia and sepsis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE",
+      "target_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 7],
+      "phase": "complication",
+      "clinical_rationale": "Uncontrolled urinary/prostatic source increases bacteremia and septic deterioration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Fever is a common systemic manifestation of acute bacterial prostatitis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Patients often report fever even if antipyretics lower measured temperature.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "chills_rigors_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Chills and rigors scale with bacteremic or high-cytokine presentations.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Fever and inflammation raise heart rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "severe",
+      "clinical_rationale": "Urosepsis can cause vasodilation and hypotension.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "severe",
+      "clinical_rationale": "Septic hypoperfusion increases lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 5],
+      "phase": "severe",
+      "clinical_rationale": "Sepsis, dehydration, obstruction, or severe urinary infection can raise creatinine and change antimicrobial dosing context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Acute bacterial inflammation commonly causes leukocytosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Neutrophilia is typical for acute bacterial infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_SYSTEMIC_INNATE_INFLAMMATION",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "CRP rises with systemic inflammation and may lag symptom onset.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "serum_procalcitonin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "severe",
+      "clinical_rationale": "Procalcitonin is more prominent in systemic bacterial infection and sepsis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "dysuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Inflamed prostate and urethral irritation cause painful urination.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "urinary_frequency_urgency_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Local inflammation irritates the bladder outlet and lower urinary tract.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "target_id": "urinary_retention_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Acute prostatic swelling can cause inability to void.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "target_id": "urinary_obstruction_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Retention and high residual volume represent obstructive source-control burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "perineal_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Prostatic capsular and pelvic floor irritation commonly refer pain to the perineum.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "suprapubic_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Bladder outlet inflammation and urinary retention produce suprapubic discomfort.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "prostate_tenderness_on_dre_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Tenderness on digital rectal examination is a classic local finding, though it may be absent in abscess or atypical cases.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "boggy_prostate_on_dre_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Edematous inflamed prostate may feel boggy or enlarged.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "serum_prostate_specific_antigen",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "presentation",
+      "clinical_rationale": "Acute prostatic inflammation can markedly elevate PSA; it is supportive context when already measured, not a required diagnosis label.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "pyuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Inflamed infected prostate and accompanying lower urinary tract infection commonly produce pyuria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "urine_wbc_per_hpf",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Urine microscopy often shows elevated white cells.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "hematuria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Inflamed urinary tract mucosa or instrumentation can produce microscopic or gross hematuria.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN",
+      "target_id": "urine_culture_positivity_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "workup",
+      "clinical_rationale": "Midstream urine culture often identifies the causative organism, though it can be negative after antibiotics or localized abscess.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "prostatic_enlargement_on_imaging_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 4],
+      "phase": "imaging",
+      "clinical_rationale": "Inflammatory edema can enlarge the prostate on CT, MRI, or ultrasound.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "prostatic_heterogeneous_enhancement_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 4],
+      "phase": "imaging",
+      "clinical_rationale": "Inflamed or suppurative prostatic tissue can enhance heterogeneously.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_ACUTE_NEUTROPHILIC_PROSTATIC_INFLAMMATION",
+      "target_id": "periprostatic_fat_stranding_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 4],
+      "phase": "imaging",
+      "clinical_rationale": "Inflammation can extend into periprostatic tissues.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "complication",
+      "clinical_rationale": "Suppuration produces a discrete abscess on CT, MRI, ultrasound, or drainage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "largest_prostatic_abscess_diameter_cm_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "complication",
+      "clinical_rationale": "Higher suppurative activity increases drainable abscess burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "prostatic_abscess_multiloculated_activity_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "complication",
+      "clinical_rationale": "Multiple loculations reflect larger or more complex suppuration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "extraprostatic_inflammatory_extension_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 7],
+      "phase": "complication",
+      "clinical_rationale": "Abscess can extend beyond the capsule or inflame perirectal tissue.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION",
+      "target_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 5],
+      "phase": "complication",
+      "clinical_rationale": "Suppuration increases event risk of abscess formation or progression.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION",
+      "target_id": "acute_urinary_retention_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Outflow obstruction can progress to acute urinary retention.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 3],
+      "phase": "severe",
+      "clinical_rationale": "Bacteremia and systemic inflammation drive urosepsis risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [1, 14],
+      "phase": "severe",
+      "clinical_rationale": "Sustained bacteremia can seed distant abscesses, endocarditis, bone/joint infection, or septic emboli.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE",
+      "target_id": "chronic_bacterial_prostatitis_transition_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [7, 60],
+      "phase": "late",
+      "clinical_rationale": "Incomplete clearance can transition into chronic or recurrent bacterial prostatitis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION",
+      "target_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 5],
+      "phase": "severe",
+      "clinical_rationale": "Death risk is mainly mediated by septic shock, organ dysfunction, and uncontrolled source.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured body temperature during acute prostatitis presentation.",
+      "baseline_range": [36.5, 37.5],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [37.8, 40.5],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Reported fever before or during presentation.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "chills_rigors_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Chills or rigors accompanying febrile prostatitis.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "malaise_fatigue_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Systemic malaise, fatigue, myalgias, or ill appearance.",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nausea_vomiting_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Nausea or vomiting associated with acute systemic infection or pelvic pain.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Heart rate during presentation.",
+      "baseline_range": [60, 90],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [85, 140],
+      "plateau_duration_days": [0.2, 7],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Systolic blood pressure; lower values emerge in severe septic presentations.",
+      "baseline_range": [100, 140],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [80, 140],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Mean arterial pressure; septic deterioration pushes this down.",
+      "baseline_range": [70, 100],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [55, 100],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Respiratory rate during acute systemic infection.",
+      "baseline_range": [12, 20],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [14, 32],
+      "plateau_duration_days": [0.1, 5],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Total leukocyte count.",
+      "baseline_range": [4, 10],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [10, 45],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Absolute neutrophil count.",
+      "baseline_range": [2, 7],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [7, 40],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "C-reactive protein concentration.",
+      "baseline_range": [0.2, 5],
+      "peak_day_range": [1, 5],
+      "peak_value_range": [20, 250],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_procalcitonin",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum procalcitonin, especially elevated in severe bacterial or septic cases.",
+      "baseline_range": [0.02, 0.1],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.05, 10],
+      "plateau_duration_days": [0.5, 5],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum lactate; rises with shock or hypoperfusion.",
+      "baseline_range": [0.5, 2.0],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.8, 6.0],
+      "plateau_duration_days": [0.1, 3],
+      "decline_half_life_days": [0.2, 2],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum creatinine as renal function and dosing context in severe acute prostatitis, retention, or urosepsis.",
+      "baseline_range": [0.6, 1.2],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.6, 3.5],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dysuria_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Pain or burning with urination.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_frequency_urgency_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Urinary frequency, urgency, or irritative lower urinary tract symptoms.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_retention_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Hesitancy, incomplete voiding, inability to void, high post-void residual, or catheter-requiring retention.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_obstruction_activity",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Mechanical or inflammatory bladder-outlet obstruction contributing to infection persistence.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "perineal_pain_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Perineal, rectal, pelvic, or deep prostate-region pain.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "suprapubic_pain_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Suprapubic pain or bladder-base discomfort.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Lower abdominal or pelvic abdominal pain from retention, abscess, or sepsis context.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hematuria_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Gross or microscopic hematuria associated with lower urinary tract inflammation, trauma, or instrumentation.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "prostate_tenderness_on_dre_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Tender prostate on gentle digital rectal examination.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "boggy_prostate_on_dre_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "prostate_tenderness_on_dre_activity",
+      "shape_free_text": "Boggy or edematous quality of an inflamed prostate on exam; consumed only when a prostate exam finding is present.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "prostate_enlargement_on_exam_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Prostate enlargement on rectal examination during an acute episode.",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pyuria_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Qualitative pyuria or positive urinary white cell evidence.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_wbc_per_hpf",
+      "category": "lab_value",
+      "unit": "WBC_per_HPF",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Urine white blood cells per high-power field.",
+      "baseline_range": [0.0, 5.0],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [5, 100],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_rbc_per_hpf",
+      "category": "lab_value",
+      "unit": "RBC_per_HPF",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Urine red blood cells per high-power field.",
+      "baseline_range": [0.0, 3.0],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0, 100],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "urine_leukocyte_esterase_positivity",
+      "category": "microbiology",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Urine dipstick leukocyte esterase positivity.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_culture_positivity_probability",
+      "category": "microbiology",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that properly collected urine culture identifies a pathogen in the acute episode.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_prostate_specific_antigen",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum PSA during acute inflammation; can be markedly elevated and then fall after treatment.",
+      "baseline_range": [0.1, 4.0],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [4, 80],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "prostatic_enlargement_on_imaging_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Enlarged or swollen prostate on CT, MRI, or ultrasound during acute infection.",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prostatic_heterogeneous_enhancement_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Heterogeneous prostatic enhancement or hypodense inflammatory areas.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "periprostatic_fat_stranding_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Periprostatic, bladder-base, or pelvic fat stranding adjacent to the prostate.",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Imaging or drainage evidence of a discrete prostatic abscess within the acute prostatitis spectrum.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "largest_prostatic_abscess_diameter_cm_in_D-ACUTE-PROSTATITIS",
+      "category": "imaging_finding",
+      "unit": "cm",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "shape_free_text": "Largest measured prostatic abscess diameter; only consumed when abscess presence is true.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [2, 21],
+      "peak_value_range": [0.5, 8.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [10, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prostatic_abscess_multiloculated_activity_in_D-ACUTE-PROSTATITIS",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "shape_free_text": "Multiple loculations or multiple prostatic abscess cavities.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [2, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [10, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "extraprostatic_inflammatory_extension_activity",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "shape_free_text": "Inflammation or collection extending beyond the prostate capsule into adjacent pelvic, perirectal, perianal, or retroperitoneal spaces.",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [2, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [10, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_culture_positivity_probability",
+      "category": "microbiology",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability of bacteremia in severe acute prostatitis; usually post-workup confirmatory in presentation-only cases.",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "source_control_need",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Need for drainage, urinary decompression, or correction of an obstructed/inadequately controlled infectious source.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 60],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "source_control_adequacy",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Adequacy of urinary drainage and abscess/source control.",
+      "baseline_range": [0.8, 1.0],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_drainage_adequacy_in_D-ACUTE-PROSTATITIS",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Adequacy of bladder drainage and relief of acute retention in prostatitis.",
+      "baseline_range": [0.8, 1.0],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_antibiotic_coverage_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that current antibiotics cover the causative organism; hidden until culture/susceptibility or strong epidemiologic context is known.",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prostatic_tissue_antibiotic_penetration_adequacy",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Expected penetration of the chosen regimen into inflamed prostate tissue and abscess context.",
+      "baseline_range": [0.0, 0.3],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fluoroquinolone_susceptibility_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that the causative organism is susceptible to fluoroquinolone therapy.",
+      "baseline_range": [0.2, 0.8],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that the causative organism is susceptible to trimethoprim-sulfamethoxazole.",
+      "baseline_range": [0.2, 0.8],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mrsa_coverage_need_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that empiric or definitive therapy needs MRSA-active coverage because of culture, skin source, bacteremia, local epidemiology, or abscess phenotype.",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "sti_pathogen_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Probability that gonorrhea, chlamydia, or another sexually transmitted pathogen context is driving prostatitis.",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "recent_genitourinary_instrumentation_context_probability",
+      "category": "risk_factor",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Recent catheterization, cystoscopy, prostate biopsy, prostate procedure, or other instrumented genitourinary context.",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-30, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_urinary_retention_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Instantaneous hazard of acute urinary retention requiring decompression.",
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.001, 0.3],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Instantaneous hazard of forming or progressing to a prostatic abscess.",
+      "baseline_range": [0.000001, 0.0001],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0.0005, 0.08],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [5, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Instantaneous hazard of bacteremic urosepsis or septic shock from acute prostatitis.",
+      "baseline_range": [0.000001, 0.0001],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0005, 0.15],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Instantaneous hazard of metastatic abscess, endocarditis, bone/joint infection, or septic embolic spread.",
+      "baseline_range": [0.000001, 0.00005],
+      "peak_day_range": [1, 14],
+      "peak_value_range": [0.0001, 0.05],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "chronic_bacterial_prostatitis_transition_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Hazard of transition to chronic or recurrent bacterial prostatitis after incomplete acute clearance.",
+      "baseline_range": [0.000001, 0.00005],
+      "peak_day_range": [14, 90],
+      "peak_value_range": [0.0001, 0.02],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Lifespan outcome hazard for acute bacterial prostatitis, mainly mediated by septic shock, uncontrolled abscess, and vulnerable host context.",
+      "baseline_range": [0.000001, 0.00002],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.00001, 0.05],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "body_temperature",
+      "target_axis_id": "heart_rate",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.35, 0.7],
+      "phase": "presentation",
+      "clinical_rationale": "Residual fever-tachycardia covariance remains after systemic inflammation is modeled.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "white_blood_cell_count",
+      "target_axis_id": "absolute_neutrophil_count",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.6, 0.9],
+      "phase": "presentation",
+      "clinical_rationale": "Neutrophilia is the dominant leukocyte pattern in acute bacterial infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "body_temperature",
+      "target_axis_id": "serum_crp",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.25, 0.55],
+      "phase": "presentation",
+      "clinical_rationale": "Fever and CRP share inflammatory drive, with CRP lagging early fever.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "dysuria_activity",
+      "target_axis_id": "urinary_frequency_urgency_activity",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.35, 0.75],
+      "phase": "presentation",
+      "clinical_rationale": "Lower urinary tract irritative symptoms commonly cluster.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urinary_retention_activity",
+      "target_axis_id": "urinary_obstruction_activity",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 1],
+      "phase": "presentation",
+      "clinical_rationale": "Clinical retention is direct evidence of obstructive source-control burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urinary_obstruction_activity",
+      "target_axis_id": "acute_urinary_retention_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 2],
+      "phase": "presentation",
+      "clinical_rationale": "Higher outlet obstruction increases retention event risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "prostate_tenderness_on_dre_activity",
+      "target_axis_id": "perineal_pain_activity",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.25, 0.6],
+      "phase": "presentation",
+      "clinical_rationale": "Both arise from local prostatic and pelvic inflammation, but either may be absent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "pyuria_activity",
+      "target_axis_id": "urine_wbc_per_hpf",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [0.6, 0.9],
+      "phase": "presentation",
+      "clinical_rationale": "Qualitative pyuria and urine WBC count encode the same urinary inflammatory evidence at different granularity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+      "target_axis_id": "source_control_need",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 1],
+      "phase": "complication",
+      "clinical_rationale": "A prostatic abscess raises need for drainage or close source-control reassessment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "largest_prostatic_abscess_diameter_cm_in_D-ACUTE-PROSTATITIS",
+      "target_axis_id": "source_control_need",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 1],
+      "phase": "complication",
+      "clinical_rationale": "Larger collections are less likely to sterilize without drainage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_adequacy",
+      "target_axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [0, 3],
+      "phase": "treatment_course",
+      "clinical_rationale": "Adequate drainage and source control reduce septic deterioration risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_need",
+      "target_axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 5],
+      "phase": "complication",
+      "clinical_rationale": "Persistent retention or undrained infection increases abscess progression.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "serum_lactate",
+      "relationship": "negative_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [-0.65, -0.25],
+      "phase": "severe",
+      "clinical_rationale": "Septic hypoperfusion links lower MAP with higher lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [0, 3],
+      "phase": "severe",
+      "clinical_rationale": "Mortality risk is mainly downstream of septic shock and organ dysfunction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [1, 14],
+      "phase": "severe",
+      "clinical_rationale": "Metastatic infection, endocarditis, or septic emboli worsen outcome hazard.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "oral_fluoroquinolone_course",
+      "display_name": "Oral fluoroquinolone course",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_SYSTEMIC_INNATE_INFLAMMATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.2, 2.5], "decline_half_life_days": [7, 60]},
+        "prostatic_tissue_antibiotic_penetration_adequacy": {"peak_value_factor": [1.2, 2.0], "decline_half_life_days": [7, 60]},
+        "white_blood_cell_count": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [1, 4]},
+        "serum_crp": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [2, 7]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.9], "decline_half_life_days": [3, 30]}
+      },
+      "required_context_axes": ["fluoroquinolone_susceptibility_probability", "prostatic_tissue_antibiotic_penetration_adequacy", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "fluoroquinolone_susceptibility_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.0, 0.4],
+          "clinical_rationale": "Resistance or high local fluoroquinolone resistance makes this regimen inadequate."
+        },
+        {
+          "axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+          "condition": "high",
+          "effect": "weakens_without_source_control",
+          "factor_range": [0.2, 0.8],
+          "clinical_rationale": "Large abscesses may not sterilize with antibiotics alone."
+        }
+      ],
+      "clinical_rationale": "A culture-active fluoroquinolone has useful oral bioavailability and prostatic penetration for selected stable cases.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [14, 42]},
+        {"axis_id": "prostatic_tissue_antibiotic_penetration_adequacy", "direction": "up", "magnitude_range": [0.4, 0.9], "onset_days_range": [0, 1], "duration_days_range": [14, 42]},
+        {"axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.1, 0.8], "onset_days_range": [1, 3], "duration_days_range": [14, 42]}
+      ]
+    },
+    {
+      "treatment_id": "oral_trimethoprim_sulfamethoxazole_course",
+      "display_name": "Oral trimethoprim-sulfamethoxazole course",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_SYSTEMIC_INNATE_INFLAMMATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.1, 2.3], "decline_half_life_days": [7, 60]},
+        "prostatic_tissue_antibiotic_penetration_adequacy": {"peak_value_factor": [1.0, 1.8], "decline_half_life_days": [7, 60]},
+        "serum_crp": {"peak_value_factor": [0.3, 0.85], "decline_half_life_days": [2, 7]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.9], "decline_half_life_days": [3, 30]}
+      },
+      "required_context_axes": ["trimethoprim_sulfamethoxazole_susceptibility_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.0, 0.4],
+          "clinical_rationale": "Organism resistance or high-risk empiric context reduces expected benefit."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "requires_dose_adjustment_or_alternative",
+          "factor_range": [0.4, 1.0],
+          "clinical_rationale": "Renal impairment changes safety and dosing."
+        }
+      ],
+      "clinical_rationale": "Trimethoprim component penetrates prostate; useful when the organism is susceptible and the patient is stable.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [14, 42]},
+        {"axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.1, 0.8], "onset_days_range": [1, 3], "duration_days_range": [14, 42]}
+      ]
+    },
+    {
+      "treatment_id": "parenteral_ceftriaxone_or_cefotaxime",
+      "display_name": "Parenteral third-generation cephalosporin",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_SYSTEMIC_INNATE_INFLAMMATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.2, 2.5], "decline_half_life_days": [3, 30]},
+        "white_blood_cell_count": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 4]},
+        "serum_crp": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [2, 7]},
+        "urosepsis_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [2, 14]}
+      },
+      "required_context_axes": ["active_antibiotic_coverage_probability", "mrsa_coverage_need_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mrsa_coverage_need_probability",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [0.0, 0.4],
+          "clinical_rationale": "Third-generation cephalosporins do not cover MRSA."
+        },
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.0, 0.5],
+          "clinical_rationale": "ESBL, AmpC, Pseudomonas, Enterococcus, or resistant gram-positive organisms may not be covered."
+        }
+      ],
+      "clinical_rationale": "Parenteral cephalosporin therapy can rapidly treat susceptible gram-negative or gonococcal contexts while cultures are pending.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [7, 28]},
+        {"axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [1, 3], "duration_days_range": [7, 28]}
+      ]
+    },
+    {
+      "treatment_id": "broad_spectrum_antipseudomonal_beta_lactam",
+      "display_name": "Broad-spectrum antipseudomonal beta-lactam",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.3, 2.8], "decline_half_life_days": [3, 30]},
+        "urosepsis_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.15, 0.75], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.15, 0.75], "decline_half_life_days": [2, 14]}
+      },
+      "required_context_axes": ["active_antibiotic_coverage_probability", "mrsa_coverage_need_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.0, 0.5],
+          "clinical_rationale": "Coverage depends on organism and local susceptibility; ESBL/carbapenemase or MRSA context requires alternatives or add-ons."
+        },
+        {
+          "axis_id": "mrsa_coverage_need_probability",
+          "condition": "high",
+          "effect": "requires_add_on",
+          "factor_range": [0.0, 0.6],
+          "clinical_rationale": "Beta-lactam alone does not provide MRSA activity."
+        }
+      ],
+      "clinical_rationale": "Severe, catheter-associated, healthcare-associated, or septic presentations often need parenteral broad gram-negative coverage until cultures clarify.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 0.9], "onset_days_range": [0, 1], "duration_days_range": [7, 28]},
+        {"axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.2, 0.85], "onset_days_range": [1, 3], "duration_days_range": [7, 28]}
+      ]
+    },
+    {
+      "treatment_id": "carbapenem_for_esbl_or_severe_resistant_context",
+      "display_name": "Carbapenem for resistant gram-negative or severe septic context",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.5, 3.0], "decline_half_life_days": [3, 30]},
+        "serum_procalcitonin": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [1, 4]},
+        "urosepsis_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [2, 14]}
+      },
+      "required_context_axes": ["active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mrsa_coverage_need_probability",
+          "condition": "high",
+          "effect": "requires_add_on",
+          "factor_range": [0.0, 0.6],
+          "clinical_rationale": "Carbapenem does not cover MRSA."
+        }
+      ],
+      "clinical_rationale": "Carbapenem therapy reshapes resistant gram-negative bacterial burden when ESBL or severe sepsis context makes narrower coverage unreliable.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.5, 1.0], "onset_days_range": [0, 1], "duration_days_range": [7, 28]},
+        {"axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.3, 0.9], "onset_days_range": [1, 3], "duration_days_range": [7, 28]}
+      ]
+    },
+    {
+      "treatment_id": "anti_mrsa_therapy",
+      "display_name": "Anti-MRSA therapy",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN", "M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION", "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.3, 3.0], "decline_half_life_days": [3, 42]},
+        "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.15, 0.8], "decline_half_life_days": [3, 21]},
+        "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.15, 0.8], "decline_half_life_days": [3, 21]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.15, 0.8], "decline_half_life_days": [2, 21]}
+      },
+      "required_context_axes": ["mrsa_coverage_need_probability", "active_antibiotic_coverage_probability", "prostatic_tissue_antibiotic_penetration_adequacy"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mrsa_coverage_need_probability",
+          "condition": "low",
+          "effect": "reduces_incremental_value",
+          "factor_range": [0.3, 0.8],
+          "clinical_rationale": "MRSA-active therapy adds less when ordinary Enterobacterales are the likely pathogen."
+        },
+        {
+          "axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+          "condition": "high",
+          "effect": "requires_source_control_consideration",
+          "factor_range": [0.4, 1.0],
+          "clinical_rationale": "S. aureus prostatic abscess often benefits from drainage plus antibiotics."
+        }
+      ],
+      "clinical_rationale": "Vancomycin, daptomycin, linezolid, clindamycin step-down, or other MRSA-active regimens are selected by susceptibility, bacteremia status, and prostatic penetration context.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 42]},
+        {"axis_id": "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [1, 5], "duration_days_range": [14, 42]}
+      ]
+    },
+    {
+      "treatment_id": "ceftriaxone_plus_doxycycline_for_sti_context",
+      "display_name": "Ceftriaxone plus doxycycline for STI-context prostatitis",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antibacterial_therapy",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_DUCTAL_BACTERIAL_BURDEN"],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.2, 2.5], "decline_half_life_days": [3, 30]},
+        "dysuria_activity": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.3, 0.95], "decline_half_life_days": [3, 21]}
+      },
+      "required_context_axes": ["sti_pathogen_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "sti_pathogen_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [0.1, 0.6],
+          "clinical_rationale": "This regimen is most relevant when gonorrhea/chlamydia or urethritis context is plausible."
+        }
+      ],
+      "clinical_rationale": "STI-directed coverage is a context-specific reshaping of bacterial burden, not a disease-label rule.",
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [7, 28]}
+      ]
+    },
+    {
+      "treatment_id": "urinary_decompression",
+      "display_name": "Urinary decompression for acute retention",
+      "mode": ["push_state", "reshape_landscape"],
+      "treatment_lane": "urinary_drainage",
+      "mechanistic_targets": ["M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION", "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE"],
+      "trajectory_modifications": {
+        "urinary_retention_activity": {"peak_value_factor": [0.0, 0.4], "decline_half_life_days": [0.5, 7]},
+        "urinary_obstruction_activity": {"peak_value_factor": [0.1, 0.7], "decline_half_life_days": [1, 14]},
+        "urinary_drainage_adequacy_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [1.2, 2.0], "decline_half_life_days": [7, 60]},
+        "urosepsis_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "required_context_axes": ["urinary_retention_activity", "urinary_obstruction_activity", "urinary_drainage_adequacy_in_D-ACUTE-PROSTATITIS"],
+      "effect_modifiers": [
+        {
+          "axis_id": "urinary_retention_activity",
+          "condition": "low",
+          "effect": "reduces_incremental_value",
+          "factor_range": [0.1, 0.6],
+          "clinical_rationale": "Drainage adds little when there is no retention or obstruction."
+        }
+      ],
+      "clinical_rationale": "Bladder decompression relieves retention and lowers obstructed-source burden; route and technique are contextual decisions.",
+      "push_targets": [
+        {"axis_id": "urinary_retention_activity", "direction": "down", "magnitude_range": [0.5, 1.0], "onset_days_range": [0, 0.2], "duration_days_range": [1, 30]},
+        {"axis_id": "urinary_drainage_adequacy_in_D-ACUTE-PROSTATITIS", "direction": "up", "magnitude_range": [0.5, 1.0], "onset_days_range": [0, 0.2], "duration_days_range": [1, 30]}
+      ]
+    },
+    {
+      "treatment_id": "alpha_1_blocker",
+      "display_name": "Alpha-1 blocker for voiding obstruction",
+      "mode": ["push_state"],
+      "treatment_lane": "urinary_drainage_adjunct",
+      "mechanistic_targets": ["M_ABP_BLADDER_NECK_EDEMA_AND_OUTFLOW_OBSTRUCTION"],
+      "trajectory_modifications": {
+        "urinary_retention_activity": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 14]},
+        "urinary_obstruction_activity": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 14]},
+        "acute_urinary_retention_hazard": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 14]}
+      },
+      "required_context_axes": ["urinary_retention_activity", "urinary_obstruction_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "limits_use",
+          "factor_range": [0.2, 0.8],
+          "clinical_rationale": "Hypotension limits alpha-blocker tolerance."
+        }
+      ],
+      "clinical_rationale": "Alpha blockade can reduce bladder-neck tone and improve voiding as an adjunct, without replacing antibiotics or drainage when needed.",
+      "push_targets": [
+        {"axis_id": "urinary_obstruction_activity", "direction": "down", "magnitude_range": [0.2, 0.7], "onset_days_range": [0, 2], "duration_days_range": [7, 30]},
+        {"axis_id": "acute_urinary_retention_hazard", "direction": "down", "magnitude_range": [0.2, 0.7], "onset_days_range": [0, 2], "duration_days_range": [7, 30]}
+      ]
+    },
+    {
+      "treatment_id": "prostatic_abscess_drainage",
+      "display_name": "Prostatic abscess drainage",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "prostatic_source_control",
+      "mechanistic_targets": ["M_ABP_PROSTATIC_SUPPURATION_ABSCESS_FORMATION", "M_ABP_SOURCE_CONTROL_FAILURE_OR_INADEQUATE_DRAINAGE", "M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION"],
+      "trajectory_modifications": {
+        "source_control_adequacy": {"peak_value_factor": [1.3, 2.0], "decline_half_life_days": [14, 180]},
+        "source_control_need": {"peak_value_factor": [0.0, 0.5], "decline_half_life_days": [7, 60]},
+        "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.0, 0.6], "decline_half_life_days": [7, 60]},
+        "urosepsis_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [1, 14]},
+        "mortality_hazard_in_D-ACUTE-PROSTATITIS": {"peak_value_factor": [0.2, 0.85], "decline_half_life_days": [2, 30]}
+      },
+      "required_context_axes": ["prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS", "largest_prostatic_abscess_diameter_cm_in_D-ACUTE-PROSTATITIS", "source_control_need"],
+      "effect_modifiers": [
+        {
+          "axis_id": "prostatic_abscess_presence_in_D-ACUTE-PROSTATITIS",
+          "condition": "low",
+          "effect": "not_applicable",
+          "factor_range": [0.0, 0.2],
+          "clinical_rationale": "Drainage has no role without an abscess or drainable collection."
+        },
+        {
+          "axis_id": "largest_prostatic_abscess_diameter_cm_in_D-ACUTE-PROSTATITIS",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [1.1, 1.8],
+          "clinical_rationale": "Large or persistent collections are more source-control dependent."
+        }
+      ],
+      "clinical_rationale": "TRUS-guided aspiration, transperineal drainage, transurethral drainage, or operative drainage reduces abscess burden when antibiotics alone are insufficient.",
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 180]},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 2], "duration_days_range": [14, 180]},
+        {"axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "direction": "down", "magnitude_range": [0.2, 0.8], "onset_days_range": [0, 3], "duration_days_range": [14, 60]}
+      ]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "bladder_outlet_obstruction_or_bph",
+      "display_name": "Bladder outlet obstruction or benign prostatic hyperplasia",
+      "risk_type": "prior_probability_and_trajectory_modulation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_retention_activity", "effect": "increase", "factor_range": [1.2, 2.5]},
+            {"axis_id": "urinary_obstruction_activity", "effect": "increase", "factor_range": [1.2, 2.5]},
+            {"axis_id": "acute_urinary_retention_hazard", "effect": "increase", "factor_range": [1.5, 4.0]}
+          ],
+          "clinical_rationale": "Urinary stasis and high residual volume predispose to intraprostatic reflux and retention."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_urinary_instrumentation_or_prostate_manipulation",
+      "display_name": "Recent urinary instrumentation or prostate manipulation",
+      "risk_type": "prior_probability_and_pathogen_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_genitourinary_instrumentation_context_probability", "effect": "increase", "factor_range": [2.0, 10.0]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "decrease", "factor_range": [0.4, 0.9]}
+          ],
+          "clinical_rationale": "Catheterization, biopsy, cystoscopy, or prostate procedures can inoculate organisms and select resistant pathogens."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_mellitus_or_hyperglycemia",
+      "display_name": "Diabetes mellitus or uncontrolled hyperglycemia",
+      "risk_type": "prior_probability_and_complication_hazard",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.5, 4.0]},
+            {"axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.3, 3.0]},
+            {"axis_id": "mortality_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.2, 2.5]}
+          ],
+          "clinical_rationale": "Diabetes predisposes to urinary infection, abscess formation, and severe sepsis."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "immunocompromised_state",
+      "display_name": "Immunocompromised host state",
+      "risk_type": "prior_probability_and_blunted_response",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "decrease", "factor_range": [0.6, 1.0]},
+            {"axis_id": "white_blood_cell_count", "effect": "decrease", "factor_range": [0.4, 1.0]},
+            {"axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.3, 4.0]},
+            {"axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.3, 4.0]}
+          ],
+          "clinical_rationale": "Transplant, HIV, neutropenia, steroid exposure, malignancy, or other immunosuppression increases complicated infection risk while sometimes blunting fever or leukocytosis."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "sexually_transmitted_infection_context",
+      "display_name": "Sexually transmitted infection context",
+      "risk_type": "pathogen_and_treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "sti_pathogen_probability", "effect": "increase", "factor_range": [2.0, 10.0]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "context_dependent", "factor_range": [0.3, 1.5]}
+          ],
+          "clinical_rationale": "Younger patients or urethritis context can shift pathogen distribution toward gonorrhea/chlamydia and alter treatment coverage needs."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "skin_soft_tissue_staphylococcal_or_bacteremia_context",
+      "display_name": "Skin/soft-tissue staphylococcal or bacteremia context",
+      "risk_type": "pathogen_and_complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "mrsa_coverage_need_probability", "effect": "increase", "factor_range": [2.0, 10.0]},
+            {"axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.3, 4.0]},
+            {"axis_id": "metastatic_infection_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.5, 5.0]}
+          ],
+          "clinical_rationale": "Recurrent furuncles, skin abscess, or concurrent S. aureus bacteremia increases probability of hematogenous or staphylococcal prostatic abscess."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_or_inactive_antibiotic_coverage",
+      "display_name": "Delayed or inactive antibiotic coverage",
+      "risk_type": "trajectory_and_source_control",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "decrease", "factor_range": [0.0, 0.6]},
+            {"axis_id": "prostatic_abscess_formation_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.5, 5.0]},
+            {"axis_id": "source_control_need", "effect": "increase", "factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Delayed, resistant, or poorly penetrating therapy sustains bacterial burden and inflammatory trajectory."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "large_or_multiloculated_prostatic_abscess",
+      "display_name": "Large or multiloculated prostatic abscess",
+      "risk_type": "source_control_dependency",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "source_control_need", "effect": "increase", "factor_range": [1.5, 5.0]},
+            {"axis_id": "source_control_adequacy", "effect": "decrease_until_drained", "factor_range": [0.1, 0.8]},
+            {"axis_id": "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "effect": "increase", "factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Large or multiloculated collections have higher source-control need and may not respond to antibiotics alone."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "sepsis_resuscitation_and_monitoring",
+      "display_name": "Sepsis resuscitation and monitoring",
+      "targets": ["mean_arterial_pressure", "serum_lactate", "urosepsis_hazard_in_D-ACUTE-PROSTATITIS", "mortality_hazard_in_D-ACUTE-PROSTATITIS"],
+      "clinical_rationale": "Severe presentations need fluids, vasopressors when indicated, blood cultures before antibiotics when feasible, lactate monitoring, and organ-support escalation."
+    },
+    {
+      "care_id": "analgesia_antipyretics_and_hydration",
+      "display_name": "Analgesia, antipyretics, and hydration",
+      "targets": ["body_temperature", "perineal_pain_activity", "suprapubic_pain_activity", "nausea_vomiting_activity"],
+      "clinical_rationale": "Symptom control supports hydration and voiding while definitive antimicrobial/source-control therapy reshapes the disease."
+    },
+    {
+      "care_id": "culture_and_susceptibility_followup",
+      "display_name": "Culture and susceptibility follow-up",
+      "targets": ["active_antibiotic_coverage_probability", "fluoroquinolone_susceptibility_probability", "trimethoprim_sulfamethoxazole_susceptibility_probability", "mrsa_coverage_need_probability"],
+      "clinical_rationale": "Urine, blood, and abscess cultures are not disease labels; they update treatment modifier axes and allow narrowing or escalation."
+    },
+    {
+      "care_id": "avoid_prostate_massage_during_acute_episode",
+      "display_name": "Avoid prostate massage during acute episode",
+      "targets": ["M_ABP_BACTEREMIA_UROSEPSIS_DISSEMINATION"],
+      "clinical_rationale": "Vigorous manipulation may worsen pain or bacteremia risk during acute bacterial prostatitis."
+    },
+    {
+      "care_id": "followup_for_resolution_and_recurrence",
+      "display_name": "Follow-up for resolution and recurrence",
+      "targets": ["serum_prostate_specific_antigen", "chronic_bacterial_prostatitis_transition_hazard", "source_control_adequacy"],
+      "clinical_rationale": "Clinical reassessment, repeat imaging when abscess was present, and delayed PSA reassessment prevent confusing acute inflammation with chronic infection or malignancy."
+    }
+  ]
+}

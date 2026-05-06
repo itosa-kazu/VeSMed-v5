@@ -735,3 +735,26 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `312/314 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: PID / Acute Prostatitis / Enterococcal Bacteremia
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-PELVIC-INFLAMMATORY-DISEASE`: pelvic inflammatory disease.
+  - `D-ACUTE-PROSTATITIS`: acute bacterial prostatitis.
+  - `D-ENTEROCOCCAL-BACTEREMIA`: enterococcal bacteremia.
+- New real PMC/PubMed cases:
+  - `D-PELVIC-INFLAMMATORY-DISEASE`: `PMC12399346` / PMID `40901240`, `PMC11283372` / PMID `39070315`, `PMC3533887` / PMID `23031581`.
+  - `D-ACUTE-PROSTATITIS`: `PMC5903498` / PMID `29686573`, `PMC4156639` / PMID `25158781`, `PMC5521102` / PMID `28732492`.
+  - `D-ENTEROCOCCAL-BACTEREMIA`: `PMC9340997` / PMID `35899534`, `PMC7768448` / PMID `33158120`, `PMC10324793` / PMID `37427050`.
+- PID source rule: first-layer PID remains pure. TOA, ruptured TOA, postpartum context, IUD/post-sterilization, gonococcal/chlamydial etiology, and septic physiology are spectrum/context/event/source-control axes or future related leaves, not disease-name qualifiers. NAAT/culture species, operative/laparoscopic/pathology confirmation, final diagnosis, treatment response, and outcome are confirmatory/non-ranking unless testing post-workup mode.
+- Acute prostatitis source rule: first-layer acute bacterial prostatitis remains pure. Prostatic abscess, trauma/instrumentation, urinary retention, MRSA/MSSA/ESBL, bacteremia, and septic shock are context/event/treatment-modifier axes or future subtype/related leaves. Culture species/susceptibility, definitive abscess confirmation, and treatment response stay confirmatory/non-ranking unless available as presentation imaging/lab evidence.
+- Enterococcal bacteremia source rule: first-layer enterococcal bacteremia remains pure. Species, VRE/HLAR, dialysis catheter, urinary/biliary/intra-abdominal source, endocarditis, and shock are source/risk/treatment/event axes or related leaves. Blood-culture species, susceptibility, TEE final vegetation, source adjudication, treatment response, and follow-up outcome stay confirmatory/non-ranking for presentation-only ranking.
+- Axis ontology repair from this batch: composite axes with `or` were normalized to one-concept axes: `endometritis_activity`, `tubal_fluid_collection_activity`, `extraprostatic_inflammatory_extension_activity`, and `recent_genitourinary_instrumentation_context_probability`. `qt_prolongation_hazard` was added as a real treatment-safety event hazard because PID treatments referenced QT-active drug risk.
+- Future scope warning: if `D-TUBO-OVARIAN-ABSCESS`, postpartum endometritis, renal/perinephric abscess, or additional bacteremia/source leaves are added, apply condition-scope checks to avoid double-counting PID/TOA, GU source, and bacteremia facts as both a disease manifold and a background/context modifier.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-ESBL-ENTEROBACTERALES-BACTEREMIA`.
+- Focused new-batch fast grid (`PELVIC_INFLAMMATORY_DISEASE,ACUTE_PROSTATITIS,ENTEROCOCCAL_BACTEREMIA`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 326 case JSON files loaded.
+  - Single-manifold validation `321/323 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
