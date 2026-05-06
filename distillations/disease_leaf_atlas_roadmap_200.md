@@ -126,31 +126,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-POLYMYOSITIS | Polymyositis |
 | D-DRUG-FEVER | Simple drug fever |
 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis |
+| D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction |
+| D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia |
+| D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
-| 2 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
-| 3 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
-| 4 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
-| 5 | D-CELLULITIS | Cellulitis | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
-| 6 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
-| 7 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
-| 8 | D-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
-| 9 | D-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
-| 10 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
-| 11 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
-| 12 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
-| 13 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
-| 14 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
-| 15 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
-| 16 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 17 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
-| 18 | D-APLASTIC-ANEMIA | Aplastic anemia | critical pancytopenia and fever/neutropenia mimic near leukemia and marrow failure |
-| 19 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
-| 20 | D-ACUTE-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
+| 1 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
+| 2 | D-CELLULITIS | Cellulitis | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
+| 3 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
+| 4 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
+| 5 | D-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
+| 6 | D-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
+| 7 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
+| 8 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
+| 9 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
+| 10 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
+| 11 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
+| 12 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
+| 13 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 14 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 15 | D-APLASTIC-ANEMIA | Aplastic anemia | critical pancytopenia and fever/neutropenia mimic near leukemia and marrow failure |
+| 16 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
+| 17 | D-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
+| 18 | D-ACUTE-CHOLECYSTITIS | Acute cholecystitis | common fever/RUQ pain source-control disease near cholangitis and sepsis |
+| 19 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
+| 20 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
 
 ## Candidate Pool Toward 200
 

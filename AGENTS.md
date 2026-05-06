@@ -669,3 +669,24 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `284/286 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: FNHTR / Strep Pyogenes Bacteremia / Pseudomonas Bacteremia
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-TRANSFUSION-REACTION-FNHTR`: febrile non-hemolytic transfusion reaction.
+  - `D-STREP-PYOGENES-BACTEREMIA`: Streptococcus pyogenes bacteremia.
+  - `D-PSEUDOMONAS-BACTEREMIA`: Pseudomonas aeruginosa bacteremia.
+- New real PMC/PubMed cases:
+  - `D-TRANSFUSION-REACTION-FNHTR`: `PMC2860765` cases 3/7/11 plus PMID `6837570`.
+  - `D-STREP-PYOGENES-BACTEREMIA`: `PMC3122791`, `PMC5622333`, `PMC6370406`.
+  - `D-PSEUDOMONAS-BACTEREMIA`: `PMC6531848`, `PMC10931707`, `PMC5080512`.
+- FNHTR source rule: keep this leaf separate from acute hemolytic transfusion reaction, delayed hemolytic transfusion reaction, TRALI, TACO, sepsis, and allergic/anaphylactic transfusion reaction. HLA/leukocyte antibody workup, negative hemolysis/TRALI/TACO/sepsis workup, dechallenge, and later tolerance are confirmatory/non-ranking unless testing post-workup mode. Treatment-safety context axes such as `acute_liver_injury_activity` and `respiratory_depression_risk_context` should be explicit `treatment_modifier` axes when referenced by treatments, not phantom references.
+- Bacteremia leaf rule: organism-level bacteremia leaves can exist, but source diseases and syndromic complications stay as source/context/event axes or separate leaves. For `D-STREP-PYOGENES-BACTEREMIA`, necrotizing fasciitis, TSS, cellulitis, pneumonia, postpartum sepsis, and endocarditis are not part of the disease name. For `D-PSEUDOMONAS-BACTEREMIA`, central-line infection, neutropenia, pneumonia, UTI, ecthyma gangrenosum, endocarditis, and resistance phenotype are context/risk/treatment modifiers or future leaves.
+- Blood-culture species, susceptibility, resistance mechanism, emm typing, and final source adjudication are confirmatory/non-ranking for presentation-only tests unless explicitly testing post-workup mode. Do not hardcode pathogen identity into diagnosis ranking to beat `D-SEPSIS-GN` or other bacteremia leaves.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-ITP`.
+- Focused new-batch fast grid (`TRANSFUSION_REACTION_FNHTR,STREP_PYOGENES_BACTEREMIA,PSEUDOMONAS_BACTEREMIA`) loaded 10 cases and was `10/10 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 299 case JSON files loaded.
+  - Single-manifold validation `294/296 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

@@ -1,0 +1,312 @@
+{
+  "disease": "D-TRANSFUSION-REACTION-FNHTR",
+  "disease_id": "D-TRANSFUSION-REACTION-FNHTR",
+  "disease_name": "Febrile non-hemolytic transfusion reaction",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Febrile non-hemolytic transfusion reaction",
+    "leaf_granularity": "First-layer disease leaf for fever, chills, rigors, and discomfort temporally associated with transfusion of a cellular blood component, without hemolysis, bacterial contamination, acute lung injury, circulatory overload, or allergic/anaphylactic physiology defining the reaction.",
+    "boundary_policy": "Acute hemolytic transfusion reaction, delayed hemolytic transfusion reaction, TRALI, TACO, septic transfusion reaction, and allergic or anaphylactic transfusion reaction are mimics, context, or separate current/future leaves. This leaf may contain boundary axes expected to remain low, but it does not absorb those syndromes.",
+    "ranking_note": "Presentation ranking may use recent cellular blood component exposure, timing during or soon after transfusion, fever or measured temperature rise, chills or rigors, headache, nausea, malaise, preserved oxygenation, lack of shock when directly observed, and recurrence with cellular components. Final blood bank adjudication, HLA/leukocyte antibody matching, negative hemolysis or bacterial culture workup, negative TRALI/TACO workup, and dechallenge after stopping the transfusion should stay confirmatory/non-ranking unless testing a post-workup mode."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE",
+      "display_name": "Cellular blood component exposure",
+      "clinical_meaning": "A red-cell, platelet, or granulocyte-containing blood component is transfused in the time window capable of producing an acute febrile non-hemolytic reaction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 0.1],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [0.05, 1],
+      "decline_half_life_days": [0.1, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD",
+      "display_name": "Stored leukocyte cytokine and biologic response modifier load",
+      "clinical_meaning": "Cytokines and other pyrogenic biologic response modifiers accumulate in cellular components during storage, especially when residual leukocytes or platelets are present.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [0.05, 1],
+      "decline_half_life_days": [0.1, 1],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY",
+      "display_name": "Recipient anti-leukocyte or anti-HLA reactivity",
+      "clinical_meaning": "Recipient antibodies against donor leukocyte, HLA, granulocyte, or platelet antigens trigger leukocyte activation and pyrogen release without red-cell hemolysis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.1, 7],
+      "decline_half_life_days": [1, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE",
+      "display_name": "Acute pyrogenic fever response",
+      "clinical_meaning": "IL-1, IL-6, TNF-alpha, and related pyrogenic signaling raise temperature and produce fever history during or within hours after transfusion.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [0.05, 1],
+      "decline_half_life_days": [0.1, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE",
+      "display_name": "Rigor, chills, and autonomic discomfort response",
+      "clinical_meaning": "Pyrogenic cytokine signaling and acute transfusion discomfort produce chills, rigors, malaise, headache, nausea, and mild tachycardia without the dominant shock or pulmonary edema of serious mimics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.05, 1],
+      "decline_half_life_days": [0.1, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY",
+      "display_name": "Non-hemolytic and non-pulmonary boundary phenotype",
+      "clinical_meaning": "The reaction remains in the FNHTR manifold when hemoglobinuria, hemoglobinemia, severe hypotension, new pulmonary edema or hypoxemia, generalized urticaria, airway compromise, and bacterial contamination evidence are absent or clinically subordinate.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 0.25],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [0.1, 2],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "exposure", "clinical_rationale": "FNHTR requires recent transfusion of a cellular component, though exposure alone is not diagnostic.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "recent_platelet_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "exposure", "clinical_rationale": "Platelet components are a common context for FNHTR because of platelet and residual leukocyte cytokine biology.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "recent_red_blood_cell_transfusion_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "exposure", "clinical_rationale": "Red-cell transfusions can also trigger FNHTR, especially in repeatedly transfused or sensitized patients.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "transfusion_temporal_link_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Symptoms typically occur during transfusion or within the early post-transfusion window.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.1], "phase": "pyrogen_delivery", "clinical_rationale": "Transfusion delivers preformed cytokines and biologic response modifiers from the product.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "target_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.25], "phase": "immune_activation", "clinical_rationale": "Donor leukocyte or platelet antigens become available to recipient anti-leukocyte antibodies during transfusion.", "knowledge_confidence": "medium"},
+    {"source_id": "M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD", "target_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.1], "phase": "fever_expression", "clinical_rationale": "Preformed product cytokines can rapidly raise the recipient's thermoregulatory set point.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "target_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.25], "phase": "fever_expression", "clinical_rationale": "Anti-HLA or anti-granulocyte reactions trigger endogenous pyrogen release.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "target_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "HLA, granulocyte, or leukocyte antibody testing can support the mechanism after transfusion medicine workup.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Fever with chills or rigors is the central clinical expression of FNHTR.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Measured temperature rises during the acute febrile reaction.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "post_transfusion_temperature_rise_delta_c", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "FNHTR is often defined by a temperature rise from pretransfusion baseline.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Charted or patient-reported fever is commonly available even when a single measured temperature is missing.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Pyrogenic set-point change produces chills and rigors.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Chills and rigors are common FNHTR symptoms and may occur with or without documented fever.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "rigors_severity_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Severe shaking chills are a typical reason to stop the transfusion and treat symptoms.", "knowledge_confidence": "medium"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "headache_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Headache can accompany transfusion-associated fever but is nonspecific.", "knowledge_confidence": "low"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Nausea or vomiting may accompany the febrile reaction but should not dominate the phenotype.", "knowledge_confidence": "low"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "transfusion_associated_malaise_discomfort_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Discomfort and malaise are nonspecific but common in febrile reactions.", "knowledge_confidence": "medium"},
+    {"source_id": "M_FNHTR_RIGOR_AUTONOMIC_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "presentation", "clinical_rationale": "Fever and rigors may produce mild tachycardia, although severe instability should trigger mimic evaluation.", "knowledge_confidence": "low"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "oxygen_saturation", "effect_on_target": "maintain", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "boundary", "clinical_rationale": "FNHTR should not be defined by new hypoxemia; hypoxemia should raise TRALI, TACO, sepsis, or cardiopulmonary mimic concern.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "dyspnea_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "boundary", "clinical_rationale": "New dyspnea is not a core FNHTR feature and should push toward pulmonary or allergic mimics.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "pulmonary_edema_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "boundary", "clinical_rationale": "Pulmonary edema is outside the FNHTR leaf and suggests TRALI or TACO.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "rash_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "boundary", "clinical_rationale": "Urticaria or generalized rash should raise allergic transfusion reaction rather than FNHTR alone.", "knowledge_confidence": "medium"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "hemoglobinuria_dark_urine_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0.25], "phase": "boundary", "clinical_rationale": "Hemoglobinuria is not expected in FNHTR and should raise acute hemolytic reaction.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "fnhtr_negative_hemolysis_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 2], "phase": "post_workup", "clinical_rationale": "Negative hemolysis workup helps adjudicate FNHTR after initial presentation.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "fnhtr_negative_bacterial_contamination_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Negative product and patient cultures support non-septic adjudication when cultures are obtained.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_NONHEMOLYTIC_NONPULMONARY_BOUNDARY", "target_id": "fnhtr_negative_trali_taco_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 2], "phase": "post_workup", "clinical_rationale": "Absence of pulmonary edema, hypoxemia, and volume overload supports FNHTR after workup.", "knowledge_confidence": "high"},
+    {"source_id": "M_FNHTR_ACUTE_PYROGENIC_RESPONSE", "target_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 1], "phase": "outcome", "clinical_rationale": "FNHTR itself has very low direct mortality; hazard mainly represents frailty, interruption burden, or unrecognized mimic risk.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Recent transfusion of a cellular blood component capable of carrying residual leukocytes, platelets, or stored cytokines.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "recent_platelet_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Recent platelet component transfusion, including single-donor or HLA-selected platelet concentrate.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "recent_red_blood_cell_transfusion_activity", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Recent red-cell transfusion exposure; FNHTR can occur with red cells but must remain separate from hemolytic reaction.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "transfusion_temporal_link_activity", "category": "clinical_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Fever, chills, or rigors begin during transfusion or within the early post-transfusion window.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.25], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "satellite", "parent_axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR"},
+    {"axis_id": "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Acute transfusion-timed fever, chills, rigors, and discomfort cluster without hemolytic, pulmonary, septic, or allergic syndrome dominating.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 0.25], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "shape_free_text": "Measured temperature during the transfusion reaction.", "baseline_range": [36.2, 37.2], "peak_day_range": [0, 0.25], "peak_value_range": [38.0, 40.5], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "post_transfusion_temperature_rise_delta_c", "category": "vital", "unit": "degC_delta", "log_scale": false, "shape_free_text": "Temperature increase from pretransfusion baseline.", "baseline_range": [0.0, 0.3], "peak_day_range": [0, 0.25], "peak_value_range": [1.0, 4.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "fever_history_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Observed or reported fever associated with the transfusion episode.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 0.25], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "chills_rigors_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Chills, shaking chills, or rigors during or soon after transfusion.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 0.25], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "rigors_severity_activity_in_D-TRANSFUSION-REACTION-FNHTR", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Severity of shaking rigors requiring interruption or medication.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "satellite", "parent_axis_id": "chills_rigors_activity"},
+    {"axis_id": "headache_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Headache during the febrile transfusion episode.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "nausea_vomiting_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Nausea or vomiting during the acute transfusion reaction.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.6], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "transfusion_associated_malaise_discomfort_activity_in_D-TRANSFUSION-REACTION-FNHTR", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "General discomfort, malaise, or feeling unwell during the febrile transfusion reaction.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Heart rate during the reaction; may be normal or mildly high.", "baseline_range": [55, 105], "peak_day_range": [0, 0.25], "peak_value_range": [65, 135], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "shape_free_text": "Mean arterial pressure is usually preserved; severe hypotension should trigger mimic evaluation.", "baseline_range": [70, 105], "peak_day_range": [0, 0.25], "peak_value_range": [65, 115], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "shape_free_text": "Oxygenation should usually be preserved in isolated FNHTR.", "baseline_range": [95, 100], "peak_day_range": [0, 0.25], "peak_value_range": [94, 100], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "dyspnea_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "New dyspnea should remain absent or mild in isolated FNHTR.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.15], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "pulmonary_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Pulmonary edema is not expected in isolated FNHTR.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.05], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "rash_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Urticaria or generalized rash should remain absent or subordinate in pure FNHTR.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.15], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "hemoglobinuria_dark_urine_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Dark urine or hemoglobinuria should be absent in FNHTR; if present, evaluate acute hemolytic reaction.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0.25], "peak_value_range": [0.0, 0.05], "plateau_duration_days": [0.05, 1], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "category": "confirmatory_context", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Post-workup HLA, granulocyte, or leukocyte antibody evidence supporting a leukocyte-mediated FNHTR mechanism.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "fnhtr_negative_hemolysis_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Post-workup absence of acute hemolysis evidence.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "fnhtr_negative_bacterial_contamination_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Post-workup absence of bacterial contamination or septic transfusion reaction evidence.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "fnhtr_negative_trali_taco_workup_context_in_D-TRANSFUSION-REACTION-FNHTR", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Post-workup absence of TRALI or TACO physiology.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "fnhtr_dechallenge_response_context_in_D-TRANSFUSION-REACTION-FNHTR", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Improvement after stopping or completing the implicated transfusion and symptomatic treatment.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "acute_liver_injury_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Current acute liver injury or hepatic failure context that limits acetaminophen safety for symptomatic fever control.", "baseline_range": [0.0, 0.03], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "respiratory_depression_risk_context", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Sedation, opioid sensitivity, ventilatory failure, severe hypoxemia, sleep apnea, frailty, or neurologic context that limits opioid or meperidine use for severe rigors.", "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR", "category": "derived_hazard", "unit": "hazard_per_day", "log_scale": true, "shape_free_text": "Lifespan hazard directly attributable to isolated FNHTR is very low; excess hazard mainly reflects frailty, transfusion interruption burden, or missed serious mimics.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 1], "peak_value_range": [0.00002, 0.003], "plateau_duration_days": [0.05, 3], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "target_axis_id": "transfusion_temporal_link_activity", "coupling_type": "drift", "effect": "increase", "lag_days_range": [0, 0.25], "clinical_rationale": "The transfusion exposure must be temporally linked to the febrile reaction.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "post_transfusion_temperature_rise_delta_c", "coupling_type": "noise_correlation", "effect": "positive_correlation", "lag_days_range": [0, 0.25], "clinical_rationale": "Measured temperature and change from baseline usually move together.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "chills_rigors_activity", "coupling_type": "mixed", "effect": "positive_but_not_required", "lag_days_range": [0, 0.25], "clinical_rationale": "Fever commonly accompanies chills or rigors, but either can be documented alone.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "chills_rigors_activity", "target_axis_id": "heart_rate", "coupling_type": "noise_correlation", "effect": "weak_positive_correlation", "lag_days_range": [0, 0.25], "clinical_rationale": "Rigors and fever can raise pulse modestly.", "knowledge_confidence": "low"},
+    {"source_axis_id": "dyspnea_activity", "target_axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR", "coupling_type": "hazard_drift", "effect": "increase", "lag_days_range": [0, 1], "clinical_rationale": "Meaningful dyspnea increases apparent hazard by indicating a possible serious pulmonary mimic rather than pure FNHTR.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "hemoglobinuria_dark_urine_activity", "target_axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR", "coupling_type": "hazard_drift", "effect": "increase", "lag_days_range": [0, 1], "clinical_rationale": "Hemoglobinuria is outside the FNHTR core and signals possible acute hemolytic reaction with higher risk.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "stop_or_pause_transfusion_and_notify_transfusion_service",
+      "display_name": "Stop or pause transfusion and notify transfusion service",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_FNHTR_CELLULAR_COMPONENT_EXPOSURE", "M_FNHTR_ACUTE_PYROGENIC_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "decrease_ongoing_exposure", "target_range": [0.0, 0.3], "onset_days": [0, 0.02]},
+        {"axis_id": "body_temperature", "effect": "decrease_after_exposure_removed", "target_range": [36.5, 38.0], "onset_days": [0.05, 1]},
+        {"axis_id": "mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "decrease_missed_mimic_risk", "target_range": [0.00001, 0.001], "onset_days": [0, 1]}
+      ],
+      "clinical_rationale": "Any acute transfusion fever should trigger immediate transfusion interruption and transfusion-service notification until serious reactions are assessed."
+    },
+    {
+      "treatment_id": "antipyretic_symptom_control",
+      "display_name": "Antipyretic symptom control",
+      "mode": "push_state",
+      "target_mechanisms": ["M_FNHTR_ACUTE_PYROGENIC_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "body_temperature", "effect": "decrease", "target_range": [36.5, 38.0], "onset_days": [0, 0.25]},
+        {"axis_id": "fever_history_activity", "effect": "decrease", "target_range": [0.0, 0.4], "onset_days": [0.05, 1]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "acute_liver_injury_activity", "effect_if_high": "limits_acetaminophen_use", "clinical_rationale": "Acetaminophen safety depends on liver context."}
+      ],
+      "clinical_rationale": "Antipyretics reduce fever symptoms but do not replace transfusion reaction evaluation."
+    },
+    {
+      "treatment_id": "rigors_management_when_severe",
+      "display_name": "Rigors management when severe",
+      "mode": "push_state",
+      "target_mechanisms": ["M_FNHTR_RIGOR_AUTONOMIC_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "chills_rigors_activity", "effect": "decrease", "target_range": [0.0, 0.4], "onset_days": [0, 0.25]},
+        {"axis_id": "rigors_severity_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "decrease", "target_range": [0.0, 0.3], "onset_days": [0, 0.25]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "respiratory_depression_risk_context", "effect_if_high": "limits_opioid_rigor_treatment", "clinical_rationale": "Meperidine or similar agents require respiratory and sedation risk assessment."}
+      ],
+      "clinical_rationale": "Severe rigors may need targeted symptomatic treatment after dangerous mimics are being evaluated."
+    },
+    {
+      "treatment_id": "future_leukoreduced_or_hla_compatible_component_strategy",
+      "display_name": "Future leukoreduced or HLA-compatible component strategy",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD", "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY"],
+      "trajectory_modifications": [
+        {"axis_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "use_to_select_components", "target_range": [0.0, 1.0], "onset_days": [1, 14]},
+        {"axis_id": "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "reduce_recurrence_probability", "target_range": [0.0, 0.4], "onset_days": [0, 1]}
+      ],
+      "clinical_rationale": "Patients with recurrent FNHTR or demonstrable leukocyte/HLA antibodies may need leukoreduced, washed, or HLA-selected products depending on component and local transfusion-medicine guidance."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_cellular_blood_component_transfusion",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5.0, 25.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "increase", "multiplier": [1.2, 2.0]},
+            {"axis_id": "transfusion_temporal_link_activity", "effect": "increase", "multiplier": [1.2, 2.0]}
+          ],
+          "clinical_rationale": "The disease cannot occur without recent relevant transfusion exposure, but timing and symptom pattern determine explanatory value."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "platelet_or_leukocyte_containing_component_transfusion",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_platelet_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "increase", "multiplier": [1.2, 2.0]},
+            {"axis_id": "M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD", "effect": "increase", "multiplier": [1.1, 2.0]}
+          ],
+          "clinical_rationale": "Platelet and leukocyte-containing products have higher febrile reaction biology than plasma-only exposure."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_transfusion_pregnancy_or_hla_sensitization",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "effect": "increase", "multiplier": [1.2, 3.0]},
+            {"axis_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "increase_if_workup_available", "multiplier": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Prior antigen exposure increases likelihood of anti-HLA or anti-leukocyte mediated febrile reactions."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hematology_oncology_or_multitransfused_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_platelet_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "increase_context_probability", "multiplier": [1.1, 2.0]},
+            {"axis_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "effect": "increase", "multiplier": [1.1, 2.0]}
+          ],
+          "clinical_rationale": "Hematology patients often receive repeated cellular products and may become alloimmunized."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "nonleukoreduced_or_long_stored_component_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_FNHTR_STORED_LEUKOCYTE_CYTOKINE_LOAD", "effect": "increase", "multiplier": [1.2, 3.0]},
+            {"axis_id": "post_transfusion_temperature_rise_delta_c", "effect": "increase", "multiplier": [1.1, 2.0]}
+          ],
+          "clinical_rationale": "Residual leukocytes and storage duration can increase cytokine and biologic response modifier exposure."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "recurrent_febrile_transfusion_reaction_history",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 12.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_FNHTR_RECIPIENT_ANTI_LEUKOCYTE_REACTIVITY", "effect": "increase", "multiplier": [1.2, 3.0]},
+            {"axis_id": "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR", "effect": "increase_recurrence_likelihood", "multiplier": [1.1, 2.0]}
+          ],
+          "clinical_rationale": "Prior repeated febrile reactions raise suspicion for a recurring recipient-product interaction."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "acute_transfusion_reaction_protocol", "clinical_rationale": "Stop or pause the transfusion, maintain IV access, verify patient and component identity, notify transfusion medicine, and send required samples according to local protocol."},
+    {"care_id": "mimic_safety_workup", "clinical_rationale": "Evaluate hemolysis, bacterial contamination, TRALI, TACO, allergic or anaphylactic reaction, and underlying infection when fever occurs around transfusion."},
+    {"care_id": "symptom_monitoring", "clinical_rationale": "Trend temperature, chills or rigors, blood pressure, pulse, oxygenation, respiratory symptoms, rash, urine color, and recurrent fever after transfusion interruption."},
+    {"care_id": "future_transfusion_planning", "clinical_rationale": "Document the reaction and consult transfusion medicine before future transfusions, especially in patients with recurrent reactions or leukocyte/HLA antibodies."}
+  ],
+  "quality_notes": [
+    "Pure disease-name leaf: FNHTR is kept separate from AHTR, DHTR, TRALI, TACO, sepsis, and allergic/anaphylactic transfusion reaction.",
+    "No first_line, preferred, guideline_recommended, indication_strength, or diagnosis_should_be fields are used.",
+    "The only derived_hazard axis is mortality_hazard_in_D-TRANSFUSION-REACTION-FNHTR.",
+    "Confirmatory workup axes are present for post-workup mode but are non-ranking in presentation-focused cases."
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "case_id": "TRANSFUSION_REACTION_FNHTR_GRANULOCYTE_AUTOANTIBODY_PMID6837570",
+  "source_pmid": "6837570",
+  "source_pmcid": null,
+  "source_url": "https://pubmed.ncbi.nlm.nih.gov/6837570/",
+  "disease_label_per_paper": "Severe febrile nonhemolytic transfusion reaction associated with granulocyte autoantibodies",
+  "expected_manifold": "D-TRANSFUSION-REACTION-FNHTR",
+  "demographics": {
+    "age": 69,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "A 69-year-old man with immunoblastic lymphadenopathy and autoimmune hemolytic anemia had no previous blood product exposure.",
+    "He developed a severe febrile nonhemolytic transfusion reaction after the initial infusion of packed red blood cells.",
+    "The reaction recurred with packed red blood cell transfusion but did not occur when freeze-thawed red blood cells were used.",
+    "Immunofluorescence later demonstrated granulocyte antibodies in serum and on granulocytes; immune complex, HLA, and platelet antibodies were not present. These serologic details are confirmatory/non-ranking.",
+    "The paper concluded that granulocyte autoantibodies probably produced the febrile transfusion reactions."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "recent_cellular_blood_component_transfusion", "category": "present", "value": 1, "source_text_value": "initial infusion of packed red blood cells", "use_in_ranking": true},
+    {"factor": "recurrent_febrile_transfusion_reaction_history", "category": "present", "value": 1, "source_text_value": "reaction recurred with transfusion of packed red blood cells", "use_in_ranking": true}
+  ],
+  "observations": [
+    {"axis_id": "recent_cellular_blood_component_transfusion_activity_in_D-TRANSFUSION-REACTION-FNHTR", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "packed red blood cell infusion"},
+    {"axis_id": "recent_red_blood_cell_transfusion_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "packed red blood cells"},
+    {"axis_id": "transfusion_temporal_link_activity", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "reaction following the initial infusion of packed red blood cells"},
+    {"axis_id": "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "severe febrile nonhemolytic transfusion reaction"},
+    {"axis_id": "fever_history_activity", "value": 1.0, "unit": "severity_score_0_1", "source_text_value": "severe febrile reaction"},
+    {"axis_id": "body_temperature", "qualitative_value": "high_grade_fever", "unit": "degC", "source_text_value": "severe febrile nonhemolytic transfusion reaction"}
+  ],
+  "underlying_or_mimic_context": [
+    {
+      "condition": "autoimmune_hemolytic_anemia",
+      "source_text_value": "underlying autoimmune hemolytic anemia was present, but the paper labels the transfusion reaction itself as nonhemolytic and granulocyte-antibody mediated",
+      "use_in_ranking": false
+    }
+  ],
+  "confirmatory_findings": [
+    {"finding": "Granulocyte antibodies demonstrated in serum and on granulocytes", "axis_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "value": 1.0, "unit": "probability_0_1", "source_text_value": "immunofluorescence techniques demonstrated granulocyte antibodies in his serum and on the surface of his granulocytes", "use_in_ranking": false},
+    {"finding": "HLA and platelet antibodies were absent", "axis_id": "hla_or_leukocyte_antibody_reactivity_context_in_D-TRANSFUSION-REACTION-FNHTR", "value": 0.5, "unit": "probability_0_1", "source_text_value": "HLA and platelet antibodies were not present", "use_in_ranking": false},
+    {"finding": "Freeze-thawed red blood cells did not reproduce the reaction", "axis_id": "fnhtr_dechallenge_response_context_in_D-TRANSFUSION-REACTION-FNHTR", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "reaction recurred with packed red blood cells, but not when freeze-thawed red blood cells were used", "use_in_ranking": false},
+    {"finding": "Paper conclusion: granulocyte autoantibodies probably produced febrile transfusion reactions", "source_text_value": "granulocyte autoantibodies probably produced febrile transfusion reactions", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    {"name": "freeze_thawed_red_cells_for_future_transfusion", "source_text_value": "reaction did not recur when freeze-thawed red blood cells were used", "use_in_ranking": false}
+  ],
+  "outcome": {
+    "status": "reaction_prevented_with_freeze_thawed_red_cells",
+    "source_text_value": "not when freeze-thawed red blood cells were used",
+    "use_in_ranking": false
+  },
+  "quality_warnings": [
+    "Underlying autoimmune hemolytic anemia is preserved as context and is not used to convert this case into an acute hemolytic transfusion reaction.",
+    "Granulocyte antibody testing, recurrence pattern, and freeze-thawed RBC tolerance are confirmatory/non-ranking."
+  ]
+}

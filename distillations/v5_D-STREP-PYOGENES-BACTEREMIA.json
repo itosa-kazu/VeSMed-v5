@@ -1,0 +1,549 @@
+{
+  "disease": "D-STREP-PYOGENES-BACTEREMIA",
+  "disease_id": "D-STREP-PYOGENES-BACTEREMIA",
+  "disease_name": "Streptococcus pyogenes bacteremia",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Streptococcus pyogenes bacteremia",
+    "leaf_granularity": "First-layer disease leaf for invasive bloodstream infection caused by Streptococcus pyogenes, independent of the presenting source or later complication label.",
+    "boundary_policy": "Necrotizing fasciitis, streptococcal toxic shock syndrome, cellulitis, pneumonia, postpartum sepsis, endocarditis, septic arthritis, osteomyelitis, meningitis, and deep abscess are source/context/complication/mimic or separate leaves. They may be represented as axes and event hazards when clinically observed, but they are not appended to this disease name.",
+    "ranking_note": "Presentation ranking should use ordinary clinical observations available at the tested stage: fever or hypothermia, chills, abrupt toxic appearance, skin/soft tissue or mucosal source signs, oral-maxillofacial inflammation, peripheral ischemic wound context, vital signs, CBC, CRP/PCT, lactate, renal/liver/coagulation injury, and observed complications. Blood culture species, susceptibility, emm typing, and final source adjudication are confirmatory/non-ranking unless a post-workup test explicitly includes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SPY_BARRIER_OR_MUCOSAL_INVASION",
+      "display_name": "Barrier or mucosal invasion by Streptococcus pyogenes",
+      "clinical_meaning": "GAS crosses skin, soft tissue, pharyngeal, oral, genital tract, surgical, traumatic, or ulcerated barriers and enters lymphatics or blood. The portal can be obvious, subtle, or initially occult.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-7, 1],
+      "peak_value_range": [0.25, 0.9],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN",
+      "display_name": "Viable GAS bloodstream burden",
+      "clinical_meaning": "Density and persistence of viable Streptococcus pyogenes in blood; drives blood culture positivity, abrupt systemic illness, and opportunities for deep or endovascular seeding.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.45, 0.98],
+      "plateau_duration_days": [0.5, 8],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE",
+      "display_name": "Innate inflammatory and acute-phase response",
+      "clinical_meaning": "Complement, neutrophil, monocyte, IL-1/TNF/IL-6, and acute-phase activation in response to invasive GAS; produces fever, rigors, tachycardia, CRP/PCT rise, leukocyte changes, and constitutional symptoms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.4, 0.95],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 6],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY",
+      "display_name": "Superantigen and exotoxin activity",
+      "clinical_meaning": "Streptococcal pyrogenic exotoxins and related virulence factors can amplify cytokine release, capillary leak, coagulopathy, tissue injury, and shock. Activity varies by strain and host context.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.05, 0.9],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION",
+      "display_name": "GAS sepsis-associated organ dysfunction",
+      "clinical_meaning": "Distributive shock, endothelial leak, hypoperfusion, mitochondrial dysfunction, AKI, ARDS, encephalopathy, hepatic injury, thrombocytopenia, and DIC-like coagulopathy from invasive GAS and host response.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION",
+      "display_name": "Local pyogenic tissue infection",
+      "clinical_meaning": "Cellulitis, erysipelas, oral-maxillofacial cellulitis, wound infection, infected ulcer, postpartum endometritis, septic arthritis, myositis, abscess, or necrotizing soft tissue infection can be the source of bacteremia or a concurrent focus.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-3, 7],
+      "peak_value_range": [0.1, 0.95],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_HEMATOGENOUS_SEEDING",
+      "display_name": "Hematogenous metastatic or endovascular seeding",
+      "clinical_meaning": "Persistent bloodstream infection can seed valves, prosthetic material, joints, bone, meninges, deep soft tissue, brain/subdural spaces, or other sterile sites.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [0.01, 0.75],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SPY_SOURCE_CONTROL_FAILURE",
+      "display_name": "Uncontrolled source or nidus",
+      "clinical_meaning": "Undrained abscess, necrotic tissue, infected ischemic ulcer, retained device, postpartum uterine focus, severe oral disease, or endovascular focus can continue to seed blood despite antimicrobial activity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.05, 0.9],
+      "plateau_duration_days": [2, 90],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY",
+      "display_name": "Inactive, delayed, or poorly delivered antimicrobial therapy",
+      "clinical_meaning": "Delay before active therapy, lack of toxin-suppressive adjunct when toxin physiology is dominant, allergy constraints, underdosing, poor tissue delivery to ischemic/necrotic foci, or rare non-susceptibility contexts can prolong viable burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.02, 0.8],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_SPY_BARRIER_OR_MUCOSAL_INVASION", "target_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Barrier invasion is the route into blood.", "confidence": "high"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Local tissue infection can seed bacteremia.", "confidence": "high"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "blood_culture_positivity_probability", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 0], "rationale": "Viable organisms in blood raise culture positivity; species identity remains confirmatory unless post-workup mode is tested.", "confidence": "high"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "spy_blood_culture_persistence_days", "effect_on_target": "up", "edge_type": "drift", "lag_days_range": [1, 7], "rationale": "Higher viable burden and uncontrolled source prolong positive cultures.", "confidence": "medium"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Bloodstream burden triggers systemic innate inflammation.", "confidence": "high"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "High invasive burden increases systemic toxin exposure when the strain expresses relevant virulence factors.", "confidence": "medium"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Pyrogenic cytokines cause fever; older or immunosuppressed hosts may be blunted.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Abrupt bacteremia commonly produces chills or rigors.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Fever, inflammation, hypovolemia, and shock raise heart rate.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "respiratory_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Fever, metabolic acidosis, hypoperfusion, or respiratory complications increase respiratory rate.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "malaise_fatigue_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Cytokines produce toxic appearance, malaise, prostration, and fatigue.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Systemic infection and toxin physiology can produce nausea and vomiting.", "confidence": "medium"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "diarrhea_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Systemic infection, toxin physiology, or antimicrobial exposure can produce diarrhea; it is not required for GAS bacteremia.", "confidence": "low"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Leukocytosis is common, though leukopenia can occur in severe GAS sepsis.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "absolute_neutrophil_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Neutrophilic response tracks invasive bacterial inflammation.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "CRP rises in invasive pyogenic infection.", "confidence": "high"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "serum_procalcitonin", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "PCT often rises in invasive bacterial sepsis.", "confidence": "medium"},
+    {"source_id": "M_SPY_INNATE_INFLAMMATORY_RESPONSE", "target_id": "serum_albumin", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [1, 7], "rationale": "Inflammation and capillary leak lower albumin.", "confidence": "medium"},
+    {"source_id": "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY", "target_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Toxin-amplified cytokine release drives shock and organ dysfunction.", "confidence": "high"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "High viable invasive burden can drive sepsis physiology even without toxin-dominant features.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "systolic_blood_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Distributive shock and capillary leak lower blood pressure.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "mean_arterial_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "GAS sepsis can cause hypotension and vasopressor requirement.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "oxygen_saturation", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "ARDS, pneumonia, pulmonary edema, or shock-related respiratory failure can lower oxygen saturation.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "altered_mental_status_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Sepsis, hypoperfusion, fever, and metabolic injury can cause confusion or lethargy.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_lactate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Hypoperfusion and mitochondrial dysfunction raise lactate.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_creatinine", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Sepsis-associated AKI raises creatinine.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "blood_urea_nitrogen", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Hypoperfusion, dehydration, AKI, and catabolic stress raise BUN.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_ast", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Shock liver, myositis, or systemic injury can raise AST.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_alt", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Shock liver or systemic injury can raise ALT.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "platelet_count", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Severe GAS sepsis can cause thrombocytopenia through DIC, endothelial injury, and critical illness.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "prothrombin_time_inr", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "DIC-like coagulopathy or hepatic injury can prolong INR.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "d_dimer", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "DIC and thrombosis/fibrinolysis raise D-dimer.", "confidence": "medium"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "peripheral_skin_soft_tissue_infection_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-2, 5], "rationale": "Skin or limb cellulitis, erysipelas, wound infection, or ulcer can be visible around presentation.", "confidence": "high"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "oral_maxillofacial_cellulitis_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-2, 5], "rationale": "Oral or maxillofacial source can produce face, eyelid, submandibular, or masticator-space cellulitis.", "confidence": "medium"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "periodontal_or_oral_mucosal_source_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-7, 7], "rationale": "Periodontal disease or oral mucosal injury can provide a portal for invasive GAS.", "confidence": "medium"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "pharyngitis_or_upper_respiratory_source_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-14, 3], "rationale": "Recent or active pharyngitis/URI can precede invasive GAS.", "confidence": "medium"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "postpartum_uterine_infection_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-1, 7], "rationale": "Postpartum endometritis or uterine infection is a recognized source context for invasive GAS.", "confidence": "high"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "limb_ischemia_or_necrotic_ulcer_activity", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [-14, 14], "rationale": "Ischemic ulcer or necrotic toe context lowers local defense and can seed bacteremia.", "confidence": "medium"},
+    {"source_id": "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION", "target_id": "necrotizing_soft_tissue_infection_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Some GAS tissue infections progress to necrotizing infection.", "confidence": "high"},
+    {"source_id": "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 2], "rationale": "Toxin-amplified cytokine release can cause shock.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "circulatory_collapse_shock_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 2], "rationale": "Hypotension, capillary leak, and high lactate raise shock hazard.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Hypoperfusion and inflammatory renal injury raise AKI hazard.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "ards_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Sepsis, pneumonia, capillary leak, or fluid resuscitation can precipitate ARDS.", "confidence": "medium"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "dic_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "GAS sepsis may produce DIC-like coagulopathy.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "purpura_fulminans_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Sepsis-associated coagulopathy can progress to purpura fulminans and ischemic tissue loss.", "confidence": "medium"},
+    {"source_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "target_id": "M_SPY_HEMATOGENOUS_SEEDING", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [1, 14], "rationale": "Persistent bacteremia creates metastatic and endovascular seeding risk.", "confidence": "medium"},
+    {"source_id": "M_SPY_HEMATOGENOUS_SEEDING", "target_id": "deep_metastatic_infection_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [2, 21], "rationale": "Bloodstream spread can seed sterile sites.", "confidence": "medium"},
+    {"source_id": "M_SPY_HEMATOGENOUS_SEEDING", "target_id": "endocarditis_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [3, 21], "rationale": "GAS endocarditis is rare but possible, especially with valve or device substrate.", "confidence": "medium"},
+    {"source_id": "M_SPY_SOURCE_CONTROL_FAILURE", "target_id": "spy_blood_culture_persistence_days", "effect_on_target": "up", "edge_type": "drift", "lag_days_range": [1, 7], "rationale": "Uncontrolled nidus prolongs bacteremia.", "confidence": "high"},
+    {"source_id": "M_SPY_SOURCE_CONTROL_FAILURE", "target_id": "source_control_need", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "Necrotic tissue, abscess, dental source, ischemic ulcer, or uterine source may require source control.", "confidence": "high"},
+    {"source_id": "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "M_SPY_VIABLE_BLOODSTREAM_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Inactive or delayed therapy prolongs viable burden.", "confidence": "high"},
+    {"source_id": "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "active_antibiotic_coverage_probability", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "When therapy is inactive or delayed, active coverage is low.", "confidence": "high"},
+    {"source_id": "M_SPY_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Shock and organ dysfunction are major lifespan hazards.", "confidence": "high"},
+    {"source_id": "M_SPY_SOURCE_CONTROL_FAILURE", "target_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 14], "rationale": "Uncontrolled nidus increases death risk.", "confidence": "high"},
+    {"source_id": "M_SPY_HEMATOGENOUS_SEEDING", "target_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [2, 21], "rationale": "Deep metastatic or endovascular complications increase mortality.", "confidence": "medium"},
+    {"source_id": "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY", "target_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Delayed active therapy worsens invasive GAS outcomes.", "confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that blood cultures are positive for a bacterial bloodstream infection. Organism species and susceptibility remain confirmatory unless testing post-workup evidence.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "spy_blood_culture_persistence_days", "category": "microbiology", "unit": "days", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Duration of persistent GAS-positive blood cultures under the disease context; ordinary species identity remains confirmatory.", "baseline_range": [0, 0], "peak_day_range": [1, 7], "peak_value_range": [0, 7], "plateau_duration_days": [0, 7], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Fever or hypothermia in invasive GAS bacteremia.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 2], "peak_value_range": [38.0, 41.0], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Chills, rigors, or abrupt shaking fever with bacteremia.", "baseline_range": [0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.5, 4], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachycardia from fever, inflammation, hypovolemia, or shock.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [95, 170], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Tachypnea from fever, acidosis, shock, or pulmonary complication.", "baseline_range": [12, 20], "peak_day_range": [0, 3], "peak_value_range": [20, 38], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; may fall with distributive shock.", "baseline_range": [105, 140], "peak_day_range": [0, 2], "peak_value_range": [65, 125], "plateau_duration_days": [0.2, 4], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "diastolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Diastolic pressure; may fall in vasodilatory shock.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [35, 75], "plateau_duration_days": [0.2, 4], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values mark shock physiology.", "baseline_range": [70, 100], "peak_day_range": [0, 2], "peak_value_range": [45, 85], "plateau_duration_days": [0.2, 4], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Oxygen saturation; can fall with ARDS, pneumonia, pulmonary edema, or shock.", "baseline_range": [95, 100], "peak_day_range": [0, 5], "peak_value_range": [75, 99], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "altered_mental_status_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Confusion, disorientation, lethargy, stupor, or encephalopathy during invasive GAS.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "malaise_fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Toxic appearance, weakness, lethargy, malaise, or prostration.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 6], "knowledge_confidence": "high"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Nausea or vomiting during systemic infection or toxin physiology.", "baseline_range": [0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "diarrhea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Diarrhea during invasive illness or antimicrobial exposure; not a defining feature of GAS bacteremia.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.6], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "low"},
+    {"axis_id": "peripheral_skin_soft_tissue_infection_activity", "category": "physical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed cellulitis, erysipelas, soft-tissue swelling, wound infection, tender erythema, or infected ulcer of an extremity/trunk/breast/skin site.", "baseline_range": [0, 0.03], "peak_day_range": [-2, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "oral_maxillofacial_cellulitis_activity", "category": "physical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Facial, eyelid, cheek, submandibular, masticator-space, or oral-maxillofacial cellulitis/swelling that may serve as source context.", "baseline_range": [0, 0.02], "peak_day_range": [-2, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "periodontal_or_oral_mucosal_source_activity", "category": "physical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Periodontal disease, oral mucosal scratch, denture trauma, dental extraction need, or other oral portal observed clinically.", "baseline_range": [0, 0.08], "peak_day_range": [-14, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "pharyngitis_or_upper_respiratory_source_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent or active sore throat, pharyngitis, tonsillitis, otitis, sinusitis, or upper respiratory portal context.", "baseline_range": [0, 0.08], "peak_day_range": [-14, 3], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "postpartum_uterine_infection_activity", "category": "physical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Postpartum fever, abdominal/pelvic pain, abnormal bleeding, uterine tenderness/enlargement, endometritis, or necrotic uterine source context.", "baseline_range": [0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "limb_ischemia_or_necrotic_ulcer_activity", "category": "physical", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ischemic limb, necrotic toe, diabetic/vascular ulcer, cold foot, or poor-perfusion wound that can serve as portal and source-control problem.", "baseline_range": [0, 0.03], "peak_day_range": [-30, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "localized_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pain localized to infected soft tissue, wound, limb, oral-maxillofacial site, joint, abdomen/pelvis, or deep seeded focus.", "baseline_range": [0, 0.05], "peak_day_range": [-2, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "WBC count; GAS bacteremia often raises WBC but severe sepsis or immunosuppression can blunt or lower it.", "baseline_range": [4, 10], "peak_day_range": [0, 3], "peak_value_range": [1.0, 35.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Absolute neutrophil count in invasive bacterial inflammation.", "baseline_range": [2, 7], "peak_day_range": [0, 3], "peak_value_range": [0.5, 30.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Neutrophil fraction; often elevated with invasive bacterial infection.", "baseline_range": [40, 75], "peak_day_range": [0, 3], "peak_value_range": [70, 95], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelet count; thrombocytopenia marks severe GAS sepsis, DIC, TSS-like physiology, or marrow disease context.", "baseline_range": [150, 350], "peak_day_range": [0, 5], "peak_value_range": [20, 300], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin; anemia is not defining but is common with chronic disease, critical illness, bleeding, or host comorbidity.", "baseline_range": [12, 17], "peak_day_range": [0, 10], "peak_value_range": [6, 15], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein in invasive pyogenic infection.", "baseline_range": [0.2, 5.0], "peak_day_range": [0, 4], "peak_value_range": [30, 350], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin in invasive bacterial sepsis.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.5, 80], "plateau_duration_days": [0.5, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Albumin falls with inflammation, capillary leak, poor nutrition, or chronic disease.", "baseline_range": [3.5, 5.0], "peak_day_range": [1, 10], "peak_value_range": [1.5, 3.5], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Lactate rises with hypoperfusion and severe sepsis.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [2.0, 12.0], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.3, 2], "knowledge_confidence": "high"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Creatinine rises with AKI, shock, CKD, or nephrotoxic context.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 5], "peak_value_range": [0.8, 5.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "BUN rises with dehydration, hypoperfusion, catabolism, CKD, or AKI.", "baseline_range": [7, 20], "peak_day_range": [0, 5], "peak_value_range": [15, 90], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST can rise with shock liver, myositis, rhabdomyolysis, or systemic injury.", "baseline_range": [10, 40], "peak_day_range": [0, 5], "peak_value_range": [40, 1000], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT can rise with shock liver or systemic injury.", "baseline_range": [7, 45], "peak_day_range": [0, 5], "peak_value_range": [40, 800], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "PT/INR rises with DIC-like coagulopathy, liver dysfunction, anticoagulation, or severe sepsis.", "baseline_range": [0.9, 1.2], "peak_day_range": [0, 5], "peak_value_range": [1.0, 5.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug_mL_FEU", "log_scale": true, "axis_role": "measurement", "shape_free_text": "D-dimer rises with DIC, sepsis-associated coagulopathy, thrombosis, or tissue injury.", "baseline_range": [0.0, 0.5], "peak_day_range": [0, 5], "peak_value_range": [1.0, 40.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "circulatory_collapse_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of hypotensive shock, vasopressor requirement, or circulatory collapse.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 5], "peak_value_range": [0.005, 0.35], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of AKI from shock, DIC, nephrotoxins, or severe infection.", "baseline_range": [0.0001, 0.002], "peak_day_range": [0, 7], "peak_value_range": [0.003, 0.15], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "high"},
+    {"axis_id": "ards_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of ARDS or severe hypoxic respiratory failure in invasive GAS sepsis.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of overt DIC or severe sepsis-associated coagulopathy.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 5], "peak_value_range": [0.002, 0.18], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "purpura_fulminans_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of purpura fulminans, acral ischemia, gangrene, or thrombotic skin necrosis from severe GAS sepsis-associated coagulopathy.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 5], "peak_value_range": [0.0005, 0.08], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "necrotizing_soft_tissue_infection_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard that local GAS soft tissue infection progresses to necrotizing fasciitis, myositis, or myonecrosis. This is a complication/event axis, not the disease name.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 5], "peak_value_range": [0.001, 0.18], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "deep_metastatic_infection_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of septic arthritis, osteomyelitis, meningitis, subdural empyema, deep abscess, or other metastatic seeded focus.", "baseline_range": [0.0001, 0.001], "peak_day_range": [2, 21], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [7, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "endocarditis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of GAS infective endocarditis; rare but relevant with valve/device substrate or persistent bacteremia.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [3, 21], "peak_value_range": [0.0005, 0.03], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that current antimicrobial regimen is active against the bloodstream isolate and reaches relevant tissues.", "baseline_range": [0.0, 1.0], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "penicillin_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that GAS isolate is susceptible to penicillin or narrow beta-lactam therapy; usually high, but should be evidence-driven if susceptibility is available.", "baseline_range": [0.9, 1.0], "peak_day_range": [-365, 0], "peak_value_range": [0.9, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "clindamycin_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that isolate is susceptible to clindamycin for toxin-suppressive adjunctive use; inducible or constitutive resistance can limit effect.", "baseline_range": [0.65, 0.95], "peak_day_range": [-365, 0], "peak_value_range": [0.65, 0.95], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "History of severe immediate beta-lactam reaction or severe delayed reaction constraining beta-lactam therapy.", "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need for drainage, debridement, extraction, removal of infected material, hysterectomy/washout, amputation, or other source control.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Adequacy of source control after drainage, debridement, extraction, removal, or surgical management.", "baseline_range": [0.0, 1.0], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "intravenous_immunoglobulin_availability_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Availability and feasibility of IVIG when toxin-mediated shock physiology is dominant.", "baseline_range": [0.0, 1.0], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard driven by shock, toxin physiology, AKI, ARDS, DIC, necrotizing soft tissue infection, metastatic/endovascular seeding, delayed active therapy, source-control failure, age, and host comorbidity.", "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 21], "peak_value_range": [0.002, 0.25], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 0], "clinical_rationale": "Fever and tachycardia co-move through cytokine and sympathetic tone.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "white_blood_cell_count", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Both often track inflammatory burden, but WBC can be blunted or low in severe sepsis.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "serum_lactate", "relationship": "inverse_drift", "coupling_type": "drift", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 1], "clinical_rationale": "Hypotension and hypoperfusion raise lactate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_lactate", "target_axis_id": "circulatory_collapse_shock_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 1], "clinical_rationale": "Elevated lactate marks shock severity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "platelet_count", "target_axis_id": "dic_hazard", "relationship": "inverse_hazard_drift", "coupling_type": "hazard_drift", "effect_direction": "source_down_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "Falling platelets support DIC-like coagulopathy.", "knowledge_confidence": "high"},
+    {"source_axis_id": "d_dimer", "target_axis_id": "dic_hazard", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 2], "clinical_rationale": "High D-dimer with thrombocytopenia and prolonged INR raises DIC hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "active_antibiotic_coverage_probability", "target_axis_id": "spy_blood_culture_persistence_days", "relationship": "inverse_drift", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [1, 5], "clinical_rationale": "Active therapy shortens bacteremia when source control is adequate.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "spy_blood_culture_persistence_days", "relationship": "inverse_drift", "coupling_type": "drift", "effect_direction": "source_up_decreases_target", "lag_days_range": [1, 7], "clinical_rationale": "Adequate source control reduces ongoing bloodstream seeding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_need", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 14], "clinical_rationale": "Undrained, necrotic, oral, postpartum, or ischemic sources increase death risk if uncontrolled.", "knowledge_confidence": "high"},
+    {"source_axis_id": "circulatory_collapse_shock_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 3], "clinical_rationale": "Shock is a major lifespan hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "AKI raises treatment complexity and mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "ards_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "Severe respiratory failure increases mortality.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "DIC raises bleeding, ischemic, and multiorgan failure risks.", "knowledge_confidence": "high"},
+    {"source_axis_id": "necrotizing_soft_tissue_infection_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [0, 7], "clinical_rationale": "Necrotizing infection increases mortality through source-control failure and toxin physiology.", "knowledge_confidence": "high"},
+    {"source_axis_id": "deep_metastatic_infection_hazard", "target_axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "relationship": "source_leads_target", "coupling_type": "hazard_drift", "effect_direction": "source_up_increases_target", "lag_days_range": [2, 21], "clinical_rationale": "Metastatic seeded foci increase morbidity and mortality.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "penicillin_g_iv",
+      "drug_class": "narrow_beta_lactam",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive_when_susceptible",
+      "required_context_axes": ["penicillin_susceptibility_probability", "severe_beta_lactam_reaction_history_activity", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "penicillin_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.85, 1.2], "clinical_rationale": "Beta-lactam effect depends on isolate susceptibility."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0.0, 0.4], "clinical_rationale": "Severe beta-lactam reaction may preclude penicillin."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.5, 1.2], "clinical_rationale": "Necrotic or undrained foci may not clear with antimicrobial therapy alone."}
+      ],
+      "failure_modes": ["severe beta-lactam allergy", "delayed initiation", "poor delivery into necrotic or ischemic tissue", "uncontrolled source"],
+      "trajectory_modifications": {
+        "M_SPY_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.15, 0.45], "plateau_duration_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 2.5]},
+        "M_SPY_INNATE_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.35, 0.75], "decline_half_life_days": [1, 4]},
+        "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.1, 0.4], "decline_half_life_days": [0.5, 2]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "Allergic reaction context can limit therapy."}
+      ],
+      "context_specific_role": "Pathogen-directed bactericidal therapy when susceptibility and allergy context allow.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "ceftriaxone_or_cefotaxime_iv",
+      "drug_class": "third_generation_cephalosporin",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.1], "clinical_rationale": "Effect requires active coverage and adequate exposure."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0.0, 0.5], "clinical_rationale": "Severe beta-lactam reaction may preclude cephalosporin use."}
+      ],
+      "failure_modes": ["allergy constraint", "delayed de-escalation decisions due to missing cultures", "uncontrolled source"],
+      "trajectory_modifications": {
+        "M_SPY_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.2, 0.55], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [0.5, 3]},
+        "M_SPY_INNATE_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.4, 0.8], "decline_half_life_days": [1, 5]},
+        "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.2, 0.6], "decline_half_life_days": [0.5, 3]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 120], "interpretation": "Cephalosporins can raise transaminases or cholestatic markers."}
+      ],
+      "context_specific_role": "Broad beta-lactam option while bloodstream isolate and source context are being clarified, and a definitive option if susceptible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "clindamycin_adjunct",
+      "drug_class": "protein_synthesis_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "adjunct_for_toxin_or_deep_tissue_context",
+      "required_context_axes": ["clindamycin_susceptibility_probability", "circulatory_collapse_shock_hazard", "necrotizing_soft_tissue_infection_hazard", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "clindamycin_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.2], "clinical_rationale": "Toxin-suppressive effect depends on susceptibility and achievable exposure."},
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Toxin physiology increases value of protein-synthesis inhibition as adjunct."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "weakens", "factor_range": [0.2, 0.7], "clinical_rationale": "Adjunctive clindamycin should not replace bactericidal active therapy for bacteremia."}
+      ],
+      "failure_modes": ["clindamycin resistance", "monotherapy for high-burden bacteremia", "C. difficile or GI toxicity", "late use after toxin physiology established"],
+      "trajectory_modifications": {
+        "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY": {"peak_value_factor": [0.25, 0.65], "decline_half_life_days": [0.5, 3]},
+        "M_SPY_SEPTIC_ORGAN_DYSFUNCTION": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [1, 5]},
+        "M_SPY_INNATE_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "diarrhea_activity", "direction": "up", "magnitude_range": [0, 0.5], "interpretation": "Antibiotic-associated diarrhea and C. difficile risk."}
+      ],
+      "context_specific_role": "Adjunct to bactericidal therapy when toxin-mediated shock, necrotizing tissue infection, or severe invasive GAS physiology is present or strongly suspected.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "linezolid_adjunct_or_alternative",
+      "drug_class": "oxazolidinone",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "clindamycin_susceptibility_probability", "platelet_count"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.1], "clinical_rationale": "Linezolid must be active and should be paired appropriately in severe bacteremia contexts."},
+        {"axis_id": "clindamycin_susceptibility_probability", "condition": "low", "effect": "strengthens_relative_role", "factor_range": [1.0, 1.3], "clinical_rationale": "Linezolid can be considered when clindamycin resistance or intolerance limits toxin-suppressive adjunct."},
+        {"axis_id": "platelet_count", "condition": "low", "effect": "changes_toxicity", "factor_range": [0.7, 1.0], "clinical_rationale": "Thrombocytopenia increases monitoring burden during linezolid therapy."}
+      ],
+      "failure_modes": ["marrow suppression during prolonged therapy", "serotonergic interaction", "use without adequate bactericidal/source-control plan in high-burden disease"],
+      "trajectory_modifications": {
+        "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY": {"peak_value_factor": [0.3, 0.75], "decline_half_life_days": [0.5, 4]},
+        "M_SPY_INNATE_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "platelet_count", "direction": "down", "magnitude_range": [0, 80], "interpretation": "Linezolid-associated thrombocytopenia risk, especially with longer courses."}
+      ],
+      "context_specific_role": "Protein-synthesis-inhibiting option when clindamycin is unavailable, resistant, or not tolerated; not a semantic replacement for source control.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "broad_empiric_sepsis_coverage",
+      "drug_class": "broad_spectrum_empiric_antimicrobial_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "empiric_until_source_and_cultures_clarify",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "source_control_need", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.1], "clinical_rationale": "Empiric regimen helps only if it covers the true bloodstream pathogen."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.5, 1.2], "clinical_rationale": "Antibiotics alone may fail in necrotic, oral, abscess, uterine, device, or ischemic sources."}
+      ],
+      "failure_modes": ["coverage gap", "delayed narrowing after confirmatory results", "toxicity or allergy constraints", "uncontrolled source"],
+      "trajectory_modifications": {
+        "M_SPY_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [0.5, 4]},
+        "M_SPY_ANTIMICROBIAL_INACTIVITY_OR_DELAY": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [0.5, 4]}
+      },
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.1, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 1.5], "interpretation": "Renal toxicity risk depends on selected agents and host context."}
+      ],
+      "context_specific_role": "Initial coverage for unstable sepsis before organism, source, and susceptibility context are confirmed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "surgical_or_procedural_source_control",
+      "drug_class": "source_control_intervention",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "necrotizing_soft_tissue_infection_hazard", "oral_maxillofacial_cellulitis_activity", "limb_ischemia_or_necrotic_ulcer_activity", "postpartum_uterine_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Benefit is largest when an uncontrolled nidus exists."},
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.2], "clinical_rationale": "Incomplete debridement, drainage, extraction, or removal leaves ongoing seeding."}
+      ],
+      "failure_modes": ["no drainable or controllable focus", "delayed intervention in necrotizing or ischemic tissue", "procedural risk in shock", "incomplete removal of infected nidus"],
+      "trajectory_modifications": {
+        "M_SPY_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.1, 0.45], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [0.5, 5]},
+        "M_SPY_VIABLE_BLOODSTREAM_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 4]},
+        "M_SPY_LOCAL_PYOGENIC_TISSUE_INFECTION": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0.1, 2.0],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [
+        {"axis_id": "hemoglobin", "direction": "down", "magnitude_range": [0, 2.0], "interpretation": "Procedural bleeding risk depends on coagulopathy and operative extent."}
+      ],
+      "context_specific_role": "Drainage, debridement, oral extraction, uterine source control, device removal, vascular/limb intervention, or other procedure when observed source context requires it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_immunoglobulin",
+      "drug_class": "immune_modulating_antitoxin_support",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "selected_toxin_mediated_severe_disease",
+      "required_context_axes": ["intravenous_immunoglobulin_availability_activity", "circulatory_collapse_shock_hazard", "necrotizing_soft_tissue_infection_hazard", "dic_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "intravenous_immunoglobulin_availability_activity", "condition": "present", "effect": "required_for_effect", "factor_range": [0.7, 1.1], "clinical_rationale": "IVIG can only influence the vector field when available and delivered."},
+        {"axis_id": "circulatory_collapse_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Toxin-mediated shock context increases possible benefit."}
+      ],
+      "failure_modes": ["uncertain benefit in non-toxin-dominant disease", "delayed use", "volume or thrombosis risk", "lack of source control or active antibiotics"],
+      "trajectory_modifications": {
+        "M_SPY_SUPERANTIGEN_TOXIN_ACTIVITY": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_SPY_SEPTIC_ORGAN_DYSFUNCTION": {"peak_value_factor": [0.65, 0.95], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.5, 2.0],
+      "carryover_after_stop_days": [2, 14],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Infusion volume and osmotic load may worsen oxygenation in renal/cardiac dysfunction."}
+      ],
+      "context_specific_role": "Adjunctive antitoxin immune support for severe toxin-mediated shock physiology; should not replace active antimicrobials or source control.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "advanced_age",
+      "modulation": {
+        "host_vulnerability": {
+          "P_disease_ratio": [1.1, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.0], "clinical_rationale": "Older age increases invasive infection mortality."},
+            {"axis_id": "body_temperature", "effect": "blunted_or_variable", "magnitude_factor_range": [0.7, 1.1], "clinical_rationale": "Fever response may be lower in older adults."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "modulation": {
+        "comorbidity": {
+          "P_disease_ratio": [1.1, 2.2],
+          "axis_response_modulation": [
+            {"axis_id": "peripheral_skin_soft_tissue_infection_activity", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.1, 1.6], "clinical_rationale": "Diabetes increases skin/soft tissue and ulcer infection risk."},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.1, 1.8], "clinical_rationale": "Diabetes increases AKI vulnerability in sepsis."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "peripheral_vascular_disease_or_ischemic_ulcer",
+      "modulation": {
+        "comorbidity": {
+          "P_disease_ratio": [1.2, 2.8],
+          "axis_response_modulation": [
+            {"axis_id": "limb_ischemia_or_necrotic_ulcer_activity", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.4, 2.5], "clinical_rationale": "Ischemic ulcers provide a portal and source-control problem."},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.0], "clinical_rationale": "Ischemic tissue may require procedural management or remains a nidus."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "skin_barrier_disruption_or_trauma",
+      "modulation": {
+        "exposure_context": {
+          "P_disease_ratio": [1.2, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "peripheral_skin_soft_tissue_infection_activity", "effect": "higher_peak", "magnitude_factor_range": [1.1, 1.8], "clinical_rationale": "Skin break, abrasion, wound, or trauma can be a portal."},
+            {"axis_id": "necrotizing_soft_tissue_infection_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.1, 1.8], "clinical_rationale": "Traumatized tissue can be a locus for invasive GAS tissue disease."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "periodontal_or_oral_mucosal_disease",
+      "modulation": {
+        "source_context": {
+          "P_disease_ratio": [1.1, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "periodontal_or_oral_mucosal_source_activity", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.2, 2.0], "clinical_rationale": "Oral mucosal disease can act as a portal for systemic infection."},
+            {"axis_id": "oral_maxillofacial_cellulitis_activity", "effect": "higher_peak", "magnitude_factor_range": [1.1, 1.8], "clinical_rationale": "Oral or sinus source may manifest as maxillofacial cellulitis."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "myelodysplastic_syndrome_or_malignancy",
+      "modulation": {
+        "immunosuppression": {
+          "P_disease_ratio": [1.1, 2.2],
+          "axis_response_modulation": [
+            {"axis_id": "white_blood_cell_count", "effect": "blunted_or_variable", "magnitude_factor_range": [0.5, 1.4], "clinical_rationale": "Marrow disease can distort WBC response."},
+            {"axis_id": "platelet_count", "effect": "lower_baseline_or_peak", "magnitude_factor_range": [0.3, 0.9], "clinical_rationale": "MDS can lower platelet baseline before sepsis."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "postpartum_state",
+      "modulation": {
+        "source_context": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "postpartum_uterine_infection_activity", "effect": "higher_peak", "magnitude_factor_range": [1.3, 2.5], "clinical_rationale": "Early postpartum state is a high-risk mucosal source context for GAS."},
+            {"axis_id": "circulatory_collapse_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2.0], "clinical_rationale": "Pregnancy-associated invasive GAS can deteriorate rapidly."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "recent_pharyngitis_or_household_gas_exposure",
+      "modulation": {
+        "exposure_context": {
+          "P_disease_ratio": [1.1, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "pharyngitis_or_upper_respiratory_source_activity", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2.0], "clinical_rationale": "Recent GAS throat exposure or pharyngitis can precede invasive disease."}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "delayed_active_antibiotics_or_source_control",
+      "modulation": {
+        "treatment_context": {
+          "P_disease_ratio": [1.0, 1.3],
+          "axis_response_modulation": [
+            {"axis_id": "spy_blood_culture_persistence_days", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.2, 2.5], "clinical_rationale": "Delay prolongs bacteremia and inflammatory exposure."},
+            {"axis_id": "mortality_hazard_in_D-STREP-PYOGENES-BACTEREMIA", "effect": "higher_peak", "magnitude_factor_range": [1.2, 2.0], "clinical_rationale": "Delayed control worsens severe invasive GAS outcomes."}
+          ]
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    "Serial vital signs, mental status, urine output, CBC with differential, platelets, CRP/PCT when available, lactate, creatinine/BUN, electrolytes, AST/ALT, bilirubin, PT/INR, fibrinogen, and D-dimer when severe sepsis or coagulopathy is suspected.",
+    "Obtain blood cultures and source cultures before antibiotics when feasible, but do not delay antimicrobial therapy in unstable patients.",
+    "Hemodynamic resuscitation with balanced fluids, vasopressors, lactate-guided reassessment, and ICU monitoring when shock physiology is present.",
+    "Early source evaluation: skin/soft tissue exam, oral/dental/maxillofacial exam when plausible, postpartum pelvic/uterine assessment, wound/ulcer assessment, imaging for abscess/necrotizing infection, and echocardiography or deep-focus imaging when persistent bacteremia or focal signs occur.",
+    "Respiratory support from oxygen through mechanical ventilation for ARDS, pneumonia, pulmonary edema, or shock-related respiratory failure.",
+    "Renal support and dose adjustment for AKI or CKD; monitor nephrotoxic antimicrobial combinations.",
+    "DIC/coagulopathy management with platelet, plasma, fibrinogen/cryoprecipitate, anticoagulation, or surgical timing decisions according to bleeding/thrombosis context.",
+    "Infection-control and contact evaluation according to local invasive GAS guidance, especially postpartum, neonatal, household, or institutional clusters."
+  ]
+}
