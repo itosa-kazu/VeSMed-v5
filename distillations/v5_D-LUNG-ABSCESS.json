@@ -1,0 +1,1772 @@
+{
+  "disease": "D-LUNG-ABSCESS",
+  "disease_name": "Lung abscess",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "leaf_granularity": "first_layer_disease_leaf",
+    "manifold_definition": "Localized necrotizing infection of lung parenchyma forming a pus-filled cavity, usually with surrounding pneumonia and often an air-fluid level when the cavity communicates with an airway.",
+    "disease_name_scope": "Disease prompt medical input is only Lung abscess. Etiology, source, chronicity, microbiology, severity, drainage need, and mimic context are represented as mechanisms, axes, risk factors, treatment modifiers, or event hazards rather than disease-name qualifiers.",
+    "near_neighbor_mimics": [
+      "bacterial pneumonia",
+      "pleural empyema",
+      "tuberculosis",
+      "cavitating lung cancer",
+      "septic pulmonary emboli and endocarditis",
+      "pulmonary embolism with infarct/cavitation",
+      "sepsis with pulmonary source"
+    ]
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_LA_OROPHARYNGEAL_OR_AIRWAY_INOCULATION",
+      "display_name": "Oropharyngeal or airway inoculation",
+      "clinical_meaning": "Aspiration of oral anaerobes, microaerophilic streptococci, mixed upper-airway flora, or infected secretions into dependent or obstructed lung segments.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-14, 1],
+      "peak_value_range": [0.25, 0.95],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "display_name": "Polymicrobial parenchymal infection",
+      "clinical_meaning": "Mixed anaerobic, facultative, microaerophilic streptococcal, staphylococcal, gram-negative, mycobacterial, fungal, or secondary-source infection expands within consolidated lung parenchyma.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [3, 45],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "display_name": "Necrotizing liquefaction and cavity formation",
+      "clinical_meaning": "Neutrophil-rich proteolysis, tissue ischemia, bacterial toxins, and impaired clearance liquefy infected lung, creating a thick-walled pus cavity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 28],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "display_name": "Bronchial communication and internal drainage",
+      "clinical_meaning": "Communication between the abscess cavity and bronchial tree permits air entry, air-fluid level formation, cough, copious or putrid sputum, and potential aspiration of abscess contents.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [3, 120],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE",
+      "display_name": "Secondary obstruction or non-aspiration source pressure",
+      "clinical_meaning": "Endobronchial tumor, foreign body, bronchiectasis, infected infarct, septic embolus, contiguous subdiaphragmatic infection, or structural lung disease can create or maintain an abscess and increase nonresolution risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-60, 14],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "display_name": "Pleural extension and empyema pressure",
+      "clinical_meaning": "Peripheral abscess, necrotizing pneumonia, or rupture can extend across visceral pleura, causing complicated parapneumonic effusion, empyema, bronchopleural fistula, or chest-wall extension.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "display_name": "Systemic inflammatory and septic spillover",
+      "clinical_meaning": "Local necrotizing infection can drive fever, acute-phase response, leukocytosis, bacteremia, hypotension, lactate rise, AKI, and septic shock.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.15, 0.95],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "display_name": "Gas-exchange failure from consolidation, cavity burden, or spillover",
+      "clinical_meaning": "Surrounding pneumonia, shunt, airway pus burden, atelectasis, empyema, and aspiration of abscess contents impair oxygenation and can require ventilatory support.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_LA_OROPHARYNGEAL_OR_AIRWAY_INOCULATION",
+      "target_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Inoculated flora proliferate in dependent or poorly cleared lung.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "target_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [2, 21],
+      "clinical_rationale": "Persistent bacterial burden and neutrophilic destruction liquefy consolidated parenchyma.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Cavities often drain through bronchi and develop an air-fluid interface.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE",
+      "target_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Obstruction, embolic seeding, bronchiectasis, or contiguous source sustains infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE",
+      "target_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 45],
+      "clinical_rationale": "Poor drainage or infarcted tissue favors cavity persistence and enlargement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 21],
+      "clinical_rationale": "Peripheral necrotic cavities can involve pleura or rupture.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "target_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "High infectious burden generates systemic inflammatory response and bacteremia risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "target_id": "pneumonia_infiltrate_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Abscess usually sits within or near pneumonic consolidation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION",
+      "target_id": "pulmonary_consolidation_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Inflammatory airspace filling produces consolidation around the cavity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "cavitary_pulmonary_lesion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "The visible cavity is the imaging expression of liquefactive necrosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "lung_abscess_presence_in_D-LUNG-ABSCESS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "A pus-filled parenchymal cavity defines the disease manifold.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "target_id": "pulmonary_air_fluid_level_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Air entering a pus cavity creates a radiographic air-fluid level.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "lung_abscess_largest_diameter_cm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "More extensive liquefaction creates a larger cavity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "lung_abscess_wall_thickness_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Chronic inflammatory rim and granulation tissue make a thick cavity wall.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "target_id": "cough_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Bronchial irritation and drainage trigger cough.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "target_id": "purulent_sputum_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Draining pus produces purulent or copious sputum.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE",
+      "target_id": "putrid_sputum_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Anaerobic mixed infection can produce foul-smelling sputum.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Cytokine activity commonly causes fever, though afebrile presentations occur.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Active infection raises measured temperature when fever response is intact.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "night_sweats_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [7, 60],
+      "clinical_rationale": "Subacute abscess may present like chronic infection with sweats.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "weight_loss_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [7, 90],
+      "clinical_rationale": "Prolonged infection causes anorexia, catabolism, and weight loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 5],
+      "clinical_rationale": "Bacterial abscess usually produces leukocytosis, sometimes very high in severe infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 5],
+      "clinical_rationale": "Neutrophil-predominant response is common in pyogenic abscess.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 5],
+      "clinical_rationale": "IL-6 acute-phase signaling raises CRP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "erythrocyte_sedimentation_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [2, 14],
+      "clinical_rationale": "Subacute inflammation raises ESR.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Consolidation, cavity burden, and pleural disease produce dyspnea.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Hypoxemia and increased work of breathing raise respiratory rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Shunt and V/Q mismatch lower oxygen saturation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "oxygen_requirement_level",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "More severe gas-exchange failure requires supplemental oxygen or ventilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "target_id": "pleuritic_chest_pain_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Pleural irritation causes pain with inspiration or cough.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "target_id": "pleural_effusion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Parapneumonic pleural reaction or empyema creates effusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "target_id": "empyema_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Pleural extension can transition to empyema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "hemoptysis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Cavity wall inflammation or vascular erosion can cause hemoptysis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "major_hemoptysis_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 45],
+      "clinical_rationale": "Large or invasive cavities can erode vessels.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "target_id": "bronchopleural_fistula_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [1, 45],
+      "clinical_rationale": "Necrotic peripheral cavities can communicate with pleural space.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "acute_respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Severe consolidation, pus burden, or empyema can cause respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "need_for_mechanical_ventilation_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Failure of oxygenation or airway clearance may require ventilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "circulatory_collapse_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Septic physiology can progress to shock.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Sepsis, hypoxemia, and nephrotoxic exposure can produce AKI.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY",
+      "target_id": "source_control_need",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Large, persistent, or poorly draining cavities often need catheter, bronchoscopic, pleural, or surgical source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE",
+      "target_id": "bronchial_obstruction_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [-60, 30],
+      "clinical_rationale": "Tumor, foreign body, or stenosis may obstruct drainage and mimic cancer.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Sepsis and shock are major fatal pathways.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE",
+      "target_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Respiratory failure increases near-term death risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA",
+      "target_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [3, 30],
+      "clinical_rationale": "Empyema, fistula, and uncontrolled pleural sepsis prolong infection and raise mortality.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "lung_abscess_presence_in_D-LUNG-ABSCESS",
+      "axis_name": "Lung abscess presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 28],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Parenchymal pus cavity compatible with lung abscess on CT, radiograph, drainage, bronchoscopy, or pathology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cavitary_pulmonary_lesion_presence",
+      "axis_name": "Cavitary pulmonary lesion presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 28],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 90],
+      "clinical_interpretation": "Cavitation supports abscess but overlaps with TB, fungal disease, necrotizing pneumonia, cancer, infarct, and septic emboli.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_air_fluid_level_presence",
+      "axis_name": "Pulmonary cavity air-fluid level presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "cavitary_pulmonary_lesion_presence",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 35],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Air-fluid level is a strong abscess clue when a cavity communicates with an airway, but absence does not exclude abscess.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lung_abscess_largest_diameter_cm",
+      "axis_name": "Largest lung abscess diameter",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "lung_abscess_presence_in_D-LUNG-ABSCESS",
+      "unit": "cm",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [2.0, 14.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 90],
+      "clinical_interpretation": "Largest cavity dimension; large cavities are more likely to need drainage and take longer to resolve.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lung_abscess_wall_thickness_activity",
+      "axis_name": "Thick abscess wall activity",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "lung_abscess_presence_in_D-LUNG-ABSCESS",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [7, 60],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [14, 120],
+      "clinical_interpretation": "Smooth enhancing thick wall supports abscess but can overlap with cavitating cancer or TB.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "lung_abscess_multiloculated_activity",
+      "axis_name": "Multiloculated or complex lung abscess activity",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "lung_abscess_presence_in_D-LUNG-ABSCESS",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 90],
+      "clinical_interpretation": "Internal septation, complex loculation, or multiple communicating cavity components.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pneumonia_infiltrate_extent",
+      "axis_name": "Pulmonary infiltrate extent",
+      "category": "imaging_finding",
+      "axis_role": "measurement",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 45],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Surrounding pneumonic infiltrate often accompanies the abscess cavity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_consolidation_activity",
+      "axis_name": "Pulmonary consolidation activity",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 45],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Lobar, segmental, or pericavitary consolidation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tree_in_bud_opacity_extent",
+      "axis_name": "Tree-in-bud opacity extent",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Airway-centered infection, aspiration, TB, or nontuberculous mycobacterial disease can produce this pattern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bronchial_obstruction_activity",
+      "axis_name": "Bronchial obstruction activity",
+      "category": "imaging_or_procedure_finding",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-60, 30],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [14, 365],
+      "clinical_interpretation": "Tumor, foreign body, stricture, mucus plug, or extrinsic compression can obstruct drainage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "source_control_need",
+      "axis_name": "Source control need",
+      "category": "treatment_modifier",
+      "axis_role": "finding",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [1, 60],
+      "clinical_interpretation": "Need for drainage, bronchoscopy, pleural intervention, or surgery based on cavity size, persistence, airway/pleural communication, and clinical failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abscess_drainage_accessibility",
+      "axis_name": "Abscess drainage accessibility",
+      "category": "treatment_modifier",
+      "axis_role": "satellite",
+      "parent_axis_id": "source_control_need",
+      "unit": "probability_0_1",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-1, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [1, 60],
+      "clinical_interpretation": "Whether CT-guided, bronchoscopic, pleural, or surgical access can safely drain the cavity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cough_activity",
+      "axis_name": "Cough activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Cough may be productive, absent early, or blunted in severe respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "purulent_sputum_activity",
+      "axis_name": "Purulent sputum activity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "cough_activity",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Purulent or copious sputum supports draining airway infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "putrid_sputum_activity",
+      "axis_name": "Putrid sputum activity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "purulent_sputum_activity",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Foul-smelling sputum suggests anaerobic burden but is not required.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "axis_name": "Dyspnea activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [2, 45],
+      "clinical_interpretation": "Breathlessness from pneumonia burden, hypoxemia, pleural disease, or sepsis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "chest_pain_activity",
+      "axis_name": "Chest pain activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [2, 60],
+      "clinical_interpretation": "Chest pain may reflect pleural irritation, peripheral cavity, musculoskeletal strain, or contiguous spread.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pleuritic_chest_pain_activity",
+      "axis_name": "Pleuritic chest pain activity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "chest_pain_activity",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [2, 60],
+      "clinical_interpretation": "Pain worsened by inspiration or cough supports pleural involvement but overlaps with PE, pneumonia, and empyema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoptysis_activity",
+      "axis_name": "Hemoptysis activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 45],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Hemoptysis can occur but also raises TB, cancer, PE/infarct, aspergillosis, or vascular complication concern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "axis_name": "Fever history activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [2, 30],
+      "clinical_interpretation": "Fever is common but can be absent in localized, elderly, immunosuppressed, or late presentations.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "body_temperature",
+      "axis_name": "Body temperature",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "degC",
+      "baseline_range": [36.1, 37.2],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [36.5, 40.2],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Measured temperature at presentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "night_sweats_activity",
+      "axis_name": "Night sweats activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [7, 90],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Subacute infection symptom; also important TB, lymphoma, and cancer mimic evidence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "weight_loss_activity",
+      "axis_name": "Weight loss activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [7, 120],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 120],
+      "clinical_interpretation": "Chronic inflammatory weight loss overlaps strongly with TB and malignancy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "axis_name": "Fatigue activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Generalized weakness, malaise, or fatigue from infection and catabolism.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "axis_name": "Heart rate",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "beats_per_min",
+      "baseline_range": [55, 100],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [80, 145],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Tachycardia from fever, hypoxemia, pain, or sepsis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "axis_name": "Respiratory rate",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "breaths_per_min",
+      "baseline_range": [12, 20],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [18, 40],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Tachypnea from hypoxemia, metabolic acidosis, or sepsis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "axis_name": "Mean arterial pressure",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [70, 105],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [45, 105],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Can be preserved in localized abscess or fall with septic shock.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "axis_name": "Oxygen saturation",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "%",
+      "baseline_range": [95, 100],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [70, 98],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "May be normal in localized abscess or severely low with extensive pneumonia, empyema, or respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oxygen_requirement_level",
+      "axis_name": "Oxygen requirement level",
+      "category": "vital_support",
+      "axis_role": "measurement",
+      "unit": "ordinal_0_5",
+      "baseline_range": [0.0, 0.0],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 5.0],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "0 room air, 1 low-flow oxygen, 2 high-flow/non-rebreather, 3 noninvasive ventilation, 4 invasive ventilation, 5 ECMO-level support.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "axis_name": "White blood cell count",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [4.0, 10.5],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [8.0, 65.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Leukocytosis is common; normal WBC does not exclude abscess.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "axis_name": "Absolute neutrophil count",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [1.8, 7.5],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [6.0, 55.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Neutrophil predominance supports pyogenic infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_crp",
+      "axis_name": "C-reactive protein",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mg/L",
+      "log_scale": true,
+      "baseline_range": [0.2, 5.0],
+      "peak_day_range": [1, 14],
+      "peak_value_range": [30.0, 350.0],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [2, 14],
+      "clinical_interpretation": "Usually elevated with active abscess and surrounding pneumonia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "erythrocyte_sedimentation_rate",
+      "axis_name": "Erythrocyte sedimentation rate",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mm/hr",
+      "baseline_range": [0, 20],
+      "peak_day_range": [3, 30],
+      "peak_value_range": [30, 120],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [7, 45],
+      "clinical_interpretation": "ESR captures subacute inflammatory burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "axis_name": "Serum lactate",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "baseline_range": [0.5, 2.0],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.8, 12.0],
+      "plateau_duration_days": [0, 7],
+      "decline_half_life_days": [0.5, 3],
+      "clinical_interpretation": "Normal in localized abscess; rises with shock or severe respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "axis_name": "Serum bicarbonate",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "baseline_range": [22, 29],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [7, 27],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Low bicarbonate can reflect metabolic acidosis during sepsis or respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "axis_name": "Serum creatinine",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "baseline_range": [0.6, 1.2],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.7, 4.0],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [2, 21],
+      "clinical_interpretation": "AKI may occur with sepsis, dehydration, hypoxemia, or nephrotoxic treatment.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "axis_name": "Blood urea nitrogen",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "baseline_range": [7, 20],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [10, 70],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [2, 21],
+      "clinical_interpretation": "May rise with dehydration, renal dysfunction, or catabolism.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "axis_name": "Serum albumin",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "g/dL",
+      "baseline_range": [3.5, 5.0],
+      "peak_day_range": [3, 60],
+      "peak_value_range": [1.5, 4.2],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "clinical_interpretation": "Low albumin reflects inflammation, malnutrition, liver disease, or chronic illness.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "platelet_count",
+      "axis_name": "Platelet count",
+      "category": "lab",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [150, 400],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [120, 800],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [3, 30],
+      "clinical_interpretation": "Reactive thrombocytosis can occur; severe sepsis may reduce platelets.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "anemia_activity",
+      "axis_name": "Anemia activity",
+      "category": "lab",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Anemia may accompany chronic inflammation, malnutrition, renal disease, or bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pleural_effusion_presence",
+      "axis_name": "Pleural effusion presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Parapneumonic effusion or empyema can accompany lung abscess but may instead represent a primary pleural process.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "empyema_hazard",
+      "axis_name": "Empyema hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0005],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.001, 0.08],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 60],
+      "clinical_interpretation": "Risk of complicated infected pleural collection requiring drainage or decortication.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bronchopleural_fistula_hazard",
+      "axis_name": "Bronchopleural fistula hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0002],
+      "peak_day_range": [3, 60],
+      "peak_value_range": [0.0005, 0.05],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 90],
+      "clinical_interpretation": "Risk of cavity communication with pleural space or persistent air leak.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "major_hemoptysis_hazard",
+      "axis_name": "Major hemoptysis hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0002],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0005, 0.06],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 45],
+      "clinical_interpretation": "Risk of clinically significant airway bleeding from cavity or vascular involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard",
+      "axis_name": "Acute respiratory failure hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0005],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.25],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [1, 21],
+      "clinical_interpretation": "Risk of new or worsening respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "need_for_mechanical_ventilation_hazard",
+      "axis_name": "Need for mechanical ventilation hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0002],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0005, 0.18],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [1, 21],
+      "clinical_interpretation": "Risk of intubation or ongoing ventilator support.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "circulatory_collapse_shock_hazard",
+      "axis_name": "Circulatory collapse or septic shock hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0003],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.18],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Risk of shock from severe pulmonary infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "axis_name": "Acute kidney injury hazard",
+      "category": "event_hazard",
+      "axis_role": "finding",
+      "unit": "events_per_day",
+      "baseline_range": [0.0, 0.0005],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.12],
+      "plateau_duration_days": [0, 21],
+      "decline_half_life_days": [2, 21],
+      "clinical_interpretation": "Risk of AKI from sepsis, hypoxemia, dehydration, or therapy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "axis_name": "Mortality hazard in Lung abscess",
+      "category": "derived_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "baseline_range": [0.00001, 0.0002],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0005, 0.12],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [3, 45],
+      "clinical_interpretation": "Disease-specific lifespan outcome hazard driven by respiratory failure, sepsis/shock, uncontrolled source, empyema/fistula, and major hemoptysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "poor_oral_hygiene_activity",
+      "axis_name": "Poor oral hygiene activity",
+      "category": "clinical_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "clinical_interpretation": "Caries, periodontal disease, gingivitis, dental calculus, or poor dentition increasing anaerobic/oral flora burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "aspiration_risk_activity",
+      "axis_name": "Aspiration risk activity",
+      "category": "clinical_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 3650],
+      "decline_half_life_days": [7, 365],
+      "clinical_interpretation": "Alcohol intoxication, altered consciousness, seizure, dysphagia, vomiting, reflux, sedation, neurologic disease, or impaired cough.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_antibiotic_coverage_probability",
+      "axis_name": "Active antibiotic coverage probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-1, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Probability that the selected antimicrobial regimen covers the active pathogen mix after setting, Gram stain, culture, susceptibility, and allergy context are considered.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anaerobic_coverage_probability",
+      "axis_name": "Anaerobic coverage probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-1, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Coverage adequacy for anaerobic/oral flora when aspiration, putrid sputum, poor dentition, abscess, necrosis, or empyema are present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "severe_beta_lactam_allergy",
+      "axis_name": "Severe beta-lactam allergy",
+      "category": "treatment_modifier",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "clinical_interpretation": "Anaphylaxis or severe delayed reaction limiting beta-lactam use.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "renal_dose_adjustment_need",
+      "axis_name": "Renal dose adjustment need",
+      "category": "treatment_modifier",
+      "axis_role": "finding",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 3650],
+      "decline_half_life_days": [7, 365],
+      "clinical_interpretation": "Renal function context affecting antibiotic dosing and toxicity.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "lung_abscess_largest_diameter_cm",
+      "target_axis_id": "source_control_need",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Large cavities are less likely to clear rapidly with antibiotics alone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "pulmonary_air_fluid_level_presence",
+      "target_axis_id": "purulent_sputum_activity",
+      "coupling_type": "mixed",
+      "direction": "positive",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Airway communication can produce both an air-fluid level and sputum drainage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "pneumonia_infiltrate_extent",
+      "target_axis_id": "oxygen_saturation",
+      "coupling_type": "drift",
+      "direction": "negative",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "More extensive consolidation lowers oxygenation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "oxygen_saturation",
+      "target_axis_id": "acute_respiratory_failure_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Lower saturation raises respiratory failure risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "oxygen_requirement_level",
+      "target_axis_id": "need_for_mechanical_ventilation_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Escalating support is a near-term marker of ventilator risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "pleural_effusion_presence",
+      "target_axis_id": "empyema_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Pleural fluid adjacent to abscess can become infected or loculated.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "empyema_hazard",
+      "target_axis_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [1, 14],
+      "clinical_rationale": "Uncontrolled pleural infection increases death risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "major_hemoptysis_hazard",
+      "target_axis_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Major airway bleeding can be rapidly fatal.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "acute_respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Respiratory failure is a proximal fatal event.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "circulatory_collapse_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-LUNG-ABSCESS",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [0, 7],
+      "clinical_rationale": "Shock raises short-term mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "white_blood_cell_count",
+      "target_axis_id": "serum_crp",
+      "coupling_type": "noise_correlation",
+      "direction": "positive",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Inflammatory intensity moves leukocytes and CRP together after accounting for mechanism activity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "fever_history_activity",
+      "target_axis_id": "body_temperature",
+      "coupling_type": "noise_correlation",
+      "direction": "positive",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Reported fever and measured temperature are related but not identical evidence.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "ampicillin_sulbactam_or_amoxicillin_clavulanate",
+      "display_name": "Ampicillin-sulbactam or amoxicillin-clavulanate",
+      "treatment_modes": ["reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "effect": "decrease", "onset_days_range": [0.5, 3], "effect_size_range": [0.35, 0.8]},
+        {"mechanism_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS", "effect": "decrease", "onset_days_range": [1, 5], "effect_size_range": [0.2, 0.7]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "serum_crp", "direction": "decrease", "onset_days_range": [1, 5], "magnitude_range": [0.2, 0.7]},
+        {"axis_id": "white_blood_cell_count", "direction": "decrease", "onset_days_range": [1, 5], "magnitude_range": [0.15, 0.6]},
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 7], "magnitude_range": [0.15, 0.55]}
+      ],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability", "severe_beta_lactam_allergy", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "low_value_effect": "weakens_or_nullifies_antibiotic_effect"},
+        {"axis_id": "anaerobic_coverage_probability", "low_value_effect": "weakens_effect_when_anaerobic_abscess_context_is_high"},
+        {"axis_id": "severe_beta_lactam_allergy", "high_value_effect": "limits_use_or_requires_alternative"},
+        {"axis_id": "renal_dose_adjustment_need", "high_value_effect": "requires_dose_adjustment_and_toxicity_monitoring"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "piperacillin_tazobactam",
+      "display_name": "Piperacillin-tazobactam",
+      "treatment_modes": ["reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "effect": "decrease", "onset_days_range": [0.5, 3], "effect_size_range": [0.35, 0.85]},
+        {"mechanism_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS", "effect": "decrease", "onset_days_range": [0.5, 4], "effect_size_range": [0.25, 0.75]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "serum_crp", "direction": "decrease", "onset_days_range": [1, 5], "magnitude_range": [0.2, 0.7]},
+        {"axis_id": "circulatory_collapse_shock_hazard", "direction": "decrease", "onset_days_range": [0.5, 4], "magnitude_range": [0.1, 0.5]},
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 7], "magnitude_range": [0.15, 0.55]}
+      ],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability", "severe_beta_lactam_allergy", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "low_value_effect": "weakens_or_nullifies_antibiotic_effect"},
+        {"axis_id": "anaerobic_coverage_probability", "low_value_effect": "weakens_effect_if_anaerobic_source_is_uncovered"},
+        {"axis_id": "severe_beta_lactam_allergy", "high_value_effect": "limits_use_or_requires_alternative"},
+        {"axis_id": "renal_dose_adjustment_need", "high_value_effect": "requires_dose_adjustment_and_monitoring"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "carbapenem_broad_spectrum",
+      "display_name": "Carbapenem broad-spectrum therapy",
+      "treatment_modes": ["reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "effect": "decrease", "onset_days_range": [0.5, 3], "effect_size_range": [0.35, 0.9]},
+        {"mechanism_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS", "effect": "decrease", "onset_days_range": [0.5, 4], "effect_size_range": [0.25, 0.8]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 7], "magnitude_range": [0.1, 0.6]},
+        {"axis_id": "serum_crp", "direction": "decrease", "onset_days_range": [1, 5], "magnitude_range": [0.2, 0.75]}
+      ],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "low_value_effect": "weakens_or_nullifies_antibiotic_effect"},
+        {"axis_id": "renal_dose_adjustment_need", "high_value_effect": "requires_dose_adjustment_and_seizure_toxicity_monitoring"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "clindamycin_or_metronidazole_anaerobic_addition",
+      "display_name": "Anaerobic-focused add-on therapy",
+      "treatment_modes": ["reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "effect": "decrease", "onset_days_range": [0.5, 4], "effect_size_range": [0.15, 0.55]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "putrid_sputum_activity", "direction": "decrease", "onset_days_range": [2, 10], "magnitude_range": [0.1, 0.6]},
+        {"axis_id": "anaerobic_coverage_probability", "direction": "increase", "onset_days_range": [0, 1], "magnitude_range": [0.3, 0.9]}
+      ],
+      "required_context_axes": ["anaerobic_coverage_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "anaerobic_coverage_probability", "low_value_effect": "main_reason_to_add_when_current_regimen_lacks_anaerobic_coverage"},
+        {"axis_id": "active_antibiotic_coverage_probability", "low_value_effect": "insufficient_as_sole_therapy_if_aerobic_or_resistant_pathogens_dominate"}
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "anti_mrsa_coverage",
+      "display_name": "Anti-MRSA coverage",
+      "treatment_modes": ["reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "effect": "decrease", "onset_days_range": [0.5, 3], "effect_size_range": [0.1, 0.75]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "increase", "onset_days_range": [0, 1], "magnitude_range": [0.1, 0.8]}
+      ],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "low_value_effect": "helps_only_if_staphylococcal_or_mrsa_probability_is_high"},
+        {"axis_id": "renal_dose_adjustment_need", "high_value_effect": "requires_level_or_toxicity_monitoring_for_renally_cleared_agents"}
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "percutaneous_abscess_catheter_drainage",
+      "display_name": "Percutaneous abscess catheter drainage",
+      "treatment_modes": ["reshape_landscape", "push_state"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY", "effect": "decrease", "onset_days_range": [0, 3], "effect_size_range": [0.15, 0.75]},
+        {"mechanism_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE", "effect": "decrease", "onset_days_range": [1, 7], "effect_size_range": [0.1, 0.6]},
+        {"mechanism_id": "M_LA_SYSTEMIC_INFLAMMATION_SEPSIS", "effect": "decrease", "onset_days_range": [1, 7], "effect_size_range": [0.1, 0.55]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "source_control_need", "direction": "decrease", "onset_days_range": [0, 3], "magnitude_range": [0.25, 0.9]},
+        {"axis_id": "lung_abscess_largest_diameter_cm", "direction": "decrease", "onset_days_range": [1, 14], "magnitude_range": [0.1, 0.6]},
+        {"axis_id": "oxygen_saturation", "direction": "increase", "onset_days_range": [1, 7], "magnitude_range": [0.02, 0.25]},
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 7], "magnitude_range": [0.1, 0.6]}
+      ],
+      "required_context_axes": ["source_control_need", "abscess_drainage_accessibility", "bronchopleural_fistula_hazard", "major_hemoptysis_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "high_value_effect": "increases_expected_benefit"},
+        {"axis_id": "abscess_drainage_accessibility", "low_value_effect": "reduces_feasibility_or_pushes_toward_bronchoscopic_or_surgical_approach"},
+        {"axis_id": "bronchopleural_fistula_hazard", "high_value_effect": "raises_procedure_risk_and_monitoring_need"},
+        {"axis_id": "major_hemoptysis_hazard", "high_value_effect": "requires_careful_route_planning_and_bleeding_risk_control"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "bronchoscopic_toilet_or_endobronchial_drainage",
+      "display_name": "Bronchoscopic airway clearance or endobronchial drainage",
+      "treatment_modes": ["push_state", "reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_BRONCHIAL_COMMUNICATION_DRAINAGE", "effect": "decrease", "onset_days_range": [0, 3], "effect_size_range": [0.1, 0.5]},
+        {"mechanism_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE", "effect": "decrease", "onset_days_range": [0, 3], "effect_size_range": [0.1, 0.5]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "oxygen_saturation", "direction": "increase", "onset_days_range": [0, 3], "magnitude_range": [0.02, 0.2]},
+        {"axis_id": "oxygen_requirement_level", "direction": "decrease", "onset_days_range": [0, 5], "magnitude_range": [0.1, 0.6]}
+      ],
+      "required_context_axes": ["bronchial_obstruction_activity", "oxygen_requirement_level", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "bronchial_obstruction_activity", "high_value_effect": "increases_value_for_diagnosis_and_airway_clearance"},
+        {"axis_id": "oxygen_requirement_level", "high_value_effect": "requires_airway_risk_planning"},
+        {"axis_id": "source_control_need", "high_value_effect": "may_help_when_airway_communication_or_mucus_plugging_is_prominent"}
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "pleural_drainage_or_decortication",
+      "display_name": "Pleural drainage or decortication when empyema is present",
+      "treatment_modes": ["reshape_landscape", "push_state"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA", "effect": "decrease", "onset_days_range": [0, 7], "effect_size_range": [0.2, 0.8]},
+        {"mechanism_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE", "effect": "decrease", "onset_days_range": [1, 10], "effect_size_range": [0.1, 0.5]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "empyema_hazard", "direction": "decrease", "onset_days_range": [0, 7], "magnitude_range": [0.2, 0.8]},
+        {"axis_id": "pleural_effusion_presence", "direction": "decrease", "onset_days_range": [1, 14], "magnitude_range": [0.2, 0.8]},
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 14], "magnitude_range": [0.1, 0.5]}
+      ],
+      "required_context_axes": ["pleural_effusion_presence", "empyema_hazard", "oxygen_requirement_level"],
+      "effect_modifiers": [
+        {"axis_id": "empyema_hazard", "high_value_effect": "increases_expected_benefit"},
+        {"axis_id": "pleural_effusion_presence", "low_value_effect": "reduces_relevance_when_no_pleural_collection_exists"},
+        {"axis_id": "oxygen_requirement_level", "high_value_effect": "increases_perioperative_risk"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "surgical_resection_or_open_source_control",
+      "display_name": "Surgical resection or open source control",
+      "treatment_modes": ["reshape_landscape", "push_state"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_NECROTIZING_LIQUEFACTION_CAVITY", "effect": "decrease", "onset_days_range": [0, 7], "effect_size_range": [0.3, 0.9]},
+        {"mechanism_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE", "effect": "decrease", "onset_days_range": [0, 14], "effect_size_range": [0.1, 0.8]},
+        {"mechanism_id": "M_LA_PLEURAL_EXTENSION_EMPYEMA", "effect": "decrease", "onset_days_range": [0, 14], "effect_size_range": [0.1, 0.8]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "source_control_need", "direction": "decrease", "onset_days_range": [0, 7], "magnitude_range": [0.3, 0.9]},
+        {"axis_id": "mortality_hazard_in_D-LUNG-ABSCESS", "direction": "decrease", "onset_days_range": [1, 14], "magnitude_range": [0.05, 0.5]}
+      ],
+      "required_context_axes": ["source_control_need", "abscess_drainage_accessibility", "bronchial_obstruction_activity", "oxygen_requirement_level"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "high_value_effect": "increases_potential_benefit_after_failed_less_invasive_control"},
+        {"axis_id": "abscess_drainage_accessibility", "low_value_effect": "may_increase_need_for_surgical_route"},
+        {"axis_id": "bronchial_obstruction_activity", "high_value_effect": "increases_need_to_address_obstruction_or_rule_out_malignancy"},
+        {"axis_id": "oxygen_requirement_level", "high_value_effect": "raises_procedural_mortality_risk"}
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "oxygen_and_ventilatory_support",
+      "display_name": "Oxygen and ventilatory support",
+      "treatment_modes": ["push_state", "modulate_sigma"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_GAS_EXCHANGE_RESPIRATORY_FAILURE", "effect": "decrease_effect_on_downstream_hazard", "onset_days_range": [0, 1], "effect_size_range": [0.1, 0.6]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "oxygen_saturation", "direction": "increase", "onset_days_range": [0, 1], "magnitude_range": [0.05, 0.4]},
+        {"axis_id": "acute_respiratory_failure_hazard", "direction": "decrease", "onset_days_range": [0, 2], "magnitude_range": [0.05, 0.35]}
+      ],
+      "required_context_axes": ["oxygen_saturation", "oxygen_requirement_level", "need_for_mechanical_ventilation_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "oxygen_saturation", "low_value_effect": "increases_immediate_benefit"},
+        {"axis_id": "oxygen_requirement_level", "high_value_effect": "signals_need_for_escalated_support"},
+        {"axis_id": "need_for_mechanical_ventilation_hazard", "high_value_effect": "supports_airway_planning"}
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "dental_or_aspiration_source_control",
+      "display_name": "Dental and aspiration-source control",
+      "treatment_modes": ["modulate_theta", "reshape_landscape"],
+      "mechanism_targets": [
+        {"mechanism_id": "M_LA_OROPHARYNGEAL_OR_AIRWAY_INOCULATION", "effect": "decrease", "onset_days_range": [1, 30], "effect_size_range": [0.1, 0.6]}
+      ],
+      "trajectory_modifications": [
+        {"axis_id": "aspiration_risk_activity", "direction": "decrease", "onset_days_range": [1, 30], "magnitude_range": [0.1, 0.7]},
+        {"axis_id": "poor_oral_hygiene_activity", "direction": "decrease", "onset_days_range": [1, 90], "magnitude_range": [0.1, 0.8]}
+      ],
+      "required_context_axes": ["aspiration_risk_activity", "poor_oral_hygiene_activity"],
+      "effect_modifiers": [
+        {"axis_id": "aspiration_risk_activity", "high_value_effect": "increases_recurrence_prevention_value"},
+        {"axis_id": "poor_oral_hygiene_activity", "high_value_effect": "increases_oral_source_control_value"}
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "poor_oral_hygiene_or_periodontal_disease",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "poor_oral_hygiene_activity", "direction": "increase", "factor_range": [1.2, 2.0], "rationale": "Poor dentition raises oral anaerobic and Streptococcus anginosus group burden."},
+            {"axis_id": "putrid_sputum_activity", "direction": "increase", "factor_range": [1.05, 1.5], "rationale": "Anaerobic oral flora increases foul sputum probability."},
+            {"axis_id": "anaerobic_coverage_probability", "effect": "increases_importance_when_low", "factor_range": [1.1, 1.8], "rationale": "Oral anaerobic burden makes anaerobic coverage more important."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "aspiration_risk_or_alcohol_use",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "aspiration_risk_activity", "direction": "increase", "factor_range": [1.2, 2.0], "rationale": "Loss of airway protection or aspiration events seed dependent lung."},
+            {"axis_id": "pneumonia_infiltrate_extent", "direction": "increase", "factor_range": [1.0, 1.4], "rationale": "Aspiration often produces surrounding pneumonic infiltrate."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_LA_POLYMICROBIAL_PARENCHYMAL_INFECTION", "direction": "increase", "factor_range": [1.0, 1.4], "rationale": "Diabetes modestly impairs host defense."},
+            {"axis_id": "source_control_need", "direction": "increase", "factor_range": [1.0, 1.3], "rationale": "Impaired host response may slow closure."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "chronic_lung_disease_or_bronchiectasis",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE", "direction": "increase", "factor_range": [1.0, 1.6], "rationale": "Structural lung disease impairs clearance and creates local nidus."},
+            {"axis_id": "oxygen_saturation", "direction": "decrease", "factor_range": [1.05, 1.4], "rationale": "Reduced pulmonary reserve magnifies hypoxemia."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "immunosuppression_or_malignancy",
+      "type": "host_risk_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE", "direction": "increase", "factor_range": [1.0, 1.6], "rationale": "Cancer can obstruct bronchi or mimic abscess; immunosuppression broadens pathogen spectrum."},
+            {"axis_id": "white_blood_cell_count", "direction": "mixed", "factor_range": [0.5, 1.4], "rationale": "Immunosuppression can blunt leukocytosis or permit severe infection."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "bronchial_obstruction_or_foreign_body",
+      "type": "anatomic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "bronchial_obstruction_activity", "direction": "increase", "factor_range": [1.2, 2.0], "rationale": "Obstruction is a secondary abscess substrate and nonresolution driver."},
+            {"axis_id": "source_control_need", "direction": "increase", "factor_range": [1.1, 1.8], "rationale": "Obstruction must be removed or sampled to clear the abscess."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "septic_emboli_or_endocarditis_context",
+      "type": "mimic_or_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.6, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "M_LA_SECONDARY_OBSTRUCTION_OR_SOURCE", "direction": "increase", "factor_range": [1.0, 1.5], "rationale": "Hematogenous seeding can create cavitary pulmonary lesions but often belongs to septic emboli/endocarditis manifold when present."},
+            {"axis_id": "cavitary_pulmonary_lesion_presence", "direction": "increase", "factor_range": [1.0, 1.4], "rationale": "Multiple peripheral cavitary lesions may be embolic rather than primary abscess."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "large_abscess_or_failed_antibiotic_response",
+      "type": "disease_course_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "source_control_need", "direction": "increase", "factor_range": [1.2, 2.0], "rationale": "Large or persistent cavity increases drainage/source-control need."},
+            {"axis_id": "abscess_drainage_accessibility", "direction": "increase", "factor_range": [1.0, 1.4], "rationale": "Imaging must determine whether minimally invasive drainage is feasible."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Do not split first-layer Lung abscess by aspiration, organism, acute/chronic course, community/hospital setting, abscess size, or severity.",
+    "Presentation ranking should use early symptoms, exam, vitals, labs, and presentation imaging. Culture, bronchoscopy, pathology, cytology, drainage findings, and treatment response are confirmatory unless known at presentation.",
+    "Actively evaluate near-neighbor mimics: pneumonia without abscess, pleural empyema, TB/NTM, cavitating cancer, septic pulmonary emboli/endocarditis, pulmonary infarct/cavitation, fungal disease, and vasculitis.",
+    "CT should assess cavity location, wall, air-fluid level, size, surrounding consolidation, tree-in-bud pattern, pleural effusion/empyema, multiplicity, vascular proximity, bronchial obstruction, and possible tumor or foreign body.",
+    "Microbiology should be sought before antibiotics when feasible, but negative cultures do not exclude lung abscess because anaerobes and prior antibiotics reduce yield.",
+    "Antibiotic selection should be modulated by active coverage, anaerobic coverage, local resistance, aspiration/oral source context, immune status, allergy, renal function, and culture/susceptibility when available.",
+    "Drainage/source control becomes more important for large cavities, persistent fever or leukocytosis, poor antibiotic response, thick or loculated collections, pleural extension, respiratory compromise, or suspected obstruction.",
+    "Pleural effusion next to an abscess needs empyema assessment; pleural drainage/decortication is a separate source-control vector when pleural infection dominates.",
+    "Support oxygenation, airway clearance, nutrition, glycemic control, dental/oral source control, aspiration prevention, and rehabilitation while monitoring for hemoptysis, bronchopleural fistula, empyema, sepsis, AKI, and respiratory failure."
+  ],
+  "quality_notes": [
+    "No treatment-ordering label fields are used.",
+    "Treatment ranking should emerge from forward simulation with coverage, drainage feasibility, organ support, and hazard axes.",
+    "Horizontal fairness review is needed for cavitary_pulmonary_lesion_presence, pulmonary_air_fluid_level_presence, lung_abscess_largest_diameter_cm, putrid_sputum_activity, bronchial_obstruction_activity, empyema_hazard, bronchopleural_fistula_hazard, and major_hemoptysis_hazard across pneumonia, empyema, TB, cavitating cancer, septic pulmonary emboli/endocarditis, pulmonary embolism, and sepsis leaves."
+  ]
+}

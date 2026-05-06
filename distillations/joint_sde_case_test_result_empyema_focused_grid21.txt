@@ -1,0 +1,153 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=2500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: grid time_grid_n=21 (deterministic midpoint parameter sampling)
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 9 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=9, total_ranked=9, max_combo_size=1
+Case filter: EMPYEMA
+Cases loaded for this run: 3
+
+Manifolds:
+  D-SEPSIS-GN : axes=82, mechanisms=11, mech_edges=56, couplings=17, risk_factors=13
+  D-ACUTE-CHOLECYSTITIS: axes=66, mechanisms= 9, mech_edges=56, couplings=18, risk_factors= 8
+  D-ASPIRATION-PNEUMONIA: axes=63, mechanisms= 9, mech_edges=52, couplings=14, risk_factors=12
+  D-EMPYEMA   : axes=73, mechanisms= 9, mech_edges=33, couplings=16, risk_factors=12
+  D-LUNG-ABSCESS: axes=62, mechanisms= 8, mech_edges=44, couplings=12, risk_factors= 8
+  D-PNEUMOCOCCAL-PNEUMONIA: axes=91, mechanisms=17, mech_edges=74, couplings= 7, risk_factors=18
+  D-PULMONARY-EMBOLISM: axes=54, mechanisms= 8, mech_edges=42, couplings=18, risk_factors= 8
+  D-PYOGENIC-LIVER-ABSCESS: axes=93, mechanisms=12, mech_edges=70, couplings=12, risk_factors=12
+  D-TB-DISSEMINATED: axes=64, mechanisms=15, mech_edges=63, couplings= 9, risk_factors=11
+Base-measure/background axes: 2932
+
+----------------------------------------------------------------------------------------------------
+EMPYEMA_LOCULATED_PIGTAIL_PMC10406000  expected=D-EMPYEMA
+source: PMID 37554852 / PMC10406000 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10406000/
+paper diagnosis: Left-sided community-acquired pneumonia with empyema thoracis managed with ultrasound-guided pigtail catheter
+observed axes: 19
+risk context: recent_or_active_pneumonia=present; older_age_or_frailty=present
+
+[joint SDE ranking: all candidates]
+* D-EMPYEMA               logP=    -49.34 mean=  -2.741 n=18 prior= +3.66
+  D-LUNG-ABSCESS          logP=   -241.06 mean= -13.392 n=18 prior= +0.00
+  D-ASPIRATION-PNEUMONIA  logP=   -304.19 mean= -16.899 n=18 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -312.70 mean= -17.372 n=18 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS   logP=   -422.77 mean= -23.487 n=18 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -428.36 mean= -23.798 n=18 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -449.08 mean= -24.949 n=18 prior= +0.00
+  D-SEPSIS-GN             logP=   -453.48 mean= -25.193 n=18 prior= +0.00
+  D-PULMONARY-EMBOLISM    logP=   -486.12 mean= -27.007 n=18 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-EMPYEMA    logP=    -49.34 mean=  -2.741 prior= +3.66
+  D-LUNG-ABSCESS logP=   -241.06 mean= -13.392 prior= +0.00
+  D-ASPIRATION-PNEUMONIA logP=   -304.19 mean= -16.899 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -312.70 mean= -17.372 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS logP=   -422.77 mean= -23.487 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -428.36 mean= -23.798 prior= +0.00
+  D-TB-DISSEMINATED logP=   -449.08 mean= -24.949 prior= +0.00
+  D-SEPSIS-GN  logP=   -453.48 mean= -25.193 prior= +0.00
+  D-PULMONARY-EMBOLISM logP=   -486.12 mean= -27.007 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -49.34 candidate=D-EMPYEMA
+  logP_best_single=    -49.34 candidate=D-EMPYEMA
+  logP_background_only=   -687.19 mean= -38.177 n=18
+  delta_to_null_best_known=   +637.85
+  delta_to_null_best_single=   +637.85
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-EMPYEMA  PASS
+best latent times: D-EMPYEMA=day11.4
+largest standardized residuals: mean_arterial_pressure obs=120 mmHg mu=82.4791 via=D-EMPYEMA z=3.5; loculated_pleural_effusion_activity_in_D-EMPYEMA obs=0.9 severity_score_0_1 mu=0.36171 via=D-EMPYEMA z=3.2; fever_history_activity obs=1 severity_score_0_1 mu=0.5 via=D-EMPYEMA z=3.0; decreased_breath_sounds_activity obs=0.8 severity_score_0_1 mu=0.31375 via=D-EMPYEMA z=2.9; heart_rate obs=140 beats_per_min mu=95.2366 via=D-EMPYEMA z=2.8
+
+----------------------------------------------------------------------------------------------------
+EMPYEMA_PARAPNEUMONIC_ANAEROBIC_PMC3716031  expected=D-EMPYEMA
+source: PMID 23882393 / PMC3716031 / https://pmc.ncbi.nlm.nih.gov/articles/PMC3716031/
+paper diagnosis: Parapneumonic empyema diagnosed by chest radiograph and computed tomography
+observed axes: 23
+risk context: immunosuppression_hiv_transplant_malignancy_or_chronic_steroids=present; tb_endemic_exposure_or_prior_tb=present; aspiration_risk_or_poor_dentition=present; recent_or_active_pneumonia=present
+
+[joint SDE ranking: all candidates]
+* D-EMPYEMA               logP=    -59.84 mean=  -2.992 n=20 prior= +7.75
+  D-LUNG-ABSCESS          logP=   -389.61 mean= -20.506 n=19 prior= +0.00
+  D-ASPIRATION-PNEUMONIA  logP=   -436.28 mean= -22.962 n=19 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -487.13 mean= -25.638 n=19 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -505.04 mean= -26.581 n=19 prior= +0.00
+  D-SEPSIS-GN             logP=   -530.16 mean= -27.903 n=19 prior= +0.00
+  D-PULMONARY-EMBOLISM    logP=   -537.46 mean= -28.287 n=19 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS   logP=   -555.24 mean= -29.223 n=19 prior= +0.00
+  D-TB-DISSEMINATED       logP=   -571.33 mean= -30.070 n=19 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-EMPYEMA    logP=    -59.84 mean=  -2.992 prior= +7.75
+  D-LUNG-ABSCESS logP=   -389.61 mean= -20.506 prior= +0.00
+  D-ASPIRATION-PNEUMONIA logP=   -436.28 mean= -22.962 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -487.13 mean= -25.638 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -505.04 mean= -26.581 prior= +0.00
+  D-SEPSIS-GN  logP=   -530.16 mean= -27.903 prior= +0.00
+  D-PULMONARY-EMBOLISM logP=   -537.46 mean= -28.287 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS logP=   -555.24 mean= -29.223 prior= +0.00
+  D-TB-DISSEMINATED logP=   -571.33 mean= -30.070 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -59.84 candidate=D-EMPYEMA
+  logP_best_single=    -59.84 candidate=D-EMPYEMA
+  logP_background_only=   -611.66 mean= -32.193 n=19
+  delta_to_null_best_known=   +551.82
+  delta_to_null_best_single=   +551.82
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-EMPYEMA  PASS
+best latent times: D-EMPYEMA=day11.4
+largest standardized residuals: prothrombin_time_inr obs=1.6 INR mu=1.05 via=base_measure_background z=6.5; pleural_air_fluid_level_activity_in_D-EMPYEMA obs=0.9 severity_score_0_1 mu=0.302 via=D-EMPYEMA z=3.6; loculated_pleural_effusion_activity_in_D-EMPYEMA obs=0.9 severity_score_0_1 mu=0.36171 via=D-EMPYEMA z=3.2; platelet_count obs=39 10^9/L mu=350 via=D-EMPYEMA z=3.1; purulent_sputum_activity obs=1 severity_score_0_1 mu=0.5 via=D-EMPYEMA z=3.0
+
+----------------------------------------------------------------------------------------------------
+EMPYEMA_PERINEPHRIC_DIAPHRAGM_DEFECT_PMC6350234  expected=D-EMPYEMA
+source: PMID 30723543 / PMC6350234 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6350234/
+paper diagnosis: Pleural empyema in a patient with a perinephric abscess and diaphragmatic defect
+observed axes: 18
+risk context: older_age_or_frailty=present; subdiaphragmatic_or_abdominal_source=present; healthcare_exposure_recent_antibiotics_or_resistant_pathogen_risk=present; chronic_lung_disease_or_bronchiectasis=absent_or_not_reported
+
+[joint SDE ranking: all candidates]
+* D-EMPYEMA               logP=    -88.22 mean=  -5.514 n=16 prior= +4.60
+  D-LUNG-ABSCESS          logP=   -435.51 mean= -27.220 n=16 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -459.76 mean= -28.735 n=16 prior= +0.00
+  D-ASPIRATION-PNEUMONIA  logP=   -531.22 mean= -33.201 n=16 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -551.52 mean= -34.470 n=16 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS   logP=   -553.73 mean= -34.608 n=16 prior= +0.00
+  D-SEPSIS-GN             logP=   -585.09 mean= -36.568 n=16 prior= +0.00
+  D-TB-DISSEMINATED       logP=  -1208.96 mean= -75.560 n=16 prior= +0.00
+  D-PULMONARY-EMBOLISM    logP=  -2463.75 mean=-153.984 n=16 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-EMPYEMA    logP=    -88.22 mean=  -5.514 prior= +4.60
+  D-LUNG-ABSCESS logP=   -435.51 mean= -27.220 prior= +0.00
+  D-PNEUMOCOCCAL-PNEUMONIA logP=   -459.76 mean= -28.735 prior= +0.00
+  D-ASPIRATION-PNEUMONIA logP=   -531.22 mean= -33.201 prior= +0.00
+  D-PYOGENIC-LIVER-ABSCESS logP=   -551.52 mean= -34.470 prior= +0.00
+  D-ACUTE-CHOLECYSTITIS logP=   -553.73 mean= -34.608 prior= +0.00
+  D-SEPSIS-GN  logP=   -585.09 mean= -36.568 prior= +0.00
+  D-TB-DISSEMINATED logP=  -1208.96 mean= -75.560 prior= +0.00
+  D-PULMONARY-EMBOLISM logP=  -2463.75 mean=-153.984 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -88.22 candidate=D-EMPYEMA
+  logP_best_single=    -88.22 candidate=D-EMPYEMA
+  logP_background_only=  -2553.80 mean=-159.613 n=16
+  delta_to_null_best_known=  +2465.58
+  delta_to_null_best_single=  +2465.58
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-EMPYEMA  PASS
+best latent times: D-EMPYEMA=day11.4
+largest standardized residuals: white_blood_cell_count obs=68 10^9/L mu=15.453 via=D-EMPYEMA z=10.2; pleural_thickening_activity_in_D-EMPYEMA obs=0.8 severity_score_0_1 mu=0.209054 via=D-EMPYEMA z=3.5; dullness_to_percussion_activity obs=0.9 severity_score_0_1 mu=0.3115 via=D-EMPYEMA z=3.5; decreased_breath_sounds_activity obs=0.9 severity_score_0_1 mu=0.31375 via=D-EMPYEMA z=3.5; fever_history_activity obs=1 severity_score_0_1 mu=0.5 via=D-EMPYEMA z=3.0
+
+====================================================================================================
+Single-manifold validation: 3/3 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.

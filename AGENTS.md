@@ -831,3 +831,26 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `321/323 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: Brain Abscess / Empyema / Lung Abscess
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-BRAIN-ABSCESS`: brain abscess.
+  - `D-EMPYEMA`: pleural empyema.
+  - `D-LUNG-ABSCESS`: lung abscess.
+- New real PMC/PubMed cases:
+  - `D-BRAIN-ABSCESS`: `PMC7857860` / PMID `33536050`, `PMC10454062` / PMID `37623049`, `PMC3970313` / PMID `24693470`.
+  - `D-EMPYEMA`: `PMC3716031` / PMID `23882393`, `PMC10406000` / PMID `37554852`, `PMC6350234` / PMID `30723543`.
+  - `D-LUNG-ABSCESS`: `PMC6736456` / PMID `31464925`, `PMC9792334` / PMID `36579261`, `PMC7125289` / PMID `32246299`.
+- Brain abscess source rule: keep first-layer brain abscess pure. Etiology/source contexts such as hematogenous spread, odontogenic/oropharyngeal source, endovascular septic emboli, pulmonary suppurative infection, sinus/otogenic source, trauma/neurosurgery, Nocardia/fungal context, ventriculitis, hydrocephalus, and mass effect are context/event/source-control axes or separate disease leaves, not disease-name qualifiers. Aspirate culture, operative pathology, TEE after diagnosis, and treatment response are confirmatory/non-ranking unless testing post-workup mode.
+- Empyema source rule: keep pleural empyema separate from pneumonia, lung abscess, TB pleuritis, malignant effusion, pulmonary embolism, and subdiaphragmatic abscess. Presentation imaging, pleural fluid gross pus/pH/glucose/loculation, hypoxemia, and source-control need can be rankable when available; culture species, final source adjudication, surgery/pathology, and treatment response stay confirmatory/non-ranking unless testing post-workup mode.
+- Lung abscess source rule: keep first-layer lung abscess pure. Aspiration context, anaerobic/actinomycotic/nocardial/fungal pathogens, empyema, bronchopleural fistula, septic emboli, TB/cancer mimic, and drainage failure are context/event/source-control axes or separate leaves. Microbiology, bronchoscopy/pathology, and post-drainage response are confirmatory/non-ranking unless present at the tested stage.
+- Axis ontology repair from this batch: composite `_or_` axis IDs were normalized to one-concept names before regression: `neurobehavioral_change_activity`, `language_disturbance_activity`, `odontogenic_oropharyngeal_source_probability_in_D-BRAIN-ABSCESS`, `endovascular_septic_embolic_source_probability_in_D-BRAIN-ABSCESS`, `pulmonary_suppurative_infection_source_probability_in_D-BRAIN-ABSCESS`, `direct_cns_inoculation_context_probability_in_D-BRAIN-ABSCESS`, `right_to_left_cardiac_shunt_context_probability_in_D-BRAIN-ABSCESS`, `atypical_chronic_pathogen_probability_in_D-EMPYEMA`, and `chronic_recurrent_empyema_hazard_in_D-EMPYEMA`.
+- Horizontal fairness checks done in focused regression: new brain abscess cases were tested against Nocardia, invasive aspergillosis, toxoplasmosis, bacterial meningitis, HSV encephalitis, infective endocarditis, pneumonia, PE, sepsis, and pyogenic liver abscess; empyema/lung abscess cases were tested against pneumonia, aspiration pneumonia, TB, PE, sepsis, and source-control neighbors. Existing Nocardia CNS abscess case still ranked `D-NOCARDIOSIS`, so the new brain abscess leaf did not steal that organism-level manifold.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-ORBITAL-CELLULITIS`.
+- Focused new-batch fast grid (`BRAIN_ABSCESS,EMPYEMA,LUNG_ABSCESS`) loaded 10 matching cases and was `10/10 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 363 case JSON files loaded.
+  - Single-manifold validation `358/360 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

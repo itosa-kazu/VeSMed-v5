@@ -1,0 +1,132 @@
+{
+  "case_id": "LUNG_ABSCESS_DRAINAGE_FAILURE_PMC7125289",
+  "source_pmid": "32246299",
+  "source_pmcid": "PMC7125289",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7125289/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7125289/fullTextXML",
+  "disease_label_per_paper": "Antibiotic-refractory left upper lobe lung abscess with initial percutaneous drainage failure requiring larger catheter exchange",
+  "expected_manifold": "D-LUNG-ABSCESS",
+  "demographics": {
+    "age": 42,
+    "sex": "M",
+    "past_history": ["no remarkable medical history reported"]
+  },
+  "presentation_summary": [
+    "A 42-year-old man presented with persistent fever and left chest pain for two weeks.",
+    "Chest radiograph showed diffuse consolidation of the left lung.",
+    "Chest CT showed a large left upper-lobe abscess with an air-fluid level and extensive consolidation of the whole left lung.",
+    "He was diagnosed with severe pneumonia with a lung abscess and was treated empirically with meropenem and vancomycin.",
+    "After five days of antibiotics there was no satisfactory clinical response; CT-guided drainage with a 10-Fr pigtail catheter removed 42 mL of pus.",
+    "The small catheter clogged the next day, residual abscess content remained, right-lung pneumonia developed after suspected aspiration of abscess material, and respiratory failure required ventilation and later tracheostomy.",
+    "A 28-Fr catheter exchange under lung isolation drained 650 mL over eight days; pus culture grew Prevotella buccae, Streptococcus anginosus, and Fusobacterium necrophorum."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "large_abscess_or_failed_antibiotic_response", "category": "large_abscess_at_presentation", "value": 1.0, "use_in_ranking": true, "source_text_value": "large abscess with whole-left-lung consolidation"},
+    {"factor": "aspiration_risk_or_alcohol_use", "category": "not_reported_at_presentation", "value": 0.0, "use_in_ranking": true, "source_text_value": "no aspiration risk factor reported before drainage"}
+  ],
+  "observations": [
+    {"axis_id": "fever_history_activity", "value": 0.9, "unit": "severity_score_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "persistent fever for two weeks"},
+    {"axis_id": "body_temperature", "value": 38.5, "unit": "degC", "time_day": 0, "use_in_ranking": true, "source_text_value": "persistent fever reported; no numeric temperature provided", "conversion_note": "qualitative fever encoded conservatively"},
+    {"axis_id": "chest_pain_activity", "value": 0.75, "unit": "severity_score_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "left chest pain for two weeks"},
+    {"axis_id": "pneumonia_infiltrate_extent", "value": 1.0, "unit": "relative_extent_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "diffuse consolidation of the left lung and extensive whole-left-lung consolidation"},
+    {"axis_id": "pulmonary_consolidation_activity", "value": 1.0, "unit": "severity_score_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "extensive consolidation of the whole left lung"},
+    {"axis_id": "cavitary_pulmonary_lesion_presence", "value": 1.0, "unit": "present_absent_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "CT revealed a large abscess cavity"},
+    {"axis_id": "lung_abscess_presence_in_D-LUNG-ABSCESS", "value": 1.0, "unit": "present_absent_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "large left upper-lobe lung abscess diagnosed by CT"},
+    {"axis_id": "pulmonary_air_fluid_level_presence", "value": 1.0, "unit": "present_absent_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "abscess had an air-fluid level"},
+    {"axis_id": "source_control_need", "value": 0.95, "unit": "relative_activity_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "large abscess and severe pneumonia later required drainage"},
+    {"axis_id": "oxygen_requirement_level", "value": 0.0, "unit": "ordinal_0_5", "time_day": 0, "use_in_ranking": true, "source_text_value": "no ventilatory support described at initial presentation before antibiotics/drainage"},
+    {"axis_id": "aspiration_risk_activity", "value": 0.0, "unit": "severity_score_0_1", "time_day": 0, "use_in_ranking": true, "source_text_value": "no pre-presentation aspiration risk factor described"}
+  ],
+  "imaging": [
+    {
+      "time_day": 0,
+      "test": "chest_xray",
+      "finding": "diffuse_left_lung_consolidation",
+      "mapped_axis_ids": ["pneumonia_infiltrate_extent", "pulmonary_consolidation_activity"],
+      "use_in_ranking": true
+    },
+    {
+      "time_day": 0,
+      "test": "chest_ct",
+      "finding": "large_left_upper_lobe_abscess_with_air_fluid_level_and_extensive_left_lung_consolidation",
+      "mapped_axis_ids": ["lung_abscess_presence_in_D-LUNG-ABSCESS", "cavitary_pulmonary_lesion_presence", "pulmonary_air_fluid_level_presence", "pneumonia_infiltrate_extent"],
+      "use_in_ranking": true
+    },
+    {
+      "time_day": 6,
+      "test": "chest_ct_after_initial_drainage_failure",
+      "finding": "right_lung_pneumonia_and_residual_abscess_content_after_incomplete_initial_drainage",
+      "mapped_axis_ids": ["pneumonia_infiltrate_extent", "source_control_need"],
+      "use_in_ranking": false
+    },
+    {
+      "time_day": 210,
+      "test": "follow_up_chest_ct",
+      "finding": "complete_cure_with_small_residual_thin_wall_cavity",
+      "use_in_ranking": false
+    }
+  ],
+  "microbiology": [
+    {
+      "time_day": 5,
+      "specimen": "initial_evacuated_pus",
+      "organisms": ["Prevotella buccae", "Streptococcus anginosus", "Fusobacterium necrophorum"],
+      "use_in_ranking": false,
+      "source_text_value": "organisms detected from culture of evacuated pus"
+    }
+  ],
+  "procedures": [
+    {
+      "time_day": 5,
+      "procedure": "CT_guided_percutaneous_catheter_drainage_10_Fr",
+      "finding": "42 mL pus removed; catheter clogged next day",
+      "use_in_ranking": false
+    },
+    {
+      "time_day": 6,
+      "procedure": "mechanical_ventilation",
+      "finding": "respiratory failure after drainage failure required ventilator support",
+      "use_in_ranking": false
+    },
+    {
+      "time_day": 6,
+      "procedure": "frequent_bronchoscopy",
+      "finding": "endobronchial pus removed repeatedly",
+      "use_in_ranking": false
+    },
+    {
+      "time_day": 6,
+      "procedure": "tracheostomy",
+      "finding": "performed as respiratory failure worsened",
+      "use_in_ranking": false
+    },
+    {
+      "time_day": 6,
+      "procedure": "catheter_exchange_to_28_Fr_under_one_lung_ventilation",
+      "finding": "650 mL drained over eight days with adequate drainage",
+      "use_in_ranking": false
+    }
+  ],
+  "course_observations": [
+    {"axis_id": "acute_respiratory_failure_hazard", "value": 0.20, "unit": "events_per_day", "time_day": 6, "use_in_ranking": false, "source_text_value": "post-drainage respiratory failure requiring ventilator"},
+    {"axis_id": "oxygen_requirement_level", "value": 4.0, "unit": "ordinal_0_5", "time_day": 6, "use_in_ranking": false, "source_text_value": "ventilator support after catheter clogging"},
+    {"axis_id": "source_control_need", "value": 1.0, "unit": "relative_activity_0_1", "time_day": 6, "use_in_ranking": false, "source_text_value": "incomplete drainage and residual abscess content"}
+  ],
+  "actual_treatment": [
+    {"name": "empiric meropenem plus vancomycin for severe pneumonia with lung abscess", "use_in_ranking": false},
+    {"name": "CT-guided drainage with 10-Fr pigtail catheter after five days of antibiotics", "use_in_ranking": false},
+    {"name": "larger 28-Fr catheter exchange under general anesthesia and one-lung ventilation", "use_in_ranking": false},
+    {"name": "antibiotics de-escalated to sulbactam-ampicillin after pus culture; later oral garenoxacin until day 35", "use_in_ranking": false}
+  ],
+  "outcome_follow_up": [
+    {"time_day": 5, "description": "Free from ventilator support on day 5 after catheter exchange.", "use_in_ranking": false},
+    {"time_day": 18, "description": "Drainage catheter removed on day 18 after exchange.", "use_in_ranking": false},
+    {"time_day": 40, "description": "Discharged without complications on day 40 after catheter exchange.", "use_in_ranking": false},
+    {"time_day": 210, "description": "Seven-month CT showed complete cure with only a small residual thin-walled cavity.", "use_in_ranking": false}
+  ],
+  "quality_warnings": [
+    "Culture, bronchoscopy, respiratory failure after drainage failure, catheter exchange, and treatment response are retained as non-ranking course or confirmatory evidence.",
+    "The initial presentation lacked reported numeric vitals and labs; only presentation symptoms and imaging are used for ranking."
+  ]
+}

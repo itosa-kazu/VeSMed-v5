@@ -147,31 +147,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-PULMONARY-EMBOLISM | Pulmonary embolism |
 | D-PERICARDITIS | Acute pericarditis |
 | D-ACUTE-CHOLECYSTITIS | Acute cholecystitis |
+| D-BRAIN-ABSCESS | Brain abscess |
+| D-EMPYEMA | Pleural empyema |
+| D-LUNG-ABSCESS | Lung abscess |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-BRAIN-ABSCESS | Brain abscess | critical fever/headache/focal-neurologic infection and meningitis mimic |
-| 2 | D-EMPYEMA | Pleural empyema | common/critical fever, pneumonia, hypoxemia, and source-control mimic |
-| 3 | D-LUNG-ABSCESS | Lung abscess | fever, pneumonia, aspiration, malignancy, and source-control mimic |
-| 4 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
-| 5 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
-| 6 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
-| 7 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
-| 8 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
-| 9 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis | common scrotal pain/fever GU infection mimic near prostatitis, STI, and UTI |
-| 10 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
-| 11 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
-| 12 | D-SEPTIC-ABORTION | Septic abortion | critical pelvic fever/sepsis mimic near PID, postpartum endometritis, and TOA |
-| 13 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
-| 14 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
-| 15 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
-| 16 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
-| 17 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
-| 18 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis | critical encephalitis/meningitis mimic near HSV, autoimmune encephalitis, and stroke |
-| 19 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
-| 20 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
+| 1 | D-ORBITAL-CELLULITIS | Orbital cellulitis | critical cellulitis variant with vision, sinus, cavernous sinus, and intracranial infection risks |
+| 2 | D-DIABETIC-FOOT-INFECTION | Diabetic foot infection | common soft-tissue, osteomyelitis, bacteremia, and source-control mimic |
+| 3 | D-CATHETER-ASSOCIATED-UTI | Catheter-associated urinary tract infection | common device-associated fever, pyelonephritis, bacteremia, and sepsis mimic |
+| 4 | D-RENAL-ABSCESS | Renal abscess | critical fever/flank pain source-control mimic near pyelonephritis and bacteremia |
+| 5 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess | critical PID complication with pelvic pain, fever, sepsis, and drainage/surgery decisions |
+| 6 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis | common scrotal pain/fever GU infection mimic near prostatitis, STI, and UTI |
+| 7 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
+| 8 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
+| 9 | D-SEPTIC-ABORTION | Septic abortion | critical pelvic fever/sepsis mimic near PID, postpartum endometritis, and TOA |
+| 10 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
+| 11 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
+| 12 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
+| 13 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
+| 14 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
+| 15 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis | critical encephalitis/meningitis mimic near HSV, autoimmune encephalitis, and stroke |
+| 16 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
+| 17 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
+| 18 | D-CHIKUNGUNYA | Chikungunya | common global fever, rash, and severe arthralgia mimic near dengue, rickettsiosis, and viral syndromes |
+| 19 | D-MEASLES | Measles | public-health-critical fever, cough, conjunctivitis, and rash mimic near viral exanthems and Kawasaki-like illness |
+| 20 | D-ACUTE-HEPATITIS-A | Acute hepatitis A | common fever, jaundice, and transaminitis mimic near cholangitis, leptospirosis, EBV/CMV, and acute liver injury |
 
 ## Candidate Pool Toward 200
 

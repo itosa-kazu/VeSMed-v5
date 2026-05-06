@@ -1,0 +1,521 @@
+{
+  "disease": "D-BRAIN-ABSCESS",
+  "disease_name": "Brain abscess",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Brain abscess",
+    "leaf_granularity": "specific clinical leaf for intraparenchymal brain abscess, including hematogenous, contiguous, traumatic, neurosurgical, bacterial, nocardial, fungal, and polymicrobial presentations without restricting etiology or severity",
+    "ranking_note": "Presentation ranking should use symptoms, neurologic exam, systemic inflammation, source-context evidence, and presentation-time CT/MRI evidence. Abscess aspirate culture, operative pathology, post-drainage microbiology, TEE performed after brain abscess diagnosis, and treatment response are confirmatory or treatment-context evidence unless available at the presentation snapshot."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_BA_MICROBIAL_CNS_SEEDING",
+      "display_name": "Microbial seeding of brain parenchyma",
+      "clinical_meaning": "Pathogens reach brain parenchyma through hematogenous bacteremia or septic emboli, contiguous sinus/otogenic/dental spread, direct trauma, neurosurgery, or immunosuppression-associated dissemination.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [-30, 7],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_EARLY_CEREBRITIS",
+      "display_name": "Early cerebritis and neutrophilic invasion",
+      "clinical_meaning": "Local bacterial or fungal growth induces cerebritis, blood-brain barrier disruption, neutrophilic infiltration, and early focal edema before a mature capsule forms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.003],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_ENCAPSULATED_PURULENCE",
+      "display_name": "Encapsulated purulent abscess",
+      "clinical_meaning": "Necrotic purulent material becomes surrounded by granulation tissue and a collagen capsule, producing a mass-like, often ring-enhancing lesion with diffusion restriction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [4, 30],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT",
+      "display_name": "Vasogenic edema, mass effect, and intracranial pressure",
+      "clinical_meaning": "Inflammatory vascular permeability, abscess volume, hydrocephalus, and ventricular proximity cause perilesional edema, midline shift, declining mental status, herniation risk, and need for urgent decompression.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [2, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_FOCAL_CORTICAL_IRRITATION",
+      "display_name": "Focal cortical irritation and regional neurologic dysfunction",
+      "clinical_meaning": "Abscess location and edema disturb adjacent cortex or white matter, causing seizures, aphasia, gaze deviation, facial weakness, dysmetria, visual deficits, gait dysfunction, or other focal neurologic signs.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 60],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD",
+      "display_name": "Ventricular or meningeal extension",
+      "clinical_meaning": "Periventricular abscess rupture, operative spillage, or meningeal extension causes ventriculitis, meningitis physiology, hydrocephalus, refractory intracranial hypertension, and high mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE",
+      "display_name": "Systemic inflammatory and bacteremic response",
+      "clinical_meaning": "Deep CNS infection or associated source infection can drive fever, tachycardia, leukocytosis, neutrophilia, elevated CRP or ESR, positive blood cultures, and sepsis physiology; fever may be absent, especially in indolent, pretreated, or immunosuppressed cases.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_SOURCE_CONTROL_FAILURE",
+      "display_name": "Undrained abscess or uncontrolled extra-CNS source",
+      "clinical_meaning": "Large, multiloculated, multiple, resistant, fungal, nocardial, or periventricular abscesses and uncontrolled dental, sinus, otogenic, lung, endocardial, or device sources persist despite antibiotics until drainage and active source control are achieved.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [1, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_BA_SEPTIC_ORGAN_DYSFUNCTION",
+      "display_name": "Sepsis and extra-CNS organ dysfunction",
+      "clinical_meaning": "High microbial burden, bacteremia, ventriculitis, or uncontrolled source can progress to septic shock, multi-organ failure, AKI, hypoxemia, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "M_BA_EARLY_CEREBRITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_EARLY_CEREBRITIS", "target_id": "M_BA_ENCAPSULATED_PURULENCE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 14], "confidence": "high"},
+    {"source_id": "M_BA_EARLY_CEREBRITIS", "target_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "M_BA_SOURCE_CONTROL_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "M_BA_SEPTIC_ORGAN_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "hematogenous_source_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-30, 7], "confidence": "high"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "contiguous_sinus_otogenic_source_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-60, 7], "confidence": "high"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "odontogenic_oropharyngeal_source_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-90, 7], "confidence": "high"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "endovascular_septic_embolic_source_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-30, 14], "confidence": "medium"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "pulmonary_suppurative_infection_source_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-60, 14], "confidence": "medium"},
+    {"source_id": "M_BA_MICROBIAL_CNS_SEEDING", "target_id": "direct_cns_inoculation_context_probability_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "context_gate", "lag_days_range": [-180, 14], "confidence": "medium"},
+    {"source_id": "M_BA_EARLY_CEREBRITIS", "target_id": "brain_abscess_presence", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "ring_enhancing_brain_lesion_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 21], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "diffusion_restriction_brain_abscess_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 21], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "largest_brain_abscess_diameter_cm_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 60], "confidence": "high"},
+    {"source_id": "M_BA_ENCAPSULATED_PURULENCE", "target_id": "multiple_brain_abscesses_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "confidence": "medium"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "midline_shift_mm_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "hydrocephalus_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "medium"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "altered_mental_status_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "glasgow_coma_scale", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "papilledema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "seizure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "focal_neurologic_deficit_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "facial_weakness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "gait_impairment_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "dysmetria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "language_disturbance_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 4], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "confidence": "medium"},
+    {"source_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 3], "confidence": "medium"},
+    {"source_id": "M_BA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_BA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_SOURCE_CONTROL_FAILURE", "target_id": "neurosurgical_drainage_need_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_BA_SOURCE_CONTROL_FAILURE", "target_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "confidence": "high"},
+    {"source_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "target_id": "ventricular_proximity_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "target_id": "ventriculitis_activity_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "target_id": "meningeal_signs_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "confidence": "medium"},
+    {"source_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "target_id": "intraventricular_rupture_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "confidence": "high"},
+    {"source_id": "M_BA_FOCAL_CORTICAL_IRRITATION", "target_id": "seizure_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "confidence": "medium"},
+    {"source_id": "M_BA_VENTRICULAR_MENINGEAL_SPREAD", "target_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "target_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "confidence": "high"},
+    {"source_id": "M_BA_SOURCE_CONTROL_FAILURE", "target_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [1, 30], "confidence": "medium"},
+    {"source_id": "M_BA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "headache_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 30], "axis_role": "finding"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "dizziness_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "axis_role": "finding"},
+    {"axis_id": "cough_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 30], "axis_role": "finding"},
+    {"axis_id": "back_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.06], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 30], "axis_role": "finding"},
+    {"axis_id": "fever_history_activity", "category": "history", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "baseline_range": [36.0, 37.2], "peak_day_range": [0, 14], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "baseline_range": [55, 95], "peak_day_range": [0, 14], "peak_value_range": [60, 140], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "baseline_range": [10, 20], "peak_day_range": [0, 14], "peak_value_range": [10, 35], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "baseline_range": [95, 100], "peak_day_range": [0, 14], "peak_value_range": [85, 100], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [100, 145], "peak_day_range": [0, 14], "peak_value_range": [70, 190], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "baseline_range": [70, 105], "peak_day_range": [0, 14], "peak_value_range": [45, 125], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "axis_role": "measurement"},
+    {"axis_id": "glasgow_coma_scale", "category": "physical_finding", "unit": "score_3_15", "log_scale": false, "baseline_range": [15, 15], "peak_day_range": [0, 14], "peak_value_range": [3, 15], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 60], "axis_role": "measurement"},
+    {"axis_id": "altered_mental_status_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 60], "axis_role": "finding"},
+    {"axis_id": "neurobehavioral_change_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 21], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 60], "axis_role": "finding"},
+    {"axis_id": "seizure_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 60], "axis_role": "finding"},
+    {"axis_id": "focal_neurologic_deficit_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 180], "axis_role": "finding"},
+    {"axis_id": "facial_weakness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 180], "axis_role": "satellite", "parent_axis_id": "focal_neurologic_deficit_activity"},
+    {"axis_id": "gait_impairment_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 180], "axis_role": "satellite", "parent_axis_id": "focal_neurologic_deficit_activity"},
+    {"axis_id": "dysmetria_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 180], "axis_role": "satellite", "parent_axis_id": "focal_neurologic_deficit_activity"},
+    {"axis_id": "language_disturbance_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 180], "axis_role": "satellite", "parent_axis_id": "focal_neurologic_deficit_activity"},
+    {"axis_id": "meningeal_signs_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "papilledema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 21], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "baseline_range": [4.0, 10.0], "peak_day_range": [0, 14], "peak_value_range": [3.0, 30.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "neutrophil_fraction", "category": "lab", "unit": "percent", "log_scale": false, "baseline_range": [40, 75], "peak_day_range": [0, 14], "peak_value_range": [45, 95], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "baseline_range": [1.5, 7.5], "peak_day_range": [0, 14], "peak_value_range": [2.0, 25.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "hemoglobin", "category": "lab", "unit": "g/dL", "log_scale": false, "baseline_range": [12.0, 17.0], "peak_day_range": [0, 30], "peak_value_range": [8.0, 17.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "axis_role": "measurement"},
+    {"axis_id": "platelet_count", "category": "lab", "unit": "10^9/L", "log_scale": false, "baseline_range": [150, 400], "peak_day_range": [0, 21], "peak_value_range": [100, 550], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "baseline_range": [0.1, 5.0], "peak_day_range": [0, 14], "peak_value_range": [1.0, 300.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "axis_role": "measurement"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab", "unit": "mm_per_hr", "log_scale": false, "baseline_range": [0, 20], "peak_day_range": [1, 30], "peak_value_range": [10, 120], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 90], "axis_role": "measurement"},
+    {"axis_id": "serum_procalcitonin", "category": "lab", "unit": "ng/mL", "log_scale": true, "baseline_range": [0.01, 0.1], "peak_day_range": [0, 7], "peak_value_range": [0.02, 20.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "axis_role": "measurement"},
+    {"axis_id": "serum_sodium", "category": "lab", "unit": "mmol/L", "log_scale": false, "baseline_range": [135, 145], "peak_day_range": [0, 14], "peak_value_range": [120, 145], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab", "unit": "mg/dL", "log_scale": true, "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.5, 5.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "axis_role": "measurement"},
+    {"axis_id": "serum_lactate", "category": "lab", "unit": "mmol/L", "log_scale": false, "baseline_range": [0.5, 2.0], "peak_day_range": [0, 3], "peak_value_range": [0.8, 8.0], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 3], "axis_role": "measurement"},
+    {"axis_id": "brain_abscess_presence", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.6, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "ring_enhancing_brain_lesion_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [3, 30], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "diffusion_restriction_brain_abscess_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "largest_brain_abscess_diameter_cm_in_D-BRAIN-ABSCESS", "category": "imaging_measurement", "unit": "cm", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 60], "peak_value_range": [0.5, 6.5], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "multiple_brain_abscesses_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 60], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "midline_shift_mm_in_D-BRAIN-ABSCESS", "category": "imaging_measurement", "unit": "mm", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 20.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 60], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "hydrocephalus_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "ventricular_proximity_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 90], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "ventriculitis_activity_in_D-BRAIN-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [3, 60], "axis_role": "satellite", "parent_axis_id": "brain_abscess_presence"},
+    {"axis_id": "hematogenous_source_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "contiguous_sinus_otogenic_source_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.04], "peak_day_range": [-90, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 120], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "odontogenic_oropharyngeal_source_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.06], "peak_day_range": [-180, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "endovascular_septic_embolic_source_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "pulmonary_suppurative_infection_source_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-60, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 90], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "direct_cns_inoculation_context_probability_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [-180, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "axis_role": "finding"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "brain_abscess_aspirate_culture_positivity_probability_in_D-BRAIN-ABSCESS", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 60], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.2, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "anaerobic_cns_antibiotic_coverage_probability_in_D-BRAIN-ABSCESS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "anti_staphylococcal_cns_coverage_probability_in_D-BRAIN-ABSCESS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "gram_negative_cns_coverage_probability_in_D-BRAIN-ABSCESS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "nocardia_cns_coverage_probability_in_D-BRAIN-ABSCESS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.2], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "immunosuppression_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "axis_role": "finding"},
+    {"axis_id": "diabetes_mellitus_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.15], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [365, 3650], "decline_half_life_days": [365, 3650], "axis_role": "finding"},
+    {"axis_id": "right_to_left_cardiac_shunt_context_probability_in_D-BRAIN-ABSCESS", "category": "risk_context", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.01], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [365, 3650], "decline_half_life_days": [365, 3650], "axis_role": "finding"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.7, 1.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "neurosurgical_drainage_need_in_D-BRAIN-ABSCESS", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "intraventricular_rupture_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 30], "peak_value_range": [0.0001, 0.25], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [2, 60], "axis_role": "measurement"},
+    {"axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 21], "peak_value_range": [0.0001, 0.2], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 60], "axis_role": "measurement"},
+    {"axis_id": "seizure_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000005, 0.0001], "peak_day_range": [0, 30], "peak_value_range": [0.0001, 0.12], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [7, 180], "axis_role": "measurement"},
+    {"axis_id": "neurologic_disability_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000005, 0.00005], "peak_day_range": [0, 60], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [3, 120], "decline_half_life_days": [30, 365], "axis_role": "measurement"},
+    {"axis_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 60], "peak_value_range": [0.0005, 0.1], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 90], "axis_role": "measurement"},
+    {"axis_id": "relapse_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000005, 0.0001], "peak_day_range": [14, 180], "peak_value_range": [0.0001, 0.04], "plateau_duration_days": [14, 365], "decline_half_life_days": [30, 365], "axis_role": "measurement"},
+    {"axis_id": "septic_shock_hazard_in_D-BRAIN-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 21], "peak_value_range": [0.0001, 0.1], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "axis_role": "measurement"},
+    {"axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.000005, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.0001, 0.15], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [7, 120], "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "brain_abscess_presence", "target_axis_id": "ring_enhancing_brain_lesion_activity_in_D-BRAIN-ABSCESS", "coupling_type": "drift", "direction": "positive", "strength": 0.75, "lag_days_range": [0, 3], "clinical_rationale": "Mature brain abscess commonly appears as a ring-enhancing intraparenchymal lesion."},
+    {"source_axis_id": "brain_abscess_presence", "target_axis_id": "perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "coupling_type": "drift", "direction": "positive", "strength": 0.65, "lag_days_range": [0, 3], "clinical_rationale": "Abscess inflammation produces surrounding vasogenic edema."},
+    {"source_axis_id": "largest_brain_abscess_diameter_cm_in_D-BRAIN-ABSCESS", "target_axis_id": "midline_shift_mm_in_D-BRAIN-ABSCESS", "coupling_type": "drift", "direction": "positive", "strength": 0.65, "lag_days_range": [0, 3], "clinical_rationale": "Large lesions and edema are more likely to displace midline structures."},
+    {"source_axis_id": "perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "target_axis_id": "altered_mental_status_activity", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.55, "lag_days_range": [0, 2], "clinical_rationale": "Edema and elevated intracranial pressure worsen mental status."},
+    {"source_axis_id": "midline_shift_mm_in_D-BRAIN-ABSCESS", "target_axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.8, "lag_days_range": [0, 1], "clinical_rationale": "Mass effect and midline shift are direct substrates for herniation."},
+    {"source_axis_id": "hydrocephalus_activity_in_D-BRAIN-ABSCESS", "target_axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.65, "lag_days_range": [0, 1], "clinical_rationale": "Hydrocephalus increases intracranial pressure hazard."},
+    {"source_axis_id": "ventricular_proximity_activity_in_D-BRAIN-ABSCESS", "target_axis_id": "intraventricular_rupture_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.85, "lag_days_range": [0, 7], "clinical_rationale": "Periventricular abscesses have high risk of ventricular rupture."},
+    {"source_axis_id": "intraventricular_rupture_hazard_in_D-BRAIN-ABSCESS", "target_axis_id": "ventriculitis_activity_in_D-BRAIN-ABSCESS", "coupling_type": "event_transition", "direction": "positive", "strength": 0.85, "lag_days_range": [0, 2], "clinical_rationale": "Rupture or spillage introduces purulence into ventricular CSF."},
+    {"source_axis_id": "ventriculitis_activity_in_D-BRAIN-ABSCESS", "target_axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.8, "lag_days_range": [0, 7], "clinical_rationale": "Ventriculitis is one of the strongest mortality drivers in brain abscess."},
+    {"source_axis_id": "focal_neurologic_deficit_activity", "target_axis_id": "neurologic_disability_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.65, "lag_days_range": [0, 14], "clinical_rationale": "Focal deficits may persist as disability depending on lesion location and delay."},
+    {"source_axis_id": "seizure_activity", "target_axis_id": "seizure_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.65, "lag_days_range": [0, 7], "clinical_rationale": "Presentation seizure predicts recurrent seizure hazard."},
+    {"source_axis_id": "source_control_need", "target_axis_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.75, "lag_days_range": [0, 7], "clinical_rationale": "Large or complex abscesses that need drainage remain uncontrolled without source control."},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "negative", "strength": 0.75, "lag_days_range": [0, 7], "clinical_rationale": "Successful drainage and primary-source control lower persistent abscess hazard."},
+    {"source_axis_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "target_axis_id": "relapse_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "event_transition", "direction": "positive", "strength": 0.7, "lag_days_range": [14, 120], "clinical_rationale": "Incomplete drainage or inactive antimicrobial therapy increases recurrence."},
+    {"source_axis_id": "serum_crp", "target_axis_id": "erythrocyte_sedimentation_rate", "coupling_type": "noise_correlation", "direction": "positive", "strength": 0.4, "lag_days_range": [0, 7], "clinical_rationale": "Both reflect systemic inflammation, with ESR often lagging."},
+    {"source_axis_id": "fever_history_activity", "target_axis_id": "body_temperature", "coupling_type": "noise_correlation", "direction": "positive", "strength": 0.35, "lag_days_range": [0, 1], "clinical_rationale": "Fever history and measured temperature covary but can diverge in afebrile or pretreated abscess."},
+    {"source_axis_id": "blood_culture_positivity_probability", "target_axis_id": "hematogenous_source_probability_in_D-BRAIN-ABSCESS", "coupling_type": "drift", "direction": "positive", "strength": 0.55, "lag_days_range": [0, 3], "clinical_rationale": "Positive blood culture supports bloodstream seeding or septic embolic source."},
+    {"source_axis_id": "endovascular_septic_embolic_source_probability_in_D-BRAIN-ABSCESS", "target_axis_id": "multiple_brain_abscesses_activity_in_D-BRAIN-ABSCESS", "coupling_type": "drift", "direction": "positive", "strength": 0.45, "lag_days_range": [0, 14], "clinical_rationale": "Embolic sources can produce multifocal brain abscesses."},
+    {"source_axis_id": "septic_shock_hazard_in_D-BRAIN-ABSCESS", "target_axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.75, "lag_days_range": [0, 7], "clinical_rationale": "Shock and multi-organ failure dominate short-term mortality."},
+    {"source_axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "target_axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "coupling_type": "hazard_drift", "direction": "positive", "strength": 0.85, "lag_days_range": [0, 3], "clinical_rationale": "Herniation physiology is immediately life-threatening."}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "empiric_iv_vancomycin_plus_cns_gram_negative_agent_plus_metronidazole",
+      "treatment_name": "Empiric IV vancomycin plus CNS-penetrating gram-negative agent plus metronidazole",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Broad empiric antimicrobial vector field while abscess source, culture, prior procedures, and susceptibility are unresolved.",
+      "direct_targets": ["M_BA_EARLY_CEREBRITIS", "M_BA_ENCAPSULATED_PURULENCE", "M_BA_SYSTEMIC_PYOGENIC_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_cns_antibiotic_coverage_probability_in_D-BRAIN-ABSCESS", "anti_staphylococcal_cns_coverage_probability_in_D-BRAIN-ABSCESS", "gram_negative_cns_coverage_probability_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "weakens_or_nullifies_antimicrobial_effect", "clinical_rationale": "Inactive antimicrobial coverage does not reduce microbial burden."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "partial_effect_until_drainage_or_primary_source_control", "clinical_rationale": "Large collections often require drainage despite active antibiotics."}
+      ]
+    },
+    {
+      "treatment_id": "ceftriaxone_or_cefotaxime_plus_metronidazole_context",
+      "treatment_name": "Ceftriaxone or cefotaxime plus metronidazole context",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Narrower antimicrobial vector field for susceptible community or contiguous-source bacterial abscess when staphylococcal or resistant gram-negative coverage is not required by context.",
+      "direct_targets": ["M_BA_EARLY_CEREBRITIS", "M_BA_ENCAPSULATED_PURULENCE", "M_BA_SYSTEMIC_PYOGENIC_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_cns_antibiotic_coverage_probability_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "anti_staphylococcal_cns_coverage_probability_in_D-BRAIN-ABSCESS", "condition": "needed_but_low", "effect": "narrows_effect_against_staphylococcal_or_post_neurosurgical_context", "clinical_rationale": "Ceftriaxone plus metronidazole does not reliably cover MRSA or some healthcare-associated pathogens."},
+        {"axis_id": "gram_negative_cns_coverage_probability_in_D-BRAIN-ABSCESS", "condition": "susceptible_enterobacterales_present", "effect": "supports_effect", "clinical_rationale": "Susceptible gram-negative brain abscess can improve with CNS-penetrating beta-lactam therapy."}
+      ]
+    },
+    {
+      "treatment_id": "meropenem_based_broad_cns_coverage",
+      "treatment_name": "Meropenem-based broad CNS coverage",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Broad beta-lactam vector field for resistant gram-negative, polymicrobial, post-neurosurgical, or complex source contexts.",
+      "direct_targets": ["M_BA_EARLY_CEREBRITIS", "M_BA_ENCAPSULATED_PURULENCE", "M_BA_SYSTEMIC_PYOGENIC_RESPONSE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "gram_negative_cns_coverage_probability_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens_microbiologic_clearance", "clinical_rationale": "Meropenem is useful only when organism and CNS penetration context are appropriate."},
+        {"axis_id": "nocardia_cns_coverage_probability_in_D-BRAIN-ABSCESS", "condition": "nocardia_context_high", "effect": "may_require_combination_or_alternative_agents", "clinical_rationale": "Nocardia therapy is species and susceptibility dependent."}
+      ]
+    },
+    {
+      "treatment_id": "pathogen_directed_cns_penetrating_antibiotics_6_to_8_weeks_or_longer",
+      "treatment_name": "Pathogen-directed CNS-penetrating antibiotics for extended duration",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Culture, molecular, or source-directed antimicrobial vector field after organism and susceptibility context becomes known.",
+      "direct_targets": ["M_BA_EARLY_CEREBRITIS", "M_BA_ENCAPSULATED_PURULENCE", "M_BA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "brain_abscess_aspirate_culture_positivity_probability_in_D-BRAIN-ABSCESS", "condition": "high", "effect": "improves_target_selection", "clinical_rationale": "Abscess culture can shift therapy from empiric to active pathogen-directed coverage."},
+        {"axis_id": "relapse_hazard_in_D-BRAIN-ABSCESS", "condition": "high", "effect": "requires_longer_duration_or_reassessment", "clinical_rationale": "Recurrent or slow-resolving abscess requires longer active therapy and source reassessment."}
+      ]
+    },
+    {
+      "treatment_id": "nocardia_active_cns_regimen",
+      "treatment_name": "Nocardia-active CNS regimen",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Species and susceptibility-conditioned therapy for nocardial brain abscess, commonly using TMP-SMX, carbapenem, amikacin, linezolid, or fluoroquinolone combinations depending on susceptibility.",
+      "direct_targets": ["M_BA_ENCAPSULATED_PURULENCE", "M_BA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["nocardia_cns_coverage_probability_in_D-BRAIN-ABSCESS", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "nocardia_cns_coverage_probability_in_D-BRAIN-ABSCESS", "condition": "low", "effect": "weakens_or_nullifies_effect", "clinical_rationale": "Standard pyogenic abscess regimens may miss Nocardia."},
+        {"axis_id": "immunosuppression_activity", "condition": "high", "effect": "requires_longer_or_combination_therapy_context", "clinical_rationale": "Immunosuppression raises relapse and dissemination risk."}
+      ]
+    },
+    {
+      "treatment_id": "stereotactic_aspiration_or_craniotomy_drainage",
+      "treatment_name": "Stereotactic aspiration or craniotomy drainage",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Source-control vector field that lowers purulent volume, mass effect, and diagnostic uncertainty when the lesion is large, accessible, worsening, or microbiology is needed.",
+      "direct_targets": ["M_BA_ENCAPSULATED_PURULENCE", "M_BA_VASOGENIC_EDEMA_MASS_EFFECT", "M_BA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["neurosurgical_drainage_need_in_D-BRAIN-ABSCESS", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "largest_brain_abscess_diameter_cm_in_D-BRAIN-ABSCESS", "condition": "large", "effect": "strengthens_source_control_benefit", "clinical_rationale": "Large abscesses benefit from volume reduction and culture."},
+        {"axis_id": "ventricular_proximity_activity_in_D-BRAIN-ABSCESS", "condition": "high", "effect": "raises_procedural_risk_and_urgency", "clinical_rationale": "Periventricular location increases rupture or spillage consequences."}
+      ]
+    },
+    {
+      "treatment_id": "repeat_drainage_or_capsule_excision_for_persistent_or_recurrent_abscess",
+      "treatment_name": "Repeat drainage or capsule excision for persistent or recurrent abscess",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Escalated source-control vector field when imaging or symptoms show enlarging, recurrent, multiloculated, or incompletely drained abscess.",
+      "direct_targets": ["M_BA_ENCAPSULATED_PURULENCE", "M_BA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "relapse_hazard_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "multiple_brain_abscesses_activity_in_D-BRAIN-ABSCESS", "condition": "high", "effect": "may_limit_complete_surgical_effect", "clinical_rationale": "Multifocal disease may need combined medical and selective surgical control."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "source_control_alone_insufficient", "clinical_rationale": "Drainage without active antimicrobial coverage can relapse."}
+      ]
+    },
+    {
+      "treatment_id": "primary_source_control_dental_sinus_otogenic_lung_or_endocarditis",
+      "treatment_name": "Primary source control for dental, sinus, otogenic, pulmonary, or endocardial source",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Extra-CNS source-control vector field that lowers reseeding from dental disease, sinus or ear infection, lung abscess, empyema, endocarditis, or bacteremia.",
+      "direct_targets": ["M_BA_MICROBIAL_CNS_SEEDING", "M_BA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["odontogenic_oropharyngeal_source_probability_in_D-BRAIN-ABSCESS", "contiguous_sinus_otogenic_source_probability_in_D-BRAIN-ABSCESS", "pulmonary_suppurative_infection_source_probability_in_D-BRAIN-ABSCESS", "endovascular_septic_embolic_source_probability_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "low", "effect": "sustains_reseeding_or_relapse", "clinical_rationale": "Untreated primary source can maintain bacteremia or contiguous spread."}
+      ]
+    },
+    {
+      "treatment_id": "dexamethasone_for_life_threatening_edema_or_mass_effect",
+      "treatment_name": "Dexamethasone for life-threatening edema or mass effect context",
+      "modality": "push_state",
+      "context_specific_role": "Temporary anti-edema vector field for severe mass effect, hydrocephalus, or impending herniation while antimicrobial and source-control therapy proceed.",
+      "direct_targets": ["perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "midline_shift_mm_in_D-BRAIN-ABSCESS", "brain_herniation_hazard_in_D-BRAIN-ABSCESS"],
+      "required_context_axes": ["perilesional_cerebral_edema_activity_in_D-BRAIN-ABSCESS", "brain_herniation_hazard_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "does_not_replace_drainage_or_antimicrobials", "clinical_rationale": "Steroids may reduce edema but do not sterilize abscess."},
+        {"axis_id": "immunosuppression_activity", "condition": "high", "effect": "may_worsen_host_control_if_unchecked", "clinical_rationale": "Steroid exposure can blunt immune control and should be context-limited."}
+      ]
+    },
+    {
+      "treatment_id": "antiepileptic_therapy_for_seizure_control",
+      "treatment_name": "Antiepileptic therapy for seizure control",
+      "modality": "push_state",
+      "context_specific_role": "Neurophysiologic vector field reducing seizure activity and seizure hazard without directly sterilizing abscess.",
+      "direct_targets": ["seizure_activity", "seizure_hazard_in_D-BRAIN-ABSCESS"],
+      "required_context_axes": ["seizure_activity", "seizure_hazard_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "M_BA_ENCAPSULATED_PURULENCE", "condition": "high", "effect": "symptomatic_only_until_abscess_control", "clinical_rationale": "Ongoing cortical irritation persists until abscess and edema improve."}
+      ]
+    },
+    {
+      "treatment_id": "external_ventricular_drain_or_csf_diversion_for_hydrocephalus",
+      "treatment_name": "External ventricular drainage or CSF diversion for hydrocephalus",
+      "modality": "push_state",
+      "context_specific_role": "CSF-pressure vector field for hydrocephalus, ventriculitis-associated obstruction, or refractory intracranial hypertension.",
+      "direct_targets": ["hydrocephalus_activity_in_D-BRAIN-ABSCESS", "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "altered_mental_status_activity"],
+      "required_context_axes": ["hydrocephalus_activity_in_D-BRAIN-ABSCESS", "ventriculitis_activity_in_D-BRAIN-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "pressure_control_without_microbiologic_clearance", "clinical_rationale": "CSF diversion treats pressure but not the infectious source."}
+      ]
+    },
+    {
+      "treatment_id": "intraventricular_or_intrathecal_antibiotics_for_refractory_ventriculitis",
+      "treatment_name": "Intraventricular or intrathecal antibiotics for refractory ventriculitis context",
+      "modality": "reshape_landscape",
+      "context_specific_role": "Conditional CSF-space antimicrobial vector field for refractory ventriculitis or gram-negative CNS infection when systemic therapy and drainage are insufficient.",
+      "direct_targets": ["M_BA_VENTRICULAR_MENINGEAL_SPREAD", "ventriculitis_activity_in_D-BRAIN-ABSCESS"],
+      "required_context_axes": ["ventriculitis_activity_in_D-BRAIN-ABSCESS", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "ventriculitis_activity_in_D-BRAIN-ABSCESS", "condition": "low_or_absent", "effect": "little_direct_benefit", "clinical_rationale": "CSF-space antibiotics are context-specific to ventricular or meningeal infection."}
+      ]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "contiguous_sinus_otogenic_or_mastoid_infection",
+      "category": "source_context",
+      "modulation": {"present": {"P_disease_ratio": [2.0, 12.0], "trajectory_modulation": "Raises contiguous-source seeding and may produce temporal, cerebellar, or frontal abscess patterns.", "axis_response_modulation": [{"axis_id": "M_BA_MICROBIAL_CNS_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0], "clinical_rationale": "Adjacent infection can directly extend into intracranial compartments."}, {"axis_id": "contiguous_sinus_otogenic_source_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [2.0, 10.0], "clinical_rationale": "Source-context evidence increases probability of contiguous spread."}]}},
+      "clinical_rationale": "Sinusitis, otitis, and mastoiditis are classic sources of brain abscess."
+    },
+    {
+      "factor": "dental_or_oropharyngeal_infection",
+      "category": "source_context",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 8.0], "trajectory_modulation": "Raises Streptococcus anginosus group and anaerobic source probability.", "axis_response_modulation": [{"axis_id": "odontogenic_oropharyngeal_source_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [2.0, 10.0], "clinical_rationale": "Oral flora are frequent pathogens in brain abscess."}, {"axis_id": "anaerobic_cns_antibiotic_coverage_probability_in_D-BRAIN-ABSCESS", "effect": "higher_context_importance", "magnitude_factor_range": [1.2, 3.0], "clinical_rationale": "Dental sources increase anaerobic coverage relevance."}]}},
+      "clinical_rationale": "Dental disease can seed brain abscess by contiguous or hematogenous routes."
+    },
+    {
+      "factor": "infective_endocarditis_or_septic_emboli",
+      "category": "source_context",
+      "modulation": {"present": {"P_disease_ratio": [2.0, 10.0], "trajectory_modulation": "Raises hematogenous and multifocal abscess probability.", "axis_response_modulation": [{"axis_id": "hematogenous_source_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Endocarditis can seed brain parenchyma through septic emboli."}, {"axis_id": "multiple_brain_abscesses_activity_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0], "clinical_rationale": "Septic emboli may produce multiple lesions."}]}},
+      "clinical_rationale": "Endovascular infection is an important source and mimic in brain abscess evaluation."
+    },
+    {
+      "factor": "pulmonary_abscess_empyema_or_chronic_lung_source",
+      "category": "source_context",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 8.0], "trajectory_modulation": "Raises hematogenous spread probability and oral-flora or nocardial etiologic context.", "axis_response_modulation": [{"axis_id": "pulmonary_suppurative_infection_source_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [2.0, 10.0], "clinical_rationale": "Pulmonary abscess or empyema may share pathogens with brain abscess or represent source disease."}]}},
+      "clinical_rationale": "Pulmonary infection can be a source, comorbidity, or mimic of hematogenous brain abscess."
+    },
+    {
+      "factor": "immunosuppression_transplant_hiv_malignancy_or_chronic_steroids",
+      "category": "host_modifier",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 10.0], "trajectory_modulation": "Raises opportunistic, fungal, nocardial, toxoplasma-like mimic, multifocal, and blunted inflammatory presentation probability.", "axis_response_modulation": [{"axis_id": "M_BA_MICROBIAL_CNS_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0], "clinical_rationale": "Immunosuppression increases CNS infection susceptibility."}, {"axis_id": "fever_history_activity", "effect": "lower_or_blunted_peak", "magnitude_factor_range": [0.3, 0.9], "clinical_rationale": "Inflammatory response may be blunted."}, {"axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Opportunistic pathogens and host frailty worsen outcome."}]}},
+      "clinical_rationale": "Immune compromise changes etiology, inflammatory signal, recurrence risk, and mortality."
+    },
+    {
+      "factor": "diabetes_cirrhosis_alcohol_use_or_poor_host_reserve",
+      "category": "host_modifier",
+      "modulation": {"present": {"P_disease_ratio": [1.2, 5.0], "trajectory_modulation": "Raises invasive gram-negative or polymicrobial infection risk and septic mortality context.", "axis_response_modulation": [{"axis_id": "M_BA_SYSTEMIC_PYOGENIC_RESPONSE", "effect": "higher_peak", "magnitude_factor_range": [1.1, 3.0], "clinical_rationale": "Host factors raise invasive infection and sepsis risk."}, {"axis_id": "septic_shock_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Comorbidity worsens septic reserve."}]}},
+      "clinical_rationale": "Diabetes, cirrhosis, and alcohol use are recognized risk contexts for invasive brain abscess pathogens."
+    },
+    {
+      "factor": "head_trauma_neurosurgery_or_csf_device",
+      "category": "source_context",
+      "modulation": {"present": {"P_disease_ratio": [2.0, 15.0], "trajectory_modulation": "Raises direct inoculation, healthcare-associated gram-negative, staphylococcal, and ventriculitis context.", "axis_response_modulation": [{"axis_id": "direct_cns_inoculation_context_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [3.0, 20.0], "clinical_rationale": "Direct inoculation or device infection changes pathogenesis."}, {"axis_id": "anti_staphylococcal_cns_coverage_probability_in_D-BRAIN-ABSCESS", "effect": "higher_context_importance", "magnitude_factor_range": [1.5, 4.0], "clinical_rationale": "Post-neurosurgical abscess raises staphylococcal coverage relevance."}]}},
+      "clinical_rationale": "Trauma and neurosurgery create direct access routes and alter pathogen distribution."
+    },
+    {
+      "factor": "right_to_left_shunt_or_cyanotic_congenital_heart_disease",
+      "category": "host_modifier",
+      "modulation": {"present": {"P_disease_ratio": [3.0, 20.0], "trajectory_modulation": "Raises hematogenous brain seeding by bypassing pulmonary filtration.", "axis_response_modulation": [{"axis_id": "right_to_left_cardiac_shunt_context_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [5.0, 30.0], "clinical_rationale": "Right-to-left shunts are a classic brain abscess risk factor."}, {"axis_id": "hematogenous_source_probability_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [2.0, 8.0], "clinical_rationale": "Hematogenous seeding becomes more likely."}]}},
+      "clinical_rationale": "Cyanotic congenital heart disease and shunts increase brain abscess risk."
+    },
+    {
+      "factor": "large_periventricular_or_multiloculated_abscess",
+      "category": "disease_severity_modifier",
+      "modulation": {"present": {"P_disease_ratio": [1.0, 2.0], "trajectory_modulation": "Raises mass-effect, rupture, source-control, and mortality hazards.", "axis_response_modulation": [{"axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0], "clinical_rationale": "Large lesions and edema increase herniation risk."}, {"axis_id": "intraventricular_rupture_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [2.0, 12.0], "clinical_rationale": "Periventricular location increases rupture risk."}, {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0], "clinical_rationale": "Large or multiloculated abscess often needs drainage."}]}},
+      "clinical_rationale": "Size, ventricular proximity, and multiloculation drive poor outcome and source-control dependence."
+    },
+    {
+      "factor": "delayed_diagnosis_or_inactive_prior_antibiotics",
+      "category": "care_context",
+      "modulation": {"present": {"P_disease_ratio": [1.0, 3.0], "trajectory_modulation": "Allows capsule maturation, enlargement, recurrence, and neurologic injury.", "axis_response_modulation": [{"axis_id": "uncontrolled_brain_abscess_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Delay or inactive therapy sustains abscess growth."}, {"axis_id": "relapse_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Prior inactive treatment can select persistence or recurrence."}]}},
+      "clinical_rationale": "Brain abscess outcomes depend heavily on early imaging, active therapy, and source control."
+    },
+    {
+      "factor": "low_presenting_gcs_or_progressive_mental_status_decline",
+      "category": "prognostic_modifier",
+      "modulation": {"present": {"P_disease_ratio": [1.0, 2.0], "trajectory_modulation": "Marks advanced intracranial pressure, edema, or sepsis physiology.", "axis_response_modulation": [{"axis_id": "mortality_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0], "clinical_rationale": "Low GCS is a strong poor prognostic marker in brain abscess."}, {"axis_id": "brain_herniation_hazard_in_D-BRAIN-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Declining consciousness often reflects mass effect or intracranial hypertension."}]}},
+      "clinical_rationale": "Mental status at presentation is a major severity and outcome signal."
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "urgent_neuroimaging_and_neurosurgical_monitoring",
+      "care_name": "Urgent CT/MRI and neurosurgical monitoring",
+      "clinical_role": "Defines abscess location, size, edema, hydrocephalus, ventricular proximity, and drainage feasibility."
+    },
+    {
+      "care_id": "intracranial_pressure_and_airway_hemodynamic_support",
+      "care_name": "Intracranial pressure, airway, and hemodynamic support",
+      "clinical_role": "Supports oxygenation, perfusion, seizure control, and cerebral edema management during definitive therapy."
+    },
+    {
+      "care_id": "avoid_lumbar_puncture_when_mass_effect_or_herniation_risk",
+      "care_name": "Avoid lumbar puncture when mass effect or herniation risk is present",
+      "clinical_role": "Protects against precipitating herniation when imaging shows mass lesion, edema, midline shift, or hydrocephalus."
+    },
+    {
+      "care_id": "serial_mri_or_ct_response_monitoring",
+      "care_name": "Serial MRI or CT response monitoring",
+      "clinical_role": "Tracks abscess shrinkage, edema, recurrence, ventriculitis, and need for repeat drainage."
+    },
+    {
+      "care_id": "rehabilitation_after_neurologic_deficit",
+      "care_name": "Rehabilitation after neurologic deficit",
+      "clinical_role": "Addresses motor, speech, gait, seizure, and cognitive sequelae after infection control."
+    },
+    {
+      "care_id": "microbiology_sampling_and_susceptibility_followup",
+      "care_name": "Microbiology sampling and susceptibility follow-up",
+      "clinical_role": "Converts empiric therapy into active pathogen-directed coverage and identifies Nocardia, fungal, anaerobic, or resistant pathogens."
+    }
+  ]
+}
