@@ -1,0 +1,1826 @@
+{
+  "disease": "D-POLYMYOSITIS",
+  "disease_name": "Polymyositis",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Polymyositis",
+    "leaf_granularity": "first-layer clinical disease leaf for polymyositis, without adding antisynthetase syndrome, dermatomyositis, inclusion body myositis, immune-mediated necrotizing myopathy, overlap syndrome, trigger, severity, or organ-complication qualifiers to the disease name",
+    "subtype_policy": "Trigger context, malignancy context, viral/post-infectious context, connective-tissue-disease overlap context, ILD, myocarditis, rhabdomyolysis, and treatment-refractory course are represented as mechanisms, axes, risk factors, event hazards, and treatment modifiers. Closely related myositis subtypes and mimics can become separate leaves later.",
+    "ranking_note": "Presentation ranking may use observed proximal weakness, myalgia, dysphagia, respiratory muscle weakness, CK/myoglobin/LDH/transaminases, inflammatory markers, renal injury from rhabdomyolysis, and presentation imaging when available. Muscle biopsy, EMG, myositis antibodies, final paper diagnosis, and treatment response should be confirmatory or non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "display_name": "CD8-predominant endomysial autoimmune myositis",
+      "clinical_meaning": "Immune-mediated endomysial inflammation and myofiber injury drive the core polymyositis muscle manifold.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [7, 90],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [21, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "display_name": "Myofiber necrosis, regeneration, and enzyme leakage",
+      "clinical_meaning": "Active myofiber injury leaks CK, myoglobin, LDH, AST, and ALT and can progress to rhabdomyolysis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "display_name": "Proximal, bulbar, and respiratory muscle weakness",
+      "clinical_meaning": "Inflammatory muscle dysfunction causes shoulder/hip girdle weakness, neck flexor weakness, dysphagia, impaired mobility, and occasionally respiratory muscle failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [7, 120],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [21, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "display_name": "Systemic inflammatory activity",
+      "clinical_meaning": "Cytokine and acute-phase activity can produce fatigue, fever, CRP/ESR elevation, anemia of inflammation, thrombocytosis, hypoalbuminemia, and weight loss.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "display_name": "Extramuscular lung and cardiac involvement",
+      "clinical_meaning": "A subset of polymyositis courses involve ILD, myocarditis, arrhythmia, or other organ-level inflammatory complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [21, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "display_name": "Rhabdomyolysis and myoglobinuric kidney injury pathway",
+      "clinical_meaning": "Very high myofiber injury can create myoglobinuria, oliguria, creatinine/BUN rise, and acute kidney injury hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 30],
+      "phase": "active_myositis",
+      "clinical_rationale": "Endomysial immune injury damages myofibers and raises muscle enzymes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [3, 90],
+      "phase": "whole_course",
+      "clinical_rationale": "Inflamed proximal and axial muscles lose strength over days to months.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Active autoimmune myositis can generate systemic acute-phase activity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 7],
+      "phase": "severe_myofiber_injury",
+      "clinical_rationale": "Extreme muscle breakdown can become rhabdomyolysis with renal tubular injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "muscle_mri_edema_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "diagnostic_workup",
+      "clinical_rationale": "Active inflammatory myositis can produce MRI muscle edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "myopathic_emg_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "diagnostic_workup",
+      "clinical_rationale": "Needle EMG can show irritable myopathy with fibrillations and short-duration polyphasic motor units.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+      "target_id": "skeletal_muscle_bone_scan_uptake_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "diagnostic_workup",
+      "clinical_rationale": "Some active polymyositis cases show increased radionuclide uptake in inflamed muscles.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "proximal_muscle_weakness_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "Symmetric proximal weakness is the dominant clinical expression of polymyositis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "neck_flexor_weakness_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Neck flexors can be involved with axial myositis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "functional_mobility_impairment_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "whole_course",
+      "clinical_rationale": "Difficulty rising, walking, lifting arms, dressing, or standing tracks weakness burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "dysphagia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "bulbar_course",
+      "clinical_rationale": "Bulbar or esophageal involvement can cause dysphagia and aspiration risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "respiratory_muscle_weakness_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 60],
+      "phase": "severe_course",
+      "clinical_rationale": "Severe axial or diaphragmatic weakness can impair ventilation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "myalgia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "Muscle pain or tenderness may accompany inflammatory muscle injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_creatine_kinase",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_myositis",
+      "clinical_rationale": "CK is the main muscle injury enzyme axis in polymyositis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_aldolase",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_myositis",
+      "clinical_rationale": "Aldolase may rise with muscle injury even when CK is less informative.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_myoglobin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "active_myositis",
+      "clinical_rationale": "Myoglobin rises with muscle breakdown and contributes to renal injury risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_myositis",
+      "clinical_rationale": "LDH commonly rises with muscle injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_ast",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_myositis",
+      "clinical_rationale": "AST can rise from skeletal muscle injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "serum_alt",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "active_myositis",
+      "clinical_rationale": "ALT may rise with myositis or concurrent hepatic stress, usually less specifically than AST/CK.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_MYOFIBER_NECROSIS_REGENERATION",
+      "target_id": "rhabdomyolysis_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "phase": "severe_myofiber_injury",
+      "clinical_rationale": "Marked muscle enzyme release, myoglobinuria, and dark urine indicate rhabdomyolysis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "target_id": "oliguria_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "renal_complication",
+      "clinical_rationale": "Myoglobinuric tubular injury may reduce urine output.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "renal_complication",
+      "clinical_rationale": "Rhabdomyolysis-associated AKI can raise serum creatinine.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "target_id": "blood_urea_nitrogen",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "renal_complication",
+      "clinical_rationale": "Rhabdomyolysis-associated AKI can raise BUN.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_RHABDOMYOLYSIS_AKI_PATHWAY",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 7],
+      "phase": "renal_complication",
+      "clinical_rationale": "Myoglobinuric tubular injury raises AKI event hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "fatigue_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "whole_course",
+      "clinical_rationale": "Fatigue and malaise track systemic inflammation and muscle disease burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "weight_loss_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [14, 120],
+      "phase": "chronic_or_severe_course",
+      "clinical_rationale": "Chronic inflammation and dysphagia can cause weight loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_course",
+      "clinical_rationale": "Fever can occur but is not required and should not suppress infectious mimics.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_course",
+      "clinical_rationale": "CRP can be elevated with systemic inflammatory myositis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "erythrocyte_sedimentation_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 14],
+      "phase": "systemic_course",
+      "clinical_rationale": "ESR may rise with inflammatory myopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 7],
+      "phase": "systemic_course",
+      "clinical_rationale": "Leukocytosis can accompany inflammation, stress, steroids, or infection mimics.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "platelet_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [3, 21],
+      "phase": "systemic_course",
+      "clinical_rationale": "Reactive thrombocytosis may track acute-phase inflammation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [14, 90],
+      "phase": "chronic_course",
+      "clinical_rationale": "Anemia of inflammation can accompany chronic active disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "serum_albumin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [14, 90],
+      "phase": "chronic_or_severe_course",
+      "clinical_rationale": "Inflammation, catabolism, poor intake, and severe illness can lower albumin.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "pulmonary_or_respiratory_muscle_course",
+      "clinical_rationale": "Dyspnea can arise from respiratory muscle weakness or ILD.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "target_id": "interstitial_lung_disease_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 180],
+      "phase": "pulmonary_course",
+      "clinical_rationale": "Polymyositis can have ILD, though this should remain separable from antisynthetase syndrome context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "phase": "severe_pulmonary_course",
+      "clinical_rationale": "ILD or respiratory muscle weakness can lower oxygenation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "target_id": "myocarditis_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 60],
+      "phase": "cardiac_course",
+      "clinical_rationale": "Inflammatory myopathy can rarely involve myocardium.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+      "target_id": "cardiac_arrhythmia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 30],
+      "phase": "cardiac_course",
+      "clinical_rationale": "Myocardial involvement can produce arrhythmia risk.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "aspiration_pneumonia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 14],
+      "phase": "bulbar_course",
+      "clinical_rationale": "Dysphagia and secretion mismanagement increase aspiration pneumonia risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS",
+      "target_id": "respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [0, 14],
+      "phase": "severe_course",
+      "clinical_rationale": "Respiratory muscle weakness can progress to ventilatory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "aspiration_pneumonia_hazard",
+      "target_id": "respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_event",
+      "lag_days_range": [0, 7],
+      "phase": "complication_chain",
+      "clinical_rationale": "Aspiration pneumonia can precipitate hypoxemia and respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "respiratory_failure_hazard",
+      "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 7],
+      "phase": "severe_course",
+      "clinical_rationale": "Respiratory failure is a major short-term death pathway in severe polymyositis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "acute_kidney_injury_hazard",
+      "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 14],
+      "phase": "renal_complication",
+      "clinical_rationale": "Severe AKI from rhabdomyolysis increases mortality and need for organ support.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "myocarditis_hazard",
+      "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 14],
+      "phase": "cardiac_course",
+      "clinical_rationale": "Myocarditis can raise death risk through heart failure or arrhythmia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "cardiac_arrhythmia_hazard",
+      "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "effect_on_target": "increase",
+      "edge_type": "event_to_outcome",
+      "lag_days_range": [0, 3],
+      "phase": "cardiac_course",
+      "clinical_rationale": "Clinically important arrhythmia can acutely raise mortality.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 30],
+      "phase": "severe_systemic_course",
+      "clinical_rationale": "Most polymyositis is not immediately fatal, but severe systemic inflammation and complications increase hazard.",
+      "knowledge_confidence": "low"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "proximal_muscle_weakness_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Symmetric shoulder and hip girdle weakness, difficulty rising, climbing stairs, lifting arms, combing hair, dressing, or walking.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 120],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "neck_flexor_weakness_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Neck flexor weakness from axial myositis.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 120],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding",
+      "parent_axis_id": "proximal_muscle_weakness_activity"
+    },
+    {
+      "axis_id": "functional_mobility_impairment_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Functional disability caused by myositis weakness, from difficulty with activities to inability to stand or walk unaided.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 120],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "satellite",
+      "parent_axis_id": "proximal_muscle_weakness_activity"
+    },
+    {
+      "axis_id": "myalgia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Muscle pain, tenderness, or body aches associated with inflammatory myopathy.",
+      "baseline_range": [0, 0.08],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "dysphagia_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Oropharyngeal or esophageal swallowing impairment from inflammatory myopathy.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "respiratory_muscle_weakness_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Respiratory muscle weakness, hypoventilation, or difficulty clearing secretions caused by myositis.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "fatigue_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Fatigue or malaise accompanying active myositis.",
+      "baseline_range": [0, 0.1],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "weight_loss_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Weight loss from chronic inflammation, dysphagia, or severe illness.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [14, 180],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "muscle_mri_edema_activity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "MRI edema or inflammatory signal in proximal or involved skeletal muscles.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "myopathic_emg_activity",
+      "category": "diagnostic_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Needle EMG pattern compatible with active irritable myopathy.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "skeletal_muscle_bone_scan_uptake_activity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Increased radionuclide bone-scan uptake in multiple inflamed skeletal muscles.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_creatine_kinase",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "CK elevation from inflammatory myofiber injury; can be mild in chronic treated disease or extreme with rhabdomyolysis.",
+      "baseline_range": [30, 200],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [300, 50000],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_aldolase",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "Aldolase elevation from muscle injury.",
+      "baseline_range": [0, 8],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [8, 80],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_myoglobin",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "shape_free_text": "Myoglobin release from muscle breakdown.",
+      "baseline_range": [0, 100],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [200, 30000],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ldh",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "shape_free_text": "LDH elevation from skeletal muscle injury or severe systemic illness.",
+      "baseline_range": [120, 250],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [250, 6000],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_ast",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": false,
+      "shape_free_text": "AST elevation from muscle injury; may exceed ALT when muscle dominates.",
+      "baseline_range": [10, 40],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [50, 1800],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_alt",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": false,
+      "shape_free_text": "ALT can rise during myositis or concurrent hepatic stress.",
+      "baseline_range": [7, 56],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [40, 900],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "rhabdomyolysis_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Clinical rhabdomyolysis activity, such as extreme CK, myoglobinuria, dark urine, and severe muscle breakdown.",
+      "baseline_range": [0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "log_scale": true,
+      "shape_free_text": "CRP may be normal, modestly elevated, or very high in severe inflammatory or complication-rich polymyositis; infection remains a key mimic.",
+      "baseline_range": [0.2, 5],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0, 450],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "erythrocyte_sedimentation_rate",
+      "category": "lab_value",
+      "unit": "mm_per_hr",
+      "log_scale": false,
+      "shape_free_text": "ESR elevation from systemic inflammation.",
+      "baseline_range": [0, 20],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0, 100],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "shape_free_text": "Fever is optional in polymyositis and high fever should keep infection and systemic inflammatory mimics competitive.",
+      "baseline_range": [36.2, 37.2],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [36.2, 39.5],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "low",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "shape_free_text": "Tachycardia may follow inflammation, pain, anemia, infection, or cardiac involvement.",
+      "baseline_range": [60, 100],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [70, 130],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "low",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "White blood cell count is often normal but can rise with stress, inflammation, steroids, infection, or malignancy context.",
+      "baseline_range": [4, 11],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [3, 18],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "low",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "platelet_count",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "shape_free_text": "Reactive thrombocytosis can accompany acute-phase inflammation.",
+      "baseline_range": [150, 400],
+      "peak_day_range": [3, 60],
+      "peak_value_range": [150, 650],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Hemoglobin may be low from chronic inflammation, malignancy, kidney disease, or unrelated comorbidity.",
+      "baseline_range": [12, 17],
+      "peak_day_range": [14, 180],
+      "peak_value_range": [8, 14],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Hypoalbuminemia can reflect inflammation, poor intake, dysphagia, malignancy, renal disease, or severe illness.",
+      "baseline_range": [3.5, 5],
+      "peak_day_range": [14, 180],
+      "peak_value_range": [1.5, 3.7],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "oliguria_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Reduced urine output during rhabdomyolysis-associated kidney injury.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "Creatinine can rise when polymyositis is complicated by rhabdomyolysis-associated acute kidney injury; background kidney disease must be handled as patient context.",
+      "baseline_range": [0.6, 1.2],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.6, 12],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "shape_free_text": "BUN can rise with severe renal complication, dehydration, catabolism, or background kidney disease.",
+      "baseline_range": [7, 20],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [7, 240],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Dyspnea from respiratory muscle weakness, ILD, cardiac involvement, anemia, or mimic disease.",
+      "baseline_range": [0, 0.05],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "interstitial_lung_disease_extent",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "ILD extent when polymyositis has pulmonary involvement; antisynthetase syndrome remains a separate context/mimic.",
+      "baseline_range": [0, 0.03],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0, 0.7],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium",
+      "axis_role": "finding"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "shape_free_text": "Oxygen saturation may fall with severe ILD, aspiration, respiratory muscle failure, or unrelated cardiopulmonary disease.",
+      "baseline_range": [95, 100],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [75, 100],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "aspiration_pneumonia_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Aspiration event hazard from dysphagia and secretion mismanagement.",
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.001, 0.12],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "respiratory_failure_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Respiratory failure hazard from respiratory muscle weakness, ILD, or aspiration complications.",
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.001, 0.15],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "AKI hazard from rhabdomyolysis, myoglobinuria, dehydration, or severe illness.",
+      "baseline_range": [0.00001, 0.0008],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.001, 0.25],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "myocarditis_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Myocarditis hazard in rare cardiac polymyositis involvement.",
+      "baseline_range": [0.000001, 0.0002],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0005, 0.05],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "low",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "cardiac_arrhythmia_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Arrhythmia hazard when cardiac inflammation or severe systemic illness is present.",
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0005, 0.08],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "low",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "serious_infection_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Serious infection hazard from high-dose immunosuppression, immobility, aspiration, lines, or background frailty.",
+      "baseline_range": [0.00001, 0.001],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.001, 0.12],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Lifespan outcome hazard for polymyositis, driven mainly by respiratory failure, aspiration, severe renal injury, cardiac involvement, infection, malignancy context, and frailty.",
+      "baseline_range": [0.000005, 0.0002],
+      "peak_day_range": [0, 180],
+      "peak_value_range": [0.0002, 0.08],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "medium",
+      "axis_role": "measurement"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "dysphagia_activity",
+      "target_axis_id": "aspiration_pneumonia_hazard",
+      "relationship": "bulbar_weakness_to_aspiration",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 8.0],
+      "activation_threshold_range": [0.4, 0.8],
+      "lag_days_range": [0, 14],
+      "phase": "bulbar_course",
+      "clinical_rationale": "Dysphagia and secretion mismanagement raise aspiration pneumonia risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "respiratory_muscle_weakness_activity",
+      "target_axis_id": "respiratory_failure_hazard",
+      "relationship": "respiratory_muscle_weakness_to_failure",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 10.0],
+      "activation_threshold_range": [0.4, 0.8],
+      "lag_days_range": [0, 7],
+      "phase": "severe_course",
+      "clinical_rationale": "Respiratory muscle weakness can directly increase respiratory failure hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "oxygen_saturation",
+      "target_axis_id": "respiratory_failure_hazard",
+      "relationship": "hypoxemia_to_respiratory_failure",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [1.5, 8.0],
+      "activation_threshold_range": [90, 94],
+      "lag_days_range": [0, 3],
+      "phase": "severe_pulmonary_course",
+      "clinical_rationale": "Hypoxemia indicates higher respiratory failure hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_creatine_kinase",
+      "target_axis_id": "acute_kidney_injury_hazard",
+      "relationship": "extreme_ck_to_rhabdomyolysis_aki",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.2, 8.0],
+      "activation_threshold_range": [5000, 30000],
+      "lag_days_range": [0, 7],
+      "phase": "rhabdomyolysis_course",
+      "clinical_rationale": "Extreme CK can mark rhabdomyolysis severity and AKI risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_creatine_kinase",
+      "target_axis_id": "proximal_muscle_weakness_activity",
+      "relationship": "shared_active_myositis_residual_correlation",
+      "coupling_type": "mixed",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.0, 3.0],
+      "activation_threshold_range": [300, 2000],
+      "lag_days_range": [0, 14],
+      "phase": "active_myositis",
+      "clinical_rationale": "CK and weakness often move together through active myositis, but either can be discordant.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "aspiration_pneumonia_hazard",
+      "target_axis_id": "respiratory_failure_hazard",
+      "relationship": "aspiration_to_respiratory_failure",
+      "coupling_type": "event_transition",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 8.0],
+      "activation_threshold_range": [0.005, 0.05],
+      "lag_days_range": [0, 7],
+      "phase": "complication_chain",
+      "clinical_rationale": "Aspiration pneumonia can progress to respiratory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "relationship": "respiratory_failure_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [2.0, 12.0],
+      "activation_threshold_range": [0.003, 0.05],
+      "lag_days_range": [0, 7],
+      "phase": "severe_course",
+      "clinical_rationale": "Respiratory failure is a major near-term mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "acute_kidney_injury_hazard",
+      "target_axis_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "relationship": "aki_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.2, 6.0],
+      "activation_threshold_range": [0.003, 0.05],
+      "lag_days_range": [0, 14],
+      "phase": "renal_complication",
+      "clinical_rationale": "Severe AKI increases mortality and organ-support need.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serious_infection_hazard",
+      "target_axis_id": "mortality_hazard_in_D-POLYMYOSITIS",
+      "relationship": "serious_infection_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [1.5, 10.0],
+      "activation_threshold_range": [0.003, 0.05],
+      "lag_days_range": [0, 14],
+      "phase": "treatment_or_complication_context",
+      "clinical_rationale": "Infection after aspiration, lines, or immunosuppression can dominate mortality risk.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "high_dose_systemic_glucocorticoids",
+      "display_name": "High-dose systemic glucocorticoids",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+        "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT"
+      ],
+      "clinical_role": "Rapidly suppresses autoimmune muscle and systemic inflammatory activity.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 7],
+          "effect_scale_range": [0.25, 0.75],
+          "clinical_rationale": "Glucocorticoids rapidly reduce inflammatory myositis activity."
+        },
+        {
+          "target_id": "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY",
+          "effect_on_target": "decrease",
+          "onset_days_range": [1, 7],
+          "effect_scale_range": [0.25, 0.8],
+          "clinical_rationale": "Glucocorticoids reduce acute-phase inflammation."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [3, 30],
+          "effect_scale_range": [0.02, 0.25],
+          "clinical_rationale": "High-dose steroids increase infection risk, especially in frail or aspirating patients."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "net_benefit_weaker_or_harmful",
+          "factor_range": [0.3, 1.2],
+          "clinical_rationale": "Active or probable infection can change the net vector field of immunosuppression."
+        },
+        {
+          "axis_id": "steroid_hyperglycemia_risk",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [0.5, 1.2],
+          "clinical_rationale": "Diabetes or severe illness increases steroid hyperglycemia toxicity."
+        }
+      ]
+    },
+    {
+      "treatment_id": "methotrexate_or_azathioprine_steroid_sparing",
+      "display_name": "Methotrexate or azathioprine steroid-sparing therapy",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_MYOFIBER_NECROSIS_REGENERATION"
+      ],
+      "clinical_role": "Disease-modifying steroid-sparing control for sustained polymyositis activity.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 60],
+          "effect_scale_range": [0.15, 0.55],
+          "clinical_rationale": "Conventional immunosuppression reduces chronic T-cell-mediated myositis activity."
+        },
+        {
+          "target_id": "serum_creatine_kinase",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 90],
+          "effect_scale_range": [0.1, 0.45],
+          "clinical_rationale": "As muscle inflammation improves, CK tends to fall."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "renal_dose_adjustment_context",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "Renal dysfunction can limit methotrexate use and increase cytopenia or mucosal toxicity."
+        },
+        {
+          "axis_id": "serious_liver_injury_hazard",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "Significant liver injury changes the safety of hepatotoxic steroid-sparing agents."
+        }
+      ]
+    },
+    {
+      "treatment_id": "mycophenolate_mofetil",
+      "display_name": "Mycophenolate mofetil",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT"
+      ],
+      "clinical_role": "Steroid-sparing immune control, especially when lung involvement or methotrexate constraints exist.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 60],
+          "effect_scale_range": [0.1, 0.5],
+          "clinical_rationale": "Mycophenolate dampens lymphocyte proliferation."
+        },
+        {
+          "target_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+          "effect_on_target": "decrease",
+          "onset_days_range": [21, 90],
+          "effect_scale_range": [0.1, 0.45],
+          "clinical_rationale": "May reduce inflammatory lung involvement in selected myositis contexts."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serious_infection_hazard",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [0.4, 1.2],
+          "clinical_rationale": "Additional immunosuppression can worsen infection risk."
+        }
+      ]
+    },
+    {
+      "treatment_id": "intravenous_or_subcutaneous_immunoglobulin",
+      "display_name": "Intravenous or subcutaneous immunoglobulin",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_PROXIMAL_BULBAR_RESPIRATORY_WEAKNESS"
+      ],
+      "clinical_role": "Immune modulation for severe, refractory, dysphagic, or rapidly progressive polymyositis.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [3, 30],
+          "effect_scale_range": [0.15, 0.65],
+          "clinical_rationale": "Immunoglobulin can improve refractory inflammatory myositis."
+        },
+        {
+          "target_id": "dysphagia_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.15, 0.65],
+          "clinical_rationale": "Dysphagia can improve when myositis activity falls."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "renal_dose_adjustment_context",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.4, 1.0],
+          "clinical_rationale": "Renal impairment and volume/osmotic load shape immunoglobulin safety."
+        },
+        {
+          "axis_id": "thrombosis_hazard",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [0.5, 1.2],
+          "clinical_rationale": "Immunoglobulin can increase thrombotic risk in susceptible patients."
+        }
+      ]
+    },
+    {
+      "treatment_id": "rituximab_for_refractory_polymyositis",
+      "display_name": "Rituximab for refractory polymyositis",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_SYSTEMIC_INFLAMMATORY_ACTIVITY"
+      ],
+      "clinical_role": "Escalation immune modulation for refractory or severe disease after standard agents are insufficient.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [14, 90],
+          "effect_scale_range": [0.1, 0.55],
+          "clinical_rationale": "B-cell depletion can help selected refractory inflammatory myopathy courses."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [14, 180],
+          "effect_scale_range": [0.02, 0.25],
+          "clinical_rationale": "B-cell depletion increases infection and viral reactivation risk."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_hepatitis_b_reactivation_risk",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.1, 0.8],
+          "clinical_rationale": "HBV reactivation risk must be managed before anti-CD20 therapy."
+        }
+      ]
+    },
+    {
+      "treatment_id": "cyclophosphamide_for_life_threatening_organ_involvement",
+      "display_name": "Cyclophosphamide for life-threatening organ involvement",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT"
+      ],
+      "clinical_role": "Escalation for severe organ-threatening ILD, myocarditis, or rapidly progressive refractory myositis.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT",
+          "effect_on_target": "decrease",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.15, 0.65],
+          "clinical_rationale": "Alkylating immunosuppression can suppress severe inflammatory organ involvement."
+        },
+        {
+          "target_id": "serious_infection_hazard",
+          "effect_on_target": "increase",
+          "onset_days_range": [7, 90],
+          "effect_scale_range": [0.05, 0.35],
+          "clinical_rationale": "Cyclophosphamide increases cytopenia and infection hazard."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "severe_cytopenia_hazard",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.2, 1.0],
+          "clinical_rationale": "Baseline cytopenia or marrow compromise limits cytotoxic therapy."
+        }
+      ]
+    },
+    {
+      "treatment_id": "calcineurin_inhibitor_for_refractory_or_lung_context",
+      "display_name": "Tacrolimus or cyclosporine for refractory or lung context",
+      "treatment_mode": "reshape_landscape",
+      "direct_targets": [
+        "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+        "M_PM_EXTRAMUSCULAR_ORGAN_INVOLVEMENT"
+      ],
+      "clinical_role": "Additional immune suppression for refractory disease or lung-dominant myositis contexts.",
+      "trajectory_modifications": [
+        {
+          "target_id": "M_PM_CD8_ENDOMYSIAL_AUTOIMMUNE_MYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.1, 0.5],
+          "clinical_rationale": "Calcineurin inhibition reduces T-cell activation."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "toxicity_limited",
+          "factor_range": [0.2, 0.9],
+          "clinical_rationale": "Nephrotoxicity risk limits calcineurin inhibitor use in AKI or CKD."
+        }
+      ]
+    },
+    {
+      "treatment_id": "swallowing_nutrition_and_aspiration_precautions",
+      "display_name": "Swallowing, nutrition, and aspiration precautions",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "dysphagia_activity",
+        "aspiration_pneumonia_hazard",
+        "serum_albumin"
+      ],
+      "clinical_role": "Reduces aspiration and nutritional harm while immunosuppression takes effect.",
+      "trajectory_modifications": [
+        {
+          "target_id": "aspiration_pneumonia_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0, 3],
+          "effect_scale_range": [0.2, 0.7],
+          "clinical_rationale": "Diet modification, speech therapy, secretion management, and enteral feeding reduce aspiration risk."
+        },
+        {
+          "target_id": "serum_albumin",
+          "effect_on_target": "increase",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.05, 0.25],
+          "clinical_rationale": "Nutritional support can improve intake-related hypoalbuminemia over time."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "dysphagia_activity",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [1.2, 6.0],
+          "clinical_rationale": "This support matters most when dysphagia is active."
+        }
+      ]
+    },
+    {
+      "treatment_id": "respiratory_support",
+      "display_name": "Respiratory support",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "oxygen_saturation",
+        "respiratory_failure_hazard"
+      ],
+      "clinical_role": "Supports oxygenation and ventilation during respiratory muscle weakness, aspiration, or ILD.",
+      "trajectory_modifications": [
+        {
+          "target_id": "oxygen_saturation",
+          "effect_on_target": "increase",
+          "onset_days_range": [0, 1],
+          "effect_scale_range": [0.2, 0.9],
+          "clinical_rationale": "Supplemental oxygen or ventilatory support directly improves oxygenation."
+        },
+        {
+          "target_id": "respiratory_failure_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0, 2],
+          "effect_scale_range": [0.15, 0.7],
+          "clinical_rationale": "Ventilatory support reduces immediate failure risk but does not stop autoimmune myositis."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "respiratory_failure_hazard",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [1.2, 6.0],
+          "clinical_rationale": "Respiratory support has its main survival effect when respiratory failure risk is active."
+        }
+      ]
+    },
+    {
+      "treatment_id": "renal_support_for_rhabdomyolysis_aki",
+      "display_name": "Renal support for rhabdomyolysis-associated AKI",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "acute_kidney_injury_hazard",
+        "serum_creatinine",
+        "blood_urea_nitrogen"
+      ],
+      "clinical_role": "Hydration, electrolyte management, and renal replacement support when severe rhabdomyolysis or AKI is active.",
+      "trajectory_modifications": [
+        {
+          "target_id": "acute_kidney_injury_hazard",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0, 3],
+          "effect_scale_range": [0.15, 0.7],
+          "clinical_rationale": "Supportive renal care reduces immediate kidney-injury consequences."
+        },
+        {
+          "target_id": "mortality_hazard_in_D-POLYMYOSITIS",
+          "effect_on_target": "decrease",
+          "onset_days_range": [0, 7],
+          "effect_scale_range": [0.05, 0.3],
+          "clinical_rationale": "Managing severe renal complications can reduce short-term mortality."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "acute_kidney_injury_hazard",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [1.2, 6.0],
+          "clinical_rationale": "Renal support is outcome-relevant when AKI risk is active."
+        }
+      ]
+    },
+    {
+      "treatment_id": "rehabilitation_and_strength_recovery",
+      "display_name": "Rehabilitation and strength recovery",
+      "treatment_mode": "push_state",
+      "direct_targets": [
+        "functional_mobility_impairment_activity",
+        "proximal_muscle_weakness_activity"
+      ],
+      "clinical_role": "Restores function and prevents deconditioning after inflammatory activity is controlled enough for safe exercise.",
+      "trajectory_modifications": [
+        {
+          "target_id": "functional_mobility_impairment_activity",
+          "effect_on_target": "decrease",
+          "onset_days_range": [7, 60],
+          "effect_scale_range": [0.1, 0.5],
+          "clinical_rationale": "Physical therapy improves function and reduces deconditioning."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_creatine_kinase",
+          "condition": "very_high",
+          "effect": "defer_intensity_until_safe",
+          "factor_range": [0.3, 1.0],
+          "clinical_rationale": "Aggressive exercise during uncontrolled rhabdomyolysis or severe weakness can be unsafe."
+        }
+      ]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "middle_age_or_older_adult",
+      "type": "demographic",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "axis_response_modulation": {
+            "functional_mobility_impairment_activity": {"peak_value_factor": [1.0, 1.5]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.1, 2.5]}
+          },
+          "clinical_rationale": "Adult onset is typical, and older age reduces reserve during complications."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "female_sex",
+      "type": "demographic",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 2.5],
+          "clinical_rationale": "Polymyositis is more common in women, although men can be affected."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "malignancy_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": {
+            "weight_loss_activity": {"peak_value_factor": [1.2, 2.5]},
+            "serum_albumin": {"peak_value_factor": [0.5, 0.9]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.2, 5.0]}
+          },
+          "clinical_rationale": "Cancer can be a contextual trigger or competing driver of inflammatory myopathy severity and poor reserve."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "recent_viral_or_covid_infection_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": {
+            "serum_crp": {"peak_value_factor": [1.0, 2.5]},
+            "myalgia_activity": {"peak_value_factor": [1.0, 1.8]}
+          },
+          "clinical_rationale": "Post-infectious immune activation can temporally precede polymyositis, while acute infection remains a mimic."
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "connective_tissue_disease_overlap_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": {
+            "serum_crp": {"peak_value_factor": [1.0, 2.0]},
+            "interstitial_lung_disease_extent": {"peak_value_factor": [1.0, 2.5]}
+          },
+          "clinical_rationale": "Sjögren, RA, SLE, systemic sclerosis, and other connective-tissue disease contexts can coexist with inflammatory myopathy; overlap should not be baked into the disease name."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "dysphagia_or_bulbar_involvement",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": {
+            "aspiration_pneumonia_hazard": {"peak_value_factor": [1.5, 8.0]},
+            "respiratory_failure_hazard": {"peak_value_factor": [1.2, 4.0]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.2, 4.0]}
+          },
+          "clinical_rationale": "Bulbar involvement changes complication and mortality trajectory."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "interstitial_lung_disease_or_respiratory_muscle_involvement",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": {
+            "dyspnea_activity": {"peak_value_factor": [1.2, 3.0]},
+            "oxygen_saturation": {"peak_value_factor": [0.75, 1.0]},
+            "respiratory_failure_hazard": {"peak_value_factor": [1.5, 8.0]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.2, 5.0]}
+          },
+          "clinical_rationale": "Pulmonary or ventilatory involvement is a major severity modifier."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "cardiac_involvement_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": {
+            "myocarditis_hazard": {"peak_value_factor": [2.0, 8.0]},
+            "cardiac_arrhythmia_hazard": {"peak_value_factor": [1.5, 6.0]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.2, 5.0]}
+          },
+          "clinical_rationale": "Myocarditis or arrhythmia context raises complication hazard."
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "chronic_kidney_disease_or_aki_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": {
+            "serum_creatinine": {"peak_value_factor": [1.2, 6.0]},
+            "blood_urea_nitrogen": {"peak_value_factor": [1.2, 6.0]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.2, 4.0]}
+          },
+          "clinical_rationale": "Background kidney disease changes base measures and worsens tolerance of rhabdomyolysis and treatment."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "diabetes_or_high_steroid_toxicity_context",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.9, 1.3],
+          "axis_response_modulation": {
+            "serious_infection_hazard": {"peak_value_factor": [1.2, 3.0]},
+            "mortality_hazard_in_D-POLYMYOSITIS": {"peak_value_factor": [1.0, 2.5]}
+          },
+          "clinical_rationale": "Diabetes and frailty increase glucocorticoid infection and metabolic toxicity."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "current_or_recent_immunosuppression",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": {
+            "white_blood_cell_count": {"peak_value_factor": [0.8, 1.5]},
+            "serious_infection_hazard": {"peak_value_factor": [1.5, 5.0]}
+          },
+          "clinical_rationale": "Immunosuppression can mute or distort inflammation while raising infection hazard."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "preserve_mimic_differential",
+      "clinical_role": "Actively evaluate dermatomyositis, antisynthetase syndrome, inclusion body myositis, immune-mediated necrotizing myopathy, muscular dystrophy, endocrine or metabolic myopathy, drug-induced myopathy, infection, malignancy, neuropathy, myasthenia, and motor neuron disease without encoding any of them into the polymyositis disease name."
+    },
+    {
+      "care_id": "presentation_vs_confirmatory_evidence_separation",
+      "clinical_role": "Use observed symptoms, labs, vitals, and presentation imaging for presentation ranking; keep muscle biopsy, EMG, myositis antibodies, final diagnosis, and treatment response as confirmatory unless the workflow is explicitly post-workup."
+    },
+    {
+      "care_id": "monitor_bulbar_respiratory_and_cardiac_complications",
+      "clinical_role": "Track swallowing safety, secretion management, oxygenation, respiratory mechanics, ECG/troponin/echo when indicated, and aspiration or ventilatory failure risk."
+    },
+    {
+      "care_id": "trend_muscle_and_renal_labs",
+      "clinical_role": "Trend CK, aldolase or LDH, AST/ALT, myoglobin when available, urinalysis/dark urine, creatinine, BUN, electrolytes, and urine output during severe myofiber injury."
+    },
+    {
+      "care_id": "screen_for_malignancy_and_overlap_context",
+      "clinical_role": "Assess malignancy and connective tissue disease context as modifiers rather than disease-name qualifiers."
+    },
+    {
+      "care_id": "rehabilitation_and_falls_prevention",
+      "clinical_role": "Provide graded rehabilitation, mobility aids, fall prevention, nutrition, bone protection, and steroid-toxicity monitoring."
+    }
+  ],
+  "quality_notes": [
+    "The disease prompt scope is pure disease name: Polymyositis.",
+    "The only derived_hazard axis is mortality_hazard_in_D-POLYMYOSITIS.",
+    "No first-line, preferred, guideline-recommended, indication-strength, diagnosis-should-be, or hard ranking fields are used."
+  ]
+}

@@ -1,0 +1,312 @@
+{
+  "disease": "D-DRUG-FEVER",
+  "disease_id": "D-DRUG-FEVER",
+  "disease_name": "Simple drug fever",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Simple drug fever",
+    "leaf_granularity": "First-layer disease leaf for isolated medication-induced fever where fever is the dominant disease expression and no severe cutaneous adverse reaction, toxidrome, infection, or drug-induced organ injury defines the leaf.",
+    "boundary_policy": "DRESS, SJS/TEN, serotonin syndrome, neuroleptic malignant syndrome, malignant hyperthermia, toxic shock syndrome, active infection, and primary drug-induced organ injury remain mimics, exclusions, context, or separate leaves. This manifold may contain context axes that help separate simple drug fever from those entities, but it does not absorb them.",
+    "ranking_note": "Presentation ranking may use medication exposure, temporal relation to starting or continuing a plausible drug, fever during continued exposure, relative bradycardia or otherwise discordant clinical wellness, rash/eosinophilia/organ injury being absent when directly observed, and ordinary labs available at that clinical stage. Dechallenge, rechallenge, final adjudication, negative cultures, and fever resolution after stopping the drug are confirmatory/non-ranking unless a post-workup test explicitly includes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE",
+      "display_name": "Culprit drug exposure with compatible latency",
+      "clinical_meaning": "An administered medication is present at a time and duration compatible with drug fever. Latency is variable: hours in sensitized patients, commonly several days to two weeks, and occasionally chronic or recurrent with repeated dosing.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-30, 0],
+      "peak_value_range": [0.45, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DRUG_FEVER_IMMUNE_PYROGENIC_RESPONSE",
+      "display_name": "Immune-mediated pyrogenic hypersensitivity response",
+      "clinical_meaning": "Drug, metabolite, or immune-complex recognition triggers pyrogenic cytokine signaling without the systemic tissue infiltration that defines DRESS or a primary drug-induced organ injury syndrome.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE",
+      "display_name": "Thermoregulatory set-point fever response",
+      "clinical_meaning": "Pyrogenic signaling or drug-specific central thermoregulatory effects increase measured temperature. Fever pattern is nonspecific and may be intermittent, remittent, low-grade, high-grade, or masked by antipyretics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [0.2, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DRUG_FEVER_LOW_LOCALIZING_SYMPTOM_ACTIVITY",
+      "display_name": "Low localizing symptom and preserved clinical wellness phenotype",
+      "clinical_meaning": "Many patients appear less ill than expected for the fever, have few focal infectious symptoms, and may have relative bradycardia, although these clues are not required and are inconsistently present.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.25, 0.95],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY",
+      "display_name": "Variable acute-phase and hematologic response",
+      "clinical_meaning": "CRP, ESR, leukocyte count, eosinophils, and mild transaminase abnormalities may be normal or elevated. No single lab establishes the diagnosis; marked organ injury or severe cytopenia should push toward another leaf or complication context.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY",
+      "display_name": "Simple fever phenotype boundary",
+      "clinical_meaning": "The leaf remains simple when mucosal erosions, blistering skin disease, eosinophilic organ infiltration, severe autonomic rigidity/toxidrome physiology, shock, or primary organ failure are absent or clinically subordinate.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "target_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "exposure", "clinical_rationale": "Drug fever requires exposure to a plausible medication, but exposure alone is not diagnostic.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "target_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "presentation", "clinical_rationale": "The fever should follow drug initiation, dose escalation, repeated dosing, or prolonged exposure by a compatible interval.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "target_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "presentation", "clinical_rationale": "Fever typically persists or recurs while the offending drug is continued.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "target_id": "chronic_or_recurrent_low_grade_drug_fever_pattern_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 3650], "phase": "repeated_or_chronic_exposure", "clinical_rationale": "Some medications produce low-grade recurrent or chronic fever during repeated exposure rather than a classic acute inpatient pattern.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "target_id": "M_DRUG_FEVER_IMMUNE_PYROGENIC_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "pathogenesis", "clinical_rationale": "Drug exposure activates pyrogenic immune or idiosyncratic response in susceptible patients.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_IMMUNE_PYROGENIC_RESPONSE", "target_id": "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "fever_expression", "clinical_rationale": "Pyrogenic signaling raises the thermoregulatory set point.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "fever_expression", "clinical_rationale": "Measured temperature is the central observed axis of the disease.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "fever_expression", "clinical_rationale": "History of recurrent or persistent fever may be more informative than a single measured temperature.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE", "target_id": "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "presentation", "clinical_rationale": "Simple drug fever often produces fever without a new focal infectious syndrome.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_LOW_LOCALIZING_SYMPTOM_ACTIVITY", "target_id": "relative_bradycardia_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Relative bradycardia can occur in drug fever, though absence does not exclude it.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_LOW_LOCALIZING_SYMPTOM_ACTIVITY", "target_id": "heart_rate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "relative_bradycardia", "clinical_rationale": "Heart rate may be lower than expected for temperature in a subset of cases; many cases still have normal rate or tachycardia.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_LOW_LOCALIZING_SYMPTOM_ACTIVITY", "target_id": "chills_or_discomfort_activity_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Chills, discomfort, irritability, or malaise can accompany the fever but are nonspecific.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "lab_variability", "clinical_rationale": "CRP may be normal or elevated and cannot by itself distinguish drug fever from infection.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "lab_variability", "clinical_rationale": "ESR may be mildly or moderately elevated in some cases.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "lab_variability", "clinical_rationale": "WBC is often normal but can be mildly high; marked leukemoid patterns should be treated as a context or separate adverse reaction rather than the simple leaf core.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "lab_variability", "clinical_rationale": "Neutrophil count may be normal or mildly high depending on stress and concurrent illness.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "eosinophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "lab_variability", "clinical_rationale": "Eosinophilia occurs in a minority; prominent eosinophilia with rash or organ injury should suggest DRESS or another adverse-reaction leaf.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "lab_variability", "clinical_rationale": "Procalcitonin is usually low or only mildly elevated in simple drug fever, but false elevation is possible.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "lab_variability", "clinical_rationale": "Mild transient transaminase abnormalities can occur, but hepatitis as the defining syndrome belongs outside the simple drug fever leaf.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_VARIABLE_ACUTE_PHASE_ACTIVITY", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "lab_variability", "clinical_rationale": "Mild transient ALT abnormalities can occur, but primary liver injury is not this leaf.", "knowledge_confidence": "low"},
+    {"source_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY", "target_id": "rash_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "boundary", "clinical_rationale": "Rash may be absent in simple drug fever; prominent rash suggests other drug-hypersensitivity leaves.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY", "target_id": "mucosal_erosion_activity", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "boundary", "clinical_rationale": "Mucosal erosions are not part of simple drug fever and should shift toward SJS/TEN or other mucocutaneous disease.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY", "target_id": "organ_dysfunction_activity_in_D-DRUG-FEVER", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "boundary", "clinical_rationale": "Simple drug fever should not be defined by new organ failure.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY", "target_id": "drug_fever_dechallenge_response_context_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 3], "phase": "post_workup", "clinical_rationale": "Defervescence after stopping the suspect drug supports the diagnosis but should be non-ranking in presentation-only tests.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY", "target_id": "drug_fever_rechallenge_response_context_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "confirmatory_mechanism_to_axis", "lag_days_range": [0, 3], "phase": "post_workup", "clinical_rationale": "Rechallenge may reproduce fever and strongly confirms causality, but it is not ordinary presentation evidence and is often not clinically appropriate.", "knowledge_confidence": "high"},
+    {"source_id": "M_DRUG_FEVER_IMMUNE_PYROGENIC_RESPONSE", "target_id": "mortality_hazard_in_D-DRUG-FEVER", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 14], "phase": "outcome", "clinical_rationale": "Simple drug fever has very low direct mortality; risk mainly reflects diagnostic delay, frailty, or misclassification rather than the fever manifold itself.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "category": "treatment_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Known exposure to a plausible culprit medication at the clinical stage being scored.", "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 0], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "category": "temporal_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Fever onset follows starting, escalating, repeated dosing, or prolonged exposure to a plausible drug by a compatible interval.", "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 0], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "satellite", "parent_axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER"},
+    {"axis_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "category": "temporal_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Fever persists or recurs while the suspect drug remains active or continues to be administered.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "satellite", "parent_axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER"},
+    {"axis_id": "chronic_or_recurrent_low_grade_drug_fever_pattern_activity_in_D-DRUG-FEVER", "category": "temporal_context", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Chronic, recurrent, or low-grade fever pattern during repeated medication exposure.", "baseline_range": [0.0, 0.03], "peak_day_range": [7, 3650], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium", "axis_role": "satellite", "parent_axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER"},
+    {"axis_id": "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Fever with few new focal symptoms or the patient appearing clinically better than an infectious fever would suggest.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.25, 0.95], "plateau_duration_days": [1, 30], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "shape_free_text": "Measured body temperature during the fever episode.", "baseline_range": [36.2, 37.2], "peak_day_range": [0, 14], "peak_value_range": [37.3, 41.5], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "fever_history_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "History of fever, recurrent fever, or fever spikes.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Heart rate during fever; may be lower than expected, normal, or tachycardic depending on age, baseline disease, pain, and critical illness.", "baseline_range": [55, 105], "peak_day_range": [0, 14], "peak_value_range": [60, 140], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "relative_bradycardia_activity_in_D-DRUG-FEVER", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Heart rate lower than expected for the degree of fever, when directly observed.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "chills_or_discomfort_activity_in_D-DRUG-FEVER", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Chills, rigors, irritability, discomfort, or malaise during the fever episode.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "rash_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Drug fever may have no rash; prominent rash should raise concern for other drug hypersensitivity leaves.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.25], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "mucosal_erosion_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Mucosal erosions or ulcerating mucocutaneous disease are not expected in simple drug fever.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.05], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "organ_dysfunction_activity_in_D-DRUG-FEVER", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "New clinically meaningful organ dysfunction attributable to the drug; should remain low in the simple fever leaf.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.15], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "WBC count during simple drug fever; often normal but may be mildly high or altered by concurrent illness.", "baseline_range": [4, 10], "peak_day_range": [0, 14], "peak_value_range": [3.5, 18], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "Absolute neutrophil count; usually normal to mildly elevated in simple drug fever.", "baseline_range": [2, 7], "peak_day_range": [0, 14], "peak_value_range": [1.5, 14], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "eosinophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "shape_free_text": "Absolute eosinophil count; may be normal or mildly high, while marked eosinophilia with systemic signs suggests DRESS or another leaf.", "baseline_range": [0.0, 0.5], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.5], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "shape_free_text": "CRP may be normal, mildly elevated, or substantially elevated; it is nonspecific.", "baseline_range": [0.2, 5], "peak_day_range": [0, 14], "peak_value_range": [0.2, 150], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm_per_hr", "log_scale": false, "shape_free_text": "ESR may be normal or elevated in simple drug fever.", "baseline_range": [0, 25], "peak_day_range": [0, 21], "peak_value_range": [0, 100], "plateau_duration_days": [3, 45], "decline_half_life_days": [7, 45], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "shape_free_text": "Procalcitonin is generally low or only mildly elevated in simple drug fever; high values favor bacterial infection or other inflammatory states.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 14], "peak_value_range": [0.02, 0.8], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 5], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "AST is usually normal or only mildly abnormal; primary hepatitis is outside this leaf.", "baseline_range": [10, 40], "peak_day_range": [0, 14], "peak_value_range": [10, 120], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "shape_free_text": "ALT is usually normal or only mildly abnormal; primary drug-induced liver injury is outside this leaf.", "baseline_range": [7, 45], "peak_day_range": [0, 14], "peak_value_range": [7, 140], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "shape_free_text": "Creatinine should usually follow baseline host context; new AKI should point away from simple drug fever toward another process or adverse-reaction complication.", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.5, 1.5], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "percent", "log_scale": false, "shape_free_text": "Oxygen saturation is usually preserved unless another illness is present.", "baseline_range": [95, 100], "peak_day_range": [0, 14], "peak_value_range": [92, 100], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "shape_free_text": "Blood pressure is usually preserved in simple drug fever; shock suggests sepsis, anaphylaxis, TSS, or another leaf.", "baseline_range": [70, 105], "peak_day_range": [0, 14], "peak_value_range": [65, 110], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "drug_fever_dechallenge_response_context_in_D-DRUG-FEVER", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Fever resolution after stopping the suspected drug; post-workup confirmatory context, not presentation ranking evidence by default.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "drug_fever_rechallenge_response_context_in_D-DRUG-FEVER", "category": "confirmatory_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Fever recurrence after rechallenge; strong confirmatory context when ethically and clinically available, not presentation ranking evidence by default.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "mortality_hazard_in_D-DRUG-FEVER", "category": "derived_hazard", "unit": "hazard_per_day", "log_scale": true, "shape_free_text": "Lifespan hazard from simple drug fever itself is very low; excess risk is mostly from frailty, underlying illness, or misclassification of another syndrome.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 14], "peak_value_range": [0.00002, 0.005], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "target_axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "coupling_type": "drift", "effect": "increase", "lag_days_range": [0, 30], "clinical_rationale": "Exposure and timing jointly define the clinical plausibility of simple drug fever.", "knowledge_confidence": "high"},
+    {"source_axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "target_axis_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "coupling_type": "drift", "effect": "increase", "lag_days_range": [0, 30], "clinical_rationale": "A compatible latency matters most when the fever persists during continued exposure.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "fever_history_activity", "coupling_type": "noise_correlation", "effect": "positive_correlation", "lag_days_range": [0, 1], "clinical_rationale": "Current temperature and history of fever spikes are correlated but not identical.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "coupling_type": "mixed", "effect": "weak_or_dissociated_correlation", "lag_days_range": [0, 1], "clinical_rationale": "Heart rate may be discordantly low for fever in some drug fever cases but tachycardia is also possible.", "knowledge_confidence": "low"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "serum_crp", "coupling_type": "noise_correlation", "effect": "weak_positive_correlation", "lag_days_range": [0, 7], "clinical_rationale": "Some cases have CRP elevation, but normal CRP does not exclude simple drug fever.", "knowledge_confidence": "low"},
+    {"source_axis_id": "organ_dysfunction_activity_in_D-DRUG-FEVER", "target_axis_id": "mortality_hazard_in_D-DRUG-FEVER", "coupling_type": "hazard_drift", "effect": "increase", "lag_days_range": [0, 14], "clinical_rationale": "When organ dysfunction is present, mortality risk reflects departure from the simple leaf toward another adverse-reaction or illness context.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "withdraw_suspected_offending_drug",
+      "display_name": "Withdraw suspected offending drug",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE", "M_DRUG_FEVER_IMMUNE_PYROGENIC_RESPONSE", "M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "effect": "decrease", "target_range": [0.0, 0.1], "onset_days": [0, 1]},
+        {"axis_id": "body_temperature", "effect": "decrease", "target_range": [36.5, 37.5], "onset_days": [0.5, 3]},
+        {"axis_id": "mortality_hazard_in_D-DRUG-FEVER", "effect": "decrease", "target_range": [0.00001, 0.0005], "onset_days": [1, 5]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "essential_drug_no_safe_alternative_context", "effect_if_high": "reduces_feasibility", "clinical_rationale": "Some culprit drugs may be essential, requiring substitution planning rather than abrupt loss of critical therapy."},
+        {"axis_id": "active_serious_infection_activity", "effect_if_high": "requires_source_specific_alternative", "clinical_rationale": "If the suspected drug is an antimicrobial still needed for active infection, withdrawal must be paired with appropriate alternative coverage."}
+      ],
+      "clinical_rationale": "Removing the causative exposure is the causal intervention for simple drug fever."
+    },
+    {
+      "treatment_id": "substitute_non_cross_reactive_alternative",
+      "display_name": "Substitute non-cross-reactive alternative",
+      "mode": "reshape_landscape",
+      "target_mechanisms": ["M_DRUG_FEVER_CULPRIT_DRUG_EXPOSURE"],
+      "trajectory_modifications": [
+        {"axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "effect": "decrease", "target_range": [0.0, 0.15], "onset_days": [0, 2]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "drug_class_cross_reactivity_context", "effect_if_high": "reduces_effect", "clinical_rationale": "Substitution within a cross-reactive class may not remove the pyrogenic trigger."},
+        {"axis_id": "renal_dose_adjustment_context", "effect_if_high": "requires_dose_selection", "clinical_rationale": "Renal impairment can prolong exposure to some candidate alternatives."}
+      ],
+      "clinical_rationale": "When therapy remains necessary, replacing the culprit with a non-cross-reactive alternative removes the fever trigger while preserving disease treatment."
+    },
+    {
+      "treatment_id": "antipyretic_symptom_control",
+      "display_name": "Antipyretic symptom control",
+      "mode": "push_state",
+      "target_mechanisms": ["M_DRUG_FEVER_THERMOREGULATORY_SETPOINT_RESPONSE"],
+      "trajectory_modifications": [
+        {"axis_id": "body_temperature", "effect": "decrease", "target_range": [36.8, 38.0], "onset_days": [0, 0.5]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "acute_liver_injury_activity", "effect_if_high": "limits_acetaminophen_use", "clinical_rationale": "Acetaminophen may be unsafe in significant liver injury."},
+        {"axis_id": "renal_dose_adjustment_context", "effect_if_high": "limits_nsaid_use", "clinical_rationale": "NSAIDs may be inappropriate in kidney disease, bleeding risk, or postoperative settings."}
+      ],
+      "clinical_rationale": "Antipyretics can reduce symptoms but do not remove the culprit drug vector field."
+    },
+    {
+      "treatment_id": "monitor_for_boundary_syndrome_or_alternative_diagnosis",
+      "display_name": "Monitor for boundary syndrome or alternative diagnosis",
+      "mode": "modulate_theta",
+      "target_mechanisms": ["M_DRUG_FEVER_SIMPLE_PHENOTYPE_BOUNDARY"],
+      "trajectory_modifications": [
+        {"axis_id": "organ_dysfunction_activity_in_D-DRUG-FEVER", "effect": "decrease_uncertainty_by_following", "target_range": [0.0, 0.15], "onset_days": [0, 3]},
+        {"axis_id": "mucosal_erosion_activity", "effect": "decrease_uncertainty_by_following", "target_range": [0.0, 0.05], "onset_days": [0, 3]}
+      ],
+      "effect_modifiers": [
+        {"axis_id": "immunosuppression_activity", "effect_if_high": "raises_alternative_infection_concern", "clinical_rationale": "Immunosuppressed hosts may have muted infection signs, so simple drug fever should not suppress mimic surveillance."},
+        {"axis_id": "hemodynamic_instability_activity", "effect_if_high": "shifts_away_from_simple_leaf", "clinical_rationale": "Shock is not expected in simple drug fever and requires evaluation for sepsis, TSS, anaphylaxis, or other critical illness."}
+      ],
+      "clinical_rationale": "This is not a curative drug treatment; it keeps the clinical trajectory from being incorrectly compressed into the simple leaf when new boundary evidence appears."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_new_or_prolonged_medication_exposure",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 12.0],
+          "axis_response_modulation": [
+            {"axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "effect": "increase", "multiplier": [1.2, 2.0]},
+            {"axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "effect": "increase", "multiplier": [1.1, 1.8]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "beta_lactam_or_antibiotic_exposure",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "effect": "increase", "multiplier": [1.0, 1.5]},
+            {"axis_id": "serum_crp", "effect": "increase", "multiplier": [1.0, 1.6]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "polypharmacy_or_icu_hospitalization_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 3.5],
+          "axis_response_modulation": [
+            {"axis_id": "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER", "effect": "decrease", "multiplier": [0.7, 1.0]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "prior_drug_fever_or_drug_hypersensitivity_history",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "effect": "increase", "multiplier": [1.1, 1.8]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "hiv_or_immunocompromised_host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER", "effect": "decrease", "multiplier": [0.6, 1.0]},
+            {"axis_id": "white_blood_cell_count", "effect": "decrease_or_blunt", "multiplier": [0.7, 1.0]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "renal_impairment_or_low_clearance_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "effect": "increase", "multiplier": [1.0, 1.5]},
+            {"axis_id": "serum_creatinine", "effect": "increase_background", "multiplier": [1.2, 2.5]}
+          ]
+        }
+      }
+    },
+    {
+      "factor": "extreme_age_neonate_or_frail_elderly_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "broaden", "multiplier": [0.8, 1.2]},
+            {"axis_id": "heart_rate", "effect": "broaden", "multiplier": [0.8, 1.3]}
+          ]
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {"care_id": "medication_timeline_reconciliation", "clinical_rationale": "Construct a medication start/stop/dose timeline before attributing fever to infection or inflammatory disease."},
+    {"care_id": "avoid_unnecessary_antimicrobial_escalation_when_stable", "clinical_rationale": "In stable patients with no localizing evidence, reassessing medications can prevent unnecessary antimicrobial escalation."},
+    {"care_id": "document_culprit_and_cross_reactivity", "clinical_rationale": "Document the suspected culprit, reaction timing, and class cross-reactivity uncertainty for future prescribing."},
+    {"care_id": "continue_mimic_surveillance_if_unstable_or_new_findings", "clinical_rationale": "Shock, mucosal lesions, diffuse rash, eosinophilia with organ injury, rigidity, hyperthermia toxidrome, positive cultures, or focal organ findings should trigger mimic or separate-leaf evaluation."}
+  ],
+  "quality_notes": [
+    "Dechallenge and rechallenge axes are present only as confirmatory context; case files keep them non-ranking for presentation-focused smoke tests.",
+    "The only derived_hazard axis is mortality_hazard_in_D-DRUG-FEVER."
+  ]
+}

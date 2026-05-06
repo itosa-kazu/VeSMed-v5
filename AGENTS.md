@@ -648,3 +648,24 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `275/277 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: Polymyositis / Drug Fever / Alcoholic Hepatitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-POLYMYOSITIS`: polymyositis.
+  - `D-DRUG-FEVER`: simple drug fever.
+  - `D-ALCOHOLIC-HEPATITIS`: alcoholic hepatitis.
+- New real PMC/PubMed cases:
+  - `D-POLYMYOSITIS`: `PMC9338774`, `PMC4124644`, `PMC8147826`.
+  - `D-DRUG-FEVER`: `PMC4964257`, `PMC5073694`, `PMC11166378`.
+  - `D-ALCOHOLIC-HEPATITIS`: `PMC10934003`, `PMC11089831`, `PMC10563462`.
+- Polymyositis source rule: keep the first-layer leaf pure. Dermatomyositis, antisynthetase syndrome, inclusion-body myositis, and immune-mediated necrotizing myopathy are mimics/context or future leaves. EMG, muscle biopsy, myositis antibodies, final diagnosis, and treatment response stay confirmatory/non-ranking unless testing post-workup mode.
+- Simple drug fever source rule: this leaf must not absorb DRESS, SJS/TEN, serotonin syndrome, NMS, malignant hyperthermia, TSS, infection, or drug-induced organ injury. Dechallenge/rechallenge, negative infection workup, final adjudication, and fever resolution after stopping a drug are confirmatory/non-ranking for presentation-only tests.
+- Alcoholic hepatitis source rule: acute liver failure, cholangitis, viral hepatitis, DILI, decompensated cirrhosis, pancreatitis, sepsis, and portal vein thrombosis remain mimics/context/event axes, not part of the disease name. Biopsy/final adjudication/treatment response/outcome remain confirmatory/non-ranking.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-TRANSFUSION-REACTION-FNHTR`.
+- Focused new-batch fast grid (`POLYMYOSITIS,DRUG_FEVER,ALCOHOLIC_HEPATITIS`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 289 case JSON files loaded.
+  - Single-manifold validation `284/286 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

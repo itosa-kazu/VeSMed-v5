@@ -1,0 +1,82 @@
+{
+  "case_id": "DRUG_FEVER_DALTEPARIN_NEONATE_PMC5073694",
+  "source_pmid": "27737872",
+  "source_pmcid": "PMC5073694",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5073694/",
+  "disease_label_per_paper": "Dalteparin-sodium induced drug fever in a neonate",
+  "expected_manifold": "D-DRUG-FEVER",
+  "demographics": {
+    "gestational_age_weeks": 26.4,
+    "age_days_at_drug_start": 5,
+    "country_context": "Sweden"
+  },
+  "presentation_summary": [
+    "Preterm infant born at 26+3 weeks gestation had an uncomplicated postnatal transition and was found on day of life 5 to have a right ventricular thrombus.",
+    "Dalteparin-sodium was started on day of life 5 by subcutaneous injections for the thrombus.",
+    "On day of life 7, two days after dalteparin initiation, body temperature increased with discomfort and increased heart rate.",
+    "The injection catheter site was inspected repeatedly for infection, bleeding, or dislocation.",
+    "CRP was negative, blood cell count was normal, liver enzymes and renal parameters remained normal, and blood cultures plus broad viral molecular diagnostics were negative.",
+    "Fever normalized after discontinuing dalteparin and recurred with rechallenge; both dechallenge and rechallenge are preserved as confirmatory/non-ranking evidence."
+  ],
+  "snapshot_day": 2,
+  "risk_context": [
+    {
+      "factor": "recent_new_or_prolonged_medication_exposure",
+      "category": "present",
+      "value": 1,
+      "source_text_value": "dalteparin-sodium was initiated on day of life 5 and fever occurred on day of life 7"
+    },
+    {
+      "factor": "extreme_age_neonate_or_frail_elderly_context",
+      "category": "present",
+      "value": 1,
+      "source_text_value": "preterm infant born at 26+3 weeks gestation"
+    }
+  ],
+  "observations": [
+    {"axis_id": "suspect_drug_exposure_activity_in_D-DRUG-FEVER", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "treatment with dalteparin-sodium was initiated on day of life 5", "use_in_ranking": true},
+    {"axis_id": "drug_fever_compatible_latency_activity_in_D-DRUG-FEVER", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "body temperature increased on day of life 7, two days after dalteparin initiation", "use_in_ranking": true},
+    {"axis_id": "fever_persistence_while_drug_continued_activity_in_D-DRUG-FEVER", "value": 0.85, "unit": "severity_score_0_1", "source_text_value": "temperature increase occurred during dalteparin exposure before medication was changed", "use_in_ranking": true},
+    {"axis_id": "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER", "value": 0.8, "unit": "severity_score_0_1", "source_text_value": "injection site inspected without signs of infection, bleeding, or dislocation; infection screening did not reveal another cause", "use_in_ranking": true},
+    {"axis_id": "body_temperature", "value": 38.5, "unit": "degC", "source_text_value": "infant's body temperature increased; exact numeric value not stated in text, encoded as febrile qualitative observation", "use_in_ranking": true},
+    {"axis_id": "fever_history_activity", "value": 0.85, "unit": "severity_score_0_1", "source_text_value": "body temperature increased during dalteparin treatment", "use_in_ranking": true},
+    {"axis_id": "chills_or_discomfort_activity_in_D-DRUG-FEVER", "value": 0.65, "unit": "severity_score_0_1", "source_text_value": "patient began showing signs of discomfort", "use_in_ranking": true},
+    {"axis_id": "white_blood_cell_count", "value": 0, "unit": "normal_flag_only", "source_text_value": "blood cell count was normal during dalteparin and unfractionated heparin treatment periods", "use_in_ranking": true},
+    {"axis_id": "serum_crp", "value": 0, "unit": "normal_flag_only", "source_text_value": "C reactive protein was negative", "use_in_ranking": true},
+    {"axis_id": "serum_ast", "value": 0, "unit": "normal_flag_only", "source_text_value": "liver enzymes including ASAT remained normal", "use_in_ranking": true},
+    {"axis_id": "serum_alt", "value": 0, "unit": "normal_flag_only", "source_text_value": "liver enzymes including ALAT remained normal", "use_in_ranking": true},
+    {"axis_id": "serum_creatinine", "value": 0, "unit": "normal_flag_only", "source_text_value": "renal parameters including creatinine and BUN remained normal", "use_in_ranking": true},
+    {"axis_id": "organ_dysfunction_activity_in_D-DRUG-FEVER", "value": 0.0, "unit": "severity_score_0_1", "source_text_value": "liver enzymes and renal parameters remained normal", "use_in_ranking": true}
+  ],
+  "underlying_or_mimic_context": [
+    {
+      "condition": "right ventricular thrombus requiring anticoagulation",
+      "source_text_value": "routine echocardiography on day of life 5 diagnosed a thrombus in the right ventricle",
+      "use_in_ranking": false
+    },
+    {
+      "condition": "infection considered and treated empirically",
+      "source_text_value": "screening for infection was started and antibiotic treatment initiated",
+      "use_in_ranking": false
+    }
+  ],
+  "confirmatory_findings": [
+    {"finding": "Negative infection evaluation", "axis_id": "mimic_exclusion_context", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "negative blood cultures and molecular diagnostics for 15 different viruses ruled out viral or bacterial infection as fever origin", "use_in_ranking": false},
+    {"finding": "Dechallenge response after stopping dalteparin", "axis_id": "drug_fever_dechallenge_response_context_in_D-DRUG-FEVER", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "fever, signs of irritation, and tachycardia normalized after discontinuing the treatment", "use_in_ranking": false},
+    {"finding": "Rechallenge reproduced fever", "axis_id": "drug_fever_rechallenge_response_context_in_D-DRUG-FEVER", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "rechallenge led to an increase in body temperature and decreased to normal after stopping treatment", "use_in_ranking": false},
+    {"finding": "Paper diagnosis of dalteparin-sodium induced drug fever", "axis_id": "paper_diagnosis_confirmation", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "Dalteparin-sodium induced drug fever in a neonate", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    {"name": "dalteparin_sodium_discontinued_or_changed", "source_text_value": "medication was changed from dalteparin after excluding infection", "use_in_ranking": false}
+  ],
+  "outcome": {
+    "clinical_course": "Infant was normal developed and doing well at corrected age 3 months.",
+    "source_text_value": "the infant was normal developed and was doing well when seen for follow-up at corrected age of 3 months",
+    "use_in_ranking": false
+  },
+  "quality_warnings": [
+    "Exact fever temperature was not stated in the text; the case preserves it as a qualitative febrile observation encoded numerically only for runtime consumption.",
+    "Negative infectious testing, dechallenge, rechallenge, and final adjudication are non-ranking confirmatory evidence.",
+    "The ventricular thrombus and anticoagulation indication are preserved as underlying context, not as the expected disease."
+  ]
+}

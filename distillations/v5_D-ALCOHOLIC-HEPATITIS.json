@@ -1,0 +1,540 @@
+{
+  "disease": "D-ALCOHOLIC-HEPATITIS",
+  "disease_name": "Alcoholic hepatitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Alcoholic hepatitis",
+    "leaf_granularity": "First-layer clinical disease leaf for alcohol-associated hepatic steatohepatitis with jaundice and inflammatory liver dysfunction. Acute liver failure, cholangitis, viral hepatitis, drug-induced liver injury, decompensated cirrhosis, pancreatitis, sepsis, malignancy, and biliary obstruction remain mimics or context, not disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use harmful alcohol exposure, recent alcohol escalation or withdrawal context, jaundice, hepatomegaly or tender liver, AST-predominant transaminitis, high GGT, direct-predominant hyperbilirubinemia, INR/PT, albumin, leukocytosis, macrocytosis, portal-hypertensive findings, ascites, encephalopathy, and renal or infection hazards. Liver biopsy, exclusion of viral/autoimmune/biliary/DILI mimics, final paper diagnosis, treatment response, and outcome should be confirmatory/non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS",
+      "display_name": "Alcohol metabolite oxidative and mitochondrial stress",
+      "clinical_meaning": "Sustained or recently escalated alcohol exposure generates acetaldehyde adducts, oxidative stress, mitochondrial dysfunction, CYP2E1 induction, and altered gut-liver signaling that prime hepatocyte injury.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-90, 0],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY",
+      "display_name": "Steatosis, hepatocyte ballooning, and Mallory-type injury",
+      "clinical_meaning": "Hepatocytes accumulate fat, swell, develop cytoskeletal injury, and release AST-predominant enzymes with a typical alcohol-associated hepatocellular pattern.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-30, 7],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION",
+      "display_name": "Neutrophilic innate hepatic inflammation",
+      "clinical_meaning": "Damaged hepatocytes, endotoxin, DAMPs, IL-8/CXCL signals, and complement recruit neutrophils and amplify systemic inflammatory response, leukocytosis, fever, and CRP without requiring bacterial infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-7, 7],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 42],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION",
+      "display_name": "Canalicular cholestasis and bile excretory dysfunction",
+      "clinical_meaning": "Alcohol-associated hepatocyte swelling, cholestasis, ductular reaction, and inflammatory bile transport impairment produce direct-predominant hyperbilirubinemia, jaundice, pruritus, dark urine, high ALP, and high GGT.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION",
+      "display_name": "Synthetic dysfunction and portal-hypertensive decompensation",
+      "clinical_meaning": "Inflammatory hepatic dysfunction, low reserve, fibrosis/cirrhosis context, and sinusoidal pressure impair clotting-factor synthesis and albumin production, producing INR elevation, edema, ascites, portal-hypertensive physiology, and bleeding susceptibility.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [7, 120],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_IMMUNE_PARESIS_INFECTION_SUSCEPTIBILITY",
+      "display_name": "Immune paresis and infection susceptibility",
+      "clinical_meaning": "Severe alcoholic hepatitis combines systemic inflammation with impaired neutrophil/macrophage function, gut permeability, aspiration risk, and malnutrition, raising infection and sepsis hazards and modulating steroid safety.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN",
+      "display_name": "Hepatic encephalopathy, renal injury, and multiorgan failure cascade",
+      "clinical_meaning": "Severe liver dysfunction, ammonia handling failure, inflammation, vasodilation, infection, GI bleeding, dehydration, and hepatorenal physiology can produce encephalopathy, AKI, shock, respiratory failure, and death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY",
+      "display_name": "Abstinence-supported hepatic recovery capacity",
+      "clinical_meaning": "Alcohol cessation, nutrition, infection control, and preserved hepatic reserve allow inflammation and cholestasis to recede; low activity represents poor regenerative reserve or continued alcohol injury.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.3, 0.9],
+      "peak_day_range": [3, 42],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "harmful_alcohol_use_context_activity", "target_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [-365, 0], "phase": "context", "clinical_rationale": "Harmful alcohol exposure is the upstream context for alcoholic hepatitis.", "confidence": "high"},
+    {"source_id": "recent_alcohol_escalation_or_binge_activity", "target_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [-30, 0], "phase": "trigger", "clinical_rationale": "Recent escalation or binge exposure can precipitate symptomatic alcoholic hepatitis.", "confidence": "high"},
+    {"source_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "target_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 30], "phase": "initiation", "clinical_rationale": "Alcohol metabolite and oxidative injury drive steatosis and ballooning degeneration.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "peak", "clinical_rationale": "Hepatocyte injury releases inflammatory signals that recruit neutrophils.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Ballooning and canalicular injury impair bile excretion.", "confidence": "high"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Severe inflammation impairs hepatic synthetic function and worsens portal-hypertensive decompensation.", "confidence": "medium"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Synthetic dysfunction and portal hypertension amplify encephalopathy, bleeding, renal, and shock pathways.", "confidence": "high"},
+    {"source_id": "M_AH_IMMUNE_PARESIS_INFECTION_SUSCEPTIBILITY", "target_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "infection_complicated", "clinical_rationale": "Infection in severe alcoholic hepatitis can precipitate renal failure, encephalopathy, shock, and death.", "confidence": "high"},
+    {"source_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY", "target_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 30], "phase": "recovery", "clinical_rationale": "Sustained abstinence removes the ongoing alcohol injury driver.", "confidence": "high"},
+    {"source_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY", "target_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "effect_on_target": "decrease", "edge_type": "mechanism_to_mechanism", "lag_days_range": [7, 60], "phase": "recovery", "clinical_rationale": "Recovery capacity lowers bilirubin and cholestatic burden over days to weeks.", "confidence": "medium"},
+
+    {"source_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "target_id": "serum_gamma_glutamyl_transferase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 7], "phase": "context_to_peak", "clinical_rationale": "Alcohol induction and cholestasis commonly raise GGT.", "confidence": "high"},
+    {"source_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "target_id": "mean_corpuscular_volume", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-90, 0], "phase": "context", "clinical_rationale": "Alcohol exposure and folate deficiency commonly cause macrocytosis.", "confidence": "medium"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "Alcohol-associated hepatocyte and mitochondrial injury raises AST.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "ALT rises but is often lower than AST in alcoholic hepatitis.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "ast_alt_ratio", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "AST predominance is a common alcohol-associated transaminase pattern.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "hepatomegaly_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Steatosis and inflammation enlarge the liver.", "confidence": "high"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "hepatic_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Capsular stretch and inflammation cause tender hepatomegaly or RUQ pain.", "confidence": "medium"},
+    {"source_id": "M_AH_STEATOSIS_BALLOONING_MALLORY_INJURY", "target_id": "hepatic_steatosis_imaging_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-30, 14], "phase": "whole_course", "clinical_rationale": "Alcoholic hepatitis often appears with fatty liver or hepatomegaly on imaging.", "confidence": "high"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Neutrophilic inflammation can produce marked leukocytosis or leukemoid reaction.", "confidence": "high"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Alcoholic hepatitis leukocytosis is typically neutrophil-predominant.", "confidence": "medium"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "band_neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Severe inflammatory stress may include bandemia after infection is excluded or as competing context.", "confidence": "medium"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Systemic inflammation raises CRP.", "confidence": "medium"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "peak", "clinical_rationale": "Fever may occur from sterile inflammation, infection, or alcohol withdrawal context.", "confidence": "medium"},
+    {"source_id": "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Inflammation, withdrawal, pain, anemia, hypovolemia, or infection raise heart rate.", "confidence": "medium"},
+    {"source_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Alcoholic hepatitis is often clinically recognized by jaundice and high bilirubin.", "confidence": "high"},
+    {"source_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "target_id": "serum_bilirubin_direct", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Canalicular dysfunction produces conjugated bilirubin elevation.", "confidence": "high"},
+    {"source_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "target_id": "jaundice_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Visible jaundice and scleral icterus reflect bilirubin burden.", "confidence": "high"},
+    {"source_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "target_id": "pruritus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "cholestatic", "clinical_rationale": "Cholestasis can cause generalized pruritus.", "confidence": "medium"},
+    {"source_id": "M_AH_CHOLESTATIC_BILE_EXCRETORY_DYSFUNCTION", "target_id": "serum_alkaline_phosphatase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "cholestatic", "clinical_rationale": "ALP may rise with cholestatic alcoholic hepatitis, though marked biliary obstruction remains a mimic.", "confidence": "medium"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "prothrombin_time_inr", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Reduced clotting-factor synthesis prolongs INR and contributes to severity scores.", "confidence": "high"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "whole_course", "clinical_rationale": "Inflammation, impaired synthesis, malnutrition, and dilution lower albumin.", "confidence": "high"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "ascites_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "portal_hypertensive", "clinical_rationale": "Severe alcoholic hepatitis can produce portal-hypertensive ascites even without established cirrhosis.", "confidence": "high"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "portal_hypertension_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "portal_hypertensive", "clinical_rationale": "Sinusoidal inflammation and low reserve raise portal pressure.", "confidence": "medium"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "maddrey_discriminant_function_score", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "severity", "clinical_rationale": "Bilirubin and PT prolongation are combined in Maddrey severity scoring.", "confidence": "high"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "meld_score", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severity", "clinical_rationale": "Bilirubin, INR, creatinine, and sodium contribute to MELD/MELD-Na severity.", "confidence": "high"},
+    {"source_id": "M_AH_IMMUNE_PARESIS_INFECTION_SUSCEPTIBILITY", "target_id": "infection_sepsis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "phase": "severe_or_treated", "clinical_rationale": "Severe alcoholic hepatitis and steroid exposure increase infection risk.", "confidence": "high"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "serum_ammonia", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Liver dysfunction and shunting raise ammonia in encephalopathy contexts.", "confidence": "medium"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "mental_status_abnormality_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Encephalopathy, alcohol withdrawal, infection, or metabolic disturbance can alter mental status.", "confidence": "high"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "hepatic_encephalopathy_grade", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "West Haven grade captures hepatic encephalopathy severity.", "confidence": "high"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "renal_complication", "clinical_rationale": "AKI or hepatorenal physiology raises creatinine in severe alcoholic hepatitis.", "confidence": "high"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "phase": "renal_complication", "clinical_rationale": "AKI is a major mortality pathway.", "confidence": "high"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "shock", "clinical_rationale": "Vasodilation, infection, bleeding, or dehydration can lower perfusion pressure.", "confidence": "medium"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Impaired hepatic clearance, hypoperfusion, or sepsis raises lactate.", "confidence": "medium"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "gastrointestinal_bleeding_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "phase": "portal_hypertensive", "clinical_rationale": "Coagulopathy, portal hypertension, varices, gastritis, and thrombocytopenia increase GI bleeding risk.", "confidence": "medium"},
+    {"source_id": "M_AH_SYNTHETIC_PORTAL_HYPERTENSIVE_DYSFUNCTION", "target_id": "portal_vein_thrombosis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 30], "phase": "complication", "clinical_rationale": "Inflammation and cirrhosis/portal-flow context can increase portal venous thrombosis risk.", "confidence": "low"},
+    {"source_id": "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN", "target_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Encephalopathy, AKI, shock, respiratory failure, and sepsis are major near-term mortality pathways.", "confidence": "high"},
+    {"source_id": "M_AH_IMMUNE_PARESIS_INFECTION_SUSCEPTIBILITY", "target_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "severe_or_treated", "clinical_rationale": "Infection is a major determinant of survival and steroid net benefit.", "confidence": "high"},
+    {"source_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY", "target_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 90], "phase": "recovery", "clinical_rationale": "Abstinence and recovery capacity lower ongoing injury and death risk.", "confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "harmful_alcohol_use_context_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Heavy, sustained, or clinically harmful alcohol use context; quantity and chronicity are case evidence, not disease-name qualifiers.", "baseline_range": [0, 0.08], "peak_day_range": [-3650, 0], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "recent_alcohol_escalation_or_binge_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent escalation, binge, relapse, or abrupt reduction after heavy use near presentation.", "baseline_range": [0, 0.03], "peak_day_range": [-30, 0], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 120], "knowledge_confidence": "high"},
+    {"axis_id": "alcohol_withdrawal_risk_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Risk or active context of alcohol withdrawal after recent cessation or reduced intake.", "baseline_range": [0, 0.03], "peak_day_range": [-3, 3], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "jaundice_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Visible jaundice, scleral icterus, dark urine, or generalized yellow discoloration.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [7, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "pruritus_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Generalized itching from cholestatic bilirubin/bile-acid burden.", "baseline_range": [0, 0.04], "peak_day_range": [0, 21], "peak_value_range": [0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "fatigue_malaise_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Fatigue, malaise, weakness, or reduced activity during alcoholic hepatitis.", "baseline_range": [0, 0.08], "peak_day_range": [-14, 7], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "anorexia_poor_appetite_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Poor appetite, anorexia, or reduced intake.", "baseline_range": [0, 0.05], "peak_day_range": [-14, 7], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea, vomiting, retching, or poor oral tolerance.", "baseline_range": [0, 0.05], "peak_day_range": [-7, 7], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Right upper quadrant, epigastric, or diffuse abdominal pain. Severe focal biliary or pancreatic patterns remain mimic/context evidence.", "baseline_range": [0, 0.05], "peak_day_range": [-7, 7], "peak_value_range": [0, 0.8], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatic_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Tender hepatomegaly, RUQ tenderness, or liver capsule discomfort.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.1, 0.9], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatomegaly_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Palpable or imaging hepatomegaly from fatty enlarged inflamed liver.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "high"},
+    {"axis_id": "hepatic_steatosis_imaging_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ultrasound, CT, MRI, or biopsy-compatible fatty liver/steatosis signal.", "baseline_range": [0, 0.12], "peak_day_range": [-365, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "ascites_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical or imaging ascites, abdominal distension with fluid wave, or paracentesis-confirmed ascites.", "baseline_range": [0, 0.03], "peak_day_range": [0, 21], "peak_value_range": [0, 1.0], "plateau_duration_days": [3, 180], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "portal_hypertension_activity", "category": "derived_clinical_activity", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Portal-hypertensive physiology from ascites with high SAAG, collateral/recanalized umbilical vein, varices, splenomegaly, or portal-flow imaging.", "baseline_range": [0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "splenomegaly_presence", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Palpable or imaging splenomegaly, usually portal-hypertension or hematologic context.", "baseline_range": [0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0, 1], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "portal_vein_thrombosis_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging-confirmed portal venous thrombus in the alcoholic hepatitis context; remains a complication/context axis, not a separate disease-name qualifier.", "baseline_range": [0, 0.002], "peak_day_range": [0, 30], "peak_value_range": [0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "low"},
+    {"axis_id": "mental_status_abnormality_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Confusion, slowed speech, disorientation, somnolence, agitation, or coma from hepatic encephalopathy, withdrawal, infection, or metabolic context.", "baseline_range": [0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "hepatic_encephalopathy_grade", "category": "neurologic_measurement", "unit": "grade_0_4", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "mental_status_abnormality_activity", "shape_free_text": "West Haven or equivalent hepatic encephalopathy grade.", "baseline_range": [0, 0], "peak_day_range": [0, 14], "peak_value_range": [0, 4], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Temperature may be normal or high from alcoholic hepatitis SIRS, infection, aspiration, or withdrawal.", "baseline_range": [36.2, 37.5], "peak_day_range": [0, 7], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate rises with inflammation, withdrawal, anemia, hypovolemia, pain, sepsis, or bleeding.", "baseline_range": [60, 100], "peak_day_range": [0, 7], "peak_value_range": [80, 150], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Perfusion pressure; low values mark bleeding, infection, vasodilation, or hepatorenal/shock context.", "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [45, 110], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate may rise with infection, aspiration, ascites, encephalopathy, metabolic stress, or shock.", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [12, 36], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "low"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AST in alcoholic hepatitis is typically elevated but often below the thousands; AST commonly exceeds ALT.", "baseline_range": [10, 40], "peak_day_range": [0, 7], "peak_value_range": [80, 700], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALT is elevated but often lower than AST in alcoholic hepatitis; very high ALT suggests viral/toxic/ischemic mimics.", "baseline_range": [7, 55], "peak_day_range": [0, 7], "peak_value_range": [30, 400], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "ast_alt_ratio", "category": "derived_measurement", "unit": "ratio", "log_scale": false, "axis_role": "measurement", "shape_free_text": "AST/ALT ratio; values above one and often above two support alcohol-associated pattern but are not diagnostic alone.", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 7], "peak_value_range": [1.2, 4.5], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "ALP can be normal, mildly elevated, or markedly elevated in cholestatic alcoholic hepatitis; biliary obstruction remains a mimic/context.", "baseline_range": [40, 130], "peak_day_range": [0, 21], "peak_value_range": [80, 900], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_gamma_glutamyl_transferase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "GGT is often high with alcohol exposure and cholestasis.", "baseline_range": [5, 60], "peak_day_range": [-30, 14], "peak_value_range": [60, 4000], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin is a core jaundice/severity axis in alcoholic hepatitis.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 21], "peak_value_range": [3, 35], "plateau_duration_days": [7, 120], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_bilirubin_direct", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "serum_bilirubin_total", "shape_free_text": "Direct bilirubin is often prominently elevated with alcoholic hepatitis cholestasis.", "baseline_range": [0, 0.3], "peak_day_range": [0, 21], "peak_value_range": [1, 25], "plateau_duration_days": [7, 120], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Albumin falls with impaired synthesis, inflammation, dilution, malnutrition, and chronic reserve limitation.", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 30], "peak_value_range": [1.5, 3.4], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR rises with hepatic synthetic dysfunction and drives severity scores.", "baseline_range": [0.9, 1.2], "peak_day_range": [0, 14], "peak_value_range": [1.0, 4.5], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "maddrey_discriminant_function_score", "category": "derived_score", "unit": "points", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Maddrey discriminant function from bilirubin and prothrombin time; high values mark severe alcoholic hepatitis context.", "baseline_range": [0, 5], "peak_day_range": [0, 14], "peak_value_range": [10, 120], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "meld_score", "category": "derived_score", "unit": "points", "log_scale": false, "axis_role": "measurement", "shape_free_text": "MELD or MELD-Na severity score from bilirubin, INR, creatinine, and sodium.", "baseline_range": [6, 10], "peak_day_range": [0, 14], "peak_value_range": [10, 45], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_sodium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Sodium may be low with advanced portal hypertension, ascites, low solute intake, or severe illness.", "baseline_range": [135, 145], "peak_day_range": [0, 14], "peak_value_range": [118, 145], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Creatinine rises with AKI, hepatorenal physiology, hypovolemia, infection, or shock.", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.3, 8.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BUN may rise with dehydration, renal injury, catabolism, or GI bleeding.", "baseline_range": [7, 20], "peak_day_range": [0, 14], "peak_value_range": [4, 120], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ammonia", "category": "lab_value", "unit": "umol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Ammonia can be elevated in hepatic encephalopathy but may not correlate perfectly with mental status.", "baseline_range": [10, 35], "peak_day_range": [0, 14], "peak_value_range": [35, 180], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lactate may rise from impaired hepatic clearance, hypoperfusion, infection, seizure, or severe systemic inflammation.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 7], "peak_value_range": [0.8, 12], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Anemia may reflect chronic alcohol use, nutrition, GI bleeding, inflammation, or hemolysis context.", "baseline_range": [12, 16], "peak_day_range": [-90, 14], "peak_value_range": [6, 15], "plateau_duration_days": [7, 365], "decline_half_life_days": [14, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_corpuscular_volume", "category": "lab_value", "unit": "fL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "MCV is often high from alcohol exposure, folate deficiency, or liver disease.", "baseline_range": [80, 96], "peak_day_range": [-90, 0], "peak_value_range": [92, 125], "plateau_duration_days": [30, 365], "decline_half_life_days": [30, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Leukocytosis is common and can be extreme in leukemoid reaction; infection and malignancy remain mimics/context.", "baseline_range": [4, 10], "peak_day_range": [0, 7], "peak_value_range": [8, 80], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Neutrophil percentage or neutrophil predominance in alcoholic hepatitis inflammatory response.", "baseline_range": [40, 70], "peak_day_range": [0, 7], "peak_value_range": [50, 95], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "band_neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Band forms may rise with severe inflammatory stress, infection, or leukemoid reaction.", "baseline_range": [0, 3], "peak_day_range": [0, 7], "peak_value_range": [0, 30], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Platelets may be normal, low from portal hypertension/alcohol marrow toxicity, or high/reactive; severe thrombocytopenia points to broader differential.", "baseline_range": [150, 400], "peak_day_range": [-30, 14], "peak_value_range": [40, 500], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "CRP rises with alcoholic hepatitis systemic inflammation and rises further with infection.", "baseline_range": [0.2, 5], "peak_day_range": [0, 7], "peak_value_range": [10, 250], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ferritin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Ferritin can rise from inflammation, liver injury, alcohol-associated iron handling changes, or iron overload mimic context.", "baseline_range": [20, 300], "peak_day_range": [0, 14], "peak_value_range": [200, 5000], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "low"},
+    {"axis_id": "gastrointestinal_bleeding_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Melena, hematemesis, hematochezia, occult bleeding, or suspected GI bleeding in portal-hypertension/alcohol gastritis context.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0, 1.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "portal_vein_thrombosis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of portal venous thrombosis in severe inflammatory/portal-hypertensive context.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 30], "peak_value_range": [0.0005, 0.05], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "low"},
+    {"axis_id": "gastrointestinal_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of clinically important GI bleeding from portal hypertension, gastritis, coagulopathy, thrombocytopenia, or anticoagulation context.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.08], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "infection_sepsis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of bacterial infection or sepsis during severe alcoholic hepatitis, especially with immune paresis or corticosteroid exposure.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 30], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of AKI or hepatorenal physiology from severe liver disease, infection, dehydration, bleeding, or shock.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 30], "peak_value_range": [0.001, 0.15], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "acute_liver_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of progression to acute-on-chronic or acute liver failure physiology; this is an event hazard, not the disease leaf name.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 30], "peak_value_range": [0.0005, 0.12], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan mortality hazard for alcoholic hepatitis emerging from severity, infection, renal failure, encephalopathy, bleeding, shock, and recovery capacity.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.0005, 0.20], "plateau_duration_days": [3, 90], "decline_half_life_days": [14, 180], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "harmful_alcohol_use_context_activity", "target_axis_id": "serum_gamma_glutamyl_transferase", "relationship": "alcohol_context_to_ggt", "coupling_type": "drift", "correlation_range": [0.35, 0.8], "lag_days_range": [-30, 7], "phase": "context", "effect_direction": "source_up_increases_target", "clinical_rationale": "Alcohol exposure and cholestasis commonly raise GGT.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_ast", "target_axis_id": "serum_alt", "relationship": "transaminase_covariance_with_ast_predominance", "coupling_type": "noise_correlation", "correlation_range": [0.45, 0.9], "lag_days_range": [0, 2], "phase": "whole_course", "effect_direction": "positive_correlation", "clinical_rationale": "AST and ALT usually rise together, with AST often higher.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_ast", "target_axis_id": "ast_alt_ratio", "relationship": "ast_to_ast_alt_ratio", "coupling_type": "drift", "correlation_range": [0.4, 0.85], "lag_days_range": [0, 1], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "AST predominance raises the AST/ALT ratio.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_bilirubin_total", "target_axis_id": "jaundice_activity", "relationship": "bilirubin_to_visible_jaundice", "coupling_type": "drift", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 3], "phase": "whole_course", "effect_direction": "source_up_increases_target", "clinical_rationale": "Visible jaundice tracks bilirubin burden.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_bilirubin_total", "target_axis_id": "maddrey_discriminant_function_score", "relationship": "bilirubin_component_of_mdf", "coupling_type": "drift", "correlation_range": [0.7, 0.95], "lag_days_range": [0, 1], "phase": "severity", "effect_direction": "source_up_increases_target", "clinical_rationale": "Bilirubin is a major MDF component.", "knowledge_confidence": "high"},
+    {"source_axis_id": "prothrombin_time_inr", "target_axis_id": "maddrey_discriminant_function_score", "relationship": "coagulopathy_component_of_mdf", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "severity", "effect_direction": "source_up_increases_target", "clinical_rationale": "Prothrombin prolongation raises MDF severity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_albumin", "target_axis_id": "ascites_activity", "relationship": "low_albumin_portal_context_to_ascites", "coupling_type": "mixed", "correlation_range": [0.35, 0.8], "lag_days_range": [0, 21], "phase": "portal_hypertensive", "effect_direction": "source_down_increases_target", "clinical_rationale": "Low albumin and portal pressure support ascites formation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "portal_hypertension_activity", "target_axis_id": "ascites_activity", "relationship": "portal_hypertension_to_ascites", "coupling_type": "drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 14], "phase": "portal_hypertensive", "effect_direction": "source_up_increases_target", "clinical_rationale": "Portal hypertension is a major driver of ascites.", "knowledge_confidence": "high"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "infection_sepsis_hazard", "relationship": "leukocytosis_to_infection_context_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.15, 0.55], "lag_days_range": [0, 3], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Very high WBC can be sterile AH inflammation but still raises the need to evaluate infection.", "knowledge_confidence": "low"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "creatinine_to_aki_hazard", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.95], "lag_days_range": [0, 3], "phase": "renal_complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "Creatinine rise marks AKI or hepatorenal risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "relationship": "aki_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 7], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Renal failure sharply worsens alcoholic hepatitis survival.", "knowledge_confidence": "high"},
+    {"source_axis_id": "infection_sepsis_hazard", "target_axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "relationship": "infection_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 14], "phase": "severe_or_treated", "effect_direction": "source_up_increases_target", "clinical_rationale": "Infection and sepsis dominate severe alcoholic hepatitis mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "hepatic_encephalopathy_grade", "target_axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "relationship": "encephalopathy_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.85], "lag_days_range": [0, 7], "phase": "severe", "effect_direction": "source_up_increases_target", "clinical_rationale": "Higher encephalopathy grade signals severe liver dysfunction and aspiration/ICU risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gastrointestinal_bleeding_hazard", "target_axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "relationship": "gi_bleeding_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.8], "lag_days_range": [0, 7], "phase": "bleeding_complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "GI bleeding can precipitate shock, encephalopathy, infection, and death.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "portal_vein_thrombosis_hazard", "target_axis_id": "portal_hypertension_activity", "relationship": "pvt_to_portal_hypertension", "coupling_type": "event_transition", "correlation_range": [0.25, 0.75], "lag_days_range": [0, 30], "phase": "complication", "effect_direction": "source_up_increases_target", "clinical_rationale": "Portal venous thrombosis can worsen portal flow and collateral/ascites physiology.", "knowledge_confidence": "low"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "alcohol_cessation_and_addiction_medicine_support",
+      "treatment_name": "Alcohol cessation and addiction-medicine support",
+      "mode": "modulate_theta",
+      "role": "remove_ongoing_alcohol_injury_and_reduce_relapse_risk",
+      "required_context_axes": ["harmful_alcohol_use_context_activity", "recent_alcohol_escalation_or_binge_activity", "alcohol_withdrawal_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "alcohol_withdrawal_risk_activity", "condition": "high", "effect": "requires_withdrawal_management", "factor_range": [0.8, 1.5], "clinical_rationale": "Withdrawal risk requires benzodiazepine or phenobarbital protocols, monitoring, and thiamine before glucose."},
+        {"axis_id": "mental_status_abnormality_activity", "condition": "high", "effect": "requires_careful_sedation_balance", "factor_range": [0.6, 1.2], "clinical_rationale": "Encephalopathy and withdrawal can overlap clinically."}
+      ],
+      "trajectory_modifications": {
+        "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [7, 90]},
+        "M_AH_ABSTINENCE_REGENERATION_RECOVERY": {"peak_value_factor": [1.1, 2.0], "plateau_duration_factor": [1.1, 2.5], "decline_half_life_days": [30, 365]},
+        "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS": {"peak_value_factor": [0.45, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [30, 180]}
+      }
+    },
+    {
+      "treatment_id": "enteral_nutrition_high_protein_calorie_repletion",
+      "treatment_name": "Enteral nutrition and protein-calorie repletion",
+      "mode": "reshape_landscape",
+      "role": "restore_metabolic_reserve_and_improve_regeneration",
+      "required_context_axes": ["anorexia_poor_appetite_activity", "serum_albumin", "M_AH_ABSTINENCE_REGENERATION_RECOVERY"],
+      "effect_modifiers": [
+        {"axis_id": "mental_status_abnormality_activity", "condition": "high", "effect": "requires_aspiration_safe_delivery", "factor_range": [0.6, 1.2], "clinical_rationale": "Encephalopathy increases aspiration risk and may require tube feeding precautions."},
+        {"axis_id": "ascites_activity", "condition": "high", "effect": "requires_sodium_volume_balance", "factor_range": [0.8, 1.3], "clinical_rationale": "Ascites requires balancing nutrition with sodium restriction and volume status."}
+      ],
+      "trajectory_modifications": {
+        "M_AH_ABSTINENCE_REGENERATION_RECOVERY": {"peak_value_factor": [1.05, 1.8], "plateau_duration_factor": [1.1, 2.0], "decline_half_life_days": [14, 180]},
+        "serum_albumin": {"peak_value_factor": [1.02, 1.25], "plateau_duration_factor": [0.8, 1.2], "decline_half_life_days": [14, 120]},
+        "infection_sepsis_hazard": {"peak_value_factor": [0.75, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [14, 90]}
+      }
+    },
+    {
+      "treatment_id": "thiamine_folate_multivitamin_repletion",
+      "treatment_name": "Thiamine, folate, and multivitamin repletion",
+      "mode": "push_state",
+      "role": "reduce_wernicke_macrocytosis_and_malnutrition_complications",
+      "required_context_axes": ["harmful_alcohol_use_context_activity", "mean_corpuscular_volume", "mental_status_abnormality_activity"],
+      "effect_modifiers": [
+        {"axis_id": "mental_status_abnormality_activity", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Wernicke risk should be covered when confusion occurs in alcohol-use context."}
+      ],
+      "trajectory_modifications": {
+        "mental_status_abnormality_activity": {"peak_value_factor": [0.75, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [1, 14]},
+        "mean_corpuscular_volume": {"peak_value_factor": [0.9, 1.0], "plateau_duration_factor": [0.8, 1.0], "decline_half_life_days": [30, 180]}
+      }
+    },
+    {
+      "treatment_id": "prednisolone_for_severe_alcoholic_hepatitis_context",
+      "treatment_name": "Prednisolone for severe alcoholic hepatitis context",
+      "mode": "reshape_landscape",
+      "role": "suppress_neutrophilic_inflammatory_liver_injury_when_severity_high_and_infection_bleeding_mimics_controlled",
+      "required_context_axes": ["maddrey_discriminant_function_score", "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION", "infection_sepsis_hazard", "gastrointestinal_bleeding_hazard", "serum_creatinine"],
+      "effect_modifiers": [
+        {"axis_id": "maddrey_discriminant_function_score", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Steroid net benefit is considered in severe presentations."},
+        {"axis_id": "infection_sepsis_hazard", "condition": "high", "effect": "toxicity_or_competing_risk_increases", "factor_range": [0.2, 1.0], "clinical_rationale": "Uncontrolled infection can make corticosteroids harmful."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "toxicity_or_competing_risk_increases", "factor_range": [0.3, 1.0], "clinical_rationale": "Active GI bleeding is a major caution context."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "benefit_limited_by_renal_failure_context", "factor_range": [0.4, 1.0], "clinical_rationale": "Renal failure marks poor prognosis and changes net benefit."}
+      ],
+      "trajectory_modifications": {
+        "M_AH_NEUTROPHILIC_INNATE_INFLAMMATION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [3, 30]},
+        "white_blood_cell_count": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [3, 21]},
+        "serum_bilirubin_total": {"peak_value_factor": [0.55, 0.95], "plateau_duration_factor": [0.5, 0.95], "decline_half_life_days": [7, 60]},
+        "infection_sepsis_hazard": {"peak_value_factor": [1.0, 1.8], "plateau_duration_factor": [1.0, 1.5], "decline_half_life_days": [7, 90]}
+      }
+    },
+    {
+      "treatment_id": "n_acetylcysteine_adjunct_support",
+      "treatment_name": "N-acetylcysteine adjunct support",
+      "mode": "modulate_sigma",
+      "role": "support_redox_perfusion_and_early_severe_course_as_adjunct_to_core_care",
+      "required_context_axes": ["maddrey_discriminant_function_score", "serum_bilirubin_total", "prothrombin_time_inr"],
+      "effect_modifiers": [
+        {"axis_id": "acute_liver_failure_hazard", "condition": "high", "effect": "may_strengthen_rescue_context", "factor_range": [1.0, 2.0], "clinical_rationale": "NAC is often considered when severe liver failure physiology overlaps."}
+      ],
+      "trajectory_modifications": {
+        "M_AH_HEPATIC_ENCEPHALOPATHY_RENAL_MULTIORGAN": {"peak_value_factor": [0.75, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [3, 30]},
+        "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS": {"peak_value_factor": [0.75, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [7, 60]}
+      }
+    },
+    {
+      "treatment_id": "hepatic_encephalopathy_bowel_decontamination",
+      "treatment_name": "Lactulose and rifaximin for hepatic encephalopathy context",
+      "mode": "push_state",
+      "role": "lower_ammonia_and_encephalopathy_burden",
+      "required_context_axes": ["mental_status_abnormality_activity", "hepatic_encephalopathy_grade", "serum_ammonia"],
+      "effect_modifiers": [
+        {"axis_id": "hepatic_encephalopathy_grade", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Higher encephalopathy grade increases urgency of ammonia-lowering and airway monitoring."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "bleeding_trigger_requires_parallel_control", "factor_range": [0.8, 1.5], "clinical_rationale": "GI bleeding can precipitate encephalopathy and must be controlled."}
+      ],
+      "trajectory_modifications": {
+        "serum_ammonia": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 7]},
+        "mental_status_abnormality_activity": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]},
+        "hepatic_encephalopathy_grade": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]}
+      }
+    },
+    {
+      "treatment_id": "ascites_portal_hypertension_management",
+      "treatment_name": "Ascites and portal-hypertension management",
+      "mode": "push_state",
+      "role": "control_fluid_overload_ascites_and_portal_hypertensive_complications",
+      "required_context_axes": ["ascites_activity", "portal_hypertension_activity", "serum_albumin", "serum_sodium", "serum_creatinine"],
+      "effect_modifiers": [
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "diuretic_toxicity_limited", "factor_range": [0.3, 1.0], "clinical_rationale": "AKI or hepatorenal physiology limits diuresis and favors albumin/paracentesis strategy."},
+        {"axis_id": "serum_sodium", "condition": "low", "effect": "requires_hyponatremia_volume_balance", "factor_range": [0.5, 1.2], "clinical_rationale": "Hyponatremia constrains fluid and diuretic management."}
+      ],
+      "trajectory_modifications": {
+        "ascites_activity": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [1, 30]},
+        "portal_hypertension_activity": {"peak_value_factor": [0.8, 1.0], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [14, 180]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.8, 1.2], "plateau_duration_factor": [0.8, 1.2], "decline_half_life_days": [1, 30]}
+      }
+    },
+    {
+      "treatment_id": "infection_screening_source_control_active_antibiotics",
+      "treatment_name": "Infection screening, source control, and active antibiotics when infection context is present",
+      "mode": "reshape_landscape",
+      "role": "reduce_infection_sepsis_hazard_that_modulates_steroid_safety_and_survival",
+      "required_context_axes": ["infection_sepsis_hazard", "body_temperature", "white_blood_cell_count", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "infection_sepsis_hazard", "condition": "high", "effect": "required_for_effect", "factor_range": [1.2, 8.0], "clinical_rationale": "Antibiotic/source-control benefit depends on actual infection context."},
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "requires_icu_bundle", "factor_range": [1.0, 3.0], "clinical_rationale": "Shock physiology needs parallel hemodynamic support."}
+      ],
+      "trajectory_modifications": {
+        "infection_sepsis_hazard": {"peak_value_factor": [0.15, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 21]},
+        "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS": {"peak_value_factor": [0.6, 0.95], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [7, 60]}
+      }
+    },
+    {
+      "treatment_id": "portal_vein_thrombosis_anticoagulation_context",
+      "treatment_name": "Anticoagulation for portal vein thrombosis context",
+      "mode": "push_state",
+      "role": "reduce_portal_thrombosis_extension_when_thrombus_context_and_bleeding_risk_allow",
+      "required_context_axes": ["portal_vein_thrombosis_activity", "portal_vein_thrombosis_hazard", "gastrointestinal_bleeding_hazard", "prothrombin_time_inr"],
+      "effect_modifiers": [
+        {"axis_id": "portal_vein_thrombosis_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [1.5, 8.0], "clinical_rationale": "Anticoagulation is relevant when thrombosis is present or strongly suspected."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "toxicity_increases", "factor_range": [0.2, 1.0], "clinical_rationale": "Varices, bleeding, and severe coagulopathy constrain anticoagulation."}
+      ],
+      "trajectory_modifications": {
+        "portal_vein_thrombosis_hazard": {"peak_value_factor": [0.2, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [14, 180]},
+        "portal_vein_thrombosis_activity": {"peak_value_factor": [0.4, 1.0], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [30, 180]},
+        "gastrointestinal_bleeding_hazard": {"peak_value_factor": [1.0, 1.8], "plateau_duration_factor": [1.0, 1.4], "decline_half_life_days": [7, 90]}
+      }
+    },
+    {
+      "treatment_id": "early_liver_transplant_evaluation_for_nonresponse_context",
+      "treatment_name": "Early liver transplant evaluation for selected nonresponse context",
+      "mode": "push_state",
+      "role": "rescue_selected_high_mortality_nonresponders_when_psychosocial_and_medical_criteria_are_met",
+      "required_context_axes": ["mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "maddrey_discriminant_function_score", "meld_score", "M_AH_ABSTINENCE_REGENERATION_RECOVERY"],
+      "effect_modifiers": [
+        {"axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "condition": "very_high", "effect": "strengthens_context_need", "factor_range": [1.5, 8.0], "clinical_rationale": "Rescue transplant evaluation is relevant in high predicted mortality and poor native recovery."},
+        {"axis_id": "harmful_alcohol_use_context_activity", "condition": "high_uncontrolled", "effect": "feasibility_limited", "factor_range": [0.1, 1.0], "clinical_rationale": "Transplant feasibility depends on structured psychosocial/addiction assessment rather than a diagnosis label."}
+      ],
+      "trajectory_modifications": {
+        "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS": {"peak_value_factor": [0.1, 0.8], "plateau_duration_factor": [0.2, 0.9], "decline_half_life_days": [7, 180]}
+      }
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "sustained_heavy_alcohol_use_or_alcohol_use_disorder",
+      "category": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 80],
+          "axis_response_modulation": [
+            {"axis_id": "harmful_alcohol_use_context_activity", "effect": "higher_baseline", "magnitude_factor_range": [5, 100], "clinical_rationale": "Observed harmful alcohol exposure directly raises disease-context evidence."},
+            {"axis_id": "serum_gamma_glutamyl_transferase", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "GGT is alcohol-inducible and cholestasis-sensitive."},
+            {"axis_id": "mean_corpuscular_volume", "effect": "higher_peak", "magnitude_factor_range": [1.02, 1.25], "clinical_rationale": "Alcohol and folate deficiency increase macrocytosis."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_binge_or_escalation_after_chronic_use",
+      "category": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 12],
+          "axis_response_modulation": [
+            {"axis_id": "recent_alcohol_escalation_or_binge_activity", "effect": "higher_baseline", "magnitude_factor_range": [5, 50], "clinical_rationale": "Recent escalation can precipitate symptomatic alcoholic hepatitis."},
+            {"axis_id": "serum_ast", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2.0], "clinical_rationale": "Recent injury can raise transaminases."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "malnutrition_or_low_protein_calorie_reserve",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5],
+          "axis_response_modulation": [
+            {"axis_id": "serum_albumin", "effect": "lower_peak", "magnitude_factor_range": [0.6, 0.95], "clinical_rationale": "Malnutrition and inflammation lower albumin."},
+            {"axis_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY", "effect": "lower_recovery_capacity", "magnitude_factor_range": [0.5, 0.9], "clinical_rationale": "Poor nutritional reserve limits hepatic recovery."}
+          ],
+          "treatment_effect_modulation": {
+            "enteral_nutrition_high_protein_calorie_repletion": "stronger when malnutrition or low intake context is active"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "underlying_cirrhosis_or_portal_hypertension_context",
+      "category": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 8],
+          "axis_response_modulation": [
+            {"axis_id": "portal_hypertension_activity", "effect": "higher_baseline", "magnitude_factor_range": [2, 20], "clinical_rationale": "Baseline portal hypertension makes ascites and bleeding more likely."},
+            {"axis_id": "ascites_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Cirrhosis and portal pressure amplify ascites."},
+            {"axis_id": "prothrombin_time_inr", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.1, 2.0], "clinical_rationale": "Low hepatic reserve worsens coagulopathy."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "active_infection_or_aspiration_context",
+      "category": "trigger_or_complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 3],
+          "axis_response_modulation": [
+            {"axis_id": "infection_sepsis_hazard", "effect": "higher_peak", "magnitude_factor_range": [2, 20], "clinical_rationale": "Infection is common and hazardous in severe alcoholic hepatitis."},
+            {"axis_id": "white_blood_cell_count", "effect": "higher_peak", "magnitude_factor_range": [1.1, 3.0], "clinical_rationale": "Infection can add to sterile AH leukocytosis."}
+          ],
+          "treatment_effect_modulation": {
+            "prednisolone_for_severe_alcoholic_hepatitis_context": "reduced or unsafe until infection is controlled",
+            "infection_screening_source_control_active_antibiotics": "stronger when infection context is active"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "renal_dysfunction_or_hepatorenal_context",
+      "category": "complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 3],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_peak", "magnitude_factor_range": [1.3, 8.0], "clinical_rationale": "Renal dysfunction raises creatinine and MELD."},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [2, 20], "clinical_rationale": "AKI is a core severe AH complication."},
+            {"axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Renal failure worsens prognosis."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "gastrointestinal_bleeding_or_high_bleeding_risk_context",
+      "category": "complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 3],
+          "axis_response_modulation": [
+            {"axis_id": "gastrointestinal_bleeding_activity", "effect": "higher_peak", "magnitude_factor_range": [2, 20], "clinical_rationale": "Observed GI bleeding raises bleeding activity."},
+            {"axis_id": "gastrointestinal_bleeding_hazard", "effect": "higher_peak", "magnitude_factor_range": [2, 20], "clinical_rationale": "Portal hypertension and coagulopathy raise bleeding risk."},
+            {"axis_id": "hepatic_encephalopathy_grade", "effect": "higher_peak_after_bleeding", "magnitude_factor_range": [1.1, 2.5], "clinical_rationale": "GI bleeding can precipitate encephalopathy."}
+          ],
+          "treatment_effect_modulation": {
+            "prednisolone_for_severe_alcoholic_hepatitis_context": "reduced while active bleeding is uncontrolled",
+            "portal_vein_thrombosis_anticoagulation_context": "limited when bleeding hazard is high"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "continued_alcohol_use_after_presentation",
+      "category": "course_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4],
+          "axis_response_modulation": [
+            {"axis_id": "M_AH_ALCOHOL_METABOLITE_OXIDATIVE_STRESS", "effect": "sustained_activity", "magnitude_factor_range": [1.2, 3.0], "clinical_rationale": "Continued alcohol sustains hepatocyte injury."},
+            {"axis_id": "M_AH_ABSTINENCE_REGENERATION_RECOVERY", "effect": "lower_recovery_capacity", "magnitude_factor_range": [0.2, 0.8], "clinical_rationale": "No abstinence blunts recovery."},
+            {"axis_id": "mortality_hazard_in_D-ALCOHOLIC-HEPATITIS", "effect": "higher_long_tail", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Continued alcohol increases recurrent injury and mortality."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Keep the first-layer leaf name pure: Alcoholic hepatitis. Acute liver failure, cholangitis, viral hepatitis, DILI, decompensated cirrhosis, pancreatitis, sepsis, portal vein thrombosis, and malignancy are mimics, complications, or context axes.",
+    "Do not use final diagnosis, liver biopsy, negative viral/autoimmune/biliary workup, steroid response, abstinence response, or outcome as presentation-ranking evidence unless running a post-workup diagnostic mode.",
+    "Preserve presentation evidence even when it overlaps mimics: fever, leukocytosis, high CRP, ascites, GI bleeding, portal vein thrombosis, elevated ferritin, lactate, and cholestatic labs remain structured evidence.",
+    "Severity and treatment should emerge from bilirubin, INR/PT, creatinine, sodium, encephalopathy, infection, bleeding, MDF/MELD, and mortality hazard rather than from clinical ordering labels.",
+    "Corticosteroid behavior must be modulated by infection, GI bleeding, renal failure, and severity context; do not encode a universal treatment ordering label.",
+    "Alcohol exposure is a context/risk axis for this disease, not a generic reason to force every liver or abdominal case into this manifold."
+  ],
+  "quality_checks": [
+    "Only one derived_hazard axis is present: mortality_hazard_in_D-ALCOHOLIC-HEPATITIS.",
+    "No clinical-ordering label fields are used.",
+    "Disease-name scope is pure: Alcoholic hepatitis; mimics and complications are represented as axes, events, or confirmatory context."
+  ]
+}

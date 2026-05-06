@@ -123,31 +123,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-FAMILIAL-MEDITERRANEAN-FEVER | Familial Mediterranean fever |
 | D-TRANSFUSION-REACTION-HEMOLYTIC | Acute hemolytic transfusion reaction |
 | D-TRANSPLANT-REJECTION-ACUTE | Acute transplant rejection |
+| D-POLYMYOSITIS | Polymyositis |
+| D-DRUG-FEVER | Simple drug fever |
+| D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-POLYMYOSITIS | Polymyositis | myositis fever/CK/weakness mimic near dermatomyositis and inflammatory disease |
-| 2 | D-DRUG-FEVER | Simple drug fever | common fever mimic that should not be collapsed into DRESS or SJS/TEN |
-| 3 | D-ALCOHOLIC-HEPATITIS | Alcoholic hepatitis | common fever/jaundice/liver injury mimic near infection and ALF |
-| 4 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
-| 5 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
-| 6 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
-| 7 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
-| 8 | D-CELLULITIS | Cellulitis | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
-| 9 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
-| 10 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
-| 11 | D-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
-| 12 | D-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
-| 13 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
-| 14 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
-| 15 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
-| 16 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
-| 17 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
-| 18 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
-| 19 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
-| 20 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 1 | D-TRANSFUSION-REACTION-FNHTR | Febrile non-hemolytic transfusion reaction | common transfusion fever mimic distinct from hemolytic reaction |
+| 2 | D-STREP-PYOGENES-BACTEREMIA | Streptococcus pyogenes bacteremia | critical invasive streptococcal fever/shock mimic near TSS and necrotizing fasciitis |
+| 3 | D-PSEUDOMONAS-BACTEREMIA | Pseudomonas aeruginosa bacteremia | critical bacteremia in immunocompromised and device-associated contexts |
+| 4 | D-ITP | Immune thrombocytopenia | common platelet-fall mimic near Evans, HIT, TTP, DIC, and leukemia |
+| 5 | D-CELLULITIS | Cellulitis | very common fever, soft-tissue inflammation, bacteremia, and necrotizing fasciitis mimic |
+| 6 | D-SPONTANEOUS-BACTERIAL-PERITONITIS | Spontaneous bacterial peritonitis | common/critical fever, abdominal pain, AKI, encephalopathy, and sepsis mimic in cirrhosis |
+| 7 | D-ASPIRATION-PNEUMONIA | Aspiration pneumonia | common fever/hypoxemia mimic distinct from pneumococcal, mycoplasma, and legionella leaves |
+| 8 | D-APPENDICITIS | Acute appendicitis | common abdominal fever/pain source-control disease and sepsis mimic |
+| 9 | D-DIVERTICULITIS | Acute diverticulitis | common fever/abdominal pain source-control disease with abscess/perforation risk |
+| 10 | D-PELVIC-INFLAMMATORY-DISEASE | Pelvic inflammatory disease | common reproductive-age fever/pelvic pain mimic with tubo-ovarian abscess risk |
+| 11 | D-ACUTE-PROSTATITIS | Acute bacterial prostatitis | common male fever/UTI sepsis mimic distinct from pyelonephritis |
+| 12 | D-ENTEROCOCCAL-BACTEREMIA | Enterococcal bacteremia | common/critical bacteremia in older, biliary, urinary, and healthcare-associated contexts |
+| 13 | D-ESBL-ENTEROBACTERALES-BACTEREMIA | ESBL Enterobacterales bacteremia | critical resistant bacteremia and sepsis treatment-coverage mimic |
+| 14 | D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION | Central line-associated bloodstream infection | common device-associated fever/bacteremia source-control disease |
+| 15 | D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE | Hyperosmolar hyperglycemic state | common/critical metabolic mimic near DKA, sepsis, stroke, and dehydration |
+| 16 | D-TRAPS | TNF receptor-associated periodic syndrome | recurrent fever/autoinflammatory mimic near FMF, AOSD, and infection |
+| 17 | D-CAPS | Cryopyrin-associated periodic syndrome | recurrent fever/urticarial rash/autoinflammatory mimic near infection and rheumatology disease |
+| 18 | D-APLASTIC-ANEMIA | Aplastic anemia | critical pancytopenia and fever/neutropenia mimic near leukemia and marrow failure |
+| 19 | D-PULMONARY-EMBOLISM | Pulmonary embolism | common/critical dyspnea, fever, chest pain, shock, and myocarditis/pneumonia mimic |
+| 20 | D-ACUTE-PERICARDITIS | Acute pericarditis | common chest pain/fever mimic near myocarditis, ACS, and systemic inflammatory disease |
 
 ## Candidate Pool Toward 200
 
