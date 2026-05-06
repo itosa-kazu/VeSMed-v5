@@ -712,3 +712,26 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `303/305 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-06 New Batch Memory: Aspiration Pneumonia / Appendicitis / Diverticulitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ASPIRATION-PNEUMONIA`: aspiration pneumonia.
+  - `D-APPENDICITIS`: acute appendicitis.
+  - `D-DIVERTICULITIS`: acute diverticulitis.
+- New real PMC/PubMed cases:
+  - `D-ASPIRATION-PNEUMONIA`: `PMC8666202` / PMID `34934540`, `PMC3790037` / PMID `24101960`, `PMC11835467` / PMID `39968446`.
+  - `D-APPENDICITIS`: `PMC10590198` / PMID `37868373`, `PMC11364456` / PMID `39220170`, `PMC12414484` / PMID `40922864`.
+  - `D-DIVERTICULITIS`: `PMC9393316` / PMID `36017297`, `PMC6176041` / PMID `30305862`, `PMC10997493` / PMID `38586678`.
+- Aspiration pneumonia source rule: keep this leaf separate from ordinary bacterial pneumonia leaves, chemical pneumonitis without infection, lung abscess/empyema, pneumococcal/legionella/mycoplasma pneumonia, PJP, influenza/COVID, pulmonary embolism, and heart failure. Witnessed aspiration, dependent infiltrates, airway material, oxygenation, fever, sputum, and aspiration-risk context can be rankable when present at presentation; culture species, susceptibility, bronchoscopy final interpretation, and treatment response are confirmatory/non-ranking unless testing post-workup mode.
+- Appendicitis source rule: keep first-layer appendicitis pure. Perforated, appendicolith-associated, abscess/phlegmon, duplicated appendix, pregnancy, pediatric, right-sided, and elderly presentations are spectrum/context/event axes or future subtype, not disease-name qualifiers. Operative/pathology confirmation and treatment response stay confirmatory/non-ranking.
+- Diverticulitis source rule: keep first-layer diverticulitis pure. Uncomplicated/complicated, perforated, abscess, right-sided, cecal, hepatic-flexure, elderly, or immunocompromised presentations are spectrum/context/event/location axes or future subtype. Surgery/pathology/final diagnosis/treatment response remain confirmatory/non-ranking.
+- Treatment schema repair from this batch: `D-APPENDICITIS` initially used list-shaped `trajectory_modifications`; main agent normalized these to runtime-readable object-shaped `trajectory_modifications` and preserved the original additive direction/magnitude effects as `push_targets`. This was an engineering schema repair, not a medical ranking patch.
+- Axis ontology note: `anorexia_activity` and `anorexia_poor_appetite_activity` are known synonym debt already present before this batch. Do not create additional poor-appetite synonyms; future ontology audit should merge these consistently across disease and case JSON.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-PELVIC-INFLAMMATORY-DISEASE`.
+- Focused new-batch fast grid (`ASPIRATION_PNEUMONIA,APPENDICITIS,DIVERTICULITIS`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 317 case JSON files loaded.
+  - Single-manifold validation `312/314 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

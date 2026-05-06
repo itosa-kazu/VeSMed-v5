@@ -1,0 +1,2358 @@
+{
+  "disease": "D-ASPIRATION-PNEUMONIA",
+  "disease_name": "Aspiration pneumonia",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "leaf_granularity": "first_layer_disease_leaf",
+    "manifold_definition": "Pulmonary infection and inflammatory lung injury after aspiration of colonized oropharyngeal secretions, gastric contents, or particulate material into the lower respiratory tract. The first-layer leaf is not split by community versus hospital setting, anaerobic burden, stroke, nursing-home residence, or severity.",
+    "subtype_policy": "Aspiration triggers, swallowing impairment, impaired consciousness, dental/oral status, care setting, and likely pathogen mix are represented as risk/context and treatment modifiers rather than qualifiers in the disease name."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "display_name": "Lower-airway inoculation by aspirated material",
+      "clinical_meaning": "Macroaspiration or repeated microaspiration delivers colonized oral secretions, gastric fluid, food particles, or sputum into bronchi and dependent alveoli.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-1, 1],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [0.2, 3],
+      "decline_half_life_days": [0.5, 3],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY",
+      "display_name": "Chemical and particulate airway injury",
+      "clinical_meaning": "Acid, bile, enzymes, and particulate food injure airway epithelium, obstruct bronchi, provoke bronchospasm, atelectasis, and acute neutrophil recruitment before bacterial growth is fully established.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.15, 0.9],
+      "plateau_duration_days": [0.2, 2],
+      "decline_half_life_days": [0.5, 4],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+      "display_name": "Polymicrobial oral or gastric pathogen burden",
+      "clinical_meaning": "Mixed aerobic, facultative, and anaerobic organisms from the oropharynx or stomach proliferate in injured dependent lung. Modern aspiration pneumonia is often aerobic gram-negative or streptococcal, with anaerobic dominance mainly in poor dentition, necrosis, abscess, or empyema contexts.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.35, 0.95],
+      "plateau_duration_days": [1, 6],
+      "decline_half_life_days": [1, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "display_name": "Neutrophilic alveolitis and consolidation",
+      "clinical_meaning": "Alveolar neutrophil influx, edema, fibrin, and cellular debris fill airspaces, producing crackles, cough, sputum, fever, elevated CRP, and radiographic infiltrate or consolidation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [2, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_DEPENDENT_DEPOSITION_MICROASPIRATION",
+      "display_name": "Gravity-dependent deposition and recurrent microaspiration",
+      "clinical_meaning": "Aspirated material preferentially injures dependent segments: posterior upper lobes and superior lower lobes when supine, basal lower lobes when upright; chronic silent aspiration can produce recurrent lower/posterior infiltrates and tree-in-bud bronchiolitis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.2, 0.9],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [5, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "display_name": "Shunt physiology and hypoxemic respiratory failure",
+      "clinical_meaning": "Dependent consolidation, atelectasis, bronchial obstruction, and inflammatory edema produce V/Q mismatch and true shunt with tachypnea, dyspnea, low SpO2, low PaO2/FiO2, and possible ventilatory failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 6],
+      "decline_half_life_days": [1, 8],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "display_name": "Systemic inflammatory response and sepsis pressure",
+      "clinical_meaning": "Pulmonary infection can spill into systemic cytokine activity, bacteremia, hypotension, lactate rise, AKI, thrombocytopenia, and delirium, especially in frail elderly or delayed-treatment cases.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.15, 0.85],
+      "plateau_duration_days": [0.5, 5],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION",
+      "display_name": "Pleural, abscess, and necrotizing complication pressure",
+      "clinical_meaning": "Persistent polymicrobial burden, poor oral anaerobic load, delayed therapy, or obstruction can progress to lung abscess, necrotizing pneumonia, complicated parapneumonic effusion, or empyema.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 21],
+      "peak_value_range": [0.02, 0.65],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+      "display_name": "Ongoing airway-protection failure",
+      "clinical_meaning": "Dysphagia, impaired cough, vocal-cord dysfunction, altered consciousness, reflux, tube feeding, or poor oral care sustain recurrence risk and weaken treatment response unless aspiration prevention is addressed.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [-30, 1],
+      "peak_value_range": [0.1, 0.95],
+      "plateau_duration_days": [3, 365],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+      "target_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Airway-protection failure increases macroaspiration and repeated microaspiration events.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "target_id": "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 0.5],
+      "clinical_rationale": "Aspirated gastric contents or food particles directly injure and obstruct airway surfaces.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "target_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "The same aspirated material introduces viable oral and gastric flora into injured dependent lung.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+      "target_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Bacterial growth and PAMPs amplify neutrophilic alveolar exudation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY",
+      "target_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Chemical pneumonitis and obstruction initiate sterile neutrophilic lung injury that can become infected.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_DEPENDENT_DEPOSITION_MICROASPIRATION",
+      "target_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 14],
+      "clinical_rationale": "Repeated dependent deposition sustains or recurs alveolitis in dependent regions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Airspace filling and atelectasis create shunt physiology and increased work of breathing.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+      "target_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Higher bacterial burden increases systemic inflammatory and bacteremic risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+      "target_id": "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [2, 14],
+      "clinical_rationale": "Persistent bacterial burden, especially anaerobic or obstructed infection, can produce abscess or empyema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "target_id": "witnessed_aspiration_event_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 0],
+      "clinical_rationale": "Witnessed choking, vomiting, regurgitation, or airway contamination is the observed macroaspiration counterpart.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+      "target_id": "recurrent_silent_aspiration_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 30],
+      "clinical_rationale": "Silent aspiration presents as recurrent pneumonias or chronic cough without obvious choking.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+      "target_id": "dysphagia_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [-30, 0],
+      "clinical_rationale": "Oropharyngeal dysphagia is a major airway-protection substrate for aspiration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+      "target_id": "impaired_airway_protection_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [-30, 0],
+      "clinical_rationale": "Altered mentation, weak cough, vocal-cord dysfunction, or sedation lowers airway protection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "target_id": "vomiting_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [-1, 0],
+      "clinical_rationale": "Vomiting or regurgitation is a common proximate macroaspiration event.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_LOWER_AIRWAY_INOCULATION",
+      "target_id": "aspirated_airway_material_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "CT, bronchoscopy, or suctioning may reveal sputum, bile, food particles, or secretions in the airway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_DEPENDENT_DEPOSITION_MICROASPIRATION",
+      "target_id": "dependent_pulmonary_infiltrate_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Gravity-dependent distribution is a characteristic imaging clue for aspiration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_DEPENDENT_DEPOSITION_MICROASPIRATION",
+      "target_id": "tree_in_bud_opacity_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 14],
+      "clinical_rationale": "Recurrent aspiration can produce bronchiolar tree-in-bud or branching centrilobular opacities.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY",
+      "target_id": "atelectasis_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Particulate obstruction and splinting can collapse dependent lung segments.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "pneumonia_infiltrate_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Alveolar exudate and edema produce radiographic infiltrates.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "pulmonary_consolidation_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Airspace filling can appear as consolidation, especially in dependent lobes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "pleural_effusion_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 7],
+      "clinical_rationale": "Parapneumonic pleural reaction may accompany aspiration pneumonia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "cough_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Airway and alveolar inflammation commonly cause cough, although cough may be absent in frail or neurologically impaired patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "purulent_sputum_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Neutrophilic airway infection can produce purulent sputum.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "crackles_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Dependent alveolar fluid and consolidation produce crackles or coarse breath sounds.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "hiccup_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 5],
+      "clinical_rationale": "Lower-lobe or diaphragmatic pleural irritation can rarely present with persistent hiccups.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_ASP_NEUTROPHILIC_ALVEOLITIS_CONSOLIDATION",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "IL-1, TNF, and IL-6 drive fever; elderly or frail patients may be afebrile.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Fever, hypoxemia, and systemic inflammation raise heart rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Tachypnea is an early response to hypoxemia and increased work of breathing.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "dyspnea_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Gas exchange impairment and work of breathing produce dyspnea unless neurologic blunting masks symptoms.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "V/Q mismatch and shunt lower SpO2.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "oxygen_requirement_level",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Escalating oxygen or ventilatory support reflects respiratory severity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "pao2_fio2_ratio",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "PaO2/FiO2 captures severity of oxygen transfer failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "arterial_paco2",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Severe fatigue, obstruction, or COPD overlap can produce hypercapnia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "arterial_ph",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Hypercapnic or lactic acidosis can lower arterial pH.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Bacterial pneumonia and stress usually produce leukocytosis, though elderly or marrow-suppressed patients can remain normal.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Neutrophil predominance is common in bacterial aspiration pneumonia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 3],
+      "clinical_rationale": "IL-6-driven acute-phase response raises CRP.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "serum_procalcitonin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Procalcitonin rises with bacterial infection and sepsis pressure but may be modest in localized aspiration.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Sepsis physiology and dehydration can lower MAP in severe cases.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Shock and severe hypoxemia can elevate lactate.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 3],
+      "clinical_rationale": "Sepsis, dehydration, nephrotoxic exposure, or hypoxemia may produce AKI.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [1, 4],
+      "clinical_rationale": "Severe infection can consume platelets or suppress marrow response.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "acute_respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 1],
+      "clinical_rationale": "Worsening hypoxemia increases near-term respiratory failure risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "ards_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Large-volume aspiration and severe pneumonia can evolve into diffuse alveolar damage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "need_for_mechanical_ventilation_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Persistent hypoxemia, hypercapnia, or airway contamination increases intubation risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Sepsis and hypoperfusion raise AKI event risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "circulatory_collapse_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [0, 2],
+      "clinical_rationale": "Aspiration pneumonia can produce septic shock in severe or frail cases.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION",
+      "target_id": "lung_abscess_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [3, 21],
+      "clinical_rationale": "Necrotizing anaerobic or mixed infection can cavitate into lung abscess.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION",
+      "target_id": "empyema_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [3, 21],
+      "clinical_rationale": "Pleural bacterial extension can create complicated effusion or empyema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS",
+      "target_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Sepsis physiology is a major near-term mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE",
+      "target_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [0, 3],
+      "clinical_rationale": "Respiratory failure is the main proximal fatal pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION",
+      "target_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [3, 21],
+      "clinical_rationale": "Abscess, necrosis, and empyema prolong infection and raise death risk.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "witnessed_aspiration_event_activity",
+      "axis_name": "Witnessed aspiration or choking event activity",
+      "category": "clinical_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-1, 1],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.0, 2],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Observed choking, coughing with meals, regurgitation, vomiting, or airway contamination around symptom onset.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "recurrent_silent_aspiration_activity",
+      "axis_name": "Recurrent silent aspiration activity",
+      "category": "clinical_course_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-30, 0],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [14, 365],
+      "clinical_interpretation": "Recurrent pneumonia, chronic cough, or swallow-study evidence of silent aspiration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dysphagia_activity",
+      "axis_name": "Dysphagia activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-30, 0],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [7, 365],
+      "decline_half_life_days": [14, 365],
+      "clinical_interpretation": "Swallowing impairment is a major aspiration substrate but may be absent in single emesis-related aspiration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "impaired_airway_protection_activity",
+      "axis_name": "Impaired airway protection activity",
+      "category": "clinical_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-7, 0],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.5, 365],
+      "decline_half_life_days": [1, 365],
+      "clinical_interpretation": "Reduced consciousness, weak cough, vocal-cord dysfunction, neurologic disease, sedation, or seizure-related airway risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vomiting_activity",
+      "axis_name": "Vomiting or regurgitation activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-1, 0],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.0, 2],
+      "decline_half_life_days": [0.5, 3],
+      "clinical_interpretation": "Vomiting or regurgitation can be the proximate aspiration event.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "aspirated_airway_material_presence",
+      "axis_name": "Aspirated material visible in airway",
+      "category": "imaging_or_procedure_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 1],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.0, 2],
+      "decline_half_life_days": [0.5, 3],
+      "clinical_interpretation": "Sputum, bile, food particles, or secretions seen in trachea/bronchi by CT, bronchoscopy, or suctioning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pneumonia_infiltrate_extent",
+      "axis_name": "New pulmonary infiltrate or consolidation extent",
+      "category": "imaging_finding",
+      "axis_role": "measurement",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [3, 21],
+      "clinical_interpretation": "Generic pneumonia infiltrate axis reused for aspiration-related airspace disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dependent_pulmonary_infiltrate_extent",
+      "axis_name": "Gravity-dependent pulmonary infiltrate extent",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [3, 30],
+      "clinical_interpretation": "Posterior or basal lower-lobe predominance, or dependent upper-lobe/posterior segment involvement in supine patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_consolidation_activity",
+      "axis_name": "Pulmonary consolidation activity",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [3, 21],
+      "clinical_interpretation": "Airspace consolidation from dependent neutrophilic exudate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tree_in_bud_opacity_extent",
+      "axis_name": "Tree-in-bud or bronchiolitis opacity extent",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 60],
+      "clinical_interpretation": "Bronchiolar branching/centrilobular opacities are especially relevant to recurrent microaspiration.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "atelectasis_extent",
+      "axis_name": "Atelectasis extent",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pneumonia_infiltrate_extent",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [1, 10],
+      "clinical_interpretation": "Airway obstruction, mucus plugging, splinting, and postoperative physiology can produce atelectasis alongside aspiration pneumonia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pleural_effusion_extent",
+      "axis_name": "Pleural effusion extent",
+      "category": "imaging_finding",
+      "axis_role": "measurement",
+      "unit": "relative_extent_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [1, 7],
+      "peak_value_range": [0.0, 0.6],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [3, 30],
+      "clinical_interpretation": "Parapneumonic effusion can accompany aspiration pneumonia but is not required.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cough_activity",
+      "axis_name": "Cough activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Cough may be productive, weak, absent, or blunted depending on airway-protection status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "purulent_sputum_activity",
+      "axis_name": "Purulent or copious sputum activity",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "cough_activity",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Copious or purulent sputum supports airway bacterial burden but can be absent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "crackles_activity",
+      "axis_name": "Crackles or coarse breath sounds activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Coarse crackles or decreased dependent breath sounds reflect airspace disease.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hiccup_activity",
+      "axis_name": "Hiccup activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.1, 7],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Persistent hiccups are uncommon but can occur with lower-lobe pneumonia or diaphragmatic irritation.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "dyspnea_activity",
+      "axis_name": "Dyspnea activity",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [1, 10],
+      "clinical_interpretation": "Dyspnea tracks respiratory involvement but may be underreported in frail or neurologically impaired patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "body_temperature",
+      "axis_name": "Body temperature",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "degC",
+      "baseline_range": [36.2, 37.2],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [36.5, 40.5],
+      "plateau_duration_days": [0.5, 5],
+      "decline_half_life_days": [1, 5],
+      "clinical_interpretation": "Fever is common but elderly aspiration pneumonia can present with low-grade fever or no fever.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "axis_name": "Fever history activity",
+      "category": "clinical_course_context",
+      "axis_role": "finding",
+      "unit": "severity_score_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Reported fever may be more informative than a single afebrile measurement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "axis_name": "Respiratory rate",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "breaths_per_min",
+      "baseline_range": [12, 20],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [18, 45],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 5],
+      "clinical_interpretation": "Tachypnea is a sensitive sign of pneumonia severity and hypoxemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "axis_name": "Heart rate",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "beats_per_min",
+      "baseline_range": [55, 95],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [70, 140],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 5],
+      "clinical_interpretation": "Tachycardia reflects fever, hypoxemia, dehydration, or sepsis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "axis_name": "Systolic blood pressure",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [100, 145],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [70, 145],
+      "plateau_duration_days": [0.2, 4],
+      "decline_half_life_days": [0.5, 4],
+      "clinical_interpretation": "Hypotension appears in severe sepsis, dehydration, or sedation overlap; many cases remain normotensive.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "axis_name": "Mean arterial pressure",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [70, 105],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [45, 105],
+      "plateau_duration_days": [0.2, 4],
+      "decline_half_life_days": [0.5, 4],
+      "clinical_interpretation": "MAP falls with severe sepsis or shock but can be normal in mild aspiration pneumonia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "axis_name": "Peripheral oxygen saturation",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "%",
+      "baseline_range": [95, 100],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [75, 97],
+      "plateau_duration_days": [0.2, 6],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "SpO2 may be preserved in mild lower-lobe disease but drops sharply with large-volume aspiration or COPD overlap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oxygen_requirement_level",
+      "axis_name": "Oxygen or ventilatory support requirement level",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "ordinal_0_5",
+      "baseline_range": [0, 0.5],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0, 5],
+      "plateau_duration_days": [0.2, 7],
+      "decline_half_life_days": [0.5, 10],
+      "clinical_interpretation": "0 none, 1 low-flow oxygen, 2 high-flow or mask, 3 noninvasive ventilation, 4 invasive ventilation, 5 rescue ventilation/ECMO-level support.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pao2_fio2_ratio",
+      "axis_name": "PaO2/FiO2 ratio",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [400, 500],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [60, 320],
+      "plateau_duration_days": [0.2, 6],
+      "decline_half_life_days": [0.5, 8],
+      "clinical_interpretation": "Gas-exchange severity marker; values below 300 indicate clinically important oxygenation impairment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_pao2",
+      "axis_name": "Arterial PaO2",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [80, 105],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [40, 95],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Absolute PaO2 depends on FiO2 and should be interpreted with oxygen delivery context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "arterial_paco2",
+      "axis_name": "Arterial PaCO2",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "baseline_range": [35, 45],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [30, 75],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Low or normal in pure tachypnea; high in COPD overlap, fatigue, or ventilatory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "arterial_ph",
+      "axis_name": "Arterial pH",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "pH",
+      "baseline_range": [7.35, 7.45],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [7.05, 7.45],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Acidemia reflects severe hypercapnia, lactic acidosis, or mixed respiratory/metabolic failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "axis_name": "White blood cell count",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [4, 11],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [5, 30],
+      "plateau_duration_days": [1, 6],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Leukocytosis is common; normal WBC does not exclude aspiration pneumonia in elderly or frail patients.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "axis_name": "Absolute neutrophil count",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [1.5, 8.0],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [3, 26],
+      "plateau_duration_days": [1, 6],
+      "decline_half_life_days": [1, 7],
+      "clinical_interpretation": "Neutrophil-predominant inflammation supports bacterial lung infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_crp",
+      "axis_name": "C-reactive protein",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/L",
+      "baseline_range": [0, 10],
+      "peak_day_range": [1, 5],
+      "peak_value_range": [20, 320],
+      "plateau_duration_days": [1, 6],
+      "decline_half_life_days": [2, 7],
+      "clinical_interpretation": "CRP tracks inflammatory burden and usually falls after effective therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_procalcitonin",
+      "axis_name": "Serum procalcitonin",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "baseline_range": [0.01, 0.1],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.1, 30],
+      "plateau_duration_days": [0.5, 4],
+      "decline_half_life_days": [1, 3],
+      "clinical_interpretation": "Higher with bacterial sepsis; may be low in localized or chemical-predominant aspiration.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "axis_name": "Hemoglobin",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "g/dL",
+      "baseline_range": [12, 16],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [7, 16],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [2, 14],
+      "clinical_interpretation": "Anemia is a severity and frailty context rather than defining aspiration pneumonia.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "platelet_count",
+      "axis_name": "Platelet count",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "baseline_range": [150, 400],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [80, 500],
+      "plateau_duration_days": [1, 7],
+      "decline_half_life_days": [2, 10],
+      "clinical_interpretation": "Can be normal, reactive-high, or low with severe sepsis.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "serum_albumin",
+      "axis_name": "Serum albumin",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "g/dL",
+      "baseline_range": [3.5, 5.0],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [1.8, 4.0],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [3, 21],
+      "clinical_interpretation": "Low albumin reflects frailty, inflammation, and mortality risk but is not specific.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "axis_name": "Serum lactate",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "baseline_range": [0.5, 2.0],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.8, 8.0],
+      "plateau_duration_days": [0.2, 3],
+      "decline_half_life_days": [0.5, 3],
+      "clinical_interpretation": "Lactate rises in shock, severe work of breathing, or hypoxemia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "axis_name": "Serum creatinine",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "baseline_range": [0.5, 1.2],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.5, 4.0],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [1, 10],
+      "clinical_interpretation": "AKI is a complication or background context, not a defining axis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "axis_name": "Blood urea nitrogen",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "baseline_range": [7, 20],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [7, 80],
+      "plateau_duration_days": [0.5, 7],
+      "decline_half_life_days": [1, 10],
+      "clinical_interpretation": "BUN can rise with dehydration, catabolism, AKI, or gastrointestinal bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "axis_name": "Serum bicarbonate",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "baseline_range": [22, 29],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [10, 30],
+      "plateau_duration_days": [0.2, 4],
+      "decline_half_life_days": [0.5, 4],
+      "clinical_interpretation": "Bicarbonate can fall with lactic acidosis or remain normal in isolated pneumonia.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "respiratory_failure_activity",
+      "axis_name": "Respiratory failure activity",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 6],
+      "decline_half_life_days": [0.5, 8],
+      "clinical_interpretation": "Composite bedside expression of hypoxemia, hypercapnia, respiratory distress, and need for ventilatory support.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard",
+      "axis_name": "Acute respiratory failure hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.0001, 0.003],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.003, 0.35],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Event risk for clinically important acute respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "ards_hazard",
+      "axis_name": "ARDS hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.00001, 0.001],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0005, 0.2],
+      "plateau_duration_days": [0.5, 6],
+      "decline_half_life_days": [1, 8],
+      "clinical_interpretation": "Large-volume aspiration or severe bilateral pneumonia can lead to ARDS.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "need_for_mechanical_ventilation_hazard",
+      "axis_name": "Need for invasive mechanical ventilation hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.00001, 0.001],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.0005, 0.25],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Invasive ventilation risk rises with refractory hypoxemia, hypercapnia, airway contamination, or depressed mental status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "axis_name": "Acute kidney injury hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.0001, 0.003],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.001, 0.12],
+      "plateau_duration_days": [0.5, 6],
+      "decline_half_life_days": [1, 8],
+      "clinical_interpretation": "AKI risk tracks sepsis severity, dehydration, and nephrotoxic treatment context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "circulatory_collapse_shock_hazard",
+      "axis_name": "Circulatory collapse or shock hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.00001, 0.001],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.0005, 0.18],
+      "plateau_duration_days": [0.2, 5],
+      "decline_half_life_days": [0.5, 7],
+      "clinical_interpretation": "Shock hazard increases in severe aspiration pneumonia or frail elderly patients.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "lung_abscess_hazard",
+      "axis_name": "Lung abscess hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.000001, 0.0002],
+      "peak_day_range": [3, 21],
+      "peak_value_range": [0.0002, 0.05],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [7, 45],
+      "clinical_interpretation": "Anaerobic, necrotizing, or obstructed aspiration infection can evolve into abscess.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "empyema_hazard",
+      "axis_name": "Empyema hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "baseline_range": [0.000001, 0.0002],
+      "peak_day_range": [3, 21],
+      "peak_value_range": [0.0002, 0.04],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [7, 45],
+      "clinical_interpretation": "Complicated parapneumonic effusion or empyema risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "active_antibiotic_coverage_probability",
+      "axis_name": "Active antibiotic coverage probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 365],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Probability that the chosen regimen covers the current bacterial burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anaerobic_coverage_probability",
+      "axis_name": "Anaerobic coverage probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "baseline_range": [0.0, 0.1],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 365],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Treatment context axis for anaerobic activity when abscess, necrosis, empyema, severe periodontal disease, or witnessed gastric aspiration raises anaerobic value.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "aspiration_prevention_adequacy",
+      "axis_name": "Aspiration prevention adequacy",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.2],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 365],
+      "decline_half_life_days": [7, 365],
+      "clinical_interpretation": "Adequacy of NPO decisions, swallow assessment, diet texture, feeding position, oral care, tube strategy, and medication/sedation review.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "airway_protection_need_activity",
+      "axis_name": "Airway protection need activity",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 2],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [1, 14],
+      "clinical_interpretation": "Need for protected airway, suctioning, airway clearance, or enteral feeding precautions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oral_antibiotic_absorption_reliability",
+      "axis_name": "Oral antibiotic absorption reliability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "baseline_range": [0.85, 1.0],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 365],
+      "decline_half_life_days": [1, 30],
+      "clinical_interpretation": "Vomiting, ileus, shock, or NPO status lowers reliability of oral antibiotics.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "severe_renal_impairment_activity",
+      "axis_name": "Severe renal impairment activity",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "relative_activity_0_1",
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [7, 365],
+      "clinical_interpretation": "Renal dosing and nephrotoxicity context for beta-lactams and adjunctive agents.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "axis_name": "Mortality hazard in aspiration pneumonia",
+      "category": "derived_hazard",
+      "axis_role": "measurement",
+      "unit": "deaths_per_day",
+      "log_scale": true,
+      "baseline_range": [0.00001, 0.0005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0003, 0.12],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [2, 14],
+      "clinical_interpretation": "Lifespan outcome hazard driven by respiratory failure, sepsis/shock, frailty, recurrent aspiration, abscess/empyema, and delayed active therapy.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "witnessed_aspiration_event_activity",
+      "target_axis_id": "aspirated_airway_material_presence",
+      "coupling_type": "noise_correlation",
+      "correlation": 0.62,
+      "lag_days_range": [0, 1],
+      "rationale": "Witnessed aspiration and visible airway material often occur together but either can be absent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "dependent_pulmonary_infiltrate_extent",
+      "target_axis_id": "pneumonia_infiltrate_extent",
+      "coupling_type": "noise_correlation",
+      "correlation": 0.75,
+      "lag_days_range": [0, 0],
+      "rationale": "Dependent extent is a satellite of the overall infiltrate burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "pneumonia_infiltrate_extent",
+      "target_axis_id": "oxygen_saturation",
+      "coupling_type": "drift",
+      "effect_on_target": "decrease",
+      "lag_days_range": [0, 1],
+      "conditionality": "Stronger when consolidation is bilateral, large-volume, or accompanied by atelectasis/COPD.",
+      "rationale": "More airspace disease worsens gas exchange.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "oxygen_saturation",
+      "target_axis_id": "pao2_fio2_ratio",
+      "coupling_type": "noise_correlation",
+      "correlation": 0.72,
+      "lag_days_range": [0, 0],
+      "rationale": "Both axes measure oxygenation severity when FiO2 context is available.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "pao2_fio2_ratio",
+      "target_axis_id": "ards_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_on_target": "increase_when_low",
+      "lag_days_range": [0, 1],
+      "conditionality": "Most relevant with bilateral infiltrates or large-volume aspiration.",
+      "rationale": "Low PaO2/FiO2 is the primary gas-exchange signal for ARDS-level severity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "oxygen_requirement_level",
+      "target_axis_id": "need_for_mechanical_ventilation_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 1],
+      "rationale": "Escalating oxygen support predicts intubation risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_paco2",
+      "target_axis_id": "need_for_mechanical_ventilation_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 1],
+      "conditionality": "Hypercapnia from COPD overlap, fatigue, or airway obstruction.",
+      "rationale": "CO2 retention identifies ventilatory failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_crp",
+      "target_axis_id": "white_blood_cell_count",
+      "coupling_type": "noise_correlation",
+      "correlation": 0.45,
+      "lag_days_range": [0, 2],
+      "rationale": "CRP and leukocytosis are co-driven by systemic inflammation but are not causally upstream of one another.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "acute_respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 2],
+      "rationale": "Respiratory failure is a proximal death pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "ards_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 3],
+      "rationale": "ARDS-level injury substantially increases mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "circulatory_collapse_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 2],
+      "rationale": "Septic shock or peri-aspiration circulatory collapse increases near-term death risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "acute_kidney_injury_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [0, 3],
+      "rationale": "AKI reflects multiorgan dysfunction and worsens prognosis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "lung_abscess_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [3, 14],
+      "rationale": "Abscess prolongs infection and source-control burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "empyema_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+      "coupling_type": "event_transition",
+      "effect_on_target": "increase",
+      "lag_days_range": [3, 14],
+      "rationale": "Empyema adds source-control and sepsis risk.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "ampicillin_sulbactam_iv",
+      "drug_class": "beta_lactam_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "empiric_or_definitive",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Benefit depends on coverage of oral streptococci, susceptible gram-negatives, and anaerobic components when present."
+        },
+        {
+          "axis_id": "severe_renal_impairment_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Renal dosing required to avoid accumulation."
+        }
+      ],
+      "failure_modes": ["ESBL_or_AmpC_pathogen", "severe_beta_lactam_allergy", "undrained_abscess_or_empyema"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.25, 0.65],
+          "plateau_duration_factor": [0.2, 0.6],
+          "decline_half_life_days": [1, 3]
+        },
+        "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS": {
+          "peak_value_factor": [0.45, 0.8],
+          "plateau_duration_factor": [0.4, 0.8],
+          "decline_half_life_days": [1, 4]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.55, 0.9],
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.55, 0.9],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.5, 2],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "diarrhea_activity",
+          "direction": "up",
+          "magnitude_range": [0.02, 0.2],
+          "interpretation": "antibiotic-associated diarrhea"
+        }
+      ],
+      "context_specific_role": "Broad aspiration-pneumonia coverage when oral flora and susceptible hospital/community gram-negative organisms are plausible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "amoxicillin_clavulanate",
+      "drug_class": "oral_or_iv_beta_lactam_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "step_down_or_mild_disease",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["oral_antibiotic_absorption_reliability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "oral_antibiotic_absorption_reliability",
+          "condition": "low",
+          "effect": "weakens",
+          "clinical_rationale": "Vomiting, ileus, shock, or NPO status makes oral step-down unreliable."
+        }
+      ],
+      "failure_modes": ["severe_disease_requiring_iv_therapy", "poor_oral_absorption", "ESBL_or_resistant_gram_negative"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.35, 0.75],
+          "plateau_duration_factor": [0.3, 0.75],
+          "decline_half_life_days": [1, 4]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.45, 0.8],
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.45, 0.8],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.5, 2],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "diarrhea_activity",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.3],
+          "interpretation": "GI intolerance and antibiotic-associated diarrhea"
+        }
+      ],
+      "context_specific_role": "Oral completion or mild stable aspiration pneumonia when absorption and coverage are adequate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "ceftriaxone_plus_metronidazole",
+      "drug_class": "third_generation_cephalosporin_plus_anaerobic_agent",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Metronidazole adds anaerobic coverage when abscess, necrosis, severe periodontal disease, or gastric aspiration makes it valuable."
+        }
+      ],
+      "failure_modes": ["ESBL_or_AmpC_pathogen", "ceftriaxone_resistant_gram_negative", "C_difficile_risk_from_broad_anaerobic_pressure"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.3, 0.7],
+          "plateau_duration_factor": [0.25, 0.7],
+          "decline_half_life_days": [1, 4]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.5, 0.85],
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.8, 1.0],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.5, 2],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "diarrhea_activity",
+          "direction": "up",
+          "magnitude_range": [0.05, 0.25],
+          "interpretation": "metronidazole GI intolerance"
+        }
+      ],
+      "context_specific_role": "Separates gram-negative/streptococcal coverage from anaerobic coverage when a cephalosporin backbone is chosen.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "piperacillin_tazobactam_iv",
+      "drug_class": "broad_spectrum_antipseudomonal_beta_lactam_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "severe_or_healthcare_context",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN", "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS"],
+      "required_context_axes": ["active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Expected benefit rises when resistant gram-negative or healthcare-associated flora remain covered."
+        },
+        {
+          "axis_id": "severe_renal_impairment_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Renal dosing and sodium load matter in CKD or AKI."
+        }
+      ],
+      "failure_modes": ["ESBL_or_carbapenemase_pathogen", "nephrotoxicity_with_vancomycin", "overly_broad_for_mild_stable_case"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.2, 0.6],
+          "plateau_duration_factor": [0.2, 0.6],
+          "decline_half_life_days": [1, 3]
+        },
+        "M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS": {
+          "peak_value_factor": [0.35, 0.75],
+          "plateau_duration_factor": [0.3, 0.75],
+          "decline_half_life_days": [1, 4]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.65, 0.95],
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.65, 0.95],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.25, 1.5],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "serum_creatinine",
+          "direction": "up",
+          "magnitude_range": [0.0, 0.8],
+          "interpretation": "AKI signal especially with vancomycin or severe illness"
+        }
+      ],
+      "context_specific_role": "Broader IV option for severe aspiration pneumonia, postoperative/hospital exposure, or pseudomonal risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "carbapenem_iv",
+      "drug_class": "carbapenem",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "resistant_or_critical_illness_context",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "strengthens_when_switched_to_active",
+          "clinical_rationale": "Value rises when prior beta-lactam/beta-lactamase inhibitor or ceftriaxone exposure is likely inactive against ESBL/AmpC organisms."
+        },
+        {
+          "axis_id": "severe_renal_impairment_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Dose adjustment reduces neurotoxicity and accumulation."
+        }
+      ],
+      "failure_modes": ["carbapenemase_pathogen", "seizure_risk_with_accumulation", "unnecessary_selection_pressure_in_mild_case"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.15, 0.55],
+          "plateau_duration_factor": [0.15, 0.55],
+          "decline_half_life_days": [0.8, 3]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.75, 0.98],
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.75, 0.98],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.25, 1.5],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "antibiotic_nonresponse_activity",
+          "direction": "down_when_active",
+          "magnitude_range": [0.2, 0.8],
+          "interpretation": "inactive-coverage pressure falls after active carbapenem therapy"
+        }
+      ],
+      "context_specific_role": "Escalation or definitive coverage for ESBL-risk or critically ill aspiration pneumonia when narrower coverage is unreliable.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "clindamycin_or_moxifloxacin_beta_lactam_allergy_option",
+      "drug_class": "non_beta_lactam_or_anaerobic_option",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "allergy_or_selected_anaerobic_context",
+      "target_mechanisms": ["M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["anaerobic_coverage_probability"],
+      "effect_modifiers": [
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "These agents are most relevant when anaerobic burden is clinically important."
+        }
+      ],
+      "failure_modes": ["C_difficile_colitis", "poor_gram_negative_coverage_for_clindamycin", "QT_or_tendon_risk_for_fluoroquinolone"],
+      "trajectory_modifications": {
+        "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN": {
+          "peak_value_factor": [0.45, 0.9],
+          "plateau_duration_factor": [0.4, 0.9],
+          "decline_half_life_days": [2, 6]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "direction": "up",
+          "magnitude_range": [0.5, 0.95],
+          "unit": "probability_0_1"
+        }
+      ],
+      "onset_delay_days": [0.5, 2],
+      "carryover_after_stop_days": [0.5, 3],
+      "side_effects": [
+        {
+          "axis_id": "diarrhea_activity",
+          "direction": "up",
+          "magnitude_range": [0.1, 0.5],
+          "interpretation": "C. difficile risk is clinically important with clindamycin"
+        }
+      ],
+      "context_specific_role": "Narrow allergy or anaerobic-complication option; expected value depends strongly on pathogen mix and toxicity context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "supplemental_oxygen_hfnc_or_noninvasive_support",
+      "drug_class": "respiratory_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "target_mechanisms": ["M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE"],
+      "required_context_axes": ["oxygen_saturation", "oxygen_requirement_level"],
+      "effect_modifiers": [
+        {
+          "axis_id": "pneumonia_infiltrate_extent",
+          "condition": "high",
+          "effect": "weakens",
+          "clinical_rationale": "Large shunt fraction can blunt oxygen response and require escalation."
+        },
+        {
+          "axis_id": "impaired_airway_protection_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Noninvasive support may worsen aspiration risk when airway protection is poor."
+        }
+      ],
+      "failure_modes": ["delayed_intubation", "persistent_airway_contamination", "hypercapnic_failure"],
+      "push_targets": [
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "up",
+          "magnitude_range": [3, 25],
+          "unit": "%"
+        },
+        {
+          "axis_id": "pao2_fio2_ratio",
+          "direction": "up",
+          "magnitude_range": [20, 150],
+          "unit": "mmHg"
+        }
+      ],
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 0.2],
+      "side_effects": [],
+      "context_specific_role": "Supports oxygenation while antibiotics, airway clearance, and aspiration prevention act.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "airway_suction_bronchoscopy_clearance",
+      "drug_class": "airway_clearance_procedure",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "source_control",
+      "target_mechanisms": ["M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY", "M_ASP_HYPOXEMIC_SHUNT_RESPIRATORY_FAILURE"],
+      "required_context_axes": ["aspirated_airway_material_presence", "airway_protection_need_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "aspirated_airway_material_presence",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Clearance benefit is greatest when particulate, bile, or copious secretions remain in the airway."
+        }
+      ],
+      "failure_modes": ["procedure_hypoxemia", "incomplete_distal_clearance", "delayed_airway_protection"],
+      "trajectory_modifications": {
+        "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY": {
+          "peak_value_factor": [0.3, 0.8],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [0.3, 2]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "aspirated_airway_material_presence",
+          "direction": "down",
+          "magnitude_range": [0.2, 0.9],
+          "unit": "present_absent_0_1"
+        },
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "up",
+          "magnitude_range": [0, 8],
+          "unit": "%"
+        }
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0.2, 2],
+      "side_effects": [
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "down",
+          "magnitude_range": [0, 5],
+          "interpretation": "transient bronchoscopy-related desaturation"
+        }
+      ],
+      "context_specific_role": "Clear retained aspirate or mucus plugging when imaging, suction, or bronchoscopy shows airway material.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "aspiration_prevention_bundle",
+      "drug_class": "risk_context_intervention",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "supportive_source_control",
+      "target_mechanisms": ["M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE", "M_ASP_LOWER_AIRWAY_INOCULATION"],
+      "required_context_axes": ["aspiration_prevention_adequacy", "airway_protection_need_activity"],
+      "effect_modifiers": [
+        {
+          "axis_id": "dysphagia_activity",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Swallow evaluation, diet modification, positioning, and oral care matter most when dysphagia is present."
+        },
+        {
+          "axis_id": "impaired_airway_protection_activity",
+          "condition": "high",
+          "effect": "strengthens",
+          "clinical_rationale": "Sedation review, airway protection, and feeding-route decisions reduce repeated aspiration."
+        }
+      ],
+      "failure_modes": ["unrecognized_silent_aspiration", "tube_feeding_reflux", "poor_adherence_to_positioning_or_oral_care"],
+      "theta_changes": [
+        {
+          "covariate": "M_ASP_LOWER_AIRWAY_INOCULATION",
+          "direction": "down",
+          "duration": "days_to_months"
+        },
+        {
+          "covariate": "M_ASP_RECURRENCE_AIRWAY_PROTECTION_FAILURE",
+          "direction": "down_when_reversible",
+          "duration": "weeks_to_months"
+        }
+      ],
+      "push_targets": [
+        {
+          "axis_id": "aspiration_prevention_adequacy",
+          "direction": "up",
+          "magnitude_range": [0.3, 0.9],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [7, 365],
+      "side_effects": [
+        {
+          "axis_id": "oral_intake_tolerance_activity",
+          "direction": "down_when_NPO_or_restricted",
+          "magnitude_range": [0.1, 0.8],
+          "interpretation": "temporary nutrition and quality-of-life tradeoff"
+        }
+      ],
+      "context_specific_role": "Prevents recurrence and treatment failure from continued aspiration; includes oral care, upright feeding, swallow evaluation, texture change, NPO when unsafe, medication/sedation review, and reflux management.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "lung_abscess_or_empyema_drainage",
+      "drug_class": "source_control_procedure",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "source_control",
+      "target_mechanisms": ["M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION"],
+      "required_context_axes": ["lung_abscess_hazard", "empyema_hazard", "pleural_effusion_extent"],
+      "effect_modifiers": [
+        {
+          "axis_id": "empyema_hazard",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Drainage benefit depends on drainable pleural infection or abscess source-control need."
+        }
+      ],
+      "failure_modes": ["non_drained_loculation", "bleeding_or_procedural_complication", "persistent_airway_aspiration"],
+      "trajectory_modifications": {
+        "M_ASP_PLEURAL_ABSCESS_NECROTIZING_COMPLICATION": {
+          "peak_value_factor": [0.2, 0.7],
+          "plateau_duration_factor": [0.2, 0.7],
+          "decline_half_life_days": [2, 10]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "pleural_effusion_extent",
+          "direction": "down",
+          "magnitude_range": [0.2, 0.8],
+          "unit": "relative_extent_0_1"
+        }
+      ],
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [0.001, 0.03],
+          "interpretation": "procedural bleeding risk"
+        }
+      ],
+      "context_specific_role": "Chest tube, image-guided drainage, fibrinolytics, VATS, or abscess drainage when complications become source-control problems.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "balanced_crystalloid_and_norepinephrine_for_shock",
+      "drug_class": "hemodynamic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "target_mechanisms": ["M_ASP_SYSTEMIC_INFLAMMATION_SEPSIS"],
+      "required_context_axes": ["mean_arterial_pressure", "serum_lactate"],
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "required_for_effect",
+          "clinical_rationale": "Hemodynamic support is useful when shock physiology is present."
+        },
+        {
+          "axis_id": "oxygen_saturation",
+          "condition": "low",
+          "effect": "changes_toxicity",
+          "clinical_rationale": "Over-resuscitation can worsen oxygenation in pneumonia or ARDS."
+        }
+      ],
+      "failure_modes": ["fluid_overload_worsening_hypoxemia", "unresolved_source_or_inactive_antibiotics"],
+      "push_targets": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [5, 25],
+          "unit": "mmHg"
+        },
+        {
+          "axis_id": "serum_lactate",
+          "direction": "down_when_hypoperfusion_reversed",
+          "magnitude_range": [0, 3],
+          "unit": "mmol/L"
+        }
+      ],
+      "onset_delay_days": [0, 0.05],
+      "carryover_after_stop_days": [0, 0.5],
+      "side_effects": [
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "down",
+          "magnitude_range": [0, 5],
+          "interpretation": "pulmonary edema from excess fluid"
+        }
+      ],
+      "context_specific_role": "Supportive shock care while active antibiotics and airway/source control take effect.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "advanced_age_frailty",
+      "type": "continuous_or_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "body_temperature",
+              "effect": "blunted_fever_response",
+              "factor_range": [0.75, 1.0],
+              "rationale": "Frail elderly patients may have low-grade or absent fever."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-ASPIRATION-PNEUMONIA",
+              "direction": "increase",
+              "factor_range": [1.2, 2.5],
+              "rationale": "Age and frailty strongly worsen aspiration pneumonia prognosis."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_stroke_or_neurologic_disease",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "impaired_airway_protection_activity",
+              "direction": "increase",
+              "factor_range": [1.2, 2.0],
+              "rationale": "Stroke, dementia, Parkinson disease, ALS, or bulbar disease impair swallowing and cough."
+            },
+            {
+              "axis_id": "recurrent_silent_aspiration_activity",
+              "direction": "increase",
+              "factor_range": [1.2, 2.2],
+              "rationale": "Neurologic disease increases silent/recurrent aspiration."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "dysphagia",
+      "type": "physical_finding",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 15.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "dysphagia_activity",
+              "direction": "increase",
+              "factor_range": [1.2, 2.0],
+              "rationale": "Observed dysphagia directly raises aspiration probability."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "impaired_consciousness_or_seizure",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 12.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "witnessed_aspiration_event_activity",
+              "direction": "increase",
+              "factor_range": [1.1, 1.8],
+              "rationale": "Loss of airway reflexes around seizures or altered consciousness raises macroaspiration likelihood."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_anesthesia_or_procedural_sedation",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "impaired_airway_protection_activity",
+              "direction": "increase",
+              "factor_range": [1.1, 1.8],
+              "rationale": "Sedation, opioids, intubation, and postoperative state reduce airway protection."
+            },
+            {
+              "axis_id": "atelectasis_extent",
+              "direction": "increase",
+              "factor_range": [1.05, 1.5],
+              "rationale": "Postoperative atelectasis can overlap with aspiration injury."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "witnessed_vomiting_or_regurgitation",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [3.0, 20.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "witnessed_aspiration_event_activity",
+              "direction": "increase",
+              "factor_range": [1.2, 2.0],
+              "rationale": "Vomiting/regurgitation immediately before symptoms is a high-value aspiration context."
+            },
+            {
+              "axis_id": "M_ASP_CHEMICAL_PARTICULATE_AIRWAY_INJURY",
+              "direction": "increase",
+              "factor_range": [1.1, 1.8],
+              "rationale": "Gastric contents add acid/bile/particulate injury."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "tube_feeding_or_peg",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "recurrent_silent_aspiration_activity",
+              "direction": "increase",
+              "factor_range": [1.1, 1.8],
+              "rationale": "Tube feeding does not eliminate aspiration and can coexist with reflux and secretion aspiration."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "poor_oral_hygiene_or_periodontal_disease",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 5.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "anaerobic_coverage_probability",
+              "effect": "increases_expected_value_when_low",
+              "factor_range": [1.1, 1.6],
+              "rationale": "Poor oral source raises anaerobic and mixed-flora burden."
+            },
+            {
+              "axis_id": "lung_abscess_hazard",
+              "direction": "increase",
+              "factor_range": [1.1, 2.0],
+              "rationale": "Poor dentition and anaerobic burden increase abscess risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "long_term_care_or_bedbound",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "dependent_pulmonary_infiltrate_extent",
+              "direction": "increase",
+              "factor_range": [1.05, 1.4],
+              "rationale": "Bedbound patients aspirate into posterior dependent segments."
+            },
+            {
+              "axis_id": "active_antibiotic_coverage_probability",
+              "effect": "lower_empiric_certainty",
+              "factor_range": [0.7, 1.0],
+              "rationale": "Healthcare exposure increases resistant gram-negative probability."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "copd_or_chronic_lung_disease",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "oxygen_saturation",
+              "direction": "decrease",
+              "factor_range": [1.05, 1.3],
+              "rationale": "Lower pulmonary reserve magnifies hypoxemia."
+            },
+            {
+              "axis_id": "arterial_paco2",
+              "direction": "increase",
+              "factor_range": [1.05, 1.4],
+              "rationale": "COPD increases hypercapnic failure risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "gastric_retention_or_reflux",
+      "type": "clinical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {
+              "axis_id": "vomiting_activity",
+              "direction": "increase",
+              "factor_range": [1.05, 1.6],
+              "rationale": "Reflux, gastric retention, obstruction, or gastroparesis raise regurgitation risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 2.5],
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_ASP_POLYMICROBIAL_ORAL_GASTRIC_PATHOGEN_BURDEN",
+              "direction": "increase",
+              "factor_range": [1.0, 1.3],
+              "rationale": "Diabetes can impair host defense and gastric motility, but it is a modest nonspecific modifier."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Preserve the first-layer diagnosis as aspiration pneumonia; do not split by CAP/HAP, elderly, stroke, anaerobic, nursing-home, or severe subtype.",
+    "Evaluate aspiration risk: witnessed choking/vomiting, dysphagia, cough with meals, impaired consciousness, neurologic disease, sedating medications, reflux, tube feeding, poor oral hygiene, and care setting.",
+    "Chest imaging should assess gravity-dependent distribution, lower/posterior predominance, airway material, atelectasis, cavitation, abscess, pleural effusion, and empyema.",
+    "Obtain sputum and blood cultures in severe disease or treatment failure, but pathogen identity and susceptibility belong in confirmatory or post-workup context for presentation-only ranking.",
+    "Use oxygen escalation according to hypoxemia and work of breathing; protect airway early when consciousness or secretion burden makes noninvasive support unsafe.",
+    "Use lung-protective ventilation when invasive ventilation or ARDS physiology occurs.",
+    "Airway suctioning and bronchoscopy are most valuable for large-volume particulate aspiration, mucus plugging, or persistent lobar collapse.",
+    "Swallow evaluation, NPO decision, diet texture changes, upright feeding, oral care, and sedation/medication review are disease-modifying recurrence controls, not afterthoughts.",
+    "De-escalate antibiotics when cultures, clinical course, and setting make narrower coverage safe; avoid unnecessary prolonged anaerobic pressure when abscess/empyema/necrosis risk is low.",
+    "Drain empyema, complicated parapneumonic effusion, or selected abscess/source-control lesions when medical therapy alone cannot clear the infection.",
+    "Monitor for respiratory failure, ARDS, sepsis/shock, AKI, C. difficile, recurrent aspiration, and post-discharge swallowing/nutrition safety."
+  ],
+  "quality_notes": [
+    "No treatment ordering labels are used; treatment choice is left to forward simulation and RMST scoring.",
+    "Anaerobic risk is modeled as context and treatment-modifier probability rather than as a disease-name qualifier.",
+    "New axes that should receive horizontal review include witnessed_aspiration_event_activity, dependent_pulmonary_infiltrate_extent, aspirated_airway_material_presence, tree_in_bud_opacity_extent, atelectasis_extent, purulent_sputum_activity, crackles_activity, hiccup_activity, anaerobic_coverage_probability, aspiration_prevention_adequacy, lung_abscess_hazard, and empyema_hazard."
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "case_id": "DIVERTICULITIS_CECAL_PERFORATED_PMC6176041",
+  "source_pmid": "30305862",
+  "source_pmcid": "PMC6176041",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6176041/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6176041/fullTextXML",
+  "disease_label_per_paper": "Perforated cecal diverticulitis",
+  "expected_manifold": "D-DIVERTICULITIS",
+  "demographics": {
+    "age": 43,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "43-year-old man presented with three days of severe right lower quadrant abdominal pain.",
+    "Symptoms included anorexia, fever, and nausea without vomiting.",
+    "Exam showed right lower quadrant rebound tenderness.",
+    "Laboratory testing showed leukocytosis of 19.8 x10^9/L with neutrophilia.",
+    "CT showed a normal appendix, multiple right-sided colonic diverticula, adjacent inflammatory fat stranding, and locules of free gas consistent with isolated stage 1 acute cecal diverticulitis."
+  ],
+  "snapshot_day": 0,
+  "risk_context": [
+    {"factor": "right_sided_colonic_diverticula_context", "category": "anatomic_context", "source_text_value": "multiple right-sided colonic diverticula"}
+  ],
+  "observations": [
+    {"axis_id": "abdominal_pain_activity", "value": 0.9, "unit": "severity_score_0_1", "source_text_value": "three-day history of severe right lower quadrant abdominal pain", "use_in_ranking": true},
+    {"axis_id": "right_lower_quadrant_pain_activity", "value": 0.95, "unit": "severity_score_0_1", "source_text_value": "right lower quadrant abdominal pain", "use_in_ranking": true},
+    {"axis_id": "anorexia_activity", "value": 0.8, "unit": "severity_score_0_1", "source_text_value": "anorexia", "use_in_ranking": true},
+    {"axis_id": "fever_history_activity", "value": 0.7, "unit": "severity_score_0_1", "source_text_value": "fever", "use_in_ranking": true},
+    {"axis_id": "nausea_vomiting_activity", "value": 0.45, "unit": "severity_score_0_1", "source_text_value": "nausea without vomiting", "use_in_ranking": true},
+    {"axis_id": "abdominal_tenderness_activity", "value": 0.9, "unit": "severity_score_0_1", "source_text_value": "right lower quadrant tenderness", "use_in_ranking": true},
+    {"axis_id": "peritoneal_signs_activity", "value": 0.65, "unit": "severity_score_0_1", "source_text_value": "rebound tenderness", "use_in_ranking": true},
+    {"axis_id": "white_blood_cell_count", "value": 19.8, "unit": "x10^9/L", "source_text_value": "white blood cell count was 19.8 x 10^9/L", "use_in_ranking": true}
+  ],
+  "imaging": [
+    {
+      "modality": "ct_abdomen_pelvis",
+      "day": 0,
+      "finding": "Normal appendix on CT.",
+      "source_text_value": "computed tomography revealed a normal appendix",
+      "mapped_axis_ids": ["appendiceal_inflammation_activity"],
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "use_in_ranking": true
+    },
+    {
+      "modality": "ct_abdomen_pelvis",
+      "day": 0,
+      "finding": "Multiple right-sided colonic diverticula.",
+      "source_text_value": "multiple right sided colonic diverticula",
+      "mapped_axis_ids": ["diverticula_presence", "right_colon_involvement_activity", "cecal_involvement_activity"],
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "use_in_ranking": true
+    },
+    {
+      "modality": "ct_abdomen_pelvis",
+      "day": 0,
+      "finding": "Inflammatory fat stranding adjacent to the cecal diverticula.",
+      "source_text_value": "adjacent inflammatory fat stranding",
+      "mapped_axis_ids": ["pericolic_fat_stranding_activity", "inflamed_colonic_diverticulum_activity"],
+      "value": 0.9,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
+    },
+    {
+      "modality": "ct_abdomen_pelvis",
+      "day": 0,
+      "finding": "Locules of free gas adjacent to the involved cecum.",
+      "source_text_value": "locules of free gas",
+      "mapped_axis_ids": ["pericolic_extraluminal_gas_activity", "diverticular_microperforation_activity"],
+      "value": 0.85,
+      "unit": "relative_activity_0_1",
+      "use_in_ranking": true
+    }
+  ],
+  "confirmatory_findings": [
+    {"finding": "Paper final diagnosis of isolated Hinchey stage 1 acute cecal diverticulitis", "axis_id": "paper_diagnosis_confirmation", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "isolated Hinchey stage 1 acute cecal diverticulitis", "use_in_ranking": false},
+    {"finding": "Clinical resolution after intravenous antibiotics and rehydration", "axis_id": "treatment_response_confirmation", "value": 1.0, "unit": "present_absent_0_1", "source_text_value": "medical management with intravenous antibiotics and rehydration", "use_in_ranking": false}
+  ],
+  "actual_treatment": [
+    "intravenous antibiotics",
+    "intravenous rehydration",
+    "medical management without appendectomy"
+  ],
+  "outcome": {
+    "survival_status": "survived",
+    "source_text_value": "symptoms resolved and outpatient follow-up was arranged"
+  },
+  "quality_warnings": [
+    "Final diagnosis, conservative-treatment response, and follow-up colonoscopy are non-ranking evidence.",
+    "Normal appendix is retained as pre-treatment imaging evidence because it is a presentation CT finding, not a final adjudication label."
+  ]
+}
