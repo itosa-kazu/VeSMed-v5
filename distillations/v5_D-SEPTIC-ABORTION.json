@@ -1,0 +1,683 @@
+{
+  "disease": "D-SEPTIC-ABORTION",
+  "disease_id": "D-SEPTIC-ABORTION",
+  "disease_name": "Septic abortion",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Septic abortion",
+    "leaf_granularity": "First-layer clinical disease leaf for uterine infection complicating pregnancy loss or pregnancy termination before fetal viability. Spontaneous, medical, surgical, unsafe, retained-products, post-instrumentation, clostridial, streptococcal, gram-negative, hemorrhagic, shock, DIC, endocarditis, and source-control-failure presentations remain mechanisms, axes, risk/context modifiers, event hazards, treatment modifiers, or future subtype layers rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume recent pregnancy loss or abortion context, fever or hypothermia, pelvic/lower abdominal pain, vaginal bleeding or discharge, uterine or pelvic tenderness, retained products of conception on ultrasound, systemic inflammatory labs, shock physiology, coagulopathy, and source-control need. Culture species, susceptibility, operative/pathology confirmation, treatment response, hysterectomy pathology, ECMO course, and follow-up outcome remain confirmatory or non-ranking unless a post-workup mode explicitly consumes them."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT",
+      "display_name": "Pregnancy-loss uterine source context",
+      "clinical_meaning": "A recent spontaneous or induced abortion, medical abortion, uterine instrumentation, open cervix, bleeding decidua, or retained gestational tissue creates a uterine surface vulnerable to ascending or inoculated infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-14, 0],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 42],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA",
+      "display_name": "Retained products and necrotic decidual nidus",
+      "clinical_meaning": "Retained products of conception, infected clot, necrotic decidua, or malodorous intrauterine tissue maintain microbial growth and prevent full source resolution.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [-3, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN",
+      "display_name": "Polymicrobial and anaerobic uterine burden",
+      "clinical_meaning": "Genital, enteric, anaerobic, streptococcal, staphylococcal, gram-negative, and less common respiratory or clostridial organisms can infect the endometrium, myometrium, retained tissue, blood, or peritoneal fluid.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION",
+      "display_name": "Endometritis, myometritis, and pelvic inflammation",
+      "clinical_meaning": "Neutrophilic infection of endometrium, myometrium, tubes, pelvic peritoneum, or adjacent tissues produces pelvic pain, cramping, uterine tenderness, abnormal bleeding, discharge, cervical findings, peritoneal signs, and imaging inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS",
+      "display_name": "Systemic inflammatory sepsis physiology",
+      "clinical_meaning": "Uterine infection, bacteremia, pelvic spread, hypovolemia, or toxin activity can drive fever or hypothermia, chills, tachycardia, tachypnea, hypotension, leukocytosis or leukopenia, CRP/PCT rise, lactate elevation, and organ-risk axes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [0.2, 21],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK",
+      "display_name": "Toxin-mediated clostridial shock phenotype",
+      "clinical_meaning": "Toxin-producing clostridial uterine infection can cause leukemoid reaction, capillary leak, third spacing, refractory shock, hemoconcentration, myonecrosis or necrotic uterus, severe organ failure, and sometimes minimal fever.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE",
+      "display_name": "Coagulopathy, DIC, and hemorrhage",
+      "clinical_meaning": "Sepsis, retained gestational tissue, placental tissue factor exposure, shock, or clostridial toxin can trigger platelet consumption, DIC, abnormal PT/INR, fibrinolysis, uterine bleeding, procedural bleeding, anemia, and transfusion need.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 14],
+      "decline_half_life_days": [0.5, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SA_BACTEREMIA_METASTATIC_AND_ORGAN_DYSFUNCTION",
+      "display_name": "Bacteremia, metastatic seeding, and organ dysfunction",
+      "clinical_meaning": "Uterine-source bacteremia and severe sepsis can seed valves, joints, lungs, peritoneum, or soft tissues and can cause AKI, ARDS, encephalopathy, septic arthritis, endocarditis, or abscess complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SA_ACTIVE_COVERAGE_AND_SOURCE_CONTROL_RESOLUTION",
+      "display_name": "Active antimicrobial coverage and uterine source-control resolution",
+      "clinical_meaning": "Concordant broad-spectrum antimicrobial exposure plus uterine evacuation, repeat evacuation, drainage, or hysterectomy when needed reshapes the trajectory toward microbial clearance and resolving inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.35],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "clinical_rationale": "Pregnancy loss or termination can leave retained gestational tissue, clot, or necrotic decidua.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "clinical_rationale": "Open cervix, bleeding tissue, or instrumentation allows ascent or inoculation of genital and enteric organisms.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "target_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Retained or necrotic tissue sustains microbial burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "target_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Intrauterine microbial burden produces endometrial, myometrial, and pelvic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "clinical_rationale": "Uterine and pelvic infection can trigger systemic inflammatory response and sepsis.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "target_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 1], "clinical_rationale": "High bacterial burden or bacteremia can quickly drive sepsis physiology.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "target_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Clostridial uterine infection is a subset of anaerobic burden that can produce toxin-mediated shock.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Sepsis and shock activate coagulation and fibrinolytic cascades.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "target_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "clinical_rationale": "Toxin-mediated shock can accelerate thrombocytopenia, capillary leak, and DIC-like coagulopathy.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "M_SA_BACTEREMIA_METASTATIC_AND_ORGAN_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 14], "clinical_rationale": "Sepsis and bacteremia increase metastatic infection and organ dysfunction risk.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_ACTIVE_COVERAGE_AND_SOURCE_CONTROL_RESOLUTION", "target_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [0, 2], "clinical_rationale": "Active broad-spectrum antimicrobials reduce susceptible uterine microbial burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ACTIVE_COVERAGE_AND_SOURCE_CONTROL_RESOLUTION", "target_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [0, 2], "clinical_rationale": "Evacuation or operation removes retained tissue and necrotic source material.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ACTIVE_COVERAGE_AND_SOURCE_CONTROL_RESOLUTION", "target_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [0, 3], "clinical_rationale": "Toxin-suppressive antibiotics and decisive source control reduce ongoing toxin production.", "knowledge_confidence": "medium"},
+
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "recent_pregnancy_termination_loss_context_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-14, 0], "clinical_rationale": "Recent abortion or pregnancy loss is a direct source-context observation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "pregnancy_status", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-28, 0], "clinical_rationale": "Positive pregnancy test or current/recent gestation anchors the obstetric context.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "gestational_age_weeks", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-28, 0], "clinical_rationale": "Gestational age structures source-control and hemorrhage risk context.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_PREGNANCY_LOSS_UTERINE_SOURCE_CONTEXT", "target_id": "abnormal_pregnancy_tissue_passage_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-7, 0], "clinical_rationale": "Passage of tissue is common in incomplete abortion or septic abortion presentation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "target_id": "retained_products_of_conception_presence", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Retained products are the observed imaging or procedural correlate of retained gestational tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "target_id": "endometrial_echogenic_material_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Echogenic intrauterine material on ultrasound can represent retained products, clot, or infected tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA", "target_id": "malodorous_products_of_conception_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Malodorous products are a direct source finding for infected retained tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "pelvic_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Uterine and pelvic inflammation produces pelvic pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "lower_abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Uterine infection commonly localizes to the lower abdomen.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Pelvic infection, peritonitis, or shock can present as broader abdominal pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "vaginal_bleeding_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-7, 7], "clinical_rationale": "Incomplete abortion and infected uterine tissue commonly cause vaginal bleeding or spotting.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "vaginal_discharge_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Endometritis or cervicitis can produce abnormal discharge, though discharge can be absent.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "malodorous_vaginal_discharge_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Foul or tan-brown discharge suggests infected uterine contents or necrotic tissue.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "uterine_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Endometritis, myometritis, and retained infected tissue produce uterine tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "pelvic_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Pelvic exam tenderness reflects inflamed uterus, cervix, adnexa, or peritoneum.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "cervical_motion_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Cervical movement can transmit traction to inflamed uterine and pelvic tissues.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "open_cervical_os_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-3, 7], "clinical_rationale": "Open cervix is common during incomplete abortion or recent uterine evacuation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION", "target_id": "peritoneal_signs_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Severe uterine infection, pelvic peritonitis, perforation, or ascites can cause guarding or rebound.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "body_temperature", "effect_on_target": "increase_or_variable", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Septic abortion often causes fever, but toxin-mediated or immunologically blunted presentations can be afebrile.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever, pain, bleeding, and sepsis raise heart rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Pain, metabolic stress, sepsis, or acidosis increase respiratory rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Septic vasodilation, capillary leak, and hemorrhage lower arterial pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "white_blood_cell_count", "effect_on_target": "increase_or_decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Most cases show leukocytosis; severe sepsis may show leukopenia, and clostridial toxin can cause leukemoid reaction.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "CRP rises with uterine infection and systemic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "PCT can rise markedly with bacterial sepsis and shock.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "target_id": "leukemoid_reaction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Clostridial toxic shock can produce extreme leukocytosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "target_id": "capillary_leak_third_spacing_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Toxin injury increases vascular permeability, ascites, pleural effusions, edema, and fluid requirements.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "target_id": "necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 5], "clinical_rationale": "Clostridial infection and uncontrolled sepsis can lead to necrotic uterus or gangrenous salpingitis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE", "target_id": "platelet_count", "effect_on_target": "decrease_or_reactive_increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "DIC consumes platelets while milder inflammation can cause reactive thrombocytosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE", "target_id": "international_normalized_ratio", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "DIC and liver/shock effects may prolong INR.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_COAGULOPATHY_DIC_HEMORRHAGE", "target_id": "major_bleeding_hazard", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Coagulopathy and uterine source manipulation increase bleeding hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_BACTEREMIA_METASTATIC_AND_ORGAN_DYSFUNCTION", "target_id": "endocarditis_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [3, 30], "clinical_rationale": "Persistent bacteremia can seed heart valves.", "knowledge_confidence": "low"},
+    {"source_id": "M_SA_BACTEREMIA_METASTATIC_AND_ORGAN_DYSFUNCTION", "target_id": "septic_arthritis_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [1, 30], "clinical_rationale": "Bacteremia can seed joints or periarticular tissue.", "knowledge_confidence": "low"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "progression_to_septic_shock_hazard", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Severe uterine infection raises shock transition risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "clinical_rationale": "Shock, nephrotoxins, and sepsis raise AKI risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "ards_hazard", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 5], "clinical_rationale": "Sepsis, capillary leak, and fluid resuscitation can produce respiratory failure.", "knowledge_confidence": "medium"},
+    {"source_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "target_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Shock, bacteremia, DIC, and organ dysfunction determine near-term survival.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "recent_pregnancy_termination_loss_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent spontaneous abortion, medical abortion, surgical abortion, passage of pregnancy tissue, or uterine evacuation context.", "baseline_range": [0.0, 0.02], "peak_day_range": [-14, 0], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "pregnancy_status", "category": "treatment_modifier", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Current or very recent pregnancy context by test, gestational sac, or obstetric history.", "baseline_range": [0.0, 0.05], "peak_day_range": [-280, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 280], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "gestational_age_weeks", "category": "context", "unit": "weeks", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Gestational age at pregnancy loss or termination.", "baseline_range": [0.0, 0.0], "peak_day_range": [-280, 0], "peak_value_range": [4.0, 24.0], "plateau_duration_days": [1, 280], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "abnormal_pregnancy_tissue_passage_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of passing products of conception, tissue, clot-like tissue, or suspected incomplete abortion.", "baseline_range": [0.0, 0.02], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "vaginal_bleeding_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Vaginal spotting, bleeding, tan-brown blood, or heavy bleeding around pregnancy loss.", "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 7], "peak_value_range": [0.15, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "pelvic_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pain perceived in the pelvis from uterine or pelvic infection.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "lower_abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Lower abdominal pain, cramping, or suprapubic pain from uterine infection.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.25, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Broader abdominal pain from pelvic spread, peritonitis, distension, or sepsis.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.15, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea or vomiting from pelvic infection, shock, pain, medication, or peritonitis.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "diarrhea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Loose stools or diarrhea accompanying systemic infection, toxin physiology, or pelvic irritation.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors from bacteremia or systemic inflammatory response.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reported fever before or during presentation.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured body temperature; can be high, normal, or low depending on phenotype.", "baseline_range": [36.4, 37.2], "peak_day_range": [0, 3], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate response to fever, pain, blood loss, and sepsis.", "baseline_range": [60, 100], "peak_day_range": [0, 2], "peak_value_range": [90, 160], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate response to pain, fever, sepsis, acidosis, or respiratory failure.", "baseline_range": [12, 20], "peak_day_range": [0, 2], "peak_value_range": [16, 38], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic arterial pressure during pelvic infection and shock risk.", "baseline_range": [100, 130], "peak_day_range": [0, 2], "peak_value_range": [60, 125], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values reflect septic, hemorrhagic, or mixed shock physiology.", "baseline_range": [70, 100], "peak_day_range": [0, 2], "peak_value_range": [40, 95], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "oxygen_saturation", "category": "vital", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pulse oximetry reflecting baseline oxygenation or evolving ARDS/volume overload.", "baseline_range": [95, 100], "peak_day_range": [0, 7], "peak_value_range": [75, 100], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "White blood cell count; ranges from leukopenia in severe sepsis to extreme leukemoid reaction in clostridial toxic shock.", "baseline_range": [4.0, 11.0], "peak_day_range": [0, 3], "peak_value_range": [2.0, 55.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Neutrophil predominance during bacterial uterine infection.", "baseline_range": [40, 75], "peak_day_range": [0, 3], "peak_value_range": [70, 98], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein response to uterine and systemic inflammation.", "baseline_range": [0.1, 5.0], "peak_day_range": [0, 5], "peak_value_range": [20, 300], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin response to bacterial sepsis and shock.", "baseline_range": [0.01, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.05, 80], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab", "unit": "mmol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum lactate from shock, tissue hypoperfusion, or severe sepsis.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [1.0, 10.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobin", "category": "lab", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin affected by bleeding, hemodilution, hemoconcentration, or critical illness.", "baseline_range": [11.5, 15.5], "peak_day_range": [0, 7], "peak_value_range": [6.0, 16.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "category": "lab", "unit": "10^9/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Platelet count; may be reactive high early or very low with DIC and severe sepsis.", "baseline_range": [150, 450], "peak_day_range": [0, 5], "peak_value_range": [10, 650], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_creatinine", "category": "lab", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Creatinine reflecting kidney reserve or AKI during septic abortion.", "baseline_range": [0.5, 1.1], "peak_day_range": [0, 7], "peak_value_range": [0.4, 5.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "BUN reflecting hydration, renal perfusion, kidney injury, or catabolic state.", "baseline_range": [6, 20], "peak_day_range": [0, 7], "peak_value_range": [2, 80], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "international_normalized_ratio", "category": "lab", "unit": "ratio", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR as a coagulation axis in sepsis, DIC, liver dysfunction, or dilution.", "baseline_range": [0.8, 1.2], "peak_day_range": [0, 5], "peak_value_range": [1.0, 3.0], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "prothrombin_time", "category": "lab", "unit": "seconds", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Prothrombin time during septic abortion-associated coagulopathy.", "baseline_range": [10, 14], "peak_day_range": [0, 5], "peak_value_range": [12, 35], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "uterine_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Tenderness over the uterus or fundus on abdominal or bimanual examination.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "pelvic_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Diffuse pelvic tenderness on bimanual or pelvic examination.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "cervical_motion_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pain elicited by cervical motion during pelvic exam.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "vaginal_discharge_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abnormal vaginal discharge in the abortion or postabortal setting.", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "malodorous_vaginal_discharge_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "vaginal_discharge_activity", "shape_free_text": "Foul, tan-brown, or malodorous discharge or blood suggesting infected uterine contents.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "open_cervical_os_activity", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Open or fingertip-dilated cervical os during incomplete abortion or recent evacuation.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Abdominal tenderness from pelvic infection, uterine tenderness, or peritonitis.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "peritoneal_signs_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Guarding, rebound tenderness, or peritoneal irritation.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "retained_products_of_conception_presence", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ultrasound, CT, procedural, or pathology evidence of retained products of conception.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "endometrial_echogenic_material_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "retained_products_of_conception_presence", "shape_free_text": "Echogenic or thick material in the endometrial cavity.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "endometrial_thickening_hyperemia_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "retained_products_of_conception_presence", "shape_free_text": "Thickened or hyperemic endometrium on ultrasound in the postabortal setting.", "baseline_range": [0.0, 0.03], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 45], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "malodorous_products_of_conception_activity", "category": "source_control", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "retained_products_of_conception_presence", "shape_free_text": "Malodorous intrauterine products, necrotic decidua, or infected clot at evacuation.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "pelvic_free_fluid_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pelvic free fluid, ascites, or inflammatory fluid in the pelvis.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "intrauterine_free_gas_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Intrauterine gas, uterine wall gas, or free air suggesting gas-forming infection, instrumentation, or perforation context.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "leukemoid_reaction_activity", "category": "derived_lab_pattern", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Extreme leukocytosis pattern, especially WBC above roughly 30-50 x10^9/L in toxin-mediated disease.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "capillary_leak_third_spacing_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Edema, ascites, pleural effusions, large positive fluid balance, or shock from vascular leak.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for uterine evacuation, repeat evacuation, drainage, or definitive operative source control.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.2, 30], "decline_half_life_days": [0.5, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of uterine evacuation, necrotic-tissue removal, drainage, hysterectomy, or source resolution.", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [14, 365], "knowledge_confidence": "high"},
+    {"axis_id": "uterine_evacuation_feasibility", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Feasibility and safety of suction curettage, manual vacuum aspiration, or D&C as uterine source control.", "baseline_range": [0.1, 0.8], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that the antimicrobial regimen covers likely or proven uterine-source organisms.", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "anaerobic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that the antimicrobial regimen covers anaerobic genital and enteric organisms.", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "toxin_suppression_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that treatment includes toxin-suppressive coverage such as clindamycin when clostridial or streptococcal toxic shock is suspected.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of severe immediate or severe delayed beta-lactam reaction affecting broad postabortal antimicrobial selection.", "baseline_range": [0.0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need to adjust renally cleared antibiotics or avoid nephrotoxic exposure in AKI/CKD/shock contexts.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [3, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "progression_to_septic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of hypotensive septic shock or vasopressor-requiring shock.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 3], "peak_value_range": [0.02, 0.6], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "dic_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of disseminated intravascular coagulation during septic abortion.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 5], "peak_value_range": [0.005, 0.3], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "major_bleeding_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of major uterine, procedural, intra-abdominal, or coagulopathic bleeding.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 5], "peak_value_range": [0.005, 0.4], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of acute kidney injury from shock, sepsis, nephrotoxins, or rhabdomyolysis.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 7], "peak_value_range": [0.005, 0.35], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "ards_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of acute respiratory distress syndrome or hypoxic respiratory failure during severe sepsis.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 7], "peak_value_range": [0.002, 0.3], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "endocarditis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of infective endocarditis from persistent uterine-source bacteremia.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [3, 30], "peak_value_range": [0.0001, 0.03], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 180], "knowledge_confidence": "low"},
+    {"axis_id": "septic_arthritis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of septic arthritis or metastatic joint infection from bacteremia.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [1, 30], "peak_value_range": [0.0001, 0.04], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 180], "knowledge_confidence": "low"},
+    {"axis_id": "necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of necrotic uterus, gangrenous myometritis, or uterine tissue requiring definitive operative source control.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.3], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Disease-specific lifespan mortality hazard from septic abortion, dominated by shock, DIC, hemorrhage, clostridial toxin physiology, source-control delay, and organ failure.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.6], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "recent_pregnancy_termination_loss_context_activity", "target_axis_id": "retained_products_of_conception_presence", "relationship": "postabortal_source_context_to_rpoc", "coupling_type": "mixed", "correlation_range": [0.25, 0.8], "lag_days_range": [0, 7], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Recent abortion context and retained products often co-occur but neither should be a hard diagnostic label.", "knowledge_confidence": "high"},
+    {"source_axis_id": "retained_products_of_conception_presence", "target_axis_id": "source_control_need", "relationship": "rpoc_source_control_pressure", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.9], "lag_days_range": [0, 2], "phase": "source_control", "effect_direction": "positive_correlation", "clinical_rationale": "Retained products increase the need for evacuation or repeat source control.", "knowledge_confidence": "high"},
+    {"source_axis_id": "endometrial_echogenic_material_activity", "target_axis_id": "retained_products_of_conception_presence", "relationship": "rpoc_parent_satellite_consistency", "coupling_type": "mixed", "correlation_range": [0.6, 0.95], "lag_days_range": [0, 0], "phase": "imaging", "effect_direction": "positive_correlation", "clinical_rationale": "Echogenic material is a satellite of the retained-products parent finding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "uterine_tenderness_activity", "target_axis_id": "pelvic_tenderness_activity", "relationship": "uteropelvic_exam_tenderness_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.8], "lag_days_range": [0, 0], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Pelvic and uterine tenderness are related exam outputs but can be incomplete.", "knowledge_confidence": "high"},
+    {"source_axis_id": "vaginal_bleeding_activity", "target_axis_id": "abnormal_pregnancy_tissue_passage_history_activity", "relationship": "bleeding_tissue_passage_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.7], "lag_days_range": [-3, 3], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Bleeding and tissue passage commonly coexist during incomplete abortion.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "malodorous_vaginal_discharge_activity", "target_axis_id": "vaginal_discharge_activity", "relationship": "malodor_parent_discharge_consistency", "coupling_type": "mixed", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 0], "phase": "presentation", "effect_direction": "positive_correlation", "clinical_rationale": "Malodor is a satellite descriptor of abnormal discharge or infected blood.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "fever_tachycardia_covariance", "coupling_type": "mixed", "correlation_range": [0.2, 0.65], "lag_days_range": [0, 1], "phase": "systemic", "effect_direction": "positive_correlation", "clinical_rationale": "Fever, pain, bleeding, and sepsis commonly raise pulse.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "systemic_inflammation_covariance", "coupling_type": "noise_correlation", "correlation_range": [0.15, 0.65], "lag_days_range": [0, 3], "phase": "systemic", "effect_direction": "positive_correlation", "clinical_rationale": "WBC and CRP often rise together, but severe sepsis and toxin syndromes can break the pattern.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "leukemoid_reaction_activity", "relationship": "extreme_wbc_pattern_consistency", "coupling_type": "mixed", "correlation_range": [0.7, 0.98], "lag_days_range": [0, 0], "phase": "toxin", "effect_direction": "positive_correlation", "clinical_rationale": "Extreme WBC elevation maps to the leukemoid pattern axis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "serum_lactate", "relationship": "shock_lactate_inverse_relation", "coupling_type": "hazard_drift", "correlation_range": [-0.75, -0.25], "lag_days_range": [0, 1], "phase": "shock", "effect_direction": "inverse_correlation", "clinical_rationale": "Hypoperfusion tends to increase lactate when shock progresses.", "knowledge_confidence": "high"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "shock_to_aki_transition", "coupling_type": "event_transition", "correlation_range": [0.35, 0.85], "lag_days_range": [0, 3], "phase": "complication", "effect_direction": "positive_correlation", "clinical_rationale": "Shock and vasopressor physiology increase AKI hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "dic_hazard", "target_axis_id": "major_bleeding_hazard", "relationship": "dic_bleeding_transition", "coupling_type": "event_transition", "correlation_range": [0.45, 0.9], "lag_days_range": [0, 2], "phase": "coagulopathy", "effect_direction": "positive_correlation", "clinical_rationale": "DIC increases clinically important bleeding hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "major_bleeding_hazard", "target_axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "relationship": "bleeding_mortality_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.85], "lag_days_range": [0, 2], "phase": "outcome", "effect_direction": "positive_correlation", "clinical_rationale": "Major bleeding or massive transfusion worsens short-term survival.", "knowledge_confidence": "high"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "relationship": "shock_mortality_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.95], "lag_days_range": [0, 2], "phase": "outcome", "effect_direction": "positive_correlation", "clinical_rationale": "Septic shock is the dominant near-term mortality driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "relationship": "source_control_mortality_inverse_relation", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.3], "lag_days_range": [0, 5], "phase": "treatment_response", "effect_direction": "inverse_correlation", "clinical_rationale": "Adequate evacuation or operation lowers ongoing source-driven mortality hazard.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "ampicillin_gentamicin_clindamycin_iv_bundle",
+      "drug_class": "broad_uterine_source_antibiotic_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "broad_empiric_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability", "toxin_suppression_coverage_probability", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 2.0], "clinical_rationale": "Benefit depends on active coverage of likely organisms."},
+        {"axis_id": "anaerobic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Anaerobic genital and enteric flora are central to severe septic abortion."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.4, 1.0], "clinical_rationale": "Antibiotics do not remove retained products or necrotic uterus."}
+      ],
+      "failure_modes": ["retained products not evacuated", "aminoglycoside nephrotoxicity", "resistant gram-negative organism", "missed clostridial necrotic source"],
+      "trajectory_modifications": {
+        "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN": {"peak_value_factor": [0.25, 0.7], "decline_half_life_days": [1, 10]},
+        "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 7]},
+        "mortality_hazard_in_D-SEPTIC-ABORTION": {"peak_value_factor": [0.55, 0.95], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 0.9], "unit": "probability_0_1"},
+        {"axis_id": "toxin_suppression_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.8], "unit": "probability_0_1"}
+      ],
+      "onset_delay_days": [0, 0.5],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "magnitude_range": [0.0, 0.04], "interpretation": "Gentamicin toxicity risk increases with shock or renal impairment."}
+      ],
+      "context_specific_role": "Broad uterine-source coverage vector with anaerobic and toxin-suppression activity while source control is arranged.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "piperacillin_tazobactam_plus_clindamycin",
+      "drug_class": "broad_beta_lactam_beta_lactamase_inhibitor_toxin_suppression_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "broad_empiric_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability", "toxin_suppression_coverage_probability", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "anaerobic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Piperacillin-tazobactam covers many anaerobic and gram-negative uterine-source pathogens."},
+        {"axis_id": "toxin_suppression_coverage_probability", "condition": "high", "effect": "strengthens_if_toxin_phenotype", "factor_range": [1.0, 1.5], "clinical_rationale": "Clindamycin suppresses protein synthesis and toxin production when clostridial or streptococcal toxic shock is suspected."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "weakens_or_contraindicates", "factor_range": [0.0, 0.5], "clinical_rationale": "Severe beta-lactam reaction limits use."}
+      ],
+      "failure_modes": ["BLNAR or resistant organism", "delayed source control", "severe beta-lactam reaction", "renal dosing mismatch"],
+      "trajectory_modifications": {
+        "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN": {"peak_value_factor": [0.2, 0.65], "decline_half_life_days": [1, 10]},
+        "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [0.5, 7]},
+        "mortality_hazard_in_D-SEPTIC-ABORTION": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 0.9], "unit": "probability_0_1"},
+        {"axis_id": "anaerobic_coverage_probability", "direction": "up", "magnitude_range": [0.5, 0.95], "unit": "probability_0_1"}
+      ],
+      "onset_delay_days": [0, 0.5],
+      "carryover_after_stop_days": [1, 14],
+      "context_specific_role": "Broad severe pelvic sepsis vector with toxin-suppression add-on when clostridial or streptococcal toxic shock is plausible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cefepime_or_carbapenem_metronidazole_resistant_sepsis_lane",
+      "drug_class": "resistant_gram_negative_and_anaerobic_coverage",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "resistant_or_critical_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "anaerobic_coverage_probability", "progression_to_septic_shock_hazard", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.0, 1.5], "clinical_rationale": "Severe shock lowers tolerance for narrow or inactive empiric coverage."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low_due_resistance", "effect": "strengthens_if_broadening_restores_coverage", "factor_range": [1.0, 2.0], "clinical_rationale": "This lane helps only if broader coverage matches the pathogen and susceptibility context."}
+      ],
+      "failure_modes": ["overly broad without source control", "anaerobic gap if metronidazole omitted", "renal neurotoxicity or dose mismatch", "pathogen remains resistant"],
+      "trajectory_modifications": {
+        "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN": {"peak_value_factor": [0.15, 0.6], "decline_half_life_days": [1, 10]},
+        "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS": {"peak_value_factor": [0.3, 0.75], "decline_half_life_days": [0.5, 7]},
+        "mortality_hazard_in_D-SEPTIC-ABORTION": {"peak_value_factor": [0.45, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 0.9], "unit": "probability_0_1"}
+      ],
+      "onset_delay_days": [0, 0.5],
+      "carryover_after_stop_days": [1, 14],
+      "context_specific_role": "Escalation vector when critical illness, resistant gram-negative probability, or early regimen mismatch threatens active coverage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "suction_uterine_evacuation_or_dilation_and_curettage",
+      "drug_class": "uterine_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "source_control_context_dependent",
+      "required_context_axes": ["retained_products_of_conception_presence", "uterine_evacuation_feasibility", "source_control_need", "source_control_adequacy", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "retained_products_of_conception_presence", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Evacuation directly removes retained infected products."},
+        {"axis_id": "uterine_evacuation_feasibility", "condition": "low", "effect": "weakens_or_requires_alternative", "factor_range": [0.0, 0.7], "clinical_rationale": "Anatomic, gestational-age, perforation, or bleeding context may make simple evacuation insufficient or unsafe."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "requires_resuscitation_and_blood_product_support", "factor_range": [0.4, 1.0], "clinical_rationale": "Coagulopathy or hemorrhage modifies procedure risk."}
+      ],
+      "failure_modes": ["incomplete evacuation", "uterine perforation", "hemorrhage", "necrotic uterus requiring operation", "delayed antibiotics"],
+      "trajectory_modifications": {
+        "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [0.2, 5]},
+        "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [0.5, 7]},
+        "source_control_need": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [0.5, 7]},
+        "mortality_hazard_in_D-SEPTIC-ABORTION": {"peak_value_factor": [0.45, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 1.0], "unit": "relative_activity_0_1"},
+        {"axis_id": "retained_products_of_conception_presence", "direction": "down", "magnitude_range": [0.4, 1.0], "unit": "present_absent_0_1"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.0, 0.08], "interpretation": "Evacuation can trigger bleeding, especially with DIC, higher gestational age, or adherent tissue."}
+      ],
+      "context_specific_role": "Source-control vector for retained products, open cervix with infected tissue, persistent uterine source, or septic incomplete abortion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "repeat_evacuation_hysteroscopy_or_diagnostic_laparoscopy",
+      "drug_class": "repeat_source_control_and_source_assessment",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "source_control_context_dependent",
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "retained_products_of_conception_presence", "intrauterine_free_gas_activity", "peritoneal_signs_activity"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "low_after_initial_evacuation", "effect": "strengthens", "factor_range": [1.0, 1.7], "clinical_rationale": "Persistent source after initial evacuation increases value of repeat source assessment."},
+        {"axis_id": "peritoneal_signs_activity", "condition": "high", "effect": "requires_broader_surgical_evaluation", "factor_range": [1.0, 1.5], "clinical_rationale": "Peritoneal signs raise concern for spread, perforation, or necrotic source beyond simple RPOC."}
+      ],
+      "failure_modes": ["missed necrotic uterus", "procedure delay", "incomplete source identification", "operative injury"],
+      "trajectory_modifications": {
+        "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [0.2, 7]},
+        "M_SA_ENDOMETRITIS_MYOMETRITIS_PELVIC_INFLAMMATION": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [1, 14]},
+        "source_control_need": {"peak_value_factor": [0.05, 0.6], "decline_half_life_days": [0.5, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [7, 90],
+      "context_specific_role": "Second-look source-control vector when initial evacuation is incomplete, imaging remains abnormal, bacteremia persists, or peritonitis/free air requires source assessment.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "hysterectomy_or_definitive_operative_uterine_source_control",
+      "drug_class": "definitive_operative_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "salvage_source_control_context_dependent",
+      "required_context_axes": ["necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION", "progression_to_septic_shock_hazard", "source_control_need", "source_control_adequacy", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Necrotic or gangrenous uterus cannot be sterilized reliably with antibiotics alone."},
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "strengthens_if_source_uncontrolled", "factor_range": [1.0, 1.6], "clinical_rationale": "Refractory shock with uterine source increases value of decisive operation."},
+        {"axis_id": "major_bleeding_hazard", "condition": "high", "effect": "requires_parallel_blood_product_support", "factor_range": [0.3, 1.0], "clinical_rationale": "Coagulopathy changes operative risk and requires support."}
+      ],
+      "failure_modes": ["low true uterine source-control need", "operative bleeding", "delayed operation after organ failure", "incomplete extrauterine source control"],
+      "trajectory_modifications": {
+        "M_SA_RETAINED_PRODUCTS_AND_NECROTIC_DECIDUA": {"peak_value_factor": [0.0, 0.2], "plateau_duration_factor": [0.0, 0.2], "decline_half_life_days": [0.1, 3]},
+        "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK": {"peak_value_factor": [0.05, 0.45], "decline_half_life_days": [0.5, 10]},
+        "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN": {"peak_value_factor": [0.05, 0.4], "decline_half_life_days": [0.5, 7]},
+        "mortality_hazard_in_D-SEPTIC-ABORTION": {"peak_value_factor": [0.35, 0.85], "decline_half_life_days": [1, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.7, 1.0], "unit": "relative_activity_0_1"},
+        {"axis_id": "necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION", "direction": "down", "magnitude_range": [0.05, 0.3], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [30, 3650],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.02, 0.15], "interpretation": "Emergency hysterectomy in septic or coagulopathic patients can cause major bleeding."}
+      ],
+      "context_specific_role": "Definitive source-control vector for necrotic uterus, persistent bacteremia/source failure, clostridial toxic shock with deterioration, or life-threatening uterine infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "iv_immunoglobulin_for_toxic_shock_context",
+      "drug_class": "toxin_neutralization_immunomodulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "toxin_context_dependent",
+      "required_context_axes": ["leukemoid_reaction_activity", "capillary_leak_third_spacing_activity", "progression_to_septic_shock_hazard", "toxin_suppression_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "leukemoid_reaction_activity", "condition": "high_with_toxic_shock", "effect": "strengthens_context", "factor_range": [1.0, 1.4], "clinical_rationale": "Extreme leukocytosis and shock increase suspicion for toxin-mediated physiology."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "does_not_replace_source_control", "factor_range": [0.2, 0.8], "clinical_rationale": "IVIG cannot remove infected tissue or necrotic uterus."}
+      ],
+      "failure_modes": ["no toxin-mediated disease", "source remains uncontrolled", "delayed antibiotics", "volume or thrombosis concerns"],
+      "trajectory_modifications": {
+        "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK": {"peak_value_factor": [0.35, 0.9], "decline_half_life_days": [0.5, 7]},
+        "progression_to_septic_shock_hazard": {"peak_value_factor": [0.5, 0.95], "decline_half_life_days": [0.5, 7]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [1, 21],
+      "context_specific_role": "Adjunctive vector only when toxic shock physiology is plausible; it remains dependent on antibiotics and source control.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "drug": "hemodynamic_resuscitation_vasopressors_and_icu_support",
+      "drug_class": "supportive_fluid_vasopressor_critical_care_bundle",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive_context_dependent",
+      "required_context_axes": ["mean_arterial_pressure", "systolic_blood_pressure", "serum_lactate", "progression_to_septic_shock_hazard", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Shock physiology increases benefit of fluids, vasopressors, monitoring, and ICU support."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.4, 1.0], "clinical_rationale": "Resuscitation supports physiology but does not sterilize or evacuate the source."}
+      ],
+      "failure_modes": ["source remains uncontrolled", "fluid overload and ARDS", "vasopressor ischemia", "delayed antibiotics"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.2, 4.0], "unit": "mmol/L"},
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "down", "magnitude_range": [0.0, 0.08], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "ards_hazard", "direction": "up", "magnitude_range": [0.0, 0.06], "interpretation": "Large-volume resuscitation can worsen pulmonary edema or ARDS in capillary leak states."}
+      ],
+      "context_specific_role": "Physiologic support while antimicrobial and uterine source-control vectors address the cause.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dic_hemorrhage_transfusion_and_coagulation_support",
+      "drug_class": "blood_product_and_coagulopathy_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive_context_dependent",
+      "required_context_axes": ["dic_hazard", "major_bleeding_hazard", "platelet_count", "hemoglobin", "international_normalized_ratio"],
+      "effect_modifiers": [
+        {"axis_id": "dic_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "DIC requires correction of consumptive coagulopathy while the uterine source is controlled."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.4, 1.0], "clinical_rationale": "Blood products do not remove the infection trigger."}
+      ],
+      "failure_modes": ["ongoing uterine bleeding", "uncontrolled source", "transfusion reaction", "volume overload"],
+      "push_targets": [
+        {"axis_id": "hemoglobin", "direction": "up", "magnitude_range": [0.5, 4.0], "unit": "g/dL"},
+        {"axis_id": "platelet_count", "direction": "up", "magnitude_range": [10, 100], "unit": "10^9/L"},
+        {"axis_id": "major_bleeding_hazard", "direction": "down", "magnitude_range": [0.02, 0.25], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0, 3],
+      "side_effects": [
+        {"axis_id": "capillary_leak_third_spacing_activity", "direction": "up", "magnitude_range": [0.0, 0.15], "interpretation": "Blood product and crystalloid exposure can worsen third spacing in capillary leak states."}
+      ],
+      "context_specific_role": "Supportive vector for DIC, anemia, active bleeding, or procedural bleeding risk during source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "analgesia_antiemetics_and_serial_pelvic_reassessment",
+      "drug_class": "symptom_support_and_monitoring",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["pelvic_pain_activity", "abdominal_pain_activity", "nausea_vomiting_activity", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "does_not_replace_source_control", "factor_range": [0.2, 0.8], "clinical_rationale": "Symptom control without reassessment can mask worsening peritonitis or source failure."}
+      ],
+      "failure_modes": ["masking deterioration", "opioid-related ileus", "persistent vomiting preventing oral stepdown"],
+      "push_targets": [
+        {"axis_id": "pelvic_pain_activity", "direction": "down", "magnitude_range": [0.1, 0.6], "unit": "severity_score_0_1"},
+        {"axis_id": "nausea_vomiting_activity", "direction": "down", "magnitude_range": [0.1, 0.6], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0, 0.5],
+      "carryover_after_stop_days": [0, 2],
+      "context_specific_role": "Supportive vector with serial examination and escalation if pain, bleeding, fever, or shock persists.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "retained_products_or_incomplete_abortion",
+      "type": "source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 20.0],
+          "axis_response_modulation": [
+            {"axis_id": "retained_products_of_conception_presence", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Retained products are a core uterine-source context."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Retained infected tissue increases evacuation pressure."},
+            {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "direction": "up_if_uncontrolled", "factor_range": [1.1, 4.0], "clinical_rationale": "Uncontrolled retained products sustain sepsis and mortality hazard."}
+          ],
+          "trajectory_modulation": "Raises uterine-source anchoring and shifts treatment dynamics toward evacuation plus antibiotics."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_uterine_instrumentation_medical_abortion_or_open_cervix",
+      "type": "mucosal_disruption_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_pregnancy_termination_loss_context_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Recent abortion context defines the source window."},
+            {"axis_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "direction": "up", "factor_range": [1.1, 4.0], "clinical_rationale": "Mucosal disruption and open cervix facilitate ascent or inoculation."}
+          ],
+          "trajectory_modulation": "Raises prior and early microbial-burden activity without using procedure type as a disease-name qualifier."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_care_or_delayed_active_antibiotics",
+      "type": "treatment_timing_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Delay allows uterine infection to progress to systemic sepsis."},
+            {"axis_id": "M_SA_BACTEREMIA_METASTATIC_AND_ORGAN_DYSFUNCTION", "direction": "up", "factor_range": [1.2, 6.0], "clinical_rationale": "Delayed adequate therapy increases bacteremia and metastatic seeding risk."},
+            {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "direction": "up", "factor_range": [1.2, 6.0], "clinical_rationale": "Delay worsens shock and source-control outcomes."}
+          ],
+          "trajectory_modulation": "Prolongs high-burden disease until active coverage and source control are achieved."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "higher_gestational_age_or_heavy_bleeding_context",
+      "type": "obstetric_and_hemorrhage_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "gestational_age_weeks", "direction": "up", "factor_range": [1.0, 1.0], "clinical_rationale": "Gestational age affects bleeding and evacuation complexity."},
+            {"axis_id": "major_bleeding_hazard", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Higher tissue burden and bleeding increase hemorrhage risk."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.1, 4.0], "clinical_rationale": "Later gestation or heavy bleeding can complicate evacuation and source control."}
+          ],
+          "trajectory_modulation": "Shifts toward mixed septic-hemorrhagic physiology and procedural support needs."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "toxin_producing_clostridial_or_streptococcal_context",
+      "type": "pathogen_toxin_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_SA_TOXIN_MEDIATED_CLOSTRIDIAL_SHOCK", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Toxin-producing pathogens reshape the trajectory toward leukemoid shock and capillary leak."},
+            {"axis_id": "leukemoid_reaction_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Extreme WBC response supports toxin phenotype."},
+            {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "direction": "up", "factor_range": [1.5, 10.0], "clinical_rationale": "Toxin shock carries high mortality when source control is delayed."}
+          ],
+          "treatment_effect_modulation": [
+            {"treatment": "piperacillin_tazobactam_plus_clindamycin", "direction": "strengthens_context", "factor_range": [1.0, 1.5]},
+            {"treatment": "hysterectomy_or_definitive_operative_uterine_source_control", "direction": "strengthens_if_necrotic_or_refractory", "factor_range": [1.0, 1.8]}
+          ],
+          "trajectory_modulation": "Activates toxin-suppression and decisive source-control semantics without making clostridial infection the disease name."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "resistant_or_unusual_pathogen_context",
+      "type": "microbiology_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "active_antibiotic_coverage_probability", "direction": "context_dependent", "factor_range": [0.2, 1.5], "clinical_rationale": "Unusual pathogens and resistance can make common empiric regimens inactive."},
+            {"axis_id": "M_SA_SYSTEMIC_INFLAMMATORY_SEPSIS", "direction": "up_if_inactive_coverage", "factor_range": [1.0, 5.0], "clinical_rationale": "Inactive coverage prolongs systemic response."}
+          ],
+          "treatment_effect_modulation": [
+            {"treatment": "cefepime_or_carbapenem_metronidazole_resistant_sepsis_lane", "direction": "strengthens_if_restores_active_coverage", "factor_range": [1.0, 2.0]}
+          ],
+          "trajectory_modulation": "Treats susceptibility as external context that modulates coverage rather than a semantic disease label."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "immunosuppression_diabetes_or_high_comorbidity_burden",
+      "type": "host_reserve_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.6, 1.3], "clinical_rationale": "Fever can be absent despite severe infection."},
+            {"axis_id": "progression_to_septic_shock_hazard", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Lower physiologic reserve raises shock risk."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Comorbidity increases kidney vulnerability during sepsis or nephrotoxic therapy."}
+          ],
+          "trajectory_modulation": "Can blunt classic inflammatory signs while increasing complication and treatment-toxicity risk."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "unsafe_or_nonsterile_abortion_context",
+      "type": "exposure_and_access_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 15.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_SA_POLYMICROBIAL_ANAEROBIC_UTERINE_BURDEN", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Nonsterile instrumentation and delayed access increase polymicrobial burden."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Trauma, retained tissue, or delayed care increase source-control pressure."},
+            {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "direction": "up", "factor_range": [1.2, 8.0], "clinical_rationale": "Unsafe procedures and delayed care increase severe outcomes."}
+          ],
+          "trajectory_modulation": "Raises microbial-burden and source-control-risk context without putting unsafe abortion in the disease name."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "inadequate_or_delayed_source_control",
+      "type": "source_control_timing_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "source_control_adequacy", "direction": "down", "factor_range": [0.0, 0.6], "clinical_rationale": "Inadequate evacuation or persistent necrotic tissue sustains the source."},
+            {"axis_id": "progression_to_septic_shock_hazard", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Uncontrolled source sustains shock physiology."},
+            {"axis_id": "mortality_hazard_in_D-SEPTIC-ABORTION", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Source-control delay is a major mortality driver."}
+          ],
+          "trajectory_modulation": "Keeps microbial, inflammatory, and toxin fields active until source control improves."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Structure obstetric context directly: positive pregnancy test, gestational age, recent pregnancy loss or termination, passage of tissue, open cervical os, and retained products are observed context/source axes, not diagnosis labels.",
+    "Use parent finding plus satellite structure for RPOC and discharge: retained_products_of_conception_presence is the parent; endometrial echogenic material, hyperemia, and malodorous products are child/satellite axes. vaginal_discharge_activity is the parent for malodorous discharge.",
+    "Keep postpartum endometritis, PID without RPOC, tubo-ovarian abscess, ectopic pregnancy, toxic shock syndrome, sepsis/DIC, appendicitis, diverticulitis, and urinary or pelvic mimics competitive when their observed axes are present.",
+    "Use ultrasound or CT evidence available at presentation: retained products, endometrial thickening or hyperemia, open cervical os, pelvic free fluid, intrauterine gas/free air, peritoneal signs, and source-control need can be rankable.",
+    "Culture species, susceptibility, MALDI-TOF identification, operative findings, hysterectomy pathology, post-evacuation improvement, ECMO course, and final paper diagnosis should remain confirmatory or post-workup evidence for presentation-only tests.",
+    "Source control is a state variable: antibiotics reshape microbial burden, but retained products, necrotic uterus, perforation, persistent bacteremia, clostridial toxic shock, hemorrhage, and ongoing shock determine whether evacuation, repeat procedure, or hysterectomy changes RMST.",
+    "Clostridial or streptococcal toxic shock should be represented through toxin mechanism activity, leukemoid reaction, capillary leak, shock, and source-control axes rather than as a separate disease-name qualifier inside this first-layer leaf.",
+    "DIC and hemorrhage enter outcome through event hazard axes and blood-product support, not through a hard-coded fatality rule."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-SEPTIC-ABORTION.",
+    "Septic abortion was distilled from the disease name alone; retained products, medical/surgical/unsafe context, organism, shock, DIC, and toxic shock are represented as mechanisms, axes, modifiers, or event hazards.",
+    "No treatment priority-label fields are used.",
+    "New uterus/RPOC axes should receive horizontal ontology review when postpartum endometritis, ectopic pregnancy, additional PID/TOA variants, and septic pelvic thrombophlebitis leaves are integrated."
+  ]
+}

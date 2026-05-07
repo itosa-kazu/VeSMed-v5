@@ -901,3 +901,27 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `373/375 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: Postpartum Endometritis / Perinephric Abscess / Septic Abortion
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-POSTPARTUM-ENDOMETRITIS`: postpartum endometritis.
+  - `D-PERINEPHRIC-ABSCESS`: perinephric abscess.
+  - `D-SEPTIC-ABORTION`: septic abortion.
+- Real PMC/PubMed cases:
+  - `D-POSTPARTUM-ENDOMETRITIS`: `PMC6615581` / PMID `31312545`, `PMC6500617` / PMID `31139481`, `PMC8384018` / PMID `34485067`.
+  - `D-PERINEPHRIC-ABSCESS`: `PMC9979943` / PMID `36896437`, `PMC9803770` / PMID `36593858`, `PMC6707826` / PMID `31497419`.
+  - `D-SEPTIC-ABORTION`: `PMC12811538` / PMID `41551360`, `PMC10083041` / PMID `37041893`, `PMC5692239` / PMID `29188070`.
+- Postpartum endometritis source rule: keep first-layer postpartum endometritis separate from PID, TOA, septic abortion, pyelonephritis, CAUTI, appendicitis, diverticulitis, toxic shock syndrome, streptococcal bacteremia, and generic sepsis. Postpartum timing, uterine tenderness, lochia abnormality, pelvic pain, endomyometrial inflammation/necrosis, and source-control need can be rankable when present; culture species, operative/pathology confirmation, and treatment response remain confirmatory/non-ranking unless testing post-workup mode.
+- Perinephric abscess source rule: keep first-layer perinephric abscess separate from renal abscess, pyelonephritis, CAUTI, renal cyst/tumor/hematoma/urinoma, bacteremia/endocarditis, appendicitis/diverticulitis, and generic sepsis. Perinephric collection, capsular/retroperitoneal extension, renal mass effect, pyuria/urinary obstruction context, imaging source-control need, and adjacent-organ complications can be rankable; aspirate culture, procedure success, and post-drainage response stay confirmatory/non-ranking unless testing post-workup mode.
+- Septic abortion source rule: keep first-layer septic abortion separate from postpartum endometritis, PID, TOA, retained products without infection, ectopic pregnancy, toxic shock syndrome, DIC, and generic sepsis. Recent pregnancy termination/loss context, uterine tenderness, retained infected products, foul discharge/bleeding, shock, DIC, necrotizing myometritis, and source-control need can be rankable; culture species, surgical pathology, and treatment response remain confirmatory/non-ranking unless testing post-workup mode.
+- Axis ontology repair from this batch: composite `_or_` and typo axes were normalized before regression: `intrapartum_ascending_infection_risk_context_activity`, `recent_urinary_tract_device_instrumentation_context_probability_in_D-PERINEPHRIC-ABSCESS`, `renal_mass_effect_activity_in_D-PERINEPHRIC-ABSCESS`, `peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS`, `perinephric_noninfectious_fluid_collection_context_activity_in_D-PERINEPHRIC-ABSCESS`, `abscess_breach_fistulization_hazard_in_D-PERINEPHRIC-ABSCESS`, `recent_pregnancy_termination_loss_context_activity`, `intrauterine_free_gas_activity`, `necrotizing_myometritis_hazard_in_D-SEPTIC-ABORTION`, and `vascular_erosion_mycotic_aneurysm_hazard_in_D-PERINEPHRIC-ABSCESS`. Missing treatment-context axes such as beta-lactam allergy, renal-dose adjustment need, MRSA coverage need, carbapenem susceptibility, and antifungal/Candida glabrata coverage context were added where treatments referenced them.
+- Horizontal fairness notes: postpartum endometritis, septic abortion, PID, TOA, pyelonephritis/CAUTI, and abdominal surgical mimics share pelvic/urinary/intra-abdominal fever axes; renal and perinephric abscess leaves share GU-source, obstruction, imaging collection, source-control, and bacteremia-seeding evidence. When adding future PJI, CRE infection, viral meningitis, and encephalitis leaves, re-check shared fever, source-control, hardware/device, CNS, resistant-organism, and treatment-coverage axes rather than giving one leaf exclusive explanatory power.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-PROSTHETIC-JOINT-INFECTION`.
+- Current atlas count after this batch: 139 disease manifolds and 387 real case JSON files.
+- Focused new-batch grid (`POSTPARTUM_ENDOMETRITIS,PERINEPHRIC_ABSCESS,SEPTIC_ABORTION`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas grid after this batch:
+  - 387 case JSON files present; 384 single-manifold cases and 2 combo cases were scorable in this run.
+  - Single-manifold validation `382/384 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

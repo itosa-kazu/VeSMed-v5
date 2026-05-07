@@ -156,31 +156,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-RENAL-ABSCESS | Renal abscess |
 | D-TUBO-OVARIAN-ABSCESS | Tubo-ovarian abscess |
 | D-EPIDIDYMO-ORCHITIS | Epididymo-orchitis |
+| D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis |
+| D-PERINEPHRIC-ABSCESS | Perinephric abscess |
+| D-SEPTIC-ABORTION | Septic abortion |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-POSTPARTUM-ENDOMETRITIS | Postpartum endometritis | common postpartum fever/pelvic pain mimic near PID, TOA, UTI, and sepsis |
-| 2 | D-PERINEPHRIC-ABSCESS | Perinephric abscess | critical fever/flank pain source-control mimic near pyelonephritis and renal abscess |
-| 3 | D-SEPTIC-ABORTION | Septic abortion | critical pelvic fever/sepsis mimic near PID, postpartum endometritis, and TOA |
-| 4 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
-| 5 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
-| 6 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
-| 7 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
-| 8 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
-| 9 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis | critical encephalitis/meningitis mimic near HSV, autoimmune encephalitis, and stroke |
-| 10 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
-| 11 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
-| 12 | D-CHIKUNGUNYA | Chikungunya | common global fever, rash, and severe arthralgia mimic near dengue, rickettsiosis, and viral syndromes |
-| 13 | D-MEASLES | Measles | public-health-critical fever, cough, conjunctivitis, and rash mimic near viral exanthems and Kawasaki-like illness |
-| 14 | D-ACUTE-HEPATITIS-A | Acute hepatitis A | common fever, jaundice, and transaminitis mimic near cholangitis, leptospirosis, EBV/CMV, and acute liver injury |
-| 15 | D-ACUTE-HEPATITIS-B | Acute hepatitis B | fever, jaundice, transaminitis, rash/arthralgia, and acute liver injury mimic |
-| 16 | D-ACUTE-HEPATITIS-E | Acute hepatitis E | fever, jaundice, pregnancy-risk liver failure, and cholangitis/leptospirosis mimic |
-| 17 | D-AMOEBIC-LIVER-ABSCESS | Amoebic liver abscess | fever/right-upper-quadrant pain source-control mimic near pyogenic liver abscess and travel infections |
-| 18 | D-STRONGYLOIDES-HYPERINFECTION | Strongyloides hyperinfection | critical fever/sepsis/ARDS mimic in steroid or immunosuppressed hosts |
-| 19 | D-TRICHINELLOSIS | Trichinellosis | fever, myalgia, facial edema, eosinophilia mimic near rheum and parasitic infection |
-| 20 | D-IGA-VASCULITIS | IgA vasculitis | common vasculitic fever/rash/abdominal pain/renal mimic near infection and systemic rheum |
+| 1 | D-PROSTHETIC-JOINT-INFECTION | Prosthetic joint infection | common hardware-associated fever/pain source-control disease near septic arthritis and bacteremia |
+| 2 | D-VIRAL-MENINGITIS | Viral meningitis | common fever/headache/meningitis mimic near bacterial meningitis, HSV encephalitis, and systemic viral syndromes |
+| 3 | D-CARBAPENEM-RESISTANT-ENTEROBACTERALES-INFECTION | Carbapenem-resistant Enterobacterales infection | critical resistant infection and sepsis treatment-coverage mimic after ESBL |
+| 4 | D-ERYSIPELAS | Erysipelas | common superficial cellulitis mimic with fever, sharp erythema, and bacteremia/TSS near-neighbor risk |
+| 5 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis | critical encephalitis mimic near viral meningitis/HSV encephalitis, seizures, psychiatric symptoms, and fever |
+| 6 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis | critical encephalitis/meningitis mimic near HSV, autoimmune encephalitis, and stroke |
+| 7 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
+| 8 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
+| 9 | D-CHIKUNGUNYA | Chikungunya | common global fever, rash, and severe arthralgia mimic near dengue, rickettsiosis, and viral syndromes |
+| 10 | D-MEASLES | Measles | public-health-critical fever, cough, conjunctivitis, and rash mimic near viral exanthems and Kawasaki-like illness |
+| 11 | D-ACUTE-HEPATITIS-A | Acute hepatitis A | common fever, jaundice, and transaminitis mimic near cholangitis, leptospirosis, EBV/CMV, and acute liver injury |
+| 12 | D-ACUTE-HEPATITIS-B | Acute hepatitis B | fever, jaundice, transaminitis, rash/arthralgia, and acute liver injury mimic |
+| 13 | D-ACUTE-HEPATITIS-E | Acute hepatitis E | fever, jaundice, pregnancy-risk liver failure, and cholangitis/leptospirosis mimic |
+| 14 | D-AMOEBIC-LIVER-ABSCESS | Amoebic liver abscess | fever/right-upper-quadrant pain source-control mimic near pyogenic liver abscess and travel infections |
+| 15 | D-STRONGYLOIDES-HYPERINFECTION | Strongyloides hyperinfection | critical fever/sepsis/ARDS mimic in steroid or immunosuppressed hosts |
+| 16 | D-TRICHINELLOSIS | Trichinellosis | fever, myalgia, facial edema, eosinophilia mimic near rheum and parasitic infection |
+| 17 | D-IGA-VASCULITIS | IgA vasculitis | common vasculitic fever/rash/abdominal pain/renal mimic near infection and systemic rheum |
+| 18 | D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis | fever/purpura/renal-neuropathy mimic near infection, lymphoma, and systemic vasculitis |
+| 19 | D-URTICARIAL-VASCULITIS | Urticarial vasculitis | recurrent fever/urticarial rash/angioedema mimic near allergy, infection, and systemic autoimmune disease |
+| 20 | D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease | overlap systemic rheum mimic with fever, Raynaud, myositis, ILD, serositis, and renal-risk axes |
 
 ## Candidate Pool Toward 200
 

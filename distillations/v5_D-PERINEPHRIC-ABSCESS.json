@@ -1,0 +1,687 @@
+{
+  "disease": "D-PERINEPHRIC-ABSCESS",
+  "disease_name": "Perinephric abscess",
+  "schema_version": "v5.0",
+  "distillation_scope": {
+    "disease_name_input": "Perinephric abscess",
+    "leaf_granularity": "infection with a purulent collection in the perinephric space between renal capsule and Gerota fascia; renal abscess, pyelonephritis without formed perinephric collection, CAUTI, psoas or retroperitoneal abscess from nonrenal source, renal tumor/cyst, staphylococcal bacteremia/endocarditis, and sepsis remain neighboring manifolds or source contexts",
+    "not_subtype_restricted": true,
+    "prompt_scope_note": "Pure disease name only; organism, renal abscess extension, obstruction, diabetes, shock, fistula, hematoma, and source-control status are represented as axes or risk modifiers rather than disease-name qualifiers."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PNA_ASCENDING_URINARY_TRACT_SEEDING",
+      "display_name": "Ascending urinary-tract seeding",
+      "clinical_meaning": "Uropathogens ascend from bladder, ureter, or pyelonephritis into the renal capsule/perinephric space, especially with obstruction, stones, reflux, catheters, stents, or nephrostomy tracts.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-7, 5],
+      "peak_value_range": [0.15, 0.95],
+      "plateau_duration_days": [2, 21],
+      "decline_half_life_days": [2, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING",
+      "display_name": "Hematogenous or contiguous seeding",
+      "clinical_meaning": "Bacteremia, skin/soft tissue infection, endovascular infection, adjacent bowel/psoas disease, infected hematoma, or prior renal infection seeds the perinephric space without requiring dominant urinary symptoms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-14, 7],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [3, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_URINARY_STASIS_INSTRUMENTATION",
+      "display_name": "Urinary stasis and instrumentation niche",
+      "clinical_meaning": "Obstruction, nephrolithiasis, hydronephrosis, neurogenic bladder, ureteral stents, nephrostomy tracts, urinary leaks, or urinoma create a persistent reservoir that sustains infection and abscess formation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.06],
+      "peak_day_range": [-30, 3],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN",
+      "display_name": "Perinephric pathogen burden",
+      "clinical_meaning": "Viable bacteria or fungi persist within perinephric pus, necrotic tissue, urinoma, or infected hematoma and drive local suppuration and systemic inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [3, 45],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION",
+      "display_name": "Neutrophilic suppuration and liquefaction",
+      "clinical_meaning": "Neutrophilic inflammation, tissue necrosis, and liquefaction form a drainable perinephric pus cavity with rim enhancement, debris, gas, or loculation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [3, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT",
+      "display_name": "Gerota-space expansion and mass effect",
+      "clinical_meaning": "The collection expands within the perinephric fascial compartment, displacing kidney, causing flank pain/swelling, compressing drainage, or mimicking renal mass/cyst/hematoma.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [2, 30],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [5, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_RETROPERITONEAL_EXTENSION",
+      "display_name": "Retroperitoneal and psoas extension",
+      "clinical_meaning": "Abscess tracks along retroperitoneal fascial planes into psoas, iliac fossa, flank subcutaneous tissue, diaphragm, pleura, or adjacent peritoneal surfaces.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.05, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [5, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic inflammatory response",
+      "clinical_meaning": "Local abscess inflammation drives fever, tachycardia, leukocytosis or blunted leukocyte response, CRP/procalcitonin elevation, malaise, anorexia, and catabolic physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 10],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_BACTEREMIA_SEPSIS",
+      "display_name": "Bacteremia and sepsis physiology",
+      "clinical_meaning": "Perinephric infection seeds bloodstream or triggers severe host response with lactate elevation, hypotension, AKI, respiratory stress, and organ dysfunction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.05, 1.0],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_SOURCE_CONTROL_FAILURE",
+      "display_name": "Source-control failure",
+      "clinical_meaning": "Large, multiloculated, gas-forming, inaccessible, obstructed, fistulizing, or necrotic perinephric collections persist despite antibiotics unless drainage, decompression, debridement, or nephrectomy reshapes the source.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION",
+      "display_name": "Fistula, rupture, or vascular erosion",
+      "clinical_meaning": "Uncontrolled perinephric inflammation may rupture into peritoneum, fistulize to bowel or urinary tract, or erode vessels, causing pyoperitoneum, polymicrobial infection, bleeding, mycotic aneurysm, or catastrophic hemorrhage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [7, 90],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_PNA_ASCENDING_URINARY_TRACT_SEEDING", "target_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "causal", "lag_days_range": [0, 7], "clinical_rationale": "Ascending urinary infection can extend through renal capsule or infected urinoma into perinephric space.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING", "target_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "causal", "lag_days_range": [0, 14], "clinical_rationale": "Hematogenous or adjacent-source inoculation establishes pathogen burden without requiring urinary symptoms.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_URINARY_STASIS_INSTRUMENTATION", "target_id": "M_PNA_ASCENDING_URINARY_TRACT_SEEDING", "effect_on_target": "increase", "edge_type": "causal", "lag_days_range": [0, 14], "clinical_rationale": "Stasis, stones, stents, nephrostomy tracts, and leaks increase ascending inoculum and persistence.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_URINARY_STASIS_INSTRUMENTATION", "target_id": "urinary_obstruction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Obstruction or stasis context is often visible clinically or radiographically.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_URINARY_STASIS_INSTRUMENTATION", "target_id": "hydronephrosis_grade_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Obstructive contexts may show hydronephrosis; absence does not exclude perinephric abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "target_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "effect_on_target": "increase", "edge_type": "causal", "lag_days_range": [1, 7], "clinical_rationale": "Persistent pathogen burden drives neutrophilic pus and liquefaction.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "target_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "A mature suppurative cavity is the defining imaging finding.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "target_id": "rim_enhancing_perinephric_collection_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Rim enhancement reflects organized infected collection.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "target_id": "perinephric_abscess_gas_presence_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Gas can occur with gas-forming organisms, fistula, instrumentation, or necrotic tissue.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "target_id": "multiloculated_perinephric_abscess_pattern_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 14], "clinical_rationale": "Organized pus cavities may become septated or multiloculated.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "largest_perinephric_abscess_diameter_cm_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Expansion is measured by the largest dimension of the collection.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "perinephric_abscess_extent_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Perinephric fascial-space involvement can be focal or extensive.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "renal_mass_effect_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Large collections can displace or compress the kidney.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "flank_pain_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Capsular stretch and fascial inflammation produce flank pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "flank_swelling_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "clinical_rationale": "Very large or laterally tracking collections can present with flank swelling.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_GEROTA_SPACE_EXPANSION_MASS_EFFECT", "target_id": "cva_tenderness_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Perinephric inflammation commonly produces costovertebral angle tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_RETROPERITONEAL_EXTENSION", "target_id": "psoas_extension_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "clinical_rationale": "Retroperitoneal spread can involve psoas or iliopsoas fascial planes.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_RETROPERITONEAL_EXTENSION", "target_id": "retroperitoneal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "clinical_rationale": "The abscess can extend beyond perinephric fascia into broader retroperitoneum.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_RETROPERITONEAL_EXTENSION", "target_id": "subcutaneous_flank_extension_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 30], "clinical_rationale": "Severe collections can track through flank soft tissue.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_RETROPERITONEAL_EXTENSION", "target_id": "retroperitoneal_back_pain_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Psoas or paraspinal retroperitoneal extension produces back or hip-region pain.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Perinephric abscess often causes fever, though fever can be absent in older or immunocompromised patients.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Systemic inflammatory and bacteremic physiology can produce chills or rigors.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever, pain, volume depletion, or sepsis can cause tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Neutrophilic bacterial infection usually raises WBC, but cirrhosis, immunosuppression, or marrow reserve can blunt it.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Neutrophilic response is common when marrow reserve is intact.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 4], "clinical_rationale": "CRP rises with pyogenic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "PCT may rise with bacterial systemic infection, especially severe or bacteremic disease.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "target_id": "pyuria_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 2], "clinical_rationale": "Urinary-source or communicating abscesses often show pyuria; hematogenous or isolated perinephric cases may not.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "target_id": "hematuria_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 3], "clinical_rationale": "Stones, infection, instrumentation, or renal capsular involvement can cause microscopic or gross hematuria.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "target_id": "urine_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 2], "clinical_rationale": "Urine culture can be positive with urinary source but may be negative after antibiotics or with noncommunicating collections.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "target_id": "abscess_aspirate_culture_positivity_probability_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Drained pus culture often identifies the pathogen but is post-diagnosis evidence unless drainage is part of the tested snapshot.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 2], "clinical_rationale": "Blood cultures may be positive in hematogenous, obstructed, or severe disease.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Sepsis and hypoperfusion raise lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Septic vasodilation can lower blood pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Septic shock lowers MAP.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [0, 2], "clinical_rationale": "Bacteremia and high inflammatory activity can progress to septic shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [0, 3], "clinical_rationale": "Sepsis, obstruction, dehydration, and renal compression can precipitate AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Persistent abscess cavity requires drainage, decompression, debridement, or salvage surgery depending on anatomy.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Undrained, partially drained, obstructed, or inaccessible collections remain inadequately controlled.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SOURCE_CONTROL_FAILURE", "target_id": "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Complex anatomy, multiloculation, psoas/subdiaphragmatic tracking, or bowel/vascular proximity complicates drainage.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_SOURCE_CONTROL_FAILURE", "target_id": "relapse_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [3, 30], "clinical_rationale": "Residual cavities, stones, stents, or persistent leaks increase recurrence.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_RETROPERITONEAL_EXTENSION", "target_id": "psoas_abscess_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [1, 14], "clinical_rationale": "Retroperitoneal spread can form a secondary psoas abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "target_id": "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 60], "clinical_rationale": "Inflammatory erosion into colon or ureter can create fistulas.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "target_id": "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 45], "clinical_rationale": "Perinephric abscess can rarely rupture into the peritoneal cavity producing pyoperitoneum.", "knowledge_confidence": "low"},
+    {"source_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "target_id": "vascular_erosion_mycotic_aneurysm_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [7, 90], "clinical_rationale": "Severe adjacent inflammation can erode vessels or cause mycotic aneurysm.", "knowledge_confidence": "low"},
+    {"source_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "target_id": "abscess_breach_fistulization_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_event_hazard", "lag_days_range": [3, 60], "clinical_rationale": "Rupture or fistula risk rises with delayed, large, gas-forming, or persistent collections.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PNA_BACTEREMIA_SEPSIS", "target_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [0, 2], "clinical_rationale": "Shock and organ dysfunction are major proximate mortality drivers.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_SOURCE_CONTROL_FAILURE", "target_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [1, 14], "clinical_rationale": "Ongoing uncontrolled pus cavity sustains sepsis and complication risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "target_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome_hazard", "lag_days_range": [0, 7], "clinical_rationale": "Rupture, polymicrobial peritonitis, or vascular hemorrhage markedly worsens prognosis.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "baseline_range": [36.0, 37.3], "peak_day_range": [0, 10], "peak_value_range": [37.0, 40.5], "plateau_duration_days": [0, 30], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [55, 95], "peak_day_range": [0, 7], "peak_value_range": [80, 145], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [16, 34], "plateau_duration_days": [0, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [70, 130], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [45, 95], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "flank_pain_activity_in_D-PERINEPHRIC-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "cva_tenderness_activity_in_D-PERINEPHRIC-ABSCESS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "flank_swelling_activity_in_D-PERINEPHRIC-ABSCESS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [3, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "retroperitoneal_back_pain_activity_in_D-PERINEPHRIC-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.06], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "diarrhea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.06], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "low"},
+    {"axis_id": "anorexia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "dysuria_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.06], "peak_day_range": [-3, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "urinary_frequency_urgency_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [-3, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "gross_hematuria_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "low"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [4.0, 10.5], "peak_day_range": [0, 7], "peak_value_range": [6.0, 30.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [1.5, 7.5], "peak_day_range": [0, 7], "peak_value_range": [4.0, 25.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.2, 5.0], "peak_day_range": [1, 10], "peak_value_range": [20.0, 450.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.01, 0.10], "peak_day_range": [0, 5], "peak_value_range": [0.05, 60.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm_per_hr", "log_scale": false, "axis_role": "measurement", "baseline_range": [0, 20], "peak_day_range": [3, 21], "peak_value_range": [20, 120], "plateau_duration_days": [7, 60], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 3], "peak_value_range": [0.8, 8.0], "plateau_duration_days": [0, 5], "decline_half_life_days": [0.1, 1.5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.7, 6.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [7, 22], "peak_day_range": [0, 14], "peak_value_range": [10, 120], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "estimated_gfr", "category": "lab_value", "unit": "mL/min/1.73m2", "log_scale": false, "axis_role": "measurement", "baseline_range": [90, 130], "peak_day_range": [0, 14], "peak_value_range": [5, 90], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [12.0, 16.5], "peak_day_range": [0, 30], "peak_value_range": [6.0, 13.5], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [150, 400], "peak_day_range": [0, 14], "peak_value_range": [40, 450], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 21], "knowledge_confidence": "low"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 30], "peak_value_range": [1.5, 4.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "international_normalized_ratio", "category": "lab_value", "unit": "ratio", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.8, 1.2], "peak_day_range": [0, 30], "peak_value_range": [0.9, 3.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 30], "knowledge_confidence": "low"},
+    {"axis_id": "pyuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_wbc_per_uL", "category": "urinalysis", "unit": "cells_per_uL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "pyuria_activity", "baseline_range": [0, 10], "peak_day_range": [-3, 7], "peak_value_range": [5, 10000], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_leukocyte_esterase_positivity", "category": "urinalysis", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_nitrite_positivity", "category": "urinalysis", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "low"},
+    {"axis_id": "hematuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-3, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-3, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "abscess_aspirate_culture_positivity_probability_in_D-PERINEPHRIC-ABSCESS", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 21], "knowledge_confidence": "high"},
+    {"axis_id": "staphylococcus_aureus_bacteremia_probability", "category": "microbiology_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "carbapenem_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.9], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [3, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "mrsa_coverage_need_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antifungal_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "candida_glabrata_probability", "category": "microbiology_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 180], "knowledge_confidence": "low"},
+    {"axis_id": "urinary_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "hydronephrosis_grade_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "nephrolithiasis_context_presence", "category": "source_context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.08], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "recent_urinary_tract_device_instrumentation_context_probability_in_D-PERINEPHRIC-ABSCESS", "category": "source_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [-180, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 21], "peak_value_range": [1.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "high"},
+    {"axis_id": "largest_perinephric_abscess_diameter_cm_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "cm", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 30], "peak_value_range": [1.0, 25.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "high"},
+    {"axis_id": "perinephric_abscess_extent_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "high"},
+    {"axis_id": "rim_enhancing_perinephric_collection_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 21], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "high"},
+    {"axis_id": "perinephric_abscess_gas_presence_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.002], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "multiloculated_perinephric_abscess_pattern_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.005], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "high"},
+    {"axis_id": "renal_mass_effect_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.005], "peak_day_range": [1, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_parenchymal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "psoas_extension_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.002], "peak_day_range": [2, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [10, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "retroperitoneal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.002], "peak_day_range": [2, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [10, 60], "knowledge_confidence": "high"},
+    {"axis_id": "subcutaneous_flank_extension_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "baseline_range": [0.0, 0.001], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [10, 60], "knowledge_confidence": "low"},
+    {"axis_id": "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.001], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 45], "knowledge_confidence": "low"},
+    {"axis_id": "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.001], "peak_day_range": [7, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [14, 120], "knowledge_confidence": "low"},
+    {"axis_id": "perinephric_noninfectious_fluid_collection_context_activity_in_D-PERINEPHRIC-ABSCESS", "category": "source_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [-90, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "low"},
+    {"axis_id": "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.7, 1.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "bacteremia_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 14], "peak_value_range": [0.001, 0.20], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.00001, 0.0001], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.15], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.00001, 0.0003], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.20], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "psoas_abscess_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.000001, 0.00005], "peak_day_range": [3, 45], "peak_value_range": [0.0001, 0.04], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 45], "knowledge_confidence": "low"},
+    {"axis_id": "abscess_breach_fistulization_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.000001, 0.00003], "peak_day_range": [3, 90], "peak_value_range": [0.00005, 0.03], "plateau_duration_days": [0, 60], "decline_half_life_days": [14, 90], "knowledge_confidence": "low"},
+    {"axis_id": "vascular_erosion_mycotic_aneurysm_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.0000001, 0.00001], "peak_day_range": [7, 90], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [0, 60], "decline_half_life_days": [14, 90], "knowledge_confidence": "low"},
+    {"axis_id": "relapse_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.00001, 0.0001], "peak_day_range": [7, 90], "peak_value_range": [0.0001, 0.03], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.000005, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.0001, 0.20], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "body_temperature", "relationship": "source_up_decreases_target", "coupling_type": "event_transition", "correlation_range": [-0.85, -0.45], "lag_days_range": [1, 4], "phase": "treatment_response", "clinical_rationale": "Adequate drainage plus active antimicrobial therapy usually produces defervescence over days.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "white_blood_cell_count", "relationship": "source_up_decreases_target", "coupling_type": "event_transition", "correlation_range": [-0.75, -0.35], "lag_days_range": [1, 7], "phase": "treatment_response", "clinical_rationale": "Leukocytosis improves after source control when coverage is active.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "serum_crp", "relationship": "source_up_decreases_target", "coupling_type": "event_transition", "correlation_range": [-0.75, -0.35], "lag_days_range": [2, 10], "phase": "treatment_response", "clinical_rationale": "CRP falls more slowly than fever after source control.", "knowledge_confidence": "high"},
+    {"source_axis_id": "largest_perinephric_abscess_diameter_cm_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.90], "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Larger perinephric collections are less likely to sterilize with antibiotics alone.", "knowledge_confidence": "high"},
+    {"source_axis_id": "multiloculated_perinephric_abscess_pattern_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Multiloculation impairs drainage and antibiotic penetration.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urinary_obstruction_activity", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.50, 0.90], "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Obstruction or urinary leak requires decompression in addition to antimicrobial therapy.", "knowledge_confidence": "high"},
+    {"source_axis_id": "psoas_extension_activity_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "retroperitoneal_back_pain_activity_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_correlation", "coupling_type": "drift", "correlation_range": [0.40, 0.85], "lag_days_range": [0, 3], "phase": "complicated_course", "clinical_rationale": "Psoas or iliac extension produces back, hip, or psoas-region pain.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "perinephric_abscess_gas_presence_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.80], "lag_days_range": [0, 3], "phase": "complicated_course", "clinical_rationale": "Gas may indicate high-inoculum, necrotic, fistulizing, or gas-forming infection that often needs drainage.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "retroperitoneal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 3], "phase": "complicated_course", "clinical_rationale": "Tracking collections require more complex drain positioning or surgery.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "bacteremia_hazard_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_event_chain", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 3], "phase": "severe_course", "clinical_rationale": "Bacteremia increases shock risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_event_chain", "coupling_type": "hazard_drift", "correlation_range": [0.60, 0.95], "lag_days_range": [0, 2], "phase": "severe_course", "clinical_rationale": "Shock is a dominant driver of early mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_event_chain", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.75], "lag_days_range": [0, 7], "phase": "severe_course", "clinical_rationale": "AKI marks organ dysfunction and worsens treatment tolerance.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "abscess_breach_fistulization_hazard_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_event_chain", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.90], "lag_days_range": [0, 7], "phase": "complicated_course", "clinical_rationale": "Rupture or enteric fistula increases polymicrobial sepsis and operative complexity.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "vascular_erosion_mycotic_aneurysm_hazard_in_D-PERINEPHRIC-ABSCESS", "target_axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "relationship": "positive_event_chain", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.95], "lag_days_range": [0, 3], "phase": "catastrophic_complication", "clinical_rationale": "Vascular erosion or mycotic aneurysm can cause fatal hemorrhage.", "knowledge_confidence": "low"},
+    {"source_axis_id": "pyuria_activity", "target_axis_id": "urine_wbc_per_uL", "relationship": "coarse_finding_measurement_overlap", "coupling_type": "noise_correlation", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 0], "phase": "observation", "clinical_rationale": "Qualitative pyuria and urine WBC count encode the same urine-inflammatory evidence at different granularity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urine_leukocyte_esterase_positivity", "target_axis_id": "pyuria_activity", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "lag_days_range": [0, 0], "phase": "observation", "clinical_rationale": "Leukocyte esterase and pyuria are related urinalysis signals.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "image_guided_percutaneous_perinephric_abscess_drainage",
+      "display_name": "Image-guided percutaneous perinephric abscess drainage",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "source_control",
+      "mechanistic_targets": ["M_PNA_NEUTROPHILIC_SUPPURATION_LIQUEFACTION", "M_PNA_SOURCE_CONTROL_FAILURE", "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["perinephric_abscess_presence_in_D-PERINEPHRIC-ABSCESS", "largest_perinephric_abscess_diameter_cm_in_D-PERINEPHRIC-ABSCESS", "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "largest_perinephric_abscess_diameter_cm_in_D-PERINEPHRIC-ABSCESS", "condition": "large_or_mature_collection", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Larger drainable abscesses benefit more from catheter drainage."},
+        {"axis_id": "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "weakens_or_requires_alternate_route", "factor_range": [0.2, 0.9], "clinical_rationale": "Difficult anatomy may require surgery, alternative access, or staged drainage."},
+        {"axis_id": "international_normalized_ratio", "condition": "markedly_high", "effect": "increases_procedural_bleeding_context", "factor_range": [0.4, 1.0], "clinical_rationale": "Coagulopathy changes procedure timing and correction needs."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.05, 0.45], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [0.5, 7]},
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.70], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [2, 14]},
+        "source_control_adequacy": {"peak_value_factor": [1.2, 2.5], "decline_half_life_days": [14, 180]},
+        "mortality_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.35, 0.85], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 2], "duration_days_range": [14, 180]},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 3], "duration_days_range": [7, 90]}
+      ],
+      "clinical_rationale": "Drainage directly reduces pus burden and source-control failure when a safe drainable collection exists.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "open_or_laparoscopic_drainage_debridement",
+      "display_name": "Open or laparoscopic drainage and debridement",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "source_control",
+      "mechanistic_targets": ["M_PNA_RETROPERITONEAL_EXTENSION", "M_PNA_SOURCE_CONTROL_FAILURE", "M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION"],
+      "required_context_axes": ["retroperitoneal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 2.0], "clinical_rationale": "Intraperitoneal rupture or diffuse pus often requires operative washout."},
+        {"axis_id": "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "requires_bowel_or_diversion_plan", "factor_range": [0.8, 1.5], "clinical_rationale": "Enteric fistula changes source-control strategy."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.05, 0.50], "decline_half_life_days": [1, 10]},
+        "M_PNA_RETROPERITONEAL_EXTENSION": {"peak_value_factor": [0.20, 0.75], "decline_half_life_days": [7, 45]},
+        "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.40, 0.90], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 3], "duration_days_range": [14, 180]}
+      ],
+      "clinical_rationale": "Operative source control is a vector for inaccessible, ruptured, multiloculated, necrotic, fistulizing, or failed percutaneous cases.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "urologic_decompression_or_instrumentation_control",
+      "display_name": "Urologic decompression, stone control, or device exchange",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "source_control",
+      "mechanistic_targets": ["M_PNA_URINARY_STASIS_INSTRUMENTATION", "M_PNA_ASCENDING_URINARY_TRACT_SEEDING", "M_PNA_SOURCE_CONTROL_FAILURE"],
+      "required_context_axes": ["urinary_obstruction_activity", "hydronephrosis_grade_in_D-PERINEPHRIC-ABSCESS", "nephrolithiasis_context_presence", "recent_urinary_tract_device_instrumentation_context_probability_in_D-PERINEPHRIC-ABSCESS", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "urinary_obstruction_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 2.0], "clinical_rationale": "Persistent obstruction sustains infection unless decompressed."},
+        {"axis_id": "recent_urinary_tract_device_instrumentation_context_probability_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "changes_source_control_target", "factor_range": [0.8, 1.5], "clinical_rationale": "A device tract, stent, or leak may require exchange, removal, or diversion."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_URINARY_STASIS_INSTRUMENTATION": {"peak_value_factor": [0.10, 0.60], "decline_half_life_days": [3, 30]},
+        "M_PNA_ASCENDING_URINARY_TRACT_SEEDING": {"peak_value_factor": [0.20, 0.75], "decline_half_life_days": [2, 14]},
+        "source_control_adequacy": {"peak_value_factor": [1.1, 2.0], "decline_half_life_days": [14, 180]}
+      },
+      "push_targets": [
+        {"axis_id": "urinary_obstruction_activity", "direction": "down", "magnitude_range": [0.3, 1.0], "onset_days_range": [0, 3], "duration_days_range": [14, 180]},
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.2, 0.8], "onset_days_range": [0, 3], "duration_days_range": [14, 180]}
+      ],
+      "clinical_rationale": "Drainage of the abscess may fail if upstream obstruction, infected stone, urinary leak, or device biofilm remains uncontrolled.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "broad_urinary_gram_negative_iv_antibiotic_coverage",
+      "display_name": "Broad urinary gram-negative IV antibiotic coverage",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE", "M_PNA_BACTEREMIA_SEPSIS"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "urine_culture_positivity_probability", "source_control_need", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "weakens", "factor_range": [0.0, 0.5], "clinical_rationale": "Inactive antibiotic exposure does not reshape pathogen burden."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "factor_range": [0.3, 0.9], "clinical_rationale": "Large pus cavities often persist despite active antibiotics alone."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dosing_context", "factor_range": [0.6, 1.0], "clinical_rationale": "AKI/CKD changes dosing and toxicity."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.20, 0.70], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [2, 14]},
+        "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.30, 0.85], "decline_half_life_days": [1, 7]},
+        "M_PNA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.25, 0.80], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.45, 0.95], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 60]}
+      ],
+      "clinical_rationale": "Ceftriaxone, cefepime, piperacillin-tazobactam, or equivalent active urinary-source coverage is selected by severity, resistance context, and susceptibility.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "carbapenem_for_resistant_or_severe_perinephric_abscess",
+      "display_name": "Carbapenem for resistant or severe gram-negative context",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "M_PNA_BACTEREMIA_SEPSIS"],
+      "required_context_axes": ["carbapenem_susceptibility_probability", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Carbapenem activity is useful for ESBL/AmpC or severe high-inoculum gram-negative abscess."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dosing_context", "factor_range": [0.6, 1.0], "clinical_rationale": "Renal dysfunction changes dosing and neurotoxicity risk."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.60], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [2, 14]},
+        "M_PNA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.20, 0.70], "decline_half_life_days": [1, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 60]}
+      ],
+      "clinical_rationale": "This vector is selected by resistant gram-negative or severe sepsis context, not by a hard first-line label.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "anti_staphylococcal_coverage_for_hematogenous_context",
+      "display_name": "Anti-staphylococcal coverage for hematogenous context",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING", "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "M_PNA_BACTEREMIA_SEPSIS"],
+      "required_context_axes": ["staphylococcus_aureus_bacteremia_probability", "mrsa_coverage_need_probability", "active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "staphylococcus_aureus_bacteremia_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Hematogenous S. aureus perinephric abscess requires active anti-staphylococcal therapy and source search."},
+        {"axis_id": "mrsa_coverage_need_probability", "condition": "high", "effect": "requires_mrsa_active_agent", "factor_range": [0.5, 1.4], "clinical_rationale": "MRSA context changes cefazolin/nafcillin versus vancomycin/daptomycin feasibility."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "limits_beta_lactam_options", "factor_range": [0.0, 0.8], "clinical_rationale": "Severe allergy changes definitive MSSA therapy options."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING": {"peak_value_factor": [0.20, 0.70], "decline_half_life_days": [2, 14]},
+        "M_PNA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.15, 0.65], "decline_half_life_days": [2, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 60]}
+      ],
+      "clinical_rationale": "Staphylococcal hematogenous perinephric abscess must be treated through the same active-coverage mechanism without turning organism identity into a disease label.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "anaerobic_or_polymicrobial_enteric_coverage",
+      "display_name": "Anaerobic or polymicrobial enteric coverage",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_PNA_FISTULA_RUPTURE_VASCULAR_EROSION", "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Enteric fistula implies polymicrobial and anaerobic exposure."},
+        {"axis_id": "peritoneal_extension_pyoperitoneum_activity_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Pyoperitoneum requires intra-abdominal coverage and source control."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.20, 0.75], "decline_half_life_days": [2, 14]},
+        "M_PNA_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.35, 0.85], "decline_half_life_days": [1, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [7, 60]}
+      ],
+      "clinical_rationale": "Metronidazole-containing or broad anaerobic regimens are context-driven by bowel/peritoneal extension, not by uncomplicated urinary-source disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "antifungal_coverage_for_candida_or_immunocompromised_context",
+      "display_name": "Antifungal coverage for Candida or immunocompromised context",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_PNA_PERINEPHRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["active_antifungal_coverage_probability", "candida_glabrata_probability", "abscess_aspirate_culture_positivity_probability_in_D-PERINEPHRIC-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antifungal_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Candida bloodstream or abscess culture context supports antifungal activity."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "already_bacterial_only", "effect": "does_not_replace_bacterial_coverage", "factor_range": [0.4, 1.0], "clinical_rationale": "Antifungal coverage is additive when fungal disease is plausible and does not replace bacterial coverage."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.80], "decline_half_life_days": [3, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antifungal_coverage_probability", "direction": "up", "magnitude_range": [0.2, 1.0], "onset_days_range": [0, 2], "duration_days_range": [14, 60]}
+      ],
+      "clinical_rationale": "Fungal coverage is a treatment-context vector for documented or high-probability Candida involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "salvage_nephrectomy_or_partial_nephrectomy",
+      "display_name": "Salvage nephrectomy or partial nephrectomy",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "source_control",
+      "mechanistic_targets": ["M_PNA_SOURCE_CONTROL_FAILURE", "M_PNA_URINARY_STASIS_INSTRUMENTATION", "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN"],
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "renal_parenchymal_extension_activity_in_D-PERINEPHRIC-ABSCESS", "urinary_obstruction_activity", "drainage_access_complexity_activity_in_D-PERINEPHRIC-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "persistently_low_after_less_invasive_control", "effect": "strengthens", "factor_range": [1.0, 2.0], "clinical_rationale": "Destroyed/nonfunctioning or chronically infected kidney may require resection."},
+        {"axis_id": "estimated_gfr", "condition": "low_single_functioning_kidney_context", "effect": "raises_tradeoff", "factor_range": [0.2, 1.0], "clinical_rationale": "Renal reserve changes feasibility and expected RMST impact."}
+      ],
+      "trajectory_modifications": {
+        "M_PNA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.02, 0.45], "decline_half_life_days": [1, 14]},
+        "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.05, 0.50], "decline_half_life_days": [2, 21]},
+        "relapse_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.10, 0.70], "decline_half_life_days": [14, 180]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 7], "duration_days_range": [30, 365]}
+      ],
+      "clinical_rationale": "Resection is a context-dependent salvage vector for failed source control, nonfunctioning infected kidney, or destructive XGP/emphysematous context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "sepsis_resuscitation_and_hemodynamic_support",
+      "display_name": "Sepsis resuscitation and hemodynamic support",
+      "mode": ["push_state", "modulate_sigma"],
+      "treatment_lane": "physiologic_support",
+      "mechanistic_targets": ["M_PNA_BACTEREMIA_SEPSIS"],
+      "required_context_axes": ["systolic_blood_pressure", "mean_arterial_pressure", "serum_lactate", "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 2.0], "clinical_rationale": "Support is most relevant when hypotension or organ dysfunction is present."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "does_not_replace_source_control", "factor_range": [0.4, 1.0], "clinical_rationale": "Hemodynamic support stabilizes physiology but does not drain pus."}
+      ],
+      "trajectory_modifications": {
+        "septic_shock_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.45, 0.90], "decline_half_life_days": [0.5, 5]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.55, 0.95], "decline_half_life_days": [1, 7]},
+        "mortality_hazard_in_D-PERINEPHRIC-ABSCESS": {"peak_value_factor": [0.50, 0.90], "decline_half_life_days": [0.5, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg", "onset_days_range": [0, 0.2], "duration_days_range": [0.5, 7]},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.2, 4.0], "unit": "mmol/L", "onset_days_range": [0.1, 1], "duration_days_range": [0.5, 5]}
+      ],
+      "clinical_rationale": "Resuscitation improves short-horizon survival physiology while definitive outcome still depends on active coverage and source control.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "diabetes_mellitus",
+      "risk_type": "host_susceptibility_and_severity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_PNA_PERINEPHRIC_PATHOGEN_BURDEN", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "perinephric_abscess_gas_presence_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.1, 3.0]},
+            {"axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Diabetes increases urinary-source abscess risk, gas-forming infection context, and severe infection risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "nephrolithiasis_or_urinary_obstruction",
+      "risk_type": "urinary_stasis_source_control_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_PNA_URINARY_STASIS_INSTRUMENTATION", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0]},
+            {"axis_id": "urinary_obstruction_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]}
+          ],
+          "clinical_rationale": "Stones and obstruction sustain infected urine and impair abscess clearance."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_nephrostomy_stent_or_urinary_instrumentation",
+      "risk_type": "iatrogenic_or_device_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_urinary_tract_device_instrumentation_context_probability_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0]},
+            {"axis_id": "perinephric_noninfectious_fluid_collection_context_activity_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0]}
+          ],
+          "clinical_rationale": "A device tract, stent, urinary leak, or urinoma can become infected and form a perinephric abscess."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "cirrhosis_or_hypoalbuminemia",
+      "risk_type": "host_defense_and_procedural_risk",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "white_blood_cell_count", "effect": "may_blunt_peak", "magnitude_factor_range": [0.4, 1.2]},
+            {"axis_id": "serum_albumin", "effect": "lower_baseline_and_peak", "magnitude_factor_range": [0.5, 0.9]},
+            {"axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4.0]}
+          ],
+          "clinical_rationale": "Cirrhosis increases infection risk and may blunt leukocytosis while increasing mortality and procedure risk."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "immunosuppression_malignancy_or_ckd",
+      "risk_type": "host_susceptibility_and_atypical_presentation",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "may_blunt_peak", "magnitude_factor_range": [0.4, 1.1]},
+            {"axis_id": "serum_creatinine", "effect": "higher_background_or_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Immune compromise, malignancy, and CKD increase risk, atypical presentation, renal toxicity, and poor reserve."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "staphylococcus_aureus_bacteremia_or_deep_skin_source",
+      "risk_type": "hematogenous_seeding_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0]},
+            {"axis_id": "blood_culture_positivity_probability", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "staphylococcus_aureus_bacteremia_probability", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0]}
+          ],
+          "clinical_rationale": "S. aureus bacteremia can seed renal/perinephric spaces and requires horizontal evaluation for endocarditis and metastatic infection."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_diagnosis_or_prior_partial_antibiotics",
+      "risk_type": "diagnostic_delay_and_culture_yield_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "urine_culture_positivity_probability", "effect": "lower_or_variable_peak", "magnitude_factor_range": [0.2, 1.0]},
+            {"axis_id": "M_PNA_SOURCE_CONTROL_FAILURE", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0]},
+            {"axis_id": "abscess_breach_fistulization_hazard_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0]}
+          ],
+          "clinical_rationale": "Delay allows maturation/extension while partial antibiotics can lower culture yield and fever without source control."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "perinephric_hematoma_urinoma_or_trauma",
+      "risk_type": "infected_collection_substrate",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "perinephric_noninfectious_fluid_collection_context_activity_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0]},
+            {"axis_id": "M_PNA_HEMATOGENOUS_OR_CONTIGUOUS_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0]},
+            {"axis_id": "bowel_fistula_activity_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_if_chronic_large_collection", "magnitude_factor_range": [1.0, 4.0]}
+          ],
+          "clinical_rationale": "Hematoma or urinoma can become infected and may mimic tumor or renal mass before abscess maturation is recognized."
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "older_age_or_frailty",
+      "risk_type": "reserve_and_presentation_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "body_temperature", "effect": "may_blunt_peak", "magnitude_factor_range": [0.5, 1.1]},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "mortality_hazard_in_D-PERINEPHRIC-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Older adults may present without fever and have less renal and hemodynamic reserve."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Keep first-layer perinephric abscess separate from renal abscess, pyelonephritis without formed perinephric collection, CAUTI, psoas abscess from nonrenal source, renal cyst/tumor, bacteremia/endocarditis, and generic sepsis.",
+    "Presentation ranking may use presentation-time CT, ultrasound, MRI, or POCUS evidence of perinephric collection, rim enhancement, gas, size, extension, obstruction, or drainability. Aspirate culture, operation findings, and response are confirmatory unless present at the tested snapshot.",
+    "Obtain blood cultures, urine culture, urinalysis, and abscess aspirate culture when feasible, but do not let culture species become a diagnosis label.",
+    "Use contrast CT or high-quality ultrasound/MRI to define whether the collection is perinephric rather than intrarenal, cystic/tumor, hematoma, urinoma, psoas, or intra-abdominal source.",
+    "Trend temperature, heart rate, MAP, urine output, WBC/ANC, CRP, procalcitonin, creatinine, BUN, lactate, albumin, INR, and drain output to judge response and procedural risk.",
+    "Coordinate urology, interventional radiology, infectious diseases, and surgery early when the abscess is large, gas-forming, multiloculated, obstructed, ruptured, fistulizing, psoas/retroperitoneal-extending, or poorly accessible.",
+    "Renal-dose adjust antimicrobials in CKD, AKI, obstruction, or older age; monitor vancomycin, aminoglycoside, TMP-SMX, fluoroquinolone, and beta-lactam toxicity when relevant.",
+    "Repeat imaging if fever, pain, leukocytosis, CRP/PCT, bacteremia, renal dysfunction, or drain output fails to improve after 48-72 hours of active therapy and attempted source control.",
+    "Use sepsis supportive care as needed: balanced crystalloid, lactate reassessment, norepinephrine for fluid-refractory hypotension, oxygen/ventilatory support, glycemic control, renal replacement therapy for standard indications, and VTE prophylaxis when safe.",
+    "Assess and correct source substrates such as stones, obstruction, stents, nephrostomy tracts, urinary leak, infected hematoma/urinoma, bowel fistula, or destroyed nonfunctioning kidney to reduce relapse."
+  ]
+}
