@@ -1,0 +1,643 @@
+{
+  "disease": "D-RENAL-ABSCESS",
+  "disease_name": "Renal abscess",
+  "schema_version": "v5_distillation_mechanism_first",
+  "distillation_scope": {
+    "disease_name_input": "Renal abscess",
+    "leaf_granularity": "intrarenal renal parenchymal abscess as a distinct manifold; perinephric abscess, renal tumor/cyst, pyelonephritis without abscess, CAUTI, prostatitis, bacteremia/sepsis, and endocarditis remain neighboring manifolds or source contexts",
+    "not_subtype_restricted": true
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING",
+      "display_name": "Ascending upper urinary tract seeding",
+      "clinical_meaning": "Uropathogens ascend from bladder/ureter or acute pyelonephritis into renal cortex and medulla, especially with reflux, stones, obstruction, instrumentation, or persistent high bacterial burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.2, 0.95],
+      "plateau_duration_days": [1, 14],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING",
+      "display_name": "Hematogenous renal cortical seeding",
+      "clinical_meaning": "Bacteremia, including Staphylococcus aureus, Salmonella, Campylobacter, or septic embolic/endovascular sources, seeds renal cortical microvasculature and can produce cortical, bilateral, or multifocal abscesses even without pyuria.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_URINARY_STASIS_OBSTRUCTION",
+      "display_name": "Urinary stasis and obstruction",
+      "clinical_meaning": "Stone, collecting-system obstruction, reflux, cystic disease, retention, or instrumentation impairs urine flow and local clearance, sustaining infected renal parenchyma and increasing source-control dependence.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-30, 7],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN",
+      "display_name": "Renal parenchymal pathogen burden",
+      "clinical_meaning": "Active bacterial replication inside renal parenchyma and pus cavity; scales with fever, inflammatory markers, urine or blood cultures when communication exists, and response to active antimicrobial coverage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [1, 10],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_NEUTROPHILIC_SUPPURATION",
+      "display_name": "Renal neutrophilic suppuration",
+      "clinical_meaning": "Neutrophil-rich tissue destruction and liquefaction within cortex or corticomedullary parenchyma, driving flank pain, CVA tenderness, local renal edema, pyuria when collecting system communication is present, and rising inflammatory markers.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [2, 14],
+      "peak_value_range": [0.5, 1.0],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [5, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_ABSCESS_CAVITY_MATURATION",
+      "display_name": "Mature intrarenal abscess cavity",
+      "clinical_meaning": "Coalescence into a rim-enhancing, liquefied, septated, or unilocular renal pus cavity with reduced antibiotic penetration; large or persistent cavities often require drainage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 21],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_MULTIFOCAL_BILATERAL_DISSEMINATION",
+      "display_name": "Multifocal or bilateral renal dissemination",
+      "clinical_meaning": "Multiple renal abscesses or bilateral lesions, most often from hematogenous dissemination or severe host impairment, increasing diagnostic ambiguity and systemic-risk burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [1, 21],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [7, 60],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION",
+      "display_name": "Perinephric or psoas extension",
+      "clinical_meaning": "Intrarenal suppuration extends through the renal capsule into perinephric space or adjacent psoas/retroperitoneum, shifting the manifold toward deeper source-control dependence and prolonged pain/fever.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [5, 30],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE",
+      "display_name": "Systemic bacterial cytokine response",
+      "clinical_meaning": "IL-1/IL-6/TNF and acute-phase activation from renal infection, producing fever, chills, tachycardia, leukocytosis, CRP/ESR/procalcitonin elevation, malaise, nausea, and physiologic stress.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.4, 1.0],
+      "plateau_duration_days": [2, 21],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_BACTEREMIA_SEPSIS",
+      "display_name": "Bacteremia and sepsis propagation",
+      "clinical_meaning": "Renal abscess organisms enter bloodstream or persist as a bacteremic nidus, causing hypotension, AKI, septic shock, metastatic infection, and mortality hazard when uncontrolled.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_RA_SOURCE_CONTROL_FAILURE",
+      "display_name": "Renal abscess source-control failure",
+      "clinical_meaning": "Large, multiloculated, inaccessible, bilateral, perinephric, psoas-extending, or obstructed abscess cavities continue to generate pathogen burden despite active antibiotics until drainage or decompression succeeds.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 30],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING", "target_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "early", "clinical_rationale": "Ascending uropathogens seed renal parenchyma and initiate pathogen burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "target_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "early_or_context_dependent", "clinical_rationale": "Bacteremia can directly seed renal cortex without preceding cystitis or pyuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_URINARY_STASIS_OBSTRUCTION", "target_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Stasis impairs clearance and sustains bacterial replication.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "target_id": "M_RA_NEUTROPHILIC_SUPPURATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "early_to_peak", "clinical_rationale": "Pathogen replication recruits neutrophils and tissue destruction.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_NEUTROPHILIC_SUPPURATION", "target_id": "M_RA_ABSCESS_CAVITY_MATURATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [2, 14], "phase": "peak", "clinical_rationale": "Suppurative foci liquefy and coalesce into a drainable cavity.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "target_id": "M_RA_MULTIFOCAL_BILATERAL_DISSEMINATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "context_dependent", "clinical_rationale": "Bloodstream seeding can produce multiple or bilateral cortical lesions.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_ABSCESS_CAVITY_MATURATION", "target_id": "M_RA_SOURCE_CONTROL_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Mature pus cavities have limited antibiotic penetration and may persist until drained.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION", "target_id": "M_RA_SOURCE_CONTROL_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "complicated_course", "clinical_rationale": "Extension outside renal parenchyma increases drainage complexity.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "target_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Renal infection drives systemic inflammatory response.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "target_id": "M_RA_BACTEREMIA_SEPSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "severe_or_persistent", "clinical_rationale": "High bacterial burden can seed blood or sustain bacteremia.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "M_RA_BACTEREMIA_SEPSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "persistent_or_complicated", "clinical_rationale": "Undrained abscess continues to leak inflammatory and infectious burden.", "knowledge_confidence": "high"},
+
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever is a common manifestation of renal abscess.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Bacteremic or high-burden renal infection often causes chills or rigors.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever and cytokine response produce tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Acute bacterial suppuration produces leukocytosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Neutrophil-predominant response is typical.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "CRP rises with renal parenchymal suppuration.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "clinical_rationale": "ESR can be elevated, especially in subacute abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Procalcitonin may rise when bacterial burden or bacteremia is high.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_NEUTROPHILIC_SUPPURATION", "target_id": "flank_pain_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Renal capsular and parenchymal inflammation causes flank pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_NEUTROPHILIC_SUPPURATION", "target_id": "cva_tenderness_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Inflamed kidney produces costovertebral angle tenderness.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION", "target_id": "retroperitoneal_back_pain_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Retroperitoneal or psoas extension causes back/lumbar pain and psoas irritation.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SYSTEMIC_CYTOKINE_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Systemic infection and renal pain frequently cause nausea or vomiting.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING", "target_id": "dysuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Lower-tract involvement may cause dysuria, but absence does not exclude renal abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING", "target_id": "pyuria_score_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Ascending renal abscess often has pyuria when the urinary tract communicates with the infected focus.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "target_id": "pyuria_score_in_D-RENAL-ABSCESS", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "conditionality": "Compared with ascending urinary-source renal abscess, hematogenous cortical abscess can have little or no pyuria.", "clinical_rationale": "Hematogenous cortical abscess may not communicate with the collecting system early.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING", "target_id": "urine_culture_positivity_probability_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "clinical_rationale": "Urine cultures can be positive in ascending urinary-source abscess.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "target_id": "blood_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Hematogenous renal abscess often tracks with bacteremia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_NEUTROPHILIC_SUPPURATION", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Renal parenchymal inflammation, dehydration, sepsis, or obstruction can worsen kidney function.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_ABSCESS_CAVITY_MATURATION", "target_id": "renal_abscess_presence_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Mature abscess cavity is the imaging-defining feature.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_ABSCESS_CAVITY_MATURATION", "target_id": "rim_enhancing_renal_lesion_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Organized pus cavity often appears as rim-enhancing low-attenuation lesion on CT/MRI.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_ABSCESS_CAVITY_MATURATION", "target_id": "largest_renal_abscess_diameter_cm_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "clinical_rationale": "Cavity maturation increases measurable abscess diameter.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_ABSCESS_CAVITY_MATURATION", "target_id": "multiloculated_renal_abscess_pattern_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "clinical_rationale": "Septations and multiple locules reflect complex abscess maturation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_MULTIFOCAL_BILATERAL_DISSEMINATION", "target_id": "renal_abscess_count_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Dissemination increases number of collections.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_MULTIFOCAL_BILATERAL_DISSEMINATION", "target_id": "bilateral_renal_abscess_presence_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Bilateral renal abscesses suggest hematogenous or severe disseminated disease.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION", "target_id": "perinephric_extension_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Extension beyond renal capsule is represented on imaging.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION", "target_id": "psoas_extension_activity_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Psoas involvement is a recognized extension pathway.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_URINARY_STASIS_OBSTRUCTION", "target_id": "urinary_obstruction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Stone or obstructive urinary pathology may be visible as source-control context.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Persistent large or complex abscess creates need for drainage/decompression.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Before adequate drainage or decompression, source control remains low.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "antibiotic_nonresponse_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 7], "clinical_rationale": "Persistent fever or leukocytosis despite antibiotics is a classic clue to an abscess focus.", "knowledge_confidence": "high"},
+    {"source_id": "active_antibiotic_coverage_probability", "target_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect_on_target": "decrease", "edge_type": "treatment_context_to_mechanism", "lag_days_range": [1, 5], "conditionality": "The active-coverage axis is provided by culture/susceptibility or empiric local antibiogram context, not inferred from symptoms alone.", "clinical_rationale": "Active antimicrobial coverage reduces renal parenchymal pathogen burden when source control is not completely blocking effect.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_BACTEREMIA_SEPSIS", "target_id": "bacteremia_hazard_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Renal abscess can seed bloodstream.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_BACTEREMIA_SEPSIS", "target_id": "progression_to_septic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Uncontrolled bacteremia and cytokine response can progress to shock.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_BACTEREMIA_SEPSIS", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "clinical_rationale": "Sepsis physiology, dehydration, nephrotoxic exposure, obstruction, or renal involvement can precipitate AKI.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_PERINEPHRIC_PSOAS_EXTENSION", "target_id": "contiguous_extrarenal_extension_hazard_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Maturing abscess may extend outside the renal capsule.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "recurrent_abscess_hazard_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 60], "clinical_rationale": "Incomplete drainage, obstruction, or inactive coverage increases recurrence.", "knowledge_confidence": "medium"},
+    {"source_id": "M_RA_BACTEREMIA_SEPSIS", "target_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Death risk is mediated mainly by septic shock, AKI, host frailty, and uncontrolled source.", "knowledge_confidence": "high"},
+    {"source_id": "M_RA_SOURCE_CONTROL_FAILURE", "target_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 7], "clinical_rationale": "Uncontrolled abscess sustains infection and raises severe outcome risk.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "baseline_range": [36.0, 37.3], "peak_day_range": [0, 7], "peak_value_range": [38.0, 40.5], "plateau_duration_days": [1, 21], "decline_half_life_days": [0.5, 3], "axis_role": "measurement"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 5], "axis_role": "finding"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "baseline_range": [55, 100], "peak_day_range": [0, 7], "peak_value_range": [85, 140], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 4], "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [14, 32], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 4], "axis_role": "measurement"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [70, 130], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.2, 3], "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [45, 95], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.2, 3], "axis_role": "measurement"},
+    {"axis_id": "flank_pain_activity_in_D-RENAL-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 21], "axis_role": "finding"},
+    {"axis_id": "cva_tenderness_activity_in_D-RENAL-ABSCESS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 21], "axis_role": "finding"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "axis_role": "finding"},
+    {"axis_id": "dysuria_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 10], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "urinary_frequency_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [-7, 10], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "retroperitoneal_back_pain_activity_in_D-RENAL-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [2, 60], "decline_half_life_days": [3, 30], "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "baseline_range": [4.0, 10.0], "peak_day_range": [0, 7], "peak_value_range": [10.0, 28.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "axis_role": "measurement"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "baseline_range": [1.5, 7.5], "peak_day_range": [0, 7], "peak_value_range": [7.0, 24.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": false, "baseline_range": [0.5, 5.0], "peak_day_range": [0, 7], "peak_value_range": [40, 350], "plateau_duration_days": [2, 21], "decline_half_life_days": [2, 10], "axis_role": "measurement"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm/hr", "log_scale": false, "baseline_range": [0, 20], "peak_day_range": [1, 14], "peak_value_range": [30, 120], "plateau_duration_days": [7, 45], "decline_half_life_days": [7, 30], "axis_role": "measurement"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "baseline_range": [0.01, 0.1], "peak_day_range": [0, 5], "peak_value_range": [0.2, 40.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 3], "axis_role": "measurement"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.7, 4.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "axis_role": "measurement"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "baseline_range": [7, 20], "peak_day_range": [0, 14], "peak_value_range": [8, 80], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "axis_role": "measurement"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "baseline_range": [3.5, 5.0], "peak_day_range": [2, 21], "peak_value_range": [2.0, 4.0], "plateau_duration_days": [3, 45], "decline_half_life_days": [7, 45], "axis_role": "measurement"},
+    {"axis_id": "pyuria_score_in_D-RENAL-ABSCESS", "category": "lab_value", "unit": "WBC_per_HPF", "log_scale": false, "baseline_range": [0, 5], "peak_day_range": [0, 7], "peak_value_range": [0, 200], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "axis_role": "measurement"},
+    {"axis_id": "hematuria_activity", "category": "lab_value", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "urine_leukocyte_esterase_positivity_in_D-RENAL-ABSCESS", "category": "lab_value", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "axis_role": "finding"},
+    {"axis_id": "urine_nitrite_positivity_in_D-RENAL-ABSCESS", "category": "lab_value", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "axis_role": "finding"},
+    {"axis_id": "bacteriuria_activity_in_D-RENAL-ABSCESS", "category": "lab_value", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "axis_role": "finding"},
+    {"axis_id": "proteinuria_activity", "category": "lab_value", "unit": "severity_score_0_1", "log_scale": false, "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.5], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "axis_role": "finding"},
+    {"axis_id": "urine_culture_positivity_probability_in_D-RENAL-ABSCESS", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 10], "axis_role": "finding"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.65], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "gram_negative_bacteremia_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 10], "peak_value_range": [0.0, 0.55], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "axis_role": "finding"},
+    {"axis_id": "staphylococcus_aureus_bacteremia_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.6], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 14], "axis_role": "finding"},
+    {"axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.8, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "finding"},
+    {"axis_id": "rim_enhancing_renal_lesion_activity_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "largest_renal_abscess_diameter_cm_in_D-RENAL-ABSCESS", "category": "imaging_measurement", "unit": "cm", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [1.0, 10.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "measurement", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "multiloculated_renal_abscess_pattern_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "renal_abscess_count_in_D-RENAL-ABSCESS", "category": "imaging_measurement", "unit": "count", "log_scale": false, "baseline_range": [0, 0], "peak_day_range": [0, 30], "peak_value_range": [1, 8], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "measurement", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "bilateral_renal_abscess_presence_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "renal_abscess_liquefaction_activity_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "perinephric_extension_activity_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "renal_abscess_presence_in_D-RENAL-ABSCESS"},
+    {"axis_id": "psoas_extension_activity_in_D-RENAL-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.0], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 120], "decline_half_life_days": [14, 120], "axis_role": "satellite", "parent_axis_id": "perinephric_extension_activity_in_D-RENAL-ABSCESS"},
+    {"axis_id": "urinary_obstruction_activity", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 90], "axis_role": "finding"},
+    {"axis_id": "urinary_source_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.1], "peak_day_range": [-14, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "hematogenous_source_probability_in_D-RENAL-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "endovascular_septic_embolic_source_probability_in_D-RENAL-ABSCESS", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.02], "peak_day_range": [-60, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 120], "decline_half_life_days": [7, 60], "axis_role": "finding"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.7, 1.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 90], "axis_role": "finding"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.2, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "ceftriaxone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "piperacillin_tazobactam_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.8], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "carbapenem_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.9], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "fluoroquinolone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.7], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.7], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "mrsa_coverage_need_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "baseline_range": [0.0, 0.15], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.1], "peak_value_range": [0.0, 1.0], "axis_role": "finding"},
+    {"axis_id": "antibiotic_nonresponse_activity", "category": "clinical_course_context", "unit": "relative_activity_0_1", "log_scale": false, "baseline_range": [0.0, 0.05], "peak_day_range": [2, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "axis_role": "finding"},
+    {"axis_id": "bacteremia_hazard_in_D-RENAL-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.3], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 10], "axis_role": "measurement"},
+    {"axis_id": "progression_to_septic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.002, 0.2], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "axis_role": "measurement"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.0001, 0.002], "peak_day_range": [0, 14], "peak_value_range": [0.002, 0.2], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 14], "axis_role": "measurement"},
+    {"axis_id": "contiguous_extrarenal_extension_hazard_in_D-RENAL-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [3, 30], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [3, 45], "decline_half_life_days": [7, 60], "axis_role": "measurement"},
+    {"axis_id": "recurrent_abscess_hazard_in_D-RENAL-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0005], "peak_day_range": [14, 90], "peak_value_range": [0.0005, 0.03], "plateau_duration_days": [7, 90], "decline_half_life_days": [30, 180], "axis_role": "measurement"},
+    {"axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "baseline_range": [0.00001, 0.0001], "peak_day_range": [0, 30], "peak_value_range": [0.0005, 0.08], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "body_temperature", "relationship": "source_up_decreases_target", "coupling_type": "event_transition", "correlation_range": [-0.85, -0.45], "lag_days_range": [1, 3], "phase": "treatment_response", "clinical_rationale": "Adequate drainage plus active antibiotics usually produces defervescence within days.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "serum_crp", "relationship": "source_up_decreases_target", "coupling_type": "event_transition", "correlation_range": [-0.8, -0.4], "lag_days_range": [2, 7], "phase": "treatment_response", "clinical_rationale": "CRP falls after source control with a slower lag than fever.", "knowledge_confidence": "high"},
+    {"source_axis_id": "largest_renal_abscess_diameter_cm_in_D-RENAL-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.9], "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Larger abscesses are less likely to sterilize with antibiotics alone and more likely to require drainage.", "knowledge_confidence": "high"},
+    {"source_axis_id": "multiloculated_renal_abscess_pattern_in_D-RENAL-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Multiloculation makes complete drainage and antibiotic penetration harder.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "urinary_obstruction_activity", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Obstruction requires decompression in addition to antibiotics.", "knowledge_confidence": "high"},
+    {"source_axis_id": "perinephric_extension_activity_in_D-RENAL-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "lag_days_range": [0, 3], "phase": "complicated_course", "clinical_rationale": "Extrarenal extension usually increases drainage complexity and need.", "knowledge_confidence": "high"},
+    {"source_axis_id": "psoas_extension_activity_in_D-RENAL-ABSCESS", "target_axis_id": "retroperitoneal_back_pain_activity_in_D-RENAL-ABSCESS", "relationship": "positive_correlation", "coupling_type": "drift", "correlation_range": [0.45, 0.85], "lag_days_range": [0, 3], "phase": "complicated_course", "clinical_rationale": "Psoas extension produces lumbar/back pain and psoas irritation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.9], "lag_days_range": [0, 2], "phase": "severe_course", "clinical_rationale": "Shock is a dominant mediator of mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "relationship": "positive_correlation", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.75], "lag_days_range": [0, 5], "phase": "severe_course", "clinical_rationale": "AKI worsens severe infection prognosis and limits antimicrobial options.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "lag_days_range": [0, 1], "phase": "febrile_phase", "clinical_rationale": "Fever and tachycardia fluctuate together during systemic response.", "knowledge_confidence": "high"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.65], "lag_days_range": [0, 3], "phase": "inflammatory_phase", "clinical_rationale": "Both are driven by bacterial inflammatory burden but with different lags.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "Ceftriaxone or cefotaxime",
+      "drug_class": "third_generation_cephalosporin",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_core",
+      "empiric_or_definitive_role": "empiric_or_targeted_when_susceptible",
+      "required_context_axes": ["ceftriaxone_susceptibility_probability", "active_antibiotic_coverage_probability", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "ceftriaxone_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.3], "clinical_rationale": "Activity against susceptible Enterobacterales or Salmonella is required."},
+        {"axis_id": "mrsa_coverage_need_probability", "condition": "high", "effect": "weakens", "factor_range": [0.0, 0.5], "clinical_rationale": "Ceftriaxone does not cover MRSA and is not definitive for S. aureus renal abscess."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "contraindicates", "clinical_rationale": "Severe beta-lactam reaction precludes routine cephalosporin use."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "A large mature abscess may not sterilize with antibiotics alone."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.65], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]},
+        "M_RA_SYSTEMIC_CYTOKINE_RESPONSE": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.4, 0.8], "decline_half_life_days": [1, 5]},
+        "M_RA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "side_effects": [{"axis_id": "secondary_infection_hazard", "direction": "up", "magnitude_range": [1.0, 1.8], "interpretation": "Broad antibiotic exposure can select C. difficile or resistant organisms."}],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Piperacillin-tazobactam",
+      "drug_class": "antipseudomonal_beta_lactam_beta_lactamase_inhibitor",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_core",
+      "empiric_or_definitive_role": "empiric_or_targeted_broad_coverage",
+      "required_context_axes": ["piperacillin_tazobactam_susceptibility_probability", "active_antibiotic_coverage_probability", "urinary_obstruction_activity", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "piperacillin_tazobactam_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.3], "clinical_rationale": "Useful for susceptible Enterobacterales, Pseudomonas risk, enterococcal context, or polymicrobial urinary source."},
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high_esbl_context", "effect": "weaker_than_carbapenem", "factor_range": [0.3, 0.8], "clinical_rationale": "ESBL high-inoculum abscess or bacteremia may be less reliable with piperacillin-tazobactam."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.7, 1.0], "clinical_rationale": "Renal dose adjustment is required."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "Antibiotic effect is limited when a large pus cavity remains undrained."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [1, 7]},
+        "M_RA_SYSTEMIC_CYTOKINE_RESPONSE": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.35, 0.8], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 0.9], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "side_effects": [{"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 0.6], "interpretation": "AKI signal is more relevant with baseline renal impairment or vancomycin coexposure."}],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Carbapenem",
+      "drug_class": "carbapenem_beta_lactam",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_core",
+      "empiric_or_definitive_role": "resistant_gram_negative_or_severe_infection_context",
+      "required_context_axes": ["carbapenem_susceptibility_probability", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "carbapenem_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.3], "clinical_rationale": "Carbapenem activity is useful for ESBL/AmpC high-inoculum renal abscess or severe bacteremic disease."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.7, 1.0], "clinical_rationale": "Renal dosing and neurotoxicity monitoring are needed."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.55], "plateau_duration_factor": [0.2, 0.65], "decline_half_life_days": [1, 7]},
+        "M_RA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.2, 0.65], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [1, 5]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Anti-staphylococcal beta-lactam",
+      "drug_class": "mssa_active_beta_lactam",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_core",
+      "empiric_or_definitive_role": "targeted_for_mssa_context",
+      "required_context_axes": ["staphylococcus_aureus_bacteremia_probability", "active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "staphylococcus_aureus_bacteremia_probability", "condition": "high_with_mssa_susceptibility", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Cefazolin, nafcillin, or equivalent MSSA-active beta-lactam is biologically stronger than vancomycin for MSSA when usable."},
+        {"axis_id": "mrsa_coverage_need_probability", "condition": "high", "effect": "weakens", "factor_range": [0.0, 0.5], "clinical_rationale": "MSSA beta-lactams do not cover MRSA."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "contraindicates_or_requires_desensitization", "clinical_rationale": "Severe beta-lactam reaction changes feasibility."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING": {"peak_value_factor": [0.25, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 10]},
+        "M_RA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [2, 10]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Vancomycin or daptomycin",
+      "drug_class": "mrsa_active_gram_positive_agent",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_core",
+      "empiric_or_definitive_role": "mrsa_or_severe_staphylococcal_context",
+      "required_context_axes": ["mrsa_coverage_need_probability", "staphylococcus_aureus_bacteremia_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "mrsa_coverage_need_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.3], "clinical_rationale": "MRSA or severe staphylococcal renal abscess requires active gram-positive coverage."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1.0], "clinical_rationale": "Vancomycin requires renal adjustment and exposure monitoring; daptomycin also requires renal dosing."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 14]},
+        "M_RA_BACTEREMIA_SEPSIS": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [2, 14]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "side_effects": [{"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 0.8], "interpretation": "Vancomycin nephrotoxicity risk matters in renal infection and AKI."}],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Fluoroquinolone or trimethoprim-sulfamethoxazole oral step-down",
+      "drug_class": "high_oral_bioavailability_antibiotic",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antibiotic_stepdown",
+      "empiric_or_definitive_role": "definitive_stepdown_when_susceptible_and_clinically_improving",
+      "required_context_axes": ["fluoroquinolone_susceptibility_probability", "trimethoprim_sulfamethoxazole_susceptibility_probability", "active_antibiotic_coverage_probability", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "low", "effect": "weakens", "factor_range": [0.2, 0.7], "clinical_rationale": "Oral step-down is less reliable before clinical improvement and source control."},
+        {"axis_id": "fluoroquinolone_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.2], "clinical_rationale": "Fluoroquinolone step-down requires susceptibility and risk-benefit acceptability."},
+        {"axis_id": "trimethoprim_sulfamethoxazole_susceptibility_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.2], "clinical_rationale": "TMP-SMX step-down requires susceptibility and renal/electrolyte monitoring."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.7, 1.0], "clinical_rationale": "Both options may require renal adjustment or monitoring."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [2, 14]},
+        "recurrent_abscess_hazard_in_D-RENAL-ABSCESS": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [14, 90]}
+      },
+      "push_targets": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.2, 0.8], "unit": "probability_0_1"}],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [0.5, 2],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Image-guided renal abscess aspiration or catheter drainage",
+      "drug_class": "percutaneous_abscess_source_control",
+      "mode": "reshape_landscape",
+      "treatment_lane": "renal_abscess_source_control",
+      "empiric_or_definitive_role": "source_control_and_diagnostic_sampling",
+      "required_context_axes": ["renal_abscess_presence_in_D-RENAL-ABSCESS", "largest_renal_abscess_diameter_cm_in_D-RENAL-ABSCESS", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "largest_renal_abscess_diameter_cm_in_D-RENAL-ABSCESS", "condition": "large_or_persistent", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Larger abscesses benefit more from drainage and culture sampling."},
+        {"axis_id": "multiloculated_renal_abscess_pattern_in_D-RENAL-ABSCESS", "condition": "high", "effect": "may_require_catheter_or_repeat_drainage", "factor_range": [0.7, 1.4], "clinical_rationale": "Complex collections may not resolve with single aspiration."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Drainage directly addresses mature pus cavity source control."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [2, 14]},
+        "M_RA_ABSCESS_CAVITY_MATURATION": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [7, 45]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "relative_activity_0_1"},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0.1, 2],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [{"axis_id": "bleeding_hazard", "direction": "up", "magnitude_range": [0.0, 1.5], "interpretation": "Procedure-related bleeding or adjacent-organ injury risk depends on access route and coagulopathy."}],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Urinary decompression",
+      "drug_class": "urologic_source_control",
+      "mode": "push_state",
+      "treatment_lane": "urinary_drainage_source_control",
+      "empiric_or_definitive_role": "source_control_when_obstruction_or_infected_collecting_system_present",
+      "required_context_axes": ["urinary_obstruction_activity", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "urinary_obstruction_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Ureteral stent or nephrostomy can relieve obstructed infected drainage."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Benefit is larger when obstruction sustains infection."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_URINARY_STASIS_OBSTRUCTION": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [1, 14]},
+        "M_RA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [2, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"},
+        {"axis_id": "urinary_obstruction_activity", "direction": "down", "magnitude_range": [0.4, 1.0], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0.1, 1],
+      "carryover_after_stop_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Surgical drainage or nephrectomy",
+      "drug_class": "surgical_abscess_source_control",
+      "mode": "reshape_landscape",
+      "treatment_lane": "renal_abscess_source_control",
+      "empiric_or_definitive_role": "rescue_source_control",
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "perinephric_extension_activity_in_D-RENAL-ABSCESS"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "very_high_or_failed_percutaneous", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Surgery may be needed after failed percutaneous/endoscopic access, extensive destruction, rupture, or nonfunctioning kidney."},
+        {"axis_id": "perinephric_extension_activity_in_D-RENAL-ABSCESS", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.5], "clinical_rationale": "Complex retroperitoneal extension may require operative control."}
+      ],
+      "trajectory_modifications": {
+        "M_RA_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.0, 0.4], "plateau_duration_factor": [0.0, 0.4], "decline_half_life_days": [2, 21]},
+        "M_RA_PERINEPHRIC_PSOAS_EXTENSION": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [7, 60]}
+      },
+      "push_targets": [{"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "relative_activity_0_1"}],
+      "onset_delay_days": [0.1, 3],
+      "carryover_after_stop_days": [14, 180],
+      "side_effects": [{"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 1.5], "interpretation": "Nephron loss or perioperative renal injury can worsen kidney function."}],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "diabetes_mellitus",
+      "risk_type": "host_susceptibility_and_severity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.2, 3.0]},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.1, 2.5]},
+            {"axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 3.0]}
+          ],
+          "clinical_rationale": "Diabetes increases renal abscess risk and severe urinary-source infection risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "kidney_stone_history",
+      "risk_type": "urinary_stasis_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_RA_URINARY_STASIS_OBSTRUCTION", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "urinary_obstruction_activity", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Stones or prior stone disease can obstruct or harbor infection."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "urinary_obstruction_or_structural_abnormality",
+      "risk_type": "urinary_source_control_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_RA_URINARY_STASIS_OBSTRUCTION", "effect": "higher_peak", "magnitude_factor_range": [2.0, 6.0]},
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]},
+            {"axis_id": "recurrent_abscess_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "clinical_rationale": "Obstruction, reflux, cystic disease, or instrumentation can sustain abscess formation and recurrence."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "immunosuppression_or_primary_immunodeficiency",
+      "risk_type": "host_defense_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4.0]},
+            {"axis_id": "M_RA_MULTIFOCAL_BILATERAL_DISSEMINATION", "effect": "higher_peak", "magnitude_factor_range": [1.3, 5.0]},
+            {"axis_id": "body_temperature", "effect": "may_be_blunted", "magnitude_factor_range": [0.5, 1.2]},
+            {"axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.3, 5.0]}
+          ],
+          "clinical_rationale": "Impaired humoral/cellular immunity increases atypical organisms, dissemination, and severe course; fever may be muted."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "staphylococcus_aureus_bacteremia_or_endovascular_source",
+      "risk_type": "hematogenous_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_RA_HEMATOGENOUS_RENAL_CORTICAL_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0]},
+            {"axis_id": "hematogenous_source_probability_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0]},
+            {"axis_id": "urine_culture_positivity_probability_in_D-RENAL-ABSCESS", "effect": "may_be_lower", "magnitude_factor_range": [0.2, 1.0]},
+            {"axis_id": "bacteremia_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0]}
+          ],
+          "clinical_rationale": "S. aureus renal abscess commonly raises concern for hematogenous seeding or endovascular infection."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_urinary_instrumentation_or_catheter",
+      "risk_type": "iatrogenic_urinary_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_source_probability", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4.0]},
+            {"axis_id": "M_RA_ASCENDING_UPPER_URINARY_TRACT_SEEDING", "effect": "higher_peak", "magnitude_factor_range": [1.3, 4.0]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "lower_if_empiric", "magnitude_factor_range": [0.3, 0.9]}
+          ],
+          "clinical_rationale": "Instrumentation increases ascending infection and resistant uropathogen probability."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "large_multiloculated_or_bilateral_abscess",
+      "risk_type": "source_control_dependency",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "source_control_need", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0]},
+            {"axis_id": "source_control_adequacy", "effect": "lower_until_controlled", "magnitude_factor_range": [0.0, 0.7]},
+            {"axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Large, complex, or bilateral collections are less likely to respond to antibiotics alone."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_or_inactive_antibiotic_coverage",
+      "risk_type": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "lower_peak", "magnitude_factor_range": [0.0, 0.6]},
+            {"axis_id": "M_RA_RENAL_PARENCHYMAL_PATHOGEN_BURDEN", "effect": "higher_or_more_persistent_peak", "magnitude_factor_range": [1.2, 5.0]},
+            {"axis_id": "progression_to_septic_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Inactive or delayed antimicrobial coverage sustains abscess burden and severe course."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_age_or_chronic_kidney_disease",
+      "risk_type": "host_reserve_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "effect": "higher_background_or_peak", "magnitude_factor_range": [1.1, 3.0]},
+            {"axis_id": "acute_kidney_injury_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]},
+            {"axis_id": "mortality_hazard_in_D-RENAL-ABSCESS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Lower renal and physiologic reserve worsens severe infection tolerance and dosing constraints."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Obtain blood cultures, urine culture, and abscess aspirate culture when feasible before narrowing antibiotics; culture and susceptibility are context axes rather than diagnosis labels.",
+    "Use contrast CT, MRI, or ultrasound to define intrarenal abscess size, liquefaction, multiloculation, bilateral disease, obstruction, perinephric extension, and drainability.",
+    "Coordinate urology, interventional radiology, infectious diseases, and surgery early when abscess is large, persistent, obstructed, bilateral, inaccessible, or extends to perinephric/psoas space.",
+    "Provide sepsis-supportive care when hypotension, lactate elevation, AKI, or organ dysfunction is present: fluids, vasopressors when needed, source control, and close monitoring.",
+    "Renal-dose adjust beta-lactams, fluoroquinolones, TMP-SMX, aminoglycosides, vancomycin, and daptomycin; monitor creatinine, electrolytes, and drug levels when relevant.",
+    "Repeat imaging is useful when fever or leukocytosis persists after 48-72 hours of active therapy, after drainage, or before stopping therapy in complex collections.",
+    "Analgesia, antiemetics, hydration, drain care, and follow-up imaging support recovery but do not replace antimicrobial activity or source control."
+  ]
+}

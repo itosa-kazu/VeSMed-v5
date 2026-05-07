@@ -877,3 +877,27 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `367/369 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: Renal Abscess / TOA / Epididymo-Orchitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-RENAL-ABSCESS`: renal abscess.
+  - `D-TUBO-OVARIAN-ABSCESS`: tubo-ovarian abscess.
+  - `D-EPIDIDYMO-ORCHITIS`: epididymo-orchitis.
+- Real PMC/PubMed cases:
+  - `D-RENAL-ABSCESS`: `PMC10822679` / PMID `38283446`, `PMC10704059` / PMID `38077678`, `PMC8170294` / PMID `34104703`.
+  - `D-TUBO-OVARIAN-ABSCESS`: `PMC12399346` / PMID `40901240`, `PMC3533887` / PMID `23031581`, `PMC11283372` / PMID `39070315`.
+  - `D-EPIDIDYMO-ORCHITIS`: `PMC7160564` / PMID `32322510`, `PMC9837258` / PMID `36643286`, `PMC7402548` / PMID `32775073`.
+- Ontology note: three older PID case files using the same TOA PMCs were removed and replaced by the `D-TUBO-OVARIAN-ABSCESS` leaf versions. This is not a ranking patch: once TOA is an independent first-layer leaf, PID complicated by a formed tubo-ovarian abscess should resolve to the more specific TOA manifold when abscess evidence is present.
+- Renal abscess source rule: keep first-layer renal abscess separate from pyelonephritis, perinephric abscess, renal cyst/tumor, bacteremia/endocarditis, and urosepsis. Flank/CVA findings, renal rim-enhancing lesion, abscess size/count/liquefaction, pyuria/culture context, obstruction, and source-control need can be rankable when present; culture species, aspirate result, procedure success, and post-drainage response stay confirmatory/non-ranking unless testing post-workup mode.
+- TOA source rule: keep first-layer TOA separate from PID without abscess, postpartum endometritis, septic abortion, appendicitis, diverticulitis, ovarian torsion/tumor, ectopic pregnancy, and generic sepsis. Complex adnexal mass, abscess size, pelvic tenderness, peritonitis/rupture, and source-control need can be rankable; operative/pathology confirmation, culture species, and treatment response stay confirmatory/non-ranking unless testing post-workup mode.
+- Epididymo-orchitis source rule: keep first-layer epididymo-orchitis separate from testicular torsion, Fournier gangrene, acute prostatitis, CAUTI/UTI, testicular tumor, hernia, and STI organism-level labels. Scrotal pain/swelling/tenderness, epididymal/testicular Doppler findings, pyuria/urine context, STI/instrumentation context, abscess/ischemia hazards, and source-control need can be rankable when presentation evidence exists; culture species, operative pathology, and treatment response stay confirmatory/non-ranking.
+- Axis ontology repair from this batch: composite or phantom references were normalized before regression: `retroperitoneal_back_pain_activity_in_D-RENAL-ABSCESS`, `contiguous_extrarenal_extension_hazard_in_D-RENAL-ABSCESS`, `procedural_bleeding_risk_context_activity`, `atypical_granulomatous_pathogen_context_probability`, and `severe_beta_lactam_reaction_history_activity`.
+- Horizontal fairness notes: renal/perinephric abscess, pyelonephritis, CAUTI, prostatitis, endocarditis, and S. aureus bacteremia share GU-source and hematogenous-seeding evidence; TOA/PID/postpartum/septic-abortion leaves share pelvic inflammatory axes but must avoid double-counting PID and formed abscess as the same fact; epididymo-orchitis shares urinary/STI/instrumentation axes with prostatitis/CAUTI/PID and future torsion/Fournier/tumor mimics.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-POSTPARTUM-ENDOMETRITIS`.
+- Focused new-batch grid (`RENAL_ABSCESS,TUBO_OVARIAN_ABSCESS,EPIDIDYMO_ORCHITIS`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas grid after this batch:
+  - 378 unique case JSON files loaded.
+  - Single-manifold validation `373/375 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

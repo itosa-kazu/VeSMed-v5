@@ -1,0 +1,617 @@
+{
+  "disease": "D-EPIDIDYMO-ORCHITIS",
+  "disease_id": "D-EPIDIDYMO-ORCHITIS",
+  "disease_name": "Epididymo-orchitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Epididymo-orchitis",
+    "leaf_granularity": "First-layer clinical disease leaf for inflammation and infection involving the epididymis with ipsilateral or bilateral testicular involvement. STI-associated, enteric urinary-source, post-instrumentation, congenital-anomaly, viral, granulomatous, abscess-forming, ischemic, neonatal, older-adult, and septic contexts remain axes, modifiers, event hazards, treatment contexts, or future subtype layers rather than disease-name qualifiers.",
+    "boundary_policy": "This leaf models epididymal and testicular inflammatory infection physiology. Testicular torsion, torsion of appendix testis, acute prostatitis, CAUTI/UTI, pyelonephritis, inguinal hernia, testicular tumor, Fournier gangrene, PID/partner STI context, and sepsis remain near-neighbor manifolds or superposition candidates. Culture species, susceptibility, final paper diagnosis, operative pathology, and treatment response are confirmatory or treatment-context evidence unless a post-workup mode intentionally consumes them.",
+    "ranking_note": "Presentation-only ranking may consume acute scrotal/testicular pain, scrotal swelling, erythema, tenderness, epididymal/testicular enlargement, urinary or urethral symptoms, sexual or instrumentation context, fever/vitals, inflammatory labs, urinalysis, and initial scrotal Doppler/imaging. Final microbiology, susceptibility, abscess culture, orchiectomy pathology, treatment response, and follow-up outcome should be preserved but non-ranking in presentation tests."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY",
+      "display_name": "Urogenital ascent, reflux, instrumentation, STI, or hematogenous entry",
+      "clinical_meaning": "Organisms or inflammatory triggers reach the epididymis and testis through urethral ascent, urinary reflux through ejaculatory ducts, bladder outlet obstruction, catheterization or instrumentation, sexual exposure, congenital urinary tract anomaly, or less commonly hematogenous spread.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-14, 1],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [0.5, 60],
+      "decline_half_life_days": [1, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN",
+      "display_name": "Epididymal pathogen burden",
+      "clinical_meaning": "Replicating bacteria, atypical organisms, or viral inflammatory burden in the epididymis drives pyuria, culture positivity, epididymal enlargement, tenderness, and progression into the testis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION",
+      "display_name": "Epididymal and orchitic inflammation",
+      "clinical_meaning": "Neutrophilic or granulomatous inflammation causes epididymal and testicular edema, hyperemia, pain, swelling, induration, reactive hydrocele, and tenderness along the spermatic cord.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [2, 45],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE",
+      "display_name": "Scrotal compartment edema, exudate, and reactive hydrocele",
+      "clinical_meaning": "Inflammation around the epididymis, tunica vaginalis, scrotal wall, and spermatic cord produces swelling, erythema, complex hydrocele, pyocele, and pressure symptoms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 10],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [2, 45],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic inflammatory response",
+      "clinical_meaning": "Local urogenital infection can drive fever, chills, tachycardia, leukocytosis, neutrophilia, CRP rise, nausea, vomiting, and sepsis physiology when severe or bacteremic.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [0.5, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION",
+      "display_name": "Abscess, pyocele, and necrosis formation",
+      "clinical_meaning": "Persistent pathogen burden, delayed or inactive treatment, obstruction, diabetes, immunosuppression, urinary anomaly, or virulent organisms can organize into epididymal, testicular, scrotal wall, pyocele, or seminal vesicle abscess with tissue necrosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [3, 21],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK",
+      "display_name": "Venous congestion, ischemia, infarction, or secondary torsion risk",
+      "clinical_meaning": "Severe swelling, pyocele, pampiniform plexus thrombosis, vascular compression, or rarely secondary torsion can impair perfusion and cause testicular ischemia, infarction, necrosis, or loss.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.003],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0.2, 30],
+      "decline_half_life_days": [1, 60],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS",
+      "display_name": "Source-control failure, urinary stasis, or anatomic substrate",
+      "clinical_meaning": "Undrained abscess, retained infected urine, intermittent catheterization failure, obstruction, reflux, ureterocele, hydro-ureteronephrosis, or persistent sexual/urinary source sustains epididymo-orchitis despite antimicrobial exposure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-30, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 3650],
+      "decline_half_life_days": [1, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION",
+      "display_name": "Active antimicrobial coverage and local resolution",
+      "clinical_meaning": "Coverage matched to STI, enteric urinary, resistant healthcare, pseudomonal, mycobacterial, or viral/nonbacterial context plus drainage when needed reshapes pathogen burden and allows inflammatory edema and perfusion risk to resolve.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.4],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 180],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "recent_unprotected_sexual_exposure_probability", "target_id": "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY", "effect_on_target": "increase", "edge_type": "risk_context", "lag_days_range": [-30, 1], "clinical_rationale": "Recent sexual exposure can introduce gonococcal, chlamydial, or other urethral pathogens that ascend to the epididymis.", "knowledge_confidence": "high"},
+    {"source_id": "recent_genitourinary_instrumentation_context_probability", "target_id": "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY", "effect_on_target": "increase", "edge_type": "risk_context", "lag_days_range": [-30, 1], "clinical_rationale": "Catheterization, instrumentation, and urinary tract manipulation can inoculate or reflux uropathogens.", "knowledge_confidence": "high"},
+    {"source_id": "urinary_retention_activity", "target_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "effect_on_target": "increase", "edge_type": "axis_to_mechanism", "lag_days_range": [-365, 2], "clinical_rationale": "Retention and incomplete drainage sustain urinary-source burden.", "knowledge_confidence": "high"},
+    {"source_id": "urinary_anatomic_malformation_context_probability", "target_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "effect_on_target": "increase", "edge_type": "risk_context", "lag_days_range": [-3650, 7], "clinical_rationale": "Congenital reflux, ureterocele, duplication, or hydronephrosis can create a recurrent urinary-source substrate.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY", "target_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Entry into the urogenital tract precedes epididymal microbial burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "target_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "clinical_rationale": "Persistent stasis or source-control failure sustains pathogen burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Pathogen burden elicits epididymal and testicular inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "clinical_rationale": "Local inflammatory edema and exudate spread to the tunica vaginalis and scrotal wall.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "clinical_rationale": "Bacterial or severe inflammatory burden can drive systemic cytokine response.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [2, 14], "clinical_rationale": "Persistent infection can organize into abscess or pyocele.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "target_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 21], "clinical_rationale": "Undrained or anatomically sustained infection raises abscess risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "target_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 10], "clinical_rationale": "Severe edema or pyocele can compress venous outflow and reduce perfusion.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 10], "clinical_rationale": "Abscess and necrotizing inflammation can compromise testicular blood flow.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION", "target_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [0, 3], "clinical_rationale": "Active antimicrobial coverage reduces pathogen burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION", "target_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [1, 7], "clinical_rationale": "Inflammation resolves after pathogen burden falls.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION", "target_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "effect_on_target": "decrease", "edge_type": "treatment_response_gate", "lag_days_range": [0, 14], "clinical_rationale": "Drainage, urinary decompression, and source management reduce persistent source activity.", "knowledge_confidence": "high"},
+
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "testicular_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Inflamed epididymis and testis produce scrotal or testicular pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "scrotal_swelling_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Inflammatory edema produces scrotal swelling.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "target_id": "scrotal_erythema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Scrotal wall inflammation can produce erythema.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "target_id": "scrotal_induration_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "clinical_rationale": "Edema, phlegmon, or abscess can make the scrotum indurated.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "epididymal_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Epididymal tenderness is a direct local sign.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "epididymal_enlargement_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Epididymal inflammation enlarges the epididymis clinically and on ultrasound.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "testicular_enlargement_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "clinical_rationale": "Orchitis produces testicular enlargement and heterogeneous echotexture.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "spermatic_cord_tenderness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Inflammation can extend along the vas and spermatic cord.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "prehn_sign_relief_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Pain relief with elevation can occur in epididymo-orchitis but is imperfect and should not override torsion signs.", "knowledge_confidence": "low"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "cremasteric_reflex_preserved_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "The cremasteric reflex is often preserved in epididymo-orchitis, but absence should trigger torsion concern.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "high_riding_testis_activity", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 2], "clinical_rationale": "High-riding or transverse lie is not typical uncomplicated epididymo-orchitis and indicates torsion/ischemia context when present.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "scrotal_doppler_epididymal_hyperemia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Color Doppler often shows epididymal hyperemia.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "scrotal_doppler_testicular_hyperemia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "Orchitic involvement often increases testicular blood flow early.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_ORCHITIC_INFLAMMATION", "target_id": "testicular_doppler_flow_preservation_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Preserved arterial and venous flow supports non-torsion inflammatory acute scrotum, but late abscess/ischemia can override this.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "decreased_testicular_perfusion_activity", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 3], "clinical_rationale": "Vascular compromise or torsion lowers perfusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "target_id": "reactive_hydrocele_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "clinical_rationale": "Tunica vaginalis inflammation commonly creates reactive hydrocele.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE", "target_id": "complex_hydrocele_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "clinical_rationale": "Proteinaceous, septated, or infected fluid suggests complicated exudate or pyocele.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "testicular_abscess_presence_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [2, 21], "clinical_rationale": "Suppuration can form a testicular abscess.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "scrotal_wall_abscess_activity_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [3, 21], "clinical_rationale": "Infection may extend to scrotal wall abscess or draining sinus.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "seminal_vesicle_abscess_activity_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [3, 30], "clinical_rationale": "Deep genital tract extension can involve seminal vesicles in severe cases.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "pampiniform_plexus_thrombosis_activity_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 10], "clinical_rationale": "Severe local inflammation can rarely associate with pampiniform plexus thrombosis.", "knowledge_confidence": "low"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "testicular_ischemia_necrosis_activity_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 14], "clinical_rationale": "Perfusion compromise can culminate in ischemic necrosis.", "knowledge_confidence": "high"},
+
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "dysuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Urethral, bladder, or prostatic source commonly causes dysuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "urinary_frequency_urgency_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Lower urinary tract involvement can cause frequency and urgency.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY", "target_id": "urethral_discharge_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [-7, 3], "clinical_rationale": "STI-associated epididymo-orchitis can have urethritis and discharge, though discharge can be absent.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "pyuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Urinary-source and STI-associated disease often produces pyuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "urine_wbc_per_hpf", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Urine microscopy may show WBCs.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "urine_leukocyte_esterase_positivity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Leukocyte esterase tracks urinary leukocytes.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "urine_nitrite_positivity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Nitrite positivity supports Enterobacterales urinary-source context but can be negative in many true cases.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "bacteriuria_activity", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Urinary-source epididymo-orchitis can show bacteria on urinalysis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "urine_culture_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Urine culture positivity reflects urinary-source burden; species identity remains confirmatory in presentation-only ranking.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "target_id": "mucosal_gonorrhea_naat_positivity_probability", "effect_on_target": "increase", "edge_type": "observation_gate", "lag_days_range": [0, 1], "clinical_rationale": "Positive gonorrhea NAAT updates treatment context when STI-source disease is present.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Fever may accompany severe or systemic epididymo-orchitis.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Reported fever can precede measured presentation temperature.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Chills scale with systemic bacterial inflammation or bacteremia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "clinical_rationale": "Fever, pain, inflammation, and dehydration raise heart rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Bacterial epididymo-orchitis commonly causes leukocytosis when systemic.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "neutrophil_fraction", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Neutrophil predominance is typical for bacterial inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "clinical_rationale": "CRP rises with local and systemic inflammatory burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Severe pain, fever, or sepsis physiology can cause nausea or vomiting.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "clinical_rationale": "Severe urogenital infection can progress to hypotension and sepsis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "progression_to_septic_shock_hazard", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Systemic infection raises septic shock hazard.", "knowledge_confidence": "medium"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "clinical_rationale": "Abscess, pyocele, or necrosis increases need for drainage or exploration.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "hazard_drift", "lag_days_range": [0, 3], "clinical_rationale": "Before drainage or decompression, source control is inadequate.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "target_id": "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 7], "clinical_rationale": "Suppurative activity increases testicular abscess hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 5], "clinical_rationale": "Perfusion compromise increases necrosis hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "target_id": "testicular_torsion_hazard", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 5], "clinical_rationale": "Secondary torsion is rare but clinically important when acute pain abruptly worsens or torsion signs appear.", "knowledge_confidence": "low"},
+    {"source_id": "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Mortality risk is usually low but rises with sepsis, frailty, immunosuppression, and shock.", "knowledge_confidence": "medium"},
+    {"source_id": "progression_to_septic_shock_hazard", "target_id": "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "hazard_drift", "lag_days_range": [0, 2], "clinical_rationale": "Shock is the main short-term mortality path.", "knowledge_confidence": "high"},
+    {"source_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "target_id": "fertility_impairment_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [0, 30], "clinical_rationale": "Necrosis or testicular loss can impair fertility, especially with bilateral disease or preexisting infertility.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "testicular_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Acute unilateral or bilateral testicular/scrotal pain attributable to epididymal or testicular inflammation.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "scrotal_swelling_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Visible or palpable scrotal swelling.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "scrotal_erythema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Scrotal erythema or warmth from local inflammation.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "scrotal_induration_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Induration, phlegmon, or firm scrotal inflammatory swelling.", "baseline_range": [0.0, 0.01], "peak_day_range": [1, 10], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [2, 45], "decline_half_life_days": [3, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "epididymal_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "testicular_pain_activity", "shape_free_text": "Focal tenderness of the epididymis on palpation.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "epididymal_enlargement_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Palpable or ultrasound epididymal enlargement or thickening.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "testicular_enlargement_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Enlarged testis from orchitis, edema, or abscess.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [2, 45], "decline_half_life_days": [3, 45], "knowledge_confidence": "high"},
+    {"axis_id": "spermatic_cord_tenderness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "testicular_pain_activity", "shape_free_text": "Tender or indurated spermatic cord accompanying epididymo-orchitis.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "prehn_sign_relief_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "testicular_pain_activity", "shape_free_text": "Pain relief with scrotal elevation when documented.", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "low"},
+    {"axis_id": "cremasteric_reflex_preserved_activity", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "testicular_pain_activity", "shape_free_text": "Preserved cremasteric reflex in acute scrotum evaluation.", "baseline_range": [0.5, 1.0], "peak_day_range": [0, 1], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "high_riding_testis_activity", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "High-riding or transverse testicular lie; a torsion-context warning rather than typical uncomplicated epididymo-orchitis.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 1], "peak_value_range": [0.0, 0.2], "plateau_duration_days": [0.1, 2], "decline_half_life_days": [0.2, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "dysuria_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Painful urination or urethral irritation.", "baseline_range": [0.0, 0.08], "peak_day_range": [-3, 3], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "urinary_frequency_urgency_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Frequency, urgency, or lower urinary tract irritative symptoms.", "baseline_range": [0.0, 0.08], "peak_day_range": [-3, 3], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urethral_discharge_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Urethral discharge or urethritis finding accompanying STI-source epididymo-orchitis.", "baseline_range": [0.0, 0.03], "peak_day_range": [-7, 3], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "pyuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pyuria on urinalysis.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "urine_wbc_per_hpf", "category": "urinalysis", "unit": "WBC_per_HPF", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "pyuria_activity", "shape_free_text": "Microscopic urine white blood cells per high power field.", "baseline_range": [0.0, 5.0], "peak_day_range": [0, 2], "peak_value_range": [5.0, 100.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "urine_leukocyte_esterase_positivity", "category": "urinalysis", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "pyuria_activity", "shape_free_text": "Leukocyte esterase positivity on dipstick.", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 2], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_nitrite_positivity", "category": "urinalysis", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Urine nitrite positivity, especially for nitrate-reducing enteric gram-negative organisms.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "bacteriuria_activity", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Bacteria seen on urine microscopy or urinalysis in urinary-source epididymo-orchitis.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "urine_culture_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that urine culture is positive during the episode; species remains confirmatory/treatment context.", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "mucosal_gonorrhea_naat_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Gonorrhea NAAT positivity probability in urethral or urine testing context.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "recent_unprotected_sexual_exposure_probability", "category": "exposure_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent unprotected or new/multiple partner exposure relevant to STI-source disease.", "baseline_range": [0.0, 0.2], "peak_day_range": [-90, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "sti_pathogen_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that gonorrhea, chlamydia, Mycoplasma genitalium, or other STI pathogens are the active cause.", "baseline_range": [0.0, 0.2], "peak_day_range": [-30, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "recent_genitourinary_instrumentation_context_probability", "category": "exposure_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent catheterization, cystoscopy, urinary instrumentation, self-catheterization, or GU procedure context.", "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "urinary_anatomic_malformation_context_probability", "category": "risk_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Congenital or structural urinary tract anomaly such as reflux, ureterocele, duplication, hydronephrosis, or obstructive urinary tract malformation.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "urinary_retention_activity", "category": "source_control", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Urinary retention or self-catheterization dependence relevant to urinary-source disease.", "baseline_range": [0.0, 0.05], "peak_day_range": [-365, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [1, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "scrotal_doppler_epididymal_hyperemia_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "epididymal_enlargement_activity", "shape_free_text": "Increased epididymal vascularity on color Doppler ultrasound.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "scrotal_doppler_testicular_hyperemia_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "testicular_enlargement_activity", "shape_free_text": "Increased testicular vascularity on color Doppler ultrasound.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "testicular_doppler_flow_preservation_activity", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "testicular_pain_activity", "shape_free_text": "Preserved arterial and venous testicular Doppler flow at presentation.", "baseline_range": [0.5, 1.0], "peak_day_range": [0, 1], "peak_value_range": [0.6, 1.0], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "decreased_testicular_perfusion_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reduced or absent testicular Doppler perfusion in ischemia, infarction, or torsion context.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "reactive_hydrocele_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "scrotal_swelling_activity", "shape_free_text": "Reactive hydrocele or scrotal fluid around an inflamed testis/epididymis.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [2, 45], "decline_half_life_days": [3, 45], "knowledge_confidence": "high"},
+    {"axis_id": "complex_hydrocele_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "reactive_hydrocele_activity", "shape_free_text": "Complex, septated, infected, or pyocele-like hydrocele.", "baseline_range": [0.0, 0.005], "peak_day_range": [1, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [2, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "testicular_abscess_presence_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Drainable intratesticular abscess or suppurative collection caused by epididymo-orchitis.", "baseline_range": [0.0, 0.002], "peak_day_range": [3, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "largest_testicular_abscess_diameter_cm_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_measurement", "unit": "cm", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "testicular_abscess_presence_in_D-EPIDIDYMO-ORCHITIS", "shape_free_text": "Largest measured intratesticular abscess diameter.", "baseline_range": [0.0, 0.1], "peak_day_range": [3, 21], "peak_value_range": [0.5, 6.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "seminal_vesicle_abscess_activity_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Seminal vesicle abscess or deep genital tract suppuration accompanying epididymo-orchitis.", "baseline_range": [0.0, 0.002], "peak_day_range": [3, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "scrotal_wall_abscess_activity_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Scrotal wall abscess, draining sinus, or phlegmon related to complicated epididymo-orchitis.", "baseline_range": [0.0, 0.001], "peak_day_range": [3, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "pampiniform_plexus_thrombosis_activity_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pampiniform plexus thrombosis detected by Doppler ultrasound during epididymo-orchitis.", "baseline_range": [0.0, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 90], "knowledge_confidence": "low"},
+    {"axis_id": "testicular_ischemia_necrosis_activity_in_D-EPIDIDYMO-ORCHITIS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging or operative evidence of testicular ischemia, infarction, necrosis, or nonviability from severe epididymo-orchitis.", "baseline_range": [0.0, 0.001], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 90], "decline_half_life_days": [14, 365], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature during the acute episode.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 5], "peak_value_range": [36.8, 41.5], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reported fever during the episode.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors accompanying systemic inflammatory response.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 5], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured heart rate.", "baseline_range": [60, 100], "peak_day_range": [0, 5], "peak_value_range": [80, 140], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured systolic blood pressure.", "baseline_range": [100, 140], "peak_day_range": [0, 5], "peak_value_range": [75, 140], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure during severe infection or shock context.", "baseline_range": [70, 100], "peak_day_range": [0, 5], "peak_value_range": [50, 95], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.2, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Peripheral white blood cell count.", "baseline_range": [4.0, 11.0], "peak_day_range": [0, 5], "peak_value_range": [8.0, 30.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Peripheral neutrophil percentage.", "baseline_range": [35, 80], "peak_day_range": [0, 5], "peak_value_range": [65, 95], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein concentration.", "baseline_range": [0.0, 5.0], "peak_day_range": [1, 7], "peak_value_range": [20.0, 960.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Nausea, vomiting, anorexia, or systemic illness symptoms.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that current antimicrobial regimen covers the true epididymo-orchitis pathogen context.", "baseline_range": [0.0, 0.6], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 42], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "high"},
+    {"axis_id": "fluoroquinolone_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that a urinary-source pathogen is susceptible to fluoroquinolone exposure.", "baseline_range": [0.2, 0.8], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 42], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "atypical_granulomatous_pathogen_context_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that TB, BCG-related granulomatous disease, or another atypical granulomatous pathogen context is active.", "baseline_range": [0.0, 0.03], "peak_day_range": [-365, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of severe immediate or severe delayed beta-lactam reaction affecting antibiotic selection.", "baseline_range": [0.0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need to adjust renally cleared antimicrobials or avoid nephrotoxic exposure.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [3, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for drainage, exploration, urinary decompression, or correction of persistent source.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [1, 90], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of drainage, exploration, urinary decompression, or source management.", "baseline_range": [0.0, 0.7], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "progression_to_septic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard of progression to septic shock from epididymo-orchitis or urinary-source infection.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 7], "peak_value_range": [0.0001, 0.12], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard of testicular or epididymal abscess formation.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [3, 21], "peak_value_range": [0.0005, 0.08], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard of ischemia, infarction, necrosis, or nonviable testis from severe epididymo-orchitis or secondary torsion.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 21], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [1, 60], "knowledge_confidence": "high"},
+    {"axis_id": "testicular_torsion_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard that acute scrotum has or develops torsion physiology requiring urgent surgical exclusion.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 2], "peak_value_range": [0.00001, 0.05], "plateau_duration_days": [0.1, 2], "decline_half_life_days": [0.1, 2], "knowledge_confidence": "low"},
+    {"axis_id": "fertility_impairment_hazard_in_D-EPIDIDYMO-ORCHITIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Hazard of fertility impairment from bilateral disease, abscess, testicular loss, ductal obstruction, or preexisting subfertility.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [7, 90], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [30, 3650], "decline_half_life_days": [90, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "shape_free_text": "Disease-context mortality hazard; usually low but increased by septic shock, frailty, immunosuppression, necrotizing extension, or uncontrolled source.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.00001, 0.05], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "testicular_pain_activity", "target_axis_id": "scrotal_swelling_activity", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "phase": "presentation", "clinical_rationale": "Pain and swelling share local inflammatory drive but either can lag.", "knowledge_confidence": "high"},
+    {"source_axis_id": "epididymal_tenderness_activity", "target_axis_id": "epididymal_enlargement_activity", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.4, 0.8], "phase": "presentation", "clinical_rationale": "Tenderness and enlargement are linked local epididymal signs.", "knowledge_confidence": "high"},
+    {"source_axis_id": "scrotal_doppler_epididymal_hyperemia_activity", "target_axis_id": "epididymal_enlargement_activity", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.8], "phase": "imaging", "clinical_rationale": "Ultrasound hyperemia often accompanies enlarged inflamed epididymis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "scrotal_doppler_testicular_hyperemia_activity", "target_axis_id": "testicular_enlargement_activity", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "phase": "imaging", "clinical_rationale": "Orchitis links testicular hyperemia and enlargement.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pyuria_activity", "target_axis_id": "urine_wbc_per_hpf", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.5, 0.9], "phase": "urinalysis", "clinical_rationale": "Qualitative pyuria and WBC/HPF measure the same urinary inflammatory fact at different granularity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "body_temperature", "target_axis_id": "heart_rate", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "phase": "systemic", "clinical_rationale": "Fever and tachycardia share systemic inflammatory drive.", "knowledge_confidence": "high"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "neutrophil_fraction", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.45, 0.85], "phase": "systemic", "clinical_rationale": "Leukocytosis is often neutrophil predominant in bacterial disease.", "knowledge_confidence": "high"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "serum_crp", "relationship": "positive_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.65], "phase": "systemic", "clinical_rationale": "Inflammatory labs share disease drive but CRP can lag WBC.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "reactive_hydrocele_activity", "target_axis_id": "complex_hydrocele_activity", "relationship": "source_up_can_increase_target", "coupling_type": "event_transition", "strength_range": [0.2, 0.7], "lag_days_range": [1, 10], "clinical_rationale": "Reactive fluid can become complex or pyocele-like in complicated disease.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "testicular_abscess_presence_in_D-EPIDIDYMO-ORCHITIS", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.6, 0.95], "lag_days_range": [0, 2], "clinical_rationale": "Abscess strongly increases source-control need.", "knowledge_confidence": "high"},
+    {"source_axis_id": "complex_hydrocele_activity", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.3, 0.8], "lag_days_range": [0, 3], "clinical_rationale": "Complex hydrocele or pyocele can require drainage or exploration if severe or persistent.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "decreased_testicular_perfusion_activity", "target_axis_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.7, 1.0], "lag_days_range": [0, 1], "clinical_rationale": "Doppler hypoperfusion is a direct warning for necrosis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.6, 1.0], "lag_days_range": [0, 1], "clinical_rationale": "Necrosis hazard increases need for exploration or orchiectomy-context source control.", "knowledge_confidence": "high"},
+    {"source_axis_id": "high_riding_testis_activity", "target_axis_id": "testicular_torsion_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.7, 1.0], "lag_days_range": [0, 0], "clinical_rationale": "High-riding/transverse lie is a torsion warning sign.", "knowledge_confidence": "high"},
+    {"source_axis_id": "progression_to_septic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "strength_range": [0.6, 1.0], "lag_days_range": [0, 2], "clinical_rationale": "Shock is the main path to mortality.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "treatment_id": "sti_active_cephalosporin_plus_tetracycline",
+      "display_name": "STI-active cephalosporin plus tetracycline coverage",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION"],
+      "required_context_axes": ["sti_pathogen_probability", "recent_unprotected_sexual_exposure_probability", "active_antibiotic_coverage_probability", "severe_beta_lactam_reaction_history_activity"],
+      "effect_modifiers": [
+        {"axis_id": "sti_pathogen_probability", "condition": "low", "effect": "reduces_incremental_value", "factor_range": [0.1, 0.7], "clinical_rationale": "STI-active coverage adds less when enteric urinary source is dominant."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "high", "effect": "limits_use_or_requires_alternative", "factor_range": [0.0, 0.7], "clinical_rationale": "Severe beta-lactam reaction context changes antimicrobial selection."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.2, 0.75], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 7]},
+        "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]},
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.2, 3.0], "decline_half_life_days": [1, 21]},
+        "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.4, 0.95], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [10, 21]}
+      ],
+      "clinical_rationale": "Coverage for gonorrhea/chlamydia-context disease lowers pathogen burden when STI probability is high."
+    },
+    {
+      "treatment_id": "enteric_urinary_source_antibiotic_coverage",
+      "display_name": "Enteric urinary-source antibiotic coverage",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "M_EO_ACTIVE_COVERAGE_AND_RESOLUTION"],
+      "required_context_axes": ["urine_nitrite_positivity", "urine_culture_positivity_probability", "fluoroquinolone_susceptibility_probability", "renal_dose_adjustment_need", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "fluoroquinolone_susceptibility_probability", "condition": "low", "effect": "weakens_or_requires_non_fluoroquinolone_path", "factor_range": [0.0, 0.6], "clinical_rationale": "Inactive fluoroquinolone exposure does not reshape pathogen burden."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "requires_dosing_context", "factor_range": [0.5, 1.0], "clinical_rationale": "Renal impairment changes dose and toxicity but not disease identity."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.75], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 10]},
+        "pyuria_activity": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [2, 14]},
+        "active_antibiotic_coverage_probability": {"peak_value_factor": [1.2, 3.0], "decline_half_life_days": [1, 21]},
+        "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.3, 0.85], "decline_half_life_days": [2, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 1], "duration_days_range": [10, 28]}
+      ],
+      "clinical_rationale": "Fluoroquinolone, TMP-SMX, cephalosporin, or susceptibility-guided urinary-source therapy is selected by organism and safety context."
+    },
+    {
+      "treatment_id": "broad_iv_or_resistant_gram_negative_coverage",
+      "display_name": "Broad IV or resistant gram-negative coverage",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE", "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION"],
+      "required_context_axes": ["active_antibiotic_coverage_probability", "progression_to_septic_shock_hazard", "recent_genitourinary_instrumentation_context_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Severe systemic disease increases value of rapid active IV coverage."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high_after_susceptibility", "effect": "strengthens", "factor_range": [0.9, 1.3], "clinical_rationale": "Concordant susceptibility increases expected burden reduction."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.1, 0.65], "decline_half_life_days": [0.5, 7]},
+        "M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.25, 0.85], "decline_half_life_days": [0.5, 7]},
+        "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [2, 21]},
+        "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.25, 0.9], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [7, 28]}
+      ],
+      "clinical_rationale": "Severe, healthcare-associated, pseudomonal, ESBL-risk, neonatal, or complicated abscess presentations may need broad active coverage while cultures clarify context."
+    },
+    {
+      "treatment_id": "atypical_granulomatous_or_bcg_tb_directed_therapy",
+      "display_name": "Atypical granulomatous or BCG/TB-directed therapy",
+      "mode": ["reshape_landscape"],
+      "treatment_lane": "antimicrobial_coverage",
+      "mechanistic_targets": ["M_EO_EPIDIDYMAL_PATHOGEN_BURDEN", "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION"],
+      "required_context_axes": ["atypical_granulomatous_pathogen_context_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "atypical_granulomatous_pathogen_context_probability", "condition": "low", "effect": "not_applicable_or_weak", "factor_range": [0.0, 0.3], "clinical_rationale": "TB/BCG-directed therapy is a context-specific vector, not a generic epididymo-orchitis rule."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_EPIDIDYMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [14, 90]},
+        "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [14, 120]}
+      },
+      "push_targets": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "up", "magnitude_range": [0.2, 0.8], "onset_days_range": [1, 14], "duration_days_range": [60, 270]}
+      ],
+      "clinical_rationale": "Granulomatous, TB, or intravesical BCG-associated disease follows a different antimicrobial and source-control context."
+    },
+    {
+      "treatment_id": "scrotal_abscess_pyocele_or_necrosis_source_control",
+      "display_name": "Scrotal abscess, pyocele, or necrosis source control",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "local_source_control",
+      "mechanistic_targets": ["M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION", "M_EO_VENOUS_CONGESTION_ISCHEMIA_OR_TORSION_RISK", "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS"],
+      "required_context_axes": ["testicular_abscess_presence_in_D-EPIDIDYMO-ORCHITIS", "complex_hydrocele_activity", "testicular_ischemia_necrosis_activity_in_D-EPIDIDYMO-ORCHITIS", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "low", "effect": "not_applicable_or_weak", "factor_range": [0.0, 0.4], "clinical_rationale": "Drainage or exploration adds little without abscess, pyocele, necrosis, torsion concern, or failed medical therapy."},
+        {"axis_id": "testicular_ischemia_necrosis_activity_in_D-EPIDIDYMO-ORCHITIS", "condition": "high", "effect": "changes_goal_to_viability_or_loss_control", "factor_range": [0.8, 1.4], "clinical_rationale": "Nonviable tissue may require debridement or orchiectomy-context source control."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_ABSCESS_PYOCELE_AND_NECROSIS_FORMATION": {"peak_value_factor": [0.05, 0.55], "plateau_duration_factor": [0.05, 0.6], "decline_half_life_days": [1, 21]},
+        "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS": {"peak_value_factor": [0.05, 0.5], "decline_half_life_days": [1, 30]},
+        "source_control_adequacy": {"peak_value_factor": [1.3, 2.5], "plateau_duration_factor": [1.0, 2.0], "decline_half_life_days": [7, 180]},
+        "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.2, 0.9], "decline_half_life_days": [1, 30]},
+        "mortality_hazard_in_D-EPIDIDYMO-ORCHITIS": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 14]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "onset_days_range": [0, 1], "duration_days_range": [14, 180]},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.3, 1.0], "onset_days_range": [0, 2], "duration_days_range": [14, 180]}
+      ],
+      "clinical_rationale": "Aspiration, incision and drainage, testis-sparing debridement, exploration, or orchiectomy is source-control geometry driven by abscess, pyocele, necrosis, and viability context."
+    },
+    {
+      "treatment_id": "urinary_decompression_or_anatomic_source_management",
+      "display_name": "Urinary decompression or anatomic source management",
+      "mode": ["reshape_landscape", "push_state"],
+      "treatment_lane": "urinary_source_control",
+      "mechanistic_targets": ["M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "M_EO_UROGENITAL_OR_HEMATOGENOUS_ENTRY"],
+      "required_context_axes": ["urinary_retention_activity", "urinary_anatomic_malformation_context_probability", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "urinary_retention_activity", "condition": "low", "effect": "reduces_incremental_value", "factor_range": [0.1, 0.6], "clinical_rationale": "Drainage adds less when there is no retention or urinary stasis."},
+        {"axis_id": "urinary_anatomic_malformation_context_probability", "condition": "high", "effect": "requires_longer_term_urologic_plan", "factor_range": [0.8, 1.3], "clinical_rationale": "Congenital or structural anomalies can need delayed repair or surveillance beyond acute infection control."}
+      ],
+      "trajectory_modifications": {
+        "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [1, 30]},
+        "urinary_retention_activity": {"peak_value_factor": [0.0, 0.5], "decline_half_life_days": [0.5, 14]},
+        "source_control_adequacy": {"peak_value_factor": [1.2, 2.0], "decline_half_life_days": [7, 180]}
+      },
+      "push_targets": [
+        {"axis_id": "urinary_retention_activity", "direction": "down", "magnitude_range": [0.3, 1.0], "onset_days_range": [0, 1], "duration_days_range": [1, 90]},
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "onset_days_range": [0, 3], "duration_days_range": [7, 180]}
+      ],
+      "clinical_rationale": "Bladder decompression, catheter strategy, or later correction of reflux/obstruction reduces urinary-source persistence."
+    },
+    {
+      "treatment_id": "analgesia_antiinflammatory_scrotal_support",
+      "display_name": "Analgesia, anti-inflammatory care, and scrotal support",
+      "mode": ["push_state", "modulate_sigma"],
+      "treatment_lane": "symptom_support",
+      "mechanistic_targets": ["M_EO_SCROTAL_COMPARTMENT_EDEMA_AND_EXUDATE"],
+      "required_context_axes": ["testicular_pain_activity", "scrotal_swelling_activity", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "limits_nsaid_use", "factor_range": [0.2, 0.8], "clinical_rationale": "NSAID safety depends on renal reserve and dehydration."}
+      ],
+      "trajectory_modifications": {
+        "testicular_pain_activity": {"peak_value_factor": [0.25, 0.8], "decline_half_life_days": [0.2, 3]},
+        "scrotal_swelling_activity": {"peak_value_factor": [0.5, 0.95], "decline_half_life_days": [2, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "testicular_pain_activity", "direction": "down", "magnitude_range": [0.1, 0.7], "onset_days_range": [0, 0.5], "duration_days_range": [0.5, 14]}
+      ],
+      "clinical_rationale": "Supportive symptom vector improves pain and physiologic noise but does not replace active coverage or source control."
+    },
+    {
+      "treatment_id": "hemodynamic_resuscitation_and_sepsis_support",
+      "display_name": "Hemodynamic resuscitation and sepsis support",
+      "mode": ["push_state", "modulate_sigma"],
+      "treatment_lane": "critical_care_support",
+      "mechanistic_targets": ["M_EO_SYSTEMIC_INFLAMMATORY_RESPONSE"],
+      "required_context_axes": ["mean_arterial_pressure", "systolic_blood_pressure", "heart_rate", "progression_to_septic_shock_hazard", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "progression_to_septic_shock_hazard", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Shock physiology increases value of fluids, vasopressors, monitoring, and organ support."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_parallel_source_control", "factor_range": [0.4, 1.0], "clinical_rationale": "Support does not drain abscess or sterilize source."}
+      ],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [1.05, 1.4], "decline_half_life_days": [0.2, 2]},
+        "progression_to_septic_shock_hazard": {"peak_value_factor": [0.35, 0.85], "decline_half_life_days": [0.2, 3]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 25], "onset_days_range": [0, 0.2], "duration_days_range": [0.2, 7]},
+        {"axis_id": "heart_rate", "direction": "down", "magnitude_range": [0, 25], "onset_days_range": [0.2, 1], "duration_days_range": [0.5, 7]}
+      ],
+      "clinical_rationale": "Physiologic support is a temporary state vector while antimicrobial and source-control vector fields address the cause."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "recent_unprotected_sex_or_known_sti_exposure",
+      "type": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "recent_unprotected_sexual_exposure_probability", "effect": "increase", "factor_range": [2.0, 10.0]},
+            {"axis_id": "sti_pathogen_probability", "effect": "increase", "factor_range": [2.0, 10.0]},
+            {"axis_id": "urethral_discharge_activity", "effect": "increase", "factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Sexual exposure shifts pathogen and treatment context toward STI-source epididymo-orchitis without defining a separate first-layer leaf."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "insertive_anal_sex_or_enteric_sti_overlap_context",
+      "type": "exposure_and_pathogen_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "sti_pathogen_probability", "effect": "increase", "factor_range": [1.2, 5.0]},
+            {"axis_id": "urine_nitrite_positivity", "effect": "context_dependent", "factor_range": [0.7, 2.0]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "context_dependent", "factor_range": [0.3, 1.4]}
+          ],
+          "clinical_rationale": "Enteric and STI coverage needs can overlap in this exposure context."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "older_age_bph_urinary_retention_or_self_catheterization",
+      "type": "urinary_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_retention_activity", "effect": "increase", "factor_range": [1.5, 6.0]},
+            {"axis_id": "recent_genitourinary_instrumentation_context_probability", "effect": "increase", "factor_range": [1.5, 10.0]},
+            {"axis_id": "source_control_need", "effect": "increase", "factor_range": [1.2, 4.0]}
+          ],
+          "clinical_rationale": "Stasis and catheter exposure predispose to enteric urinary-source epididymo-orchitis and recurrence."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "congenital_or_structural_urinary_tract_anomaly",
+      "type": "anatomic_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 20.0],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_anatomic_malformation_context_probability", "effect": "increase", "factor_range": [2.0, 20.0]},
+            {"axis_id": "M_EO_SOURCE_CONTROL_FAILURE_OR_ANATOMIC_STASIS", "effect": "increase", "factor_range": [1.5, 6.0]},
+            {"axis_id": "fertility_impairment_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect": "context_dependent", "factor_range": [0.8, 2.0]}
+          ],
+          "clinical_rationale": "Neonates and children with urinary anomalies have higher epididymo-orchitis risk and recurrence/source-control concerns."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_ckd_or_immunocompromised_state",
+      "type": "host_reserve_and_complication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect": "increase", "factor_range": [1.3, 5.0]},
+            {"axis_id": "progression_to_septic_shock_hazard", "effect": "increase", "factor_range": [1.2, 4.0]},
+            {"axis_id": "renal_dose_adjustment_need", "effect": "increase", "factor_range": [1.2, 10.0]},
+            {"axis_id": "body_temperature", "effect": "blunted_or_variable", "factor_range": [0.6, 1.3]}
+          ],
+          "clinical_rationale": "Reduced host reserve increases abscess and sepsis risk while changing renal dosing and sometimes blunting fever."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_or_inactive_antimicrobial_coverage",
+      "type": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "decrease", "factor_range": [0.0, 0.6]},
+            {"axis_id": "testicular_abscess_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect": "increase", "factor_range": [1.5, 6.0]},
+            {"axis_id": "source_control_need", "effect": "increase", "factor_range": [1.2, 5.0]}
+          ],
+          "clinical_rationale": "Delay or inactive coverage permits suppuration, recurrence, and source-control dependence."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "large_abscess_complex_hydrocele_pyocele_or_necrosis",
+      "type": "source_control_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "source_control_need", "effect": "increase", "factor_range": [1.5, 8.0]},
+            {"axis_id": "testicular_ischemia_necrosis_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect": "increase", "factor_range": [1.5, 8.0]},
+            {"axis_id": "fertility_impairment_hazard_in_D-EPIDIDYMO-ORCHITIS", "effect": "increase", "factor_range": [1.5, 6.0]}
+          ],
+          "clinical_rationale": "Complicated local disease shifts from medical-only dynamics toward drainage, exploration, or loss-prevention decisions."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "viral_or_postinfectious_orchitis_context",
+      "type": "pathogen_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.7, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "pyuria_activity", "effect": "decrease", "factor_range": [0.0, 0.5]},
+            {"axis_id": "urine_culture_positivity_probability", "effect": "decrease", "factor_range": [0.0, 0.4]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "less_relevant", "factor_range": [0.0, 0.5]}
+          ],
+          "clinical_rationale": "Viral orchitis context may produce testicular inflammation with less urinary evidence; it should not force STI or enteric bacterial treatment semantics."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "granulomatous_tb_bcg_or_atypical_pathogen_context",
+      "type": "pathogen_and_treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "atypical_granulomatous_pathogen_context_probability", "effect": "increase", "factor_range": [2.0, 20.0]},
+            {"axis_id": "active_antibiotic_coverage_probability", "effect": "context_dependent", "factor_range": [0.0, 1.2]},
+            {"axis_id": "source_control_need", "effect": "increase_when_abscess_or_nonviable", "factor_range": [1.0, 4.0]}
+          ],
+          "clinical_rationale": "TB/BCG/atypical disease can mimic tumor or bacterial abscess and requires different treatment-context axes."
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Evaluate acute scrotum urgently; sudden severe pain, high-riding or transverse testis, absent cremasteric reflex, or decreased Doppler flow should keep torsion in the candidate set and can require immediate surgical exploration.",
+    "Structure genital exam evidence directly: testicular pain, scrotal swelling, erythema, epididymal tenderness/enlargement, spermatic cord tenderness, Prehn sign if documented, cremasteric reflex, and testicular lie are observed axes, not diagnosis labels.",
+    "Use urinalysis, urine culture, urethral or urine NAAT for gonorrhea/chlamydia when relevant, HIV/syphilis/STI context, and blood cultures in systemic disease to update pathogen and treatment modifier axes.",
+    "Use scrotal Doppler ultrasound to map epididymal/testicular hyperemia, preserved or decreased perfusion, hydrocele complexity, abscess, pyocele, pampiniform thrombosis, tumor mimic, and hernia/torsion exclusions.",
+    "Preserve culture species, susceptibility, operative findings, pathology, final paper diagnosis, and treatment response as confirmatory or post-workup fields for presentation-only tests.",
+    "Assess urinary retention, intermittent catheterization, bladder outlet obstruction, recent instrumentation, congenital urinary tract anomaly, and recurrent UTI context as source-control or risk axes.",
+    "Reassess severe pain, persistent fever, worsening swelling, complex hydrocele, abscess, or systemic illness after starting therapy; these change source-control need rather than being hard diagnosis tags.",
+    "Partner evaluation, STI counseling, and public-health follow-up change reinfection and treatment context but should not be encoded as rank-order labels.",
+    "Consider horizontal mimics fairly: testicular torsion, torsion appendix testis, inguinal hernia, testicular tumor, Fournier gangrene, acute prostatitis, CAUTI/UTI, pyelonephritis, PID/partner STI context, and sepsis."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-EPIDIDYMO-ORCHITIS.",
+    "No rank-order treatment labels are encoded; treatment ranking should emerge from pathogen probability, active coverage, urinary source-control, abscess/ischemia, renal safety, and sepsis-state axes.",
+    "Scrotal local axes are intentionally defined in this leaf and should be reviewed horizontally with torsion, Fournier gangrene, testicular tumor, inguinal hernia, acute prostatitis, CAUTI, pyelonephritis, and sepsis before broad regression use."
+  ]
+}
