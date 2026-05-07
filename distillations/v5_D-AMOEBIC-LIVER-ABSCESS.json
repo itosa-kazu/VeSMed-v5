@@ -1,0 +1,571 @@
+{
+  "disease": "D-AMOEBIC-LIVER-ABSCESS",
+  "disease_id": "D-AMOEBIC-LIVER-ABSCESS",
+  "disease_name": "Amoebic liver abscess",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Amoebic liver abscess",
+    "leaf_granularity": "First-layer disease leaf for hepatic abscess caused by invasive Entamoeba histolytica trophozoites after intestinal mucosal invasion and portal venous spread. The leaf is independent of abscess side, size, rupture status, travel source, host risk group, venous thrombosis, bacterial coinfection, or treatment response.",
+    "boundary_policy": "Pyogenic liver abscess, acute cholangitis, acute cholecystitis, hydatid cyst, hepatic malignancy, tuberculosis, fungal liver abscess, isolated empyema, lung abscess, pericarditis, pulmonary embolism, portal vein thrombosis, and generic sepsis remain competing manifolds or complications/context. They are not appended to the disease name.",
+    "ranking_note": "Presentation ranking should use fever, chills, malaise, diarrhea or dysentery history, right upper quadrant or epigastric pain, referred shoulder pain, hepatomegaly, jaundice, chest or respiratory symptoms, vital signs, CBC, CRP/PCT, liver tests, albumin, INR, lactate, CT/ultrasound liver abscess morphology, solitary right-lobe tendency, left-lobe or subcapsular rupture risk, pleural/pericardial/peritoneal extension, venous thrombosis, and Entamoeba serology/PCR when available. Aspirate appearance, pathogen PCR, serology, culture results, and treatment response can be confirmatory or post-workup context depending on the testing mode."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ALA_INTESTINAL_COLONIZATION_AND_MUCOSAL_INVASION",
+      "display_name": "Intestinal Entamoeba invasion",
+      "clinical_meaning": "Ingested Entamoeba histolytica cysts excyst in the colon, with trophozoite adherence, cytotoxic epithelial invasion, and intermittent colitis or asymptomatic carriage before hepatic spread.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-90, 0],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_PORTAL_VENOUS_TROPHOZOITE_SEEDING",
+      "display_name": "Portal venous trophozoite seeding",
+      "clinical_meaning": "Trophozoites enter the portal circulation and seed hepatic sinusoids, classically favoring the right lobe but able to involve the left lobe or multiple sites.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [-30, 7],
+      "peak_value_range": [0.1, 0.8],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS",
+      "display_name": "Hepatic trophozoite cytolysis and necrosis",
+      "clinical_meaning": "Amoebic cytotoxicity, hepatocyte necrosis, complement resistance, and neutrophil lysis create a necrotic inflammatory focus with few viable bacteria unless coinfection is present.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [3, 42],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY",
+      "display_name": "Liquefied amoebic abscess cavity",
+      "clinical_meaning": "Necrotic hepatic tissue liquefies into a solitary or less often multiple cavity, often containing odorless brown anchovy-paste-like material and showing low-attenuation or ring-enhancing imaging.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [3, 30],
+      "peak_value_range": [0.3, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE",
+      "display_name": "Systemic inflammatory response",
+      "clinical_meaning": "Hepatic necrosis and parasite antigens drive fever, chills, tachycardia, neutrophilic leukocytosis, CRP elevation, malaise, anorexia, and sometimes sepsis-like physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION",
+      "display_name": "Capsular and diaphragmatic irritation",
+      "clinical_meaning": "Subcapsular hepatic inflammation stretches Glisson capsule and irritates diaphragm, causing right upper quadrant or epigastric pain, referred shoulder pain, cough, pleuritic pain, and reactive pleural effusion.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [1, 42],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION",
+      "display_name": "Rupture and contiguous extension",
+      "clinical_meaning": "Large, superficial, left-lobe, or delayed-treatment abscesses can breach capsule into pleural, pericardial, peritoneal, abdominal wall, subdiaphragmatic, or bronchial spaces.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [3, 60],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [2, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION",
+      "display_name": "Venous compression and thromboinflammation",
+      "clinical_meaning": "Large abscess mass effect, adjacent inflammation, and local venous stasis can produce portal vein, hepatic vein, inferior vena cava thrombosis, and rarely pulmonary embolic complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [3, 45],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN",
+      "display_name": "Persistent tissue or luminal parasite burden",
+      "clinical_meaning": "Incomplete tissue amoebicide exposure, very large cavity, unrecognized rupture, or absent luminal eradication can sustain symptoms or later recurrence.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 60],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION",
+      "display_name": "Sepsis-like organ dysfunction",
+      "clinical_meaning": "Severe systemic inflammation, rupture, bacterial coinfection, hypovolemia, or delayed source control can drive hypotension, hypoxemia, lactate rise, AKI, coagulopathy, and mortality hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [0, 14],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_ALA_INTESTINAL_COLONIZATION_AND_MUCOSAL_INVASION", "target_id": "M_ALA_PORTAL_VENOUS_TROPHOZOITE_SEEDING", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 30], "phase": "early", "clinical_rationale": "Invasive colonic trophozoites reach hepatic sinusoids through portal venous drainage.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_PORTAL_VENOUS_TROPHOZOITE_SEEDING", "target_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "early", "clinical_rationale": "Hepatic seeding initiates local trophozoite cytotoxicity and hepatocyte necrosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 21], "phase": "peak", "clinical_rationale": "Necrotic liver tissue liquefies and coalesces into a radiographic abscess cavity.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Tissue necrosis and parasite antigens drive fever and acute-phase response.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "An enlarging cavity stretches liver capsule and irritates the diaphragm.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 30], "phase": "complication", "conditionality": "Risk rises with large, superficial, left-lobe, subcapsular, or delayed-treated abscesses.", "clinical_rationale": "Cavity pressure and enzymatic tissue destruction can breach adjacent planes.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 30], "phase": "complication", "conditionality": "Most important with giant abscesses adjacent to portal or hepatic venous branches.", "clinical_rationale": "Mass effect and local inflammation cause venous stasis and thrombosis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Pleural, pericardial, peritoneal, or abdominal wall rupture can rapidly increase physiologic stress and source-control need.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN", "target_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Persistent viable parasite burden sustains fever and inflammatory markers.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 3], "phase": "peak", "clinical_rationale": "High systemic inflammation can produce vasodilation, capillary leak, and hypoperfusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "ALA commonly presents with subjective fever.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Pyrogenic cytokines raise measured temperature.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "chills_rigors_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "High fever and inflammatory bursts produce chills or rigors.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Fever, pain, and inflammation drive tachycardia.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Neutrophilic leukocytosis is common even when abscess cultures are sterile.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "ALA commonly produces neutrophil predominance.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Hepatic acute-phase response elevates CRP.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "conditionality": "Often lower than severe bacterial sepsis but may rise with extensive inflammation or bacterial coinfection.", "clinical_rationale": "Severe systemic inflammation can elevate procalcitonin.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "malaise_fatigue_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Systemic inflammation produces malaise and fatigue.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE", "target_id": "anorexia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "presentation", "clinical_rationale": "Inflammation and liver capsule pain reduce appetite.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_INTESTINAL_COLONIZATION_AND_MUCOSAL_INVASION", "target_id": "diarrhea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [-14, 3], "phase": "context_dependent", "clinical_rationale": "Colonic amoebiasis may precede or accompany hepatic abscess, but diarrhea can be absent.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "target_id": "right_upper_quadrant_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Capsular stretch commonly causes right upper quadrant pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "target_id": "epigastric_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Left-lobe or central hepatic abscess can present as epigastric pain.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "target_id": "right_shoulder_referred_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Diaphragmatic irritation can refer pain to the shoulder through the phrenic nerve.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "target_id": "cough_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "conditionality": "More likely with diaphragmatic irritation, pleural reaction, or thoracic rupture.", "clinical_rationale": "Diaphragmatic and pleural irritation can trigger cough.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_CAPSULAR_DIAPHRAGMATIC_IRRITATION", "target_id": "pleural_effusion_presence", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "complication", "clinical_rationale": "Reactive effusion or true rupture may accompany subdiaphragmatic inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "presentation", "clinical_rationale": "Hepatic inflammation and necrosis can mildly or moderately elevate AST.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "presentation", "clinical_rationale": "Hepatic inflammation and necrosis can mildly or moderately elevate ALT.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "serum_alkaline_phosphatase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "presentation", "clinical_rationale": "Space-occupying abscess and cholestatic irritation often raise alkaline phosphatase.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "serum_bilirubin_total", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "context_dependent", "conditionality": "Jaundice is variable and more likely with large, central, or complicated abscess.", "clinical_rationale": "Inflammation and mass effect can produce cholestasis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 30], "phase": "whole_course", "clinical_rationale": "Inflammation and chronic illness lower albumin.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "The disease requires a hepatic abscess cavity.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 30], "phase": "whole_course", "clinical_rationale": "Ongoing necrosis and liquefaction enlarge the cavity.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "solitary_right_lobe_hepatic_abscess_pattern_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "ALA is classically solitary and right-lobe predominant because of portal flow anatomy.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_ABSCESS_LIQUEFACTION_CAVITY", "target_id": "anchovy_paste_aspirate_activity_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "post_workup", "clinical_rationale": "Amoebic cytolysis produces odorless brown necrotic aspirate when sampled.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS", "target_id": "abscess_aspirate_bacterial_culture_positivity_probability_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "post_workup", "conditionality": "Culture can become positive with bacterial coinfection or prior instrumentation.", "clinical_rationale": "Uncomplicated ALA usually has negative bacterial cultures.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "hepatic_abscess_capsular_or_subcapsular_extension_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Rupture begins with capsular or subcapsular extension.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "diaphragmatic_disruption_activity_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "complication", "clinical_rationale": "Transdiaphragmatic extension indicates thoracic rupture.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "pleuropulmonary_amoebiasis_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "complication", "clinical_rationale": "Rupture can seed pleura or lung and cause effusion, empyema, or pulmonary amoebiasis.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "pericardial_rupture_tamponade_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "complication", "conditionality": "Mainly with left-lobe or superior subcapsular abscess.", "clinical_rationale": "Left-lobe abscess can rupture into pericardium and cause tamponade.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION", "target_id": "portal_vein_thrombosis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "complication", "clinical_rationale": "Adjacent inflammation and compression can thrombose portal branches.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION", "target_id": "d_dimer", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "complication", "clinical_rationale": "Venous thrombosis and inflammation can elevate D-dimer.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION", "target_id": "pulmonary_embolism_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "complication", "clinical_rationale": "Large abscesses can contribute to venous thromboembolic risk, though causality is variable.", "knowledge_confidence": "low"},
+    {"source_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Severe inflammation or rupture can produce hypotension.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "oxygen_saturation", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "complication", "conditionality": "More likely with pleural rupture, empyema, PE, ARDS, or large effusion.", "clinical_rationale": "Thoracic complications and shock impair oxygenation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "peak", "clinical_rationale": "Hypoperfusion and adrenergic stress increase lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 3], "phase": "peak", "clinical_rationale": "Severe illness can produce AKI.", "knowledge_confidence": "medium"},
+    {"source_id": "M_ALA_SEPTIC_ORGAN_DYSFUNCTION", "target_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Shock, hypoxemia, rupture, and organ dysfunction raise short-term mortality risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION", "target_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "complication", "clinical_rationale": "Peritoneal, pleural, and pericardial rupture are major causes of death in complicated ALA.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Subjective fever history.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured temperature.", "baseline_range": [36.2, 37.2], "peak_day_range": [0, 7], "peak_value_range": [37.5, 40.5], "plateau_duration_days": [1, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [1, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate.", "baseline_range": [60, 100], "peak_day_range": [0, 7], "peak_value_range": [85, 140], "plateau_duration_days": [1, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate.", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [16, 34], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure.", "baseline_range": [100, 140], "peak_day_range": [0, 7], "peak_value_range": [75, 140], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure.", "baseline_range": [70, 105], "peak_day_range": [0, 7], "peak_value_range": [50, 100], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pulse oxygen saturation.", "baseline_range": [95, 100], "peak_day_range": [0, 14], "peak_value_range": [82, 100], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "malaise_fatigue_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Malaise or fatigue.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [3, 60], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "anorexia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Anorexia or poor appetite.", "baseline_range": [0.0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [3, 60], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "weight_loss_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Weight loss during subacute presentation.", "baseline_range": [0.0, 0.05], "peak_day_range": [7, 90], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [7, 120], "decline_half_life_days": [14, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "diarrhea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Diarrhea or dysenteric prodrome; may be absent.", "baseline_range": [0.0, 0.05], "peak_day_range": [-14, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Any abdominal pain.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "right_upper_quadrant_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Right upper quadrant pain from hepatic capsule stretch.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "epigastric_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "shape_free_text": "Epigastric pain, especially with left-lobe or central abscess.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 45], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "right_shoulder_referred_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "right_upper_quadrant_pain_activity_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Right shoulder referred pain from diaphragm irritation.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "hepatomegaly_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Hepatomegaly or enlarged liver on exam/imaging.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "jaundice_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Clinical jaundice or icterus.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chest pain from pleural, pericardial, pulmonary, or referred processes.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "pleuritic_chest_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "chest_pain_activity", "shape_free_text": "Pleuritic chest pain with pleural irritation or rupture.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "cough_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Cough from diaphragmatic or pleuropulmonary involvement.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dyspnea or shortness of breath.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "White blood cell count.", "baseline_range": [4, 10], "peak_day_range": [0, 14], "peak_value_range": [8, 28], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Absolute neutrophil count.", "baseline_range": [1.5, 7.5], "peak_day_range": [0, 14], "peak_value_range": [6, 24], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin; chronic inflammation may lower it.", "baseline_range": [12, 17], "peak_day_range": [0, 30], "peak_value_range": [8, 16], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 90], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelet count; reactive thrombocytosis or severe-illness thrombocytopenia may occur.", "baseline_range": [150, 400], "peak_day_range": [0, 30], "peak_value_range": [120, 650], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 30], "knowledge_confidence": "low"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein.", "baseline_range": [0.1, 5], "peak_day_range": [0, 14], "peak_value_range": [50, 400], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin.", "baseline_range": [0.01, 0.1], "peak_day_range": [0, 14], "peak_value_range": [0.05, 3.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_ast", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Aspartate aminotransferase.", "baseline_range": [10, 40], "peak_day_range": [0, 14], "peak_value_range": [25, 300], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alt", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Alanine aminotransferase.", "baseline_range": [7, 45], "peak_day_range": [0, 14], "peak_value_range": [20, 300], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_alkaline_phosphatase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Alkaline phosphatase.", "baseline_range": [40, 130], "peak_day_range": [0, 21], "peak_value_range": [100, 900], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 30], "knowledge_confidence": "high"},
+    {"axis_id": "serum_gamma_glutamyl_transferase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Gamma-glutamyl transferase.", "baseline_range": [5, 60], "peak_day_range": [0, 21], "peak_value_range": [40, 400], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_total", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Total bilirubin.", "baseline_range": [0.2, 1.2], "peak_day_range": [0, 21], "peak_value_range": [0.5, 6.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bilirubin_direct", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Direct bilirubin.", "baseline_range": [0.0, 0.3], "peak_day_range": [0, 21], "peak_value_range": [0.1, 4.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Albumin.", "baseline_range": [3.5, 5.0], "peak_day_range": [3, 60], "peak_value_range": [1.8, 4.2], "plateau_duration_days": [7, 120], "decline_half_life_days": [14, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "prothrombin_time_inr", "category": "lab_value", "unit": "INR", "log_scale": false, "axis_role": "measurement", "shape_free_text": "INR.", "baseline_range": [0.9, 1.2], "peak_day_range": [0, 14], "peak_value_range": [1.0, 2.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum lactate.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 7], "peak_value_range": [1.0, 8.0], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Creatinine.", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 14], "peak_value_range": [0.6, 4.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "d_dimer", "category": "lab_value", "unit": "ug/mL_FEU", "log_scale": true, "axis_role": "measurement", "shape_free_text": "D-dimer.", "baseline_range": [0.0, 0.5], "peak_day_range": [0, 30], "peak_value_range": [0.5, 10.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Imaging evidence of liver abscess.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [1.0, 1.0], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "high"},
+    {"axis_id": "largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_measurement", "unit": "cm", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Maximum diameter of largest hepatic abscess.", "baseline_range": [0, 0.5], "peak_day_range": [3, 45], "peak_value_range": [3, 18], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "high"},
+    {"axis_id": "hepatic_abscess_count_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_measurement", "unit": "count", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Number of hepatic abscess cavities.", "baseline_range": [0, 0], "peak_day_range": [0, 45], "peak_value_range": [1, 5], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "high"},
+    {"axis_id": "solitary_right_lobe_hepatic_abscess_pattern_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Solitary right-lobe pattern typical of ALA.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "high"},
+    {"axis_id": "left_lobe_hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Left-lobe abscess, less common but higher pericardial rupture concern.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "multiloculated_hepatic_abscess_pattern_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Septated or multiloculated hepatic abscess appearance.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [14, 120], "decline_half_life_days": [30, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatic_abscess_capsular_or_subcapsular_extension_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Subcapsular, capsular breach, or extracapsular extension.", "baseline_range": [0.0, 0.01], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [14, 120], "knowledge_confidence": "high"},
+    {"axis_id": "diaphragmatic_disruption_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_capsular_or_subcapsular_extension_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Diaphragmatic discontinuity or transdiaphragmatic spread.", "baseline_range": [0.0, 0.005], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [14, 120], "knowledge_confidence": "high"},
+    {"axis_id": "abdominal_wall_extension_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_capsular_or_subcapsular_extension_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Extension into subcutaneous or abdominal wall tissues.", "baseline_range": [0.0, 0.005], "peak_day_range": [3, 60], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "pleural_effusion_presence", "category": "imaging_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Pleural effusion on imaging or exam.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 45], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "pleural_effusion_extent", "category": "imaging_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "pleural_effusion_presence", "shape_free_text": "Relative pleural effusion extent.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 45], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "loculated_pleural_effusion_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "pleural_effusion_presence", "shape_free_text": "Loculated pleural collection or empyema-like thoracic complication due to ALA.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [3, 45], "knowledge_confidence": "medium"},
+    {"axis_id": "portal_vein_thrombosis_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Portal branch or main portal vein thrombosis.", "baseline_range": [0.0, 0.01], "peak_day_range": [3, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "pulmonary_embolism_activity", "category": "event_hazard", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Observed pulmonary embolism activity/presence.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "low"},
+    {"axis_id": "source_control_need", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for aspiration, catheter drainage, thoracic drainage, or operative source control.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "source_control", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of drainage and complication control.", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "drainable_focus_probability", "category": "source_control", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability that the abscess or thoracic collection is technically drainable.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "entamoeba_histolytica_serology_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Positive E. histolytica serology.", "baseline_range": [0.0, 0.01], "peak_day_range": [7, 60], "peak_value_range": [0.7, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [180, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "entamoeba_histolytica_pcr_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Any positive E. histolytica PCR from stool, abscess, pleural fluid, or other relevant sample.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "entamoeba_histolytica_abscess_aspirate_pcr_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "entamoeba_histolytica_pcr_positivity_probability", "shape_free_text": "Positive E. histolytica PCR in liver abscess aspirate.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "entamoeba_histolytica_stool_pcr_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "entamoeba_histolytica_pcr_positivity_probability", "shape_free_text": "Positive stool E. histolytica PCR.", "baseline_range": [0.0, 0.01], "peak_day_range": [-30, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "entamoeba_histolytica_pleural_fluid_pcr_positivity_probability", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "entamoeba_histolytica_pcr_positivity_probability", "shape_free_text": "Positive E. histolytica PCR in pleural fluid.", "baseline_range": [0.0, 0.001], "peak_day_range": [0, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "anchovy_paste_aspirate_activity_in_D-AMOEBIC-LIVER-ABSCESS", "category": "procedure_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "shape_free_text": "Odorless brown or yellow-brown anchovy-paste-like aspirate.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 45], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "abscess_aspirate_bacterial_culture_positivity_probability_in_D-AMOEBIC-LIVER-ABSCESS", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Bacterial culture positivity from abscess aspirate; usually low in uncomplicated ALA.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.4], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Probability of bacterial coinfection requiring antibacterial coverage.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "metronidazole_intolerance_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Prior or current intolerance to metronidazole relevant to nitroimidazole selection and monitoring.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 3650], "decline_half_life_days": [30, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "endemic_area_residence_or_origin_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Residence, birth, travel, or occupational exposure linked to endemic or sanitation-risk settings.", "baseline_range": [0.0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "high"},
+    {"axis_id": "msm_or_oroanal_exposure_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "MSM or oroanal sexual exposure context for E. histolytica transmission.", "baseline_range": [0.0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "diabetes_mellitus_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Diabetes mellitus context.", "baseline_range": [0.0, 0.2], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "immunosuppression_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "HIV, transplant, steroid, malignancy, or other cell-mediated immune impairment context.", "baseline_range": [0.0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "knowledge_confidence": "medium"},
+    {"axis_id": "hepatic_abscess_rupture_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of rupture into pleural, pericardial, peritoneal, abdominal wall, or bronchial spaces.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [3, 45], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "pleuropulmonary_amoebiasis_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of pleural rupture, amoebic empyema, pulmonary extension, or bronchopleural spread.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [3, 45], "peak_value_range": [0.001, 0.06], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "pericardial_rupture_tamponade_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of pericardial rupture and tamponade.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [3, 45], "peak_value_range": [0.0001, 0.04], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "portal_vein_thrombosis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of portal vein thrombosis.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [3, 45], "peak_value_range": [0.0005, 0.03], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "medium"},
+    {"axis_id": "pulmonary_embolism_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of pulmonary embolism in the setting of large abscess and thrombosis.", "baseline_range": [0.00001, 0.0001], "peak_day_range": [0, 45], "peak_value_range": [0.0001, 0.01], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "knowledge_confidence": "low"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of acute kidney injury during severe illness.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [0, 14], "peak_value_range": [0.0005, 0.04], "plateau_duration_days": [0, 14], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan mortality hazard from ALA, driven by rupture, pleuropulmonary/pericardial complications, shock, organ dysfunction, and delayed treatment.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 45], "peak_value_range": [0.00005, 0.08], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "body_temperature", "target_axis_id": "serum_crp", "relationship": "shared_systemic_inflammation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "phase": "presentation", "clinical_rationale": "Fever and CRP are correlated outputs of systemic inflammation, not direct causes of each other.", "knowledge_confidence": "high"},
+    {"source_axis_id": "white_blood_cell_count", "target_axis_id": "absolute_neutrophil_count", "relationship": "shared_neutrophilic_response", "coupling_type": "noise_correlation", "correlation_range": [0.65, 0.95], "phase": "presentation", "clinical_rationale": "Leukocytosis in ALA is usually neutrophil-predominant.", "knowledge_confidence": "high"},
+    {"source_axis_id": "largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "target_axis_id": "source_control_need", "relationship": "positive_drift", "coupling_type": "drift", "correlation_range": [0.45, 0.85], "phase": "whole_course", "clinical_rationale": "Large abscesses are more likely to need diagnostic aspiration or therapeutic drainage.", "knowledge_confidence": "high"},
+    {"source_axis_id": "largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "target_axis_id": "hepatic_abscess_rupture_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "relationship": "positive_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "phase": "complication", "clinical_rationale": "Increasing diameter and tension raise rupture risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "left_lobe_hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "target_axis_id": "pericardial_rupture_tamponade_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "relationship": "positive_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.65], "phase": "complication", "clinical_rationale": "Left-lobe ALA is anatomically closer to the pericardium.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "diaphragmatic_disruption_activity_in_D-AMOEBIC-LIVER-ABSCESS", "target_axis_id": "pleural_effusion_extent", "relationship": "event_transition", "coupling_type": "event_transition", "correlation_range": [0.55, 0.9], "phase": "complication", "clinical_rationale": "Diaphragmatic rupture can rapidly increase pleural fluid.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pleural_effusion_extent", "target_axis_id": "oxygen_saturation", "relationship": "negative_drift", "coupling_type": "drift", "correlation_range": [-0.75, -0.35], "phase": "complication", "clinical_rationale": "Large effusions and empyema reduce lung expansion and oxygenation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "portal_vein_thrombosis_activity", "target_axis_id": "d_dimer", "relationship": "positive_drift", "coupling_type": "drift", "correlation_range": [0.25, 0.7], "phase": "complication", "clinical_rationale": "Venous thrombosis contributes to fibrin turnover and D-dimer elevation.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "portal_vein_thrombosis_activity", "target_axis_id": "portal_vein_thrombosis_hazard", "relationship": "same_event_state", "coupling_type": "event_transition", "correlation_range": [0.5, 0.9], "phase": "complication", "clinical_rationale": "Observed thrombosis indicates high near-term thrombosis hazard and persistence risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_lactate", "target_axis_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "relationship": "positive_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.85], "phase": "peak", "clinical_rationale": "Hyperlactatemia reflects hypoperfusion and severe systemic illness.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "relationship": "negative_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.85, -0.4], "phase": "peak", "clinical_rationale": "Low MAP increases short-term mortality risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS", "relationship": "negative_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [-0.8, -0.35], "phase": "whole_course", "clinical_rationale": "Adequate drainage of ruptured or nonresponding collections lowers complication and mortality pressure.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "Metronidazole",
+      "drug_class": "tissue_amoebicide_nitroimidazole",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "core_tissue_amoebicide",
+      "required_context_axes": ["entamoeba_histolytica_serology_positivity_probability", "entamoeba_histolytica_pcr_positivity_probability", "hepatic_abscess_presence_in_D-AMOEBIC-LIVER-ABSCESS", "severe_hepatic_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "entamoeba_histolytica_serology_positivity_probability", "condition": "high", "effect": "increases_effect_confidence", "factor_range": [0.8, 1.0], "clinical_rationale": "Positive serology supports ALA as the treatment target."},
+        {"axis_id": "entamoeba_histolytica_pcr_positivity_probability", "condition": "high", "effect": "increases_effect_confidence", "factor_range": [0.8, 1.0], "clinical_rationale": "PCR confirmation supports active Entamoeba burden."},
+        {"axis_id": "severe_hepatic_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1.0], "clinical_rationale": "Severe hepatic dysfunction can increase nitroimidazole toxicity and monitoring needs."}
+      ],
+      "failure_modes": ["Incorrect non-amoebic diagnosis", "Unrecognized bacterial coinfection", "Ruptured or very large collection needing drainage", "Inadequate course length", "No luminal eradication with later recurrence"],
+      "trajectory_modifications": {
+        "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS": {"peak_value_factor": [0.05, 0.25], "plateau_duration_factor": [0.05, 0.3], "decline_half_life_days": [1, 5]},
+        "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.1, 0.5], "decline_half_life_days": [1, 5]},
+        "M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [3, 14]}
+      },
+      "onset_delay_days": [0.25, 3],
+      "carryover_after_stop_days": [3, 14],
+      "side_effects": [
+        {"axis_id": "nausea_vomiting_activity", "direction": "up", "magnitude_range": [0.0, 0.4], "interpretation": "Nitroimidazoles commonly cause gastrointestinal intolerance."},
+        {"axis_id": "severe_hepatic_impairment_activity", "direction": "up", "magnitude_range": [0.0, 0.2], "interpretation": "Clinically significant hepatotoxicity is uncommon but monitoring is needed in severe liver disease."}
+      ],
+      "context_specific_role": "Rapidly lowers hepatic trophozoite activity and systemic inflammatory drift when ALA is plausible or confirmed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Tinidazole",
+      "drug_class": "tissue_amoebicide_nitroimidazole",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "alternative_tissue_amoebicide",
+      "required_context_axes": ["entamoeba_histolytica_serology_positivity_probability", "entamoeba_histolytica_pcr_positivity_probability", "severe_hepatic_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "metronidazole_intolerance_activity", "condition": "high", "effect": "changes_selection", "factor_range": [0.7, 1.0], "clinical_rationale": "Tinidazole can be used when metronidazole tolerance or dosing is problematic."},
+        {"axis_id": "severe_hepatic_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1.0], "clinical_rationale": "Nitroimidazole exposure requires caution in severe hepatic impairment."}
+      ],
+      "failure_modes": ["Incorrect non-amoebic diagnosis", "No luminal agent after tissue therapy", "Ruptured collection without drainage when needed"],
+      "trajectory_modifications": {
+        "M_ALA_HEPATIC_TROPHOZOITE_CYTOLYSIS_NECROSIS": {"peak_value_factor": [0.05, 0.3], "plateau_duration_factor": [0.05, 0.4], "decline_half_life_days": [1, 5]},
+        "M_ALA_SYSTEMIC_INFLAMMATORY_RESPONSE": {"peak_value_factor": [0.1, 0.55], "plateau_duration_factor": [0.1, 0.55], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.25, 3],
+      "carryover_after_stop_days": [3, 14],
+      "side_effects": [{"axis_id": "nausea_vomiting_activity", "direction": "up", "magnitude_range": [0.0, 0.4], "interpretation": "Gastrointestinal intolerance can occur."}],
+      "context_specific_role": "Alternative nitroimidazole tissue therapy for ALA.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Paromomycin",
+      "drug_class": "luminal_amoebicide",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "luminal_eradication",
+      "required_context_axes": ["entamoeba_histolytica_stool_pcr_positivity_probability", "entamoeba_histolytica_serology_positivity_probability", "severe_renal_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "entamoeba_histolytica_stool_pcr_positivity_probability", "condition": "high", "effect": "increases_effect_confidence", "factor_range": [0.7, 1.0], "clinical_rationale": "Stool positivity indicates intestinal carriage, but luminal therapy is relevant even when stool tests are negative."},
+        {"axis_id": "severe_renal_impairment_activity", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.4, 1.0], "clinical_rationale": "Aminoglycoside-class luminal therapy may need renal caution despite poor absorption."}
+      ],
+      "failure_modes": ["Used without tissue amoebicide for hepatic disease", "Severe diarrhea limiting adherence", "No intestinal carriage but persistent hepatic source dominates symptoms"],
+      "trajectory_modifications": {
+        "M_ALA_INTESTINAL_COLONIZATION_AND_MUCOSAL_INVASION": {"peak_value_factor": [0.05, 0.25], "plateau_duration_factor": [0.05, 0.3], "decline_half_life_days": [2, 10]},
+        "M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [7, 30]}
+      },
+      "onset_delay_days": [1, 7],
+      "carryover_after_stop_days": [14, 180],
+      "side_effects": [{"axis_id": "diarrhea_activity", "direction": "up", "magnitude_range": [0.0, 0.4], "interpretation": "Luminal agents can cause gastrointestinal side effects."}],
+      "context_specific_role": "Eradicates intestinal cyst/carriage compartment after tissue therapy and reduces recurrence pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Iodoquinol or diloxanide furoate",
+      "drug_class": "luminal_amoebicide",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "alternative_luminal_eradication",
+      "required_context_axes": ["entamoeba_histolytica_serology_positivity_probability", "pregnancy_or_planning_pregnancy_activity", "severe_hepatic_impairment_activity"],
+      "effect_modifiers": [
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "changes_selection", "clinical_rationale": "Luminal agent selection depends on pregnancy and local availability."},
+        {"axis_id": "severe_hepatic_impairment_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Hepatic disease can affect tolerability and monitoring."}
+      ],
+      "failure_modes": ["Unavailable agent", "Used without tissue amoebicide for active liver abscess", "Poor adherence"],
+      "trajectory_modifications": {
+        "M_ALA_INTESTINAL_COLONIZATION_AND_MUCOSAL_INVASION": {"peak_value_factor": [0.05, 0.35], "plateau_duration_factor": [0.05, 0.4], "decline_half_life_days": [2, 14]},
+        "M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.25, 0.8], "decline_half_life_days": [7, 30]}
+      },
+      "onset_delay_days": [1, 7],
+      "carryover_after_stop_days": [14, 180],
+      "side_effects": [{"axis_id": "nausea_vomiting_activity", "direction": "up", "magnitude_range": [0.0, 0.3], "interpretation": "Gastrointestinal intolerance can occur."}],
+      "context_specific_role": "Alternative luminal eradication pathway when paromomycin is unsuitable or unavailable.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Image-guided liver abscess aspiration or catheter drainage",
+      "drug_class": "procedure_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent_source_control",
+      "required_context_axes": ["largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "source_control_need", "drainable_focus_probability", "procedural_bleeding_risk_context_activity"],
+      "effect_modifiers": [
+        {"axis_id": "largest_hepatic_abscess_diameter_cm_in_D-AMOEBIC-LIVER-ABSCESS", "condition": "high", "effect": "increases_effect_size", "factor_range": [0.5, 1.0], "clinical_rationale": "Drainage is more consequential when the cavity is large, tense, or diagnostically uncertain."},
+        {"axis_id": "drainable_focus_probability", "condition": "low", "effect": "reduces_effect", "factor_range": [0.0, 0.4], "clinical_rationale": "No safe window or poorly liquefied contents reduce procedural benefit."},
+        {"axis_id": "procedural_bleeding_risk_context_activity", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Coagulopathy or unsafe route increases procedural risk."}
+      ],
+      "failure_modes": ["Poorly liquefied abscess", "No safe access route", "Drain malposition or blockage", "Unrecognized thoracic or peritoneal rupture", "No anti-amoebic therapy"],
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"},
+        {"axis_id": "source_control_need", "direction": "down", "magnitude_range": [0.2, 0.8], "unit": "relative_activity_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_ALA_ABSCESS_LIQUEFACTION_CAVITY": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [14, 120]},
+        "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.1, 0.7], "decline_half_life_days": [3, 30]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [
+        {"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.06], "interpretation": "Percutaneous liver drainage can bleed."},
+        {"axis_id": "pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS", "direction": "up", "magnitude_range": [0.0, 0.1], "interpretation": "Instrumentation can rarely introduce or reveal bacterial superinfection."}
+      ],
+      "context_specific_role": "Diagnostic and therapeutic decompression when abscess is large, left-lobe, ruptured, nonresponding, or diagnosis is uncertain.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Thoracentesis, chest tube drainage, or VATS decortication",
+      "drug_class": "pleural_source_control_procedure",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "thoracic_complication_source_control",
+      "required_context_axes": ["pleural_effusion_presence", "pleural_effusion_extent", "loculated_pleural_effusion_activity_in_D-AMOEBIC-LIVER-ABSCESS", "oxygen_saturation"],
+      "effect_modifiers": [
+        {"axis_id": "pleural_effusion_extent", "condition": "high", "effect": "increases_effect_size", "factor_range": [0.5, 1.0], "clinical_rationale": "Large effusions produce greater respiratory benefit from drainage."},
+        {"axis_id": "loculated_pleural_effusion_activity_in_D-AMOEBIC-LIVER-ABSCESS", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "Loculated collections may need catheter drainage, fibrinolysis, or VATS."},
+        {"axis_id": "procedure_related_bleeding_hazard", "condition": "high", "effect": "changes_toxicity", "clinical_rationale": "Pleural procedures carry bleeding risk."}
+      ],
+      "failure_modes": ["Reactive effusion without drainable collection", "Undrained hepatic source", "Organized pleural peel", "No anti-amoebic therapy"],
+      "push_targets": [
+        {"axis_id": "pleural_effusion_extent", "direction": "down", "magnitude_range": [0.2, 0.9], "unit": "relative_extent_0_1"},
+        {"axis_id": "oxygen_saturation", "direction": "up", "magnitude_range": [1, 12], "unit": "%"},
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.2, 0.8], "unit": "relative_activity_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_ALA_RUPTURE_CONTIGUOUS_EXTENSION": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 30]},
+        "pleuropulmonary_amoebiasis_hazard_in_D-AMOEBIC-LIVER-ABSCESS": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [3, 30]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [3, 90],
+      "side_effects": [{"axis_id": "procedure_related_bleeding_hazard", "direction": "up", "magnitude_range": [0.001, 0.08], "interpretation": "Thoracic drainage or VATS can bleed or cause air leak."}],
+      "context_specific_role": "Controls pleural space complication and improves oxygenation when ALA ruptures into the thorax.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Broad-spectrum antibacterial coverage while pyogenic coinfection is unresolved",
+      "drug_class": "antibacterial_bridge",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent_bridge",
+      "required_context_axes": ["pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS", "abscess_aspirate_bacterial_culture_positivity_probability_in_D-AMOEBIC-LIVER-ABSCESS", "blood_culture_positivity_probability"],
+      "effect_modifiers": [
+        {"axis_id": "pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.0], "clinical_rationale": "Antibacterial benefit depends on bacterial coinfection or uncertain pyogenic abscess."},
+        {"axis_id": "abscess_aspirate_bacterial_culture_positivity_probability_in_D-AMOEBIC-LIVER-ABSCESS", "condition": "low", "effect": "reduces_effect", "factor_range": [0.0, 0.4], "clinical_rationale": "Negative bacterial culture after adequate sampling lowers antibacterial causal effect."}
+      ],
+      "failure_modes": ["Pure ALA without bacterial coinfection", "No Entamoeba-active tissue therapy", "Resistant bacterial pathogen", "Undrained pyogenic component"],
+      "trajectory_modifications": {
+        "pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 7],
+      "side_effects": [{"axis_id": "cdi_recurrence_hazard_in_D-CLOSTRIDIOIDES-DIFFICILE-SEVERE", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "Broad antibiotics can increase C. difficile risk."}],
+      "context_specific_role": "Covers bacterial liver abscess or coinfection uncertainty until microbiology and clinical course clarify the causal field.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Therapeutic anticoagulation for documented venous thrombosis",
+      "drug_class": "anticoagulant",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent_thrombosis_management",
+      "required_context_axes": ["portal_vein_thrombosis_activity", "pulmonary_embolism_activity", "therapeutic_anticoagulation_feasibility", "severe_bleeding_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "portal_vein_thrombosis_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [0.5, 1.0], "clinical_rationale": "Portal thrombosis is one context where anticoagulation may reduce persistence or extension."},
+        {"axis_id": "pulmonary_embolism_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.0], "clinical_rationale": "Observed PE gives direct anticoagulation indication if bleeding risk permits."},
+        {"axis_id": "severe_bleeding_risk_activity", "condition": "high", "effect": "contraindicates", "clinical_rationale": "Active bleeding, high-risk procedures, or coagulopathy can preclude anticoagulation."}
+      ],
+      "failure_modes": ["No documented thrombosis", "Active bleeding", "Need for urgent drainage with high bleeding risk", "Thrombus caused by uncontrolled source not yet treated"],
+      "trajectory_modifications": {
+        "M_ALA_VENOUS_COMPRESSION_THROMBOINFLAMMATION": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [14, 120]},
+        "portal_vein_thrombosis_hazard": {"peak_value_factor": [0.3, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 120]},
+        "pulmonary_embolism_hazard": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 120]}
+      },
+      "onset_delay_days": [0.1, 2],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [{"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [1.2, 5.0], "interpretation": "Anticoagulation increases bleeding risk, especially around drainage."}],
+      "context_specific_role": "Adjunct for documented portal, hepatic, caval, or pulmonary thromboembolic complications after balancing procedure and bleeding risks.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Balanced crystalloid and norepinephrine support",
+      "drug_class": "sepsis_supportive_hemodynamics",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["mean_arterial_pressure", "serum_lactate", "oxygen_saturation"],
+      "effect_modifiers": [
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "required_for_effect", "clinical_rationale": "Hemodynamic support is relevant when hypotension or hypoperfusion is present."},
+        {"axis_id": "source_control_need", "condition": "high", "effect": "requires_source_control", "clinical_rationale": "Supportive hemodynamics do not remove the hepatic or thoracic source."}
+      ],
+      "failure_modes": ["Uncontrolled rupture or abscess source", "No anti-amoebic therapy", "Fluid overload", "Refractory shock"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.2, 3.0], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0, 0.1],
+      "carryover_after_stop_days": [0, 1],
+      "side_effects": [{"axis_id": "oxygen_saturation", "direction": "down", "magnitude_range": [0, 5], "interpretation": "Over-resuscitation can worsen oxygenation."}],
+      "context_specific_role": "Temporizes shock physiology while anti-amoebic therapy and drainage reshape the causal field.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "male_sex",
+      "type": "demographic",
+      "modulation": {"present": {"P_disease_ratio": [2, 10], "trajectory_modulation": "Epidemiologic enrichment for invasive ALA without a specific axis signature.", "axis_response_modulation": {}}},
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "endemic_area_residence_origin_travel_or_sanitation_exposure",
+      "type": "exposure_context",
+      "modulation": {"present": {"P_disease_ratio": [3, 20], "trajectory_modulation": "Raises prior probability of Entamoeba colonization and later ALA, even if travel was remote.", "axis_response_modulation": {"endemic_area_residence_or_origin_context_activity": "increase", "entamoeba_histolytica_serology_positivity_probability": "increase"}}},
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "msm_or_oroanal_exposure",
+      "type": "exposure_context",
+      "modulation": {"present": {"P_disease_ratio": [2, 12], "trajectory_modulation": "Raises Entamoeba transmission risk in nonendemic settings.", "axis_response_modulation": {"msm_or_oroanal_exposure_context_activity": "increase", "entamoeba_histolytica_stool_pcr_positivity_probability": "increase"}}},
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "diabetes_mellitus",
+      "type": "comorbidity",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 6], "trajectory_modulation": "Raises invasive amebiasis risk and complicated abscess morbidity; background glucose/HbA1c should not be explained by ALA itself.", "axis_response_modulation": {"diabetes_mellitus_activity": "increase", "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase"}}},
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "hiv_or_cell_mediated_immunosuppression",
+      "type": "host_state",
+      "modulation": {"present": {"P_disease_ratio": [1.5, 8], "trajectory_modulation": "Raises risk of invasive disease and atypical presentations; CD4-preserved HIV may still have ALA.", "axis_response_modulation": {"immunosuppression_activity": "increase", "body_temperature": "blunted_or_variable", "white_blood_cell_count": "blunted_or_variable"}}},
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "malnutrition_or_chronic_alcohol_use",
+      "type": "host_state",
+      "modulation": {"present": {"P_disease_ratio": [1.2, 5], "trajectory_modulation": "Can worsen immune response, hypoalbuminemia, and pleuropulmonary complication risk.", "axis_response_modulation": {"serum_albumin": "decrease", "pleuropulmonary_amoebiasis_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase"}}},
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "large_left_lobe_or_subcapsular_abscess",
+      "type": "disease_morphology_context",
+      "modulation": {"present": {"P_disease_ratio": [1, 2], "trajectory_modulation": "Raises rupture, pericardial, pleural, abdominal wall extension, and source-control need.", "axis_response_modulation": {"hepatic_abscess_rupture_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase", "pericardial_rupture_tamponade_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase", "source_control_need": "increase"}}},
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_amoebic_diagnosis_or_inactive_initial_therapy",
+      "type": "treatment_timing_context",
+      "modulation": {"present": {"P_disease_ratio": [1, 2], "trajectory_modulation": "Sustains trophozoite activity, abscess expansion, rupture risk, and mortality hazard.", "axis_response_modulation": {"M_ALA_PERSISTENT_TISSUE_OR_LUMINAL_PARASITE_BURDEN": "increase", "hepatic_abscess_rupture_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase", "mortality_hazard_in_D-AMOEBIC-LIVER-ABSCESS": "increase"}}},
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "pyogenic_coinfection_or_uncertain_abscess_etiology",
+      "type": "microbiology_context",
+      "modulation": {"present": {"P_disease_ratio": [0.5, 2], "trajectory_modulation": "Raises need for antibacterial bridge and makes fever/PCT/culture behavior more pyogenic-like.", "axis_response_modulation": {"pyogenic_coinfection_probability_in_D-AMOEBIC-LIVER-ABSCESS": "increase", "procalcitonin": "increase", "abscess_aspirate_bacterial_culture_positivity_probability_in_D-AMOEBIC-LIVER-ABSCESS": "increase"}}},
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Use contrast CT or high-quality ultrasound to define abscess size, lobe, number, liquefaction, subcapsular extension, rupture, pleural/pericardial/peritoneal spread, and safe drainage route.",
+    "Send E. histolytica serology and, when material is available, PCR or antigen testing from stool, abscess aspirate, pleural fluid, or relevant specimens; microscopy alone is insensitive.",
+    "Send abscess, blood, and pleural cultures when sampled because pyogenic abscess or bacterial coinfection changes treatment context.",
+    "Trend temperature, heart rate, respiratory status, WBC/ANC, CRP, liver tests, albumin, INR, creatinine, lactate, D-dimer when thrombosis is suspected, and oxygenation when thoracic spread is present.",
+    "Reassess early with imaging and procedural teams if fever, pain, hypoxemia, inflammatory markers, or cavity size fail to improve after tissue amoebicide or if rupture is suspected.",
+    "Coordinate infectious diseases, interventional radiology, hepatobiliary surgery, and thoracic/cardiac teams when the abscess is large, left-lobe, ruptured, loculated, near pericardium, or associated with pleural/pericardial collections.",
+    "Give luminal eradication after tissue therapy unless a contraindication or local availability issue requires another plan.",
+    "Balance anticoagulation against drainage and bleeding risk when portal, hepatic, caval, or pulmonary thromboembolic complications are documented.",
+    "Use standard supportive care for shock or respiratory failure while anti-amoebic therapy and drainage address the causal field.",
+    "Arrange follow-up imaging because radiographic cavity resolution may lag clinical response, and monitor for recurrence when luminal treatment was delayed or incomplete."
+  ],
+  "quality_notes": [
+    "No fields encode first-line, preference, guideline status, or indication strength; treatment ranking is left to runtime outcome simulation.",
+    "New amoebic pathogen axes are pathogen-confirmation axes, not case-specific ranking patches. Pyogenic liver abscess, empyema, pulmonary embolism, portal thrombosis, and pericarditis leaves should retain their own shared clinical axes and only lack Entamoeba-specific microbiology when medically absent.",
+    "Hepatic abscess morphology is disease-owned for this leaf to avoid double-counting pyogenic liver abscess axes while allowing shared generic source-control, pleural, thrombosis, and sepsis physiology axes."
+  ]
+}
