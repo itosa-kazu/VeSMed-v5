@@ -1,0 +1,804 @@
+{
+  "disease": "D-IGA-VASCULITIS",
+  "disease_id": "D-IGA-VASCULITIS",
+  "disease_name": "IgA vasculitis",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "IgA vasculitis",
+    "leaf_granularity": "First-layer disease leaf for systemic small-vessel IgA-dominant immune-complex vasculitis involving skin, joints, gastrointestinal tract, and kidney. The leaf is independent of age, trigger, renal severity, gastrointestinal severity, biopsy site, recurrence status, and treatment response.",
+    "boundary_policy": "IgA nephropathy without systemic vasculitis, ANCA-associated vasculitis, cutaneous leukocytoclastic vasculitis without IgA-dominant systemic pattern, meningococcemia, DIC, thrombocytopenic purpura, SLE flare, cryoglobulinemic vasculitis, PAN, drug eruption, erysipelas/cellulitis, infectious endocarditis, IBD, appendicitis, intussusception from a structural lead point, and generic sepsis remain competing manifolds or triggers/context. They are not appended to the disease name.",
+    "ranking_note": "Presentation ranking should use non-thrombocytopenic palpable purpura, dependent lower-extremity or buttock distribution, arthralgia or arthritis, abdominal pain, vomiting or diarrhea, GI bleeding, imaging or endoscopic bowel edema/ulceration, hematuria, proteinuria, creatinine/eGFR, blood pressure, inflammatory markers, complement and IgA context when measured, and biopsy only when testing post-workup mode. Trigger, organism, vaccine, drug, adult/pediatric status, renal severity, and GI complication type are axes or risk/treatment context rather than disease-name qualifiers."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_MUCOSAL_OR_EXPOSURE_TRIGGER_ACTIVITY",
+      "display_name": "Mucosal, infectious, vaccine, drug, or environmental trigger activity",
+      "clinical_meaning": "Upper respiratory or gastrointestinal infection, vaccine exposure, medication exposure, malignancy context, or other antigenic stimulation can precede IgA vasculitis by days to weeks.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [-28, 0],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [1, 28],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY",
+      "display_name": "Galactose-deficient IgA1 immune-complex activity",
+      "clinical_meaning": "Aberrantly glycosylated IgA1 and anti-glycan antibodies form circulating immune complexes that deposit in small vessels and glomerular mesangium.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.08],
+      "peak_day_range": [-7, 21],
+      "peak_value_range": [0.3, 0.95],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [14, 120],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS",
+      "display_name": "Complement-amplified leukocytoclastic small-vessel vasculitis",
+      "clinical_meaning": "IgA-dominant immune-complex deposition activates alternative/lectin complement, neutrophil recruitment, leukocytoclasis, fibrinoid injury, and vascular leak in dermal, gut, joint, and renal microvessels.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.45, 0.95],
+      "plateau_duration_days": [3, 60],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS",
+      "display_name": "Cutaneous leukocytoclastic vasculitis",
+      "clinical_meaning": "Postcapillary venule vasculitis in dependent skin produces non-thrombocytopenic palpable purpura, petechiae, edema, and occasionally bullous or necrotic lesions.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.35, 0.98],
+      "plateau_duration_days": [3, 30],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_ARTICULAR_PERIARTICULAR_INFLAMMATION",
+      "display_name": "Articular and periarticular inflammation",
+      "clinical_meaning": "Sterile periarticular edema, tenosynovial inflammation, and transient arthritis or arthralgia affect ankles, knees, wrists, elbows, hands, or feet, usually non-erosive.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.15, 0.85],
+      "plateau_duration_days": [1, 21],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE",
+      "display_name": "Gastrointestinal submucosal edema and hemorrhage",
+      "clinical_meaning": "Small-vessel vasculitis in bowel wall causes submucosal edema, capillary hemorrhage, erosions, ulcers, abdominal pain, vomiting, diarrhea, occult blood, hematemesis, melena, or hematochezia.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.1, 0.95],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY",
+      "display_name": "Severe GI ischemia, obstruction, intussusception, and perforation activity",
+      "clinical_meaning": "Marked bowel edema, intramural hemorrhage, mesenteric vasculitis, dysmotility, hematoma, or ischemia can generate intussusception, obstruction, necrosis, perforation, peritonitis, hemorrhagic shock, or need for surgery.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY",
+      "display_name": "IgA vasculitis nephritis",
+      "clinical_meaning": "Mesangial IgA-dominant immune-complex deposition with endocapillary proliferation, hematuria, proteinuria, and sometimes crescents or rapidly progressive glomerulonephritis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [7, 180],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY",
+      "display_name": "Post-inflammatory chronic renal damage",
+      "clinical_meaning": "Persistent proteinuria, crescents, glomerulosclerosis, tubulointerstitial scarring, hypertension, and reduced GFR determine long-term CKD and kidney failure risk after active nephritis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [30, 365],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [90, 3650],
+      "decline_half_life_days": [365, 3650],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY",
+      "display_name": "Systemic acute-phase inflammatory activity",
+      "clinical_meaning": "IL-6 and innate immune activation produce fever, leukocytosis or neutrophilia, thrombocytosis, elevated CRP/ESR, hypoalbuminemia, and constitutional symptoms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.05, 0.9],
+      "plateau_duration_days": [2, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_IGA_VASCULITIS_TREATMENT_IMMUNOSUPPRESSION_TOXICITY_ACTIVITY",
+      "display_name": "Treatment-related immunosuppression and toxicity activity",
+      "clinical_meaning": "High-dose glucocorticoids and steroid-sparing immunosuppressants can reduce vasculitis activity but add infection, cytopenia, metabolic, fertility, renal, hepatic, and GI toxicity contexts.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [3, 180],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [7, 720],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_IGA_VASCULITIS_MUCOSAL_OR_EXPOSURE_TRIGGER_ACTIVITY", "target_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 21], "phase": "early", "clinical_rationale": "Antigenic triggers can increase IgA1 immune-complex formation in susceptible hosts.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY", "target_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "early", "clinical_rationale": "IgA-dominant immune complexes deposit in small vessels and activate complement and neutrophils.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Dermal postcapillary venule injury produces the characteristic purpura.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "M_IGA_VASCULITIS_ARTICULAR_PERIARTICULAR_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 10], "phase": "whole_course", "clinical_rationale": "Small-vessel and periarticular inflammation drives arthralgia and swelling.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Bowel-wall vasculitis creates edema, hemorrhage, and mucosal injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Severe bowel edema, hemorrhage, ischemia, or dysmotility can progress to obstruction, intussusception, necrosis, or perforation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY", "target_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 30], "phase": "whole_course", "clinical_rationale": "IgA-dominant immune complexes also deposit in glomerular mesangium and capillary loops.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [30, 365], "phase": "recovery_or_persistent", "clinical_rationale": "Persistent nephritis, proteinuria, crescents, and scarring drive CKD after the acute flare.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Active immune-complex vasculitis can generate systemic acute-phase inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "target_id": "palpable_purpura_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Dermal small-vessel leakage produces palpable purpura.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "target_id": "petechiae_purpura_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Petechiae and purpuric macules often accompany palpable lesions.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "target_id": "iga_vasculitis_dependent_lower_extremity_purpura_distribution_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Dependent pressure and venous hydrostatic forces concentrate lesions on legs and buttocks.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "target_id": "iga_vasculitis_skin_edema_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "whole_course", "clinical_rationale": "Vascular leak and dependent inflammation can cause extremity or subcutaneous edema.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS", "target_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Lesional skin biopsy shows leukocytoclastic vasculitis when sampled early.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY", "target_id": "skin_biopsy_iga_deposition_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Direct immunofluorescence can show IgA-dominant vascular deposition.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_ARTICULAR_PERIARTICULAR_INFLAMMATION", "target_id": "arthralgia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Sterile periarticular inflammation causes joint pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_ARTICULAR_PERIARTICULAR_INFLAMMATION", "target_id": "arthritis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Some patients have clinically inflamed joints.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_ARTICULAR_PERIARTICULAR_INFLAMMATION", "target_id": "iga_vasculitis_periarticular_edema_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Hands, feet, ankles, or periarticular tissues can swell during flares.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Bowel wall edema and vasculitic ischemia produce colicky or diffuse abdominal pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "iga_vasculitis_colicky_abdominal_pain_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Cramping or colicky pain is a common GI pattern.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Bowel involvement can cause nausea and vomiting.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "diarrhea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Mucosal edema and inflammation can cause diarrhea.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "gastrointestinal_bleeding_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Capillary hemorrhage and mucosal ulceration produce overt or occult GI bleeding.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "hematochezia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Lower intestinal hemorrhage can present as hematochezia.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "iga_vasculitis_hematemesis_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Upper GI erosions or ulcers can produce hematemesis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "bowel_wall_thickening_mm", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Submucosal edema can thicken bowel wall on CT or ultrasound.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "iga_vasculitis_endoscopic_erosion_ulcer_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Endoscopy can show erosive gastropathy, duodenitis, petechiae, ulceration, friability, or bleeding stigmata.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "intestinal_obstruction_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Edema, hematoma, or intussusception can obstruct bowel.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Bowel wall edema or hematoma can act as a transient lead point for intussusception.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "peritonitis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Ischemia, obstruction, or perforation can cause peritoneal signs.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "gastrointestinal_ischemia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Severe mesenteric or bowel-wall vasculitis increases ischemic injury risk.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "gastrointestinal_perforation_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Necrosis and full-thickness bowel injury can perforate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "gastrointestinal_bleeding_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Diffuse erosions and capillary hemorrhage can become clinically significant bleeding.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "target_id": "intussusception_hazard_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Edematous or hemorrhagic bowel can telescope into an adjacent segment.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "hematuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Glomerular inflammation causes microscopic or gross hematuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "gross_hematuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Some patients develop visible hematuria.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "active_urinary_sediment_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "RBCs, casts, and glomerular sediment mark active nephritis.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "proteinuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "whole_course", "clinical_rationale": "Glomerular injury produces proteinuria ranging from trace to nephrotic.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "urinary_protein_creatinine_ratio", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "whole_course", "clinical_rationale": "UPCR tracks proteinuric severity.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "urine_protein_24h", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "whole_course", "clinical_rationale": "Twenty-four-hour urine protein captures nephrotic-range involvement.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 30], "phase": "severe", "clinical_rationale": "Active nephritis or AKI raises creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "estimated_glomerular_filtration_rate", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 30], "phase": "severe", "clinical_rationale": "Loss of filtration lowers eGFR.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 21], "phase": "severe", "clinical_rationale": "Crescentic or severe nephritis can become dialysis-requiring AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY", "target_id": "end_stage_kidney_disease_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [30, 3650], "phase": "late", "clinical_rationale": "Persistent proteinuria, reduced GFR, hypertension, and chronic scarring increase ESKD risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY", "target_id": "dialysis_requirement_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 3650], "phase": "severe_or_late", "clinical_rationale": "Severe AKI or ESKD can require renal replacement therapy.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "iga_vasculitis_renal_biopsy_iga_dominant_gn_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 60], "phase": "post_workup", "clinical_rationale": "Renal biopsy can show IgA-dominant glomerulonephritis.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 60], "phase": "severe", "clinical_rationale": "Severe nephritis can show cellular crescents.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Leukocytosis may accompany systemic inflammation or trigger.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Neutrophilia can track acute inflammatory activity.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "CRP rises with systemic or GI inflammatory burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 10], "phase": "whole_course", "clinical_rationale": "ESR often rises with systemic inflammation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_SYSTEMIC_ACUTE_PHASE_ACTIVITY", "target_id": "platelet_count", "effect_on_target": "increase_or_normal", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "phase": "whole_course", "clinical_rationale": "Reactive thrombocytosis may occur, while platelet preservation helps separate IgAV purpura from thrombocytopenic bleeding.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE", "target_id": "hemoglobin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "GI bleeding can lower hemoglobin.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "target_id": "serum_albumin", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 30], "phase": "renal_or_gi_severe", "clinical_rationale": "Nephrotic proteinuria or protein-losing enteropathy lowers albumin.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY", "target_id": "serum_iga", "effect_on_target": "increase_or_normal", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "whole_course", "clinical_rationale": "Serum IgA can be elevated but normal values do not exclude IgAV.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "complement_c3", "effect_on_target": "normal_or_mild_decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Complement is often normal but mild consumption can occur; marked hypocomplementemia suggests mimics.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS", "target_id": "complement_c4", "effect_on_target": "normal_or_mild_decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "C4 is usually normal or mildly altered; low C4 should raise mimic context.", "knowledge_confidence": "medium"},
+    {"source_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY", "target_id": "systolic_blood_pressure", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 365], "phase": "renal", "clinical_rationale": "Renal involvement and CKD can raise blood pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_IGA_VASCULITIS_RENAL_CHRONIC_DAMAGE_ACTIVITY", "target_id": "mean_arterial_pressure", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 365], "phase": "renal", "clinical_rationale": "Hypertension tracks renal severity and affects long-term kidney outcome.", "knowledge_confidence": "high"},
+    {"source_id": "gastrointestinal_bleeding_hazard", "target_id": "mortality_hazard_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Major GI bleeding can cause shock, transfusion burden, and death.", "knowledge_confidence": "medium"},
+    {"source_id": "gastrointestinal_perforation_hazard", "target_id": "mortality_hazard_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Bowel perforation and peritonitis can cause sepsis and death.", "knowledge_confidence": "high"},
+    {"source_id": "acute_kidney_injury_hazard", "target_id": "mortality_hazard_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [0, 30], "phase": "severe", "clinical_rationale": "Dialysis-requiring AKI lowers physiologic reserve and increases complications.", "knowledge_confidence": "medium"},
+    {"source_id": "end_stage_kidney_disease_hazard", "target_id": "mortality_hazard_in_D-IGA-VASCULITIS", "effect_on_target": "increase", "edge_type": "event_to_outcome", "lag_days_range": [30, 3650], "phase": "late", "clinical_rationale": "Long-term kidney failure increases mortality risk.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "palpable_purpura_activity", "display_name": "Palpable purpura", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.45, 1.0], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 45], "clinical_interpretation": "Non-thrombocytopenic palpable purpura is the anchor skin finding.", "knowledge_confidence": "high"},
+    {"axis_id": "petechiae_purpura_activity", "display_name": "Petechiae or purpuric macules", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "rash_activity", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 45], "clinical_interpretation": "Petechiae may coexist with palpable purpura.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_dependent_lower_extremity_purpura_distribution_activity_in_D-IGA-VASCULITIS", "display_name": "Dependent lower-extremity or buttock purpura distribution", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "palpable_purpura_activity", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 45], "clinical_interpretation": "Dependent, symmetric legs/buttocks distribution is characteristic but not mandatory.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_truncal_or_upper_extremity_purpura_spread_activity_in_D-IGA-VASCULITIS", "display_name": "Truncal or upper-extremity purpura spread", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "palpable_purpura_activity", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 21], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [2, 30], "decline_half_life_days": [7, 60], "clinical_interpretation": "More extensive purpura can involve trunk, arms, or mucosa in severe adult cases.", "knowledge_confidence": "medium"},
+    {"axis_id": "iga_vasculitis_skin_edema_activity_in_D-IGA-VASCULITIS", "display_name": "Skin or subcutaneous edema", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "palpable_purpura_activity", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "clinical_interpretation": "Dependent edema can accompany cutaneous vasculitis.", "knowledge_confidence": "medium"},
+    {"axis_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "display_name": "Skin biopsy leukocytoclastic vasculitis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [7, 60], "clinical_interpretation": "Lesional biopsy can show leukocytoclastic vasculitis.", "knowledge_confidence": "high"},
+    {"axis_id": "skin_biopsy_iga_deposition_probability", "display_name": "Skin biopsy IgA vascular deposition", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [7, 60], "clinical_interpretation": "Direct immunofluorescence can demonstrate IgA-dominant vascular deposits.", "knowledge_confidence": "high"},
+    {"axis_id": "arthralgia_activity", "display_name": "Arthralgia", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.15, 0.9], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "clinical_interpretation": "Joint pain often involves ankles, knees, hands, or feet.", "knowledge_confidence": "high"},
+    {"axis_id": "arthritis_activity", "display_name": "Arthritis", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.75], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "clinical_interpretation": "Inflammatory joint swelling may occur but is usually non-erosive.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_periarticular_edema_activity_in_D-IGA-VASCULITIS", "display_name": "Periarticular hand or foot edema", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "arthralgia_activity", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 21], "clinical_interpretation": "Swollen hands, feet, ankles, or periarticular tissues can accompany arthralgia.", "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "display_name": "Abdominal pain", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "clinical_interpretation": "GI involvement often causes colicky or diffuse abdominal pain.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_colicky_abdominal_pain_activity_in_D-IGA-VASCULITIS", "display_name": "Colicky abdominal pain pattern", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "abdominal_pain_activity", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 21], "clinical_interpretation": "Cramping pain increases concern for bowel edema, ischemia, or obstruction.", "knowledge_confidence": "high"},
+    {"axis_id": "nausea_vomiting_activity", "display_name": "Nausea or vomiting", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Bowel edema, bleeding, or obstruction can cause nausea and vomiting.", "knowledge_confidence": "high"},
+    {"axis_id": "vomiting_activity", "display_name": "Vomiting", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Vomiting may reflect upper GI inflammation or obstruction.", "knowledge_confidence": "medium"},
+    {"axis_id": "diarrhea_activity", "display_name": "Diarrhea", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "GI mucosal inflammation can cause diarrhea.", "knowledge_confidence": "medium"},
+    {"axis_id": "gastrointestinal_bleeding_activity", "display_name": "Gastrointestinal bleeding", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 21], "clinical_interpretation": "Hematemesis, melena, hematochezia, occult blood, or endoscopic bleeding stigmata can occur.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_hematemesis_activity_in_D-IGA-VASCULITIS", "display_name": "Hematemesis", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "gastrointestinal_bleeding_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Upper GI bleeding can appear as hematemesis or coffee-ground emesis.", "knowledge_confidence": "medium"},
+    {"axis_id": "hematochezia_activity", "display_name": "Hematochezia", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "gastrointestinal_bleeding_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Lower GI bleeding can appear as hematochezia.", "knowledge_confidence": "high"},
+    {"axis_id": "bowel_wall_thickening_mm", "display_name": "Bowel wall thickening", "category": "imaging", "unit": "mm", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 3.0], "peak_day_range": [0, 14], "peak_value_range": [3.0, 15.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 21], "clinical_interpretation": "CT or ultrasound may show bowel-wall edema and thickening.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_endoscopic_erosion_ulcer_activity_in_D-IGA-VASCULITIS", "display_name": "Endoscopic erosions, petechiae, ulcers, friability, or bleeding stigmata", "category": "endoscopy", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [2, 30], "clinical_interpretation": "Post-workup GI mucosal findings support vasculitic GI involvement.", "knowledge_confidence": "high"},
+    {"axis_id": "intestinal_obstruction_activity", "display_name": "Intestinal obstruction", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Bowel edema or intussusception can obstruct intestinal transit.", "knowledge_confidence": "medium"},
+    {"axis_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "display_name": "Intussusception activity", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "intestinal_obstruction_activity", "baseline_range": [0.0, 0.001], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Target/doughnut sign or operative reduction indicates intussusception.", "knowledge_confidence": "medium"},
+    {"axis_id": "peritonitis_activity", "display_name": "Peritonitis", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Peritoneal signs imply ischemia, obstruction, or perforation risk.", "knowledge_confidence": "medium"},
+    {"axis_id": "gastrointestinal_bleeding_hazard", "display_name": "GI bleeding hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 14], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [1, 21], "clinical_interpretation": "Risk of clinically important GI bleeding.", "knowledge_confidence": "high"},
+    {"axis_id": "gastrointestinal_ischemia_hazard", "display_name": "GI ischemia hazard", "category": "event_hazard", "unit": "hazard_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 14], "peak_value_range": [0.00005, 0.04], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Risk of bowel ischemia or necrosis.", "knowledge_confidence": "medium"},
+    {"axis_id": "gastrointestinal_perforation_hazard", "display_name": "GI perforation hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00001], "peak_day_range": [0, 14], "peak_value_range": [0.00001, 0.03], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Risk of bowel perforation and peritonitis.", "knowledge_confidence": "medium"},
+    {"axis_id": "intussusception_hazard_in_D-IGA-VASCULITIS", "display_name": "Intussusception hazard in IgA vasculitis", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00001], "peak_day_range": [0, 14], "peak_value_range": [0.00001, 0.03], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [1, 14], "clinical_interpretation": "Risk of intussusception from bowel edema/hematoma, especially during acute GI involvement.", "knowledge_confidence": "medium"},
+    {"axis_id": "hematuria_activity", "display_name": "Hematuria", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 60], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "clinical_interpretation": "Microscopic or gross hematuria indicates nephritis.", "knowledge_confidence": "high"},
+    {"axis_id": "gross_hematuria_activity", "display_name": "Gross hematuria", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "hematuria_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [1, 60], "decline_half_life_days": [14, 180], "clinical_interpretation": "Visible hematuria can occur in active nephritis.", "knowledge_confidence": "medium"},
+    {"axis_id": "urine_rbc_per_hpf", "display_name": "Urine RBCs per high-power field", "category": "urinalysis", "unit": "RBC_per_HPF", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "hematuria_activity", "baseline_range": [0.0, 2.0], "peak_day_range": [0, 60], "peak_value_range": [3.0, 100.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "clinical_interpretation": "Microscopic urine RBC count quantifies hematuria.", "knowledge_confidence": "high"},
+    {"axis_id": "active_urinary_sediment_activity", "display_name": "Active urinary sediment", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "clinical_interpretation": "RBCs, casts, and glomerular urinary findings signal active nephritis.", "knowledge_confidence": "high"},
+    {"axis_id": "proteinuria_activity", "display_name": "Proteinuria", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 90], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Proteinuria ranges from mild dipstick positivity to nephrotic-range disease.", "knowledge_confidence": "high"},
+    {"axis_id": "urinary_protein_creatinine_ratio", "display_name": "Urine protein/creatinine ratio", "category": "lab_value", "unit": "g_per_g_creatinine", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "proteinuria_activity", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 90], "peak_value_range": [0.15, 10.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "UPCR tracks renal disease severity and chronic risk.", "knowledge_confidence": "high"},
+    {"axis_id": "urine_protein_24h", "display_name": "Twenty-four-hour urine protein", "category": "lab_value", "unit": "g_per_day", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "proteinuria_activity", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 90], "peak_value_range": [0.15, 10.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Twenty-four-hour protein confirms nephrotic-range involvement when high.", "knowledge_confidence": "high"},
+    {"axis_id": "nephrotic_syndrome_activity", "display_name": "Nephrotic syndrome activity", "category": "renal_syndrome", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "proteinuria_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [3, 90], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Nephrotic-range proteinuria with hypoalbuminemia and edema marks high-risk renal involvement.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "display_name": "Serum creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 90], "peak_value_range": [0.7, 6.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 365], "clinical_interpretation": "Creatinine rises with AKI, RPGN, or CKD.", "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "display_name": "Blood urea nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [7, 20], "peak_day_range": [0, 90], "peak_value_range": [10, 120], "plateau_duration_days": [3, 180], "decline_half_life_days": [7, 180], "clinical_interpretation": "BUN rises with renal failure, dehydration, GI bleeding, or catabolic stress.", "knowledge_confidence": "medium"},
+    {"axis_id": "estimated_glomerular_filtration_rate", "display_name": "Estimated GFR", "category": "lab_value", "unit": "mL/min/1.73m2", "log_scale": false, "axis_role": "measurement", "baseline_range": [90, 130], "peak_day_range": [0, 90], "peak_value_range": [5, 120], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Lower eGFR reflects acute or chronic renal involvement.", "knowledge_confidence": "high"},
+    {"axis_id": "serum_albumin", "display_name": "Serum albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [3.5, 5.0], "peak_day_range": [3, 90], "peak_value_range": [1.5, 4.5], "plateau_duration_days": [7, 365], "decline_half_life_days": [14, 180], "clinical_interpretation": "Hypoalbuminemia can reflect nephrotic proteinuria, GI protein loss, or inflammation.", "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "display_name": "Acute kidney injury hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "finding", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 90], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [3, 90], "decline_half_life_days": [14, 180], "clinical_interpretation": "Risk of clinically meaningful AKI from nephritis, dehydration, shock, or NSAID exposure.", "knowledge_confidence": "high"},
+    {"axis_id": "end_stage_kidney_disease_hazard", "display_name": "End-stage kidney disease hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.0000001, 0.000005], "peak_day_range": [30, 3650], "peak_value_range": [0.00001, 0.01], "plateau_duration_days": [90, 3650], "decline_half_life_days": [365, 3650], "clinical_interpretation": "Long-term risk of irreversible kidney failure.", "knowledge_confidence": "high"},
+    {"axis_id": "dialysis_requirement_hazard", "display_name": "Dialysis requirement hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.0000001, 0.00001], "peak_day_range": [1, 3650], "peak_value_range": [0.00001, 0.05], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Need for acute or chronic dialysis.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_renal_biopsy_iga_dominant_gn_activity_in_D-IGA-VASCULITIS", "display_name": "Renal biopsy IgA-dominant glomerulonephritis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 90], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Renal biopsy can confirm IgA-dominant immune-complex GN.", "knowledge_confidence": "high"},
+    {"axis_id": "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "display_name": "Crescentic glomerulonephritis activity", "category": "pathology", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "iga_vasculitis_renal_biopsy_iga_dominant_gn_activity_in_D-IGA-VASCULITIS", "baseline_range": [0.0, 0.002], "peak_day_range": [7, 90], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "clinical_interpretation": "Cellular crescents signal severe nephritis and worse renal prognosis.", "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "display_name": "Systolic blood pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [90, 130], "peak_day_range": [0, 365], "peak_value_range": [90, 180], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Hypertension can worsen kidney outcome; hypotension can mark bleeding or shock.", "knowledge_confidence": "high"},
+    {"axis_id": "diastolic_blood_pressure", "display_name": "Diastolic blood pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [55, 85], "peak_day_range": [0, 365], "peak_value_range": [55, 110], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Blood pressure context is critical in nephritis and bleeding states.", "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "display_name": "Mean arterial pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [70, 100], "peak_day_range": [0, 365], "peak_value_range": [45, 130], "plateau_duration_days": [0.1, 3650], "decline_half_life_days": [1, 365], "clinical_interpretation": "MAP falls with hemorrhagic/septic shock and rises with renal hypertension.", "knowledge_confidence": "high"},
+    {"axis_id": "white_blood_cell_count", "display_name": "White blood cell count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [4.0, 11.0], "peak_day_range": [0, 21], "peak_value_range": [4.0, 25.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 21], "clinical_interpretation": "Leukocytosis can accompany inflammation, stress, infection trigger, or steroid exposure.", "knowledge_confidence": "medium"},
+    {"axis_id": "absolute_neutrophil_count", "display_name": "Absolute neutrophil count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [1.8, 7.5], "peak_day_range": [0, 21], "peak_value_range": [2.0, 22.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 21], "clinical_interpretation": "Neutrophilia can track inflammatory or trigger activity.", "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "display_name": "Platelet count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [150, 400], "peak_day_range": [0, 30], "peak_value_range": [150, 650], "plateau_duration_days": [3, 45], "decline_half_life_days": [7, 45], "clinical_interpretation": "Normal or high platelets support non-thrombocytopenic purpura; thrombocytopenia suggests mimics.", "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobin", "display_name": "Hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [12.0, 16.5], "peak_day_range": [0, 30], "peak_value_range": [5.0, 16.5], "plateau_duration_days": [1, 60], "decline_half_life_days": [7, 60], "clinical_interpretation": "Falling hemoglobin can indicate GI bleeding or chronic kidney disease.", "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "display_name": "C-reactive protein", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.0, 5.0], "peak_day_range": [0, 21], "peak_value_range": [3.0, 250.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 21], "clinical_interpretation": "CRP reflects systemic and GI inflammatory burden but is not specific.", "knowledge_confidence": "high"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "display_name": "Erythrocyte sedimentation rate", "category": "lab_value", "unit": "mm/hr", "log_scale": false, "axis_role": "measurement", "baseline_range": [0, 20], "peak_day_range": [1, 21], "peak_value_range": [20, 120], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 60], "clinical_interpretation": "ESR can rise during active inflammation.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_iga", "display_name": "Serum IgA", "category": "lab_value", "unit": "g/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.7, 4.0], "peak_day_range": [0, 60], "peak_value_range": [0.7, 8.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "clinical_interpretation": "Serum IgA may be elevated, especially with renal involvement, but normal values do not exclude IgAV.", "knowledge_confidence": "medium"},
+    {"axis_id": "complement_c3", "display_name": "Complement C3", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [80, 160], "peak_day_range": [0, 30], "peak_value_range": [50, 180], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "clinical_interpretation": "Usually normal; low values increase mimic context such as lupus or cryoglobulinemia.", "knowledge_confidence": "medium"},
+    {"axis_id": "complement_c4", "display_name": "Complement C4", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [10, 40], "peak_day_range": [0, 30], "peak_value_range": [5, 45], "plateau_duration_days": [7, 90], "decline_half_life_days": [14, 120], "clinical_interpretation": "Usually normal; marked depression suggests mimic context.", "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "display_name": "Body temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "baseline_range": [36.0, 37.2], "peak_day_range": [0, 21], "peak_value_range": [36.0, 39.5], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Fever can reflect trigger or systemic inflammation.", "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "display_name": "Heart rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [55, 100], "peak_day_range": [0, 21], "peak_value_range": [60, 140], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Tachycardia can reflect pain, fever, bleeding, or shock.", "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "display_name": "Respiratory rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [12, 20], "peak_day_range": [0, 21], "peak_value_range": [12, 32], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Tachypnea may indicate pain, metabolic acidosis, infection, or shock.", "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "display_name": "Oxygen saturation", "category": "vital_sign", "unit": "%", "log_scale": false, "axis_role": "measurement", "baseline_range": [95, 100], "peak_day_range": [0, 21], "peak_value_range": [88, 100], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Usually normal unless shock, anemia, lung mimic, or rare pulmonary involvement is present.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "display_name": "Serum lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 14], "peak_value_range": [0.5, 8.0], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 7], "clinical_interpretation": "High lactate can indicate hypoperfusion from bleeding, sepsis, or bowel ischemia.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_potassium", "display_name": "Serum potassium", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [3.5, 5.0], "peak_day_range": [0, 90], "peak_value_range": [3.0, 7.0], "plateau_duration_days": [0.5, 90], "decline_half_life_days": [1, 30], "clinical_interpretation": "Hyperkalemia can accompany severe AKI or ACEi/ARB therapy.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_alt", "display_name": "Alanine aminotransferase", "category": "lab_value", "unit": "U/L", "log_scale": true, "axis_role": "measurement", "baseline_range": [5, 40], "peak_day_range": [0, 365], "peak_value_range": [5, 200], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "clinical_interpretation": "Baseline and monitoring axis for hepatotoxic treatments and mimic context.", "knowledge_confidence": "medium"},
+    {"axis_id": "nsaid_renal_gastrointestinal_bleeding_risk_context", "display_name": "NSAID renal and GI bleeding risk context", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.2], "peak_day_range": [0, 365], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Renal disease, GI bleeding, peptic injury, anticoagulation, or frailty increase NSAID toxicity.", "knowledge_confidence": "high"},
+    {"axis_id": "active_serious_infection_activity", "display_name": "Active serious infection context", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 90], "clinical_interpretation": "Serious infection changes risk of immunosuppressive treatment.", "knowledge_confidence": "high"},
+    {"axis_id": "pregnancy_or_planning_pregnancy_activity", "display_name": "Pregnancy or pregnancy-planning context", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 365], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 365], "clinical_interpretation": "Pregnancy and conception plans change medication toxicity and monitoring.", "knowledge_confidence": "high"},
+    {"axis_id": "renal_dose_adjustment_need", "display_name": "Renal dose adjustment need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 3650], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Reduced GFR changes dosing and toxicity of several treatments.", "knowledge_confidence": "high"},
+    {"axis_id": "major_bleeding_hazard", "display_name": "Major bleeding hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.00001, 0.08], "plateau_duration_days": [0.1, 30], "decline_half_life_days": [1, 30], "clinical_interpretation": "Aggregate major bleeding risk from GI disease, procedures, anticoagulation, or thrombocytopenia.", "knowledge_confidence": "medium"},
+    {"axis_id": "serious_infection_hazard", "display_name": "Serious infection hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [1, 180], "peak_value_range": [0.00001, 0.03], "plateau_duration_days": [7, 365], "decline_half_life_days": [14, 365], "clinical_interpretation": "Serious infection risk from host context or immunosuppressive therapy.", "knowledge_confidence": "high"},
+    {"axis_id": "steroid_hyperglycemia_hazard", "display_name": "Steroid hyperglycemia hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.0001], "peak_day_range": [1, 30], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [3, 90], "decline_half_life_days": [3, 60], "clinical_interpretation": "Glucocorticoids can precipitate clinically relevant hyperglycemia, especially in diabetes or frailty.", "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "display_name": "Mortality hazard in IgA vasculitis", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 3650], "peak_value_range": [0.000001, 0.08], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "clinical_interpretation": "Lifespan outcome hazard driven mainly by severe GI bleeding/perforation, shock/sepsis, dialysis-requiring AKI, chronic kidney failure, advanced age, and treatment complications.", "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "palpable_purpura_activity", "target_axis_id": "iga_vasculitis_dependent_lower_extremity_purpura_distribution_activity_in_D-IGA-VASCULITIS", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.4, 0.8], "lag_days_range": [0, 1], "conditionality": "Only when purpura is present; distribution should not be consumed without parent purpura.", "clinical_rationale": "Lower-extremity distribution is a satellite of the main purpura finding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "abdominal_pain_activity", "target_axis_id": "nausea_vomiting_activity", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.2, 0.6], "lag_days_range": [0, 2], "conditionality": "GI involvement phase", "clinical_rationale": "Bowel edema and irritation drive both pain and vomiting.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "abdominal_pain_activity", "target_axis_id": "gastrointestinal_bleeding_activity", "coupling_type": "mixed", "direction": "positive", "strength_range": [0.2, 0.7], "lag_days_range": [0, 5], "conditionality": "GI mucosal vasculitis phase", "clinical_rationale": "More severe mucosal vasculitis can produce both pain and bleeding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gastrointestinal_bleeding_activity", "target_axis_id": "hemoglobin", "coupling_type": "drift", "direction": "negative", "strength_range": [0.3, 0.9], "lag_days_range": [0, 3], "conditionality": "Overt or significant occult bleeding", "clinical_rationale": "Clinically significant bleeding lowers hemoglobin.", "knowledge_confidence": "high"},
+    {"source_axis_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "target_axis_id": "peritonitis_activity", "coupling_type": "event_transition", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [0, 2], "conditionality": "Prolonged or ischemic intussusception", "clinical_rationale": "Obstruction or ischemia can produce peritoneal signs.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "target_axis_id": "gastrointestinal_ischemia_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [0, 3], "conditionality": "Obstruction or vascular compromise", "clinical_rationale": "Intussusception can compromise mesenteric blood flow.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "gastrointestinal_ischemia_hazard", "target_axis_id": "gastrointestinal_perforation_hazard", "coupling_type": "event_transition", "direction": "positive", "strength_range": [0.4, 0.9], "lag_days_range": [0, 7], "conditionality": "Untreated bowel ischemia or necrosis", "clinical_rationale": "Ischemic necrosis can progress to perforation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gastrointestinal_bleeding_hazard", "target_axis_id": "major_bleeding_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.5, 1.0], "lag_days_range": [0, 1], "conditionality": "Overt GI bleeding", "clinical_rationale": "GI bleeding is a major component of aggregate bleeding risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "proteinuria_activity", "target_axis_id": "urinary_protein_creatinine_ratio", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.5, 0.9], "lag_days_range": [0, 3], "conditionality": "When UPCR measured", "clinical_rationale": "UPCR quantifies the proteinuria finding.", "knowledge_confidence": "high"},
+    {"source_axis_id": "proteinuria_activity", "target_axis_id": "serum_albumin", "coupling_type": "drift", "direction": "negative", "strength_range": [0.2, 0.8], "lag_days_range": [3, 30], "conditionality": "Nephrotic or severe protein-losing disease", "clinical_rationale": "Protein loss lowers serum albumin.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "hematuria_activity", "target_axis_id": "active_urinary_sediment_activity", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.4, 0.9], "lag_days_range": [0, 3], "conditionality": "Glomerular nephritis", "clinical_rationale": "Active sediment includes hematuria and casts.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urinary_protein_creatinine_ratio", "target_axis_id": "end_stage_kidney_disease_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [30, 3650], "conditionality": "Persistent proteinuria after acute phase", "clinical_rationale": "Persistent heavy proteinuria predicts CKD progression.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.4, 1.0], "lag_days_range": [0, 7], "conditionality": "Rising creatinine or reduced urine output", "clinical_rationale": "Creatinine rise indicates AKI severity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "renal_dose_adjustment_need", "coupling_type": "drift", "direction": "positive", "strength_range": [0.4, 0.9], "lag_days_range": [0, 1], "conditionality": "Reduced GFR", "clinical_rationale": "Renal impairment changes treatment dosing and toxicity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "gastrointestinal_bleeding_hazard", "target_axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [0, 7], "conditionality": "Severe GI hemorrhage", "clinical_rationale": "Bleeding can cause shock and death.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "gastrointestinal_perforation_hazard", "target_axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.4, 1.0], "lag_days_range": [0, 14], "conditionality": "Perforation, peritonitis, or sepsis", "clinical_rationale": "Perforation is one of the major acute mortality drivers.", "knowledge_confidence": "high"},
+    {"source_axis_id": "end_stage_kidney_disease_hazard", "target_axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [30, 3650], "conditionality": "Long-term renal outcome phase", "clinical_rationale": "Kidney failure increases long-term mortality.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "supportive_care_hydration_rest_and_acetaminophen",
+      "drug_class": "symptom_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["arthralgia_activity", "abdominal_pain_activity", "nausea_vomiting_activity", "serum_creatinine", "mean_arterial_pressure"],
+      "effect_modifiers": [
+        {"axis_id": "gastrointestinal_bleeding_activity", "condition": "high", "effect": "strengthens_monitoring_need", "factor_range": [1.0, 1.4], "clinical_rationale": "Bleeding requires closer hemodynamic and hemoglobin monitoring."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "strengthens_monitoring_need", "factor_range": [1.0, 1.4], "clinical_rationale": "Renal involvement requires serial urinalysis, creatinine, BP, and proteinuria follow-up."}
+      ],
+      "failure_modes": ["insufficient_for_severe_gi_bleeding", "insufficient_for_crescentic_nephritis", "missed_surgical_abdomen", "undertreated_dehydration"],
+      "push_targets": [
+        {"axis_id": "nausea_vomiting_activity", "direction": "down", "magnitude_range": [0.05, 0.4], "unit": "severity_score_0_1"},
+        {"axis_id": "mean_arterial_pressure", "direction": "up_or_stabilize", "magnitude_range": [0, 15], "unit": "mmHg"},
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "down", "magnitude_range": [0.00001, 0.01], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0.0, 0.5],
+      "carryover_after_stop_days": [0.0, 3.0],
+      "side_effects": [],
+      "context_specific_role": "Supportive vector for mild or resolving cutaneous/articular/GI symptoms and for physiologic stabilization while organ-risk axes are assessed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "nsaid_short_course_for_joint_pain",
+      "drug_class": "nonsteroidal_anti_inflammatory",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "symptom_control",
+      "required_context_axes": ["arthralgia_activity", "arthritis_activity", "serum_creatinine", "gastrointestinal_bleeding_activity", "nsaid_renal_gastrointestinal_bleeding_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "nsaid_renal_gastrointestinal_bleeding_risk_context", "condition": "high", "effect": "weakens_or_contraindicates", "factor_range": [0.0, 0.5], "clinical_rationale": "Renal disease or GI bleeding makes NSAID toxicity dominate symptom benefit."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "contraindicates_or_requires_avoidance", "factor_range": [0.0, 0.3], "clinical_rationale": "NSAIDs can worsen AKI and reduce renal perfusion."},
+        {"axis_id": "gastrointestinal_bleeding_activity", "condition": "high", "effect": "contraindicates_or_requires_avoidance", "factor_range": [0.0, 0.3], "clinical_rationale": "NSAIDs can aggravate mucosal bleeding."}
+      ],
+      "failure_modes": ["worsening_acute_kidney_injury", "worsening_gastrointestinal_bleeding", "masked_surgical_abdomen", "insufficient_for_nephritis"],
+      "push_targets": [
+        {"axis_id": "arthralgia_activity", "direction": "down", "magnitude_range": [0.1, 0.5], "unit": "severity_score_0_1"},
+        {"axis_id": "arthritis_activity", "direction": "down", "magnitude_range": [0.05, 0.35], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "magnitude_range": [0.0001, 0.03], "interpretation": "NSAID renal hemodynamic toxicity, especially with nephritis, dehydration, CKD, ACEi/ARB, or diuretics."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "NSAIDs can aggravate GI mucosal bleeding."}
+      ],
+      "context_specific_role": "Pain-control vector only when renal and GI bleeding risk is low.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "oral_prednisone_or_prednisolone",
+      "drug_class": "systemic_glucocorticoid",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "anti_inflammatory",
+      "required_context_axes": ["abdominal_pain_activity", "gastrointestinal_bleeding_activity", "proteinuria_activity", "hematuria_activity", "active_serious_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "abdominal_pain_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 1.8], "clinical_rationale": "Steroids often shorten severe inflammatory abdominal pain."},
+        {"axis_id": "proteinuria_activity", "condition": "high", "effect": "strengthens_renal_monitoring_need", "factor_range": [1.0, 1.5], "clinical_rationale": "Renal disease increases rationale for anti-inflammatory renal trajectory control and close follow-up."},
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "weakens_or_requires_control_first", "factor_range": [0.2, 0.8], "clinical_rationale": "Active serious infection can be worsened by systemic steroids."}
+      ],
+      "failure_modes": ["masked_bowel_ischemia_or_perforation", "infection", "hyperglycemia", "relapse_during_taper", "insufficient_for_severe_crescentic_nephritis"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [5, 45]},
+        "M_IGA_VASCULITIS_CUTANEOUS_LEUKOCYTOCLASTIC_VASCULITIS": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [5, 45]},
+        "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 30]}
+      },
+      "onset_delay_days": [0.5, 3.0],
+      "carryover_after_stop_days": [1, 21],
+      "side_effects": [
+        {"axis_id": "steroid_hyperglycemia_hazard", "direction": "up", "magnitude_range": [0.0001, 0.04], "interpretation": "Dose-related hyperglycemia risk."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.00005, 0.01], "interpretation": "Infection risk rises with dose and duration."},
+        {"axis_id": "gastrointestinal_perforation_hazard", "direction": "up_or_masked", "magnitude_range": [0.0, 0.01], "interpretation": "Symptoms of ischemia/perforation can be masked during steroid treatment."}
+      ],
+      "context_specific_role": "Systemic anti-inflammatory vector for significant abdominal, cutaneous, articular, or renal involvement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_methylprednisolone_pulse",
+      "drug_class": "high_dose_systemic_glucocorticoid",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "organ_threatening_anti_inflammatory",
+      "required_context_axes": ["gastrointestinal_bleeding_hazard", "acute_kidney_injury_hazard", "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "active_serious_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.0], "clinical_rationale": "Severe GI vasculitis may require rapid inflammatory suppression."},
+        {"axis_id": "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.0], "clinical_rationale": "Crescentic nephritis is organ-threatening."},
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "weakens_or_requires_control_first", "factor_range": [0.2, 0.8], "clinical_rationale": "Pulse steroids can worsen infection."}
+      ],
+      "failure_modes": ["masked_surgical_abdomen", "severe_hyperglycemia", "infection", "psychosis", "fluid_retention"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS": {"peak_value_factor": [0.25, 0.65], "plateau_duration_factor": [0.25, 0.7], "decline_half_life_days": [3, 30]},
+        "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE": {"peak_value_factor": [0.25, 0.7], "plateau_duration_factor": [0.25, 0.75], "decline_half_life_days": [2, 21]},
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.4, 0.8], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [14, 120]}
+      },
+      "onset_delay_days": [0.1, 1.5],
+      "carryover_after_stop_days": [2, 21],
+      "side_effects": [
+        {"axis_id": "steroid_hyperglycemia_hazard", "direction": "up", "magnitude_range": [0.0005, 0.06], "interpretation": "Pulse-dose steroid hyperglycemia risk."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "Severe immunosuppression-related infection risk."}
+      ],
+      "context_specific_role": "Rapid suppression vector for organ-threatening GI or renal IgAV when severe inflammatory activity dominates.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "mycophenolate_mofetil",
+      "drug_class": "antimetabolite_immunosuppressant",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "steroid_sparing_or_refractory_control",
+      "required_context_axes": ["proteinuria_activity", "urinary_protein_creatinine_ratio", "gastrointestinal_bleeding_activity", "white_blood_cell_count", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "proteinuria_activity", "condition": "persistent_or_high", "effect": "strengthens", "factor_range": [1.1, 2.0], "clinical_rationale": "Persistent nephritis/proteinuria increases need for steroid-sparing renal control."},
+        {"axis_id": "gastrointestinal_bleeding_activity", "condition": "refractory_after_steroids", "effect": "strengthens", "factor_range": [1.1, 1.8], "clinical_rationale": "Refractory GI vasculitis has case-report support for MMF."},
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "contraindicates", "factor_range": [0.0, 0.1], "clinical_rationale": "MMF is teratogenic."}
+      ],
+      "failure_modes": ["leukopenia", "infection", "gastrointestinal_intolerance", "teratogenicity", "insufficient_for_rapidly_progressive_nephritis_alone"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [30, 180]},
+        "M_IGA_VASCULITIS_GASTROINTESTINAL_SUBMUCOSAL_EDEMA_HEMORRHAGE": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [14, 90]},
+        "M_IGA_VASCULITIS_TREATMENT_IMMUNOSUPPRESSION_TOXICITY_ACTIVITY": {"peak_value_factor": [1.1, 1.8], "decline_half_life_days": [30, 180]}
+      },
+      "onset_delay_days": [7, 45],
+      "carryover_after_stop_days": [7, 60],
+      "side_effects": [
+        {"axis_id": "white_blood_cell_count", "direction": "down", "magnitude_range": [0.5, 4.0], "interpretation": "Leukopenia or marrow suppression."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.00005, 0.01], "interpretation": "Immunosuppression-related infection risk."}
+      ],
+      "context_specific_role": "Steroid-sparing or refractory-control vector for persistent nephritis or refractory GI involvement.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "azathioprine",
+      "drug_class": "thiopurine_antimetabolite",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "maintenance_or_steroid_sparing",
+      "required_context_axes": ["proteinuria_activity", "serum_alt", "white_blood_cell_count", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "proteinuria_activity", "condition": "persistent", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Persistent renal inflammatory activity may need steroid-sparing maintenance."},
+        {"axis_id": "white_blood_cell_count", "condition": "low", "effect": "weakens_or_changes_toxicity", "factor_range": [0.3, 0.8], "clinical_rationale": "Cytopenia increases toxicity risk."}
+      ],
+      "failure_modes": ["leukopenia", "hepatotoxicity", "infection", "pancreatitis", "inadequate_control_of_severe_nephritis"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [30, 180]},
+        "M_IGA_VASCULITIS_TREATMENT_IMMUNOSUPPRESSION_TOXICITY_ACTIVITY": {"peak_value_factor": [1.05, 1.6], "decline_half_life_days": [30, 180]}
+      },
+      "onset_delay_days": [14, 60],
+      "carryover_after_stop_days": [14, 90],
+      "side_effects": [
+        {"axis_id": "white_blood_cell_count", "direction": "down", "magnitude_range": [0.3, 3.0], "interpretation": "Thiopurine marrow suppression."},
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [5, 100], "interpretation": "Hepatotoxicity monitoring."}
+      ],
+      "context_specific_role": "Steroid-sparing or maintenance immunosuppression vector in selected persistent/recurrent disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "cyclophosphamide",
+      "drug_class": "alkylating_immunosuppressant",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "severe_organ_threatening_control",
+      "required_context_axes": ["iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "acute_kidney_injury_hazard", "gastrointestinal_perforation_hazard", "white_blood_cell_count", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.5], "clinical_rationale": "Crescentic or rapidly progressive nephritis is the context where cytotoxic suppression may be considered."},
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "contraindicates_or_requires_specialist_alternative", "factor_range": [0.0, 0.2], "clinical_rationale": "Cyclophosphamide is gonadotoxic and teratogenic."}
+      ],
+      "failure_modes": ["infection", "cytopenia", "infertility", "hemorrhagic_cystitis", "malignancy_risk", "limited_evidence_in_IgAV"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_COMPLEMENT_NEUTROPHIL_SMALL_VESSEL_VASCULITIS": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 120]},
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.3, 0.85], "decline_half_life_days": [30, 180]},
+        "M_IGA_VASCULITIS_TREATMENT_IMMUNOSUPPRESSION_TOXICITY_ACTIVITY": {"peak_value_factor": [1.3, 2.5], "decline_half_life_days": [30, 365]}
+      },
+      "onset_delay_days": [3, 21],
+      "carryover_after_stop_days": [14, 120],
+      "side_effects": [
+        {"axis_id": "white_blood_cell_count", "direction": "down", "magnitude_range": [1.0, 8.0], "interpretation": "Dose-related cytopenia."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.03], "interpretation": "Severe immunosuppression-related infection."}
+      ],
+      "context_specific_role": "High-toxicity vector for selected organ-threatening renal or refractory systemic IgAV when benefit outweighs toxicity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "rituximab",
+      "drug_class": "anti_cd20_monoclonal_antibody",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "refractory_or_relapsing_control",
+      "required_context_axes": ["proteinuria_activity", "active_serious_infection_activity", "serious_infection_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "proteinuria_activity", "condition": "persistent_or_relapsing", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Refractory adult IgAV nephritis or systemic disease has case-series support for B-cell depletion."},
+        {"axis_id": "active_serious_infection_activity", "condition": "high", "effect": "weakens_or_requires_control_first", "factor_range": [0.2, 0.8], "clinical_rationale": "Active serious infection increases risk from B-cell depletion."}
+      ],
+      "failure_modes": ["infusion_reaction", "hypogammaglobulinemia", "infection", "late_neutropenia", "HBV_reactivation"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [60, 365]},
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.4, 0.85], "decline_half_life_days": [60, 365]},
+        "M_IGA_VASCULITIS_TREATMENT_IMMUNOSUPPRESSION_TOXICITY_ACTIVITY": {"peak_value_factor": [1.1, 2.0], "decline_half_life_days": [90, 365]}
+      },
+      "onset_delay_days": [14, 60],
+      "carryover_after_stop_days": [90, 365],
+      "side_effects": [
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "B-cell depletion and hypogammaglobulinemia increase infection risk."}
+      ],
+      "context_specific_role": "Refractory, relapsing, or steroid-sparing B-cell depletion vector in selected adult IgAV contexts.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "ace_inhibitor_or_arb",
+      "drug_class": "renin_angiotensin_system_blocker",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "renal_protective_support",
+      "required_context_axes": ["urinary_protein_creatinine_ratio", "systolic_blood_pressure", "serum_creatinine", "serum_potassium", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "urinary_protein_creatinine_ratio", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.0], "clinical_rationale": "Proteinuria reduction lowers long-term CKD risk."},
+        {"axis_id": "serum_creatinine", "condition": "rising_or_severe_aki", "effect": "weakens_or_requires_delay", "factor_range": [0.2, 0.8], "clinical_rationale": "Hemodynamic AKI can worsen with RAS blockade during acute volume depletion or severe renal injury."},
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "contraindicates", "factor_range": [0.0, 0.1], "clinical_rationale": "RAS blockers are fetotoxic during pregnancy."}
+      ],
+      "failure_modes": ["hyperkalemia", "hemodynamic_creatinine_rise", "hypotension", "contraindicated_in_pregnancy"],
+      "theta_changes": [
+        {"covariate": "proteinuria_and_ckd_progression_hazard", "direction": "down", "duration": "months_to_years"}
+      ],
+      "push_targets": [
+        {"axis_id": "urinary_protein_creatinine_ratio", "direction": "down", "magnitude_range": [0.05, 1.5], "unit": "g_per_g_creatinine"},
+        {"axis_id": "systolic_blood_pressure", "direction": "down", "magnitude_range": [5, 20], "unit": "mmHg"},
+        {"axis_id": "end_stage_kidney_disease_hazard", "direction": "down", "magnitude_range": [0.000001, 0.002], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [3, 30],
+      "carryover_after_stop_days": [3, 30],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 0.5], "interpretation": "Expected hemodynamic creatinine rise or AKI if volume-depleted."},
+        {"axis_id": "serum_potassium", "direction": "up", "magnitude_range": [0.1, 1.0], "interpretation": "Hyperkalemia risk."}
+      ],
+      "context_specific_role": "Proteinuria and BP-modulating renal protection once hemodynamics and acute kidney injury allow.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "surgical_or_endoscopic_management_of_intussusception_bleeding_or_perforation",
+      "drug_class": "procedural_source_control_and_hemostasis",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "procedural_rescue",
+      "required_context_axes": ["iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "intestinal_obstruction_activity", "peritonitis_activity", "gastrointestinal_bleeding_hazard", "gastrointestinal_perforation_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "condition": "high", "effect": "required_for_effect", "factor_range": [1.5, 4.0], "clinical_rationale": "Mechanical intussusception/obstruction requires reduction, close surgical observation, or operation depending viability and age/context."},
+        {"axis_id": "gastrointestinal_perforation_hazard", "condition": "high", "effect": "required_for_effect", "factor_range": [2.0, 5.0], "clinical_rationale": "Perforation or necrosis requires operative control."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 3.0], "clinical_rationale": "Active bleeding may require endoscopic, radiologic, or surgical hemostasis."}
+      ],
+      "failure_modes": ["procedure_bleeding", "missed_multifocal_bowel_ischemia", "recurrent_obstruction", "delayed_wound_healing_during_steroids"],
+      "push_targets": [
+        {"axis_id": "intestinal_obstruction_activity", "direction": "down", "magnitude_range": [0.3, 0.9], "unit": "severity_score_0_1"},
+        {"axis_id": "iga_vasculitis_intussusception_activity_in_D-IGA-VASCULITIS", "direction": "down", "magnitude_range": [0.4, 0.95], "unit": "severity_score_0_1"},
+        {"axis_id": "gastrointestinal_perforation_hazard", "direction": "down", "magnitude_range": [0.00001, 0.03], "unit": "events_per_day"},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "direction": "down", "magnitude_range": [0.00001, 0.05], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0.0, 1.0],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "Procedural bleeding risk."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.02], "interpretation": "Postoperative or catheter-related infection risk."}
+      ],
+      "context_specific_role": "Mechanical and hemostatic rescue vector for intussusception, obstruction, ischemia, perforation, or uncontrolled GI bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "blood_transfusion_hemostatic_resuscitation_and_icu_support",
+      "drug_class": "critical_care_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive_rescue",
+      "required_context_axes": ["hemoglobin", "gastrointestinal_bleeding_hazard", "mean_arterial_pressure", "serum_lactate", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 3.0], "clinical_rationale": "Hemodynamic support and transfusion matter when bleeding is clinically significant."},
+        {"axis_id": "mean_arterial_pressure", "condition": "low", "effect": "strengthens", "factor_range": [1.2, 3.0], "clinical_rationale": "Shock physiology requires immediate support."}
+      ],
+      "failure_modes": ["ongoing_uncontrolled_bleeding", "transfusion_reaction", "volume_overload", "does_not_reduce_vasculitis_driver"],
+      "push_targets": [
+        {"axis_id": "hemoglobin", "direction": "up", "magnitude_range": [1.0, 5.0], "unit": "g/dL"},
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.5, 5.0], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0.0, 0.2],
+      "carryover_after_stop_days": [0.0, 7.0],
+      "side_effects": [
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0, 0.005], "interpretation": "Line and ICU exposure can add infection risk."}
+      ],
+      "context_specific_role": "Physiologic rescue vector during hemorrhage, shock, ICU care, or perioperative phases.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "renal_replacement_therapy",
+      "drug_class": "extracorporeal_renal_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive_rescue",
+      "required_context_axes": ["serum_creatinine", "blood_urea_nitrogen", "serum_potassium", "acute_kidney_injury_hazard", "dialysis_requirement_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "acute_kidney_injury_hazard", "condition": "high", "effect": "required_for_effect", "factor_range": [1.5, 3.0], "clinical_rationale": "Renal replacement is a support vector for severe AKI complications, not a direct vasculitis treatment."},
+        {"axis_id": "serum_potassium", "condition": "high", "effect": "strengthens", "factor_range": [1.5, 3.0], "clinical_rationale": "Hyperkalemia is a direct dialysis indication context."}
+      ],
+      "failure_modes": ["catheter_infection", "hypotension", "bleeding", "does_not_reduce_immunologic_nephritis_driver"],
+      "push_targets": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0.5, 2.5], "unit": "mmol/L"},
+        {"axis_id": "blood_urea_nitrogen", "direction": "down", "magnitude_range": [20, 100], "unit": "mg/dL"},
+        {"axis_id": "serum_lactate", "direction": "down_or_variable", "magnitude_range": [0.0, 3.0], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0.0, 1.0],
+      "carryover_after_stop_days": [0.0, 3.0],
+      "side_effects": [
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.01], "interpretation": "Dialysis catheter infection risk."},
+        {"axis_id": "mean_arterial_pressure", "direction": "down_or_variable", "magnitude_range": [0, 20], "interpretation": "Hemodynamic instability during dialysis."}
+      ],
+      "context_specific_role": "Renal support vector for severe AKI, hyperkalemia, acidosis, uremia, fluid overload, or ESKD.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "plasma_exchange",
+      "drug_class": "extracorporeal_immune_complex_removal",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "selected_rescue",
+      "required_context_axes": ["iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "dialysis_requirement_hazard", "gastrointestinal_bleeding_hazard", "major_bleeding_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "dialysis_requirement_hazard", "condition": "high", "effect": "strengthens_case_by_case", "factor_range": [1.0, 1.8], "clinical_rationale": "Some severe IgAV nephritis case reports use plasma exchange with dialysis, but evidence is limited."},
+        {"axis_id": "gastrointestinal_bleeding_hazard", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.5, 1.2], "clinical_rationale": "Active bleeding and catheter/coagulation shifts change procedural risk."}
+      ],
+      "failure_modes": ["catheter_complications", "bleeding", "hypocalcemia", "infection", "uncertain_incremental_benefit"],
+      "trajectory_modifications": {
+        "M_IGA_VASCULITIS_GALACTOSE_DEFICIENT_IGA1_IMMUNE_COMPLEX_ACTIVITY": {"peak_value_factor": [0.4, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [1, 14]},
+        "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.5, 0.9], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [7, 60]}
+      },
+      "onset_delay_days": [0.0, 3.0],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "major_bleeding_hazard", "direction": "up", "magnitude_range": [0.0001, 0.01], "interpretation": "Catheter and coagulation-factor shifts can increase bleeding risk."},
+        {"axis_id": "serious_infection_hazard", "direction": "up", "magnitude_range": [0.0001, 0.01], "interpretation": "Catheter and immunoglobulin removal can increase infection risk."}
+      ],
+      "context_specific_role": "Selected rescue vector for catastrophic renal or GI disease when immunologic burden is extreme and local expertise supports use.",
+      "knowledge_confidence": "low"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "childhood_age",
+      "type": "demographic",
+      "modulation": {
+        "age_3_to_15": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "iga_vasculitis_dependent_lower_extremity_purpura_distribution_activity_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [1.0, 1.5], "clinical_rationale": "Classic dependent purpura is common in children."},
+            {"axis_id": "intussusception_hazard_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [1.2, 3.0], "clinical_rationale": "Intussusception is more common in pediatric GI IgAV than in adults."}
+          ],
+          "trajectory_modulation": "Higher prior and often self-limited course, but renal and GI hazards still need surveillance."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "adult_or_elderly_onset",
+      "type": "demographic",
+      "modulation": {
+        "adult_onset": {
+          "P_disease_ratio": [0.2, 0.8],
+          "axis_response_modulation": [
+            {"axis_id": "proteinuria_activity", "direction": "up", "factor_range": [1.2, 3.0], "clinical_rationale": "Adult IgAV has more frequent and severe renal involvement."},
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Adults more often present with AKI or impaired renal function."},
+            {"axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Older adults tolerate GI bleeding, infection, and renal failure poorly."}
+          ],
+          "trajectory_modulation": "Lower incidence than childhood disease but higher renal, GI, treatment, and mortality risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_upper_respiratory_or_gastrointestinal_infection",
+      "type": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_IGA_VASCULITIS_MUCOSAL_OR_EXPOSURE_TRIGGER_ACTIVITY", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Mucosal infection is a common antecedent trigger."},
+            {"axis_id": "serum_crp", "direction": "up_or_variable", "factor_range": [1.0, 2.0], "clinical_rationale": "Trigger infection can add acute-phase response."}
+          ],
+          "trajectory_modulation": "Raises prior and can amplify acute inflammatory markers."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_vaccine_or_drug_exposure",
+      "type": "trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_IGA_VASCULITIS_MUCOSAL_OR_EXPOSURE_TRIGGER_ACTIVITY", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Vaccines and drugs are reported triggers but do not define the disease leaf."}
+          ],
+          "trajectory_modulation": "May time-lock onset but should not restrict the disease manifold to a trigger subtype."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "renal_involvement_at_presentation",
+      "type": "organ_involvement_context",
+      "modulation": {
+        "hematuria_or_proteinuria_present": {
+          "P_disease_ratio": [1.2, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_IGA_VASCULITIS_IGA_NEPHRITIS_ACTIVITY", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Hematuria and proteinuria identify renal IgAV activity."},
+            {"axis_id": "end_stage_kidney_disease_hazard", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Persistent renal involvement is the main long-term morbidity driver."}
+          ],
+          "trajectory_modulation": "Raises need for renal monitoring, BP/proteinuria control, and escalation when severe."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "nephrotic_range_proteinuria_or_crescentic_nephritis",
+      "type": "severity_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "urinary_protein_creatinine_ratio", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Nephrotic-range proteinuria defines high-risk renal phenotype."},
+            {"axis_id": "iga_vasculitis_crescentic_gn_activity_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Crescents identify rapidly progressive nephritic risk."},
+            {"axis_id": "dialysis_requirement_hazard", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Severe renal pathology can require dialysis."}
+          ],
+          "trajectory_modulation": "Shifts renal trajectory toward organ-threatening disease and slower recovery."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "severe_gastrointestinal_involvement",
+      "type": "severity_context",
+      "modulation": {
+        "gi_bleeding_obstruction_intussusception_or_peritonitis": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "M_IGA_VASCULITIS_GI_ISCHEMIA_OBSTRUCTION_PERFORATION_ACTIVITY", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Bleeding, obstruction, and peritonitis indicate severe bowel-wall disease."},
+            {"axis_id": "gastrointestinal_bleeding_hazard", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Overt bleeding predicts major bleeding need."},
+            {"axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [1.3, 8.0], "clinical_rationale": "Severe GI complications are major acute mortality drivers."}
+          ],
+          "trajectory_modulation": "Raises surgical, ICU, transfusion, and rapid immunosuppression decision stakes."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "preexisting_ckd_hypertension_diabetes_or_frailty",
+      "type": "host_reserve_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": [
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Background kidney disease raises baseline creatinine and lowers reserve."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "CKD, diabetes, and frailty increase AKI vulnerability."},
+            {"axis_id": "mortality_hazard_in_D-IGA-VASCULITIS", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Lower reserve worsens severe GI/renal/treatment outcomes."}
+          ],
+          "trajectory_modulation": "Raises complication risk and changes treatment toxicity."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "active_infection_or_immunosuppression_context",
+      "type": "treatment_safety_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": [
+            {"axis_id": "active_serious_infection_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Active infection changes safety of steroids and immunosuppression."},
+            {"axis_id": "serious_infection_hazard", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Immunosuppression increases infection hazard."},
+            {"axis_id": "white_blood_cell_count", "direction": "blunted_or_variable", "factor_range": [0.5, 1.5], "clinical_rationale": "Preexisting immunosuppression can alter WBC response."}
+          ],
+          "trajectory_modulation": "Increases toxicity of immunosuppressive vectors and raises mimic context."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Document purpura morphology, palpability, blanching, symmetry, dependent distribution, buttock/trunk/upper-extremity spread, edema, bullae, necrosis, and platelet count so thrombocytopenic purpura and infectious mimics are not conflated with IgAV.",
+    "Trend abdominal pain quality, vomiting, diarrhea, hematemesis, melena, hematochezia, stool occult blood, hemoglobin, lactate, peritoneal signs, and hemodynamics; image promptly when obstruction, intussusception, ischemia, or perforation is possible.",
+    "Trend urinalysis with sediment, urine protein quantification, serum creatinine, eGFR, albumin, potassium, and blood pressure at presentation and during follow-up; persistent proteinuria or rising creatinine should not be treated as a purely cutaneous flare.",
+    "Use skin biopsy with direct immunofluorescence or renal biopsy when diagnosis or renal severity is uncertain; biopsy evidence is confirmatory/post-workup context unless the test mode explicitly includes diagnostic-workup information.",
+    "Preserve mimic evidence: ANCA, ANA/dsDNA, complements, cryoglobulins, hepatitis/HIV, blood cultures, stool studies, endocarditis evaluation, platelet count, coagulation, and imaging source evidence can all redirect ranking when truly present.",
+    "Avoid NSAIDs when renal involvement, dehydration, GI bleeding, peptic injury, anticoagulation, or high frailty risk is present; use renal-safe analgesia and antiemetics when needed.",
+    "During glucocorticoid therapy, monitor for masked surgical abdomen, GI perforation, infection, glucose elevation, blood pressure, fluid retention, and bone/GI protection needs.",
+    "For severe GI bleeding, obstruction, intussusception, ischemia, or perforation, coordinate gastroenterology, surgery, interventional radiology, ICU, transfusion support, and immunosuppression decisions rather than relying on immunosuppression alone.",
+    "For significant nephritis, coordinate nephrology and rheumatology; consider renal biopsy severity, proteinuria persistence, BP/proteinuria control, and renal replacement indications as separate axes.",
+    "Vaccination/infection/drug triggers should be retained as context but should not narrow the first-layer disease name; future subtype modeling can occur after the base IgAV manifold is diagnosed.",
+    "Do not force IgAV to win by deleting evidence for mimics such as ANCA vasculitis, SLE, cryoglobulinemia, thrombocytopenic purpura, meningococcemia, infective endocarditis, IBD, appendicitis, or structural intussusception."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-IGA-VASCULITIS.",
+    "No treatment-rank or diagnosis-rank label fields are encoded.",
+    "Age, renal involvement, GI severity, intussusception, biopsy site, and trigger are represented as axes, risk factors, or treatment context rather than disease-name qualifiers.",
+    "Because the user limited write scope for this task, master_axes.json was not updated; new IgAV-specific and pending-general axis names are local to this disease distillation."
+  ]
+}

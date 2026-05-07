@@ -1,0 +1,516 @@
+{
+  "disease": "D-TRICHINELLOSIS",
+  "disease_id": "D-TRICHINELLOSIS",
+  "disease_name": "Trichinellosis",
+  "schema_version": "v5_current",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Trichinellosis",
+    "leaf_granularity": "First-layer disease leaf for Trichinellosis. The manifold covers enteral acquisition, larval dissemination, skeletal muscle invasion, eosinophilic inflammatory response, and severe cardiac, neurologic, pulmonary, or multiorgan complications without splitting by animal source, Trichinella species, geography, host age, or severity subtype.",
+    "boundary_policy": "Animal source, outbreak geography, Trichinella species, host age, myocarditis, neurologic involvement, ARDS, and severity are represented as axes, hazards, risk factors, or treatment context rather than disease-name qualifiers."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY",
+      "display_name": "Enteral adult worm activity",
+      "clinical_meaning": "Ingested larvae are released from undercooked meat, mature in the small intestine, and drive early abdominal pain, diarrhea, nausea, vomiting, and the source of newborn larvae.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [1, 7],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [2, 21],
+      "decline_half_life_days": [2, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION",
+      "display_name": "Newborn larval hematogenous dissemination",
+      "clinical_meaning": "Newborn larvae cross the intestinal mucosa, enter lymphatic and blood circulation, and seed striated muscle and vulnerable organs.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [7, 28],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [3, 35],
+      "decline_half_life_days": [7, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION",
+      "display_name": "Th2 eosinophilic inflammatory response",
+      "clinical_meaning": "Helminth-driven Th2 immunity and eosinophilic tissue inflammation produce marked blood eosinophilia, edema, rash, fever, capillary leak, and organ injury out of proportion to routine bacterial markers.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [10, 35],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [7, 90],
+      "decline_half_life_days": [7, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS",
+      "display_name": "Skeletal muscle nurse-cell myositis",
+      "clinical_meaning": "Larval invasion of striated muscle creates nurse-cell complexes, myocyte injury, edema, pain, weakness, CK/LDH/AST elevation, and occasionally abscess-like myositis or secondary bacterial osteomyelitis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [14, 45],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [14, 180],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_CAPILLARY_LEAK_EDEMA",
+      "display_name": "Capillary leak and craniofacial edema",
+      "clinical_meaning": "Inflammatory vascular permeability produces periorbital or facial edema, conjunctival or nail-bed hemorrhage, serosal effusions, and hypoproteinemia in some patients.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [7, 28],
+      "peak_value_range": [0.1, 0.9],
+      "plateau_duration_days": [2, 30],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS",
+      "display_name": "Eosinophilic myocarditis and cardiac injury",
+      "clinical_meaning": "Larval and eosinophil-rich myocardial injury can cause chest pain, troponin elevation, pericardial effusion, arrhythmia, heart failure, cardiogenic shock, or sudden death.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [14, 45],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS",
+      "display_name": "CNS inflammatory vasculitis and encephalitis",
+      "clinical_meaning": "Severe dissemination and eosinophilic vascular injury can affect brain or meninges, producing headache, altered mental status, focal deficits, seizures, encephalitis, or coma.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [14, 45],
+      "peak_value_range": [0.0, 0.75],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_TRICH_PULMONARY_PLEURAL_INJURY",
+      "display_name": "Pulmonary and pleural inflammatory injury",
+      "clinical_meaning": "Severe systemic or larval inflammatory injury can produce cough, dyspnea, pneumonitis, pleural effusion, hypoxemia, and ARDS.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.002],
+      "peak_day_range": [10, 45],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 45],
+      "decline_half_life_days": [5, 90],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_TRICH_CRITICAL_ORGAN_FAILURE",
+      "display_name": "Critical organ failure from severe trichinellosis",
+      "clinical_meaning": "High parasite inoculum, delayed therapy, myocarditis, ARDS, encephalitis, rhabdomyolysis, shock, or secondary infection converge into multiorgan failure and mortality hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.001],
+      "peak_day_range": [10, 60],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [0, 60],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "target_id": "diarrhea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "enteral_phase", "clinical_rationale": "Adult worms and intestinal inflammation drive early diarrhea.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "enteral_phase", "clinical_rationale": "Enteral infection can cause abdominal pain before myositis becomes dominant.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "target_id": "nausea_vomiting_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "enteral_phase", "clinical_rationale": "Gastrointestinal irritation can produce nausea or vomiting.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "target_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 14], "phase": "transition_to_muscle_phase", "clinical_rationale": "Adult females release newborn larvae that disseminate hematogenously.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION", "target_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Larval dissemination provokes Th2 and eosinophilic host response.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION", "target_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 21], "phase": "muscle_phase", "clinical_rationale": "Larvae preferentially encyst in striated muscle.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "absolute_eosinophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Eosinophilia is a core laboratory expression of tissue helminth infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "serum_ige", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 21], "phase": "systemic_phase", "clinical_rationale": "Helminth-driven Th2 response may raise serum IgE.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Systemic inflammatory response commonly produces fever.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "fever_history_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Fever can be reported historically even when measured temperature is normal at one visit.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "white_blood_cell_count", "effect_on_target": "variable", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Leukocytosis may reflect eosinophilia, neutrophilic stress, or secondary infection.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Inflammation can raise CRP, though eosinophilia and muscle enzymes are usually more specific.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CAPILLARY_LEAK_EDEMA", "target_id": "periorbital_edema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "phase": "systemic_phase", "clinical_rationale": "Periorbital edema is a classic capillary-leak expression.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_CAPILLARY_LEAK_EDEMA", "target_id": "facial_edema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "phase": "systemic_phase", "clinical_rationale": "Facial edema often accompanies periorbital edema in symptomatic disease.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_CAPILLARY_LEAK_EDEMA", "target_id": "rash_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "phase": "systemic_phase", "clinical_rationale": "Hypersensitivity and vascular inflammation can produce transient rash.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CAPILLARY_LEAK_EDEMA", "target_id": "subconjunctival_hemorrhage_activity_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_phase", "clinical_rationale": "Conjunctival or nail-bed hemorrhagic signs can occur in classic trichinellosis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CAPILLARY_LEAK_EDEMA", "target_id": "pleural_effusion_extent", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 21], "phase": "pulmonary_or_serosal", "clinical_rationale": "Serosal inflammation and capillary leak can produce pleural effusion.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "myalgia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "muscle_phase", "clinical_rationale": "Larval myositis directly causes diffuse or focal myalgia.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "proximal_muscle_weakness_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "Inflamed skeletal muscle can cause proximal weakness.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "muscle_tenderness_swelling_activity_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "Focal myositis may present as tender swollen muscle groups.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "muscle_mri_edema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 28], "phase": "muscle_phase", "clinical_rationale": "MRI can show muscle edema or abscess-like myositis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "serum_creatine_kinase", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "Myocyte injury raises serum CK.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "serum_ldh", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "LDH rises with tissue and muscle injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "serum_ast", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "AST can rise from skeletal muscle injury as well as hepatic stress.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "serum_alt", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 21], "phase": "muscle_phase", "clinical_rationale": "ALT may rise mildly during systemic or muscle-associated injury.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "pyomyositis_abscess_activity_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [7, 45], "phase": "complicated_muscle_phase", "conditionality": "Uncommon; most relevant with focal swelling, delayed presentation, or secondary bacterial invasion.", "clinical_rationale": "Damaged muscle can form abscess-like pyomyositis in rare cases.", "knowledge_confidence": "low"},
+    {"source_id": "pyomyositis_abscess_activity_in_D-TRICHINELLOSIS", "target_id": "osteomyelitis_hazard_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "event_transition", "lag_days_range": [7, 30], "phase": "rare_complication", "clinical_rationale": "Focal pyomyositis adjacent to bone can evolve into secondary osteomyelitis.", "knowledge_confidence": "low"},
+    {"source_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS", "target_id": "serum_troponin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "cardiac_complication", "clinical_rationale": "Myocardial injury raises troponin.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS", "target_id": "myocarditis_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "cardiac_complication", "clinical_rationale": "Cardiac tissue invasion and eosinophilic inflammation produce myocarditis risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS", "target_id": "cardiac_arrhythmia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "cardiac_complication", "clinical_rationale": "Inflamed myocardium and conduction involvement can produce arrhythmias.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS", "target_id": "cardiogenic_shock_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "cardiac_complication", "clinical_rationale": "Severe myocarditis or stress on underlying cardiac disease can cause shock.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS", "target_id": "headache_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "phase": "neurologic_complication", "clinical_rationale": "CNS inflammation or vascular injury can produce headache.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS", "target_id": "altered_mental_status_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 10], "phase": "neurologic_complication", "clinical_rationale": "Encephalitis or severe systemic illness can alter mental status.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS", "target_id": "encephalitis_hazard_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 10], "phase": "neurologic_complication", "clinical_rationale": "CNS trichinellosis can manifest as encephalitis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_PULMONARY_PLEURAL_INJURY", "target_id": "cough_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "pulmonary_complication", "clinical_rationale": "Pulmonary inflammatory involvement may cause cough.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_PULMONARY_PLEURAL_INJURY", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "pulmonary_complication", "clinical_rationale": "Pneumonitis, pleural effusion, myocarditis, or ARDS can produce dyspnea.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_PULMONARY_PLEURAL_INJURY", "target_id": "ards_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "phase": "pulmonary_complication", "clinical_rationale": "Severe pulmonary inflammatory injury can progress to ARDS.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "severe_myositis", "conditionality": "Most relevant with rhabdomyolysis, dehydration, shock, or nephrotoxic exposure.", "clinical_rationale": "Severe muscle injury can contribute to AKI.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_EOSINOPHILIC_MYOCARDITIS", "target_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "critical", "clinical_rationale": "Cardiac failure can drive shock and multiorgan injury.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS", "target_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "critical", "clinical_rationale": "Severe CNS involvement can drive poor outcome and intensive-care needs.", "knowledge_confidence": "medium"},
+    {"source_id": "M_TRICH_PULMONARY_PLEURAL_INJURY", "target_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "critical", "clinical_rationale": "ARDS or severe hypoxemia can precipitate multiorgan failure.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "target_id": "multiorgan_failure_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 7], "phase": "critical", "clinical_rationale": "Critical trichinellosis can culminate in multiorgan failure.", "knowledge_confidence": "high"},
+    {"source_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "target_id": "mortality_hazard_in_D-TRICHINELLOSIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 7], "phase": "critical", "clinical_rationale": "Mortality emerges from severe cardiac, neurologic, pulmonary, renal, or multiorgan complications.", "knowledge_confidence": "high"},
+    {"source_id": "active_anti_trichinella_coverage_probability", "target_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "effect_on_target": "decrease", "edge_type": "treatment_modifier_to_mechanism", "lag_days_range": [1, 7], "phase": "treated_course", "clinical_rationale": "Active benzimidazole exposure reduces adult worms and continuing larval production.", "knowledge_confidence": "high"},
+    {"source_id": "active_anti_trichinella_coverage_probability", "target_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION", "effect_on_target": "decrease", "edge_type": "treatment_modifier_to_mechanism", "lag_days_range": [1, 14], "phase": "treated_course", "conditionality": "Effect is strongest when given early before larvae are fully established in muscle.", "clinical_rationale": "Anthelmintic exposure limits ongoing dissemination but is less able to reverse established encysted muscle larvae.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "raw_undercooked_meat_exposure_context_activity", "category": "risk_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "History of eating raw or undercooked pork, wild boar, bear, horse, reptile, or other implicated meat.", "baseline_range": [0, 0.03], "peak_day_range": [-60, 0], "peak_value_range": [0, 1], "plateau_duration_days": [1, 365], "decline_half_life_days": [30, 365], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "outbreak_shared_implicated_meal_context_activity", "category": "risk_context", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Shared meal or outbreak exposure context with compatible trichinellosis cases.", "baseline_range": [0, 0.005], "peak_day_range": [-60, 0], "peak_value_range": [0, 1], "plateau_duration_days": [7, 180], "decline_half_life_days": [30, 365], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "shape_free_text": "Measured fever during enteral or systemic inflammatory phase.", "baseline_range": [36.5, 37.2], "peak_day_range": [7, 28], "peak_value_range": [37.8, 40.5], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Reported fever when exact measured temperature is unavailable.", "baseline_range": [0, 0.05], "peak_day_range": [7, 28], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "shape_free_text": "Tachycardia from fever, pain, hypovolemia, myocarditis, shock, or anxiety.", "baseline_range": [60, 90], "peak_day_range": [7, 35], "peak_value_range": [90, 150], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "shape_free_text": "Tachypnea from fever, pain, metabolic stress, pneumonitis, ARDS, or heart failure.", "baseline_range": [12, 18], "peak_day_range": [7, 35], "peak_value_range": [18, 40], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "shape_free_text": "Blood pressure may be normal in uncomplicated disease and fall with shock or severe myocarditis.", "baseline_range": [75, 100], "peak_day_range": [7, 45], "peak_value_range": [45, 100], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "diarrhea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Enteral prodrome of diarrhea after ingestion of infected meat.", "baseline_range": [0, 0.05], "peak_day_range": [1, 10], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "abdominal_pain_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Enteral-phase abdominal pain or cramps.", "baseline_range": [0, 0.05], "peak_day_range": [1, 10], "peak_value_range": [0.1, 0.9], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "nausea_vomiting_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Nausea or vomiting during enteral phase or severe systemic illness.", "baseline_range": [0, 0.05], "peak_day_range": [1, 10], "peak_value_range": [0.1, 0.8], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "myalgia_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Diffuse or focal muscle pain from larval myositis.", "baseline_range": [0, 0.05], "peak_day_range": [7, 35], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 120], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "muscle_tenderness_swelling_activity_in_D-TRICHINELLOSIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Tender or swollen involved muscles, including calf, thigh, extraocular, respiratory, or generalized skeletal muscle tenderness.", "baseline_range": [0, 0.02], "peak_day_range": [7, 35], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 120], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "proximal_muscle_weakness_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Weakness from inflammatory myositis or severe systemic illness.", "baseline_range": [0, 0.03], "peak_day_range": [7, 45], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [7, 180], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "periorbital_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Periorbital edema from helminth-associated capillary leak.", "baseline_range": [0, 0.01], "peak_day_range": [7, 28], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "facial_edema_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Facial edema, sometimes extending to limbs, during systemic capillary leak.", "baseline_range": [0, 0.02], "peak_day_range": [7, 28], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [2, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "rash_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Transient erythematous, urticarial, or nonspecific rash from hypersensitivity.", "baseline_range": [0, 0.05], "peak_day_range": [3, 21], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.5, 14], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "subconjunctival_hemorrhage_activity_in_D-TRICHINELLOSIS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Subconjunctival or small nail-bed hemorrhagic signs reported in classic trichinellosis.", "baseline_range": [0, 0.005], "peak_day_range": [7, 28], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "headache_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Headache from systemic inflammation or CNS involvement.", "baseline_range": [0, 0.05], "peak_day_range": [7, 35], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "altered_mental_status_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Confusion, encephalopathy, coma, or delirium from encephalitis, shock, hypoxemia, or multiorgan failure.", "baseline_range": [0, 0.02], "peak_day_range": [10, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 45], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "cough_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Cough from pulmonary inflammatory involvement or coincident respiratory disease.", "baseline_range": [0, 0.05], "peak_day_range": [7, 35], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "dyspnea_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "Dyspnea from pneumonitis, pleural effusion, ARDS, myocarditis, heart failure, or anemia.", "baseline_range": [0, 0.03], "peak_day_range": [10, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 45], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "white_blood_cell_count", "category": "lab", "unit": "10^9/L", "log_scale": true, "shape_free_text": "WBC count may rise with eosinophilia, neutrophilic stress, or secondary infection.", "baseline_range": [4, 10], "peak_day_range": [7, 35], "peak_value_range": [8, 40], "plateau_duration_days": [1, 45], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "absolute_eosinophil_count", "category": "lab", "unit": "10^9/L", "log_scale": true, "shape_free_text": "Absolute eosinophilia, often prominent during systemic and muscle phases but can vary by timing or immunosuppression.", "baseline_range": [0.04, 0.5], "peak_day_range": [7, 35], "peak_value_range": [0.7, 15.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 90], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_creatine_kinase", "category": "lab", "unit": "U/L", "log_scale": true, "shape_free_text": "CK elevation from skeletal muscle invasion or rhabdomyolysis.", "baseline_range": [40, 200], "peak_day_range": [7, 35], "peak_value_range": [200, 10000], "plateau_duration_days": [1, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_ldh", "category": "lab", "unit": "U/L", "log_scale": true, "shape_free_text": "LDH elevation from muscle, cardiac, pulmonary, or systemic tissue injury.", "baseline_range": [125, 250], "peak_day_range": [7, 35], "peak_value_range": [250, 2000], "plateau_duration_days": [1, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_ast", "category": "lab", "unit": "U/L", "log_scale": true, "shape_free_text": "AST elevation from skeletal muscle injury, hepatic stress, myocarditis, or multiorgan injury.", "baseline_range": [10, 40], "peak_day_range": [7, 35], "peak_value_range": [40, 1000], "plateau_duration_days": [1, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "serum_alt", "category": "lab", "unit": "U/L", "log_scale": true, "shape_free_text": "ALT may rise mildly with systemic inflammation, hepatic stress, or severe disease.", "baseline_range": [7, 45], "peak_day_range": [7, 35], "peak_value_range": [45, 500], "plateau_duration_days": [1, 45], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_crp", "category": "lab", "unit": "mg/L", "log_scale": true, "shape_free_text": "Inflammatory marker that may be mild to high depending on tissue inflammation and complications.", "baseline_range": [0, 5], "peak_day_range": [7, 35], "peak_value_range": [5, 250], "plateau_duration_days": [1, 45], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_ige", "category": "lab", "unit": "IU/mL", "log_scale": true, "shape_free_text": "IgE can rise with helminth-driven Th2 response.", "baseline_range": [0, 100], "peak_day_range": [10, 45], "peak_value_range": [100, 3000], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "serum_troponin", "category": "lab", "unit": "ng/L", "log_scale": true, "shape_free_text": "Troponin elevation from myocarditis, stress cardiomyopathy, ischemia mimic, or shock.", "baseline_range": [0, 19], "peak_day_range": [10, 45], "peak_value_range": [19, 5000], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 30], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "muscle_mri_edema_activity", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "shape_free_text": "MRI muscle edema, myositis, or inflammatory signal abnormality.", "baseline_range": [0, 0.02], "peak_day_range": [7, 45], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 120], "decline_half_life_days": [14, 180], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "pyomyositis_abscess_activity_in_D-TRICHINELLOSIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Hazard or active state for rare abscess-like pyomyositis complicating trichinellosis-associated muscle injury.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [14, 60], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [0, 30], "decline_half_life_days": [7, 90], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "osteomyelitis_hazard_in_D-TRICHINELLOSIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Rare secondary osteomyelitis hazard when focal pyomyositis extends to adjacent bone or is secondarily infected.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [14, 75], "peak_value_range": [0.0005, 0.04], "plateau_duration_days": [0, 60], "decline_half_life_days": [14, 120], "knowledge_confidence": "low", "axis_role": "finding"},
+    {"axis_id": "pleural_effusion_extent", "category": "imaging_finding", "unit": "relative_extent_0_1", "log_scale": false, "shape_free_text": "Pleural effusion burden when serosal involvement or pulmonary inflammation occurs.", "baseline_range": [0, 0.03], "peak_day_range": [7, 45], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [3, 60], "decline_half_life_days": [7, 60], "knowledge_confidence": "low", "axis_role": "measurement"},
+    {"axis_id": "myocarditis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Hazard of clinically important myocarditis or myocardial inflammatory injury.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [10, 45], "peak_value_range": [0.001, 0.3], "plateau_duration_days": [0, 30], "decline_half_life_days": [7, 90], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "cardiac_arrhythmia_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Atrial or ventricular arrhythmia hazard during myocarditis, shock, electrolyte disturbance, or hypoxemia.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [10, 45], "peak_value_range": [0.0005, 0.25], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "cardiogenic_shock_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Cardiogenic shock hazard from severe myocarditis, stress on preexisting cardiac disease, or arrhythmia.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [10, 45], "peak_value_range": [0.0005, 0.35], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 60], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "encephalitis_hazard_in_D-TRICHINELLOSIS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Hazard of encephalitis, severe encephalopathy, seizure, or focal CNS inflammatory complication caused by trichinellosis.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [10, 45], "peak_value_range": [0.0005, 0.25], "plateau_duration_days": [0, 45], "decline_half_life_days": [7, 120], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "ards_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "ARDS hazard from severe pulmonary inflammatory injury, shock, or secondary infection.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [10, 45], "peak_value_range": [0.0005, 0.35], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "AKI hazard from rhabdomyolysis, shock, dehydration, nephrotoxic exposure, or multiorgan failure.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [10, 45], "peak_value_range": [0.0005, 0.25], "plateau_duration_days": [0, 30], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "multiorgan_failure_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Hazard of multiorgan failure from severe myocarditis, ARDS, CNS involvement, shock, or delayed treatment.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [10, 60], "peak_value_range": [0.001, 0.6], "plateau_duration_days": [0, 45], "decline_half_life_days": [3, 120], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "muscle_biopsy_trichinella_larvae_positivity_probability_in_D-TRICHINELLOSIS", "category": "diagnostic_test", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Probability that muscle biopsy or pepsin digestion identifies Trichinella larvae; confirmatory and context-dependent.", "baseline_range": [0, 0.001], "peak_day_range": [14, 180], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 3650], "decline_half_life_days": [180, 3650], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "trichinella_serology_positivity_probability_in_D-TRICHINELLOSIS", "category": "diagnostic_test", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Probability of positive Trichinella serology after immune response matures; early tests can be negative.", "baseline_range": [0, 0.001], "peak_day_range": [14, 60], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [180, 3650], "knowledge_confidence": "high", "axis_role": "measurement"},
+    {"axis_id": "trichinella_pcr_positivity_probability_in_D-TRICHINELLOSIS", "category": "diagnostic_test", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Probability that PCR on larval or biopsy material identifies Trichinella DNA when organism material is available.", "baseline_range": [0, 0.001], "peak_day_range": [14, 180], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 3650], "decline_half_life_days": [180, 3650], "knowledge_confidence": "medium", "axis_role": "measurement"},
+    {"axis_id": "active_anti_trichinella_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Probability that current anthelmintic exposure has meaningful activity against Trichinella adult worms or migrating larvae at the relevant phase.", "baseline_range": [0, 0.02], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [1, 21], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "oral_antiparasitic_absorption_reliability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "shape_free_text": "Reliability of oral albendazole or mebendazole absorption and retention, reduced by vomiting, ileus, severe GI disease, or shock.", "baseline_range": [0.8, 1.0], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "knowledge_confidence": "high", "axis_role": "finding"},
+    {"axis_id": "pregnancy_or_planning_pregnancy_activity", "category": "treatment_modifier", "unit": "present_absent_0_1", "log_scale": false, "shape_free_text": "Pregnancy or near-term pregnancy planning context that modifies benzimidazole and steroid risk tradeoffs.", "baseline_range": [0, 0.1], "peak_day_range": [0, 1], "peak_value_range": [0, 1], "plateau_duration_days": [1, 300], "decline_half_life_days": [1, 90], "knowledge_confidence": "medium", "axis_role": "finding"},
+    {"axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "shape_free_text": "Lifespan-only mortality hazard for Trichinellosis, driven by myocarditis, arrhythmia, cardiogenic shock, encephalitis, ARDS, AKI, secondary infection, and multiorgan failure. This is the only derived hazard for this leaf.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [10, 60], "peak_value_range": [0.00001, 0.8], "plateau_duration_days": [0, 60], "decline_half_life_days": [7, 180], "knowledge_confidence": "high", "axis_role": "measurement"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "raw_undercooked_meat_exposure_context_activity", "target_axis_id": "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY", "coupling_type": "drift", "direction": "positive", "lag_days_range": [0, 30], "clinical_rationale": "Compatible meat exposure supplies the organism prior for enteral activity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "absolute_eosinophil_count", "target_axis_id": "periorbital_edema_activity", "coupling_type": "noise_correlation", "direction": "positive", "lag_days_range": [0, 14], "clinical_rationale": "Both often reflect the same Th2/capillary-leak phase rather than one directly causing the other.", "knowledge_confidence": "high"},
+    {"source_axis_id": "absolute_eosinophil_count", "target_axis_id": "facial_edema_activity", "coupling_type": "noise_correlation", "direction": "positive", "lag_days_range": [0, 14], "clinical_rationale": "Eosinophilia and facial edema cluster during systemic helminth response.", "knowledge_confidence": "high"},
+    {"source_axis_id": "myalgia_activity", "target_axis_id": "serum_creatine_kinase", "coupling_type": "noise_correlation", "direction": "positive", "lag_days_range": [0, 14], "clinical_rationale": "Both are downstream of skeletal muscle invasion and injury.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_creatine_kinase", "target_axis_id": "acute_kidney_injury_hazard", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Marked muscle injury or rhabdomyolysis can increase AKI hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_troponin", "target_axis_id": "myocarditis_hazard", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 2], "clinical_rationale": "Troponin elevation signals myocardial injury and raises myocarditis probability.", "knowledge_confidence": "high"},
+    {"source_axis_id": "myocarditis_hazard", "target_axis_id": "cardiac_arrhythmia_hazard", "coupling_type": "event_transition", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Myocardial inflammation increases arrhythmia risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "myocarditis_hazard", "target_axis_id": "cardiogenic_shock_hazard", "coupling_type": "event_transition", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Severe myocarditis can depress cardiac performance or destabilize underlying valve/cardiac disease.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "ards_hazard", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 7], "clinical_rationale": "ARDS is a major acute fatal pathway.", "knowledge_confidence": "high"},
+    {"source_axis_id": "encephalitis_hazard_in_D-TRICHINELLOSIS", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 7], "clinical_rationale": "Severe CNS involvement increases mortality risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "cardiogenic_shock_hazard", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Cardiogenic shock directly drives short-term death risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "cardiac_arrhythmia_hazard", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Malignant arrhythmia can cause sudden death or shock.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "multiorgan_failure_hazard", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "positive", "lag_days_range": [0, 3], "clinical_rationale": "Multiorgan failure is the final common pathway in fatal severe trichinellosis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "active_anti_trichinella_coverage_probability", "target_axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "coupling_type": "hazard_drift", "direction": "inverse", "lag_days_range": [3, 21], "clinical_rationale": "Effective early anthelmintic exposure reduces ongoing organism burden and downstream complications.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "albendazole_oral",
+      "drug_class": "benzimidazole_anthelmintic",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "active_anthelmintic_for_enteral_and_migrating_larval_phase",
+      "required_context_axes": ["active_anti_trichinella_coverage_probability", "oral_antiparasitic_absorption_reliability", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "oral_antiparasitic_absorption_reliability", "condition": "low", "effect": "weakens", "factor_range": [0.1, 0.7], "clinical_rationale": "Albendazole requires reliable oral or enteral absorption."},
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "requires_risk_review", "factor_range": [0.4, 1.0], "clinical_rationale": "Benzimidazole fetal-risk tradeoffs depend on trimester and severity."}
+      ],
+      "trajectory_modifications": {
+        "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY": {"peak_value_factor": [0.05, 0.35], "plateau_duration_factor": [0.05, 0.4], "decline_half_life_days": [1, 7]},
+        "M_TRICH_NEWBORN_LARVAL_DISSEMINATION": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [3, 21]},
+        "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [14, 180]}
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [3, 30],
+      "failure_modes": ["late_after_most_larvae_are_encysted_in_muscle", "vomiting_or_poor_absorption", "incomplete_course", "severe_organ_damage_before_parasite_burden_falls"],
+      "side_effects": [
+        {"axis_id": "serum_alt", "direction": "up", "magnitude_range": [0, 100], "interpretation": "Transaminase monitoring may be needed during therapy."}
+      ],
+      "context_specific_role": "Direct antiparasitic vector that lowers ongoing adult-worm and migrating-larval activity, with best causal leverage before the muscle phase is fully established.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "mebendazole_oral",
+      "drug_class": "benzimidazole_anthelmintic",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "active_anthelmintic_alternative_or_course_component",
+      "required_context_axes": ["active_anti_trichinella_coverage_probability", "oral_antiparasitic_absorption_reliability", "pregnancy_or_planning_pregnancy_activity"],
+      "effect_modifiers": [
+        {"axis_id": "oral_antiparasitic_absorption_reliability", "condition": "low", "effect": "weakens", "factor_range": [0.1, 0.7], "clinical_rationale": "Mebendazole is oral and can fail when retention or absorption is poor."},
+        {"axis_id": "pregnancy_or_planning_pregnancy_activity", "condition": "high", "effect": "requires_risk_review", "factor_range": [0.4, 1.0], "clinical_rationale": "Pregnancy context changes benzimidazole risk-benefit balance."}
+      ],
+      "trajectory_modifications": {
+        "M_TRICH_ENTERAL_ADULT_WORM_ACTIVITY": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [1, 10]},
+        "M_TRICH_NEWBORN_LARVAL_DISSEMINATION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.25, 0.85], "decline_half_life_days": [3, 21]},
+        "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS": {"peak_value_factor": [0.55, 1.0], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [14, 180]}
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [3, 30],
+      "failure_modes": ["late_muscle_phase_with_fixed_larval_injury", "vomiting_or_poor_absorption", "incomplete_course"],
+      "side_effects": [
+        {"axis_id": "abdominal_pain_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "GI intolerance can occur and may reduce adherence."}
+      ],
+      "context_specific_role": "Direct antiparasitic vector with similar causal target to albendazole and oral-route constraints.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "systemic_glucocorticoids_for_severe_inflammation",
+      "drug_class": "antiinflammatory_immunomodulator",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "reduce_life_threatening_eosinophilic_or_organ_inflammation",
+      "required_context_axes": ["myocarditis_hazard", "encephalitis_hazard_in_D-TRICHINELLOSIS", "ards_hazard", "active_anti_trichinella_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "myocarditis_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.1, 3.0], "clinical_rationale": "Steroids can reduce dangerous eosinophilic myocardial inflammation while antiparasitic therapy acts."},
+        {"axis_id": "encephalitis_hazard_in_D-TRICHINELLOSIS", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.1, 3.0], "clinical_rationale": "CNS edema or vasculitic inflammation can require antiinflammatory control."},
+        {"axis_id": "active_anti_trichinella_coverage_probability", "condition": "low", "effect": "weakens_safety_margin", "factor_range": [0.4, 0.9], "clinical_rationale": "Steroids reduce host inflammation but do not kill worms; pairing with active anthelmintic exposure preserves causal parasite control."}
+      ],
+      "trajectory_modifications": {
+        "M_TRICH_TH2_EOSINOPHILIC_INFLAMMATION": {"peak_value_factor": [0.15, 0.55], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [1, 14]},
+        "M_TRICH_CAPILLARY_LEAK_EDEMA": {"peak_value_factor": [0.2, 0.6], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [1, 14]},
+        "M_TRICH_EOSINOPHILIC_MYOCARDITIS": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [2, 30]},
+        "M_TRICH_CNS_VASCULITIS_ENCEPHALITIS": {"peak_value_factor": [0.25, 0.8], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [2, 30]},
+        "M_TRICH_PULMONARY_PLEURAL_INJURY": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [2, 30]}
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [1, 14],
+      "failure_modes": ["used_without_addressing_parasite_burden", "secondary_infection_or_hyperglycemia_context", "irreversible_myocardial_or_cns_injury_before_control"],
+      "side_effects": [
+        {"axis_id": "serum_glucose", "direction": "up", "magnitude_range": [0, 150], "interpretation": "Steroids can worsen hyperglycemia."}
+      ],
+      "context_specific_role": "Inflammation-reshaping vector for severe myocarditis, CNS involvement, ARDS, marked edema, or severe myositis; not an antiparasitic substitute.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "analgesia_antipyretics_hydration",
+      "drug_class": "supportive_symptom_and_volume_care",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "symptom_control_and_rhabdomyolysis_aki_risk_reduction",
+      "required_context_axes": ["body_temperature", "myalgia_activity", "serum_creatine_kinase", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "serum_creatine_kinase", "condition": "very_high", "effect": "strengthens_hydration_need", "factor_range": [1.2, 4.0], "clinical_rationale": "Marked muscle injury raises renal-protection needs."}
+      ],
+      "trajectory_modifications": {
+        "body_temperature": {"peak_value_factor": [0.7, 0.95], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 2]},
+        "myalgia_activity": {"peak_value_factor": [0.5, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.2, 7]},
+        "acute_kidney_injury_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 14]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 2],
+      "failure_modes": ["does_not_reduce_parasite_burden", "severe_myocarditis_or_ards_requires_icu_support", "renal_or_hepatic_toxicity_limits_some_analgesics"],
+      "side_effects": [],
+      "context_specific_role": "State-push support for pain, fever, hydration, and renal protection while causal antiparasitic and inflammation vectors act.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "icu_respiratory_hemodynamic_support",
+      "drug_class": "organ_support_bundle",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge_ards_shock_or_multiorgan_failure_to_recovery",
+      "required_context_axes": ["ards_hazard", "cardiogenic_shock_hazard", "mean_arterial_pressure", "respiratory_rate", "multiorgan_failure_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "ards_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Hypoxemic respiratory failure requires oxygen, ventilatory support, and lung-protective ICU care."},
+        {"axis_id": "cardiogenic_shock_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Shock requires vasopressors, inotropes, monitoring, and escalation decisions."}
+      ],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {"peak_value_factor": [0.9, 1.2], "plateau_duration_factor": [0.8, 1.0], "decline_half_life_days": [0.2, 3]},
+        "ards_hazard": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [1, 14]},
+        "multiorgan_failure_hazard": {"peak_value_factor": [0.5, 0.95], "plateau_duration_factor": [0.6, 1.0], "decline_half_life_days": [1, 14]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 2],
+      "failure_modes": ["late_irreversible_multiorgan_failure", "does_not_kill_parasites", "persistent_myocarditis_or_cns_injury_requires_parallel_causal_control"],
+      "side_effects": [],
+      "context_specific_role": "Bridge support for severe pulmonary, shock, or multiorgan states while antiparasitic and antiinflammatory treatments modify disease geometry.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cardiac_monitoring_arrhythmia_and_shock_management",
+      "drug_class": "cardiac_support_bundle",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "support_myocarditis_arrhythmia_or_cardiogenic_shock_complications",
+      "required_context_axes": ["serum_troponin", "myocarditis_hazard", "cardiac_arrhythmia_hazard", "cardiogenic_shock_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "serum_troponin", "condition": "high_or_rising", "effect": "strengthens_monitoring_need", "factor_range": [1.1, 4.0], "clinical_rationale": "Troponin elevation signals myocardial injury and need for monitoring."},
+        {"axis_id": "cardiac_arrhythmia_hazard", "condition": "high", "effect": "strengthens_context_need", "factor_range": [1.2, 5.0], "clinical_rationale": "Arrhythmia changes telemetry, electrolyte, antiarrhythmic, defibrillation, and pacing readiness."}
+      ],
+      "trajectory_modifications": {
+        "cardiac_arrhythmia_hazard": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.5, 14]},
+        "cardiogenic_shock_hazard": {"peak_value_factor": [0.3, 0.85], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [0.5, 14]},
+        "mortality_hazard_in_D-TRICHINELLOSIS": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [1, 30]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 3],
+      "failure_modes": ["uncontrolled_inflammatory_myocarditis", "late_after_cardiac_arrest_or_irreversible_shock", "does_not_reduce_parasite_burden"],
+      "side_effects": [],
+      "context_specific_role": "Cardiac state-support vector for myocarditis, arrhythmia, syncope, troponin rise, low-output shock, or cardiac arrest risk.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "raw_or_undercooked_meat_consumption",
+      "category": "exposure_prior",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [10, 200],
+          "trajectory_modulation": "Raises pretest probability and anchors timing to enteral prodrome followed by muscle/systemic phase.",
+          "axis_response_modulation": [
+            {"axis_id": "raw_undercooked_meat_exposure_context_activity", "effect": "higher_peak", "magnitude_factor_range": [10, 100], "clinical_rationale": "Trichinellosis requires ingestion of infected raw or undercooked meat."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "outbreak_or_shared_implicated_meal",
+      "category": "exposure_prior",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [5, 100],
+          "trajectory_modulation": "Shared exposure increases diagnostic prior and supports synchronized incubation among cases.",
+          "axis_response_modulation": [
+            {"axis_id": "outbreak_shared_implicated_meal_context_activity", "effect": "higher_peak", "magnitude_factor_range": [10, 100], "clinical_rationale": "Outbreak context makes compatible fever-myalgia-eosinophilia syndromes much more likely to be trichinellosis."}
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "high_larval_inoculum_or_heavy_exposure",
+      "category": "dose_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2, 20],
+          "trajectory_modulation": "Shorter incubation, higher muscle enzyme burden, stronger edema/eosinophilia, and higher organ complication hazards.",
+          "axis_response_modulation": [
+            {"axis_id": "M_TRICH_NEWBORN_LARVAL_DISSEMINATION", "effect": "higher_peak", "magnitude_factor_range": [1.5, 5.0], "clinical_rationale": "More ingested larvae produce greater disseminated larval burden."},
+            {"axis_id": "serum_creatine_kinase", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0], "clinical_rationale": "Heavier muscle invasion raises muscle injury markers."},
+            {"axis_id": "multiorgan_failure_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0], "clinical_rationale": "Severe outbreaks show organ failure and mortality concentrated in heavy-exposure contexts."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_diagnosis_or_late_anthelmintic_exposure",
+      "category": "disease_course_modifier",
+      "modulation": {
+        "late_after_muscle_phase_established": {
+          "P_disease_ratio": [1, 3],
+          "trajectory_modulation": "Allows larvae to establish in muscle and gives anthelmintics less leverage over fixed inflammatory muscle injury.",
+          "axis_response_modulation": [
+            {"axis_id": "M_TRICH_SKELETAL_MUSCLE_NURSE_CELL_MYOSITIS", "effect": "longer_plateau", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Established muscle larvae and inflammation can persist after treatment."},
+            {"axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "effect": "higher_peak", "magnitude_factor_range": [1.2, 5.0], "clinical_rationale": "Delayed recognition can permit organ complications before causal control."}
+          ],
+          "treatment_effect_modulation": {
+            "albendazole_oral": "less able to reverse established encysted muscle injury",
+            "mebendazole_oral": "less able to reverse established encysted muscle injury"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_age_or_preexisting_cardiopulmonary_disease",
+      "category": "host_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 3],
+          "trajectory_modulation": "Lower reserve makes myocarditis, pleural/pulmonary involvement, arrhythmia, and shock more dangerous.",
+          "axis_response_modulation": [
+            {"axis_id": "cardiogenic_shock_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.5, 6.0], "clinical_rationale": "Preexisting cardiac disease lowers shock threshold when myocarditis occurs."},
+            {"axis_id": "ards_hazard", "effect": "higher_peak", "magnitude_factor_range": [1.2, 4.0], "clinical_rationale": "Limited pulmonary reserve magnifies respiratory complications."},
+            {"axis_id": "mortality_hazard_in_D-TRICHINELLOSIS", "effect": "higher_peak", "magnitude_factor_range": [1.5, 8.0], "clinical_rationale": "Severe trichinellosis mortality is higher when organ reserve is poor."}
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pregnancy",
+      "category": "treatment_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 2],
+          "trajectory_modulation": "Does not define the disease leaf but changes testing, fetal risk, and medication tradeoffs.",
+          "axis_response_modulation": [
+            {"axis_id": "pregnancy_or_planning_pregnancy_activity", "effect": "higher_peak", "magnitude_factor_range": [5, 20], "clinical_rationale": "Pregnancy context should be explicit when choosing benzimidazole and steroid exposure."}
+          ],
+          "treatment_effect_modulation": {
+            "albendazole_oral": "requires trimester and severity risk review",
+            "mebendazole_oral": "requires trimester and severity risk review",
+            "systemic_glucocorticoids_for_severe_inflammation": "maternal organ-protection role may dominate in severe disease"
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "immunosuppression_or_recent_high_dose_steroids",
+      "category": "host_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1, 5],
+          "trajectory_modulation": "May alter eosinophil expression and raise risk of atypical or severe disseminated infection, while steroid treatment can still be useful for dangerous inflammation when antiparasitic coverage is active.",
+          "axis_response_modulation": [
+            {"axis_id": "absolute_eosinophil_count", "effect": "variable_response", "magnitude_factor_range": [0.2, 2.0], "clinical_rationale": "Steroids can suppress eosinophil count despite tissue disease."},
+            {"axis_id": "M_TRICH_CRITICAL_ORGAN_FAILURE", "effect": "higher_peak", "magnitude_factor_range": [1.1, 4.0], "clinical_rationale": "Host immune alteration can permit atypical or severe disease."}
+          ]
+        }
+      },
+      "knowledge_confidence": "low"
+    }
+  ],
+  "supportive_care": [
+    "Document meat exposure timing, shared meal/outbreak context, and others with compatible illness; notify public health teams when an outbreak source is plausible.",
+    "Trend CBC with differential, CK, LDH, AST/ALT, creatinine, urine output, CRP, and troponin when myositis or organ involvement is present.",
+    "Use serology and exposure-compatible syndrome for diagnosis; muscle biopsy or PCR are confirmatory when organism material is available but should not be required for early treatment in severe compatible disease.",
+    "Monitor for myocarditis with ECG, troponin trend, echocardiography, telemetry, and escalation for syncope, chest pain, shock, arrhythmia, or rising troponin.",
+    "Assess CNS and pulmonary involvement when headache, altered mental status, seizure, dyspnea, hypoxemia, pleural effusion, or ARDS physiology appears.",
+    "Use hydration and renal monitoring for high CK, dehydration, shock, or nephrotoxic exposure.",
+    "Treat focal pyomyositis, abscess, osteomyelitis, or secondary bacterial infection with source control and antibacterial therapy when clinically present; do not let these secondary events replace the Trichinellosis manifold when larvae/serology/exposure explain the syndrome.",
+    "Avoid further consumption of implicated meat and preserve remaining food samples when possible for outbreak investigation."
+  ],
+  "quality_notes": [
+    "Disease-name scope honored: the only disease-specific medical input is Trichinellosis.",
+    "No direct treatment-ranking labels are used; treatment ranking is intended to emerge from RMST simulation.",
+    "Diagnostic-test axes for serology, biopsy, and PCR are included as structured evidence but should be marked non-ranking in case files when they represent post-workup confirmation rather than presentation evidence.",
+    "Horizontal fairness: fever, myalgia, eosinophilia, CK/LDH/troponin, myocarditis, ARDS, encephalitis, and edema axes are shared with inflammatory myositis, EGPA/HES, viral myocarditis, sepsis, drug reactions, parasitic diseases, and CNS/pulmonary mimics. Trichinellosis-specific lift should come from raw/undercooked meat exposure, outbreak context, enteral-to-muscle timing, periorbital/facial edema plus eosinophilia, and Trichinella-confirmatory evidence rather than exclusive ownership of nonspecific inflammation axes."
+  ]
+}
