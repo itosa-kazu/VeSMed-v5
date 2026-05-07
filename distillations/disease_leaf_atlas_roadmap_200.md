@@ -165,31 +165,34 @@ Prioritize diseases that are either common, critical, or both.
 | D-ERYSIPELAS | Erysipelas |
 | D-AUTOIMMUNE-ENCEPHALITIS | Autoimmune encephalitis |
 | D-VZV-ENCEPHALITIS | Varicella-zoster virus encephalitis |
+| D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease |
+| D-DENGUE | Dengue |
+| D-CHIKUNGUNYA | Chikungunya |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-WEST-NILE-NEUROINVASIVE-DISEASE | West Nile neuroinvasive disease | fever with meningitis/encephalitis/acute flaccid paralysis mimic |
-| 2 | D-DENGUE | Dengue | common global fever/thrombocytopenia/shock mimic near sepsis, malaria, rickettsiosis, and viral syndromes |
-| 3 | D-CHIKUNGUNYA | Chikungunya | common global fever, rash, and severe arthralgia mimic near dengue, rickettsiosis, and viral syndromes |
-| 4 | D-MEASLES | Measles | public-health-critical fever, cough, conjunctivitis, and rash mimic near viral exanthems and Kawasaki-like illness |
-| 5 | D-ACUTE-HEPATITIS-A | Acute hepatitis A | common fever, jaundice, and transaminitis mimic near cholangitis, leptospirosis, EBV/CMV, and acute liver injury |
-| 6 | D-ACUTE-HEPATITIS-B | Acute hepatitis B | fever, jaundice, transaminitis, rash/arthralgia, and acute liver injury mimic |
-| 7 | D-ACUTE-HEPATITIS-E | Acute hepatitis E | fever, jaundice, pregnancy-risk liver failure, and cholangitis/leptospirosis mimic |
-| 8 | D-AMOEBIC-LIVER-ABSCESS | Amoebic liver abscess | fever/right-upper-quadrant pain source-control mimic near pyogenic liver abscess and travel infections |
-| 9 | D-STRONGYLOIDES-HYPERINFECTION | Strongyloides hyperinfection | critical fever/sepsis/ARDS mimic in steroid or immunosuppressed hosts |
-| 10 | D-TRICHINELLOSIS | Trichinellosis | fever, myalgia, facial edema, eosinophilia mimic near rheum and parasitic infection |
-| 11 | D-IGA-VASCULITIS | IgA vasculitis | common vasculitic fever/rash/abdominal pain/renal mimic near infection and systemic rheum |
-| 12 | D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis | fever/purpura/renal-neuropathy mimic near infection, lymphoma, and systemic vasculitis |
-| 13 | D-URTICARIAL-VASCULITIS | Urticarial vasculitis | recurrent fever/urticarial rash/angioedema mimic near allergy, infection, and systemic autoimmune disease |
-| 14 | D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease | overlap systemic rheum mimic with fever, Raynaud, myositis, ILD, serositis, and renal-risk axes |
-| 15 | D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS | Systemic sclerosis renal crisis | critical hypertension/AKI/TMA mimic near vasculitis, TTP/HUS, sepsis-AKI, and malignant hypertension |
-| 16 | D-POLYMYALGIA-RHEUMATICA | Polymyalgia rheumatica | common inflammatory fever/ESR mimic near GCA, occult infection, malignancy, and rheum flare |
-| 17 | D-GOUT-FLARE | Gout flare | common febrile mono/oligoarthritis mimic near septic arthritis, cellulitis, CPPD, and bacteremia |
-| 18 | D-CALCIUM-PYROPHOSPHATE-ARTHRITIS | Calcium pyrophosphate crystal arthritis | common acute febrile arthritis mimic near gout, septic arthritis, cellulitis, and rheum flare |
-| 19 | D-REACTIVE-ARTHRITIS | Reactive arthritis | post-infectious fever/arthritis/urethritis-conjunctivitis mimic near DGI, rheum flare, and septic arthritis |
-| 20 | D-PSORIATIC-ARTHRITIS-FLARE | Psoriatic arthritis flare | inflammatory arthritis flare mimic near infection, gout/CPPD, RA flare, and reactive arthritis |
+| 1 | D-MEASLES | Measles | public-health-critical fever, cough, conjunctivitis, and rash mimic near viral exanthems and Kawasaki-like illness |
+| 2 | D-ACUTE-HEPATITIS-A | Acute hepatitis A | common fever, jaundice, and transaminitis mimic near cholangitis, leptospirosis, EBV/CMV, and acute liver injury |
+| 3 | D-ACUTE-HEPATITIS-B | Acute hepatitis B | fever, jaundice, transaminitis, rash/arthralgia, and acute liver injury mimic |
+| 4 | D-ACUTE-HEPATITIS-E | Acute hepatitis E | fever, jaundice, pregnancy-risk liver failure, and cholangitis/leptospirosis mimic |
+| 5 | D-AMOEBIC-LIVER-ABSCESS | Amoebic liver abscess | fever/right-upper-quadrant pain source-control mimic near pyogenic liver abscess and travel infections |
+| 6 | D-STRONGYLOIDES-HYPERINFECTION | Strongyloides hyperinfection | critical fever/sepsis/ARDS mimic in steroid or immunosuppressed hosts |
+| 7 | D-TRICHINELLOSIS | Trichinellosis | fever, myalgia, facial edema, eosinophilia mimic near rheum and parasitic infection |
+| 8 | D-IGA-VASCULITIS | IgA vasculitis | common vasculitic fever/rash/abdominal pain/renal mimic near infection and systemic rheum |
+| 9 | D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis | fever/purpura/renal-neuropathy mimic near infection, lymphoma, and systemic vasculitis |
+| 10 | D-URTICARIAL-VASCULITIS | Urticarial vasculitis | recurrent fever/urticarial rash/angioedema mimic near allergy, infection, and systemic autoimmune disease |
+| 11 | D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease | overlap systemic rheum mimic with fever, Raynaud, myositis, ILD, serositis, and renal-risk axes |
+| 12 | D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS | Systemic sclerosis renal crisis | critical hypertension/AKI/TMA mimic near vasculitis, TTP/HUS, sepsis-AKI, and malignant hypertension |
+| 13 | D-POLYMYALGIA-RHEUMATICA | Polymyalgia rheumatica | common inflammatory fever/ESR mimic near GCA, occult infection, malignancy, and rheum flare |
+| 14 | D-GOUT-FLARE | Gout flare | common febrile mono/oligoarthritis mimic near septic arthritis, cellulitis, CPPD, and bacteremia |
+| 15 | D-CALCIUM-PYROPHOSPHATE-ARTHRITIS | Calcium pyrophosphate crystal arthritis | common acute febrile arthritis mimic near gout, septic arthritis, cellulitis, and rheum flare |
+| 16 | D-REACTIVE-ARTHRITIS | Reactive arthritis | post-infectious fever/arthritis/urethritis-conjunctivitis mimic near DGI, rheum flare, and septic arthritis |
+| 17 | D-PSORIATIC-ARTHRITIS-FLARE | Psoriatic arthritis flare | inflammatory arthritis flare mimic near infection, gout/CPPD, RA flare, and reactive arthritis |
+| 18 | D-ANKYLOSING-SPONDYLITIS-FLARE | Ankylosing spondylitis flare | inflammatory back pain/enthesitis flare mimic near infection, reactive arthritis, and systemic rheum |
+| 19 | D-ULCERATIVE-COLITIS-SEVERE-FLARE | Severe ulcerative colitis flare | fever, diarrhea, systemic inflammation, toxic megacolon and infection mimic |
+| 20 | D-CROHN-DISEASE-FLARE | Crohn disease flare | fever, abdominal pain, abscess/fistula and infection mimic |
 
 ## Candidate Pool Toward 200
 
