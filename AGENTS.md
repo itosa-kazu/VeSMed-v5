@@ -979,3 +979,117 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `400/402 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: West Nile / Dengue / Chikungunya
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-WEST-NILE-NEUROINVASIVE-DISEASE`: West Nile neuroinvasive disease.
+  - `D-DENGUE`: dengue.
+  - `D-CHIKUNGUNYA`: chikungunya.
+- Real PMC/PubMed cases:
+  - `D-WEST-NILE-NEUROINVASIVE-DISEASE`: `PMC3121680`, `PMC5039274`, `PMC4899671`.
+  - `D-DENGUE`: `PMC9090125`, `PMC6206890`, `PMC6082042`.
+  - `D-CHIKUNGUNYA`: `PMC7304265`, `PMC6979562`, `PMC6614379`.
+- West Nile source rule: keep neuroinvasive WNV separate from viral meningitis, HSV/VZV encephalitis, autoimmune encephalitis, bacterial meningitis, and generic arboviral fever. Encephalitis/meningitis/myelitis pattern, flaccid paralysis, CSF, MRI, immunosuppression, and mosquito/season context are axes or context, not extra disease-name qualifiers.
+- Dengue source rule: keep first-layer dengue pure. DHF/DSS, severe dengue, dengue hepatitis, AKI, bleeding, pregnancy, and serotype/travel context are event/risk/source axes or future subtypes, not disease-name qualifiers.
+- Chikungunya source rule: keep first-layer chikungunya pure. Acute febrile polyarthralgia, rash, chronic arthritis, neurologic disease, severe skin disease, and travel/vector context are axes or future subtypes, not disease-name qualifiers.
+- Horizontal fairness notes: arboviral leaves must share fever, rash, thrombocytopenia, transaminitis, CNS, arthralgia, travel/vector, and exposure axes where medically true. Dengue-specific capillary leak/hemorrhage and chikungunya-specific severe arthralgia/chronic arthritis should not be claimed by generic viral fever leaves unless clinically true.
+- UI roadmap after this batch: completed leaves are active; default next candidate became `D-MEASLES`.
+- Current atlas count after this batch: 147 disease manifolds and 414 real case JSON files.
+- Focused new-batch grid (`WEST_NILE,DENGUE,CHIKUNGUNYA`) was `9/9 PASS`.
+- Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remained `2/2 PASS`.
+
+## 2026-05-07 New Batch Memory: Measles / Acute Hepatitis A / Acute Hepatitis B
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-MEASLES`: measles.
+  - `D-ACUTE-HEPATITIS-A`: acute hepatitis A.
+  - `D-ACUTE-HEPATITIS-B`: acute hepatitis B.
+- Real PMC/PubMed cases:
+  - `D-MEASLES`: `PMC6910791`, `PMC10625051`, `PMC7308916`.
+  - `D-ACUTE-HEPATITIS-A`: `PMC3784234`, `PMC3482082`, `PMC10238316`.
+  - `D-ACUTE-HEPATITIS-B`: `PMC2783051`, `PMC3103261`, `PMC8163517`.
+- Measles source rule: keep first-layer measles pure. Pneumonia, encephalitis, SSPE, immunosuppression, vaccine failure, pregnancy, and outbreak context are axes/risk/event contexts or future subtypes, not disease-name qualifiers.
+- HAV/HBV source rule: keep acute hepatitis A and acute hepatitis B separate leaves. Fulminant hepatitis, cholestatic pattern, renal failure, extrahepatic immune manifestations, pregnancy, chronic HBV, reactivation, and coinfection are axes/risk/event contexts or future subtypes.
+- Serology/final diagnosis rule: pathogen serology can be rankable only when it is available at the tested clinical stage. Final diagnosis labels, treatment response, and follow-up outcome remain confirmatory/non-ranking unless testing post-workup mode.
+- Horizontal fairness notes: viral exanthem and viral hepatitis leaves must share fever/rash/transaminitis/bilirubin/coagulation/encephalopathy axes where true. Hepatitis-specific serology should separate HAV/HBV/HEV/EBV/CMV and drug-induced hepatitis without deleting nonspecific liver-injury evidence from mimics.
+- UI roadmap after this batch: completed leaves are active; default next candidate became `D-ACUTE-HEPATITIS-E`.
+- Current atlas count after this batch: 150 disease manifolds and 423 real case JSON files.
+- Focused new-batch grid (`MEASLES,ACUTE_HEPATITIS_A,ACUTE_HEPATITIS_B`) was `9/9 PASS`.
+- Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remained `2/2 PASS`.
+
+## 2026-05-07 New Batch Memory: Acute Hepatitis E / Amoebic Liver Abscess / Strongyloides Hyperinfection
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ACUTE-HEPATITIS-E`: acute hepatitis E.
+  - `D-AMOEBIC-LIVER-ABSCESS`: amoebic liver abscess.
+  - `D-STRONGYLOIDES-HYPERINFECTION`: Strongyloides hyperinfection.
+- Real PMC/PubMed cases:
+  - `D-ACUTE-HEPATITIS-E`: `PMC10719760`, `PMC10961495`, `PMC6795373`.
+  - `D-AMOEBIC-LIVER-ABSCESS`: `PMC12512644`, `PMC10874467`, `PMC8909445`.
+  - `D-STRONGYLOIDES-HYPERINFECTION`: `PMC7157694`, `PMC6439959`, `PMC6992991`.
+- HEV source rule: keep first-layer acute hepatitis E pure. Pregnancy, immunosuppression, chronic HEV, fulminant hepatitis, neurologic/renal manifestations, and zoonotic/travel context are axes/risk/event contexts or future subtypes.
+- Amoebic liver abscess source rule: keep first-layer amoebic liver abscess separate from pyogenic liver abscess, echinococcosis, hepatocellular tumor, biliary infection, and generic sepsis. Solitary right-lobe abscess, travel/enteric exposure, serology/antigen, pleuropulmonary extension, rupture hazard, and drainage need are axes/context; final aspirate/microbiology and response remain confirmatory/non-ranking unless available at the tested stage.
+- Strongyloides hyperinfection source rule: keep hyperinfection separate from uncomplicated strongyloidiasis, eosinophilic disorders, bacterial pneumonia/sepsis, meningitis, and GI bleeding mimics. Steroid/HTLV/immunosuppression context, larval burden, pulmonary/GI dissemination, enteric bacteremia, eosinophil suppression, and septic complications are axes/risk/event contexts.
+- Runtime/axis repair from this batch: oxygen requirement and hypoxemia evidence were added horizontally across invasive bloodstream infection, sepsis, pneumonia, and near-neighbor severe infection leaves after a transient ESBL bacteremia case steal by Nocardiosis exposed missing respiratory-severity evidence. This was a horizontal fairness fix, not a one-case patch.
+- Horizontal fairness notes: hepatitis leaves share liver injury/synthetic dysfunction/encephalopathy axes; liver abscess leaves share imaging collection, source-control, rupture, pleuropulmonary extension, and sepsis axes; strongyloides, nocardiosis, aspergillosis, TB, bacterial sepsis, and pneumonia leaves share immunosuppression and pulmonary/systemic severity axes where true.
+- UI roadmap after this batch: completed leaves are active; default next candidate became `D-TRICHINELLOSIS`.
+- Current atlas count after this batch: 153 disease manifolds and 432 real case JSON files.
+- Focused new-batch grid (`ACUTE_HEPATITIS_E,AMOEBIC_LIVER_ABSCESS,STRONGYLOIDES_HYPERINFECTION`) was `9/9 PASS`.
+- Full current-atlas grid at this point was `427/429 PASS` for single-manifold cases; the unchanged failures remained the accepted antisynthetase/DLBCL and Hodgkin/ALCL presentation-only ambiguities.
+- Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remained `2/2 PASS`.
+
+## 2026-05-07 New Batch Memory: Trichinellosis / IgA Vasculitis / Cryoglobulinemic Vasculitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-TRICHINELLOSIS`: trichinellosis.
+  - `D-IGA-VASCULITIS`: IgA vasculitis.
+  - `D-CRYOGLOBULINEMIC-VASCULITIS`: cryoglobulinemic vasculitis.
+- Real PMC/PubMed cases:
+  - `D-TRICHINELLOSIS`: `PMC7392432`, `PMC11117173`, `PMC3326967`.
+  - `D-IGA-VASCULITIS`: `PMC6739011`, `PMC5384843`, `PMC8043251`.
+  - `D-CRYOGLOBULINEMIC-VASCULITIS`: `PMC8519709`, `PMC5413707`, `PMC11144169`.
+- Trichinellosis source rule: keep first-layer trichinellosis pure. Food exposure, eosinophilia, myositis, periorbital edema, fever, diarrhea, myocarditis, CNS disease, and respiratory compromise are axes/risk/event contexts, not disease-name qualifiers.
+- IgA vasculitis source rule: keep first-layer IgA vasculitis separate from ANCA vasculitis, cryoglobulinemic vasculitis, HUS/TTP, SLE nephritis, septic emboli, drug rash, and meningococcemia. Palpable purpura, arthralgia, abdominal pain/GI bleeding, nephritis, IgA biopsy context, and renal hazard are axes/context.
+- Cryoglobulinemic vasculitis source rule: keep first-layer cryoglobulinemic vasculitis separate from IgA vasculitis, ANCA vasculitis, SLE, lymphoma fever, hepatitis-associated hepatitis leaves, and nonspecific neuropathy/renal disease. HCV/lymphoproliferative context, low C4, cryoglobulins, purpura, MPGN, neuropathy, ischemic lesions, and hyperviscosity/renal hazards are axes/context.
+- Horizontal fairness notes: small-vessel vasculitis leaves must share purpura, renal, neuropathy, GI, complement, autoantibody, and biopsy axes where true. Do not give one vasculitis leaf exclusive credit for generic purpura/nephritis; separation should come from disease-specific serology, complement pattern, organ distribution, and mechanism.
+- UI roadmap after this batch: completed leaves are active; default next candidate became `D-URTICARIAL-VASCULITIS`.
+- Current atlas count after this batch: 156 disease manifolds and 441 real case JSON files.
+- Focused new-batch grid (`TRICHINELLOSIS,IGA_VASCULITIS,CRYOGLOBULINEMIC_VASCULITIS`) was `9/9 PASS`.
+- Full current-atlas grid at this point was `436/438 PASS` for single-manifold cases; the unchanged failures remained the accepted antisynthetase/DLBCL and Hodgkin/ALCL presentation-only ambiguities.
+- Separate combo run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) remained `2/2 PASS`.
+
+## 2026-05-07 New Batch Memory: Urticarial Vasculitis / MCTD / Systemic Sclerosis Renal Crisis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-URTICARIAL-VASCULITIS`: urticarial vasculitis.
+  - `D-MIXED-CONNECTIVE-TISSUE-DISEASE`: mixed connective tissue disease.
+  - `D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS`: systemic sclerosis renal crisis.
+- Real PMC/PubMed cases:
+  - `D-URTICARIAL-VASCULITIS`: `PMC2650979` / PMID `19270838`, `PMC6203196` / PMID `30359231`, `PMC11580351` / PMID `39575061`.
+  - `D-MIXED-CONNECTIVE-TISSUE-DISEASE`: `PMC5208556` / PMID `28083450`, `PMC11466346` / PMID `39399181`, `PMC7303452` / PMID `32418955`.
+  - `D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS`: `PMC5720533` / PMID `29318207`, `PMC10589050` / PMID `37868671`, `PMC10198668` / PMID `37214048`.
+- Urticarial vasculitis source rule: keep first-layer urticarial vasculitis separate from ordinary urticaria, serum sickness, SLE, cryoglobulinemic vasculitis, IgA vasculitis, ANCA vasculitis, infection-triggered urticaria, and drug eruption. Lesions lasting over 24 hours, residual hyperpigmentation/purpura, hypocomplementemia, leukocytoclastic vasculitis, angioedema, renal/pulmonary/systemic involvement, and complement/anti-C1q context are axes/context.
+- MCTD source rule: keep first-layer MCTD separate from SLE, systemic sclerosis, polymyositis/dermatomyositis, antisynthetase syndrome, Sjogren disease, and overlap labels that do not have the MCTD anti-U1-RNP phenotype. Raynaud, swollen hands, synovitis, myositis, sclerodactyly, ILD/PAH, anti-U1-RNP, ANA, and chronic overlap organ involvement are axes/context, not extra disease-name qualifiers.
+- SRC source rule: keep systemic sclerosis renal crisis as a specific emergency leaf, not generic AKI/hypertensive emergency/TMA. Abrupt hypertension, rapidly rising creatinine, renin-angiotensin activation, microangiopathic hemolysis, thrombocytopenia, proteinuria/hematuria, systemic sclerosis context, steroid exposure, ACE-inhibitor treatment response context, dialysis hazard, and mortality hazard are axes/context.
+- Runtime evidence-loader repair from this batch: `v5_joint_sde_case_test.py` now accepts risk-factor `modulation` written either as a dict or a list. Root cause was structurally valid distillation output using list-form modulation where runtime expected dict.
+- Runtime qualitative-evidence repair from this batch: qualitative positive/negative observations now map generically by axis type. Negative evidence maps to 0 for probability/severity/presence axes and to a low finite value for log measurements; positive evidence maps to 1 for probability/severity/presence axes and otherwise to an appropriate disease-range midpoint. This prevents qualitative "negative" serology from becoming a pathological numeric zero on log axes.
+- Background/base-measure repair from this batch: antibody/self-antibody/Coombs missing-axis fallback now has healthy-negative base ranges instead of inheriting disease-positive baselines from autoimmune leaves. Example policy: probability/relative axes default near 0-0.05, assay/index axes near 0-0.9, IU/U/mL axes near 0-10 with log-safe lower bound, and ANA reciprocal near 1-80 when log-scaled.
+- MCTD distillation repair was medical and generalizable, not a ranking patch:
+  - Chronic autoantibody axes and mechanisms such as anti-RNP/U1-RNP/ANA/anti-Sm/SSA should be present from presentation or persistent when clinically true, not modeled as late acute peaks.
+  - Chronic scleroderma-like, ILD, PAH, Raynaud, swollen-hands, and overlap-organ axes should be allowed at presentation when they represent established disease background.
+  - MCTD gained medically true overlap axes/edges for low/mild anti-dsDNA overlap, antiphospholipid antibody activity, direct Coombs positivity, hemolytic anemia activity, systolic/diastolic blood pressure, AST, and ALT.
+- New general distillation audit rule: chronic autoimmune serology and established organ phenotype axes must be modeled as persistent/background-present when clinically true. Otherwise acute flare timing forces impossible disease-time alignment and can mimic another leaf for the wrong reason.
+- New general missing-axis rule: antibody results are not ordinary labs for base fallback. Negative antibody evidence should usually be normal and should not be penalized just because another autoimmune disease leaf has a positive antibody baseline.
+- Horizontal fairness notes: urticarial/IgA/cryoglobulinemic/ANCA/SLE vasculitis leaves must share purpura, complement, renal, pulmonary, neuropathy, and biopsy axes where true; MCTD/SLE/systemic sclerosis/myositis/antisynthetase/Sjogren leaves must share chronic autoimmune serology and overlap-organ axes where true; SRC/TMA/TTP/HUS/hypertensive emergency/renal vasculitis leaves must share AKI, hypertension, MAHA, thrombocytopenia, renal urinalysis, and dialysis hazards where true.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-POLYMYALGIA-RHEUMATICA`.
+- Current atlas count after this batch: 159 disease manifolds and 450 real case JSON files.
+- Focused new-batch grid (`URTICARIAL_VASCULITIS,MIXED_CONNECTIVE_TISSUE_DISEASE,SYSTEMIC_SCLEROSIS_RENAL_CRISIS`) was `9/9 PASS`.
+- Full current-atlas grid after this batch:
+  - 450 case JSON files loaded.
+  - Single-manifold validation `445/447 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` expected `D-ANTISYNTHETASE-SYNDROME` but best `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` expected `D-HODGKIN-LYMPHOMA` but best `D-ALCL`.
+  - The two combo failures in the full single-mode run are expected because `MAX_COMBO_SIZE=1`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+  - Separate combo-only run (`VESMED_ONLY_COMBO_CASES=1`, `VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`.
+- This batch was committed and pushed as `b455920 Add connective tissue renal crisis manifolds`.
+- User requested stopping after this batch. Do not launch the next disease-distillation agents until the user explicitly asks to continue.
