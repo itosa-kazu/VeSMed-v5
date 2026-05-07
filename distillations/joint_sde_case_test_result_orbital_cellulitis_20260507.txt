@@ -1,0 +1,153 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=2500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: fast time_grid_n=11 (deterministic midpoint parameter sampling)
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 9 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=9, total_ranked=9, max_combo_size=1
+Case filter: ORBITAL_CELLULITIS
+Cases loaded for this run: 3
+
+Manifolds:
+  D-BACTERIAL-MENINGITIS: axes=123, mechanisms=20, mech_edges=82, couplings=12, risk_factors=13
+  D-BRAIN-ABSCESS: axes=79, mechanisms= 9, mech_edges=53, couplings=20, risk_factors=11
+  D-CELLULITIS: axes=63, mechanisms= 9, mech_edges=50, couplings=14, risk_factors= 8
+  D-GPA       : axes=90, mechanisms=17, mech_edges=80, couplings= 7, risk_factors= 8
+  D-HODGKIN-LYMPHOMA: axes=72, mechanisms=13, mech_edges=65, couplings= 8, risk_factors= 8
+  D-IGG4-RELATED-DISEASE: axes=108, mechanisms=23, mech_edges=76, couplings=18, risk_factors= 7
+  D-INVASIVE-ASPERGILLOSIS: axes=85, mechanisms= 9, mech_edges=41, couplings=13, risk_factors= 9
+  D-ORBITAL-CELLULITIS: axes=51, mechanisms= 8, mech_edges=46, couplings=15, risk_factors=10
+  D-SJS-TEN   : axes=52, mechanisms= 9, mech_edges=28, couplings=14, risk_factors=12
+Base-measure/background axes: 3045
+
+----------------------------------------------------------------------------------------------------
+ORBITAL_CELLULITIS_ESBL_TB_PMC8047292  expected=D-ORBITAL-CELLULITIS
+source: PMID 33884351 / PMC8047292 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8047292/
+paper diagnosis: ESBL-producing bacterial orbital cellulitis with facial cellulitis in pulmonary tuberculosis
+observed axes: 17
+risk context: odontogenic infection or dental abscess=present; visual compromise, RAPD, severe proptosis, or ophthalmoplegia at presentation=present; ESBL or resistant gram-negative risk=post_culture_confirmed
+
+[joint SDE ranking: all candidates]
+* D-ORBITAL-CELLULITIS    logP=   -102.87 mean=  -6.430 n=16 prior= +2.35
+  D-INVASIVE-ASPERGILLOSIS logP=  -1378.28 mean= -86.143 n=16 prior= +0.00
+  D-BRAIN-ABSCESS         logP=  -1382.18 mean= -86.386 n=16 prior= +0.00
+  D-BACTERIAL-MENINGITIS  logP=  -1382.50 mean= -86.406 n=16 prior= +0.00
+  D-CELLULITIS            logP=  -1383.02 mean= -86.438 n=16 prior= +0.00
+  D-GPA                   logP=  -1435.09 mean= -89.693 n=16 prior= +0.00
+  D-HODGKIN-LYMPHOMA      logP=  -1440.93 mean= -90.058 n=16 prior= +0.00
+  D-IGG4-RELATED-DISEASE  logP=  -1451.44 mean= -90.715 n=16 prior= +0.00
+  D-SJS-TEN               logP=  -1500.51 mean= -93.782 n=16 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-ORBITAL-CELLULITIS logP=   -102.87 mean=  -6.430 prior= +2.35
+  D-INVASIVE-ASPERGILLOSIS logP=  -1378.28 mean= -86.143 prior= +0.00
+  D-BRAIN-ABSCESS logP=  -1382.18 mean= -86.386 prior= +0.00
+  D-BACTERIAL-MENINGITIS logP=  -1382.50 mean= -86.406 prior= +0.00
+  D-CELLULITIS logP=  -1383.02 mean= -86.438 prior= +0.00
+  D-GPA        logP=  -1435.09 mean= -89.693 prior= +0.00
+  D-HODGKIN-LYMPHOMA logP=  -1440.93 mean= -90.058 prior= +0.00
+  D-IGG4-RELATED-DISEASE logP=  -1451.44 mean= -90.715 prior= +0.00
+  D-SJS-TEN    logP=  -1500.51 mean= -93.782 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -102.87 candidate=D-ORBITAL-CELLULITIS
+  logP_best_single=   -102.87 candidate=D-ORBITAL-CELLULITIS
+  logP_background_only=  -1500.51 mean= -93.782 n=16
+  delta_to_null_best_known=  +1397.64
+  delta_to_null_best_single=  +1397.64
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-ORBITAL-CELLULITIS  PASS
+best latent times: D-ORBITAL-CELLULITIS=day3.9
+largest standardized residuals: visual_acuity_logmar obs=2.7 logMAR mu=0.50125 via=D-ORBITAL-CELLULITIS z=6.6; subperiosteal_abscess_presence_in_D-ORBITAL-CELLULITIS obs=1 present_absent_0_1 mu=0.234127 via=D-ORBITAL-CELLULITIS z=4.6; elevated_esr_activity_in_D-ORBITAL-CELLULITIS obs=1 severity_score_0_1 mu=0.254403 via=D-ORBITAL-CELLULITIS z=4.5; chemosis_activity_in_D-ORBITAL-CELLULITIS obs=1 severity_score_0_1 mu=0.255 via=D-ORBITAL-CELLULITIS z=4.5; leukocytosis_activity_in_D-ORBITAL-CELLULITIS obs=1 severity_score_0_1 mu=0.2625 via=D-ORBITAL-CELLULITIS z=4.4
+
+----------------------------------------------------------------------------------------------------
+ORBITAL_CELLULITIS_ODONTOGENIC_ADULT_PMC3168817  expected=D-ORBITAL-CELLULITIS
+source: PMID 22567060 / PMC3168817 / https://pmc.ncbi.nlm.nih.gov/articles/PMC3168817/
+paper diagnosis: Odontogenic orbital cellulitis with orbital abscess
+observed axes: 20
+risk context: odontogenic infection or dental abscess=present; visual compromise, RAPD, severe proptosis, or ophthalmoplegia at presentation=present
+
+[joint SDE ranking: all candidates]
+* D-ORBITAL-CELLULITIS    logP=    -76.88 mean=  -4.046 n=19 prior= +2.35
+  D-INVASIVE-ASPERGILLOSIS logP=   -645.38 mean= -33.967 n=19 prior= +0.00
+  D-BACTERIAL-MENINGITIS  logP=   -651.46 mean= -34.287 n=19 prior= +0.00
+  D-IGG4-RELATED-DISEASE  logP=   -703.76 mean= -37.040 n=19 prior= +0.00
+  D-CELLULITIS            logP=   -710.59 mean= -37.399 n=19 prior= +0.00
+  D-BRAIN-ABSCESS         logP=   -711.95 mean= -37.471 n=19 prior= +0.00
+  D-SJS-TEN               logP=   -739.71 mean= -38.932 n=19 prior= +0.00
+  D-HODGKIN-LYMPHOMA      logP=   -739.97 mean= -38.946 n=19 prior= +0.00
+  D-GPA                   logP=   -740.52 mean= -38.975 n=19 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-ORBITAL-CELLULITIS logP=    -76.88 mean=  -4.046 prior= +2.35
+  D-INVASIVE-ASPERGILLOSIS logP=   -645.38 mean= -33.967 prior= +0.00
+  D-BACTERIAL-MENINGITIS logP=   -651.46 mean= -34.287 prior= +0.00
+  D-IGG4-RELATED-DISEASE logP=   -703.76 mean= -37.040 prior= +0.00
+  D-CELLULITIS logP=   -710.59 mean= -37.399 prior= +0.00
+  D-BRAIN-ABSCESS logP=   -711.95 mean= -37.471 prior= +0.00
+  D-SJS-TEN    logP=   -739.71 mean= -38.932 prior= +0.00
+  D-HODGKIN-LYMPHOMA logP=   -739.97 mean= -38.946 prior= +0.00
+  D-GPA        logP=   -740.52 mean= -38.975 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -76.88 candidate=D-ORBITAL-CELLULITIS
+  logP_best_single=    -76.88 candidate=D-ORBITAL-CELLULITIS
+  logP_background_only=   -739.21 mean= -38.906 n=19
+  delta_to_null_best_known=   +662.32
+  delta_to_null_best_single=   +662.32
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-ORBITAL-CELLULITIS  PASS
+best latent times: D-ORBITAL-CELLULITIS=day5.4
+largest standardized residuals: diplopia_activity obs=1 severity_score_0_1 mu=0.240125 via=D-ORBITAL-CELLULITIS z=4.6; sinusitis_presence obs=1 present_absent_0_1 mu=0.2625 via=D-ORBITAL-CELLULITIS z=4.4; pain_with_eye_movement_activity_in_D-ORBITAL-CELLULITIS obs=1 severity_score_0_1 mu=0.311375 via=D-ORBITAL-CELLULITIS z=4.1; proptosis_activity obs=0.85 severity_score_0_1 mu=0.287625 via=D-ORBITAL-CELLULITIS z=3.4; ptosis_activity_in_D-ORBITAL-CELLULITIS obs=0.8 severity_score_0_1 mu=0.240125 via=D-ORBITAL-CELLULITIS z=3.4
+
+----------------------------------------------------------------------------------------------------
+ORBITAL_CELLULITIS_POSTTRAUMATIC_EIKENELLA_PMC12211202  expected=D-ORBITAL-CELLULITIS
+source: PMID 40598082 / PMC12211202 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12211202/
+paper diagnosis: Post-traumatic orbital cellulitis and orbital abscess caused by Eikenella corrodens
+observed axes: 13
+risk context: facial trauma, ocular trauma, foreign body, or recent orbital surgery=present; visual compromise, RAPD, severe proptosis, or ophthalmoplegia at presentation=present
+
+[joint SDE ranking: all candidates]
+* D-ORBITAL-CELLULITIS    logP=    -33.69 mean=  -2.591 n=13 prior= +2.17
+  D-BACTERIAL-MENINGITIS  logP=   -419.83 mean= -32.294 n=13 prior= +0.00
+  D-INVASIVE-ASPERGILLOSIS logP=   -420.79 mean= -32.368 n=13 prior= +0.00
+  D-CELLULITIS            logP=   -420.92 mean= -32.378 n=13 prior= +0.00
+  D-BRAIN-ABSCESS         logP=   -421.76 mean= -32.443 n=13 prior= +0.00
+  D-GPA                   logP=   -435.99 mean= -33.537 n=13 prior= +0.00
+  D-HODGKIN-LYMPHOMA      logP=   -435.99 mean= -33.537 n=13 prior= +0.00
+  D-IGG4-RELATED-DISEASE  logP=   -435.99 mean= -33.537 n=13 prior= +0.00
+  D-SJS-TEN               logP=   -435.99 mean= -33.537 n=13 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-ORBITAL-CELLULITIS logP=    -33.69 mean=  -2.591 prior= +2.17
+  D-BACTERIAL-MENINGITIS logP=   -419.83 mean= -32.294 prior= +0.00
+  D-INVASIVE-ASPERGILLOSIS logP=   -420.79 mean= -32.368 prior= +0.00
+  D-CELLULITIS logP=   -420.92 mean= -32.378 prior= +0.00
+  D-BRAIN-ABSCESS logP=   -421.76 mean= -32.443 prior= +0.00
+  D-GPA        logP=   -435.99 mean= -33.537 prior= +0.00
+  D-HODGKIN-LYMPHOMA logP=   -435.99 mean= -33.537 prior= +0.00
+  D-IGG4-RELATED-DISEASE logP=   -435.99 mean= -33.537 prior= +0.00
+  D-SJS-TEN    logP=   -435.99 mean= -33.537 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -33.69 candidate=D-ORBITAL-CELLULITIS
+  logP_best_single=    -33.69 candidate=D-ORBITAL-CELLULITIS
+  logP_background_only=   -435.99 mean= -33.537 n=13
+  delta_to_null_best_known=   +402.30
+  delta_to_null_best_single=   +402.30
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-ORBITAL-CELLULITIS  PASS
+best latent times: D-ORBITAL-CELLULITIS=day5.4
+largest standardized residuals: eyelid_erythema_activity_in_D-ORBITAL-CELLULITIS obs=1 severity_score_0_1 mu=0.3575 via=D-ORBITAL-CELLULITIS z=3.9; conjunctival_hyperemia_activity_in_D-ORBITAL-CELLULITIS obs=0.9 severity_score_0_1 mu=0.2575 via=D-ORBITAL-CELLULITIS z=3.9; periorbital_edema_activity obs=1 severity_score_0_1 mu=0.3825 via=D-ORBITAL-CELLULITIS z=3.7; ocular_pain_activity_in_D-ORBITAL-CELLULITIS obs=0.95 severity_score_0_1 mu=0.3575 via=D-ORBITAL-CELLULITIS z=3.6; facial_skin_trauma_or_foreign_body_source_probability_in_D-ORBITAL-CELLULITIS obs=1 probability_0_1 mu=0.5075 via=D-ORBITAL-CELLULITIS z=3.0
+
+====================================================================================================
+Single-manifold validation: 3/3 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.

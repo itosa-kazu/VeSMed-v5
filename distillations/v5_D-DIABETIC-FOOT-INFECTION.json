@@ -1,0 +1,755 @@
+{
+  "disease": "D-DIABETIC-FOOT-INFECTION",
+  "disease_id": "D-DIABETIC-FOOT-INFECTION",
+  "disease_name": "Diabetic foot infection",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Diabetic foot infection",
+    "leaf_granularity": "First-layer disease leaf for clinically infected foot tissue in a person with diabetes, spanning infected diabetic foot ulcer, soft-tissue infection, deep-space infection, contiguous osteomyelitis hazard, ischemic or neuropathic wound amplification, and systemic spillover without encoding organism, severity, anatomic subsite, or treatment response into the disease name.",
+    "boundary_policy": "Cellulitis, necrotizing fasciitis, primary osteomyelitis, septic arthritis, DVT, acute ischemia, gout, trauma, bacteremia/sepsis, DKA, and HHS remain competing manifolds or downstream/parallel complications when their own observed evidence is present. Culture species, susceptibility, operative findings, pathology, and treatment response are post-workup context, not presentation-only diagnosis labels.",
+    "ranking_note": "Presentation ranking should use diabetes context, neuropathy/perfusion context, chronic ulcer or puncture portal, local foot erythema/warmth/swelling/pain/purulence/necrotic slough, ulcer depth, fever or sepsis physiology, CBC, CRP/ESR/PCT, lactate, renal function, glucose, and presentation-time imaging for collection, sinus tract, gas, soft-tissue extension, or bone involvement. It should not require a culture result or final operative diagnosis."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY",
+      "display_name": "Diabetic neuropathic, vascular, and immune tissue vulnerability",
+      "clinical_meaning": "Diabetes-associated neuropathy, microvascular disease, peripheral arterial disease, hyperglycemia, deformity, callus, edema, and impaired leukocyte function create a vulnerable foot where minor trauma or ulceration can become infected and heal poorly.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-3650, 0],
+      "peak_value_range": [0.2, 0.95],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE",
+      "display_name": "Diabetic foot ulcer or puncture portal barrier failure",
+      "clinical_meaning": "A chronic ulcer, fissure, blister, callus breakdown, traumatic puncture, surgical wound, or unrecognized neuropathic injury creates a below-ankle portal for organisms.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-365, 1],
+      "peak_value_range": [0.25, 0.98],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [7, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN",
+      "display_name": "Local foot soft-tissue pathogen burden",
+      "clinical_meaning": "Viable bacteria or fungi in diabetic foot skin, subcutaneous tissue, ulcer bed, tendon sheath, fascia, or adjacent muscle drive local inflammatory signs and delayed healing.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.35, 0.98],
+      "plateau_duration_days": [1, 42],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY",
+      "display_name": "Polymicrobial, biofilm, and anaerobic wound activity",
+      "clinical_meaning": "Chronic or deep diabetic foot wounds can contain mixed aerobic and anaerobic flora, biofilm, resistant organisms, and low-oxygen niches that reduce antibiotic effect and prolong infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.1, 0.95],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [3, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA",
+      "display_name": "Local innate inflammation, edema, and pain",
+      "clinical_meaning": "Neutrophil and cytokine response to local burden produces erythema, warmth, swelling, tenderness, drainage, blistering, and regional tissue edema; neuropathy can blunt pain.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.35, 0.98],
+      "plateau_duration_days": [1, 28],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY",
+      "display_name": "Ischemia, hypoxia, and impaired antibiotic delivery",
+      "clinical_meaning": "Macrovascular PAD, microangiopathy, edema pressure, necrosis, and poor tissue perfusion reduce host-cell access, drug delivery, and wound healing.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-365, 7],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD",
+      "display_name": "Deep-space abscess, sinus tract, and tendon-sheath spread",
+      "clinical_meaning": "Infection can track from ulcer bed into deep plantar spaces, tendon sheaths, aponeurosis, intermetatarsal spaces, or leg compartments, creating collections that need source control.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_CONTIGUOUS_BONE_INVASION",
+      "display_name": "Contiguous diabetic foot bone invasion",
+      "clinical_meaning": "Deep or chronic ulcer infection can extend to cortex and marrow, producing probe-to-bone findings, metatarsal or phalangeal MRI enhancement, cortical destruction, and diabetic foot osteomyelitis physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [3, 90],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [14, 365],
+      "decline_half_life_days": [14, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS",
+      "display_name": "Necrosis, gangrene, and nonviable tissue burden",
+      "clinical_meaning": "Ischemia, pressure, polymicrobial infection, and delayed source control produce necrotic slough, gangrene, foul odor, bullae, tissue plane necrosis, and amputation risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 21],
+      "peak_value_range": [0.0, 0.98],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY",
+      "display_name": "Systemic inflammatory spillover and sepsis physiology",
+      "clinical_meaning": "Severe or uncontrolled diabetic foot infection can produce fever, tachycardia, tachypnea, hypotension, altered mentation, lactate elevation, AKI, bacteremia, shock, and mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.98],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [0.5, 10],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE",
+      "display_name": "Inactive therapy or inadequate source control",
+      "clinical_meaning": "Delayed presentation, ineffective empiric coverage, resistant organisms, poor tissue penetration, under-debridement, missed abscess, retained foreign body, or inadequate offloading sustains burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [1, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT",
+      "display_name": "Stress hyperglycemia and impaired wound repair",
+      "clinical_meaning": "Acute infection and poor glycemic control raise glucose and counter-regulatory stress, weakening neutrophil function and collagen repair while increasing dehydration and hyperglycemic-crisis vulnerability.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.1, 0.95],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "target_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 365], "phase": "predisposition", "clinical_rationale": "Neuropathy, deformity, PAD, and impaired wound repair create diabetic foot ulcers and unrecognized portals.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "target_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "initiation", "clinical_rationale": "A below-ankle portal allows organisms into diabetic foot tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "target_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Diabetes-related immune and wound impairment permits higher burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 21], "phase": "persistence", "clinical_rationale": "Persistent deep or chronic wounds select for mixed flora, anaerobic niches, and biofilm.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "early", "clinical_rationale": "Local organisms trigger erythema, warmth, edema, tenderness, and drainage.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY", "target_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Poorly perfused tissue favors anaerobic and persistent infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY", "target_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Ischemia and hypoxia drive necrosis and nonviability.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "progression", "clinical_rationale": "Unchecked local infection can form abscesses and track along tendon or fascial planes.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "target_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 60], "phase": "complication", "clinical_rationale": "Deep ulcer and sinus tract proximity allows contiguous bone invasion.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "target_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "persistence", "clinical_rationale": "Mixed, resistant, or biofilm infection makes empiric coverage and debridement adequacy more uncertain.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "target_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "feedback", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Inadequate therapy permits burden to persist.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "Higher local burden and deeper spread raise systemic inflammatory spillover.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT", "target_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "effect_on_target": "increase", "edge_type": "feedback", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Poor glycemic physiology worsens immune and wound repair vulnerability.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT", "effect_on_target": "increase", "edge_type": "feedback", "lag_days_range": [0, 3], "phase": "acute", "clinical_rationale": "Acute infection stress raises glucose and counter-regulatory physiology.", "knowledge_confidence": "high"},
+
+    {"source_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "target_id": "peripheral_neuropathy_context_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "predisposition", "clinical_rationale": "Neuropathy is a core vulnerability context.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "target_id": "loss_of_protective_sensation_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "predisposition", "clinical_rationale": "Loss of protective sensation permits unnoticed trauma.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY", "target_id": "peripheral_arterial_disease_context_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "predisposition", "clinical_rationale": "PAD is observed context for impaired perfusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY", "target_id": "pedal_perfusion_compromise_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "Macrovascular and microvascular disease produces poor pedal perfusion.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "target_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "whole_course", "clinical_rationale": "An ulcer or puncture wound is the visible portal.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "target_id": "chronic_diabetic_foot_ulcer_context_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "predisposition", "clinical_rationale": "Chronic ulcer duration expresses persistent portal context.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Local organism burden is the core infection activity.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA", "target_id": "diabetic_foot_erythema_extent_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Inflammatory vasodilation produces erythema.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA", "target_id": "diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Capillary leak and local inflammation cause swelling.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA", "target_id": "diabetic_foot_warmth_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Local hyperemia produces warmth.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_INNATE_INFLAMMATION_EDEMA", "target_id": "diabetic_foot_pain_tenderness_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Inflammatory pressure and tissue injury cause pain, although neuropathy can blunt it.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "diabetic_foot_purulent_drainage_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "whole_course", "clinical_rationale": "Pus or exudate reflects local infection burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS", "target_id": "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "severe", "clinical_rationale": "Nonviable tissue appears as slough, gangrene, or necrosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS", "target_id": "diabetic_foot_blister_bullae_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Tissue injury may cause blistering or bullae.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "target_id": "diabetic_foot_foul_odor_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Anaerobic necrotic wounds can smell foul.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "target_id": "diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "workup", "clinical_rationale": "MRI, CT, or ultrasound may show collection or abscess.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "target_id": "diabetic_foot_sinus_tract_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 30], "phase": "workup", "clinical_rationale": "Sinus tract connects ulcer to deeper infected tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "target_id": "diabetic_foot_myositis_tendon_sheath_spread_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "workup", "clinical_rationale": "Deep infection can enhance muscles or track along tendon sheaths and aponeurosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "target_id": "soft_tissue_gas_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe", "clinical_rationale": "Gas can appear with anaerobic or severe diabetic foot infection but is not required.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "target_id": "bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "workup", "clinical_rationale": "Deep ulcer reaching bone is a bedside clue to contiguous osteomyelitis.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "target_id": "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 90], "phase": "workup", "clinical_rationale": "MRI or radiographs may show marrow infection or cortical destruction.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "target_id": "diabetic_foot_cortical_bone_destruction_activity_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 120], "phase": "workup", "clinical_rationale": "Chronic contiguous bone invasion can destroy cortex or joint surfaces.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "target_id": "polymicrobial_anaerobic_probability_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "context", "clinical_rationale": "Chronic or deep wounds raise probability of mixed aerobic-anaerobic infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "target_id": "initial_inactive_antibiotic_exposure_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "treatment_context", "clinical_rationale": "Failure of recent antibiotics suggests mismatch, inadequate depth, or missing source control.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Deep abscess, necrosis, foreign body, or infected bone increases source-control need.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "treatment_context", "clinical_rationale": "Persistent burden indicates source control may be inadequate.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT", "target_id": "serum_glucose", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "acute", "clinical_rationale": "Infection stress can raise glucose.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT", "target_id": "hyperglycemic_crisis_hazard", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "phase": "acute", "clinical_rationale": "Severe infection can precipitate DKA or HHS in susceptible patients.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "body_temperature", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Cytokine spillover produces fever, though severe hosts may be afebrile.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "systemic", "clinical_rationale": "Fever, pain, and sepsis raise heart rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "respiratory_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "systemic", "clinical_rationale": "Sepsis, pain, and acidosis raise respiratory rate.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "systolic_blood_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Vasodilation and shock can lower systolic pressure.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "mean_arterial_pressure", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Shock physiology lowers MAP.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "altered_mental_status_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Sepsis, hypotension, and metabolic stress can cause encephalopathy.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "white_blood_cell_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Bacterial infection commonly produces leukocytosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "absolute_neutrophil_count", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "Neutrophilic response tracks bacterial inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "systemic", "clinical_rationale": "CRP rises with diabetic foot infection severity.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "phase": "chronic_deep", "clinical_rationale": "ESR is often high in diabetic foot osteomyelitis or chronic deep infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "serum_procalcitonin", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "systemic", "clinical_rationale": "PCT can rise in severe bacterial or septic diabetic foot infection.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "shock", "clinical_rationale": "Hypoperfusion and severe sepsis raise lactate.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Sepsis, dehydration, nephrotoxins, and CKD raise AKI risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN", "target_id": "bacteremia_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Severe local burden can seed bloodstream infection.", "knowledge_confidence": "medium"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "Systemic spillover maps to sepsis risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD", "target_id": "diabetic_foot_deep_abscess_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "phase": "complication", "clinical_rationale": "Deep spread produces abscess hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_CONTIGUOUS_BONE_INVASION", "target_id": "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [3, 90], "phase": "complication", "clinical_rationale": "Bone invasion maps to osteomyelitis hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS", "target_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 14], "phase": "limb_threat", "clinical_rationale": "Necrosis and nonviability drive amputation hazard.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY", "target_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "phase": "outcome", "clinical_rationale": "Shock, AKI, and systemic infection increase mortality.", "knowledge_confidence": "high"},
+    {"source_id": "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS", "target_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "effect_on_target": "increase", "edge_type": "hazard_driver", "lag_days_range": [0, 14], "phase": "outcome", "clinical_rationale": "Uncontrolled necrotic source raises mortality through sepsis and operative risk.", "knowledge_confidence": "high"}
+  ],
+  "axes": [
+    {"axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Visible diabetic foot ulcer, plantar puncture wound, infected blister, fissure, or other below-ankle skin/tissue break serving as a portal.", "baseline_range": [0, 0.03], "peak_day_range": [-365, 1], "peak_value_range": [0.7, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "chronic_diabetic_foot_ulcer_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Chronic, recurrent, previously treated, or non-healing diabetic foot ulcer context.", "baseline_range": [0, 0.03], "peak_day_range": [-365, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [14, 180], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Overall local diabetic foot infection activity integrating infected ulcer, surrounding inflammation, drainage, deep extension, and clinical concern for infected foot tissue.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.35, 1.0], "plateau_duration_days": [1, 42], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_erythema_extent_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Extent of erythema around the diabetic foot wound or foot infection.", "baseline_range": [0, 0.03], "peak_day_range": [0, 4], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Foot or lower-foot swelling from local infection, inflammation, venous/lymphatic load, or deep spread.", "baseline_range": [0, 0.04], "peak_day_range": [0, 5], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 28], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_warmth_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Local warmth over infected diabetic foot tissue.", "baseline_range": [0, 0.03], "peak_day_range": [0, 4], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_pain_tenderness_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "symptom_or_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Foot pain, tenderness, or weight-bearing pain from diabetic foot infection; may be blunted by neuropathy.", "baseline_range": [0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_purulent_drainage_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Purulent, seropurulent, thick, or infected exudate from diabetic foot wound.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 42], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Necrotic slough, black eschar, gangrene, devitalized tissue, or tissue-plane necrosis in the diabetic foot.", "baseline_range": [0, 0.02], "peak_day_range": [0, 21], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_blister_bullae_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Superficial blistering or bullae associated with infected diabetic foot inflammation or tissue injury.", "baseline_range": [0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "diabetic_foot_foul_odor_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Foul odor from anaerobic, necrotic, or heavily colonized infected diabetic foot wound.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "diabetic_foot_ulcer_depth_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "relative_depth_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Depth of diabetic foot ulcer, from superficial skin involvement to deep tissue, tendon, joint capsule, or bone proximity.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [3, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Positive probe-to-bone test, exposed bone, or bedside evidence that the ulcer reaches bone.", "baseline_range": [0, 0.01], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "MRI, CT, or ultrasound evidence of diabetic foot abscess, deep collection, or drainable infected space.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_sinus_tract_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging_or_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Sinus tract, fistulous pathway, or ulcer tract extending to deeper diabetic foot tissue.", "baseline_range": [0, 0.01], "peak_day_range": [1, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_myositis_tendon_sheath_spread_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging_or_exam", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "MRI, operative, or exam evidence that diabetic foot infection extends into muscles, tendon sheaths, aponeurosis, or leg/foot tissue planes.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "soft_tissue_gas_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Gas in diabetic foot soft tissue on radiograph, CT, MRI, or ultrasound; supports severe gas-forming infection but is not required.", "baseline_range": [0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Imaging evidence of metatarsal, phalangeal, tarsal, or calcaneal bone involvement contiguous with diabetic foot infection.", "baseline_range": [0, 0.01], "peak_day_range": [3, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 365], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_cortical_bone_destruction_activity_in_D-DIABETIC-FOOT-INFECTION", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "shape_free_text": "Cortical destruction, articular surface destruction, sequestrum, or erosion in foot bone adjacent to diabetic ulcer infection.", "baseline_range": [0, 0.005], "peak_day_range": [7, 120], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 365], "decline_half_life_days": [30, 180], "knowledge_confidence": "high"},
+    {"axis_id": "peripheral_neuropathy_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Known diabetic peripheral neuropathy or neuropathic symptom/exam context.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "loss_of_protective_sensation_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "peripheral_neuropathy_context_activity", "shape_free_text": "Abnormal monofilament, biothesiometer, small-fiber neuropathy, or inability to perceive foot trauma.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "peripheral_arterial_disease_context_activity", "category": "risk_context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Known PAD, abnormal Doppler/ABI, ischemic symptoms, prior revascularization, or clinician-documented poor lower-limb arterial supply.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "pedal_perfusion_compromise_activity", "category": "physical_or_vascular", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "peripheral_arterial_disease_context_activity", "shape_free_text": "Clinical or test evidence of compromised pedal perfusion, ischemia, microangiopathy, weak pulses, or tissue hypoxia limiting healing.", "baseline_range": [0, 0.05], "peak_day_range": [-365, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [14, 365], "knowledge_confidence": "high"},
+    {"axis_id": "hemoglobin_a1c", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Glycated hemoglobin as chronic glycemic-control context for diabetic foot vulnerability and wound healing.", "baseline_range": [4.8, 5.6], "peak_day_range": [-120, 0], "peak_value_range": [6.5, 14.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 120], "knowledge_confidence": "high"},
+    {"axis_id": "serum_glucose", "category": "lab_value", "unit": "mg/dL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Serum or plasma glucose during diabetic foot infection; may be normal with insulin or elevated from stress, poor control, DKA, or HHS context.", "baseline_range": [70, 110], "peak_day_range": [0, 7], "peak_value_range": [80, 450], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured body temperature; diabetic foot infection can be febrile, afebrile, or hypothermic depending on host and severity.", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 3], "peak_value_range": [36.0, 40.5], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "high"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate; rises with fever, pain, hypovolemia, or sepsis.", "baseline_range": [60, 90], "peak_day_range": [0, 3], "peak_value_range": [70, 150], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate; rises with sepsis, pain, acidosis, or hyperglycemic crisis.", "baseline_range": [12, 20], "peak_day_range": [0, 3], "peak_value_range": [14, 36], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.2, 5], "knowledge_confidence": "high"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; may decrease in sepsis or dehydration.", "baseline_range": [100, 140], "peak_day_range": [0, 3], "peak_value_range": [70, 150], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values indicate shock physiology.", "baseline_range": [70, 100], "peak_day_range": [0, 3], "peak_value_range": [45, 95], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "altered_mental_status_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Altered mentation from sepsis, hypotension, renal dysfunction, dehydration, or hyperglycemic crisis accompanying diabetic foot infection.", "baseline_range": [0, 0.03], "peak_day_range": [0, 3], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [0.2, 7], "knowledge_confidence": "high"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "White blood cell count; often elevated but may be normal or blunted.", "baseline_range": [4.0, 10.0], "peak_day_range": [0, 3], "peak_value_range": [4.0, 35.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Absolute neutrophil count; rises with bacterial inflammation unless host response is impaired.", "baseline_range": [2.0, 7.0], "peak_day_range": [0, 3], "peak_value_range": [3.0, 32.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Differential neutrophil percentage during diabetic foot infection.", "baseline_range": [40, 75], "peak_day_range": [0, 3], "peak_value_range": [55, 95], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "hemoglobin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Hemoglobin; anemia may reflect chronic disease, CKD, inflammation, bleeding, or operative loss context.", "baseline_range": [12.0, 17.0], "peak_day_range": [0, 30], "peak_value_range": [7.0, 14.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelet count; can be normal, reactive high, or low in severe sepsis/DIC context.", "baseline_range": [150, 350], "peak_day_range": [0, 7], "peak_value_range": [100, 650], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "C-reactive protein, often elevated in diabetic foot infection and useful for severity/course tracking.", "baseline_range": [0.2, 5.0], "peak_day_range": [0, 5], "peak_value_range": [20, 400], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm_per_hr", "log_scale": false, "axis_role": "measurement", "shape_free_text": "ESR, often elevated in chronic diabetic foot infection and osteomyelitis.", "baseline_range": [0, 20], "peak_day_range": [1, 21], "peak_value_range": [30, 130], "plateau_duration_days": [7, 90], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Procalcitonin; can rise with severe bacterial or septic diabetic foot infection but may be normal in localized disease.", "baseline_range": [0.02, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.05, 20.0], "plateau_duration_days": [0.2, 10], "decline_half_life_days": [0.5, 4], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum lactate, reflecting hypoperfusion, sepsis, or severe tissue ischemia.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 2], "peak_value_range": [1.0, 8.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.1, 3], "knowledge_confidence": "high"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Serum creatinine; may reflect baseline CKD, AKI, dehydration, sepsis, or nephrotoxic treatment context.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.7, 6.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "blood_urea_nitrogen", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Blood urea nitrogen; rises with dehydration, renal dysfunction, catabolic stress, or CKD.", "baseline_range": [7, 20], "peak_day_range": [0, 7], "peak_value_range": [10, 100], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Albumin and nutrition/inflammation reserve relevant to wound healing and surgical risk.", "baseline_range": [3.5, 5.0], "peak_day_range": [-30, 14], "peak_value_range": [1.5, 4.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that chosen antibiotics cover the true diabetic foot pathogen set, based on culture, susceptibility, local epidemiology, exposure history, and tissue penetration.", "baseline_range": [0.2, 0.8], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "polymicrobial_anaerobic_probability_in_D-DIABETIC-FOOT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that infection requires coverage of mixed aerobic and anaerobic diabetic foot flora.", "baseline_range": [0.05, 0.3], "peak_day_range": [-7, 7], "peak_value_range": [0.2, 0.95], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "mrsa_probability_in_D-DIABETIC-FOOT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Context probability of MRSA diabetic foot pathogen involvement.", "baseline_range": [0.02, 0.25], "peak_day_range": [-7, 7], "peak_value_range": [0.05, 0.9], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "resistant_gram_negative_probability_in_D-DIABETIC-FOOT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Context probability of resistant gram-negative diabetic foot pathogen involvement, including prior antibiotics, healthcare exposure, water/soil exposure, or known susceptibility.", "baseline_range": [0.02, 0.2], "peak_day_range": [-7, 7], "peak_value_range": [0.05, 0.9], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "initial_inactive_antibiotic_exposure_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Recent antibiotic exposure with clinical failure or likely coverage gap before presentation.", "baseline_range": [0, 0.04], "peak_day_range": [-30, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need for drainage, debridement, foreign-body removal, bone resection, revascularization, or amputation for source control.", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Degree to which infected necrotic tissue, abscess, bone focus, foreign body, and ischemic barrier have been adequately controlled.", "baseline_range": [0.0, 0.5], "peak_day_range": [0, 14], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need to adjust antibiotic, contrast, or metabolic therapy for renal impairment or AKI risk.", "baseline_range": [0, 0.05], "peak_day_range": [-30, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_deep_abscess_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of drainable deep foot abscess or closed-space infection during diabetic foot infection.", "baseline_range": [0.0001, 0.003], "peak_day_range": [0, 14], "peak_value_range": [0.005, 0.25], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of contiguous diabetic foot osteomyelitis emerging from infected ulcer or deep soft-tissue infection.", "baseline_range": [0.00005, 0.002], "peak_day_range": [3, 90], "peak_value_range": [0.001, 0.12], "plateau_duration_days": [7, 365], "decline_half_life_days": [14, 90], "knowledge_confidence": "high"},
+    {"axis_id": "necrotizing_soft_tissue_infection_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard that a diabetic foot presentation is entering necrotizing soft-tissue infection physiology requiring urgent surgical exploration.", "baseline_range": [0.00002, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.2], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of minor or major amputation from nonviable tissue, uncontrolled infection, ischemia, or osteomyelitis.", "baseline_range": [0.00005, 0.002], "peak_day_range": [0, 30], "peak_value_range": [0.002, 0.25], "plateau_duration_days": [1, 180], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "bacteremia_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of bloodstream infection arising from diabetic foot infection.", "baseline_range": [0.00002, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of sepsis or septic shock physiology driven by diabetic foot infection.", "baseline_range": [0.00005, 0.002], "peak_day_range": [0, 7], "peak_value_range": [0.003, 0.25], "plateau_duration_days": [0.2, 21], "decline_half_life_days": [0.5, 10], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "AKI hazard from sepsis, dehydration, contrast, nephrotoxic antibiotics, or baseline CKD.", "baseline_range": [0.0001, 0.004], "peak_day_range": [0, 7], "peak_value_range": [0.001, 0.25], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "hyperglycemic_crisis_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of DKA or HHS triggered or worsened by infection stress, missed insulin, SGLT2 inhibitor context, dehydration, or poor intake.", "baseline_range": [0.00002, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.0005, 0.12], "plateau_duration_days": [0.2, 14], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard for diabetic foot infection, rising with sepsis, shock, AKI, uncontrolled necrotic source, severe ischemia, frailty, and major amputation physiology.", "baseline_range": [0.00002, 0.0003], "peak_day_range": [0, 30], "peak_value_range": [0.0005, 0.08], "plateau_duration_days": [0.2, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "diabetic_foot_erythema_extent_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION", "relationship": "same_local_inflammation_field", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.75], "phase": "presentation", "clinical_rationale": "Erythema and edema often move together after local inflammatory activation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_warmth_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "diabetic_foot_erythema_extent_in_D-DIABETIC-FOOT-INFECTION", "relationship": "same_local_hyperemia_field", "coupling_type": "noise_correlation", "correlation_range": [0.3, 0.7], "phase": "presentation", "clinical_rationale": "Warmth and erythema share local hyperemia.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_ulcer_depth_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "effect_direction": "source_up_increases_target", "phase": "deep_or_chronic", "clinical_rationale": "Deeper ulcers are more likely to expose or probe to bone.", "knowledge_confidence": "high"},
+    {"source_axis_id": "bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.85], "effect_direction": "source_up_increases_target", "phase": "deep_or_chronic", "clinical_rationale": "Probe-to-bone raises likelihood and future hazard of contiguous osteomyelitis.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.8], "effect_direction": "source_up_increases_target", "phase": "workup", "clinical_rationale": "Deep collection commonly needs drainage or debridement.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.8], "effect_direction": "source_up_increases_target", "phase": "limb_threat", "clinical_rationale": "Necrotic tissue requires debridement or amputation for source control.", "knowledge_confidence": "high"},
+    {"source_axis_id": "pedal_perfusion_compromise_activity", "target_axis_id": "source_control_adequacy", "relationship": "source_up_decreases_target", "coupling_type": "drift", "correlation_range": [-0.65, -0.25], "effect_direction": "source_up_decreases_target", "phase": "whole_course", "clinical_rationale": "Poor perfusion limits antibiotic delivery and healing after local procedures.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.65], "effect_direction": "source_up_increases_target", "phase": "complication", "clinical_rationale": "Bone infection increases prolonged source-control and amputation risk.", "knowledge_confidence": "high"},
+    {"source_axis_id": "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.45, 0.9], "effect_direction": "source_up_increases_target", "phase": "limb_threat", "clinical_rationale": "Necrosis and gangrene directly drive limb nonviability.", "knowledge_confidence": "high"},
+    {"source_axis_id": "soft_tissue_gas_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "necrotizing_soft_tissue_infection_hazard", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.75], "effect_direction": "source_up_increases_target", "phase": "severe", "clinical_rationale": "Gas raises concern for gas-forming or necrotizing soft-tissue disease.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "target_axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.45, 0.9], "effect_direction": "source_up_increases_target", "phase": "outcome", "clinical_rationale": "Sepsis and shock are major mortality pathways.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.25, 0.65], "effect_direction": "source_up_increases_target", "phase": "outcome", "clinical_rationale": "AKI worsens severe infection prognosis and treatment tolerance.", "knowledge_confidence": "high"},
+    {"source_axis_id": "source_control_adequacy", "target_axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_decreases_target", "coupling_type": "hazard_drift", "correlation_range": [-0.75, -0.25], "effect_direction": "source_up_decreases_target", "phase": "treatment_response", "clinical_rationale": "Adequate source control reduces persistent sepsis and mortality hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_lactate", "target_axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.7], "effect_direction": "source_up_increases_target", "phase": "shock", "clinical_rationale": "Higher lactate reflects hypoperfusion and worse outcome.", "knowledge_confidence": "high"},
+    {"source_axis_id": "mean_arterial_pressure", "target_axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "relationship": "source_down_increases_target", "coupling_type": "hazard_drift", "correlation_range": [-0.7, -0.25], "effect_direction": "source_down_increases_target", "phase": "shock", "clinical_rationale": "Lower MAP increases mortality hazard during septic physiology.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "empiric_broad_spectrum_intravenous_dfi_antibiotic_bundle",
+      "drug_class": "antibacterial_coverage_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "empiric_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "polymicrobial_anaerobic_probability_in_D-DIABETIC-FOOT-INFECTION", "mrsa_probability_in_D-DIABETIC-FOOT-INFECTION", "resistant_gram_negative_probability_in_D-DIABETIC-FOOT-INFECTION", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.5, 1.2], "clinical_rationale": "Antibiotics reshape burden only if active against the true pathogen context."},
+        {"axis_id": "polymicrobial_anaerobic_probability_in_D-DIABETIC-FOOT-INFECTION", "condition": "high", "effect": "broadens_coverage_need", "factor_range": [0.8, 1.3], "clinical_rationale": "Deep or chronic DFI often needs gram-positive, gram-negative, and anaerobic coverage."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity_and_dose", "factor_range": [0.6, 1.1], "clinical_rationale": "Renal impairment affects beta-lactam, vancomycin, daptomycin, and contrast safety."}
+      ],
+      "failure_modes": ["inactive_coverage", "poor_tissue_delivery_from_ischemia", "missed_abscess_or_bone_source", "nephrotoxicity", "clostridioides_difficile"],
+      "trajectory_modifications": {
+        "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.25, 0.9], "decline_half_life_days": [1, 7]},
+        "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 5]},
+        "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0.05, 1.0],
+      "carryover_after_stop_days": [0.5, 4],
+      "side_effects": [
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "magnitude_range": [0, 0.04], "interpretation": "Some broad regimens and severe sepsis increase renal risk."}
+      ],
+      "context_specific_role": "Coverage lane while depth, culture, susceptibility, ischemia, and source-control context are clarified.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "culture_and_susceptibility_directed_dfi_antibiotics",
+      "drug_class": "targeted_antimicrobial_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "resistant_gram_negative_probability_in_D-DIABETIC-FOOT-INFECTION", "mrsa_probability_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.4], "clinical_rationale": "Targeted therapy is strongest when tissue/bone culture and susceptibility match the true source."},
+        {"axis_id": "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION", "condition": "high", "effect": "extends_duration_need", "factor_range": [0.7, 1.2], "clinical_rationale": "Bone involvement changes duration and source-control requirements."}
+      ],
+      "failure_modes": ["culture_contaminant_misread", "biofilm_or_bone_penetration_gap", "adherence_failure", "drug_interaction", "renal_or_hepatic_toxicity"],
+      "trajectory_modifications": {
+        "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.15, 0.7], "decline_half_life_days": [1, 10]},
+        "M_DFI_CONTIGUOUS_BONE_INVASION": {"peak_value_factor": [0.35, 0.85], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [7, 45]},
+        "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [1, 10]}
+      },
+      "onset_delay_days": [0.2, 2.0],
+      "carryover_after_stop_days": [1, 14],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0, 1.0], "interpretation": "Renal toxicity depends on regimen and host kidney reserve."}
+      ],
+      "context_specific_role": "Narrowed or organism-specific lane after microbiology context is known; not used as a diagnosis label.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "surgical_debridement_drainage_and_foreign_body_removal",
+      "drug_class": "surgical_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "source_control_context_dependent",
+      "required_context_axes": ["source_control_need", "source_control_adequacy", "diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.4], "clinical_rationale": "Debridement or drainage helps when infected necrotic tissue, abscess, or foreign body is present."},
+        {"axis_id": "pedal_perfusion_compromise_activity", "condition": "high", "effect": "reduces_healing_effect", "factor_range": [0.5, 0.95], "clinical_rationale": "Poor perfusion limits post-debridement healing."}
+      ],
+      "failure_modes": ["under_debridement", "missed_deep_space", "poor_perfusion", "bleeding", "wound_breakdown"],
+      "trajectory_modifications": {
+        "M_DFI_DEEP_SPACE_ABSCESS_SINUS_SPREAD": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.15, 0.7], "decline_half_life_days": [0.5, 7]},
+        "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS": {"peak_value_factor": [0.2, 0.7], "plateau_duration_factor": [0.15, 0.8], "decline_half_life_days": [1, 14]},
+        "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [1, 10]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0, 1.0],
+      "carryover_after_stop_days": [7, 120],
+      "side_effects": [
+        {"axis_id": "hemoglobin", "direction": "down", "magnitude_range": [0, 2.0], "interpretation": "Operative blood loss depends on procedure extent."}
+      ],
+      "context_specific_role": "Procedure lane for necrotic tissue, abscess, foreign body, or extensive infected planes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "bone_resection_or_osteomyelitis_source_control",
+      "drug_class": "orthopedic_podiatric_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "bone_involvement_context_dependent",
+      "required_context_axes": ["bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.4], "clinical_rationale": "Bone-focused source control matters when contiguous osteomyelitis is present."},
+        {"axis_id": "pedal_perfusion_compromise_activity", "condition": "high", "effect": "changes_limb_salvage_balance", "factor_range": [0.5, 1.1], "clinical_rationale": "Ischemia affects surgical healing and limb-salvage feasibility."}
+      ],
+      "failure_modes": ["no_true_bone_infection", "insufficient_margin", "poor_soft_tissue_cover", "functional_loss", "recurrent_ulcer"],
+      "trajectory_modifications": {
+        "M_DFI_CONTIGUOUS_BONE_INVASION": {"peak_value_factor": [0.15, 0.6], "plateau_duration_factor": [0.15, 0.7], "decline_half_life_days": [7, 45]},
+        "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [3, 21]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.2, 0.8], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0.2, 7.0],
+      "carryover_after_stop_days": [30, 365],
+      "side_effects": [
+        {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up_or_down_context_dependent", "magnitude_range": [0, 0.08], "interpretation": "Minor resection may preserve limb; wider nonviability may commit to amputation."}
+      ],
+      "context_specific_role": "Bone-source lane when imaging, probe-to-bone, or deep sampling shows bone involvement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "revascularization_or_perfusion_restoration",
+      "drug_class": "vascular_source_and_healing_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "ischemia_context_dependent",
+      "required_context_axes": ["peripheral_arterial_disease_context_activity", "pedal_perfusion_compromise_activity", "source_control_adequacy", "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "pedal_perfusion_compromise_activity", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.4], "clinical_rationale": "Perfusion intervention benefits ischemic diabetic foot infection more than well-perfused infection."}
+      ],
+      "failure_modes": ["no_revascularizable_target", "procedure_delay", "contrast_or_renal_risk", "thrombosis", "insufficient_wound_care"],
+      "push_targets": [
+        {"axis_id": "pedal_perfusion_compromise_activity", "direction": "down", "magnitude_range": [0.1, 0.7], "unit": "severity_score_0_1"},
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.1, 0.5], "unit": "relative_activity_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [3, 60]},
+        "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [7, 90]}
+      },
+      "onset_delay_days": [0.5, 14],
+      "carryover_after_stop_days": [30, 3650],
+      "side_effects": [
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "magnitude_range": [0, 0.03], "interpretation": "Contrast and hemodynamic shifts can increase AKI risk."}
+      ],
+      "context_specific_role": "Perfusion lane for ischemic diabetic foot infection and limb-salvage physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "urgent_amputation_or_major_resection_for_nonviable_uncontrolled_source",
+      "drug_class": "rescue_surgical_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "rescue_context_dependent",
+      "required_context_axes": ["limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_necrotic_slough_gangrene_activity_in_D-DIABETIC-FOOT-INFECTION", "sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "condition": "high", "effect": "strengthens_life_saving_source_control_role", "factor_range": [0.8, 1.5], "clinical_rationale": "Amputation becomes a life-saving source-control vector when tissue is nonviable or source cannot otherwise be controlled."}
+      ],
+      "failure_modes": ["avoidable_limb_loss_if_overused", "under_resection_if_delayed", "wound_failure", "rehabilitation_burden"],
+      "trajectory_modifications": {
+        "M_DFI_NECROSIS_GANGRENE_TISSUE_LOSS": {"peak_value_factor": [0.05, 0.5], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [1, 14]},
+        "M_DFI_SYSTEMIC_SPILLOVER_SEPSIS_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 1.0], "unit": "relative_activity_0_1"},
+        {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up_then_down_after_source_control", "magnitude_range": [0.0, 0.2], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [30, 3650],
+      "side_effects": [
+        {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "magnitude_range": [0.05, 1.0], "interpretation": "The intervention itself commits to limb loss when rescue source control is necessary."}
+      ],
+      "context_specific_role": "Rescue lane for nonviable limb segment or uncontrolled necrotic source.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "offloading_wound_care_and_pressure_redistribution",
+      "drug_class": "local_wound_supportive_care",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_ulcer_depth_activity_in_D-DIABETIC-FOOT-INFECTION", "chronic_diabetic_foot_ulcer_context_activity", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "peripheral_neuropathy_context_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Offloading is especially important when neuropathy prevents protective pain limitation."}
+      ],
+      "failure_modes": ["poor_adherence", "uncontrolled_infection", "inadequate_debridement", "poor_perfusion"],
+      "push_targets": [
+        {"axis_id": "diabetic_foot_ulcer_depth_activity_in_D-DIABETIC-FOOT-INFECTION", "direction": "down", "magnitude_range": [0.02, 0.3], "unit": "relative_depth_0_1"},
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.05, 0.25], "unit": "relative_activity_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_DFI_ULCER_PORTAL_BARRIER_FAILURE": {"peak_value_factor": [0.6, 0.95], "decline_half_life_days": [14, 90]},
+        "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT": {"peak_value_factor": [0.7, 0.95], "decline_half_life_days": [7, 45]}
+      },
+      "onset_delay_days": [1, 7],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [],
+      "context_specific_role": "Local mechanics and wound-care lane; it does not replace active antibiotics or source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "insulin_based_glycemic_control_during_infection",
+      "drug_class": "metabolic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["serum_glucose", "hemoglobin_a1c", "hyperglycemic_crisis_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "serum_glucose", "condition": "high", "effect": "required_for_effect", "factor_range": [0.8, 1.3], "clinical_rationale": "Glucose-lowering effect depends on elevated or unstable glucose context."},
+        {"axis_id": "hyperglycemic_crisis_hazard", "condition": "high", "effect": "requires_crisis_protocol", "factor_range": [1.0, 1.5], "clinical_rationale": "DKA/HHS context changes fluid, insulin, potassium, and osmolality handling."}
+      ],
+      "failure_modes": ["hypoglycemia", "hypokalemia", "under_treatment_of_dka_or_hhs", "poor_nutrition_alignment"],
+      "push_targets": [
+        {"axis_id": "serum_glucose", "direction": "down", "magnitude_range": [20, 250], "unit": "mg/dL"},
+        {"axis_id": "hyperglycemic_crisis_hazard", "direction": "down", "magnitude_range": [0.0, 0.06], "unit": "events_per_day"}
+      ],
+      "trajectory_modifications": {
+        "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 7]}
+      },
+      "onset_delay_days": [0.0, 0.5],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "serum_potassium", "direction": "down", "magnitude_range": [0, 1.5], "interpretation": "Insulin can lower potassium, especially in DKA/HHS protocols."}
+      ],
+      "context_specific_role": "Metabolic support lane that improves host repair and reduces hyperglycemic crisis risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "local_antibiotic_delivery_after_debridement",
+      "drug_class": "local_antimicrobial_adjunct",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "adjunct_context_dependent",
+      "required_context_axes": ["source_control_adequacy", "diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION", "diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "strengthens", "factor_range": [0.7, 1.2], "clinical_rationale": "Local antibiotic beads or spacers work as adjuncts after surgical access and debridement."}
+      ],
+      "failure_modes": ["no_debridement_access", "wrong_drug_for_pathogen", "persistent_ischemia", "foreign_body_or_drainage_issue"],
+      "trajectory_modifications": {
+        "M_DFI_LOCAL_SOFT_TISSUE_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [2, 14]},
+        "M_DFI_CONTIGUOUS_BONE_INVASION": {"peak_value_factor": [0.4, 0.85], "decline_half_life_days": [7, 45]}
+      },
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [
+        {"axis_id": "diabetic_foot_purulent_drainage_activity_in_D-DIABETIC-FOOT-INFECTION", "direction": "up_or_variable", "magnitude_range": [0, 0.2], "interpretation": "Local carrier drainage can complicate wound interpretation."}
+      ],
+      "context_specific_role": "Adjunctive local drug-delivery lane after debridement or bone work.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "sepsis_resuscitation_and_organ_support",
+      "drug_class": "critical_care_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "mean_arterial_pressure", "serum_lactate", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "sepsis_hazard_in_D-DIABETIC-FOOT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [0.9, 1.4], "clinical_rationale": "Shock physiology increases benefit of fluids, vasopressors, oxygen, and renal support."}
+      ],
+      "failure_modes": ["source_uncontrolled", "fluid_overload", "pressor_ischemia", "renal_replacement_complications"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.3, 5.0], "unit": "mmol/L"},
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "down", "magnitude_range": [0.0, 0.08], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [
+        {"axis_id": "pedal_perfusion_compromise_activity", "direction": "up", "magnitude_range": [0, 0.2], "interpretation": "High-dose vasopressors may worsen distal ischemia."}
+      ],
+      "context_specific_role": "Physiologic support lane while antimicrobial, metabolic, vascular, and source-control vectors address causes.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "diabetes_mellitus",
+      "type": "host_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [4.0, 20.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Diabetes is required context for this leaf."},
+            {"axis_id": "hemoglobin_a1c", "direction": "up_or_contextual", "factor_range": [1.0, 2.5], "clinical_rationale": "Poor control increases vulnerability and delayed healing."}
+          ],
+          "trajectory_modulation": "Creates diabetic foot susceptibility and wound-healing impairment."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "poor_glycemic_control_or_stress_hyperglycemia",
+      "type": "host_metabolic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_STRESS_HYPERGLYCEMIA_WOUND_IMPAIRMENT", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "Hyperglycemia worsens immune function and repair."},
+            {"axis_id": "serum_glucose", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Acute infection and poor control raise glucose."},
+            {"axis_id": "hyperglycemic_crisis_hazard", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Infection can precipitate DKA/HHS in poorly controlled diabetes."}
+          ],
+          "trajectory_modulation": "Raises host vulnerability and metabolic complication hazard."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "peripheral_neuropathy",
+      "type": "local_risk_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "peripheral_neuropathy_context_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Neuropathy predisposes to unrecognized trauma and ulceration."},
+            {"axis_id": "diabetic_foot_pain_tenderness_activity_in_D-DIABETIC-FOOT-INFECTION", "direction": "blunted_or_variable", "factor_range": [0.4, 1.2], "clinical_rationale": "Pain may be less prominent despite severe disease."},
+            {"axis_id": "diabetic_foot_ulcer_presence_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.5, 4.0], "clinical_rationale": "Loss of sensation increases ulcer and puncture risk."}
+          ],
+          "trajectory_modulation": "Increases portal formation and can hide severity by blunting pain."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "peripheral_arterial_disease_or_ischemia",
+      "type": "local_perfusion_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_ISCHEMIA_HYPOXIA_IMPAIRED_DELIVERY", "direction": "up", "factor_range": [1.5, 5.0], "clinical_rationale": "PAD impairs drug delivery and wound healing."},
+            {"axis_id": "pedal_perfusion_compromise_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "PAD manifests as poor perfusion."},
+            {"axis_id": "limb_amputation_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.5, 5.0], "clinical_rationale": "Ischemia is a major amputation driver."}
+          ],
+          "trajectory_modulation": "Raises necrosis, poor source-control durability, and amputation hazard."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "chronic_or_recurrent_diabetic_foot_ulcer",
+      "type": "portal_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "chronic_diabetic_foot_ulcer_context_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Chronic ulcer is a persistent portal."},
+            {"axis_id": "M_DFI_POLYMICROBIAL_BIOFILM_ANAEROBIC_ACTIVITY", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Chronic wounds favor biofilm and polymicrobial flora."},
+            {"axis_id": "diabetic_foot_osteomyelitis_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "Longstanding ulcer increases contiguous bone involvement risk."}
+          ],
+          "trajectory_modulation": "Shifts toward persistent, polymicrobial, and bone-adjacent disease."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "recent_puncture_trauma_foreign_body_or_surgery",
+      "type": "portal_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 8.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Puncture or surgery supplies a direct portal."},
+            {"axis_id": "diabetic_foot_deep_abscess_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Retained foreign body or puncture can seed deep space infection."}
+          ],
+          "trajectory_modulation": "Accelerates portal-to-burden transition and may add foreign-body source-control need."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_antibiotics_healthcare_exposure_or_mdr_history",
+      "type": "pathogen_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "resistant_gram_negative_probability_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Prior antibiotics and healthcare exposure increase resistant pathogen probability."},
+            {"axis_id": "initial_inactive_antibiotic_exposure_activity", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Recent clinical antibiotic failure implies possible coverage gap."},
+            {"axis_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Therapeutic mismatch prolongs infection."}
+          ],
+          "trajectory_modulation": "Increases inactive coverage and persistence risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ckd_or_renal_impairment",
+      "type": "host_and_treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "renal_dose_adjustment_need", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Renal impairment changes antibiotic and contrast dosing."},
+            {"axis_id": "serum_creatinine", "direction": "up", "factor_range": [1.2, 6.0], "clinical_rationale": "Creatinine background is higher with CKD."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "CKD lowers renal reserve during infection."}
+          ],
+          "trajectory_modulation": "Raises renal toxicity and treatment-complexity risk."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "immunosuppression_malignancy_or_transplant",
+      "type": "host_clearance_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_DIABETIC_HOST_TISSUE_VULNERABILITY", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Immunosuppression impairs local containment."},
+            {"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.6, 1.2], "clinical_rationale": "Fever response can be absent or atypical."},
+            {"axis_id": "white_blood_cell_count", "direction": "up_or_down", "factor_range": [0.4, 2.0], "clinical_rationale": "WBC response can be distorted by host state or drugs."}
+          ],
+          "trajectory_modulation": "Broadens pathogen context and can blunt inflammatory signs."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "obesity_foot_deformity_charcot_or_callus",
+      "type": "mechanical_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_ULCER_PORTAL_BARRIER_FAILURE", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Mechanical pressure and deformity increase ulcer portals."},
+            {"axis_id": "chronic_diabetic_foot_ulcer_context_activity", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Pressure and deformity promote chronic non-healing ulcers."}
+          ],
+          "trajectory_modulation": "Raises recurrence and offloading importance."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_presentation_or_missed_source_control",
+      "type": "course_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.5],
+          "axis_response_modulation": [
+            {"axis_id": "M_DFI_INACTIVE_ANTIBIOTIC_OR_SOURCE_CONTROL_FAILURE", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Delay allows local burden and tissue injury to accumulate."},
+            {"axis_id": "diabetic_foot_deep_abscess_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Missed source control allows deep collections to persist."},
+            {"axis_id": "mortality_hazard_in_D-DIABETIC-FOOT-INFECTION", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Delayed control raises severe sepsis and mortality risk."}
+          ],
+          "trajectory_modulation": "Shifts toward deep spread, necrosis, and systemic spillover."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Perform serial foot exams documenting ulcer portal, erythema extent, warmth, edema, tenderness, purulence, odor, necrosis, bullae, pain trajectory, and weight-bearing limitation.",
+    "Assess diabetes context and limb context: neuropathy, loss of protective sensation, PAD, pulses, ABI or Doppler when needed, foot deformity, Charcot features, prior ulcers, prior amputation, offloading, footwear, and recent trauma or puncture.",
+    "Use presentation labs to define severity and competing physiology: CBC with differential, CRP, ESR, procalcitonin when severe, lactate when unstable, creatinine/BUN/electrolytes, serum glucose, hemoglobin A1c, albumin or nutrition markers when relevant.",
+    "Image when depth, abscess, foreign body, gas, osteomyelitis, septic arthritis, or necrotizing transition is uncertain; radiograph can show gas or bone change, while MRI best delineates deep collection, sinus tract, muscle spread, and bone involvement.",
+    "Obtain deep tissue or bone cultures when debridement or bone sampling is performed; superficial swabs, species identity, susceptibility, final pathology, and treatment response should remain post-workup context for presentation-only diagnosis.",
+    "Use active antimicrobial coverage, source control, offloading, wound care, glycemic control, and perfusion correction as separate vector fields rather than encoding any treatment as a diagnosis label.",
+    "Escalate urgently when systemic physiology, necrosis/gangrene, gas, rapidly spreading tissue injury, deep abscess, ischemia, or altered mentation suggests limb- or life-threatening infection.",
+    "Do not narrow this manifold by organism, severity, osteomyelitis status, or amputation outcome. Mimics and adjacent leaves should win only when their own observed evidence is stronger."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-DIABETIC-FOOT-INFECTION.",
+    "No treatment-rank or diagnosis-rank labels are encoded.",
+    "Osteomyelitis, sepsis, necrotizing transition, and amputation are represented as axes/event hazards or treatment context, not as hard-coded outcome labels."
+  ]
+}

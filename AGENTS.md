@@ -854,3 +854,26 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `358/360 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: Orbital Cellulitis / Diabetic Foot Infection / CAUTI
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ORBITAL-CELLULITIS`: orbital cellulitis.
+  - `D-DIABETIC-FOOT-INFECTION`: diabetic foot infection.
+  - `D-CATHETER-ASSOCIATED-UTI`: catheter-associated urinary tract infection.
+- New real PMC/PubMed cases:
+  - `D-ORBITAL-CELLULITIS`: `PMC3168817` / PMID `22567060`, `PMC8047292` / PMID `33884351`, `PMC12211202` / PMID `40598082`.
+  - `D-DIABETIC-FOOT-INFECTION`: `PMC10823834` / PMID `38292109`, `PMC10626598` / PMID `37910441`, `PMC9173686` / PMID `35674634`.
+  - `D-CATHETER-ASSOCIATED-UTI`: `PMC9682002` / PMID `36439230`, `PMC11458280` / PMID `39376831`, `PMC9081951` / PMID `35541297`.
+- Orbital cellulitis source rule: keep first-layer orbital cellulitis separate from preseptal cellulitis, sinusitis, cavernous sinus thrombosis, meningitis, brain abscess, SJS/TEN ocular disease, thyroid orbitopathy, IgG4/GPA orbital disease, and orbital tumor. Presentation-time proptosis, painful/restricted extraocular movement, chemosis, visual acuity, postseptal CT/MRI inflammation, subperiosteal/orbital abscess, and source-control need can be rankable; operative drainage, culture species/susceptibility, final source adjudication, and treatment response stay confirmatory/non-ranking unless testing post-workup mode.
+- Diabetic foot infection source rule: keep first-layer DFI separate from generic cellulitis, necrotizing fasciitis, septic arthritis, osteomyelitis-only leaf, ischemia/trauma/gout/DVT, bacteremia/sepsis, and hyperglycemic crisis. Diabetes, neuropathy, PAD, chronic ulcer, wound depth, drainage, gas, deep collection, and foot source-control need can be rankable when presentation evidence exists; culture/susceptibility, operative/pathology confirmation, and treatment response stay confirmatory/non-ranking.
+- CAUTI source rule: keep catheter-associated UTI separate from pyelonephritis, acute prostatitis, CLABSI, organism-level bacteremia, asymptomatic bacteriuria/colonization, catheter trauma/obstruction without infection, renal/perinephric abscess, and urosepsis. Catheter/device context, urinary symptoms, pyuria/nitrite/leukocyte esterase/urine WBC, obstruction/retention, and source-control need can be rankable; culture species/susceptibility and final source adjudication remain confirmatory/non-ranking unless testing post-workup mode.
+- Axis ontology repair from this batch: composite `_or_` axis IDs were normalized before regression: `periocular_direct_inoculation_context_probability_in_D-ORBITAL-CELLULITIS`, `purulent_periocular_discharge_activity_in_D-ORBITAL-CELLULITIS`, `bone_exposure_sign_presence_in_D-DIABETIC-FOOT-INFECTION`, `urinary_catheter_dysfunction_activity`, `catheter_associated_bladder_wall_abnormality_activity`, `upper_urinary_tract_pain_tenderness_activity`, `catheter_biofilm_pathogen_probability`, and `upper_tract_suppurative_complication_hazard_in_D-CATHETER-ASSOCIATED-UTI`.
+- Horizontal fairness notes: DFI introduced diabetes/PAD/neuropathy/chronic ulcer/deep foot infection axes that should be considered for cellulitis, necrotizing fasciitis, septic arthritis, future diabetic foot osteomyelitis, and DKA/HHS when medically true. CAUTI introduced urinary catheter and urine-test axes that should be aligned with pyelonephritis, acute prostatitis, and future asymptomatic bacteriuria/colonization. Orbital cellulitis introduced ocular/orbital axes that should be shared carefully with preseptal cellulitis, sinusitis, cavernous sinus thrombosis, brain abscess/meningitis, SJS/TEN, IgG4/GPA orbital disease, and orbital tumor without letting noninfectious mimics claim bacterial purulence/source-control axes.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-RENAL-ABSCESS`.
+- Focused new-batch fast grid (`ORBITAL_CELLULITIS,DIABETIC_FOOT_INFECTION,CATHETER_ASSOCIATED_UTI`) loaded 9 cases and was `9/9 PASS`.
+- Full current-atlas fast grid after this batch:
+  - 372 case JSON files loaded.
+  - Single-manifold validation `367/369 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

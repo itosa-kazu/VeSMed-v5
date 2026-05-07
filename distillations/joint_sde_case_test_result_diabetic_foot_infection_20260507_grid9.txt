@@ -1,0 +1,160 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: mc monte_carlo_samples=500
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 10 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=10, total_ranked=10, max_combo_size=1
+Case filter: DIABETIC_FOOT_INFECTION
+Cases loaded for this run: 3
+
+Manifolds:
+  D-SEPSIS-GN : axes=82, mechanisms=11, mech_edges=56, couplings=17, risk_factors=13
+  D-CELLULITIS: axes=63, mechanisms= 9, mech_edges=50, couplings=14, risk_factors= 8
+  D-DIABETIC-FOOT-INFECTION: axes=71, mechanisms=12, mech_edges=62, couplings=15, risk_factors=11
+  D-DIABETIC-KETOACIDOSIS: axes=58, mechanisms= 9, mech_edges=48, couplings=12, risk_factors= 8
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE: axes=60, mechanisms= 9, mech_edges=41, couplings=20, risk_factors= 8
+  D-NECROTIZING-FASCIITIS: axes=60, mechanisms=11, mech_edges=53, couplings=11, risk_factors=11
+  D-PSEUDOMONAS-BACTEREMIA: axes=71, mechanisms= 9, mech_edges=48, couplings=15, risk_factors= 9
+  D-SEPTIC-ARTHRITIS: axes=70, mechanisms=11, mech_edges=56, couplings=12, risk_factors=11
+  D-STAPH-AUREUS-BACTEREMIA: axes=68, mechanisms=10, mech_edges=52, couplings=11, risk_factors= 9
+  D-VERTEBRAL-OSTEOMYELITIS: axes=70, mechanisms= 8, mech_edges=46, couplings=14, risk_factors= 9
+Base-measure/background axes: 3001
+
+----------------------------------------------------------------------------------------------------
+DIABETIC_FOOT_INFECTION_ATTACK_MRI_GAS_PMC10823834  expected=D-DIABETIC-FOOT-INFECTION
+source: PMID 38292109 / PMC10823834 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10823834/
+paper diagnosis: Severe diabetic foot attack / diabetic foot ulcer infection with deep collection, gas, and chronic osteomyelitis
+observed axes: 17
+risk context: diabetes_mellitus=host_context; poor_glycemic_control_or_stress_hyperglycemia=host_metabolic_context; peripheral_neuropathy=local_risk_context; chronic_or_recurrent_diabetic_foot_ulcer=portal_context; recent_puncture_trauma_foreign_body_or_surgery=portal_context; immunosuppression_malignancy_or_transplant=host_clearance_context; delayed_presentation_or_missed_source_control=course_context
+
+[joint SDE ranking: all candidates]
+* D-DIABETIC-FOOT-INFECTION logP=    -52.22 mean=  -3.730 n=14 prior=+10.09
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -605.46 mean= -43.247 n=14 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=   -606.68 mean= -43.334 n=14 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=   -642.41 mean= -45.887 n=14 prior= +0.00
+  D-CELLULITIS            logP=   -642.66 mean= -45.904 n=14 prior= +0.97
+  D-PSEUDOMONAS-BACTEREMIA logP=   -646.24 mean= -46.160 n=14 prior= +0.00
+  D-STAPH-AUREUS-BACTEREMIA logP=   -647.75 mean= -46.268 n=14 prior= +0.00
+  D-SEPSIS-GN             logP=   -656.86 mean= -46.919 n=14 prior= +0.00
+  D-SEPTIC-ARTHRITIS      logP=   -675.05 mean= -48.218 n=14 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=   -693.74 mean= -49.553 n=14 prior= +1.61
+
+[best single-manifold diagnostic]
+* D-DIABETIC-FOOT-INFECTION logP=    -52.22 mean=  -3.730 prior=+10.09
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -605.46 mean= -43.247 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=   -606.68 mean= -43.334 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=   -642.41 mean= -45.887 prior= +0.00
+  D-CELLULITIS logP=   -642.66 mean= -45.904 prior= +0.97
+  D-PSEUDOMONAS-BACTEREMIA logP=   -646.24 mean= -46.160 prior= +0.00
+  D-STAPH-AUREUS-BACTEREMIA logP=   -647.75 mean= -46.268 prior= +0.00
+  D-SEPSIS-GN  logP=   -656.86 mean= -46.919 prior= +0.00
+  D-SEPTIC-ARTHRITIS logP=   -675.05 mean= -48.218 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=   -693.74 mean= -49.553 prior= +1.61
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -52.22 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_best_single=    -52.22 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_background_only=   -717.75 mean= -51.268 n=14
+  delta_to_null_best_known=   +665.53
+  delta_to_null_best_single=   +665.53
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-DIABETIC-FOOT-INFECTION  PASS
+best latent times: D-DIABETIC-FOOT-INFECTION=day9.3
+largest standardized residuals: diabetic_foot_deep_collection_imaging_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.95 severity_score_0_1 mu=0.144248 via=D-DIABETIC-FOOT-INFECTION z=4.8; diabetic_foot_osteomyelitis_imaging_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.8 severity_score_0_1 mu=0.00772453 via=D-DIABETIC-FOOT-INFECTION z=4.8; diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.85 severity_score_0_1 mu=0.125035 via=D-DIABETIC-FOOT-INFECTION z=4.3; diabetic_foot_warmth_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.9 severity_score_0_1 mu=0.296075 via=D-DIABETIC-FOOT-INFECTION z=3.6; serum_crp obs=295 mg/L mu=3.94609 via=D-DIABETIC-FOOT-INFECTION z=3.4
+
+----------------------------------------------------------------------------------------------------
+DIABETIC_FOOT_INFECTION_BURKHOLDERIA_PMC9173686  expected=D-DIABETIC-FOOT-INFECTION
+source: PMID 35674634 / PMC9173686 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9173686/
+paper diagnosis: Diabetic foot infection caused by Burkholderia cepacia complex
+observed axes: 24
+risk context: diabetes_mellitus=host_context; peripheral_neuropathy=local_risk_context; recent_puncture_trauma_foreign_body_or_surgery=portal_context; prior_antibiotics_healthcare_exposure_or_mdr_history=pathogen_context; obesity_foot_deformity_charcot_or_callus=mechanical_context; delayed_presentation_or_missed_source_control=course_context
+
+[joint SDE ranking: all candidates]
+* D-DIABETIC-FOOT-INFECTION logP=    -57.46 mean=  -2.736 n=21 prior= +7.90
+  D-SEPSIS-GN             logP=   -251.75 mean= -11.988 n=21 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -255.72 mean= -12.177 n=21 prior= +0.00
+  D-CELLULITIS            logP=   -257.13 mean= -12.244 n=21 prior= +0.97
+  D-STAPH-AUREUS-BACTEREMIA logP=   -298.43 mean= -14.211 n=21 prior= +0.00
+  D-SEPTIC-ARTHRITIS      logP=   -300.15 mean= -14.293 n=21 prior= +0.00
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -311.26 mean= -14.822 n=21 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=   -313.66 mean= -14.936 n=21 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=   -326.28 mean= -15.537 n=21 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=   -369.55 mean= -17.598 n=21 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-DIABETIC-FOOT-INFECTION logP=    -57.46 mean=  -2.736 prior= +7.90
+  D-SEPSIS-GN  logP=   -251.75 mean= -11.988 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -255.72 mean= -12.177 prior= +0.00
+  D-CELLULITIS logP=   -257.13 mean= -12.244 prior= +0.97
+  D-STAPH-AUREUS-BACTEREMIA logP=   -298.43 mean= -14.211 prior= +0.00
+  D-SEPTIC-ARTHRITIS logP=   -300.15 mean= -14.293 prior= +0.00
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -311.26 mean= -14.822 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=   -313.66 mean= -14.936 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=   -326.28 mean= -15.537 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=   -369.55 mean= -17.598 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -57.46 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_best_single=    -57.46 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_background_only=   -324.79 mean= -15.466 n=21
+  delta_to_null_best_known=   +267.33
+  delta_to_null_best_single=   +267.33
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-DIABETIC-FOOT-INFECTION  PASS
+best latent times: D-DIABETIC-FOOT-INFECTION=day17.7
+largest standardized residuals: diabetic_foot_pain_tenderness_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.85 severity_score_0_1 mu=0.137098 via=D-DIABETIC-FOOT-INFECTION z=4.3; loss_of_protective_sensation_activity obs=0.9 relative_activity_0_1 mu=0.310129 via=D-DIABETIC-FOOT-INFECTION z=3.5; diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.7 severity_score_0_1 mu=0.293773 via=D-DIABETIC-FOOT-INFECTION z=2.4; neutrophil_fraction obs=73.2 percent mu=51.8456 via=D-DIABETIC-FOOT-INFECTION z=2.3; blood_urea_nitrogen obs=10.27 mg/dL mu=45.2429 via=D-DIABETIC-FOOT-INFECTION z=2.3
+
+----------------------------------------------------------------------------------------------------
+DIABETIC_FOOT_INFECTION_XDR_ENTEROCOCCUS_PMC10626598  expected=D-DIABETIC-FOOT-INFECTION
+source: PMID 37910441 / PMC10626598 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10626598/
+paper diagnosis: Extensively drug-resistant Enterococcus faecalis diabetic-foot myositis and osteomyelitis associated with sepsis
+observed axes: 33
+risk context: diabetes_mellitus=host_context; poor_glycemic_control_or_stress_hyperglycemia=host_metabolic_context; peripheral_neuropathy=local_risk_context; peripheral_arterial_disease_or_ischemia=local_perfusion_context; chronic_or_recurrent_diabetic_foot_ulcer=portal_context; prior_antibiotics_healthcare_exposure_or_mdr_history=pathogen_context; obesity_foot_deformity_charcot_or_callus=mechanical_context; delayed_presentation_or_missed_source_control=course_context
+
+[joint SDE ranking: all candidates]
+* D-DIABETIC-FOOT-INFECTION logP=   -122.77 mean=  -4.385 n=28 prior=+10.41
+  D-CELLULITIS            logP=   -734.39 mean= -26.228 n=28 prior= +0.97
+  D-STAPH-AUREUS-BACTEREMIA logP=   -759.70 mean= -27.132 n=28 prior= +0.00
+  D-SEPTIC-ARTHRITIS      logP=   -822.29 mean= -29.368 n=28 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -984.35 mean= -35.155 n=28 prior= +0.00
+  D-SEPSIS-GN             logP=  -1047.61 mean= -37.415 n=28 prior= +0.00
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=  -1068.50 mean= -38.161 n=28 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=  -1073.35 mean= -38.334 n=28 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=  -1117.90 mean= -39.925 n=28 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=  -1362.51 mean= -48.661 n=28 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-DIABETIC-FOOT-INFECTION logP=   -122.77 mean=  -4.385 prior=+10.41
+  D-CELLULITIS logP=   -734.39 mean= -26.228 prior= +0.97
+  D-STAPH-AUREUS-BACTEREMIA logP=   -759.70 mean= -27.132 prior= +0.00
+  D-SEPTIC-ARTHRITIS logP=   -822.29 mean= -29.368 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -984.35 mean= -35.155 prior= +0.00
+  D-SEPSIS-GN  logP=  -1047.61 mean= -37.415 prior= +0.00
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=  -1068.50 mean= -38.161 prior= +0.00
+  D-DIABETIC-KETOACIDOSIS logP=  -1073.35 mean= -38.334 prior= +0.00
+  D-NECROTIZING-FASCIITIS logP=  -1117.90 mean= -39.925 prior= +0.00
+  D-VERTEBRAL-OSTEOMYELITIS logP=  -1362.51 mean= -48.661 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -122.77 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_best_single=   -122.77 candidate=D-DIABETIC-FOOT-INFECTION
+  logP_background_only=  -1641.27 mean= -58.617 n=28
+  delta_to_null_best_known=  +1518.50
+  delta_to_null_best_single=  +1518.50
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-DIABETIC-FOOT-INFECTION  PASS
+best latent times: D-DIABETIC-FOOT-INFECTION=day14.5
+largest standardized residuals: diabetic_foot_myositis_tendon_sheath_spread_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.95 severity_score_0_1 mu=0.0974509 via=D-DIABETIC-FOOT-INFECTION z=5.1; diabetic_foot_sinus_tract_activity_in_D-DIABETIC-FOOT-INFECTION obs=0.9 severity_score_0_1 mu=0.191926 via=D-DIABETIC-FOOT-INFECTION z=4.2; chronic_diabetic_foot_ulcer_context_activity obs=1 relative_activity_0_1 mu=0.296009 via=D-DIABETIC-FOOT-INFECTION z=4.2; loss_of_protective_sensation_activity obs=1 relative_activity_0_1 mu=0.321861 via=D-DIABETIC-FOOT-INFECTION z=4.1; pedal_perfusion_compromise_activity obs=0.35 severity_score_0_1 mu=1 via=D-DIABETIC-FOOT-INFECTION z=3.9
+
+====================================================================================================
+Single-manifold validation: 3/3 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.

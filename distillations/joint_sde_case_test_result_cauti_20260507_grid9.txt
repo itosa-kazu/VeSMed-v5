@@ -1,0 +1,140 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=2500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: grid time_grid_n=9 (deterministic midpoint parameter sampling)
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 8 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=8, total_ranked=8, max_combo_size=1
+Case filter: CATHETER_ASSOCIATED_UTI
+Cases loaded for this run: 3
+
+Manifolds:
+  D-SEPSIS-GN : axes=82, mechanisms=11, mech_edges=56, couplings=17, risk_factors=13
+  D-ACUTE-PROSTATITIS: axes=63, mechanisms= 8, mech_edges=48, couplings=15, risk_factors= 8
+  D-CATHETER-ASSOCIATED-UTI: axes=56, mechanisms=10, mech_edges=50, couplings=14, risk_factors=10
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION: axes=65, mechanisms= 9, mech_edges=55, couplings= 9, risk_factors= 8
+  D-ENTEROCOCCAL-BACTEREMIA: axes=79, mechanisms=10, mech_edges=55, couplings=17, risk_factors=11
+  D-ESBL-ENTEROBACTERALES-BACTEREMIA: axes=85, mechanisms=10, mech_edges=51, couplings=15, risk_factors=10
+  D-PSEUDOMONAS-BACTEREMIA: axes=71, mechanisms= 9, mech_edges=48, couplings=15, risk_factors= 9
+  D-PYELONEPHRITIS: axes=123, mechanisms=17, mech_edges=90, couplings=12, risk_factors=12
+Base-measure/background axes: 2974
+
+----------------------------------------------------------------------------------------------------
+CATHETER_ASSOCIATED_UTI_CRKP_PMC9682002  expected=D-CATHETER-ASSOCIATED-UTI
+source: PMID 36439230 / PMC9682002 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9682002/
+paper diagnosis: Carbapenem-resistant Klebsiella pneumoniae catheter-associated urinary tract infection
+observed axes: 12
+risk context: indwelling_urinary_catheter_or_intermittent_catheterization=present; urinary_retention_neurogenic_bladder_or_bladder_outlet_obstruction=present; older_age_frailty_or_cognitive_impairment=older_adult; delayed_or_inactive_antibiotic_coverage=present_later_course; inadequate_catheter_or_urinary_source_control=present
+
+[joint SDE ranking: all candidates]
+* D-CATHETER-ASSOCIATED-UTI logP=    -31.96 mean=  -2.905 n=11 prior= +6.79
+  D-ACUTE-PROSTATITIS     logP=   -257.14 mean= -23.376 n=11 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -325.29 mean= -29.572 n=11 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -328.25 mean= -29.840 n=11 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -328.43 mean= -29.857 n=11 prior= +0.00
+  D-SEPSIS-GN             logP=   -438.30 mean= -39.845 n=11 prior= +0.00
+  D-PYELONEPHRITIS        logP=   -440.88 mean= -40.080 n=11 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-CATHETER-ASSOCIATED-UTI logP=    -31.96 mean=  -2.905 prior= +6.79
+  D-ACUTE-PROSTATITIS logP=   -257.14 mean= -23.376 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -325.29 mean= -29.572 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -328.25 mean= -29.840 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -328.43 mean= -29.857 prior= +0.00
+  D-SEPSIS-GN  logP=   -438.30 mean= -39.845 prior= +0.00
+  D-PYELONEPHRITIS logP=   -440.88 mean= -40.080 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -31.96 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_best_single=    -31.96 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_background_only=   -520.60 mean= -47.327 n=11
+  delta_to_null_best_known=   +488.64
+  delta_to_null_best_single=   +488.64
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-CATHETER-ASSOCIATED-UTI  PASS
+best latent times: D-CATHETER-ASSOCIATED-UTI=day11.1
+largest standardized residuals: fever_history_activity obs=1 severity_score_0_1 mu=0.24517 via=D-CATHETER-ASSOCIATED-UTI z=4.5; urinary_retention_activity obs=1 severity_score_0_1 mu=0.51 via=D-CATHETER-ASSOCIATED-UTI z=2.9; source_control_need obs=1 relative_activity_0_1 mu=0.5375 via=D-CATHETER-ASSOCIATED-UTI z=2.8; circulatory_collapse_shock_hazard obs=0.8 events_per_day mu=0.00681106 via=D-CATHETER-ASSOCIATED-UTI z=2.7; pyuria_activity obs=0.8 severity_score_0_1 mu=0.362 via=D-CATHETER-ASSOCIATED-UTI z=2.6
+
+----------------------------------------------------------------------------------------------------
+CATHETER_ASSOCIATED_UTI_PSEUDOMONAS_MENDOCINA_PMC11458280  expected=D-CATHETER-ASSOCIATED-UTI
+source: PMID 39376831 / PMC11458280 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11458280/
+paper diagnosis: Catheter-associated urinary tract infection caused by Pseudomonas mendocina with Enterococcus faecalis co-isolate
+observed axes: 12
+risk context: indwelling_urinary_catheter_or_intermittent_catheterization=present; urinary_retention_neurogenic_bladder_or_bladder_outlet_obstruction=present; chronic_kidney_disease_or_acute_obstructive_uropathy=present; older_age_frailty_or_cognitive_impairment=present; catheter_trauma_obstruction_or_repeated_replacement=present_later_course
+
+[joint SDE ranking: all candidates]
+* D-CATHETER-ASSOCIATED-UTI logP=    -30.86 mean=  -2.805 n=11 prior= +7.51
+  D-ACUTE-PROSTATITIS     logP=   -246.62 mean= -22.420 n=11 prior= +0.00
+  D-PYELONEPHRITIS        logP=   -340.13 mean= -30.921 n=11 prior= +0.00
+  D-SEPSIS-GN             logP=   -371.63 mean= -33.785 n=11 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -376.55 mean= -34.232 n=11 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -379.47 mean= -34.498 n=11 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -379.85 mean= -34.531 n=11 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-CATHETER-ASSOCIATED-UTI logP=    -30.86 mean=  -2.805 prior= +7.51
+  D-ACUTE-PROSTATITIS logP=   -246.62 mean= -22.420 prior= +0.00
+  D-PYELONEPHRITIS logP=   -340.13 mean= -30.921 prior= +0.00
+  D-SEPSIS-GN  logP=   -371.63 mean= -33.785 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -376.55 mean= -34.232 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -379.47 mean= -34.498 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -379.85 mean= -34.531 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -30.86 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_best_single=    -30.86 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_background_only=   -460.35 mean= -41.850 n=11
+  delta_to_null_best_known=   +429.49
+  delta_to_null_best_single=   +429.49
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-CATHETER-ASSOCIATED-UTI  PASS
+best latent times: D-CATHETER-ASSOCIATED-UTI=day3.7
+largest standardized residuals: hydronephrosis_grade_in_D-CATHETER-ASSOCIATED-UTI obs=0.95 severity_score_0_1 mu=0.2575 via=D-CATHETER-ASSOCIATED-UTI z=4.2; source_control_need obs=0.8 relative_activity_0_1 mu=0.143684 via=D-CATHETER-ASSOCIATED-UTI z=3.9; urine_leukocyte_esterase_positivity obs=1 probability_0_1 mu=0.355625 via=D-CATHETER-ASSOCIATED-UTI z=3.9; hematuria_activity obs=0.8 severity_score_0_1 mu=0.28 via=D-CATHETER-ASSOCIATED-UTI z=3.5; proteinuria_activity obs=0.8 severity_score_0_1 mu=0.4 via=D-CATHETER-ASSOCIATED-UTI z=3.0
+
+----------------------------------------------------------------------------------------------------
+CATHETER_ASSOCIATED_UTI_PURPLE_URINE_BAG_PMC9081951  expected=D-CATHETER-ASSOCIATED-UTI
+source: PMID 35541297 / PMC9081951 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9081951/
+paper diagnosis: Urinary tract infection presenting with purple urine bag syndrome in a long-term catheterized patient
+observed axes: 12
+risk context: indwelling_urinary_catheter_or_intermittent_catheterization=present; long_catheter_dwell_time_or_closed_drainage_break=present; constipation_poor_mobility_or_long_term_care_context=present; older_age_frailty_or_cognitive_impairment=present; urinary_retention_neurogenic_bladder_or_bladder_outlet_obstruction=present
+
+[joint SDE ranking: all candidates]
+* D-CATHETER-ASSOCIATED-UTI logP=    -28.04 mean=  -2.549 n=11 prior= +9.89
+  D-ACUTE-PROSTATITIS     logP=   -292.91 mean= -26.628 n=11 prior= +0.00
+  D-PYELONEPHRITIS        logP=   -400.84 mean= -36.440 n=11 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -401.25 mean= -36.478 n=11 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -401.68 mean= -36.517 n=11 prior= +0.00
+  D-SEPSIS-GN             logP=   -401.69 mean= -36.517 n=11 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -402.02 mean= -36.547 n=11 prior= +0.00
+
+[best single-manifold diagnostic]
+* D-CATHETER-ASSOCIATED-UTI logP=    -28.04 mean=  -2.549 prior= +9.89
+  D-ACUTE-PROSTATITIS logP=   -292.91 mean= -26.628 prior= +0.00
+  D-PYELONEPHRITIS logP=   -400.84 mean= -36.440 prior= +0.00
+  D-PSEUDOMONAS-BACTEREMIA logP=   -401.25 mean= -36.478 prior= +0.00
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -401.68 mean= -36.517 prior= +0.00
+  D-SEPSIS-GN  logP=   -401.69 mean= -36.517 prior= +0.00
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -402.02 mean= -36.547 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=    -28.04 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_best_single=    -28.04 candidate=D-CATHETER-ASSOCIATED-UTI
+  logP_background_only=   -442.37 mean= -40.216 n=11
+  delta_to_null_best_known=   +414.33
+  delta_to_null_best_single=   +414.33
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-CATHETER-ASSOCIATED-UTI  PASS
+best latent times: D-CATHETER-ASSOCIATED-UTI=day11.1
+largest standardized residuals: purple_urine_bag_discoloration_activity obs=1 present_absent_0_1 mu=0.0996545 via=D-CATHETER-ASSOCIATED-UTI z=5.4; suprapubic_tenderness_activity obs=1 severity_score_0_1 mu=0.222826 via=D-CATHETER-ASSOCIATED-UTI z=4.7; pyuria_activity obs=1 severity_score_0_1 mu=0.362 via=D-CATHETER-ASSOCIATED-UTI z=3.8; urinary_retention_activity obs=0.9 severity_score_0_1 mu=0.51 via=D-CATHETER-ASSOCIATED-UTI z=2.3; urinary_catheter_source_probability obs=0.85 probability_0_1 mu=0.606 via=D-CATHETER-ASSOCIATED-UTI z=1.5
+
+====================================================================================================
+Single-manifold validation: 3/3 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.
