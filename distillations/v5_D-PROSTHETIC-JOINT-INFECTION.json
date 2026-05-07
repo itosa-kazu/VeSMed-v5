@@ -1,0 +1,569 @@
+{
+  "disease": "D-PROSTHETIC-JOINT-INFECTION",
+  "disease_id": "D-PROSTHETIC-JOINT-INFECTION",
+  "disease_name": "Prosthetic joint infection",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Prosthetic joint infection",
+    "leaf_granularity": "First-layer disease leaf for infection involving an implanted joint prosthesis and adjacent synovium, bone, soft tissue, cement, modular components, or peri-implant fluid. Acute postoperative, acute hematogenous, chronic late, hip, knee, shoulder, staphylococcal, gram-negative, anaerobic, fungal, DAIR failure, and revision contexts are represented as axes and modifiers, not as disease-name qualifiers.",
+    "boundary_policy": "Native septic arthritis, native osteomyelitis, cellulitis, bursitis, crystal arthritis, aseptic loosening, mechanical failure, isolated bacteremia, sepsis, and DIC remain competing or parallel manifolds when their own observed evidence is stronger. Culture species, susceptibilities, final operative diagnosis, and treatment response are confirmatory or treatment-context evidence unless available as presentation-time source context.",
+    "ranking_note": "Presentation ranking should use prosthetic joint context, timing after arthroplasty or revision, joint pain/swelling/warmth/erythema, wound drainage or sinus tract, reduced range of motion, weight-bearing limitation, CRP/ESR/WBC, synovial purulence or WBC if aspirated, and presentation imaging for periprosthetic collection, gas, loosening, bone loss, or abscess. It should not require organism identity or final surgical outcome."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PJI_ENTRY_PORTAL_ACTIVITY",
+      "display_name": "Surgical inoculation or contiguous wound portal",
+      "clinical_meaning": "Organisms enter around a recently implanted or revised prosthesis through perioperative contamination, wound leakage, dehiscence, hematoma, superficial surgical-site infection, injection, trauma, or contiguous soft-tissue extension.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-30, 14],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_HEMATOGENOUS_SEEDING",
+      "display_name": "Hematogenous seeding of prosthetic material",
+      "clinical_meaning": "Bloodstream organisms from skin, catheter, urinary, gastrointestinal, dental, endovascular, or other infection seed a pre-existing joint prosthesis, often causing abrupt pain and inflammation in a previously functioning implant.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.015],
+      "peak_day_range": [-7, 7],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [2, 30],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_IMPLANT_BIOFILM_MATURATION",
+      "display_name": "Implant-surface biofilm maturation",
+      "clinical_meaning": "Organisms adhere to metal, polyethylene, ceramic, cement, or necrotic peri-implant tissue and form biofilm, lowering immune clearance and antibiotic activity while sustaining relapse risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [14, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN",
+      "display_name": "Periprosthetic viable pathogen burden",
+      "clinical_meaning": "Viable bacteria or fungi in synovial fluid, capsule, peri-implant soft tissue, bone-cement interface, or abscess drive purulence, synovial leukocytosis, cultures, and ongoing tissue injury.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [1, 180],
+      "decline_half_life_days": [2, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION",
+      "display_name": "Neutrophilic synovial and peri-incisional inflammation",
+      "clinical_meaning": "Innate immune activation creates prosthetic joint pain, effusion, warmth, erythema, swelling, restricted range of motion, wound inflammation, and CRP or ESR elevation. Older or immunosuppressed patients may have muted fever and WBC response.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 14],
+      "peak_value_range": [0.25, 1.0],
+      "plateau_duration_days": [2, 120],
+      "decline_half_life_days": [2, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_WOUND_COMMUNICATION_ACTIVITY",
+      "display_name": "Sinus tract or draining wound communication",
+      "clinical_meaning": "Persistent infection can open to the skin through a sinus tract, wound dehiscence, or chronic purulent drainage; this is highly specific for infection and strongly signals source-control failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [3, 180],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION",
+      "display_name": "Periprosthetic collection, abscess, or deep extension",
+      "clinical_meaning": "Peri-implant infection forms fluid collections, abscess, locules, soft-tissue edema, gas, sinus tracts, or extension along the femur, tibia, pelvis, or periarticular soft tissue.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 60],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [3, 90],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_IMPLANT_BONE_INTERFACE_FAILURE",
+      "display_name": "Implant-bone interface inflammation, osteolysis, and loosening",
+      "clinical_meaning": "Chronic inflammation, bacterial enzymes, osteitis, cement-interface infection, and mechanical instability produce radiographic loosening, osteolysis, pain, deformity, and functional loss.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [14, 365],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY",
+      "display_name": "Systemic inflammatory or bacteremic spillover",
+      "clinical_meaning": "High-burden PJI, hematogenous seeding, or uncontrolled implant infection can produce fever, tachycardia, leukocytosis, lactate rise, bacteremia, endocarditis or metastatic infection, septic shock, AKI, and mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [0, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY",
+      "display_name": "Inactive antimicrobial coverage or inadequate source control",
+      "clinical_meaning": "Wrong empiric coverage, resistant or unusual organism, poor biofilm penetration, retained infected components, incomplete debridement, missed collection, poor soft tissue envelope, or delayed surgery sustains pathogen burden.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [0, 30],
+      "peak_value_range": [0.0, 0.95],
+      "plateau_duration_days": [1, 365],
+      "decline_half_life_days": [3, 120],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_PJI_ENTRY_PORTAL_ACTIVITY", "target_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "initiation", "clinical_rationale": "A wound portal or perioperative inoculum places organisms into peri-implant tissue.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_HEMATOGENOUS_SEEDING", "target_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "acute_hematogenous", "clinical_rationale": "Bacteremia can seed prosthetic surfaces and synovium.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "M_PJI_IMPLANT_BIOFILM_MATURATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [1, 30], "phase": "persistence", "clinical_rationale": "Viable organisms attach to implant material and mature into biofilm.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_IMPLANT_BIOFILM_MATURATION", "target_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "feedback", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Biofilm continuously sheds organisms and protects residual burden.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 2], "phase": "whole_course", "clinical_rationale": "Pathogen-associated signals recruit neutrophils and activate synovial and soft-tissue inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "M_PJI_WOUND_COMMUNICATION_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [3, 60], "phase": "persistent", "clinical_rationale": "Persistent inflammation and drainage can maintain a wound opening or sinus tract.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "extension", "clinical_rationale": "Unchecked local burden creates fluid collections, abscesses, and loculated peri-implant infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "target_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "A deep collection or abscess is unlikely to sterilize without drainage or debridement.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_IMPLANT_BIOFILM_MATURATION", "target_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Biofilm reduces antibiotic penetration and increases relapse when hardware is retained.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "target_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "effect_on_target": "increase", "edge_type": "feedback", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Inactive therapy or inadequate source control allows viable burden to persist.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 5], "phase": "severe", "clinical_rationale": "High-burden infection can spill into systemic inflammation or bacteremia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_IMPLANT_BIOFILM_MATURATION", "target_id": "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Biofilm is the implant-surface expression of PJI persistence.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_ENTRY_PORTAL_ACTIVITY", "target_id": "recent_joint_implant_surgery_context_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "context", "clinical_rationale": "Recent arthroplasty, revision, wound leakage, or debridement is directly observed context for this mechanism.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_HEMATOGENOUS_SEEDING", "target_id": "remote_hematogenous_source_probability_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "context", "clinical_rationale": "Documented or suspected remote bloodstream source raises hematogenous seeding activity.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Synovitis, capsular distension, and peri-implant inflammation cause pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_swelling_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Effusion and periarticular edema produce swelling.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_warmth_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Local hyperemia creates warmth.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_erythema_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "presentation", "clinical_rationale": "Superficial prosthetic joints and wounds often show erythema.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "pain_with_prosthetic_joint_motion_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "presentation", "clinical_rationale": "Inflamed capsule and soft tissue make movement painful.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_range_of_motion_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Pain, effusion, and instability restrict motion.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "prosthetic_joint_weight_bearing_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "presentation", "clinical_rationale": "Hip, knee, ankle, and foot prosthetic infections impair ambulation.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_WOUND_COMMUNICATION_ACTIVITY", "target_id": "wound_dehiscence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "wound", "clinical_rationale": "Persistent wound opening is a visible expression of communication.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_WOUND_COMMUNICATION_ACTIVITY", "target_id": "prosthetic_joint_purulent_drainage_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "wound", "clinical_rationale": "Purulent drainage reflects a draining infected peri-implant focus.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_WOUND_COMMUNICATION_ACTIVITY", "target_id": "sinus_tract_communication_presence_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "persistent", "clinical_rationale": "A sinus tract communicating with the prosthesis is highly specific for PJI.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "target_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "imaging", "clinical_rationale": "Ultrasound, CT, or MRI can show peri-implant collection.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "target_id": "periprosthetic_abscess_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "imaging", "clinical_rationale": "Loculated or complex collections represent abscess-level extension.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "target_id": "periprosthetic_soft_tissue_edema_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "imaging", "clinical_rationale": "Deep soft-tissue inflammation produces edema around the prosthesis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION", "target_id": "periprosthetic_gas_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "acute_or_postoperative", "clinical_rationale": "Gas may reflect gas-forming infection or postoperative air; in context it raises urgency.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_IMPLANT_BONE_INTERFACE_FAILURE", "target_id": "implant_loosening_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [14, 365], "phase": "chronic", "clinical_rationale": "Infection and interface failure can appear as component loosening.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_IMPLANT_BONE_INTERFACE_FAILURE", "target_id": "periprosthetic_osteolysis_bone_loss_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [30, 365], "phase": "chronic", "clinical_rationale": "Chronic infection can drive osteolysis and bone loss.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "synovial_fluid_purulence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "aspiration_or_operation", "clinical_rationale": "High local burden produces gross purulence.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "synovial_fluid_wbc_count_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "aspiration", "clinical_rationale": "Neutrophilic synovitis raises synovial WBC.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "synovial_fluid_neutrophil_fraction_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "aspiration", "clinical_rationale": "PJI synovial fluid is often neutrophil-predominant.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "periprosthetic_tissue_culture_positivity_probability_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "confirmatory", "clinical_rationale": "Operative tissue culture samples identify local viable organisms.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN", "target_id": "synovial_fluid_culture_positivity_probability_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 0], "phase": "confirmatory", "clinical_rationale": "Aspirate culture positivity reflects viable organisms in the joint space.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 5], "phase": "whole_course", "clinical_rationale": "CRP commonly rises in PJI and falls with control.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_NEUTROPHILIC_SYNOVIAL_SOFT_TISSUE_INFLAMMATION", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [3, 14], "phase": "subacute_to_chronic", "clinical_rationale": "ESR is often elevated in chronic PJI.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "body_temperature", "effect_on_target": "increase_or_absent", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "variable", "clinical_rationale": "Fever may occur in acute PJI but is often absent in chronic or indolent infection.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "heart_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "acute", "clinical_rationale": "Fever, pain, lactate, and sepsis physiology cause tachycardia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "white_blood_cell_count", "effect_on_target": "increase_or_blunt", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "variable", "clinical_rationale": "Acute PJI can cause leukocytosis, while chronic or indolent PJI may have normal WBC.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "serum_lactate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "severe", "clinical_rationale": "Severe infection and hypoperfusion raise lactate.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "persistent_bacteremia_activity_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "severe_or_hematogenous", "clinical_rationale": "PJI may be seeded by bacteremia or sustain bacteremia if uncontrolled.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "severe", "clinical_rationale": "High-burden or virulent PJI can progress to shock.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Sepsis, nephrotoxic therapy, and comorbidity can raise AKI hazard.", "knowledge_confidence": "medium"},
+    {"source_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "target_id": "source_control_need", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Retained infected hardware, abscess, sinus tract, and loosening increase procedural source-control need.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "target_id": "source_control_adequacy", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "whole_course", "clinical_rationale": "Ongoing infection despite therapy indicates inadequate source control.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "target_id": "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 90], "phase": "follow_up", "clinical_rationale": "Retained biofilm, inadequate debridement, and inactive coverage raise relapse.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_IMPLANT_BONE_INTERFACE_FAILURE", "target_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [7, 180], "phase": "outcome", "clinical_rationale": "Loosening, staged revision, resection, spacer periods, and bone loss can permanently reduce joint function.", "knowledge_confidence": "high"},
+    {"source_id": "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 3], "phase": "severe", "clinical_rationale": "Mortality in PJI is mainly driven by severe systemic infection, frailty, comorbidity, bacteremia, and procedural risk.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "category": "context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Presence of an implanted joint prosthesis at the symptomatic joint.", "baseline_range": [0, 0.02], "peak_day_range": [-3650, 0], "peak_value_range": [1.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_age_days_in_D-PROSTHETIC-JOINT-INFECTION", "category": "context", "unit": "days", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Time from index arthroplasty or last revision to symptomatic infection presentation.", "baseline_range": [14, 3650], "peak_day_range": [-3650, 0], "peak_value_range": [14, 7300], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "recent_joint_implant_surgery_context_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "context", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Recent arthroplasty, revision, DAIR, wound leakage, or early postoperative wound context.", "baseline_range": [0, 0.05], "peak_day_range": [-90, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 180], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "remote_hematogenous_source_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "source_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that PJI is seeded from a remote bloodstream source.", "baseline_range": [0, 0.08], "peak_day_range": [-14, 7], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "clinical_state", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Implant-adherent biofilm burden inferred from chronicity, retained components, relapse, sinus tract, or difficult source control.", "baseline_range": [0, 0.02], "peak_day_range": [0, 90], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [14, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Pain localized to the prosthetic joint.", "baseline_range": [0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [2, 60], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_swelling_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Swelling or effusion around the prosthetic joint.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [2, 60], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_warmth_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Increased warmth over the prosthetic joint or wound.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_erythema_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Erythema over the prosthetic joint, surgical wound, or peri-incisional tissue.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "pain_with_prosthetic_joint_motion_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Pain worsened by active or passive movement of the prosthetic joint.", "baseline_range": [0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_range_of_motion_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Restricted range of motion from pain, swelling, stiffness, or implant-related infection.", "baseline_range": [0, 0.08], "peak_day_range": [0, 30], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_weight_bearing_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Difficulty weight-bearing or antalgic gait from lower-extremity prosthetic joint infection.", "baseline_range": [0, 0.08], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [3, 120], "knowledge_confidence": "high"},
+    {"axis_id": "wound_dehiscence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Surgical wound opening or breakdown overlying a prosthetic joint.", "baseline_range": [0, 0.02], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "prosthetic_joint_purulent_drainage_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "wound_dehiscence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Purulent discharge from the prosthetic joint wound or sinus tract.", "baseline_range": [0, 0.01], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [3, 180], "knowledge_confidence": "high"},
+    {"axis_id": "sinus_tract_communication_presence_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Sinus tract communicating with the prosthesis or periprosthetic space.", "baseline_range": [0, 0.005], "peak_day_range": [3, 180], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Ultrasound, CT, MRI, or radiograph evidence of fluid around the prosthesis or surgical tract.", "baseline_range": [0, 0.03], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "periprosthetic_abscess_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Complex, loculated, or rim-enhancing periprosthetic collection consistent with abscess.", "baseline_range": [0, 0.02], "peak_day_range": [0, 60], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 90], "knowledge_confidence": "high"},
+    {"axis_id": "periprosthetic_collection_largest_diameter_cm", "category": "imaging_measurement", "unit": "cm", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Largest reported diameter of periprosthetic collection.", "baseline_range": [0, 0.5], "peak_day_range": [0, 60], "peak_value_range": [0.0, 15.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [3, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "periprosthetic_soft_tissue_edema_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Peri-implant soft-tissue edema, phlegmon, or inflammatory stranding.", "baseline_range": [0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 120], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "periprosthetic_gas_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Gas in peri-implant soft tissue, joint, or fluid collection.", "baseline_range": [0, 0.02], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "implant_loosening_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Radiographic, CT, or operative evidence of prosthesis loosening in a PJI context.", "baseline_range": [0, 0.05], "peak_day_range": [14, 365], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "periprosthetic_osteolysis_bone_loss_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "implant_loosening_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Bone loss, osteolysis, or interface destruction adjacent to a prosthesis.", "baseline_range": [0, 0.05], "peak_day_range": [30, 365], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "synovial_fluid_purulence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Grossly purulent synovial or operative fluid from a prosthetic joint.", "baseline_range": [0, 0.01], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "synovial_fluid_wbc_count_in_D-PROSTHETIC-JOINT-INFECTION", "category": "lab_value", "unit": "cells_per_uL", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "synovial_fluid_purulence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Synovial fluid white blood cell count from the prosthetic joint.", "baseline_range": [0, 1000], "peak_day_range": [0, 14], "peak_value_range": [1500, 250000], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "synovial_fluid_neutrophil_fraction_in_D-PROSTHETIC-JOINT-INFECTION", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "synovial_fluid_purulence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Percent neutrophils in prosthetic-joint synovial fluid.", "baseline_range": [0, 25], "peak_day_range": [0, 14], "peak_value_range": [50, 100], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 45], "knowledge_confidence": "high"},
+    {"axis_id": "synovial_fluid_culture_positivity_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Probability that prosthetic-joint aspirate culture is positive.", "baseline_range": [0, 0.03], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "periprosthetic_tissue_culture_positivity_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "microbiology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "prosthetic_joint_presence_in_D-PROSTHETIC-JOINT-INFECTION", "shape_free_text": "Probability that intraoperative periprosthetic tissue cultures are positive.", "baseline_range": [0, 0.03], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that chosen antimicrobial therapy covers the true PJI pathogen and has adequate biofilm or tissue activity.", "baseline_range": [0.2, 0.9], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "high"},
+    {"axis_id": "biofilm_active_antibiotic_penetration_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that the antimicrobial regimen has useful activity against adherent or intracellular biofilm-associated organisms.", "baseline_range": [0.1, 0.7], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "rifampin_susceptibility_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that a staphylococcal retained-implant PJI isolate is susceptible to rifampin and appropriate for combination use.", "baseline_range": [0.3, 0.9], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "mrsa_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that methicillin-resistant Staphylococcus aureus is the relevant PJI pathogen.", "baseline_range": [0.02, 0.25], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "gram_negative_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that gram-negative bacilli are the relevant PJI pathogen set.", "baseline_range": [0.02, 0.25], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "anaerobic_gas_forming_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability of anaerobic or gas-forming organism context.", "baseline_range": [0.0, 0.08], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "fungal_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that Candida or another fungal pathogen is driving PJI.", "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 180], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need for drainage, debridement, implant retention strategy, spacer, exchange, explantation, or resection for source control.", "baseline_range": [0, 0.1], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 120], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_adequacy", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Adequacy of drainage, debridement, implant strategy, and remote source control.", "baseline_range": [0.75, 1.0], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [1, 120], "knowledge_confidence": "high"},
+    {"axis_id": "implant_retention_feasibility_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Contextual feasibility of DAIR/implant retention based on symptom duration, implant stability, sinus tract absence, soft tissue, organism, and component exchange access.", "baseline_range": [0.1, 0.7], "peak_day_range": [-7, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [1, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need to remove components or perform staged/one-stage exchange because infection is unlikely to clear with retention.", "baseline_range": [0, 0.1], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 180], "knowledge_confidence": "high"},
+    {"axis_id": "reimplantation_readiness_in_D-PROSTHETIC-JOINT-INFECTION", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that infection, soft tissue, and host state are sufficiently controlled for reimplantation after staged treatment.", "baseline_range": [0.0, 0.2], "peak_day_range": [30, 180], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 180], "knowledge_confidence": "medium"},
+    {"axis_id": "persistent_bacteremia_activity_in_D-PROSTHETIC-JOINT-INFECTION", "category": "clinical_state", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Ongoing bacteremia linked to the prosthetic joint or remote seeding source.", "baseline_range": [0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of septic shock physiology from PJI or associated bacteremia.", "baseline_range": [0.000001, 0.0001], "peak_day_range": [0, 7], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "medium"},
+    {"axis_id": "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of persistent or recurrent PJI after attempted treatment.", "baseline_range": [0.000001, 0.0002], "peak_day_range": [14, 180], "peak_value_range": [0.0001, 0.02], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of durable functional loss from bone loss, loosening, prolonged spacer, resection, amputation, or repeated surgery.", "baseline_range": [0.000001, 0.0002], "peak_day_range": [7, 180], "peak_value_range": [0.0001, 0.03], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of acute kidney injury from sepsis, hypoperfusion, contrast, or nephrotoxic antimicrobials.", "baseline_range": [0.00001, 0.001], "peak_day_range": [0, 7], "peak_value_range": [0.0001, 0.08], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Need for renal dosing adjustment or nephrotoxicity-aware antimicrobial selection.", "baseline_range": [0, 0.1], "peak_day_range": [-30, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [7, 365], "knowledge_confidence": "high"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "History suggesting severe beta-lactam allergy or reaction affecting antibiotic feasibility.", "baseline_range": [0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "rifampin_drug_interaction_risk_activity", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Drug interaction, liver toxicity, or intolerance context that reduces feasibility of rifampin-containing therapy.", "baseline_range": [0, 0.1], "peak_day_range": [-30, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital", "unit": "degC", "log_scale": false, "axis_role": "measurement", "baseline_range": [36.5, 37.5], "peak_day_range": [0, 7], "peak_value_range": [36.5, 40.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 30], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [60, 90], "peak_day_range": [0, 7], "peak_value_range": [70, 140], "plateau_duration_days": [0, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "baseline_range": [70, 100], "peak_day_range": [0, 7], "peak_value_range": [45, 105], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "respiratory_rate", "category": "vital", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "baseline_range": [12, 20], "peak_day_range": [0, 7], "peak_value_range": [12, 32], "plateau_duration_days": [0, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [4, 10], "peak_day_range": [0, 7], "peak_value_range": [4, 28], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "neutrophil_fraction", "category": "lab_value", "unit": "percent", "log_scale": false, "axis_role": "measurement", "baseline_range": [40, 75], "peak_day_range": [0, 7], "peak_value_range": [50, 95], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.2, 5], "peak_day_range": [1, 14], "peak_value_range": [10, 300], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 30], "knowledge_confidence": "high"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm_per_hr", "log_scale": false, "axis_role": "measurement", "baseline_range": [0, 20], "peak_day_range": [3, 30], "peak_value_range": [20, 120], "plateau_duration_days": [7, 180], "decline_half_life_days": [7, 60], "knowledge_confidence": "high"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 3], "peak_value_range": [0.8, 8.0], "plateau_duration_days": [0, 3], "decline_half_life_days": [0.2, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.6, 4.0], "plateau_duration_days": [0, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard from PJI, driven by systemic infection, bacteremia, shock, frailty, comorbidity, operative risk, and uncontrolled source.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.00001, 0.04], "plateau_duration_days": [0, 60], "decline_half_life_days": [3, 60], "knowledge_confidence": "medium"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "prosthetic_joint_purulent_drainage_activity_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "sinus_tract_communication_presence_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "effect_direction": "source_up_increases_target", "phase": "wound", "clinical_rationale": "Chronic purulent drainage and sinus communication often travel together.", "knowledge_confidence": "high"},
+    {"source_axis_id": "sinus_tract_communication_presence_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.5, 0.9], "effect_direction": "source_up_increases_target", "phase": "source_control", "clinical_rationale": "A sinus tract strongly argues against simple medical therapy alone.", "knowledge_confidence": "high"},
+    {"source_axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "source_control_need", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.8], "effect_direction": "source_up_increases_target", "phase": "source_control", "clinical_rationale": "A drainable collection increases benefit of procedural source control.", "knowledge_confidence": "high"},
+    {"source_axis_id": "implant_loosening_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.85], "effect_direction": "source_up_increases_target", "phase": "revision_planning", "clinical_rationale": "Loose components are less suitable for retention strategies.", "knowledge_confidence": "high"},
+    {"source_axis_id": "periprosthetic_gas_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.6], "effect_direction": "source_up_increases_target", "phase": "acute_severe", "clinical_rationale": "Gas-forming infection or severe postoperative infection can indicate high virulence and urgency.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "erythrocyte_sedimentation_rate", "relationship": "positive_residual_correlation", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.65], "effect_direction": "positive", "phase": "whole_course", "clinical_rationale": "CRP and ESR share inflammatory drive but differ in timing.", "knowledge_confidence": "high"},
+    {"source_axis_id": "persistent_bacteremia_activity_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.7], "effect_direction": "source_up_increases_target", "phase": "severe", "clinical_rationale": "Persistent bacteremia raises endocarditis, metastatic infection, shock, and death risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.4, 0.9], "effect_direction": "source_up_increases_target", "phase": "severe", "clinical_rationale": "Shock is the dominant short-term mortality driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "hazard_drift", "correlation_range": [0.15, 0.5], "effect_direction": "source_up_increases_target", "phase": "severe", "clinical_rationale": "AKI marks organ dysfunction and complicates antimicrobial therapy.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "target_axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "relationship": "source_up_increases_target", "coupling_type": "event_transition", "correlation_range": [0.3, 0.8], "effect_direction": "source_up_increases_target", "phase": "functional_outcome", "clinical_rationale": "Explant, staged revision, or permanent spacer can reduce long-term function.", "knowledge_confidence": "high"}
+  ],
+  "treatments": [
+    {
+      "drug": "empiric_vancomycin_plus_gram_negative_coverage",
+      "drug_class": "empiric_pji_antibacterial_coverage",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "empiric_antimicrobial",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "mrsa_probability_in_D-PROSTHETIC-JOINT-INFECTION", "gram_negative_probability_in_D-PROSTHETIC-JOINT-INFECTION", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.4], "clinical_rationale": "Empiric antibiotics reshape burden only if they cover the true pathogen."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.6, 1.0], "clinical_rationale": "Renal impairment changes vancomycin and gram-negative dosing."}
+      ],
+      "failure_modes": ["culture_negative_or_resistant_pathogen", "poor_biofilm_activity_with_retained_implant", "delayed_source_control", "renal_toxicity"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.9], "decline_half_life_days": [1, 14]},
+        "M_PJI_SYSTEMIC_SPILLOVER_ACTIVITY": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0, 1],
+      "carryover_after_stop_days": [0, 7],
+      "side_effects": [{"axis_id": "acute_kidney_injury_hazard", "direction": "up", "magnitude_range": [0, 0.02], "interpretation": "Vancomycin and some gram-negative agents can add nephrotoxicity risk."}],
+      "context_specific_role": "Initial coverage while aspiration, operative samples, and source-control decisions are pending.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "culture_directed_prolonged_antimicrobial_therapy",
+      "drug_class": "definitive_pji_antimicrobial_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive_antimicrobial",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "biofilm_active_antibiotic_penetration_probability_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.4], "clinical_rationale": "Definitive therapy depends on culture and susceptibility match."},
+        {"axis_id": "source_control_adequacy", "condition": "low", "effect": "weakens", "factor_range": [0.3, 0.8], "clinical_rationale": "Antibiotics alone are less durable when infected implant material or abscess remains uncontrolled."}
+      ],
+      "failure_modes": ["retained_high_burden_biofilm", "drug_intolerance", "nonadherence", "unrecognized_polymicrobial_or_fungal_pathogen"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.1, 0.6], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [3, 45]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [7, 60]},
+        "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [30, 180]}
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [7, 90],
+      "side_effects": [{"axis_id": "acute_kidney_injury_hazard", "direction": "up_or_variable", "magnitude_range": [0, 0.02], "interpretation": "Toxicity depends on the chosen antimicrobial and host renal reserve."}],
+      "context_specific_role": "Long-course pathogen-directed therapy after cultures or strong microbiologic inference.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "rifampin_combination_for_susceptible_staphylococcal_retained_implant",
+      "drug_class": "biofilm_active_staphylococcal_adjunct",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive_adjunct_context_dependent",
+      "required_context_axes": ["rifampin_susceptibility_probability_in_D-PROSTHETIC-JOINT-INFECTION", "biofilm_active_antibiotic_penetration_probability_in_D-PROSTHETIC-JOINT-INFECTION", "implant_retention_feasibility_in_D-PROSTHETIC-JOINT-INFECTION", "rifampin_drug_interaction_risk_activity"],
+      "effect_modifiers": [
+        {"axis_id": "rifampin_susceptibility_probability_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.4], "clinical_rationale": "Rifampin benefit depends on a susceptible staphylococcal isolate and companion drug."},
+        {"axis_id": "rifampin_drug_interaction_risk_activity", "condition": "high", "effect": "weakens", "factor_range": [0.2, 0.8], "clinical_rationale": "Interactions or liver toxicity can prevent use."}
+      ],
+      "failure_modes": ["rifampin_monotherapy_or_resistance", "nonstaphylococcal_pathogen", "uncontrolled_open_wound_or_abscess", "major_drug_interactions"],
+      "trajectory_modifications": {
+        "M_PJI_IMPLANT_BIOFILM_MATURATION": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.3, 0.85], "decline_half_life_days": [7, 90]},
+        "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.4, 0.8], "decline_half_life_days": [30, 180]}
+      },
+      "onset_delay_days": [1, 7],
+      "carryover_after_stop_days": [7, 60],
+      "side_effects": [{"axis_id": "rifampin_drug_interaction_risk_activity", "direction": "up", "magnitude_range": [0, 0.5], "interpretation": "Rifampin introduces interaction and hepatotoxicity constraints."}],
+      "context_specific_role": "Biofilm-active adjunct when retained hardware and susceptible staphylococcal context are present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dair_with_modular_component_exchange",
+      "drug_class": "prosthetic_joint_debridement_implant_retention_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "source_control",
+      "required_context_axes": ["implant_retention_feasibility_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_need", "source_control_adequacy", "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "implant_retention_feasibility_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.7], "clinical_rationale": "DAIR is most effective when symptoms are acute, components stable, and modular exchange is feasible."},
+        {"axis_id": "sinus_tract_communication_presence_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "present", "effect": "weakens", "factor_range": [0.2, 0.7], "clinical_rationale": "Sinus tract suggests chronic infection and lower retention success."}
+      ],
+      "failure_modes": ["mature_biofilm", "loose_components", "missed_collection", "no_modular_exchange", "resistant_or_fungal_pathogen"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.55], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [1, 21]},
+        "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [1, 14]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [3, 45]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"},
+        {"axis_id": "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "down", "magnitude_range": [0.2, 0.9], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [14, 365],
+      "side_effects": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up_or_down_contextual", "magnitude_range": [0, 0.01], "interpretation": "Successful DAIR preserves function; surgical morbidity is usually smaller than uncontrolled infection risk."}],
+      "context_specific_role": "Retention-oriented source-control lane for acute postoperative or acute hematogenous PJI with stable components.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "one_stage_exchange_arthroplasty",
+      "drug_class": "prosthetic_joint_exchange_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "source_control",
+      "required_context_axes": ["prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_need", "active_antibiotic_coverage_probability", "periprosthetic_soft_tissue_edema_activity_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.4], "clinical_rationale": "One-stage exchange needs reliable pathogen-directed therapy."},
+        {"axis_id": "periprosthetic_abscess_activity_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "weakens", "factor_range": [0.4, 0.9], "clinical_rationale": "Extensive soft-tissue compromise or abscess may push toward staged management."}
+      ],
+      "failure_modes": ["unknown_or_resistant_pathogen", "poor_soft_tissue_envelope", "systemic_instability", "incomplete_debridement"],
+      "trajectory_modifications": {
+        "M_PJI_IMPLANT_BIOFILM_MATURATION": {"peak_value_factor": [0.05, 0.35], "plateau_duration_factor": [0.05, 0.5], "decline_half_life_days": [7, 60]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [7, 90]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 0.95], "unit": "relative_activity_0_1"},
+        {"axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "down", "magnitude_range": [0.3, 0.9], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0, 14],
+      "carryover_after_stop_days": [60, 3650],
+      "side_effects": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up_or_down_contextual", "magnitude_range": [0, 0.03], "interpretation": "Exchange can restore source control and function but carries operative risk."}],
+      "context_specific_role": "Exchange lane when removal is needed and local/pathogen context permits immediate reimplantation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "two_stage_exchange_with_antibiotic_spacer",
+      "drug_class": "staged_revision_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "source_control",
+      "required_context_axes": ["prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_need", "reimplantation_readiness_in_D-PROSTHETIC-JOINT-INFECTION", "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "implant_loosening_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.7], "clinical_rationale": "Loose components often require removal."},
+        {"axis_id": "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Mature biofilm is better addressed by component removal."}
+      ],
+      "failure_modes": ["frailty_or_nonoperative_candidate", "persistent_spacer_infection", "poor_soft_tissue_or_bone_stock", "no_reimplantation_candidate"],
+      "trajectory_modifications": {
+        "M_PJI_IMPLANT_BIOFILM_MATURATION": {"peak_value_factor": [0.02, 0.25], "plateau_duration_factor": [0.02, 0.4], "decline_half_life_days": [7, 90]},
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.05, 0.4], "plateau_duration_factor": [0.1, 0.6], "decline_half_life_days": [7, 90]},
+        "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [30, 365]}
+      },
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.5, 0.98], "unit": "relative_activity_0_1"},
+        {"axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "down_after_explant", "magnitude_range": [0.3, 1.0], "unit": "relative_activity_0_1"}
+      ],
+      "onset_delay_days": [0, 30],
+      "carryover_after_stop_days": [90, 3650],
+      "side_effects": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "magnitude_range": [0.0, 0.04], "interpretation": "Spacer period, bone loss, and repeat surgery can reduce function even while improving infection control."}],
+      "context_specific_role": "Staged source-control lane for chronic, loose, sinus-tract, resistant, fungal, or high-biofilm PJI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "resection_arthroplasty_permanent_spacer_or_amputation_rescue",
+      "drug_class": "salvage_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "salvage_source_control",
+      "required_context_axes": ["prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_need", "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "reimplantation_readiness_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "low", "effect": "strengthens", "factor_range": [1.0, 1.8], "clinical_rationale": "Salvage is considered when durable reimplantation is not feasible."}
+      ],
+      "failure_modes": ["poor_surgical_candidate", "residual_infected_tissue", "major_disability", "wound_failure"],
+      "trajectory_modifications": {
+        "M_PJI_IMPLANT_BIOFILM_MATURATION": {"peak_value_factor": [0.02, 0.25], "plateau_duration_factor": [0.02, 0.4], "decline_half_life_days": [7, 90]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [7, 90]}
+      },
+      "push_targets": [{"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.4, 0.95], "unit": "relative_activity_0_1"}],
+      "onset_delay_days": [0, 30],
+      "carryover_after_stop_days": [90, 3650],
+      "side_effects": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "magnitude_range": [0.02, 0.2], "interpretation": "Salvage source control can prevent death or relapse but may sacrifice joint function."}],
+      "context_specific_role": "Rescue lane when recurrent infection, severe host compromise, bone loss, or soft-tissue failure prevents reconstructive control.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "chronic_suppressive_oral_antimicrobial_therapy",
+      "drug_class": "suppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "suppressive_context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_adequacy", "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "low", "effect": "partial_effect_only", "factor_range": [0.3, 0.8], "clinical_rationale": "Suppression may reduce relapse pressure but does not remove source."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.3], "clinical_rationale": "Suppressive therapy requires a tolerated active oral option."}
+      ],
+      "failure_modes": ["drug_toxicity", "resistance", "nonadherence", "progressive_loosened_implant", "no_active_oral_agent"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.4, 0.9], "plateau_duration_factor": [0.5, 1.0], "decline_half_life_days": [7, 90]},
+        "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.4, 0.85], "decline_half_life_days": [30, 365]}
+      },
+      "onset_delay_days": [1, 14],
+      "carryover_after_stop_days": [0, 30],
+      "side_effects": [{"axis_id": "acute_kidney_injury_hazard", "direction": "up_or_variable", "magnitude_range": [0, 0.01], "interpretation": "Long suppressive regimens require toxicity monitoring."}],
+      "context_specific_role": "Containment lane for retained prosthesis or nonoperative candidates after acute control decisions.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "pathogen_specific_unusual_or_fungal_pji_therapy",
+      "drug_class": "unusual_pathogen_directed_therapy",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "definitive_antimicrobial_context_dependent",
+      "required_context_axes": ["fungal_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "anaerobic_gas_forming_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "fungal_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "changes_agent_class", "factor_range": [1.0, 1.5], "clinical_rationale": "Fungal PJI requires antifungal rather than ordinary antibacterial vector field."},
+        {"axis_id": "anaerobic_gas_forming_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "changes_agent_class", "factor_range": [1.0, 1.5], "clinical_rationale": "Anaerobic or clostridial infection changes active regimen and urgency."}
+      ],
+      "failure_modes": ["late_pathogen_identification", "toxicity", "biofilm_persistence", "insufficient_source_control"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.7], "decline_half_life_days": [3, 60]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [7, 90]}
+      },
+      "onset_delay_days": [0, 7],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [{"axis_id": "acute_kidney_injury_hazard", "direction": "up_or_variable", "magnitude_range": [0, 0.03], "interpretation": "Some antifungals or unusual-pathogen regimens have renal or hepatic toxicity."}],
+      "context_specific_role": "Coverage lane when cultures or strong context reveal organisms not handled by ordinary empiric PJI regimens.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "drainage_or_debridement_of_periprosthetic_abscess_extension",
+      "drug_class": "deep_extension_source_control",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "source_control",
+      "required_context_axes": ["periprosthetic_abscess_activity_in_D-PROSTHETIC-JOINT-INFECTION", "periprosthetic_fluid_collection_imaging_activity_in_D-PROSTHETIC-JOINT-INFECTION", "source_control_need"],
+      "effect_modifiers": [
+        {"axis_id": "periprosthetic_abscess_activity_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [1.1, 2.0], "clinical_rationale": "Drainage benefit is greatest when a collection is present."}
+      ],
+      "failure_modes": ["missed_locule", "implant_biofilm_unaddressed", "poor_surgical_access", "ongoing_bacteremia"],
+      "trajectory_modifications": {
+        "M_PJI_PERIPROSTHETIC_COLLECTION_ABSCESS_EXTENSION": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [1, 21]},
+        "M_PJI_PERSISTENT_INFECTION_ACTIVITY": {"peak_value_factor": [0.2, 0.7], "decline_half_life_days": [3, 45]}
+      },
+      "push_targets": [{"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.2, 0.8], "unit": "relative_activity_0_1"}],
+      "onset_delay_days": [0, 2],
+      "carryover_after_stop_days": [7, 180],
+      "side_effects": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up_or_variable", "magnitude_range": [0, 0.02], "interpretation": "Aggressive debridement can add tissue injury but may prevent worse functional loss."}],
+      "context_specific_role": "Adjunct source control for peri-implant abscess, locule, soft-tissue extension, or draining tract.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "sepsis_resuscitation_and_organ_support",
+      "drug_class": "critical_care_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "mean_arterial_pressure", "serum_lactate", "acute_kidney_injury_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.5], "clinical_rationale": "Fluids, vasopressors, oxygen, and renal support matter when shock or organ dysfunction is present."}
+      ],
+      "failure_modes": ["source_uncontrolled", "inactive_antimicrobials", "fluid_overload", "pressor_ischemia"],
+      "trajectory_modifications": {
+        "septic_shock_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [0.5, 3]},
+        "mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.5, 0.95], "decline_half_life_days": [1, 7]}
+      },
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.2, 5.0], "unit": "mmol/L"}
+      ],
+      "onset_delay_days": [0, 0.2],
+      "carryover_after_stop_days": [0, 2],
+      "side_effects": [{"axis_id": "acute_kidney_injury_hazard", "direction": "up_or_variable", "magnitude_range": [0, 0.02], "interpretation": "Critical care interventions require renal and volume monitoring."}],
+      "context_specific_role": "Physiologic support while antimicrobial and source-control vector fields address the infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "analgesia_mobility_support_and_rehabilitation",
+      "drug_class": "functional_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION", "prosthetic_joint_weight_bearing_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION", "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_adequacy", "condition": "high", "effect": "strengthens", "factor_range": [0.8, 1.3], "clinical_rationale": "Rehabilitation becomes more effective once infection and surgical plan are controlled."}
+      ],
+      "failure_modes": ["does_not_reduce_pathogen_burden", "immobility_complications", "pain_masking_without_source_control"],
+      "trajectory_modifications": {
+        "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [0.5, 14]},
+        "prosthetic_joint_weight_bearing_limitation_activity_in_D-PROSTHETIC-JOINT-INFECTION": {"peak_value_factor": [0.6, 0.95], "decline_half_life_days": [7, 90]}
+      },
+      "onset_delay_days": [0, 3],
+      "carryover_after_stop_days": [0, 30],
+      "side_effects": [],
+      "context_specific_role": "Symptom and function support; it does not sterilize prosthetic infection.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {"factor": "recent_joint_implant_surgery_or_early_wound_leakage", "type": "procedure_wound_context", "modulation": {"present": {"P_disease_ratio": [3, 30], "trajectory_modulation": "Raises surgical inoculation, wound communication, collection, DAIR relevance, and early postoperative PJI probability.", "axis_response_modulation": [{"axis_id": "recent_joint_implant_surgery_context_activity_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [2, 10], "clinical_rationale": "This is direct context for early PJI."}]}}, "knowledge_confidence": "high"},
+    {"factor": "prior_revision_arthroplasty_prior_pji_or_retained_hardware_complexity", "type": "implant_context", "modulation": {"present": {"P_disease_ratio": [2, 15], "trajectory_modulation": "Raises biofilm persistence, resistant organism context, source-control complexity, and recurrence hazard.", "axis_response_modulation": [{"axis_id": "prosthetic_biofilm_activity_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.3, 5], "clinical_rationale": "Repeated surgery and prior infection increase implant-surface persistence."}]}}, "knowledge_confidence": "high"},
+    {"factor": "diabetes_obesity_malnutrition_smoking_or_chronic_kidney_disease", "type": "host_vulnerability", "modulation": {"present": {"P_disease_ratio": [1.5, 8], "trajectory_modulation": "Raises surgical-site infection risk, impaired wound healing, renal dosing complexity, and mortality reserve vulnerability.", "axis_response_modulation": [{"axis_id": "renal_dose_adjustment_need", "direction": "up_if_ckd", "factor_range": [1.5, 8], "clinical_rationale": "CKD changes antimicrobial dosing."}, {"axis_id": "wound_dehiscence_activity_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.1, 3], "clinical_rationale": "Poor host wound healing increases wound complication probability."}]}}, "knowledge_confidence": "high"},
+    {"factor": "immunosuppression_inflammatory_arthritis_malignancy_or_chronic_steroids", "type": "host_clearance_context", "modulation": {"present": {"P_disease_ratio": [1.5, 8], "trajectory_modulation": "Raises infection risk, broadens pathogen spectrum, and can blunt fever or leukocytosis.", "axis_response_modulation": [{"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.5, 1.2], "clinical_rationale": "Immunosuppression may mute fever."}, {"axis_id": "white_blood_cell_count", "direction": "blunted_or_variable", "factor_range": [0.5, 1.5], "clinical_rationale": "WBC response may be normal despite infection."}]}}, "knowledge_confidence": "high"},
+    {"factor": "staphylococcus_aureus_colonization_skin_infection_or_catheter_source", "type": "source_pathogen_context", "modulation": {"present": {"P_disease_ratio": [1.5, 10], "trajectory_modulation": "Raises staphylococcal PJI probability and bacteremia/metastatic infection context.", "axis_response_modulation": [{"axis_id": "mrsa_probability_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up_or_contextual", "factor_range": [1.2, 5], "clinical_rationale": "Healthcare and colonization context changes MRSA probability."}, {"axis_id": "persistent_bacteremia_activity_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.2, 5], "clinical_rationale": "S. aureus source context raises bacteremia concern."}]}}, "knowledge_confidence": "high"},
+    {"factor": "remote_bacteremia_dental_urinary_gastrointestinal_or_endovascular_source", "type": "hematogenous_context", "modulation": {"present": {"P_disease_ratio": [1.5, 12], "trajectory_modulation": "Raises hematogenous seeding of a previously functioning prosthesis and changes organism context.", "axis_response_modulation": [{"axis_id": "remote_hematogenous_source_probability_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [2, 10], "clinical_rationale": "Remote bloodstream source is direct context for hematogenous PJI."}]}}, "knowledge_confidence": "high"},
+    {"factor": "resistant_unusual_anaerobic_or_fungal_pathogen_context", "type": "treatment_modifier", "modulation": {"present": {"P_disease_ratio": [1, 2], "trajectory_modulation": "Changes active coverage probability, agent class, and source-control durability rather than defining a separate first-layer leaf.", "axis_response_modulation": [{"axis_id": "active_antibiotic_coverage_probability", "direction": "lower_until_identified", "factor_range": [0.2, 0.9], "clinical_rationale": "Unusual organisms are more likely to be missed empirically."}, {"axis_id": "fungal_pathogen_probability_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up_if_fungal_context", "factor_range": [2, 20], "clinical_rationale": "Fungal context changes therapy class."}]}}, "knowledge_confidence": "medium"},
+    {"factor": "sinus_tract_loose_implant_poor_soft_tissue_or_large_abscess", "type": "source_control_context", "modulation": {"present": {"P_disease_ratio": [1, 3], "trajectory_modulation": "Raises source-control need, lowers implant retention feasibility, increases explantation need and recurrence hazard.", "axis_response_modulation": [{"axis_id": "implant_retention_feasibility_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "down", "factor_range": [0.1, 0.7], "clinical_rationale": "Retention is less durable with sinus tract, loosening, or poor soft tissue."}, {"axis_id": "prosthesis_explantation_need_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.5, 6], "clinical_rationale": "These findings push toward component removal."}]}}, "knowledge_confidence": "high"},
+    {"factor": "peripheral_arterial_disease_or_poor_limb_perfusion", "type": "local_perfusion_context", "modulation": {"present": {"P_disease_ratio": [1.2, 5], "trajectory_modulation": "Raises wound failure, soft-tissue compromise, antibiotic delivery problems, and functional loss.", "axis_response_modulation": [{"axis_id": "permanent_functional_loss_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.2, 4], "clinical_rationale": "Poor perfusion complicates limb and wound outcomes."}]}}, "knowledge_confidence": "medium"},
+    {"factor": "delayed_diagnosis_inactive_antimicrobial_or_delayed_source_control", "type": "course_context", "modulation": {"present": {"P_disease_ratio": [1, 2], "trajectory_modulation": "Sustains biofilm maturation, abscess extension, loosening, recurrence, and mortality hazard when systemic spillover occurs.", "axis_response_modulation": [{"axis_id": "M_PJI_PERSISTENT_INFECTION_ACTIVITY", "direction": "up", "factor_range": [1.5, 6], "clinical_rationale": "Delay permits persistent infection."}, {"axis_id": "recurrent_pji_hazard_in_D-PROSTHETIC-JOINT-INFECTION", "direction": "up", "factor_range": [1.3, 5], "clinical_rationale": "Incomplete early control raises relapse."}]}}, "knowledge_confidence": "high"}
+  ],
+  "supportive_care": [
+    "Document implant type, joint, laterality, index arthroplasty or revision date, prior PJI, retained components, wound leakage, sinus tract, implant stability, and symptom duration.",
+    "Perform serial local exams for pain, swelling, warmth, erythema, wound dehiscence, drainage, sinus tract, range of motion, weight-bearing ability, and neurovascular status.",
+    "Use presentation labs including CBC with differential, CRP, ESR, creatinine, and lactate when unstable; trend CRP and ESR but do not use treatment response as a presentation-only diagnosis label.",
+    "Obtain blood cultures when fever, acute hematogenous presentation, S. aureus concern, systemic signs, endovascular source, or persistent infection is plausible.",
+    "Aspirate the prosthetic joint when feasible before antibiotics in stable patients; send cell count, differential, Gram stain, aerobic and anaerobic cultures, and crystals, but do not let crystals or negative early culture alone exclude PJI.",
+    "Use radiographs for loosening and gas, ultrasound or CT for collections, and MRI or nuclear imaging selectively when soft-tissue extension or osteomyelitis interface is unclear.",
+    "Coordinate orthopedics, infectious diseases, microbiology, anesthesia, and rehabilitation early because antimicrobial and source-control vector fields are interdependent.",
+    "Avoid encoding DAIR, one-stage exchange, two-stage exchange, suppression, or spacer outcome as a diagnosis label; let source-control and RMST simulation choose among them.",
+    "Adjust antimicrobial dosing for renal function, allergy history, drug interactions, local susceptibility, biofilm activity, and unusual organisms.",
+    "Preserve confirmatory microbiology, susceptibility, operative findings, and follow-up outcome in case files with use_in_ranking false when testing presentation-only diagnosis."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-PROSTHETIC-JOINT-INFECTION.",
+    "No treatment-rank or diagnosis-rank label fields are encoded.",
+    "Acute/chronic timing, organism, joint location, DAIR/revision context, and source-control failure are represented as axes, mechanisms, or treatment modifiers rather than disease-name qualifiers."
+  ]
+}
+

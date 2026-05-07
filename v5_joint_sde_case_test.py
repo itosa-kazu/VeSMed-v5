@@ -564,7 +564,15 @@ def fallback_axis_from_observation(axis_id, obs):
     }
 
 
-MAPPED_EVIDENCE_SECTIONS = ("imaging", "pathology", "procedures", "diagnostics", "physical_exam", "microbiology")
+MAPPED_EVIDENCE_SECTIONS = (
+    "imaging",
+    "pathology",
+    "procedures",
+    "diagnostics",
+    "physical_exam",
+    "microbiology",
+    "clinical_course_events",
+)
 DIRECT_AXIS_SECTION_SKIP = {
     "demographics",
     "risk_context",
@@ -591,6 +599,21 @@ def mapped_axis_ids(item):
     if isinstance(raw_ids, list):
         ids.extend(raw_ids)
     return [axis_id for axis_id in ids if axis_id]
+
+
+def mapped_axis_items(item):
+    for axis_id in mapped_axis_ids(item):
+        yield axis_id, item
+
+    raw_axes = item.get("mapped_axes")
+    if not isinstance(raw_axes, list):
+        return
+    for axis_item in raw_axes:
+        if not isinstance(axis_item, dict):
+            continue
+        axis_id = axis_item.get("axis_id") or axis_item.get("mapped_axis_id")
+        if axis_id:
+            yield axis_id, axis_item
 
 
 def can_infer_qualitative_mapped_axis(axis_id):
@@ -643,15 +666,19 @@ def mapped_item_is_negative(item):
     return any(re.search(pattern, text) for pattern in negative_patterns)
 
 
-def infer_mapped_observation(item, axis_id):
+def infer_mapped_observation(item, axis_id, axis_item=None):
     if item.get("use_in_ranking") is False:
         return None
-    value = item.get("value")
+    axis_item = axis_item or item
+    if axis_item.get("use_in_ranking") is False:
+        return None
+    value = axis_item.get("value")
     if value is not None:
-        return value, item.get("unit") or "severity_score_0_1"
+        return value, axis_item.get("unit") or item.get("unit") or "severity_score_0_1"
     if not can_infer_qualitative_mapped_axis(axis_id):
         return None
-    if mapped_item_is_negative(item):
+    merged_item = {**item, **axis_item}
+    if mapped_item_is_negative(merged_item):
         return 0.0, "severity_score_0_1"
     return 1.0, "severity_score_0_1"
 
@@ -741,9 +768,17 @@ def load_case(path):
     observations = {}
 
     def add_observation(axis_id, value, unit):
-        if not axis_id or value is None or axis_id in observations:
+        if not axis_id or value is None:
             return
-        observations[axis_id] = {"value": float(value), "unit": unit}
+        value = float(value)
+        if axis_id in observations:
+            old = observations[axis_id]
+            normalized_unit = norm_unit(unit or old.get("unit"))
+            if normalized_unit in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01") or axis_id.endswith("_hazard") or "_hazard_" in axis_id:
+                if value > float(old.get("value", 0.0)):
+                    observations[axis_id] = {"value": value, "unit": unit or old.get("unit")}
+            return
+        observations[axis_id] = {"value": value, "unit": unit}
 
     for obs in data.get("observations", []):
         if not case_item_rankable(obs):
@@ -786,8 +821,8 @@ def load_case(path):
         for item in records:
             if not isinstance(item, dict):
                 continue
-            for axis_id in mapped_axis_ids(item):
-                inferred = infer_mapped_observation(item, axis_id)
+            for axis_id, axis_item in mapped_axis_items(item):
+                inferred = infer_mapped_observation(item, axis_id, axis_item)
                 if inferred is None:
                     continue
                 value, unit = inferred
