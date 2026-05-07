@@ -919,7 +919,10 @@ def axis_sigma(axis):
         return 1.0
 
     if axis.get("log_scale"):
-        logs = [math.log10(max(v, 1e-12)) for v in values if v > 0]
+        if zero_inclusive_log_axis(axis):
+            logs = [math.log10(max(v, 0.0) + 1.0) for v in values]
+        else:
+            logs = [math.log10(max(v, 1e-12)) for v in values if v > 0]
         if not logs:
             return 0.5
         sigma = max((max(logs) - min(logs)) / 6.0, 0.15)
@@ -939,14 +942,30 @@ def axis_sigma(axis):
     return sigma
 
 
+def zero_inclusive_log_axis(axis):
+    if not axis.get("log_scale"):
+        return False
+    axis_id = axis.get("axis_id", "")
+    if axis.get("category") != "csf" and not axis_id.startswith("csf_"):
+        return False
+    for interval in (axis.get("baseline_range"), axis.get("peak_value_range")):
+        if interval is not None and min(interval) <= 0:
+            return True
+    return False
+
+
 def transform(axis, value):
     if axis.get("log_scale"):
+        if zero_inclusive_log_axis(axis):
+            return math.log10(max(value, 0.0) + 1.0)
         return math.log10(max(value, 1e-12))
     return float(value)
 
 
 def inverse_transform(axis, z):
     if axis.get("log_scale"):
+        if zero_inclusive_log_axis(axis):
+            return max((10.0 ** z) - 1.0, 0.0)
         return 10.0 ** z
     return float(z)
 

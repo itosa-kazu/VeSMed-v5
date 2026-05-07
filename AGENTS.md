@@ -950,3 +950,32 @@ Follow-up after generic evidence/runtime fixes:
   - Single-manifold validation `391/393 PASS`; combo intentionally off.
   - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
   - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.
+
+## 2026-05-07 New Batch Memory: Erysipelas / Autoimmune Encephalitis / VZV Encephalitis
+
+- The next loop again used one `xhigh` worker per disease, with disjoint write scopes:
+  - `D-ERYSIPELAS`: erysipelas.
+  - `D-AUTOIMMUNE-ENCEPHALITIS`: autoimmune encephalitis.
+  - `D-VZV-ENCEPHALITIS`: varicella-zoster virus encephalitis.
+- Real PMC/PubMed cases:
+  - `D-ERYSIPELAS`: `PMC11257657` / PMID `39027802`, `PMC12488269` / PMID `41041112`, `PMC12626943` / PMID `41268563`.
+  - `D-AUTOIMMUNE-ENCEPHALITIS`: `PMC5078958` / PMID `27776544`, `PMC5747773` / PMID `29103007`, `PMC8798333` / PMID `35116439`.
+  - `D-VZV-ENCEPHALITIS`: `PMC6861030` / PMID `31763593`, `PMC4335817` / PMID `25738170`, `PMC4017713` / PMID `24864218`.
+- Erysipelas source rule: keep first-layer erysipelas separate from cellulitis, necrotizing fasciitis, diabetic foot infection, zoster, DRESS/SJS/TEN, septic arthritis, toxic shock syndrome, streptococcal bacteremia, and generic sepsis. Sharply demarcated raised superficial erythema, dermal lymphatic pattern, skin barrier portal, chronic edema/lymphedema, bullous or hemorrhagic superficial lesions, and bacteremic/shock hazards can be rankable when present; culture organism and response to antibiotics remain confirmatory/non-ranking unless testing post-workup mode.
+- Autoimmune encephalitis source rule: keep first-layer autoimmune encephalitis as a stable syndrome leaf covering anti-NMDAR/LGI1/CASPR2/GABAB and related contexts, but do not mix HSV/VZV encephalitis, viral/bacterial meningitis, brain abscess, CNS lupus, sarcoidosis/Behcet CNS disease, toxic-metabolic delirium, or primary psychiatric disease into the disease name. Antibody type, tumor/teratoma context, FBDS, hyponatremia/SIADH, CSF/MRI/EEG, and immunotherapy context are axes or future subtypes.
+- VZV encephalitis source rule: keep VZV brain-parenchymal/CNS disease separate from VZV meningitis without encephalitis, HSV encephalitis, viral meningitis, West Nile neuroinvasive disease, autoimmune encephalitis, bacterial meningitis, brain abscess, stroke/vasculopathy without encephalitis, zoster skin disease alone, and sepsis. Rash may be absent; immunosuppression, vasculopathy/stroke, CSF VZV PCR/intrathecal antibody, MRI lesions, seizures/focal deficits, and active antiviral coverage are axes/context, not extra disease-name qualifiers.
+- Runtime/case-structure repair from this batch:
+  - `v5_joint_sde_case_test.py` now uses `log10(1+x)` only for zero-inclusive CSF log axes. The first broad attempt applied this to all zero-inclusive log axes and regressed hematology cases; it was narrowed after evidence showed the true numerical pathology was CSF zero-cell counts.
+  - `D-HSV-ENCEPHALITIS` was missing real CSF HSV PCR axes. Added `csf_viral_pcr_positivity`, `csf_hsv_pcr_positivity`, `csf_hsv1_pcr_positivity`, and `csf_hsv2_pcr_positivity`, with mechanism edges from CNS HSV replication.
+  - Existing HSV encephalitis case microbiology was structured into those PCR axes. This fixed `HSV_ENCEPHALITIS_NORMAL_CSF_PMC4717694`, where HSV-1 PCR positivity and temporal/limbic MRI were real evidence but normal CSF cell counts previously over-penalized HSV.
+  - Existing disseminated cryptococcosis meningitis/fungemia case microbiology was mapped into existing cryptococcal culture/antigen axes (`csf_culture_positivity`, `blood_culture_positivity_probability`, `csf_cryptococcal_antigen_titer`, `serum_cryptococcal_antigen_titer`, `tissue_cryptococcus_detection_probability`). This fixed a VZV encephalitis steal caused by unconsumed fungal microbiology evidence.
+- Axis ontology repair from this batch: composite `_or_` names were normalized before regression, including `erysipelas_truncal_involvement_activity_in_D-ERYSIPELAS`, `chronic_edema_context_activity`, `non_gas_pathogen_probability_in_D-ERYSIPELAS`, `M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY`, `M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY`, `catatonic_unresponsiveness_activity`, `brain_mri_nonspecific_activity_in_D-AUTOIMMUNE-ENCEPHALITIS`, `eeg_slowing_activity`, `acute_psychiatric_activation_activity`, `mri_posterior_fossa_lesion_activity_in_D-VZV-ENCEPHALITIS`, `mri_cns_surface_enhancement_activity_in_D-VZV-ENCEPHALITIS`, `advanced_hiv_immunodeficiency_activity`, `M_VZV_NEUROINVASION_ACTIVITY`, and `M_VZV_INADEQUATE_ANTIVIRAL_EXPOSURE_ACTIVITY`. VZV also gained the treatment-referenced `oxygen_saturation` vital axis.
+- Horizontal fairness notes: SSTI leaves should share bullous/hemorrhagic lesion, barrier disruption, edema/lymphedema, shock, and source-control axes where medically true, while sharply demarcated raised border and superficial lymphatic pattern stay more erysipelas-specific. CNS leaves need shared CSF/MRI/EEG/seizure/mental-status axes, but pathogen-specific PCR/antigen/antibody and parenchymal injury evidence must be structured instead of left as text. Opportunistic CNS infections in transplant/HIV hosts need microbiology axes consumed before ranking against VZV/AE.
+- UI roadmap after this batch: completed leaves are active; default next candidate is `D-WEST-NILE-NEUROINVASIVE-DISEASE`.
+- Current atlas count after this batch: 145 disease manifolds and 405 real case JSON files.
+- Focused new-batch grid (`ERYSIPELAS,AUTOIMMUNE_ENCEPHALITIS,VZV_ENCEPHALITIS,HSV_ENCEPHALITIS_NORMAL_CSF`) loaded 10 cases and was `10/10 PASS`.
+- Full current-atlas grid after this batch:
+  - 405 case JSON files present; 402 single-manifold cases and 2 combo cases were scorable in this run.
+  - Single-manifold validation `400/402 PASS`; combo intentionally off.
+  - The two single failures are unchanged accepted presentation-only ambiguities: `ANTISYNTHETASE_PULMONARY_JO1_PMC10515292` -> `D-DLBCL`, and `HODGKIN_AOSD_MASK_PMC4847271` -> `D-ALCL`.
+  - Separate combo run (`VESMED_MAX_COMBO_SIZE=2`) is `2/2 PASS`: `D-ACUTE-PANCREATITIS+D-DIABETIC-KETOACIDOSIS` and `D137+D-TTP`.

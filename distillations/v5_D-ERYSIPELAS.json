@@ -1,0 +1,662 @@
+{
+  "disease": "D-ERYSIPELAS",
+  "disease_id": "D-ERYSIPELAS",
+  "disease_name": "Erysipelas",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Erysipelas",
+    "leaf_granularity": "First-layer disease leaf for acute superficial infection of the upper dermis and superficial cutaneous lymphatics, with raised sharply demarcated erythema and lymphatic inflammation. The leaf is independent of anatomic site, recurrence status, organism, bullous or hemorrhagic morphology, bacteremia, shock, or treatment response.",
+    "boundary_policy": "Cellulitis, necrotizing fasciitis, diabetic foot infection, deep abscess, septic arthritis, osteomyelitis, streptococcal or staphylococcal bacteremia, toxic shock syndrome, generic sepsis, DRESS/SJS-TEN, zoster, DVT, gout, contact dermatitis, vasculitis, and carcinoma erysipeloides remain competing manifolds or complications/context. They are not appended to the disease name.",
+    "ranking_note": "Presentation ranking should use observed raised sharply demarcated erythema, warmth, edema, tenderness, superficial induration, lymphangitis or regional lymphadenopathy, face/lower-limb/trunk site, portal context, lymphedema or venous insufficiency, fever/chills/malaise, vital signs, CBC, CRP/ESR/PCT, lactate, renal injury, bullae or hemorrhagic lesions, and superficial imaging when available. Culture species, susceptibility, final source adjudication, biopsy exclusion, and treatment response are confirmatory or post-workup context unless explicitly testing post-workup mode."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ERYSIPELAS_PORTAL_AND_SUPERFICIAL_LYMPHATIC_ENTRY",
+      "display_name": "Skin portal and superficial lymphatic entry",
+      "clinical_meaning": "Minor trauma, fissure, interdigital maceration, tinea, ulcer, piercing, surgical scar, insect bite, chronic edema skin fragility, or an unapparent portal allows organisms to enter upper dermis and superficial lymphatics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-14, 1],
+      "peak_value_range": [0.15, 0.9],
+      "plateau_duration_days": [0.5, 30],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN",
+      "display_name": "Superficial dermal and lymphatic pathogen burden",
+      "clinical_meaning": "Viable bacteria, usually beta-hemolytic streptococci but sometimes staphylococci or Gram-negative organisms in selected hosts, proliferate in upper dermis and superficial lymphatics.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 3],
+      "peak_value_range": [0.3, 0.95],
+      "plateau_duration_days": [0.5, 10],
+      "decline_half_life_days": [0.5, 6],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION",
+      "display_name": "Local dermal lymphangitic inflammation",
+      "clinical_meaning": "Neutrophil, complement, cytokine, vasodilatory, and lymphatic inflammatory response produces raised sharply demarcated erythema, warmth, edema, tenderness, induration, lymphangitis, and regional nodes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.45, 0.98],
+      "plateau_duration_days": [1, 10],
+      "decline_half_life_days": [1, 7],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER",
+      "display_name": "Systemic inflammatory spillover",
+      "clinical_meaning": "Local superficial infection can produce fever, chills, malaise, tachycardia, leukocyte response, high CRP, PCT rise in severe disease, hypotension, lactate elevation, AKI, delirium, and rare organ dysfunction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [0, 4],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [0.2, 10],
+      "decline_half_life_days": [0.5, 5],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK",
+      "display_name": "Bullous, hemorrhagic, and superficial necrotic vascular leak",
+      "clinical_meaning": "Toxin-mediated inflammation, capillary leak, superficial vessel injury, edema pressure, host fragility, or delayed control can produce vesicles, bullae, blood-filled blisters, purpura, erosions, and superficial necrosis without necessarily implying deep fascial necrosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 5],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [0.5, 14],
+      "decline_half_life_days": [2, 21],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION",
+      "display_name": "Lymphatic and venous stasis amplification",
+      "clinical_meaning": "Lymphedema, prior lymph node dissection, venous insufficiency, chronic edema, obesity, previous erysipelas, or recurrent lymphangitis weakens local clearance and increases edema, extent, recurrence, and slow resolution.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-3650, 0],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT",
+      "display_name": "Host clearance impairment",
+      "clinical_meaning": "Advanced age, diabetes, CKD, peripheral vascular disease, cirrhosis, malignancy, transplant, corticosteroids, biologics, immunosuppressants, HIV, neutropenia, or malnutrition impair containment and alter pathogen spectrum.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.04],
+      "peak_day_range": [-365, 0],
+      "peak_value_range": [0.05, 0.95],
+      "plateau_duration_days": [7, 3650],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY",
+      "display_name": "Bloodstream and metastatic infectious spillover",
+      "clinical_meaning": "A small subset develops bacteremia, septic shock, or metastatic foci such as endophthalmitis, pericarditis, or other sterile-site inflammation. These are event hazards, not separate labels inside the disease name.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.005],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [0.2, 14],
+      "decline_half_life_days": [1, 10],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY",
+      "display_name": "Inactive, delayed, or poorly delivered antimicrobial effect",
+      "clinical_meaning": "Delay, premature discontinuation, wrong spectrum for host/pathogen context, allergy-limited therapy, underdosing, renal dosing errors, poor tissue delivery in edematous or ischemic skin, or missed local care prolong burden and complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [0, 7],
+      "peak_value_range": [0.0, 0.85],
+      "plateau_duration_days": [0.5, 21],
+      "decline_half_life_days": [0.5, 7],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_ERYSIPELAS_PORTAL_AND_SUPERFICIAL_LYMPHATIC_ENTRY", "target_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "A skin portal allows organisms into upper dermis and lymphatics.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT", "target_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Impaired host defenses allow higher and more persistent burden.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 14], "rationale": "Stasis lowers local lymphatic clearance and supports recurrence.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "target_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Dermal bacterial burden triggers local innate inflammation.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "peripheral_skin_soft_tissue_infection_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 1], "rationale": "Erysipelas is clinically visible as a superficial skin/soft tissue infection.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_sharply_demarcated_raised_border_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "The raised sharp border is the bedside feature separating erysipelas from deeper, ill-defined cellulitis.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_erythema_extent_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Vasodilation and inflammation produce erythema.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_warmth_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 1], "rationale": "Local hyperemia produces warmth.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Dermal vascular leak and lymphatic obstruction cause swelling.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Inflammatory mediators and edema pressure produce pain and tenderness.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_superficial_induration_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 3], "rationale": "Dermal edema and inflammatory infiltrate cause a firm raised plaque.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "erysipelas_lymphangitis_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 3], "rationale": "Superficial lymphatic infection can produce streaking lymphangitis.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION", "target_id": "regional_lymphadenopathy_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Regional lymph nodes react to superficial lymphatic infection.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_PORTAL_AND_SUPERFICIAL_LYMPHATIC_ENTRY", "target_id": "skin_barrier_break_activity", "effect_on_target": "up", "edge_type": "risk_context", "lag_days_range": [0, 0], "rationale": "Portal history is an observed risk context.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "chronic_edema_context_activity", "effect_on_target": "up", "edge_type": "risk_context", "lag_days_range": [0, 0], "rationale": "Chronic edema and lymphedema are observed amplifiers.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "chronic_venous_insufficiency_context_activity", "effect_on_target": "up", "edge_type": "risk_context", "lag_days_range": [0, 0], "rationale": "Venous disease increases edema and recurrence risk.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "target_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [7, 365], "rationale": "Persistent lymphatic damage and edema drive recurrence.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "target_id": "group_a_strep_probability_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "pathogen_context", "lag_days_range": [0, 1], "rationale": "Classic erysipelas commonly reflects beta-hemolytic streptococci, especially group A in facial and many sporadic cases.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT", "target_id": "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "pathogen_context", "lag_days_range": [0, 1], "rationale": "Immunosuppression, transplant, cirrhosis, and severe host impairment shift pathogen context toward Gram-negative organisms.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT", "target_id": "erysipelas_immunosuppressed_atypical_pathogen_context_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "risk_context", "lag_days_range": [0, 0], "rationale": "Host immunosuppression changes organism probability and may blunt classic response.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "target_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Higher local burden increases systemic inflammation.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "fever_history_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 1], "rationale": "Erysipelas often begins abruptly with fever history.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "body_temperature", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Pyrogenic cytokines raise measured temperature.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "chills_rigors_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 1], "rationale": "Chills can accompany abrupt streptococcal skin infection.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "malaise_fatigue_activity", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Systemic inflammation produces fatigue, anorexia, and body aches.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "heart_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Fever, pain, and inflammatory stress raise heart rate.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "respiratory_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Fever, acidosis, pain, or shock can raise respiratory rate.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "systolic_blood_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Severe spillover can produce vasodilation or shock.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "mean_arterial_pressure", "effect_on_target": "down", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Septic shock physiology lowers MAP.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "white_blood_cell_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Leukocytosis is common, but immunosuppressed hosts may show normal or low counts.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "absolute_neutrophil_count", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "Neutrophilia tracks pyogenic bacterial inflammation.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_crp", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 3], "rationale": "CRP rises with erysipelas inflammation and severity.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [1, 7], "rationale": "ESR can rise in skin and soft tissue infection.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_procalcitonin", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 2], "rationale": "PCT is most elevated in severe bacterial or bacteremic erysipelas.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_lactate", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 1], "rationale": "Hypoperfusion or severe inflammatory shock raises lactate.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "serum_creatinine", "effect_on_target": "up", "edge_type": "causal", "lag_days_range": [0, 5], "rationale": "Shock, dehydration, and AKI can raise creatinine.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 5], "rationale": "Severe infection and shock increase AKI risk.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "target_id": "erysipelas_bullous_lesion_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Vesicles and bullae reflect superficial vascular leak.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "target_id": "erysipelas_hemorrhagic_bullae_purpura_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 5], "rationale": "Blood-filled bullae and purpura reflect hemorrhagic superficial injury.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "target_id": "erysipelas_superficial_skin_necrosis_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [1, 7], "rationale": "Bullous erysipelas can produce superficial necrotic areas without fascial necrosis.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "target_id": "erysipelas_exudation_erosion_activity_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 7], "rationale": "Bulla rupture or erosions produce exudate.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "target_id": "necrotizing_soft_tissue_infection_hazard", "effect_on_target": "up", "edge_type": "warning_signal", "lag_days_range": [0, 3], "rationale": "Hemorrhagic bullae or necrosis require evaluation for deep necrotizing mimics even when final disease is superficial.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "blood_culture_positivity_probability", "effect_on_target": "up", "edge_type": "observation_gate", "lag_days_range": [0, 2], "rationale": "Bacteremic erysipelas raises blood culture positivity.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "erysipelas_bacteremia_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "rationale": "Superficial infection can rarely seed blood.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "metastatic_infection_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [1, 14], "rationale": "Bacteremia can rarely seed eye, pericardium, joint, or other sites.", "confidence": "low"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 3], "rationale": "Severe systemic inflammatory spillover can cause shock.", "confidence": "medium"},
+    {"source_id": "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY", "target_id": "initial_inactive_antibiotic_exposure_activity", "effect_on_target": "up", "edge_type": "treatment_context", "lag_days_range": [0, 1], "rationale": "Observed prior ineffective or discontinued therapy is context for delayed control.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY", "target_id": "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN", "effect_on_target": "up", "edge_type": "feedback", "lag_days_range": [0, 5], "rationale": "Inactive or delayed therapy permits burden persistence.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER", "target_id": "mortality_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 7], "rationale": "Mortality hazard is mainly driven by shock and organ dysfunction rather than uncomplicated erysipelas.", "confidence": "high"},
+    {"source_id": "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY", "target_id": "mortality_hazard_in_D-ERYSIPELAS", "effect_on_target": "up", "edge_type": "hazard_driver", "lag_days_range": [0, 14], "rationale": "Bacteremia and metastatic infection increase outcome hazard.", "confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "peripheral_skin_soft_tissue_infection_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Any visible peripheral or superficial skin/soft tissue infection activity.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_sharply_demarcated_raised_border_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Raised, indurated, sharply demarcated erythematous border typical of superficial dermal lymphatic infection.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_erythema_extent_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "relative_extent_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Extent of erythematous superficial plaque, from small focal lesion to broad anatomic region.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 4], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 10], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_warmth_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Local warmth over erysipelas plaque.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 3], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Dermal edema and swelling in the involved region, amplified by chronic edema or lymphatic injury.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 4], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Local pain, burning, or tenderness over involved erysipelas skin.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.2, 0.95], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_superficial_induration_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Firm raised superficial plaque or hard infiltrated upper dermis.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 4], "peak_value_range": [0.2, 0.9], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_lymphangitis_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Visible lymphangitic streaking or clinically suspected superficial lymphatic spread.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 10], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "regional_lymphadenopathy_activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Tender or enlarged regional lymph nodes draining the infected skin.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "erysipelas_anatomic_face_involvement_activity_in_D-ERYSIPELAS", "category": "anatomic_context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Erysipelas involving face, ear, periorbital-adjacent, or cheek region.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_anatomic_lower_limb_involvement_activity_in_D-ERYSIPELAS", "category": "anatomic_context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Erysipelas involving lower limb, foot dorsum, ankle, calf, or thigh.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 21], "decline_half_life_days": [1, 21], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_truncal_involvement_activity_in_D-ERYSIPELAS", "category": "anatomic_context", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Erysipelas involving trunk, abdominal wall, breast, or inframammary skin.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "erysipelas_bullous_lesion_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Vesicles, tense bullae, or blistering in erysipelas.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.95], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_hemorrhagic_bullae_purpura_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Blood-filled bullae, serohematic bullae, purpura, ecchymoses, or hemorrhagic superficial lesions.", "baseline_range": [0.0, 0.003], "peak_day_range": [0, 5], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "erysipelas_superficial_skin_necrosis_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Superficial necrosis, crusting, erosions, or eschar-like surface injury in complicated bullous erysipelas without proven fascial necrosis.", "baseline_range": [0.0, 0.002], "peak_day_range": [1, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 60], "knowledge_confidence": "medium"},
+    {"axis_id": "erysipelas_exudation_erosion_activity_in_D-ERYSIPELAS", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ruptured bullae, erosions, drainage, light exudate, or oozing from superficial erysipelas lesions.", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.85], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "superficial_dermal_fat_stranding_imaging_activity_in_D-ERYSIPELAS", "category": "imaging_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Ultrasound/CT/MRI evidence of superficial dermal/subcutaneous edema or fat stranding without deep fascial gas, abscess, bone, or joint primary disease.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [2, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "skin_barrier_break_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Break in skin barrier such as trauma, fissure, tinea/intertrigo, piercing, ulcer, surgery, insect bite, or injection.", "baseline_range": [0.0, 0.08], "peak_day_range": [-365, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 365], "decline_half_life_days": [7, 90], "knowledge_confidence": "high"},
+    {"axis_id": "chronic_edema_context_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chronic lymphedema, post-surgical lymphatic damage, or chronic edema context.", "baseline_range": [0.0, 0.08], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "chronic_venous_insufficiency_context_activity", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Venous stasis, varicosities, venous edema, or stasis dermatitis context.", "baseline_range": [0.0, 0.1], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "medium"},
+    {"axis_id": "recurrent_erysipelas_history_activity_in_D-ERYSIPELAS", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of recurrent erysipelas, recurrent lymphangitis, or repeated similar sharply demarcated superficial skin infections.", "baseline_range": [0.0, 0.02], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_immunosuppressed_atypical_pathogen_context_activity_in_D-ERYSIPELAS", "category": "risk_context", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Host context suggesting atypical pathogen spectrum or blunted response: transplant, long-term glucocorticoids, biologics, immunosuppressants, cirrhosis, malignancy, neutropenia, or advanced immune compromise.", "baseline_range": [0.0, 0.05], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 3650], "decline_half_life_days": [14, 365], "knowledge_confidence": "high"},
+    {"axis_id": "group_a_strep_probability_in_D-ERYSIPELAS", "category": "pathogen_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that group A Streptococcus or closely related beta-hemolytic streptococcus is the main pathogen.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.25, 0.9], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "high"},
+    {"axis_id": "non_gas_pathogen_probability_in_D-ERYSIPELAS", "category": "pathogen_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability of non-GAS streptococci, Staphylococcus aureus, or mixed non-classic pathogens contributing to erysipelas-like superficial infection.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.05, 0.6], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "category": "pathogen_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that Gram-negative bacteria are causative or clinically relevant, especially in immunosuppressed, transplant, cirrhotic, or severe bullous cases.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "body_temperature", "category": "vital_sign", "unit": "degC", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Measured body temperature; often febrile but may be low-grade or normal in early, older, or immunosuppressed hosts.", "baseline_range": [36.2, 37.2], "peak_day_range": [0, 2], "peak_value_range": [37.0, 40.5], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "fever_history_activity", "category": "qualitative", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Reported fever at home or before measurement.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "chills_rigors_activity", "category": "qualitative", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Chills or rigors around onset.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.1, 4], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "malaise_fatigue_activity", "category": "qualitative", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Malaise, fatigue, anorexia, myalgias, or toxic appearance.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "heart_rate", "category": "vital_sign", "unit": "beats_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Heart rate from normal to tachycardic depending fever, pain, shock, or host reserve.", "baseline_range": [55, 95], "peak_day_range": [0, 2], "peak_value_range": [70, 150], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "respiratory_rate", "category": "vital_sign", "unit": "breaths_per_min", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Respiratory rate; elevated in severe systemic spillover, acidosis, pain, or shock.", "baseline_range": [12, 20], "peak_day_range": [0, 2], "peak_value_range": [14, 35], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "systolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Systolic blood pressure; usually normal but can fall in septic shock.", "baseline_range": [100, 140], "peak_day_range": [0, 2], "peak_value_range": [70, 160], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "diastolic_blood_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Diastolic blood pressure; can fall with vasodilatory physiology.", "baseline_range": [60, 90], "peak_day_range": [0, 2], "peak_value_range": [35, 95], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "mean_arterial_pressure", "category": "vital_sign", "unit": "mmHg", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Mean arterial pressure; low values indicate shock physiology.", "baseline_range": [70, 105], "peak_day_range": [0, 2], "peak_value_range": [45, 110], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "oxygen_saturation", "category": "vital_sign", "unit": "%", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Pulse oximetry; usually normal unless shock, lung disease, pulmonary edema, or critical illness coexists.", "baseline_range": [95, 100], "peak_day_range": [0, 3], "peak_value_range": [85, 100], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "low"},
+    {"axis_id": "altered_mental_status_activity", "category": "neurologic_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Agitation, delirium, confusion, or encephalopathy during severe infection.", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 3], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "WBC may be normal, elevated, or blunted in immunosuppression.", "baseline_range": [4.0, 10.0], "peak_day_range": [0, 3], "peak_value_range": [4.0, 25.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "absolute_neutrophil_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "ANC often rises with bacterial response, but may be normal or low in impaired hosts.", "baseline_range": [1.8, 7.7], "peak_day_range": [0, 3], "peak_value_range": [3.0, 22.0], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "serum_crp", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "shape_free_text": "CRP often rises substantially and falls with control.", "baseline_range": [0.2, 5.0], "peak_day_range": [0, 4], "peak_value_range": [20, 350], "plateau_duration_days": [0.5, 7], "decline_half_life_days": [1, 5], "knowledge_confidence": "high"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "category": "lab_value", "unit": "mm/hr", "log_scale": false, "axis_role": "measurement", "shape_free_text": "ESR can be elevated but is slower and nonspecific.", "baseline_range": [0, 20], "peak_day_range": [1, 7], "peak_value_range": [20, 100], "plateau_duration_days": [3, 21], "decline_half_life_days": [7, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_procalcitonin", "category": "lab_value", "unit": "ng/mL", "log_scale": true, "axis_role": "measurement", "shape_free_text": "PCT is usually low to modest in uncomplicated erysipelas but can be high with severe Gram-negative, bacteremic, or shock physiology.", "baseline_range": [0.01, 0.08], "peak_day_range": [0, 2], "peak_value_range": [0.05, 60], "plateau_duration_days": [0.2, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_lactate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Lactate is normal in uncomplicated cases and rises with hypoperfusion or septic shock.", "baseline_range": [0.5, 2.0], "peak_day_range": [0, 1], "peak_value_range": [0.7, 8.0], "plateau_duration_days": [0.1, 3], "decline_half_life_days": [0.2, 2], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Creatinine usually remains at background but rises with AKI, CKD, shock, dehydration, or nephrotoxicity.", "baseline_range": [0.6, 1.2], "peak_day_range": [0, 7], "peak_value_range": [0.6, 6.0], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "estimated_glomerular_filtration_rate", "category": "lab_value", "unit": "mL/min/1.73m2", "log_scale": false, "axis_role": "measurement", "shape_free_text": "eGFR can be normal or reduced by CKD/AKI; used as renal reserve and dosing context.", "baseline_range": [80, 130], "peak_day_range": [0, 7], "peak_value_range": [10, 130], "plateau_duration_days": [1, 14], "decline_half_life_days": [2, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_bicarbonate", "category": "lab_value", "unit": "mmol/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Bicarbonate can fall with lactic acidosis, renal injury, or shock.", "baseline_range": [22, 29], "peak_day_range": [0, 2], "peak_value_range": [10, 29], "plateau_duration_days": [0.1, 5], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "serum_albumin", "category": "lab_value", "unit": "g/dL", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Albumin may be normal or low from inflammation, chronic disease, edema, or capillary leak.", "baseline_range": [3.5, 5.0], "peak_day_range": [1, 7], "peak_value_range": [1.5, 5.0], "plateau_duration_days": [3, 30], "decline_half_life_days": [7, 30], "knowledge_confidence": "low"},
+    {"axis_id": "platelet_count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Platelets are usually normal but may fall with severe sepsis/DIC or rise during recovery inflammation.", "baseline_range": [150, 400], "peak_day_range": [0, 14], "peak_value_range": [80, 600], "plateau_duration_days": [1, 21], "decline_half_life_days": [3, 21], "knowledge_confidence": "low"},
+    {"axis_id": "blood_culture_positivity_probability", "category": "diagnostic_context", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability of positive blood culture; low in uncomplicated erysipelas but higher with systemic spillover or immunosuppression.", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 2], "peak_value_range": [0.0, 0.7], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "active_antibiotic_coverage_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that current antimicrobial regimen is active against the true pathogen context.", "baseline_range": [0.2, 0.9], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "beta_lactam_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that beta-lactam therapy is microbiologically active.", "baseline_range": [0.5, 0.98], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "high"},
+    {"axis_id": "severe_beta_lactam_reaction_history_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "History of severe beta-lactam allergy or reaction limiting penicillins or cephalosporins.", "baseline_range": [0.0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "clindamycin_susceptibility_probability", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "shape_free_text": "Probability that clindamycin is active when used for allergy or toxin-suppression context.", "baseline_range": [0.4, 0.9], "peak_day_range": [0, 0], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0, 14], "decline_half_life_days": [0.5, 3], "knowledge_confidence": "medium"},
+    {"axis_id": "gram_negative_coverage_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for Gram-negative active coverage from immunosuppression, severe shock, culture/NGS context, health-care exposure, or atypical host.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "mrsa_coverage_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for MRSA-active coverage from purulence, previous MRSA, severe infection, health-care exposure, or local epidemiology.", "baseline_range": [0.0, 0.1], "peak_day_range": [0, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 7], "knowledge_confidence": "medium"},
+    {"axis_id": "renal_dose_adjustment_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Renal impairment context requiring antimicrobial or contrast dose adjustment.", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [2, 365], "knowledge_confidence": "high"},
+    {"axis_id": "initial_inactive_antibiotic_exposure_activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Prior inactive, incomplete, delayed, or stopped antibiotic exposure during the current illness.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"},
+    {"axis_id": "source_control_need", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Need for removing portal material, draining bullae/abscess, debriding nonviable superficial tissue, or controlling a nidus.", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 7], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [0.5, 21], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "source_control_adequacy", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "shape_free_text": "Adequacy of portal removal, wound care, drainage, or debridement when needed.", "baseline_range": [0.0, 0.4], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "medium"},
+    {"axis_id": "drainable_abscess_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard of focal abscess requiring drainage; uncommon in pure erysipelas but considered when swelling or exudate localizes.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [1, 14], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [1, 14], "decline_half_life_days": [3, 21], "knowledge_confidence": "medium"},
+    {"axis_id": "necrotizing_soft_tissue_infection_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Hazard that a deep necrotizing soft tissue infection is present or evolving; warning axis for rapidly progressive pain, hemorrhagic bullae, necrosis, shock, gas, or deep fascial signs.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 5], "peak_value_range": [0.00001, 0.15], "plateau_duration_days": [0.1, 10], "decline_half_life_days": [0.5, 7], "knowledge_confidence": "high"},
+    {"axis_id": "erysipelas_bacteremia_hazard_in_D-ERYSIPELAS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of bacteremia arising from erysipelas; usually low but rises with severe systemic disease, lymphedema, immunosuppression, or delayed active therapy.", "baseline_range": [0.000005, 0.0001], "peak_day_range": [0, 5], "peak_value_range": [0.00005, 0.08], "plateau_duration_days": [0.2, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of septic shock physiology secondary to erysipelas.", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 3], "peak_value_range": [0.00001, 0.25], "plateau_duration_days": [0.1, 7], "decline_half_life_days": [0.5, 5], "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Daily hazard of AKI from shock, dehydration, nephrotoxicity, or background renal vulnerability.", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 7], "peak_value_range": [0.0005, 0.25], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "medium"},
+    {"axis_id": "metastatic_infection_hazard_in_D-ERYSIPELAS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Rare hazard of hematogenous metastatic infection or sterile-site inflammatory complication after bacteremic erysipelas, including ocular, pericardial, joint, or deep foci.", "baseline_range": [0.0000001, 0.00001], "peak_day_range": [1, 14], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 30], "knowledge_confidence": "low"},
+    {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Long-tail recurrence hazard after an erysipelas episode, driven by lymphatic injury, edema, venous disease, tinea, skin breaks, obesity, and prior episodes.", "baseline_range": [0.00001, 0.0002], "peak_day_range": [14, 365], "peak_value_range": [0.0001, 0.01], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-ERYSIPELAS", "category": "derived_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "shape_free_text": "Lifespan outcome hazard from erysipelas; very low in uncomplicated superficial disease, rising with septic shock, bacteremia, atypical Gram-negative/immunosuppressed host, AKI, delayed active therapy, necrotizing mimic hazard, and severe comorbidity.", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 7], "peak_value_range": [0.000005, 0.18], "plateau_duration_days": [0.1, 14], "decline_half_life_days": [1, 14], "knowledge_confidence": "high"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "erysipelas_sharply_demarcated_raised_border_activity_in_D-ERYSIPELAS", "target_axis_id": "erysipelas_erythema_extent_in_D-ERYSIPELAS", "relationship": "same_superficial_plaque_observation", "coupling_type": "noise_correlation", "correlation_range": [0.45, 0.8], "phase": "presentation", "clinical_rationale": "Border and erythema extent are correlated visual features of the same plaque but should not cause each other.", "knowledge_confidence": "high"},
+    {"source_axis_id": "erysipelas_warmth_activity_in_D-ERYSIPELAS", "target_axis_id": "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS", "relationship": "shared_local_inflammation", "coupling_type": "noise_correlation", "correlation_range": [0.35, 0.7], "phase": "presentation", "clinical_rationale": "Warmth and pain track local inflammatory intensity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "chronic_edema_context_activity", "target_axis_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "relationship": "positive_drift", "coupling_type": "drift", "correlation_range": [0.5, 0.9], "phase": "whole_course", "clinical_rationale": "Chronic edema makes acute edema larger and more persistent.", "knowledge_confidence": "high"},
+    {"source_axis_id": "chronic_edema_context_activity", "target_axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "relationship": "positive_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.6, 0.9], "phase": "recovery", "clinical_rationale": "Chronic lymphatic compromise is a major recurrence driver.", "knowledge_confidence": "high"},
+    {"source_axis_id": "skin_barrier_break_activity", "target_axis_id": "group_a_strep_probability_in_D-ERYSIPELAS", "relationship": "portal_context", "coupling_type": "mixed", "correlation_range": [0.2, 0.5], "phase": "initiation", "clinical_rationale": "Portal evidence increases probability that a superficial bacterial inoculation explains the plaque.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "erysipelas_bullous_lesion_activity_in_D-ERYSIPELAS", "target_axis_id": "erysipelas_hemorrhagic_bullae_purpura_activity_in_D-ERYSIPELAS", "relationship": "morphology_progression", "coupling_type": "drift", "correlation_range": [0.4, 0.8], "phase": "peak", "clinical_rationale": "Bullae can evolve into serohematic or hemorrhagic bullae in severe superficial disease.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "erysipelas_hemorrhagic_bullae_purpura_activity_in_D-ERYSIPELAS", "target_axis_id": "necrotizing_soft_tissue_infection_hazard", "relationship": "warning_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.25, 0.65], "phase": "presentation", "clinical_rationale": "Hemorrhagic bullae require active exclusion of necrotizing infection while remaining compatible with bullous erysipelas.", "knowledge_confidence": "high"},
+    {"source_axis_id": "serum_crp", "target_axis_id": "white_blood_cell_count", "relationship": "shared_systemic_inflammation", "coupling_type": "noise_correlation", "correlation_range": [0.25, 0.6], "phase": "presentation", "clinical_rationale": "CRP and WBC often co-rise but may dissociate in immunosuppression.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_procalcitonin", "target_axis_id": "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "relationship": "severe_bacterial_context", "coupling_type": "mixed", "correlation_range": [0.2, 0.6], "phase": "severe", "clinical_rationale": "Very high PCT in an immunosuppressed host can support severe bacterial or Gram-negative context.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "erysipelas_bacteremia_hazard_in_D-ERYSIPELAS", "target_axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "relationship": "positive_hazard_drift", "coupling_type": "hazard_drift", "correlation_range": [0.35, 0.75], "phase": "severe", "clinical_rationale": "Bacteremia increases shock risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "target_axis_id": "acute_kidney_injury_hazard", "relationship": "shock_to_aki", "coupling_type": "event_transition", "correlation_range": [0.45, 0.8], "phase": "severe", "clinical_rationale": "Hypotension and vasopressor-dependent shock increase AKI hazard.", "knowledge_confidence": "high"},
+    {"source_axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "target_axis_id": "mortality_hazard_in_D-ERYSIPELAS", "relationship": "shock_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.55, 0.9], "phase": "severe", "clinical_rationale": "Shock is the main path from erysipelas to mortality.", "knowledge_confidence": "high"},
+    {"source_axis_id": "metastatic_infection_hazard_in_D-ERYSIPELAS", "target_axis_id": "mortality_hazard_in_D-ERYSIPELAS", "relationship": "complication_to_mortality", "coupling_type": "hazard_drift", "correlation_range": [0.2, 0.55], "phase": "complicated", "clinical_rationale": "Metastatic infection raises mortality and morbidity hazard.", "knowledge_confidence": "low"}
+  ],
+  "treatments": [
+    {
+      "drug": "penicillin_or_amoxicillin",
+      "drug_class": "narrow_beta_lactam",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "beta_lactam_susceptibility_probability", "severe_beta_lactam_reaction_history_activity", "group_a_strep_probability_in_D-ERYSIPELAS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.2], "clinical_rationale": "Antimicrobial vector depends on active coverage."},
+        {"axis_id": "group_a_strep_probability_in_D-ERYSIPELAS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Classic streptococcal erysipelas is highly beta-lactam responsive."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0.0, 0.4], "clinical_rationale": "Severe beta-lactam reaction limits use."}
+      ],
+      "failure_modes": ["wrong_pathogen_context", "severe_allergy", "nonadherence", "delayed_start", "deep_or_necrotizing_mimic"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.55], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [0.5, 3]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY": {"peak_value_factor": [0.1, 0.4], "decline_half_life_days": [0.5, 2]}
+      },
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.5, 2.0],
+      "side_effects": [
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "direction": "up", "magnitude_range": [0.0, 0.2], "interpretation": "Allergic reaction context can limit therapy."}
+      ],
+      "context_specific_role": "Narrow active beta-lactam vector when streptococcal coverage and allergy context fit.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "cefazolin_or_cephalexin",
+      "drug_class": "cefazolin_cephalexin_cephalosporin",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "beta_lactam_susceptibility_probability", "severe_beta_lactam_reaction_history_activity", "non_gas_pathogen_probability_in_D-ERYSIPELAS"],
+      "effect_modifiers": [
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.2], "clinical_rationale": "Effect requires active beta-lactam coverage."},
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "contraindicates", "factor_range": [0.0, 0.5], "clinical_rationale": "Severe beta-lactam reaction may preclude cephalosporins."}
+      ],
+      "failure_modes": ["allergy_constraint", "uncovered_mrsa_or_gram_negative_context", "missed_deep_source", "renal_dosing_error"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.18, 0.6], "plateau_duration_factor": [0.2, 0.75], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_LOCAL_DERMAL_LYMPHANGITIC_INFLAMMATION": {"peak_value_factor": [0.4, 0.85], "decline_half_life_days": [1, 5]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.4, 0.85], "decline_half_life_days": [0.5, 4]}
+      },
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.5, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 0.4], "interpretation": "Renal dosing review is needed in renal impairment."}
+      ],
+      "context_specific_role": "IV or oral beta-lactam vector for moderate, hospitalized, or step-down contexts when coverage fits.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "clindamycin_or_macrolide_alternative",
+      "drug_class": "non_beta_lactam_antistreptococcal_option",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["severe_beta_lactam_reaction_history_activity", "clindamycin_susceptibility_probability", "active_antibiotic_coverage_probability"],
+      "effect_modifiers": [
+        {"axis_id": "severe_beta_lactam_reaction_history_activity", "condition": "present", "effect": "strengthens_relative_role", "factor_range": [1.0, 1.4], "clinical_rationale": "Non-beta-lactam options become more useful when beta-lactams are unsafe."},
+        {"axis_id": "clindamycin_susceptibility_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.7, 1.2], "clinical_rationale": "Resistance weakens clinical effect."}
+      ],
+      "failure_modes": ["clindamycin_resistance", "gastrointestinal_toxicity", "monotherapy_for_gram_negative_context", "high_burden_shock_without_bactericidal_agent"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.35, 0.8], "decline_half_life_days": [1, 5]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.45, 0.9], "decline_half_life_days": [1, 5]},
+        "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [2, 10]}
+      },
+      "onset_delay_days": [0.2, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_albumin", "direction": "down_or_variable", "magnitude_range": [0.0, 0.2], "interpretation": "GI intolerance and diarrhea can worsen nutritional status in vulnerable patients."}
+      ],
+      "context_specific_role": "Alternative or adjunct vector when beta-lactam allergy, toxin-suppression context, or susceptibility data support use.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "broad_empiric_iv_skin_infection_coverage",
+      "drug_class": "broad_empiric_antimicrobial_bundle",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["active_antibiotic_coverage_probability", "gram_negative_coverage_need", "mrsa_coverage_need", "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Shock context increases need for early broad active coverage while depth and organism are clarified."},
+        {"axis_id": "gram_negative_coverage_need", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Immunosuppressed or atypical hosts may need Gram-negative coverage."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "low", "effect": "weakens", "factor_range": [0.1, 0.6], "clinical_rationale": "Broad therapy still fails if it does not cover the true pathogen."}
+      ],
+      "failure_modes": ["coverage_gap", "toxicity", "delayed_narrowing", "renal_dosing_error", "missed_necrotizing_or_abscess_source"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY": {"peak_value_factor": [0.1, 0.5], "decline_half_life_days": [0.5, 4]}
+      },
+      "onset_delay_days": [0.0, 0.5],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "renal_dose_adjustment_need", "direction": "up", "magnitude_range": [0.0, 0.4], "interpretation": "Broad regimens require renal dosing and toxicity review."}
+      ],
+      "context_specific_role": "Initial active-coverage vector for unstable, immunosuppressed, bullous hemorrhagic, or diagnostically uncertain presentations while post-workup data clarify.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "piperacillin_tazobactam_or_carbapenem_for_gram_negative_context",
+      "drug_class": "anti_gram_negative_broad_beta_lactam",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["gram_negative_coverage_need", "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Atypical Gram-negative erysipelas context increases benefit."},
+        {"axis_id": "active_antibiotic_coverage_probability", "condition": "high", "effect": "required_for_effect", "factor_range": [0.75, 1.2], "clinical_rationale": "Effect requires susceptibility or high coverage probability."}
+      ],
+      "failure_modes": ["unnecessary_broad_spectrum_when_classic_strep", "resistant_organism", "renal_toxicity", "missed_source_control"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.15, 0.6], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 4]},
+        "M_ERYSIPELAS_SYSTEMIC_SPILLOVER_ACTIVITY": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [0.5, 4]}
+      },
+      "onset_delay_days": [0.0, 0.5],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 1.0], "interpretation": "Renal toxicity risk and dose adjustment depend on agent and host context."}
+      ],
+      "context_specific_role": "Severe or immunosuppressed Gram-negative-context vector; not encoded as a disease-name qualifier.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "vancomycin_or_teicoplanin_for_mrsa_context",
+      "drug_class": "glycopeptide_anti_mrsa_coverage",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["mrsa_coverage_need", "active_antibiotic_coverage_probability", "renal_dose_adjustment_need"],
+      "effect_modifiers": [
+        {"axis_id": "mrsa_coverage_need", "condition": "high", "effect": "strengthens_relative_role", "factor_range": [1.0, 1.4], "clinical_rationale": "MRSA risk or severe purulent context increases need for MRSA-active coverage."},
+        {"axis_id": "renal_dose_adjustment_need", "condition": "high", "effect": "changes_toxicity", "factor_range": [0.7, 1.0], "clinical_rationale": "Renal impairment changes monitoring and dosing."}
+      ],
+      "failure_modes": ["not_needed_for_classic_nonpurulent_strep", "renal_toxicity", "insufficient_gram_negative_or_strep_plan_when_used_alone"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_SUPERFICIAL_DERMAL_PATHOGEN_BURDEN": {"peak_value_factor": [0.25, 0.85], "decline_half_life_days": [0.5, 5]},
+        "M_ERYSIPELAS_SYSTEMIC_INFLAMMATORY_SPILLOVER": {"peak_value_factor": [0.45, 0.9], "decline_half_life_days": [1, 5]}
+      },
+      "onset_delay_days": [0.1, 1.0],
+      "carryover_after_stop_days": [0.2, 2.0],
+      "side_effects": [
+        {"axis_id": "serum_creatinine", "direction": "up", "magnitude_range": [0.0, 1.2], "interpretation": "Glycopeptides can worsen renal function depending exposure and host context."}
+      ],
+      "context_specific_role": "Add-on or empiric vector when MRSA or severe Gram-positive coverage context is present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "blister_wound_care_and_portal_management",
+      "drug_class": "local_source_and_skin_barrier_care",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["erysipelas_bullous_lesion_activity_in_D-ERYSIPELAS", "erysipelas_exudation_erosion_activity_in_D-ERYSIPELAS", "skin_barrier_break_activity", "source_control_need", "source_control_adequacy"],
+      "effect_modifiers": [
+        {"axis_id": "source_control_need", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.3], "clinical_rationale": "Portal removal, wound care, or bulla care matters most when a local nidus exists."}
+      ],
+      "failure_modes": ["missed_deep_abscess", "excessive_debridement_of_superficial_lesion", "poor_wound_followup", "persistent_portal"],
+      "push_targets": [
+        {"axis_id": "source_control_adequacy", "direction": "up", "magnitude_range": [0.1, 0.8], "unit": "severity_score_0_1"},
+        {"axis_id": "skin_barrier_break_activity", "direction": "down", "magnitude_range": [0.05, 0.4], "unit": "severity_score_0_1"},
+        {"axis_id": "erysipelas_exudation_erosion_activity_in_D-ERYSIPELAS", "direction": "down", "magnitude_range": [0.05, 0.5], "unit": "severity_score_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [3, 14]},
+        "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY": {"peak_value_factor": [0.4, 0.9], "decline_half_life_days": [1, 7]}
+      },
+      "onset_delay_days": [0.0, 2.0],
+      "carryover_after_stop_days": [3, 60],
+      "side_effects": [
+        {"axis_id": "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS", "direction": "up_or_variable", "magnitude_range": [0.0, 0.2], "interpretation": "Dressing changes can transiently increase pain."}
+      ],
+      "context_specific_role": "Local care for bullae, erosions, portals, and superficial wounds while antimicrobials reshape pathogen burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "edema_control_elevation_compression_and_skin_care",
+      "drug_class": "local_edema_and_recurrence_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["erysipelas_edema_activity_in_D-ERYSIPELAS", "chronic_edema_context_activity", "chronic_venous_insufficiency_context_activity", "erysipelas_recurrence_hazard_in_D-ERYSIPELAS"],
+      "effect_modifiers": [
+        {"axis_id": "chronic_edema_context_activity", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Edema control is central when lymphatic/venous stasis is present."}
+      ],
+      "failure_modes": ["arterial_insufficiency_limiting_compression", "uncontrolled_acute_infection", "poor_adherence", "untreated_tinea_or_skin_break"],
+      "push_targets": [
+        {"axis_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "direction": "down", "magnitude_range": [0.05, 0.45], "unit": "severity_score_0_1"},
+        {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "direction": "down", "magnitude_range": [0.00001, 0.003], "unit": "events_per_day"},
+        {"axis_id": "skin_barrier_break_activity", "direction": "down", "magnitude_range": [0.05, 0.35], "unit": "severity_score_0_1"}
+      ],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION": {"peak_value_factor": [0.55, 0.95], "decline_half_life_days": [14, 90]}
+      },
+      "onset_delay_days": [0.5, 7.0],
+      "carryover_after_stop_days": [3, 180],
+      "side_effects": [
+        {"axis_id": "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS", "direction": "up_or_variable", "magnitude_range": [0.0, 0.1], "interpretation": "Compression may worsen pain if arterial disease or tense edema is present."}
+      ],
+      "context_specific_role": "Edema and portal-control vector for acute improvement and recurrence prevention.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "sepsis_resuscitation_and_organ_support",
+      "drug_class": "critical_care_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": ["erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "mean_arterial_pressure", "serum_lactate", "acute_kidney_injury_hazard", "oxygen_saturation"],
+      "effect_modifiers": [
+        {"axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.4], "clinical_rationale": "Shock physiology increases benefit of fluids, vasopressors, ventilation, and renal support."}
+      ],
+      "failure_modes": ["source_uncontrolled", "inactive_antimicrobial", "fluid_overload", "pressor_ischemia", "renal_replacement_complication"],
+      "push_targets": [
+        {"axis_id": "mean_arterial_pressure", "direction": "up", "magnitude_range": [5, 30], "unit": "mmHg"},
+        {"axis_id": "serum_lactate", "direction": "down", "magnitude_range": [0.5, 5.0], "unit": "mmol/L"},
+        {"axis_id": "acute_kidney_injury_hazard", "direction": "down", "magnitude_range": [0.0001, 0.08], "unit": "events_per_day"}
+      ],
+      "onset_delay_days": [0.0, 0.2],
+      "carryover_after_stop_days": [0.0, 2.0],
+      "side_effects": [
+        {"axis_id": "oxygen_saturation", "direction": "down_or_variable", "magnitude_range": [0.0, 5.0], "interpretation": "Fluid overload can worsen oxygenation in susceptible patients."}
+      ],
+      "context_specific_role": "Physiologic support while antimicrobial and source-control vectors address cause.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "long_term_recurrence_prevention_bundle",
+      "drug_class": "recurrence_prevention_and_risk_modifier",
+      "mode": "modulate_theta",
+      "empiric_or_definitive_role": "preventive",
+      "required_context_axes": ["recurrent_erysipelas_history_activity_in_D-ERYSIPELAS", "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "chronic_edema_context_activity", "skin_barrier_break_activity"],
+      "effect_modifiers": [
+        {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Prevention bundle is most valuable when recurrence risk is high."}
+      ],
+      "failure_modes": ["persistent_edema", "untreated_tinea_or_ulcer", "nonadherence", "antibiotic_adverse_effect", "resistance_selection"],
+      "trajectory_modifications": {
+        "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION": {"peak_value_factor": [0.6, 0.95], "decline_half_life_days": [30, 180]},
+        "M_ERYSIPELAS_PORTAL_AND_SUPERFICIAL_LYMPHATIC_ENTRY": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [30, 180]}
+      },
+      "push_targets": [
+        {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "direction": "down", "magnitude_range": [0.00005, 0.005], "unit": "events_per_day"},
+        {"axis_id": "skin_barrier_break_activity", "direction": "down", "magnitude_range": [0.05, 0.4], "unit": "severity_score_0_1"}
+      ],
+      "onset_delay_days": [7.0, 30.0],
+      "carryover_after_stop_days": [14, 180],
+      "side_effects": [
+        {"axis_id": "active_antibiotic_coverage_probability", "direction": "variable", "magnitude_range": [0.0, 0.1], "interpretation": "Long-term antimicrobial prevention requires stewardship and adverse-effect monitoring."}
+      ],
+      "context_specific_role": "Risk-modifying vector for recurrent erysipelas, edema/skin care, tinea treatment, portal prevention, and selected antimicrobial prophylaxis contexts.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "chronic_edema_context",
+      "type": "local_clearance_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [2.0, 10.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_ERYSIPELAS_LYMPHATIC_VENOUS_STASIS_AMPLIFICATION", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Lymphatic and chronic edema states are major erysipelas risk and recurrence contexts."},
+            {"axis_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.3, 3.0], "clinical_rationale": "Edema magnifies swelling and extent."},
+            {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Chronic lymphatic impairment drives recurrence."}
+          ],
+          "trajectory_modulation": "Amplifies local edema, extent, delayed resolution, and recurrence."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "skin_barrier_break_trauma_piercing_surgery_tinea_or_ulcer",
+      "type": "portal_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 7.0],
+          "axis_response_modulation": [
+            {"axis_id": "skin_barrier_break_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "A portal enables superficial inoculation."},
+            {"axis_id": "M_ERYSIPELAS_PORTAL_AND_SUPERFICIAL_LYMPHATIC_ENTRY", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Portal strength increases entry mechanism."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Foreign material, wounds, or ulcers may require local management."}
+          ],
+          "trajectory_modulation": "Raises entry probability and may prolong disease if portal persists."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "chronic_venous_insufficiency_obesity_or_stasis_dermatitis",
+      "type": "local_stasis_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.3, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "chronic_venous_insufficiency_context_activity", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Venous stasis and obesity increase local edema and skin fragility."},
+            {"axis_id": "erysipelas_edema_activity_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.2, 2.5], "clinical_rationale": "Stasis increases acute swelling."},
+            {"axis_id": "erysipelas_recurrence_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.3, 4.0], "clinical_rationale": "Stasis increases future episodes."}
+          ],
+          "trajectory_modulation": "Amplifies swelling and recurrence vulnerability."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "advanced_age_or_frailty",
+      "type": "host_reserve",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "mortality_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.2, 3.5], "clinical_rationale": "Older age and frailty reduce reserve when complications occur."},
+            {"axis_id": "body_temperature", "direction": "blunted_or_variable", "factor_range": [0.6, 1.2], "clinical_rationale": "Fever may be less reliable in older adults."},
+            {"axis_id": "erysipelas_septic_shock_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.1, 2.5], "clinical_rationale": "Severe infection is less tolerated."}
+          ],
+          "trajectory_modulation": "Raises severe complication and mortality hazard while allowing atypical vitals."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "diabetes_peripheral_vascular_disease_or_chronic_wound",
+      "type": "host_and_local_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Diabetes and vascular disease impair containment and wound healing."},
+            {"axis_id": "skin_barrier_break_activity", "direction": "up", "factor_range": [1.2, 5.0], "clinical_rationale": "Chronic wounds and ulcers create portals."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.1, 2.5], "clinical_rationale": "Diabetes and vascular disease increase complication vulnerability."}
+          ],
+          "trajectory_modulation": "Raises persistence, portal burden, and complication vulnerability."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "corticosteroid_immunosuppressant_transplant_malignancy_or_cirrhosis",
+      "type": "host_clearance_and_pathogen_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.4, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_ERYSIPELAS_HOST_CLEARANCE_IMPAIRMENT", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Immune suppression weakens containment."},
+            {"axis_id": "gram_negative_pathogen_probability_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Atypical and Gram-negative pathogens are more plausible in severe immune compromise."},
+            {"axis_id": "white_blood_cell_count", "direction": "blunted_or_variable", "factor_range": [0.5, 1.8], "clinical_rationale": "WBC response can be normal despite severe infection."},
+            {"axis_id": "mortality_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Host immune impairment increases severe outcome risk."}
+          ],
+          "trajectory_modulation": "Broadens pathogen context, may blunt WBC/fever, and raises shock/MODS hazard."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "bullous_or_hemorrhagic_presentation",
+      "type": "morphology_severity_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_ERYSIPELAS_BULLOUS_HEMORRHAGIC_VASCULAR_LEAK", "direction": "up", "factor_range": [2.0, 8.0], "clinical_rationale": "Bullous morphology reflects vascular leak and superficial injury."},
+            {"axis_id": "necrotizing_soft_tissue_infection_hazard", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Hemorrhagic bullae and necrosis demand parallel necrotizing-mimic assessment."},
+            {"axis_id": "source_control_need", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Bullae, erosions, or necrotic surface injury may need wound care."}
+          ],
+          "trajectory_modulation": "Shifts toward severe local morphology while keeping deep necrotizing disease as a competing hazard."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_or_inactive_antibiotics",
+      "type": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 1.5],
+          "axis_response_modulation": [
+            {"axis_id": "initial_inactive_antibiotic_exposure_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Prior ineffective or incomplete therapy indicates delayed control."},
+            {"axis_id": "M_ERYSIPELAS_DELAYED_EFFECTIVE_THERAPY_ACTIVITY", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Delayed active therapy prolongs pathogen burden and local injury."},
+            {"axis_id": "mortality_hazard_in_D-ERYSIPELAS", "direction": "up", "factor_range": [1.1, 3.0], "clinical_rationale": "Delay worsens severe complicated disease."}
+          ],
+          "trajectory_modulation": "Prolongs local burden and increases bullous/shock risk until active therapy is achieved."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Serially document lesion border, raised edge, erythema extent, warmth, edema, tenderness, induration, lymphangitic streaking, lymphadenopathy, bullae, purpura, necrosis, pain trajectory, and spread rate.",
+    "Assess portals and recurrence contexts: tinea pedis, toe-web maceration, trauma, insect bite, piercing, surgical scar, ulcer, chronic edema, lymphedema, venous insufficiency, obesity, diabetes, PAD, immunosuppression, and prior erysipelas.",
+    "Use CBC with differential, CRP/ESR, creatinine/BUN, electrolytes, lactate when unstable, and procalcitonin when severe bacterial sepsis or atypical pathogen context is being assessed.",
+    "Image only when depth, abscess, DVT, septic arthritis, osteomyelitis, necrotizing fasciitis, foreign body, or unusual anatomic complication is uncertain. Superficial fat stranding supports but does not define the disease.",
+    "Keep blood culture species, blister/wound culture species, susceptibility, NGS, biopsy exclusion, final source adjudication, and response to therapy as confirmatory/post-workup context unless the test mode explicitly includes them.",
+    "Treat shock physiology with fluids, vasopressors, oxygen or ventilation, renal support, glucose/electrolyte management, and ICU monitoring while antimicrobial and source-control vectors address the infection.",
+    "For bullous or hemorrhagic erysipelas, protect the skin barrier, manage ruptured bullae/erosions, monitor for necrotizing mimics, and avoid letting superficial necrosis alone relabel the disease as necrotizing fasciitis without deep evidence.",
+    "After acute control, reduce recurrence by edema control, compression when vascular status permits, limb elevation, skin care, tinea/intertrigo treatment, wound care, weight/venous management, and selected antimicrobial prophylaxis in recurrent high-risk contexts.",
+    "Do not force erysipelas to win by deleting true mimic evidence. Cellulitis, necrotizing fasciitis, diabetic foot infection, toxic shock syndrome, sepsis, bacteremia leaves, SJS-TEN/DRESS, zoster, DVT, septic arthritis, and carcinoma erysipeloides remain legitimate competitors when their own observed evidence is present."
+  ],
+  "quality_notes": [
+    "Unique derived hazard axis is mortality_hazard_in_D-ERYSIPELAS.",
+    "No treatment-rank, first-line, diagnosis-rank, or guideline-label fields are encoded.",
+    "Organism identity, bacteremia, shock, recurrent disease, face/lower-limb/trunk site, and bullous/hemorrhagic morphology are represented as axes, event hazards, risk factors, or treatment context rather than disease-name qualifiers."
+  ]
+}
