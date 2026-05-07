@@ -321,6 +321,23 @@ def observation_value_for_axis(obs, axis, axis_id):
     """
     value = obs.get("value")
     src = norm_unit(obs.get("unit"))
+    if src in ("qualitativenegative", "negative", "negativeflag"):
+        dst = norm_unit(axis.get("unit"))
+        if dst in ("probability01", "relativeactivity01", "severityscore01", "presentabsent01"):
+            return 0.0
+        if axis.get("log_scale"):
+            return 1.0
+        baseline = parse_interval(axis.get("baseline_range"))
+        return baseline[0] if baseline else 0.0
+    if src in ("qualitativepositive", "positive", "positiveflag"):
+        dst = norm_unit(axis.get("unit"))
+        if dst in ("probability01", "relativeactivity01", "severityscore01", "presentabsent01"):
+            return 1.0
+        peak = parse_interval(axis.get("peak_value_range"))
+        if peak is not None:
+            return midpoint(peak)
+        baseline = parse_interval(axis.get("baseline_range"))
+        return baseline[1] if baseline else 1.0
     if src == "normalflagonly":
         baseline = parse_interval(axis.get("baseline_range"))
         if baseline is None:
@@ -457,6 +474,33 @@ def load_master_axes(path=ROOT / "master_axes.json"):
     return {a["axis_id"]: a for a in data.get("axes", []) if a.get("axis_id")}
 
 
+def generic_healthy_background_override(axis_id, entry):
+    axis_key = axis_id.lower()
+    unit = entry.get("unit")
+    unit_norm = norm_unit(unit)
+    is_antibody_axis = any(token in axis_key for token in (
+        "antibody",
+        "autoantibody",
+        "coombs",
+        "antinuclear",
+        "antiphospholipid",
+    ))
+    if not is_antibody_axis:
+        return None
+    if unit_norm in ("probability01", "relativeactivity01", "presentabsent01"):
+        return {"unit": unit, "baseline_range": (0.0, 0.05), "log_scale": False}
+    if unit_norm in ("assayunits", "assayindex", "assayunitsorindex"):
+        low = 0.1 if entry.get("log_scale", False) else 0.0
+        return {"unit": unit, "baseline_range": (low, 0.9), "log_scale": bool(entry.get("log_scale", False))}
+    if unit_norm in ("iu/ml", "u/ml", "uml", "miu/ml"):
+        low = 0.1 if entry.get("log_scale", False) else 0.0
+        return {"unit": unit, "baseline_range": (low, 10.0), "log_scale": bool(entry.get("log_scale", False))}
+    if axis_id == "antinuclear_antibody_titer_reciprocal":
+        low = 1.0 if entry.get("log_scale", False) else 0.0
+        return {"unit": unit, "baseline_range": (low, 80.0), "log_scale": bool(entry.get("log_scale", False))}
+    return None
+
+
 def build_background_axes(manifolds, master_axes):
     by_axis = {}
     for manifold in manifolds.values():
@@ -506,7 +550,11 @@ def build_background_axes(manifolds, master_axes):
 
     background = {}
     for axis_id, entry in by_axis.items():
-        override = HEALTHY_OVERRIDES.get(axis_id) or v5_background.BASE_MEASURE_OVERRIDES.get(axis_id)
+        override = (
+            HEALTHY_OVERRIDES.get(axis_id)
+            or v5_background.BASE_MEASURE_OVERRIDES.get(axis_id)
+            or generic_healthy_background_override(axis_id, entry)
+        )
         if override:
             baseline = override["baseline_range"]
             unit = override["unit"]
@@ -1030,7 +1078,7 @@ def matched_risk_payload(manifold, context):
 
     for rf in manifold["risk_factors"]:
         factor = rf.get("factor")
-        for category, mod in (rf.get("modulation") or {}).items():
+        for category, mod in iter_risk_factor_modulations(rf):
             if (
                 (factor, category) not in by_key
                 and not risk_factor_present_match(factor, category, by_factor)
@@ -1044,6 +1092,20 @@ def matched_risk_payload(manifold, context):
             for item in iter_risk_modulation_items(mod.get("coupling_modulation")):
                 coupling_mods.append(item)
     return axis_mods, coupling_mods, log_prior
+
+
+def iter_risk_factor_modulations(rf):
+    raw = rf.get("modulation") or {}
+    if isinstance(raw, dict):
+        for category, mod in raw.items():
+            if isinstance(mod, dict):
+                yield category, mod
+        return
+    if isinstance(raw, list):
+        category = "present"
+        for mod in raw:
+            if isinstance(mod, dict):
+                yield category, mod
 
 
 def iter_axis_response_modulation_items(raw):

@@ -1,0 +1,598 @@
+{
+  "disease": "D-URTICARIAL-VASCULITIS",
+  "disease_id": "D-URTICARIAL-VASCULITIS",
+  "disease_name": "Urticarial vasculitis",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Urticarial vasculitis",
+    "disease_name_input": "Urticarial vasculitis",
+    "leaf_granularity": "First-layer clinicopathologic disease leaf for urticarial lesions caused by small-vessel leukocytoclastic vasculitis. Complement status, anti-C1q status, SLE association, hereditary complement deficiency, organ-threatening disease, and treatment response are represented as mechanisms, axes, risk/context factors, or future second-layer subtype context, not as disease-name qualifiers.",
+    "ranking_note": "Presentation ranking can use persistent urticarial wheals lasting more than 24 hours, pain or burning rather than pure itch, residual hyperpigmentation or purpura, angioedema, arthralgia, fever, complement consumption, anti-C1q positivity, skin biopsy leukocytoclastic vasculitis when the workup is available, and renal, pulmonary, ocular, or gastrointestinal involvement. Histology, complement studies, antibody testing, and treatment response remain structured evidence rather than hard labels."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY",
+      "display_name": "Anti-C1q immune-complex classical-complement activity",
+      "clinical_meaning": "Circulating immune complexes, often with anti-C1q antibodies in hypocomplementemic disease, activate the classical complement pathway and consume C1q, C3, C4, and CH50.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-180, 14],
+      "peak_value_range": [0.15, 1.0],
+      "plateau_duration_days": [14, 3650],
+      "decline_half_life_days": [14, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY",
+      "display_name": "Dermal postcapillary venular leukocytoclastic vasculitis",
+      "clinical_meaning": "Immune-complex deposition and complement activation injure superficial dermal venules, producing urticarial plaques with biopsy evidence of leukocytoclastic vasculitis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-30, 3],
+      "peak_value_range": [0.35, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [3, 60],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_MAST_CELL_AND_DERMAL_EDEMA_ACTIVITY",
+      "display_name": "Mast-cell activation and dermal edema",
+      "clinical_meaning": "Histamine-mediated edema contributes to wheals and pruritus, but the vasculitic component makes lesions fixed, painful or burning, and incompletely antihistamine-responsive.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.05],
+      "peak_day_range": [-7, 2],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 30],
+      "decline_half_life_days": [1, 14],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY",
+      "display_name": "Neutrophil/eosinophil vessel-wall injury",
+      "clinical_meaning": "Neutrophils, eosinophils, nuclear dust, erythrocyte extravasation, and fibrinoid necrosis drive pain, purpura, hemorrhagic change, and residual pigmentation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-7, 4],
+      "peak_value_range": [0.2, 1.0],
+      "plateau_duration_days": [1, 60],
+      "decline_half_life_days": [3, 45],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY",
+      "display_name": "Relapsing autoimmune B-cell drive",
+      "clinical_meaning": "Autoreactive B-cell activity supports relapsing disease, anti-C1q antibody persistence, association with connective-tissue disease, and response to B-cell-directed treatment in refractory systemic cases.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.03],
+      "peak_day_range": [-365, 30],
+      "peak_value_range": [0.1, 1.0],
+      "plateau_duration_days": [30, 3650],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY",
+      "display_name": "Systemic small-vessel vasculitis spillover",
+      "clinical_meaning": "When vasculitis extends beyond skin, fever, arthralgia, renal, pulmonary, ocular, gastrointestinal, cardiac, and neurologic complications become possible.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.02],
+      "peak_day_range": [-30, 14],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [3, 365],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY",
+      "display_name": "Renal immune-complex nephritis and vascular injury",
+      "clinical_meaning": "Glomerular immune deposits or renal small-vessel vasculitis cause hematuria, proteinuria, active urinary sediment, creatinine rise, and long-term kidney risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [14, 730],
+      "decline_half_life_days": [30, 365],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UV_PULMONARY_CAPILLARITIS_AIRWAY_ACTIVITY",
+      "display_name": "Pulmonary capillaritis or airway involvement",
+      "clinical_meaning": "Systemic urticarial vasculitis can involve lung parenchyma or airways, producing dyspnea, infiltrates, obstructive disease, alveolar hemorrhage, or respiratory failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 0.9],
+      "plateau_duration_days": [3, 365],
+      "decline_half_life_days": [14, 365],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_UV_OCULAR_INFLAMMATORY_VASCULITIS_ACTIVITY",
+      "display_name": "Ocular inflammatory vasculitis",
+      "clinical_meaning": "Episcleritis, scleritis, uveitis, or conjunctivitis can accompany systemic disease and can threaten vision when severe or recurrent.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 0.8],
+      "plateau_duration_days": [3, 180],
+      "decline_half_life_days": [7, 120],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_UV_GASTROINTESTINAL_VASCULITIS_ISCHEMIA_ACTIVITY",
+      "display_name": "Gastrointestinal vasculitis and ischemia",
+      "clinical_meaning": "Bowel-wall small-vessel vasculitis can cause abdominal pain, bleeding, ischemic lesions, necrotizing vasculitis, and rare colectomy-level complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [0.0, 0.01],
+      "peak_day_range": [0, 90],
+      "peak_value_range": [0.0, 1.0],
+      "plateau_duration_days": [1, 90],
+      "decline_half_life_days": [7, 180],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "complement_consumption_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Classical pathway activation consumes complement.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "complement_c3", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Complement consumption lowers C3 in many systemic cases.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "complement_c4", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Classical complement consumption lowers C4.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "total_complement_ch50", "effect_on_target": "decrease", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "CH50 falls when classical pathway activity is depleted.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "low_c1q_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "whole_course", "clinical_rationale": "Anti-C1q and immune-complex disease often produce low C1q.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "anti_c1q_antibody_positivity_probability", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "whole_course", "clinical_rationale": "Anti-C1q is a defining activity marker in many hypocomplementemic cases.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_ANTI_C1Q_CLASSICAL_COMPLEMENT_IMMUNE_COMPLEX_ACTIVITY", "target_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY", "effect_on_target": "increase", "edge_type": "mechanism_to_mechanism", "lag_days_range": [0, 7], "phase": "whole_course", "clinical_rationale": "Immune-complex complement activation drives venular inflammation.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY", "target_id": "rash_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "cutaneous_flare", "clinical_rationale": "Dermal vasculitis produces visible rash.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY", "target_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "cutaneous_flare", "clinical_rationale": "The dominant skin morphology is urticarial wheals or plaques.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY", "target_id": "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "cutaneous_flare", "clinical_rationale": "Vasculitic lesions are fixed longer than ordinary urticaria.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY", "target_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Lesional biopsy can show leukocytoclastic vasculitis.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY", "target_id": "skin_biopsy_nuclear_dust_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "Leukocytoclasis produces nuclear dust.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY", "target_id": "skin_biopsy_fibrinoid_necrosis_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "post_workup", "clinical_rationale": "More intense vascular injury causes fibrinoid necrosis.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY", "target_id": "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "cutaneous_flare", "clinical_rationale": "Vessel-wall injury makes lesions painful or burning rather than purely itchy.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY", "target_id": "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 5], "phase": "cutaneous_flare", "clinical_rationale": "Erythrocyte extravasation and vascular injury produce purpura.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY", "target_id": "residual_hyperpigmentation_after_wheal_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "phase": "resolving_lesions", "clinical_rationale": "Post-inflammatory pigmentation remains after vasculitic wheals resolve.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_MAST_CELL_AND_DERMAL_EDEMA_ACTIVITY", "target_id": "pruritus_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 1], "phase": "cutaneous_flare", "clinical_rationale": "Histamine-mediated edema causes itch.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_MAST_CELL_AND_DERMAL_EDEMA_ACTIVITY", "target_id": "angioedema_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 2], "phase": "cutaneous_or_mucosal_flare", "clinical_rationale": "Deep dermal or mucosal edema can produce angioedema.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY", "target_id": "anti_c1q_antibody_concentration", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 60], "phase": "whole_course", "clinical_rationale": "B-cell autoimmunity sustains antibody titers.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY", "target_id": "uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [14, 365], "phase": "chronic_course", "clinical_rationale": "Autoimmune drive causes recurrent flares over months to years.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "fever_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "systemic_flare", "clinical_rationale": "Systemic inflammation can produce fever.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "serum_crp", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 7], "phase": "systemic_flare", "clinical_rationale": "CRP rises with systemic inflammatory burden.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "erythrocyte_sedimentation_rate", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 14], "phase": "systemic_flare", "clinical_rationale": "ESR can rise during active systemic inflammation.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "arthralgia_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "systemic_flare", "clinical_rationale": "Arthralgia is common during systemic flares.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 30], "phase": "systemic_flare", "clinical_rationale": "Systemic spillover raises organ involvement risk.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "target_id": "proteinuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 60], "phase": "renal_involvement", "clinical_rationale": "Renal involvement produces proteinuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "target_id": "hematuria_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 60], "phase": "renal_involvement", "clinical_rationale": "Glomerular or renal vascular injury produces hematuria.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "target_id": "serum_creatinine", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [1, 90], "phase": "renal_involvement", "clinical_rationale": "AKI or chronic renal injury raises creatinine.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "target_id": "renal_biopsy_immune_complex_nephritis_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 90], "phase": "post_workup", "clinical_rationale": "Renal biopsy may show immune-complex nephritis.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "target_id": "acute_kidney_injury_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [1, 30], "phase": "renal_involvement", "clinical_rationale": "Active renal inflammation can cause AKI.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_PULMONARY_CAPILLARITIS_AIRWAY_ACTIVITY", "target_id": "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 90], "phase": "pulmonary_involvement", "clinical_rationale": "Pulmonary vasculitis or airway involvement gives lung findings.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_PULMONARY_CAPILLARITIS_AIRWAY_ACTIVITY", "target_id": "dyspnea_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "pulmonary_involvement", "clinical_rationale": "Airway or parenchymal involvement causes dyspnea.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_PULMONARY_CAPILLARITIS_AIRWAY_ACTIVITY", "target_id": "diffuse_alveolar_hemorrhage_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 30], "phase": "severe_pulmonary", "clinical_rationale": "Capillaritis can rarely produce alveolar hemorrhage.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_OCULAR_INFLAMMATORY_VASCULITIS_ACTIVITY", "target_id": "scleritis_episcleritis_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "ocular_involvement", "clinical_rationale": "Ocular inflammation may manifest as episcleritis or scleritis.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_OCULAR_INFLAMMATORY_VASCULITIS_ACTIVITY", "target_id": "conjunctivitis_activity_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 30], "phase": "ocular_involvement", "clinical_rationale": "Some flares include conjunctival inflammation.", "knowledge_confidence": "low"},
+    {"source_id": "M_UV_GASTROINTESTINAL_VASCULITIS_ISCHEMIA_ACTIVITY", "target_id": "abdominal_pain_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "gi_involvement", "clinical_rationale": "Bowel-wall vasculitis causes abdominal pain.", "knowledge_confidence": "high"},
+    {"source_id": "M_UV_GASTROINTESTINAL_VASCULITIS_ISCHEMIA_ACTIVITY", "target_id": "gastrointestinal_bleeding_activity", "effect_on_target": "increase", "edge_type": "mechanism_to_axis", "lag_days_range": [0, 14], "phase": "gi_involvement", "clinical_rationale": "Mucosal ischemia or vasculitis can cause bleeding.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_GASTROINTESTINAL_VASCULITIS_ISCHEMIA_ACTIVITY", "target_id": "gastrointestinal_ischemia_hazard", "effect_on_target": "increase", "edge_type": "mechanism_to_event", "lag_days_range": [0, 14], "phase": "severe_gi", "clinical_rationale": "Severe GI vasculitis can produce ischemia.", "knowledge_confidence": "medium"},
+    {"source_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "target_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "effect_on_target": "increase", "edge_type": "mechanism_to_outcome", "lag_days_range": [0, 30], "phase": "organ_threatening_or_infection_complicated", "clinical_rationale": "Mortality is usually low in skin-limited disease but rises with renal, pulmonary, GI, severe infection, or cardiac complications.", "knowledge_confidence": "medium"}
+  ],
+  "axes": [
+    {"axis_id": "rash_activity", "display_name": "Rash activity", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-30, 3], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 60], "clinical_interpretation": "Visible rash during the cutaneous flare.", "knowledge_confidence": "high"},
+    {"axis_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Urticarial wheals or plaques", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "rash_activity", "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 2], "peak_value_range": [0.4, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 45], "clinical_interpretation": "Wheals or urticarial plaques are the main morphology.", "knowledge_confidence": "high"},
+    {"axis_id": "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Lesions fixed for more than 24 hours", "category": "symptom", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "baseline_range": [0.0, 0.02], "peak_day_range": [-30, 1], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [2, 45], "clinical_interpretation": "Persistence beyond 24 hours separates vasculitic wheals from ordinary transient urticaria.", "knowledge_confidence": "high"},
+    {"axis_id": "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Painful or burning urticarial lesions", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "baseline_range": [0.0, 0.03], "peak_day_range": [-7, 2], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [2, 30], "clinical_interpretation": "Burning or pain supports vasculitic inflammation.", "knowledge_confidence": "high"},
+    {"axis_id": "pruritus_activity", "display_name": "Pruritus", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-7, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [1, 14], "clinical_interpretation": "Itch may coexist with pain or burning.", "knowledge_confidence": "high"},
+    {"axis_id": "residual_hyperpigmentation_after_wheal_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Residual hyperpigmentation after wheals", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "baseline_range": [0.0, 0.02], "peak_day_range": [1, 14], "peak_value_range": [0.1, 1.0], "plateau_duration_days": [7, 180], "decline_half_life_days": [14, 180], "clinical_interpretation": "Post-inflammatory pigmentation or bruising can remain after lesions resolve.", "knowledge_confidence": "high"},
+    {"axis_id": "palpable_purpura_activity", "display_name": "Palpable purpura", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 60], "clinical_interpretation": "Purpura marks small-vessel injury and erythrocyte extravasation.", "knowledge_confidence": "medium"},
+    {"axis_id": "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Purpuric or bruised urticarial lesions", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "palpable_purpura_activity", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 60], "clinical_interpretation": "Purpura occurring within or after urticarial plaques supports UV.", "knowledge_confidence": "high"},
+    {"axis_id": "angioedema_activity", "display_name": "Angioedema", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [-7, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Deep swelling may involve face, lips, eyelids, or mucosa.", "knowledge_confidence": "medium"},
+    {"axis_id": "facial_lip_angioedema_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Facial or lip angioedema", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "angioedema_activity", "baseline_range": [0.0, 0.01], "peak_day_range": [-7, 2], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [1, 14], "clinical_interpretation": "Face and lip swelling is a common angioedema pattern.", "knowledge_confidence": "medium"},
+    {"axis_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "display_name": "Skin biopsy leukocytoclastic vasculitis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.5, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 90], "clinical_interpretation": "Lesional biopsy can confirm small-vessel leukocytoclastic vasculitis.", "knowledge_confidence": "high"},
+    {"axis_id": "skin_biopsy_nuclear_dust_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Skin biopsy nuclear dust", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 7], "peak_value_range": [0.3, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 90], "clinical_interpretation": "Leukocytoclasis with nuclear dust is a biopsy feature.", "knowledge_confidence": "high"},
+    {"axis_id": "skin_biopsy_fibrinoid_necrosis_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Skin biopsy fibrinoid necrosis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "skin_biopsy_leukocytoclastic_vasculitis_activity", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 30], "decline_half_life_days": [7, 90], "clinical_interpretation": "Fibrinoid necrosis marks more intense vessel-wall injury.", "knowledge_confidence": "high"},
+    {"axis_id": "complement_consumption_activity", "display_name": "Complement consumption", "category": "lab_pattern", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 3650], "decline_half_life_days": [14, 180], "clinical_interpretation": "Low complement supports hypocomplementemic systemic activity but normal complement remains compatible with UV.", "knowledge_confidence": "high"},
+    {"axis_id": "complement_c3", "display_name": "Complement C3", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "complement_consumption_activity", "baseline_range": [90, 180], "peak_day_range": [-30, 14], "peak_value_range": [10, 120], "plateau_duration_days": [14, 3650], "decline_half_life_days": [14, 180], "clinical_interpretation": "C3 falls with complement consumption.", "knowledge_confidence": "high"},
+    {"axis_id": "complement_c4", "display_name": "Complement C4", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "complement_consumption_activity", "baseline_range": [10, 40], "peak_day_range": [-30, 14], "peak_value_range": [1, 25], "plateau_duration_days": [14, 3650], "decline_half_life_days": [14, 180], "clinical_interpretation": "C4 falls with classical pathway consumption.", "knowledge_confidence": "high"},
+    {"axis_id": "total_complement_ch50", "display_name": "Total complement CH50", "category": "lab_value", "unit": "U/mL", "log_scale": false, "axis_role": "measurement", "parent_axis_id": "complement_consumption_activity", "baseline_range": [23, 60], "peak_day_range": [-30, 14], "peak_value_range": [0, 35], "plateau_duration_days": [14, 3650], "decline_half_life_days": [14, 180], "clinical_interpretation": "CH50 can be low when classical complement pathway is consumed.", "knowledge_confidence": "medium"},
+    {"axis_id": "low_c1q_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Low C1q activity", "category": "lab_pattern", "unit": "present_absent_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "complement_consumption_activity", "baseline_range": [0.0, 0.02], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 3650], "decline_half_life_days": [14, 180], "clinical_interpretation": "Low C1q is typical in anti-C1q-driven hypocomplementemic disease.", "knowledge_confidence": "high"},
+    {"axis_id": "anti_c1q_antibody_positivity_probability", "display_name": "Anti-C1q antibody positivity", "category": "lab_value", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.03], "peak_day_range": [-30, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "clinical_interpretation": "Anti-C1q positivity supports hypocomplementemic urticarial vasculitis activity.", "knowledge_confidence": "high"},
+    {"axis_id": "anti_c1q_antibody_concentration", "display_name": "Anti-C1q antibody concentration", "category": "lab_value", "unit": "U/mL", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.0, 10.0], "peak_day_range": [-30, 30], "peak_value_range": [10.0, 300.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "clinical_interpretation": "Assay-dependent anti-C1q titer can track antibody activity when measured in U/mL.", "knowledge_confidence": "medium"},
+    {"axis_id": "uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Relapsing or chronic UV course", "category": "qualitative", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [-3650, 0], "peak_value_range": [0.2, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "clinical_interpretation": "Recurrent flares over months to years are common.", "knowledge_confidence": "high"},
+    {"axis_id": "arthralgia_activity", "display_name": "Arthralgia", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [-30, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 90], "decline_half_life_days": [3, 90], "clinical_interpretation": "Migratory or relapsing joint pain is common in systemic UV.", "knowledge_confidence": "high"},
+    {"axis_id": "fever_activity", "display_name": "Fever", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 14], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [1, 14], "clinical_interpretation": "Fever suggests systemic inflammation or infection mimic/complication.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_crp", "display_name": "C-reactive protein", "category": "lab_value", "unit": "mg/L", "log_scale": true, "axis_role": "measurement", "baseline_range": [0, 5], "peak_day_range": [0, 14], "peak_value_range": [3, 250], "plateau_duration_days": [1, 60], "decline_half_life_days": [2, 30], "clinical_interpretation": "CRP can rise during systemic inflammation or infection.", "knowledge_confidence": "medium"},
+    {"axis_id": "erythrocyte_sedimentation_rate", "display_name": "Erythrocyte sedimentation rate", "category": "lab_value", "unit": "mm/hr", "log_scale": false, "axis_role": "measurement", "baseline_range": [0, 20], "peak_day_range": [1, 30], "peak_value_range": [20, 120], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 60], "clinical_interpretation": "ESR can rise during active disease.", "knowledge_confidence": "medium"},
+    {"axis_id": "white_blood_cell_count", "display_name": "White blood cell count", "category": "lab_value", "unit": "10^9/L", "log_scale": false, "axis_role": "measurement", "baseline_range": [4.0, 11.0], "peak_day_range": [0, 30], "peak_value_range": [1.0, 25.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 60], "clinical_interpretation": "WBC count helps separate inflammation, infection, leukopenia from autoimmune disease, and treatment-limiting cytopenia.", "knowledge_confidence": "medium"},
+    {"axis_id": "serum_creatinine", "display_name": "Serum creatinine", "category": "lab_value", "unit": "mg/dL", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.5, 1.2], "peak_day_range": [0, 90], "peak_value_range": [0.7, 6.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [14, 365], "clinical_interpretation": "Creatinine rises with renal involvement or background kidney disease.", "knowledge_confidence": "high"},
+    {"axis_id": "proteinuria_activity", "display_name": "Proteinuria", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Proteinuria marks renal involvement.", "knowledge_confidence": "high"},
+    {"axis_id": "urine_protein_24h", "display_name": "Twenty-four-hour urine protein", "category": "lab_value", "unit": "g_per_day", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "proteinuria_activity", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 90], "peak_value_range": [0.15, 10.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Twenty-four-hour protein quantifies renal involvement.", "knowledge_confidence": "high"},
+    {"axis_id": "urinary_protein_creatinine_ratio", "display_name": "Urine protein/creatinine ratio", "category": "lab_value", "unit": "g_per_g_creatinine", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "proteinuria_activity", "baseline_range": [0.0, 0.15], "peak_day_range": [0, 90], "peak_value_range": [0.15, 10.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "UPCR quantifies proteinuria when reported.", "knowledge_confidence": "high"},
+    {"axis_id": "hematuria_activity", "display_name": "Hematuria", "category": "urinalysis", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Microscopic or gross hematuria supports renal involvement.", "knowledge_confidence": "high"},
+    {"axis_id": "urine_rbc_per_hpf", "display_name": "Urine RBCs per high-power field", "category": "urinalysis", "unit": "RBC_per_HPF", "log_scale": true, "axis_role": "measurement", "parent_axis_id": "hematuria_activity", "baseline_range": [0.0, 2.0], "peak_day_range": [0, 90], "peak_value_range": [3.0, 100.0], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Urine microscopy quantifies hematuria.", "knowledge_confidence": "high"},
+    {"axis_id": "renal_biopsy_immune_complex_nephritis_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Renal biopsy immune-complex nephritis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Renal biopsy can show immune deposits or nephritis in systemic UV.", "knowledge_confidence": "medium"},
+    {"axis_id": "renal_biopsy_small_vessel_vasculitis_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Renal biopsy small-vessel vasculitis", "category": "pathology", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.005], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [14, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Renal artery or arteriole fibrinoid necrosis supports vasculitic renal involvement.", "knowledge_confidence": "medium"},
+    {"axis_id": "acute_kidney_injury_hazard", "display_name": "Acute kidney injury hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 90], "peak_value_range": [0.001, 0.08], "plateau_duration_days": [1, 90], "decline_half_life_days": [7, 180], "clinical_interpretation": "Rising creatinine, nephritis, or vasculitic renal injury raises AKI risk.", "knowledge_confidence": "high"},
+    {"axis_id": "end_stage_kidney_disease_hazard", "display_name": "End-stage kidney disease hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [30, 3650], "peak_value_range": [0.00001, 0.005], "plateau_duration_days": [90, 3650], "decline_half_life_days": [180, 3650], "clinical_interpretation": "Persistent renal injury increases long-term kidney failure risk.", "knowledge_confidence": "medium"},
+    {"axis_id": "abdominal_pain_activity", "display_name": "Abdominal pain", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [2, 60], "clinical_interpretation": "Abdominal pain can reflect GI vasculitis but remains nonspecific.", "knowledge_confidence": "high"},
+    {"axis_id": "gastrointestinal_bleeding_activity", "display_name": "Gastrointestinal bleeding", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [2, 60], "clinical_interpretation": "GI mucosal vasculitis or ischemia can cause bleeding.", "knowledge_confidence": "medium"},
+    {"axis_id": "gastrointestinal_ischemia_hazard", "display_name": "Gastrointestinal ischemia hazard", "category": "event_hazard", "unit": "hazard_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [7, 90], "clinical_interpretation": "Severe bowel vasculitis may produce ischemia.", "knowledge_confidence": "medium"},
+    {"axis_id": "bowel_necrosis_or_colectomy_hazard_in_D-URTICARIAL-VASCULITIS", "display_name": "Bowel necrosis or colectomy hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 30], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [0.5, 14], "decline_half_life_days": [7, 90], "clinical_interpretation": "Rare catastrophic GI vasculitis can require bowel resection.", "knowledge_confidence": "low"},
+    {"axis_id": "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Pulmonary involvement", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 90], "peak_value_range": [0.0, 0.9], "plateau_duration_days": [3, 365], "decline_half_life_days": [14, 365], "clinical_interpretation": "Pulmonary involvement can include airway disease, infiltrates, capillaritis, or hemorrhage.", "knowledge_confidence": "medium"},
+    {"axis_id": "dyspnea_activity", "display_name": "Dyspnea", "category": "symptom", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [0.5, 90], "decline_half_life_days": [3, 90], "clinical_interpretation": "Dyspnea may reflect pulmonary vasculitis, infection, or another cardiopulmonary process.", "knowledge_confidence": "medium"},
+    {"axis_id": "ground_glass_or_crazy_paving_lung_imaging_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Ground-glass or crazy-paving lung imaging", "category": "imaging", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "satellite", "parent_axis_id": "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 90], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [14, 180], "clinical_interpretation": "Parenchymal imaging abnormalities can accompany pulmonary involvement but are not specific.", "knowledge_confidence": "low"},
+    {"axis_id": "diffuse_alveolar_hemorrhage_hazard", "display_name": "Diffuse alveolar hemorrhage hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 30], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [0.5, 30], "decline_half_life_days": [7, 90], "clinical_interpretation": "Pulmonary capillaritis can rarely produce alveolar hemorrhage.", "knowledge_confidence": "low"},
+    {"axis_id": "respiratory_failure_hazard", "display_name": "Respiratory failure hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00005], "peak_day_range": [0, 30], "peak_value_range": [0.00001, 0.03], "plateau_duration_days": [0.5, 60], "decline_half_life_days": [7, 120], "clinical_interpretation": "Severe lung disease or infection can cause respiratory failure.", "knowledge_confidence": "medium"},
+    {"axis_id": "scleritis_episcleritis_activity", "display_name": "Scleritis or episcleritis", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.01], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [3, 90], "decline_half_life_days": [7, 120], "clinical_interpretation": "Ocular inflammatory involvement can manifest as episcleritis or scleritis.", "knowledge_confidence": "medium"},
+    {"axis_id": "conjunctivitis_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Conjunctivitis during UV flare", "category": "physical_finding", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [0, 30], "peak_value_range": [0.0, 0.8], "plateau_duration_days": [1, 30], "decline_half_life_days": [3, 60], "clinical_interpretation": "Conjunctival inflammation can occur but is less specific than scleritis or uveitis.", "knowledge_confidence": "low"},
+    {"axis_id": "vision_loss_hazard_in_D-URTICARIAL-VASCULITIS", "display_name": "Vision loss hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 90], "peak_value_range": [0.00001, 0.02], "plateau_duration_days": [3, 180], "decline_half_life_days": [14, 180], "clinical_interpretation": "Severe ocular inflammation can threaten vision.", "knowledge_confidence": "low"},
+    {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "display_name": "Systemic organ involvement hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 90], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Composite hazard for clinically significant renal, pulmonary, ocular, GI, cardiac, or neurologic involvement.", "knowledge_confidence": "medium"},
+    {"axis_id": "active_serious_infection_activity", "display_name": "Active serious infection context", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.02], "peak_day_range": [0, 7], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 60], "decline_half_life_days": [3, 90], "clinical_interpretation": "Active infection reduces tolerance for broad immunosuppression and may explain fever/CRP.", "knowledge_confidence": "high"},
+    {"axis_id": "serious_infection_hazard", "display_name": "Serious infection hazard", "category": "event_hazard", "unit": "events_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.00001, 0.0005], "peak_day_range": [0, 365], "peak_value_range": [0.0001, 0.05], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Immunosuppression, complement deficiency, or infection exposure increases serious infection risk.", "knowledge_confidence": "medium"},
+    {"axis_id": "uv_refractory_cutaneous_disease_activity_in_D-URTICARIAL-VASCULITIS", "display_name": "Refractory cutaneous UV activity", "category": "treatment_modifier", "unit": "severity_score_0_1", "log_scale": false, "axis_role": "finding", "baseline_range": [0.0, 0.03], "peak_day_range": [30, 3650], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [30, 365], "clinical_interpretation": "Persistent skin disease despite symptomatic or steroid-sparing therapy changes treatment effects.", "knowledge_confidence": "medium"},
+    {"axis_id": "normocomplementemic_uv_context_probability", "display_name": "Normocomplementemic UV context", "category": "treatment_modifier", "unit": "probability_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.7], "peak_day_range": [0, 30], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [180, 3650], "clinical_interpretation": "Normal complement context often indicates more skin-limited disease and different expected treatment response.", "knowledge_confidence": "medium"},
+    {"axis_id": "colchicine_intolerance_or_toxicity_risk_context", "display_name": "Colchicine intolerance or toxicity risk", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [30, 3650], "clinical_interpretation": "Renal impairment, interacting drugs, cytopenia, neuromyopathy risk, or severe GI intolerance limits colchicine.", "knowledge_confidence": "high"},
+    {"axis_id": "g6pd_deficiency_or_dapsone_hemolysis_risk_context", "display_name": "G6PD deficiency or dapsone hemolysis risk", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [1, 3650], "decline_half_life_days": [365, 3650], "clinical_interpretation": "Hemolysis or methemoglobinemia risk limits dapsone.", "knowledge_confidence": "high"},
+    {"axis_id": "hydroxychloroquine_retinal_toxicity_risk_context", "display_name": "Hydroxychloroquine retinal toxicity risk", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [365, 3650], "clinical_interpretation": "Retinal disease, high cumulative exposure, or renal impairment increases monitoring and use limitations.", "knowledge_confidence": "high"},
+    {"axis_id": "biologic_or_immunosuppressant_infection_reactivation_risk_context", "display_name": "Biologic or immunosuppressant infection-reactivation risk", "category": "treatment_modifier", "unit": "relative_activity_0_1", "log_scale": false, "axis_role": "measurement", "baseline_range": [0.0, 0.05], "peak_day_range": [0, 1], "peak_value_range": [0.0, 1.0], "plateau_duration_days": [30, 3650], "decline_half_life_days": [180, 3650], "clinical_interpretation": "Latent infection, recurrent infection, severe complement deficiency, or current infection changes biologic/immunosuppressant effects.", "knowledge_confidence": "high"},
+    {"axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "display_name": "Mortality hazard in urticarial vasculitis", "category": "derived_hazard", "unit": "hazard_per_day", "log_scale": true, "axis_role": "measurement", "baseline_range": [0.000001, 0.00002], "peak_day_range": [0, 365], "peak_value_range": [0.000001, 0.03], "plateau_duration_days": [7, 365], "decline_half_life_days": [30, 365], "clinical_interpretation": "Skin-limited UV has low mortality; renal failure, pulmonary hemorrhage, GI ischemia, severe infection, or cardiac complications raise lifespan hazard.", "knowledge_confidence": "medium"}
+  ],
+  "axis_couplings": [
+    {"source_axis_id": "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "target_axis_id": "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.4, 0.8], "lag_days_range": [0, 1], "conditionality": "cutaneous flare", "clinical_rationale": "Morphology and persistence are correlated features of the same lesions.", "knowledge_confidence": "high"},
+    {"source_axis_id": "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS", "target_axis_id": "residual_hyperpigmentation_after_wheal_activity_in_D-URTICARIAL-VASCULITIS", "coupling_type": "drift", "direction": "positive", "strength_range": [0.3, 0.8], "lag_days_range": [1, 14], "conditionality": "lesion resolution", "clinical_rationale": "Fixed vasculitic lesions are more likely to leave pigmentation.", "knowledge_confidence": "high"},
+    {"source_axis_id": "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "target_axis_id": "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.25, 0.7], "lag_days_range": [0, 5], "conditionality": "neutrophilic vessel-wall injury", "clinical_rationale": "Pain and purpura both increase with vascular injury.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "complement_c3", "target_axis_id": "complement_c4", "coupling_type": "noise_correlation", "direction": "positive", "strength_range": [0.5, 0.9], "lag_days_range": [0, 14], "conditionality": "classical complement consumption", "clinical_rationale": "C3 and C4 often fall together during active complement consumption.", "knowledge_confidence": "high"},
+    {"source_axis_id": "anti_c1q_antibody_concentration", "target_axis_id": "complement_consumption_activity", "coupling_type": "drift", "direction": "positive", "strength_range": [0.3, 0.8], "lag_days_range": [0, 30], "conditionality": "anti-C1q-associated disease", "clinical_rationale": "Higher anti-C1q activity can track complement consumption.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "complement_consumption_activity", "target_axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.25, 0.8], "lag_days_range": [0, 90], "conditionality": "hypocomplementemic systemic phenotype", "clinical_rationale": "Hypocomplementemia is associated with higher systemic involvement risk.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "proteinuria_activity", "target_axis_id": "serum_creatinine", "coupling_type": "drift", "direction": "positive", "strength_range": [0.2, 0.7], "lag_days_range": [7, 90], "conditionality": "active or chronic renal involvement", "clinical_rationale": "More renal injury can pair proteinuria with creatinine rise.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "hematuria_activity", "target_axis_id": "acute_kidney_injury_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.6], "lag_days_range": [0, 30], "conditionality": "active urinary sediment", "clinical_rationale": "Active urinary sediment raises concern for renal inflammatory injury.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serum_creatinine", "target_axis_id": "acute_kidney_injury_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.5, 1.0], "lag_days_range": [0, 7], "conditionality": "rising creatinine", "clinical_rationale": "Creatinine rise identifies AKI severity.", "knowledge_confidence": "high"},
+    {"source_axis_id": "abdominal_pain_activity", "target_axis_id": "gastrointestinal_ischemia_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [0, 14], "conditionality": "severe or persistent GI vasculitic pain", "clinical_rationale": "Persistent severe abdominal pain can precede ischemic GI complications.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "gastrointestinal_ischemia_hazard", "target_axis_id": "bowel_necrosis_or_colectomy_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "event_transition", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [0, 7], "conditionality": "severe bowel ischemia", "clinical_rationale": "Ischemia can progress to necrosis requiring surgery.", "knowledge_confidence": "low"},
+    {"source_axis_id": "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS", "target_axis_id": "respiratory_failure_hazard", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [0, 30], "conditionality": "severe pulmonary involvement", "clinical_rationale": "Pulmonary vasculitis or infection can impair respiration.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "scleritis_episcleritis_activity", "target_axis_id": "vision_loss_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.7], "lag_days_range": [1, 90], "conditionality": "severe or recurrent scleritis/uveitis", "clinical_rationale": "Severe ocular inflammation can threaten vision.", "knowledge_confidence": "low"},
+    {"source_axis_id": "acute_kidney_injury_hazard", "target_axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.2, 0.8], "lag_days_range": [0, 30], "conditionality": "severe renal involvement", "clinical_rationale": "Severe AKI raises mortality hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "gastrointestinal_ischemia_hazard", "target_axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [0, 14], "conditionality": "bowel ischemia or necrotizing vasculitis", "clinical_rationale": "GI ischemia and surgery-level complications raise mortality hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "respiratory_failure_hazard", "target_axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [0, 14], "conditionality": "severe pulmonary involvement", "clinical_rationale": "Respiratory failure raises mortality hazard.", "knowledge_confidence": "medium"},
+    {"source_axis_id": "serious_infection_hazard", "target_axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "coupling_type": "hazard_drift", "direction": "positive", "strength_range": [0.3, 0.9], "lag_days_range": [0, 30], "conditionality": "infection during complement deficiency or immunosuppression", "clinical_rationale": "Severe infection can dominate outcome in immunosuppressed or complement-deficient patients.", "knowledge_confidence": "medium"}
+  ],
+  "treatments": [
+    {
+      "drug": "h1_h2_antihistamines",
+      "drug_class": "histamine_receptor_blockade",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["pruritus_activity", "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS", "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS"],
+      "effect_modifiers": [
+        {"axis_id": "pruritus_activity", "condition": "high", "effect": "strengthens_symptom_effect", "factor_range": [1.0, 1.5], "clinical_rationale": "Histamine blockade mainly improves itch."},
+        {"axis_id": "urticarial_lesion_duration_over_24h_activity_in_D-URTICARIAL-VASCULITIS", "condition": "present", "effect": "weakens_disease_control_effect", "factor_range": [0.1, 0.5], "clinical_rationale": "Fixed vasculitic lesions are not driven by histamine alone."},
+        {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "does_not_control_systemic_hazard", "factor_range": [0.0, 0.2], "clinical_rationale": "Antihistamines do not reshape immune-complex vasculitis."}
+      ],
+      "trajectory_modifications": {
+        "pruritus_activity": {"peak_value_factor": [0.3, 0.8], "decline_half_life_days": [0.5, 3]},
+        "M_UV_MAST_CELL_AND_DERMAL_EDEMA_ACTIVITY": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [1, 7]}
+      },
+      "failure_modes": ["vasculitic_pain_or_purpura_dominates", "systemic_organ_involvement", "nonhistaminergic_angioedema"]
+    },
+    {
+      "drug": "nsaids_for_arthralgia_or_pain",
+      "drug_class": "cyclooxygenase_inhibition",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["arthralgia_activity", "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "serum_creatinine", "gastrointestinal_bleeding_activity"],
+      "effect_modifiers": [
+        {"axis_id": "arthralgia_activity", "condition": "high", "effect": "strengthens_symptom_effect", "factor_range": [1.0, 1.4], "clinical_rationale": "NSAIDs can reduce joint pain."},
+        {"axis_id": "serum_creatinine", "condition": "high_or_rising", "effect": "weakens_or_contraindicates", "factor_range": [0.0, 0.4], "clinical_rationale": "Renal involvement increases NSAID harm."},
+        {"axis_id": "gastrointestinal_bleeding_activity", "condition": "present", "effect": "weakens_or_contraindicates", "factor_range": [0.0, 0.3], "clinical_rationale": "GI bleeding or ischemia increases NSAID risk."}
+      ],
+      "state_push": [
+        {"axis_id": "arthralgia_activity", "direction": "down", "magnitude_range": [0.1, 0.5], "unit": "severity_score_0_1"},
+        {"axis_id": "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "direction": "down", "magnitude_range": [0.05, 0.25], "unit": "severity_score_0_1"}
+      ],
+      "failure_modes": ["renal_involvement", "gi_bleeding_or_ischemia", "inadequate_control_of_vasculitis"]
+    },
+    {
+      "drug": "colchicine",
+      "drug_class": "neutrophil_migration_modulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "serum_creatinine", "colchicine_intolerance_or_toxicity_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.5], "clinical_rationale": "Neutrophilic cutaneous inflammation is a colchicine-responsive target in some patients."},
+        {"axis_id": "serum_creatinine", "condition": "high", "effect": "requires_dose_caution", "factor_range": [0.3, 0.8], "clinical_rationale": "Renal impairment increases colchicine toxicity."},
+        {"axis_id": "colchicine_intolerance_or_toxicity_risk_context", "condition": "present", "effect": "weakens_or_contraindicates", "factor_range": [0.0, 0.5], "clinical_rationale": "GI intolerance, cytopenia, interacting drugs, or neuromyopathy risk limits use."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY": {"peak_value_factor": [0.45, 0.85], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [7, 30]},
+        "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS": {"peak_value_factor": [0.5, 0.9], "decline_half_life_days": [7, 30]}
+      },
+      "failure_modes": ["organ_threatening_disease", "renal_impairment_or_drug_interaction", "inadequate_effect_on_b_cell_or_complement_drive"]
+    },
+    {
+      "drug": "dapsone",
+      "drug_class": "neutrophil_oxidative_burst_modulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "g6pd_deficiency_or_dapsone_hemolysis_risk_context", "white_blood_cell_count"],
+      "effect_modifiers": [
+        {"axis_id": "urticarial_vasculitis_purpura_activity_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.6], "clinical_rationale": "Dapsone targets neutrophil-mediated cutaneous vasculitis."},
+        {"axis_id": "g6pd_deficiency_or_dapsone_hemolysis_risk_context", "condition": "present", "effect": "contraindicates_or_requires_avoidance", "factor_range": [0.0, 0.2], "clinical_rationale": "Hemolysis or methemoglobinemia risk can dominate benefit."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_NEUTROPHIL_EOSINOPHIL_VESSEL_WALL_INJURY_ACTIVITY": {"peak_value_factor": [0.3, 0.75], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [7, 45]},
+        "painful_burning_urticarial_lesion_activity_in_D-URTICARIAL-VASCULITIS": {"peak_value_factor": [0.4, 0.8], "decline_half_life_days": [7, 30]}
+      },
+      "failure_modes": ["g6pd_deficiency_or_hemolysis", "methemoglobinemia", "severe_renal_pulmonary_gi_disease_needing_stronger_immunosuppression"]
+    },
+    {
+      "drug": "hydroxychloroquine",
+      "drug_class": "antimalarial_immunomodulator",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "normocomplementemic_uv_context_probability", "hydroxychloroquine_retinal_toxicity_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "condition": "present", "effect": "strengthens_chronic_control_effect", "factor_range": [1.0, 1.5], "clinical_rationale": "Slow immunomodulation is more useful for relapsing chronic disease than abrupt organ crisis."},
+        {"axis_id": "hydroxychloroquine_retinal_toxicity_risk_context", "condition": "high", "effect": "weakens_or_requires_monitoring", "factor_range": [0.2, 0.8], "clinical_rationale": "Retinal and dosing risk limit exposure."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY": {"peak_value_factor": [0.55, 0.9], "plateau_duration_factor": [0.7, 1.0], "decline_half_life_days": [30, 120]},
+        "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY": {"peak_value_factor": [0.55, 0.9], "decline_half_life_days": [30, 120]}
+      },
+      "failure_modes": ["slow_onset", "organ_threatening_flare", "retinal_or_dosing_risk", "incomplete_response"]
+    },
+    {
+      "drug": "systemic_glucocorticoids",
+      "drug_class": "broad_anti_inflammatory_immunosuppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "skin_biopsy_leukocytoclastic_vasculitis_activity", "active_serious_infection_activity", "serious_infection_hazard"],
+      "effect_modifiers": [
+        {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.2, 2.0], "clinical_rationale": "Steroids can rapidly suppress organ-threatening inflammatory vasculitis."},
+        {"axis_id": "active_serious_infection_activity", "condition": "present", "effect": "weakens_or_requires_source_evaluation", "factor_range": [0.1, 0.7], "clinical_rationale": "Infection can mimic flare and steroids increase infectious risk."},
+        {"axis_id": "serious_infection_hazard", "condition": "high", "effect": "raises_toxicity_hazard", "factor_range": [0.5, 1.5], "clinical_rationale": "Steroids increase infection hazard, especially with complement deficiency or prior immunosuppression."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY": {"peak_value_factor": [0.1, 0.55], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [2, 21]},
+        "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY": {"peak_value_factor": [0.15, 0.65], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [3, 30]},
+        "serious_infection_hazard": {"peak_value_factor": [1.1, 2.5], "plateau_duration_factor": [1.0, 1.5]}
+      },
+      "failure_modes": ["relapse_during_taper", "infection", "metabolic_or_bone_toxicity", "insufficient_steroid_sparing_control"]
+    },
+    {
+      "drug": "methotrexate_or_azathioprine_steroid_sparing_immunosuppression",
+      "drug_class": "conventional_steroid_sparing_immunosuppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "white_blood_cell_count", "active_serious_infection_activity", "biologic_or_immunosuppressant_infection_reactivation_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS", "condition": "present", "effect": "strengthens_steroid_sparing_effect", "factor_range": [1.0, 1.6], "clinical_rationale": "Relapsing disease may need maintenance immunosuppression."},
+        {"axis_id": "white_blood_cell_count", "condition": "low", "effect": "weakens_or_requires_holding", "factor_range": [0.0, 0.5], "clinical_rationale": "Cytopenias limit antimetabolite therapy."},
+        {"axis_id": "active_serious_infection_activity", "condition": "present", "effect": "weakens_or_requires_delay", "factor_range": [0.0, 0.5], "clinical_rationale": "Active infection changes immunosuppression risk."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY": {"peak_value_factor": [0.35, 0.8], "plateau_duration_factor": [0.5, 0.9], "decline_half_life_days": [30, 180]},
+        "M_UV_DERMAL_VENULAR_LEUKOCYTOCLASTIC_VASCULITIS_ACTIVITY": {"peak_value_factor": [0.45, 0.85], "decline_half_life_days": [21, 120]}
+      },
+      "failure_modes": ["slow_onset", "cytopenia", "hepatotoxicity", "active_infection", "organ_threatening_flare_needing_faster_control"]
+    },
+    {
+      "drug": "mycophenolate_mofetil",
+      "drug_class": "lymphocyte_antiproliferative_immunosuppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["proteinuria_activity", "hematuria_activity", "serum_creatinine", "active_serious_infection_activity", "biologic_or_immunosuppressant_infection_reactivation_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "proteinuria_activity", "condition": "present_or_persistent", "effect": "strengthens_renal_systemic_control_effect", "factor_range": [1.0, 1.8], "clinical_rationale": "Renal or systemic involvement can require steroid-sparing immune control."},
+        {"axis_id": "active_serious_infection_activity", "condition": "present", "effect": "weakens_or_requires_delay", "factor_range": [0.0, 0.5], "clinical_rationale": "Active infection increases immunosuppression harm."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY": {"peak_value_factor": [0.25, 0.75], "plateau_duration_factor": [0.4, 0.9], "decline_half_life_days": [30, 180]},
+        "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.25, 0.75], "decline_half_life_days": [30, 180]}
+      },
+      "failure_modes": ["infection", "cytopenia_or_gastrointestinal_intolerance", "pregnancy_context", "insufficient_rapid_control"]
+    },
+    {
+      "drug": "cyclophosphamide",
+      "drug_class": "alkylating_immunosuppression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["gastrointestinal_ischemia_hazard", "acute_kidney_injury_hazard", "diffuse_alveolar_hemorrhage_hazard", "white_blood_cell_count", "active_serious_infection_activity"],
+      "effect_modifiers": [
+        {"axis_id": "gastrointestinal_ischemia_hazard", "condition": "high", "effect": "strengthens_organ_threatening_context", "factor_range": [1.0, 2.0], "clinical_rationale": "Life- or organ-threatening vasculitis can require stronger induction."},
+        {"axis_id": "diffuse_alveolar_hemorrhage_hazard", "condition": "high", "effect": "strengthens_organ_threatening_context", "factor_range": [1.0, 2.0], "clinical_rationale": "Pulmonary capillaritis is an organ-threatening context."},
+        {"axis_id": "white_blood_cell_count", "condition": "low", "effect": "weakens_or_requires_holding", "factor_range": [0.0, 0.5], "clinical_rationale": "Leukopenia raises toxicity and infection risk."},
+        {"axis_id": "active_serious_infection_activity", "condition": "present", "effect": "weakens_or_requires_delay", "factor_range": [0.0, 0.5], "clinical_rationale": "Severe infection can dominate outcome and toxicity."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY": {"peak_value_factor": [0.1, 0.5], "plateau_duration_factor": [0.2, 0.7], "decline_half_life_days": [14, 90]},
+        "M_UV_GASTROINTESTINAL_VASCULITIS_ISCHEMIA_ACTIVITY": {"peak_value_factor": [0.1, 0.55], "decline_half_life_days": [14, 90]},
+        "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY": {"peak_value_factor": [0.1, 0.55], "decline_half_life_days": [30, 180]},
+        "serious_infection_hazard": {"peak_value_factor": [1.3, 3.0], "plateau_duration_factor": [1.0, 2.0]}
+      },
+      "failure_modes": ["infection", "cytopenia", "infertility_or_malignancy_risk", "need_for_maintenance_strategy"]
+    },
+    {
+      "drug": "rituximab",
+      "drug_class": "anti_cd20_b_cell_depletion",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["anti_c1q_antibody_positivity_probability", "uv_refractory_cutaneous_disease_activity_in_D-URTICARIAL-VASCULITIS", "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "biologic_or_immunosuppressant_infection_reactivation_risk_context"],
+      "effect_modifiers": [
+        {"axis_id": "anti_c1q_antibody_positivity_probability", "condition": "high", "effect": "strengthens_b_cell_targeting_logic", "factor_range": [1.0, 1.6], "clinical_rationale": "Anti-C1q antibody-driven disease can depend on autoreactive B-cell activity."},
+        {"axis_id": "uv_refractory_cutaneous_disease_activity_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.7], "clinical_rationale": "Refractory relapsing disease is the usual context for B-cell depletion in case-based evidence."},
+        {"axis_id": "biologic_or_immunosuppressant_infection_reactivation_risk_context", "condition": "high", "effect": "weakens_or_requires_screening", "factor_range": [0.1, 0.8], "clinical_rationale": "B-cell depletion increases infection and reactivation risk."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY": {"peak_value_factor": [0.05, 0.45], "plateau_duration_factor": [0.2, 0.8], "decline_half_life_days": [30, 180]},
+        "anti_c1q_antibody_concentration": {"peak_value_factor": [0.2, 0.8], "decline_half_life_days": [60, 240]},
+        "serious_infection_hazard": {"peak_value_factor": [1.1, 2.5], "plateau_duration_factor": [1.0, 2.0]}
+      },
+      "failure_modes": ["infection_or_reactivation", "hypogammaglobulinemia", "delayed_response", "non_b_cell_dominant_skin_limited_disease"]
+    },
+    {
+      "drug": "omalizumab",
+      "drug_class": "anti_ige_mast_cell_pathway_modulation",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": ["normocomplementemic_uv_context_probability", "uv_refractory_cutaneous_disease_activity_in_D-URTICARIAL-VASCULITIS", "pruritus_activity", "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS"],
+      "effect_modifiers": [
+        {"axis_id": "normocomplementemic_uv_context_probability", "condition": "high", "effect": "strengthens_cutaneous_response_context", "factor_range": [1.0, 1.8], "clinical_rationale": "Case evidence supports benefit in some normocomplementemic, skin-dominant UV."},
+        {"axis_id": "uv_refractory_cutaneous_disease_activity_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "strengthens", "factor_range": [1.0, 1.7], "clinical_rationale": "Omalizumab is mainly a refractory cutaneous symptom control vector."},
+        {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "condition": "high", "effect": "weakens_systemic_control_expectation", "factor_range": [0.1, 0.6], "clinical_rationale": "Anti-IgE does not directly suppress immune-complex nephritis, GI ischemia, or pulmonary capillaritis."}
+      ],
+      "trajectory_modifications": {
+        "M_UV_MAST_CELL_AND_DERMAL_EDEMA_ACTIVITY": {"peak_value_factor": [0.1, 0.55], "plateau_duration_factor": [0.3, 0.8], "decline_half_life_days": [14, 60]},
+        "urticarial_wheal_activity_in_D-URTICARIAL-VASCULITIS": {"peak_value_factor": [0.15, 0.65], "decline_half_life_days": [14, 60]},
+        "pruritus_activity": {"peak_value_factor": [0.1, 0.6], "decline_half_life_days": [7, 45]}
+      },
+      "failure_modes": ["systemic_complement_driven_disease", "organ_threatening_flare", "loss_of_access_or_interruption", "non_ige_dominant_vasculitic_pain"]
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "hypocomplementemia_or_anti_c1q_positive_context",
+      "type": "disease_expression_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.5, 6.0],
+          "axis_response_modulation": [
+            {"axis_id": "complement_consumption_activity", "direction": "up", "factor_range": [2.0, 10.0], "clinical_rationale": "Low complement defines the hypocomplementemic expression."},
+            {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Hypocomplementemic disease has higher systemic involvement risk."},
+            {"axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Organ-threatening systemic disease raises lifespan hazard."}
+          ],
+          "trajectory_modulation": "Amplifies complement and systemic-organ axes without making complement status part of the disease name."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "normocomplementemic_skin_limited_context",
+      "type": "disease_expression_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 2.0],
+          "axis_response_modulation": [
+            {"axis_id": "normocomplementemic_uv_context_probability", "direction": "up", "factor_range": [2.0, 6.0], "clinical_rationale": "Normal complement identifies a skin-dominant context in many patients."},
+            {"axis_id": "systemic_organ_involvement_hazard_in_D-URTICARIAL-VASCULITIS", "direction": "down", "factor_range": [0.2, 0.8], "clinical_rationale": "Skin-limited normocomplementemic disease has lower systemic hazard."}
+          ],
+          "treatment_effect_modulation": [
+            {"treatment": "omalizumab", "direction": "strengthens_cutaneous_response_context", "factor_range": [1.0, 1.8], "clinical_rationale": "Anti-IgE pathway may help refractory skin-dominant disease in case-based evidence."}
+          ],
+          "trajectory_modulation": "Keeps normal complement compatible with UV rather than penalizing all UV likelihood."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "sle_or_connective_tissue_disease_context",
+      "type": "autoimmune_background_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.2, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_UV_RELAPSING_AUTOIMMUNE_B_CELL_DRIVE_ACTIVITY", "direction": "up", "factor_range": [1.2, 4.0], "clinical_rationale": "Connective-tissue disease context can share immune-complex and B-cell activity."},
+            {"axis_id": "proteinuria_activity", "direction": "up_or_context_dependent", "factor_range": [1.0, 3.0], "clinical_rationale": "Renal findings may come from UV, SLE nephritis, or combined immune-complex disease."}
+          ],
+          "trajectory_modulation": "Raises autoimmune relapse and renal-context vigilance while preserving separate SLE manifold ownership when SLE is modeled."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "hereditary_or_acquired_complement_deficiency_context",
+      "type": "host_defense_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.0, 5.0],
+          "axis_response_modulation": [
+            {"axis_id": "complement_consumption_activity", "direction": "up_or_low_baseline", "factor_range": [1.5, 8.0], "clinical_rationale": "Complement deficiency can make complement axes abnormal before or during UV."},
+            {"axis_id": "serious_infection_hazard", "direction": "up", "factor_range": [2.0, 12.0], "clinical_rationale": "Complement deficiency raises severe encapsulated bacterial infection risk."}
+          ],
+          "trajectory_modulation": "Separates baseline complement deficiency and infection risk from UV cutaneous activity."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "renal_findings_at_presentation",
+      "type": "organ_involvement_modifier",
+      "modulation": {
+        "hematuria_or_proteinuria_or_creatinine_rise": {
+          "P_disease_ratio": [1.1, 3.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_UV_RENAL_IMMUNE_COMPLEX_NEPHRITIS_ACTIVITY", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Urinary abnormalities identify renal involvement."},
+            {"axis_id": "acute_kidney_injury_hazard", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Renal involvement increases AKI risk."}
+          ],
+          "trajectory_modulation": "Increases renal mechanism gate and renal hazard."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "pulmonary_ocular_or_gastrointestinal_systemic_features",
+      "type": "organ_involvement_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [1.1, 4.0],
+          "axis_response_modulation": [
+            {"axis_id": "M_UV_SYSTEMIC_SMALL_VESSEL_VASCULITIS_SPILLOVER_ACTIVITY", "direction": "up", "factor_range": [1.3, 6.0], "clinical_rationale": "Multi-organ features imply systemic vasculitis spillover."},
+            {"axis_id": "mortality_hazard_in_D-URTICARIAL-VASCULITIS", "direction": "up", "factor_range": [1.2, 6.0], "clinical_rationale": "Pulmonary, GI, or severe ocular disease increases outcome risk through event hazards."}
+          ],
+          "trajectory_modulation": "Raises relevant organ-specific mechanism gates instead of hard-labeling severity."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "vasoconstrictive_drug_or_low_flow_gi_context",
+      "type": "event_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.2],
+          "axis_response_modulation": [
+            {"axis_id": "gastrointestinal_ischemia_hazard", "direction": "up", "factor_range": [1.5, 6.0], "clinical_rationale": "Cocaine or low-flow states can worsen bowel ischemia on top of vasculitis."}
+          ],
+          "trajectory_modulation": "Modifies GI ischemia hazard rather than diagnosing UV."
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "current_or_recent_immunosuppression",
+      "type": "treatment_history_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [0.8, 1.5],
+          "axis_response_modulation": [
+            {"axis_id": "serious_infection_hazard", "direction": "up", "factor_range": [1.5, 8.0], "clinical_rationale": "Steroids, antimetabolites, cyclophosphamide, or rituximab increase infection risk."},
+            {"axis_id": "active_serious_infection_activity", "direction": "up_or_context_dependent", "factor_range": [1.0, 5.0], "clinical_rationale": "Fever and CRP may reflect infection during immunosuppression."}
+          ],
+          "trajectory_modulation": "Separates infection complication from vasculitis flare evidence."
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Document lesion duration, fixed location, pain or burning, itch, purpura, bruising, residual hyperpigmentation, angioedema, mucosal swelling, and photographs during active lesions.",
+    "Biopsy a fresh active lesion when diagnosis is uncertain; structure leukocytoclastic vasculitis, nuclear dust, neutrophilic infiltrate, erythrocyte extravasation, and fibrinoid necrosis as post-workup evidence.",
+    "Screen for systemic involvement with urinalysis, urine protein quantification, creatinine/eGFR, blood pressure, complement C3/C4/CH50/C1q, anti-C1q when available, inflammatory markers, and targeted autoimmune/infectious testing.",
+    "Track renal, pulmonary, ocular, and GI symptoms longitudinally; abdominal pain, dyspnea, hematuria/proteinuria, scleritis, or visual symptoms should raise organ-specific hazards.",
+    "Use antihistamines as symptom control only; persistent lesions over 24 hours, purpura, biopsy vasculitis, or systemic organ involvement should remain active disease evidence.",
+    "For dapsone, assess hemolysis/methemoglobinemia risk and G6PD status when relevant; monitor blood counts and oxygenation symptoms.",
+    "For hydroxychloroquine, document dosing, renal function, ocular baseline risk, and ophthalmology monitoring context.",
+    "For steroids and immunosuppressants, separate vasculitis activity from infection, screen for latent or active infection where relevant, and monitor glucose, blood pressure, bone risk, cytopenias, liver tests, and renal function.",
+    "Coordinate dermatology, rheumatology, nephrology, pulmonology, ophthalmology, gastroenterology, and surgery according to organ axes rather than subtype labels."
+  ],
+  "quality_notes": [
+    "No first-line, preference, guideline, or indication-strength labels are encoded; treatment order must emerge from forward simulation and case context.",
+    "Hypocomplementemic, normocomplementemic, anti-C1q-positive, SLE-associated, and complement-deficiency contexts are represented as axes or modifiers under the pure disease leaf.",
+    "Systemic event hazards are included so renal, pulmonary, ocular, GI, infection, and mortality consequences can emerge through hazard drift rather than case-specific rules.",
+    "Antihistamine limitation is represented causally: histamine symptoms may improve while immune-complex vasculitis mechanisms and systemic hazards remain largely unchanged."
+  ]
+}

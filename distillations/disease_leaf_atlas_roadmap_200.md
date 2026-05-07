@@ -174,22 +174,22 @@ Prioritize diseases that are either common, critical, or both.
 | D-TRICHINELLOSIS | Trichinellosis |
 | D-IGA-VASCULITIS | IgA vasculitis |
 | D-CRYOGLOBULINEMIC-VASCULITIS | Cryoglobulinemic vasculitis |
+| D-URTICARIAL-VASCULITIS | Urticarial vasculitis |
+| D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease |
+| D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS | Systemic sclerosis renal crisis |
 
 ## Next 20 High-Priority Leaves
 
 | priority | disease_id | disease leaf | why now |
 | --- | --- | --- | --- |
-| 1 | D-URTICARIAL-VASCULITIS | Urticarial vasculitis | recurrent fever/urticarial rash/angioedema mimic near allergy, infection, and systemic autoimmune disease |
-| 2 | D-MIXED-CONNECTIVE-TISSUE-DISEASE | Mixed connective tissue disease | overlap systemic rheum mimic with fever, Raynaud, myositis, ILD, serositis, and renal-risk axes |
-| 3 | D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS | Systemic sclerosis renal crisis | critical hypertension/AKI/TMA mimic near vasculitis, TTP/HUS, sepsis-AKI, and malignant hypertension |
-| 4 | D-POLYMYALGIA-RHEUMATICA | Polymyalgia rheumatica | common inflammatory fever/ESR mimic near GCA, occult infection, malignancy, and rheum flare |
-| 5 | D-GOUT-FLARE | Gout flare | common febrile mono/oligoarthritis mimic near septic arthritis, cellulitis, CPPD, and bacteremia |
-| 6 | D-CALCIUM-PYROPHOSPHATE-ARTHRITIS | Calcium pyrophosphate crystal arthritis | common acute febrile arthritis mimic near gout, septic arthritis, cellulitis, and rheum flare |
-| 7 | D-REACTIVE-ARTHRITIS | Reactive arthritis | post-infectious fever/arthritis/urethritis-conjunctivitis mimic near DGI, rheum flare, and septic arthritis |
-| 8 | D-PSORIATIC-ARTHRITIS-FLARE | Psoriatic arthritis flare | inflammatory arthritis flare mimic near infection, gout/CPPD, RA flare, and reactive arthritis |
-| 9 | D-ANKYLOSING-SPONDYLITIS-FLARE | Ankylosing spondylitis flare | inflammatory back pain/enthesitis flare mimic near infection, reactive arthritis, and systemic rheum |
-| 10 | D-ULCERATIVE-COLITIS-SEVERE-FLARE | Severe ulcerative colitis flare | fever, diarrhea, systemic inflammation, toxic megacolon and infection mimic |
-| 11 | D-CROHN-DISEASE-FLARE | Crohn disease flare | fever, abdominal pain, abscess/fistula and infection mimic |
+| 1 | D-POLYMYALGIA-RHEUMATICA | Polymyalgia rheumatica | common inflammatory fever/ESR mimic near GCA, occult infection, malignancy, and rheum flare |
+| 2 | D-GOUT-FLARE | Gout flare | common febrile mono/oligoarthritis mimic near septic arthritis, cellulitis, CPPD, and bacteremia |
+| 3 | D-CALCIUM-PYROPHOSPHATE-ARTHRITIS | Calcium pyrophosphate crystal arthritis | common acute febrile arthritis mimic near gout, septic arthritis, cellulitis, and rheum flare |
+| 4 | D-REACTIVE-ARTHRITIS | Reactive arthritis | post-infectious fever/arthritis/urethritis-conjunctivitis mimic near DGI, rheum flare, and septic arthritis |
+| 5 | D-PSORIATIC-ARTHRITIS-FLARE | Psoriatic arthritis flare | inflammatory arthritis flare mimic near infection, gout/CPPD, RA flare, and reactive arthritis |
+| 6 | D-ANKYLOSING-SPONDYLITIS-FLARE | Ankylosing spondylitis flare | inflammatory back pain/enthesitis flare mimic near infection, reactive arthritis, and systemic rheum |
+| 7 | D-ULCERATIVE-COLITIS-SEVERE-FLARE | Severe ulcerative colitis flare | fever, diarrhea, systemic inflammation, toxic megacolon and infection mimic |
+| 8 | D-CROHN-DISEASE-FLARE | Crohn disease flare | fever, abdominal pain, abscess/fistula and infection mimic |
 
 ## Candidate Pool Toward 200
 
