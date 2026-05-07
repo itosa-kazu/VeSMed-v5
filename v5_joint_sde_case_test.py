@@ -286,6 +286,10 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value / 10.0
     if src in ("g/dl", "gperdl") and dst in ("g/l", "gperl"):
         return value * 10.0
+    if src in ("fraction", "ratio") and dst in ("percent", "%", "percentage"):
+        return value * 100.0
+    if src in ("percent", "%", "percentage") and dst in ("fraction", "ratio"):
+        return value / 100.0
 
     if axis_id == "serum_creatinine" and src in ("umol/l", "umolperl") and dst in ("mg/dl", "mgperdl"):
         return value / 88.4
