@@ -10,7 +10,7 @@
     "blind_constraints": [
       "No local distillations/cases JSON for this PMCID was read.",
       "No expected disease metadata, paper diagnosis label, or paper-title-derived diagnosis evidence was added.",
-      "Article title, abstract diagnostic framing, etiologic serology interpretation, treatment, treatment response, late outcome, and discussion-level causal framing are excluded from ranking evidence.",
+      "Article title, abstract diagnostic framing, etiologic interpretation, treatment, treatment response, late outcome, and discussion-level causal framing are excluded from ranking evidence.",
       "Rankable observations use diagnosis-neutral generic clinical axes and no disease-suffixed ordinary observed axes."
     ]
   },
@@ -132,6 +132,16 @@
       "evidence_pointer": "Case report, first paragraph",
       "use_in_ranking": true,
       "negated": true
+    },
+    {
+      "axis_id": "hav_igm_positivity",
+      "axis_category": "microbiology",
+      "axis_role": "measurement",
+      "value": 1,
+      "unit": "probability_0_1",
+      "source_text_value": "positive for IgM anti-HAV",
+      "evidence_pointer": "Case report, first paragraph",
+      "use_in_ranking": true
     },
     {
       "axis_id": "acute_hepatocellular_injury_presence",
@@ -632,8 +642,8 @@
       "use_in_ranking": false
     },
     {
-      "type": "etiologic_serology_and_resulting_interpretation",
-      "description": "Hepatotropic viral serologies were negative for HCV, HBV, HEV, and HIV and positive for IgM anti-HAV; the paper's resulting etiologic diagnosis is kept out of ranking evidence.",
+      "type": "resulting_etiologic_interpretation",
+      "description": "The paper's resulting etiologic diagnosis and causal framing are kept out of ranking evidence; the raw IgM anti-HAV laboratory result is represented separately as a rankable diagnostic axis.",
       "evidence_pointer": "Case report, first paragraph",
       "use_in_ranking": false
     },
@@ -701,7 +711,7 @@
   "extraction_quality_notes": [
     "Blind extraction intentionally omits expected disease metadata and any paper diagnosis label field.",
     "No local distillations/cases JSON for PMC7005653 was inspected.",
-    "Positive anti-HAV IgM and the paper's diagnostic interpretation are record-only because they directly identify etiology rather than representing diagnosis-neutral clinical axes.",
+    "Positive anti-HAV IgM is included as a rankable diagnostic laboratory axis because it is a raw source result, while the paper's diagnostic interpretation remains record-only.",
     "Treatment, transplant decision-making, plasma exchange, treatment response, late outcome, and discussion-level causal framing are record-only with use_in_ranking=false.",
     "The source reports ammonia in micromoles per liter; JSON stores the unit as ASCII umol/L.",
     "Transcranial Doppler pulsatility index was reported as a range of 1.5 to 1.8; the midpoint 1.65 is stored with the original range preserved.",
