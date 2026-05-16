@@ -17,6 +17,7 @@ import math
 import os
 import re
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -30,8 +31,8 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROOT = Path(__file__).parent.resolve()
 DISTILL_DIR = ROOT / "distillations"
-CASE_DIR = DISTILL_DIR / "cases"
-RESULT_PATH = DISTILL_DIR / "joint_sde_case_test_result.txt"
+CASE_DIR = Path(os.environ.get("VESMED_CASE_DIR", DISTILL_DIR / "cases"))
+RESULT_PATH = Path(os.environ.get("VESMED_RESULT_PATH", DISTILL_DIR / "joint_sde_case_test_result.txt"))
 
 MANIFOLD_ORDER_HINTS = ("D137", "D-SEPSIS-GN", "D-TTP")
 
@@ -140,15 +141,53 @@ CASE_FILTER = env_csv("VESMED_CASE_FILTER")
 ONLY_COMBO_CASES = env_bool("VESMED_ONLY_COMBO_CASES", False)
 SCORE_MODE = os.environ.get("VESMED_SCORE_MODE", "mc").strip().lower()
 TIME_GRID_N = max(env_int("VESMED_TIME_GRID_N", 31), 1)
+REPORT_MODE = os.environ.get("VESMED_REPORT_MODE", "full").strip().lower()
+RANKING_TOP_N = env_int("VESMED_RANKING_TOP_N", 0)
+EARLY_GRID_TIME_DAYS = (0.02, 0.1, 0.5, 1.0, 3.0, 7.0)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
+SINGLE_ANCHOR_THRESHOLD = 1.0
+SINGLE_MISSING_ANCHOR_PENALTY = -60.0
+NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
 GENERIC_ANCHOR_SCORE_CAP = 4.0
+DURATION_CONDITION_SAMPLE_FACTORS = (0.5, 0.75, 1.0, 1.33, 2.0)
+DURATION_CONDITION_LOG_SIGMA = 0.35
+DURATION_COMPATIBILITY_GRACE_FACTOR = 1.5
+DURATION_COMPATIBILITY_PENALTY_SCALE = 18.0
+DURATION_COMPATIBILITY_AXIS_CAP = 60.0
+DURATION_COMPATIBILITY_TOTAL_CAP = 420.0
+ANATOMIC_IMPOSSIBILITY_LOG_PENALTY = -600.0
+
+FEMALE_REPRODUCTIVE_DISEASE_IDS = {
+    "D-AMNIOTIC-FLUID-EMBOLISM",
+    "D-CHORIOAMNIONITIS",
+    "D-ECTOPIC-PREGNANCY",
+    "D-HELLP-SYNDROME",
+    "D-OVARIAN-TORSION",
+    "D-PELVIC-INFLAMMATORY-DISEASE",
+    "D-PLACENTA-PREVIA",
+    "D-PLACENTAL-ABRUPTION",
+    "D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+    "D-PREECLAMPSIA-ECLAMPSIA",
+    "D-THREATENED-PRETERM-LABOR",
+    "D-TUBO-OVARIAN-ABSCESS",
+    "D-UTERINE-RUPTURE",
+}
+
+MALE_REPRODUCTIVE_DISEASE_IDS = {
+    "D-ACUTE-PROSTATITIS",
+    "D-BPH-URINARY-RETENTION",
+    "D-EPIDIDYMO-ORCHITIS",
+    "D-TESTICULAR-TORSION",
+}
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
 DRIFT_COUPLING_TYPES = {"drift", "hazard_drift", "event_transition", "mixed"}
 LATENT_MECHANISM_CATEGORY = "latent_mechanism"
+_CANDIDATE_AXIS_SET_CACHE = {}
+_CANDIDATE_FORMAL_AXIS_SET_CACHE = {}
 
 
 GENERIC_ANCHOR_EXCLUDED_CATEGORIES = {
@@ -258,6 +297,7 @@ def midpoint(interval, default=1.0):
     return 0.5 * (interval[0] + interval[1])
 
 
+@lru_cache(maxsize=4096)
 def norm_unit(unit):
     if unit is None:
         return ""
@@ -282,6 +322,10 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value * 10.0
     if src in ("mg/l", "mgperl") and dst in ("mg/dl", "mgperdl"):
         return value / 10.0
+    if src in ("ng/ml", "ngperml") and dst in ("ng/l", "ngperl"):
+        return value * 1000.0
+    if src in ("ng/l", "ngperl") and dst in ("ng/ml", "ngperml"):
+        return value / 1000.0
     if src in ("g/l", "gperl") and dst in ("g/dl", "gperdl"):
         return value / 10.0
     if src in ("g/dl", "gperdl") and dst in ("g/l", "gperl"):
@@ -290,6 +334,10 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value * 100.0
     if src in ("percent", "%", "percentage") and dst in ("fraction", "ratio"):
         return value / 100.0
+    if src in ("kgpermonth", "kg/month") and dst in ("kgperweek", "kg/week"):
+        return value / 4.345
+    if src in ("kgperweek", "kg/week") and dst in ("kgpermonth", "kg/month"):
+        return value * 4.345
 
     if axis_id == "serum_creatinine" and src in ("umol/l", "umolperl") and dst in ("mg/dl", "mgperdl"):
         return value / 88.4
@@ -302,6 +350,27 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value * 2.801
     if axis_id == "blood_urea_nitrogen" and src in ("g/l", "gperl") and dst in ("mg/dl", "mgperdl"):
         return value * 46.7
+    if axis_id in ("serum_calcium", "corrected_serum_calcium") and src in ("mmol/l", "mmolperl") and dst in ("mg/dl", "mgperdl"):
+        return value * 4.008
+    if axis_id in ("serum_calcium", "corrected_serum_calcium") and src in ("mg/dl", "mgperdl") and dst in ("mmol/l", "mmolperl"):
+        return value / 4.008
+    if axis_id == "serum_magnesium" and src in ("mmol/l", "mmolperl") and dst in ("mg/dl", "mgperdl"):
+        return value * 2.43
+    if axis_id == "serum_magnesium" and src in ("mg/dl", "mgperdl") and dst in ("mmol/l", "mmolperl"):
+        return value / 2.43
+    if axis_id == "serum_phosphate" and src in ("mmol/l", "mmolperl") and dst in ("mg/dl", "mgperdl"):
+        return value * 3.10
+    if axis_id == "serum_phosphate" and src in ("mg/dl", "mgperdl") and dst in ("mmol/l", "mmolperl"):
+        return value / 3.10
+
+    if axis_id == "free_thyroxine" and src in ("pmol/l", "pmolperl") and dst in ("ng/dl", "ngperdl"):
+        return value / 12.87
+    if axis_id == "free_thyroxine" and src in ("ng/dl", "ngperdl") and dst in ("pmol/l", "pmolperl"):
+        return value * 12.87
+    if axis_id == "free_triiodothyronine" and src in ("pmol/l", "pmolperl") and dst in ("pg/ml", "pgperml"):
+        return value / 1.536
+    if axis_id == "free_triiodothyronine" and src in ("pg/ml", "pgperml") and dst in ("pmol/l", "pmolperl"):
+        return value * 1.536
 
     if src in ("k/ul", "103/ul", "109/l") and dst in ("109/l", "k/ul", "103/ul"):
         return value
@@ -312,6 +381,100 @@ def convert_value(value, from_unit, to_unit, axis_id):
     return value
 
 
+def duration_value_to_days(value, unit, axis_id=None):
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(value) or value <= 0:
+        return None
+
+    unit_norm = norm_unit(unit)
+    axis_id = str(axis_id or "")
+    if unit_norm in ("hours", "hour", "hr", "hrs", "h"):
+        return value / 24.0
+    if unit_norm in ("days", "day", "d"):
+        return value
+    if unit_norm in ("weeks", "week", "wk", "wks"):
+        return value * 7.0
+    if unit_norm in ("months", "month", "mo", "mos"):
+        return value * 30.44
+    if unit_norm in ("years", "year", "yr", "yrs"):
+        return value * 365.25
+
+    if axis_id.endswith("_hours") or axis_id.endswith("_duration_hours") or "_onset_hours" in axis_id:
+        return value / 24.0
+    if axis_id.endswith("_days") or axis_id.endswith("_duration_days") or "_onset_days" in axis_id:
+        return value
+    if axis_id.endswith("_months") or axis_id.endswith("_duration_months"):
+        return value * 30.44
+    if axis_id.endswith("_years") or axis_id.endswith("_duration_years"):
+        return value * 365.25
+    return None
+
+
+def observation_is_duration_axis(axis_id):
+    axis_id = str(axis_id or "")
+    if axis_id in {
+        "symptom_duration_months",
+        "time_from_symptom_onset_days",
+        "time_since_limb_symptom_onset_hours",
+        "time_from_pain_onset_to_care_hours",
+        "time_from_pain_onset_to_presentation_hours",
+        "neurologic_symptom_duration_hours",
+    }:
+        return True
+    return (
+        axis_id.endswith("_duration_days")
+        or axis_id.endswith("_duration_hours")
+        or axis_id.endswith("_duration_months")
+        or axis_id.startswith("time_from_symptom_onset")
+        or axis_id.startswith("time_since_limb_symptom_onset")
+    )
+
+
+def case_presentation_duration_days(case):
+    """Return observed duration of the presenting illness, if structured.
+
+    This is not an unknown-disease threshold. It conditions the latent disease
+    age used in likelihood scoring when the case explicitly says how long the
+    current presentation has been present.
+    """
+    if not isinstance(case, dict):
+        return None
+
+    durations = []
+    for key in (
+        "presentation_duration_days",
+        "symptom_duration_days",
+        "history_duration_days",
+        "illness_duration_days",
+    ):
+        duration = duration_value_to_days(case.get(key), "days", key)
+        if duration is not None:
+            durations.append(duration)
+    for key in ("presentation_duration_months", "symptom_duration_months"):
+        duration = duration_value_to_days(case.get(key), "months", key)
+        if duration is not None:
+            durations.append(duration)
+
+    for axis_id, obs in case.get("observations_by_axis", {}).items():
+        if obs.get("use_in_time_conditioning") is False:
+            continue
+        if not observation_is_duration_axis(axis_id):
+            continue
+        duration = duration_value_to_days(obs.get("value"), obs.get("unit"), axis_id)
+        if duration is not None:
+            durations.append(duration)
+
+    if not durations:
+        return None
+    # If multiple duration snippets are present, the longest general presenting
+    # duration is the safest anchor. Acute sub-event durations should be kept on
+    # specific event axes and can opt out with use_in_time_conditioning:false.
+    return max(durations)
+
+
 def observation_value_for_axis(obs, axis, axis_id):
     """Convert a case observation into the axis unit without inventing precision.
 
@@ -320,33 +483,62 @@ def observation_value_for_axis(obs, axis, axis_id):
     mathematical extreme rather than "within the reference range".
     """
     value = obs.get("value")
+    cache_key = (
+        axis_id,
+        axis.get("unit"),
+        tuple(axis.get("baseline_range") or ()),
+        tuple(axis.get("peak_value_range") or ()),
+        bool(axis.get("log_scale")),
+        obs.get("unit"),
+        value,
+    )
+    value_cache = obs.setdefault("_axis_value_cache", {})
+    if cache_key in value_cache:
+        return value_cache[cache_key]
     src = norm_unit(obs.get("unit"))
     if src in ("qualitativenegative", "negative", "negativeflag"):
         dst = norm_unit(axis.get("unit"))
         if dst in ("probability01", "relativeactivity01", "severityscore01", "presentabsent01"):
+            value_cache[cache_key] = 0.0
             return 0.0
         if axis.get("log_scale"):
+            value_cache[cache_key] = 1.0
             return 1.0
         baseline = parse_interval(axis.get("baseline_range"))
-        return baseline[0] if baseline else 0.0
+        out = baseline[0] if baseline else 0.0
+        value_cache[cache_key] = out
+        return out
     if src in ("qualitativepositive", "positive", "positiveflag"):
         dst = norm_unit(axis.get("unit"))
         if dst in ("probability01", "relativeactivity01", "severityscore01", "presentabsent01"):
+            value_cache[cache_key] = 1.0
             return 1.0
         peak = parse_interval(axis.get("peak_value_range"))
         if peak is not None:
-            return midpoint(peak)
+            out = midpoint(peak)
+            value_cache[cache_key] = out
+            return out
         baseline = parse_interval(axis.get("baseline_range"))
-        return baseline[1] if baseline else 1.0
+        out = baseline[1] if baseline else 1.0
+        value_cache[cache_key] = out
+        return out
     if src == "normalflagonly":
         baseline = parse_interval(axis.get("baseline_range"))
         if baseline is None:
-            return 0.0 if float(value) <= 0.5 else 1.0
+            out = 0.0 if float(value) <= 0.5 else 1.0
+            value_cache[cache_key] = out
+            return out
         if float(value) <= 0.5:
-            return midpoint(baseline)
+            out = midpoint(baseline)
+            value_cache[cache_key] = out
+            return out
         peak = parse_interval(axis.get("peak_value_range"))
-        return midpoint(peak, midpoint(baseline))
-    return convert_value(value, obs.get("unit"), axis.get("unit"), axis_id)
+        out = midpoint(peak, midpoint(baseline))
+        value_cache[cache_key] = out
+        return out
+    out = convert_value(value, obs.get("unit"), axis.get("unit"), axis_id)
+    value_cache[cache_key] = out
+    return out
 
 
 def raw_axis_records(data):
@@ -388,6 +580,12 @@ def normalize_effect_on_target(value):
 
 
 def normalize_mechanism_edge(raw):
+    if raw.get("use_in_scoring") is False:
+        return None
+    if str(raw.get("scoring_role") or "").strip().lower() == "audit_only":
+        return None
+    if raw.get("mechanism_audit_origin") and raw.get("use_in_scoring") is not True:
+        return None
     edge = dict(raw)
     source = (
         edge.get("source_id")
@@ -604,9 +802,11 @@ def fallback_axis_from_observation(axis_id, obs):
         return None
     return {
         "axis_id": axis_id,
-        "category": "qualitative",
+        "category": obs.get("category") or "qualitative",
         "unit": unit,
         "log_scale": False,
+        "axis_role": obs.get("axis_role"),
+        "parent_axis_id": obs.get("parent_axis_id"),
         "baseline_range": [0.0, 0.05],
         "peak_day_range": None,
         "peak_value_range": None,
@@ -645,12 +845,18 @@ NON_RANKING_SECTION_PREFIXES = (
 
 def mapped_axis_ids(item):
     ids = []
+    if item.get("axis_id"):
+        ids.append(item.get("axis_id"))
     if item.get("mapped_axis_id"):
         ids.append(item.get("mapped_axis_id"))
     raw_ids = item.get("mapped_axis_ids")
     if isinstance(raw_ids, list):
         ids.extend(raw_ids)
-    return [axis_id for axis_id in ids if axis_id]
+    out = []
+    for axis_id in ids:
+        if axis_id and axis_id not in out:
+            out.append(axis_id)
+    return out
 
 
 def mapped_axis_items(item):
@@ -790,7 +996,10 @@ def background_axes_for_case(background_axes, case, candidate):
     if candidate in cache:
         return cache[candidate]
 
-    context = v5_background.background_context_for_case(case)
+    context = case.get("_background_context")
+    if context is None:
+        context = v5_background.background_context_for_case(case)
+        case["_background_context"] = context
     adjusted = {}
     for axis_id, obs in case.get("observations_by_axis", {}).items():
         axis = background_axes.get(axis_id)
@@ -815,22 +1024,527 @@ def case_item_rankable(item):
     return item.get("use_in_ranking") is not False
 
 
-def load_case(path):
-    data = json.loads(path.read_text(encoding="utf-8"))
-    observations = {}
+LEGACY_MANUAL_AXIS_BRIDGES = {
+    "fever_history_activity": ("fever_history_presence",),
+    "fever_activity": ("fever_history_presence",),
+    "fatigue_activity": ("fatigue_presence",),
+    "malaise_fatigue_activity": ("fatigue_presence", "malaise_presence"),
+    "fatigue_malaise_activity": ("fatigue_presence", "malaise_presence"),
+    "malaise_activity": ("malaise_presence",),
+    "chills_rigors_activity": ("chills_presence", "rigors_presence"),
+    "rigor_activity": ("rigors_presence",),
+    "anorexia_activity": ("appetite_loss_presence",),
+    "anorexia_poor_appetite_activity": ("appetite_loss_presence",),
+    "weight_loss_activity": ("unintentional_weight_loss_presence",),
+    "night_sweats_activity": ("night_sweats_presence",),
+    "pruritus_activity": ("pruritus_presence",),
+    "diarrhea_activity": ("diarrhea_presence", "watery_stool_presence"),
+    "bloody_diarrhea_activity": ("bloody_diarrhea_presence",),
+    "vomiting_activity": ("vomiting_presence", "gastric_fluid_vomitus_presence"),
+    "nausea_vomiting_activity": ("nausea_presence", "vomiting_presence"),
+    "gastrointestinal_bleeding_activity": ("gastrointestinal_bleeding_presence",),
+    "hematochezia_activity": ("hematochezia_presence",),
+    "iga_vasculitis_hematemesis_activity_in_D-IGA-VASCULITIS": ("hematemesis_presence",),
+    "cough_activity": ("cough_presence",),
+    "dyspnea_activity": ("dyspnea_presence",),
+    "sore_throat_activity": ("sore_throat_presence",),
+    "abdominal_pain_activity": ("abdominal_pain_presence",),
+    "headache_activity": ("headache_presence",),
+    "myalgia_activity": ("myalgia_presence",),
+    "arthralgia_activity": ("arthralgia_presence",),
+    "arthritis_activity": ("arthritis_presence",),
+    "chest_pain_activity": ("chest_pain_presence",),
+    "mental_status_abnormality_activity": ("mental_status_abnormality_presence",),
+    "altered_mental_status_activity": ("mental_status_abnormality_presence",),
+    "seizure_activity": ("seizure_presence",),
+    "neurologic_deficit_activity": ("neurologic_deficit_presence",),
+    "focal_neurologic_deficit_activity": ("focal_neurologic_deficit_presence",),
+    "neck_stiffness_activity": ("neck_stiffness_presence",),
+    "nuchal_rigidity_activity": ("neck_stiffness_presence",),
+    "meningismus_activity": ("meningismus_presence",),
+    "meningeal_signs_activity": ("meningeal_signs_presence",),
+    "photophobia_activity": ("photophobia_presence",),
+    "hemoptysis_activity": ("hemoptysis_presence",),
+    "hemoptysis_activity_in_D-NOCARDIOSIS": ("hemoptysis_presence",),
+    "pleural_effusion_activity": ("pleural_effusion_presence",),
+    "pneumonia_infiltrate_extent": ("pulmonary_infiltrate_presence",),
+    "pulmonary_infiltrate_extent_egpa": ("pulmonary_infiltrate_presence",),
+    "pulmonary_consolidation_activity": ("pulmonary_consolidation_presence",),
+    "pulmonary_edema_activity": ("pulmonary_edema_presence",),
+    "respiratory_failure_activity": ("respiratory_failure_presence",),
+    "dyspnea_respiratory_distress_activity": ("respiratory_distress_presence",),
+    "crackles_activity": ("crackles_presence",),
+    "crackles_activity_in_D-PNEUMOCOCCAL-PNEUMONIA": ("crackles_presence",),
+    "bibasal_crackles_activity": ("bibasal_crackles_presence",),
+    "diffuse_crackles_activity_in_D-PJP-PNEUMONIA": ("diffuse_crackles_presence",),
+    "decreased_breath_sounds_activity": ("decreased_breath_sounds_presence",),
+    "dullness_to_percussion_activity": ("percussion_dullness_presence",),
+    "dullness_to_percussion_activity_in_D-PNEUMOCOCCAL-PNEUMONIA": ("percussion_dullness_presence",),
+    "bronchial_breath_sounds_activity_in_D-PNEUMOCOCCAL-PNEUMONIA": ("bronchial_breath_sounds_presence",),
+    "dysuria_activity": ("dysuria_presence",),
+    "dysuria_activity_in_D-PYELONEPHRITIS": ("dysuria_presence",),
+    "urinary_symptom_activity": ("lower_urinary_tract_symptom_presence",),
+    "urinary_frequency_activity": ("urinary_frequency_presence",),
+    "urinary_frequency_urgency_activity": ("urinary_frequency_urgency_presence",),
+    "urinary_frequency_urgency_activity_in_D-PYELONEPHRITIS": ("urinary_frequency_urgency_presence",),
+    "urinary_retention_activity": ("urinary_retention_presence",),
+    "urinary_obstruction_activity": ("urinary_obstruction_presence",),
+    "flank_pain_activity": ("flank_pain_presence",),
+    "flank_pain_activity_in_D-PERINEPHRIC-ABSCESS": ("flank_pain_presence",),
+    "flank_pain_activity_in_D-PYELONEPHRITIS": ("flank_pain_presence",),
+    "flank_pain_activity_in_D-RENAL-ABSCESS": ("flank_pain_presence",),
+    "back_flank_pain_activity_in_D-IGG4-RELATED-DISEASE": ("flank_pain_presence",),
+    "cva_tenderness_activity_in_D-PERINEPHRIC-ABSCESS": ("costovertebral_angle_tenderness_presence",),
+    "cva_tenderness_activity_in_D-PYELONEPHRITIS": ("costovertebral_angle_tenderness_presence",),
+    "cva_tenderness_activity_in_D-RENAL-ABSCESS": ("costovertebral_angle_tenderness_presence",),
+    "upper_urinary_tract_pain_tenderness_activity": ("upper_urinary_tract_pain_or_tenderness_presence",),
+    "suprapubic_pain_activity": ("suprapubic_pain_presence",),
+    "suprapubic_tenderness_activity": ("suprapubic_tenderness_presence",),
+    "hematuria_activity": ("hematuria_presence",),
+    "gross_hematuria_activity": ("gross_hematuria_presence",),
+    "pyuria_activity": ("pyuria_presence",),
+    "urinary_pyuria_activity": ("pyuria_presence",),
+    "sterile_pyuria_activity": ("sterile_pyuria_presence",),
+    "bacteriuria_activity": ("bacteriuria_presence",),
+    "bacteriuria_activity_in_D-RENAL-ABSCESS": ("bacteriuria_presence",),
+    "proteinuria_activity": ("proteinuria_presence",),
+    "glomerular_proteinuria_activity_sjogren": ("glomerular_proteinuria_presence",),
+    "active_urinary_sediment_activity": ("active_urinary_sediment_presence",),
+    "granular_casts_activity": ("granular_casts_presence",),
+    "urine_white_blood_cell_casts_presence_in_D-PYELONEPHRITIS": ("urine_white_blood_cell_casts_presence",),
+    "nephrotic_syndrome_activity": ("nephrotic_syndrome_presence",),
+    "foamy_urine_activity": ("foamy_urine_presence",),
+    "pericardial_effusion_activity": ("pericardial_effusion_presence",),
+    "serositis_activity": ("serositis_presence",),
+    "pericarditis_activity_in_D-FAMILIAL-MEDITERRANEAN-FEVER": ("pericarditis_presence",),
+    "pericarditis_activity_in_D-TRAPS": ("pericarditis_presence",),
+    "jugular_venous_distension_activity": ("jugular_venous_distension_presence",),
+    "distant_heart_sounds_activity": ("distant_heart_sounds_presence",),
+    "pulsus_paradoxus_activity": ("pulsus_paradoxus_presence",),
+    "ascites_activity": ("ascites_presence",),
+    "peripheral_edema_activity": ("peripheral_edema_presence",),
+    "capillary_leak_third_spacing_activity": ("capillary_leak_third_spacing_presence",),
+    "abdominal_distension_activity": ("abdominal_distension_presence",),
+    "dehydration_activity": ("dehydration_presence",),
+    "polydipsia_activity": ("polydipsia_presence",),
+    "polyuria_activity": ("polyuria_presence",),
+    "dehydration_volume_depletion_activity": ("volume_depletion_presence", "dehydration_presence"),
+    "orthostatic_hypotension_activity": ("orthostatic_hypotension_presence",),
+    "ecg_hyperkalemia_activity": ("hyperkalemia_ecg_change_presence",),
+    "rhabdomyolysis_activity": ("rhabdomyolysis_presence",),
+    "allograft_dysfunction_activity": ("allograft_dysfunction_presence",),
+    "kidney_allograft_dysfunction_activity": ("kidney_allograft_dysfunction_presence",),
+    "heart_allograft_dysfunction_activity": ("heart_allograft_dysfunction_presence",),
+    "liver_allograft_dysfunction_activity": ("liver_allograft_dysfunction_presence",),
+    "lung_allograft_dysfunction_activity": ("lung_allograft_dysfunction_presence",),
+    "allograft_tenderness_activity": ("kidney_allograft_tenderness_presence",),
+    "lower_extremity_edema_activity": ("lower_extremity_edema_presence",),
+    "facial_edema_activity": ("facial_edema_presence",),
+    "fluid_retention_weight_gain_activity_in_D-APL": ("fluid_retention_presence",),
+    "flank_swelling_activity_in_D-PERINEPHRIC-ABSCESS": ("flank_swelling_presence",),
+    "renal_inflammation_activity_in_D-RELAPSING-POLYCHONDRITIS": ("renal_inflammation_presence",),
+    "renal_tubulointerstitial_nephritis_activity_in_D-CAEBV": ("tubulointerstitial_nephritis_presence",),
+    "new_onset_diabetes_activity_in_D-IGG4-RELATED-DISEASE": ("new_onset_diabetes_presence",),
+    "heat_intolerance_activity": ("heat_intolerance_presence",),
+    "oliguria_activity": ("oliguria_presence",),
+    "cardiac_murmur_activity": ("cardiac_murmur_presence",),
+    "ie_new_heart_murmur_activity": ("new_or_changed_cardiac_murmur_presence",),
+    "syncope_presyncope_activity": ("syncope_presence", "presyncope_presence"),
+    "syncope_activity": ("syncope_presence",),
+    "palpitations_activity": ("palpitations_presence",),
+    "diaphoresis_sweats_activity": ("diaphoresis_presence",),
+    "peritonitis_activity": ("peritoneal_irritation_presence",),
+    "bile_peritonitis_activity": ("bile_peritonitis_presence",),
+    "pelvic_pain_activity": ("pelvic_pain_presence",),
+    "lower_abdominal_pain_activity": ("lower_abdominal_pain_presence",),
+    "cervical_motion_tenderness_activity": ("cervical_motion_tenderness_presence",),
+    "adnexal_tenderness_activity": ("adnexal_tenderness_presence",),
+    "uterine_tenderness_activity": ("uterine_tenderness_presence",),
+    "vaginal_discharge_activity": ("vaginal_discharge_presence",),
+    "mucopurulent_cervical_discharge_activity": ("mucopurulent_cervical_discharge_presence",),
+    "malodorous_vaginal_discharge_activity": ("malodorous_vaginal_discharge_presence",),
+    "abnormal_lochia_activity": ("abnormal_lochia_presence",),
+    "malodorous_lochia_activity": ("malodorous_lochia_presence",),
+    "purulent_lochia_activity": ("purulent_lochia_presence",),
+    "uterine_subinvolution_activity": ("uterine_subinvolution_presence",),
+    "retained_products_of_conception_activity": ("retained_products_of_conception_presence",),
+    "pallor_activity": ("pallor_presence",),
+    "dark_urine_activity": ("dark_urine_presence",),
+    "hemoglobinuria_dark_urine_activity": ("dark_urine_presence", "pigmenturia_presence"),
+    "proximal_muscle_weakness_activity": ("proximal_muscle_weakness_presence",),
+    "generalized_weakness_activity": ("generalized_weakness_presence",),
+    "limb_weakness_paralysis_activity": ("limb_weakness_or_paralysis_presence",),
+    "neck_flexor_weakness_activity": ("neck_flexor_weakness_presence",),
+    "respiratory_muscle_weakness_activity": ("respiratory_muscle_weakness_presence",),
+    "generalized_muscle_rigidity_activity": ("generalized_muscle_rigidity_presence",),
+    "muscle_rigidity_activity": ("muscle_rigidity_presence",),
+    "masseter_spasm_activity": ("masseter_spasm_presence",),
+    "tremor_activity": ("tremor_presence",),
+    "anterior_uveitis_activity": ("anterior_uveitis_presence",),
+    "posterior_uveitis_activity": ("posterior_uveitis_presence",),
+    "uveitis_activity": ("uveitis_presence",),
+    "scleritis_episcleritis_activity": ("scleritis_episcleritis_presence",),
+    "conjunctivitis_activity": ("conjunctivitis_presence",),
+    "conjunctivitis_activity_in_D-URTICARIAL-VASCULITIS": ("conjunctivitis_presence",),
+    "conjunctival_suffusion_activity": ("conjunctival_suffusion_presence",),
+    "diplopia_activity": ("diplopia_presence",),
+    "diplopia_activity_in_D-GCA": ("diplopia_presence",),
+    "papilledema_activity": ("papilledema_presence",),
+    "periorbital_edema_activity": ("periorbital_edema_presence",),
+    "proptosis_activity": ("proptosis_presence",),
+    "restricted_extraocular_movement_activity_in_D-ORBITAL-CELLULITIS": ("restricted_extraocular_movement_presence",),
+    "eyelid_erythema_activity_in_D-ORBITAL-CELLULITIS": ("eyelid_erythema_presence",),
+    "ocular_pain_activity_in_D-ORBITAL-CELLULITIS": ("ocular_pain_presence",),
+    "purulent_periocular_discharge_activity_in_D-ORBITAL-CELLULITIS": ("purulent_periocular_discharge_presence",),
+    "blurred_vision_activity": ("blurred_vision_presence",),
+    "chemosis_activity_in_D-ORBITAL-CELLULITIS": ("chemosis_presence",),
+    "choroidal_tubercles_activity": ("choroidal_tubercles_presence",),
+    "conjunctival_hyperemia_activity_in_D-ORBITAL-CELLULITIS": ("conjunctival_hyperemia_presence",),
+    "keratitis_activity": ("keratitis_presence",),
+    "lacrimal_gland_enlargement_activity": ("lacrimal_gland_enlargement_presence",),
+    "lacrimal_gland_enlargement_activity_in_D-SARCOIDOSIS": ("lacrimal_gland_enlargement_presence",),
+    "ocular_myositis_activity_in_D-CAEBV": ("ocular_myositis_presence",),
+    "orbital_apex_syndrome_activity_in_D-INVASIVE-ASPERGILLOSIS": ("orbital_apex_syndrome_presence",),
+    "pain_with_eye_movement_activity_in_D-ORBITAL-CELLULITIS": ("pain_with_eye_movement_presence",),
+    "photophobia_activity_in_D-INVASIVE-ASPERGILLOSIS": ("photophobia_presence",),
+    "ptosis_activity_in_D-ORBITAL-CELLULITIS": ("ptosis_presence",),
+    "ptosis_activity_in_D-INVASIVE-ASPERGILLOSIS": ("ptosis_presence",),
+    "retro_orbital_pain_activity": ("retro_orbital_pain_presence",),
+    "subconjunctival_hemorrhage_activity_in_D-TRICHINELLOSIS": ("subconjunctival_hemorrhage_presence",),
+    "ie_roth_spot_activity": ("roth_spot_presence",),
+    "vision_loss_activity_in_D-INVASIVE-ASPERGILLOSIS": ("vision_loss_presence",),
+    "acrodermatitis_chronica_atrophicans_activity_in_D-LYME-DISEASE": ("acrodermatitis_chronica_atrophicans_presence",),
+    "angioedema_activity": ("angioedema_presence",),
+    "caebv_vascular_lesion_activity": ("cutaneous_vascular_lesion_presence",),
+    "condyloma_lata_activity_in_D-SECONDARY-SYPHILIS": ("condyloma_lata_presence",),
+    "cutaneous_vasculitis_purpura_activity_sjogren": ("cutaneous_vasculitis_purpura_presence",),
+    "erythema_nodosum_activity": ("erythema_nodosum_presence",),
+    "evanescent_rash_activity": ("evanescent_rash_presence",),
+    "hydroa_vacciniforme_like_skin_lesion_activity": ("hydroa_vacciniforme_like_skin_lesion_presence",),
+    "hyperpigmentation_activity": ("hyperpigmentation_presence",),
+    "ie_oslers_node_activity": ("osler_node_presence",),
+    "leukemia_cutis_activity_in_D-ALL": ("leukemia_cutis_presence",),
+    "leukemia_cutis_activity_in_D-AML": ("leukemia_cutis_presence",),
+    "migratory_erythematous_rash_activity_in_D-TRAPS": ("migratory_erythematous_rash_presence",),
+    "morbilliform_rash_activity_DRESS": ("morbilliform_rash_presence",),
+    "mucous_patch_activity_in_D-SECONDARY-SYPHILIS": ("mucous_patch_presence",),
+    "palatal_petechiae_activity": ("palatal_petechiae_presence",),
+    "papulopustular_skin_lesion_activity": ("papulopustular_skin_lesion_presence",),
+    "pustular_or_petechial_acral_rash_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("acral_rash_presence",),
+    "severe_mosquito_bite_allergy_activity": ("severe_mosquito_bite_allergy_presence",),
+    "soft_tissue_bleeding_activity": ("soft_tissue_bleeding_presence",),
+    "subcutaneous_nodule_activity_in_D-CAEBV": ("subcutaneous_nodule_presence",),
+    "subcutaneous_nodule_activity_in_D-PAN": ("subcutaneous_nodule_presence",),
+    "subcutaneous_nodule_activity_in_D-RHEUMATIC-FEVER": ("subcutaneous_nodule_presence",),
+    "superficial_thrombophlebitis_activity_behcet": ("superficial_thrombophlebitis_presence",),
+    "frontal_bossing_activity_in_D-CAPS": ("frontal_bossing_presence",),
+    "nasal_polyposis_activity_egpa": ("nasal_polyposis_presence",),
+    "parotid_gland_enlargement_activity": ("parotid_gland_enlargement_presence",),
+    "parotid_gland_enlargement_activity_in_D-SARCOIDOSIS": ("parotid_gland_enlargement_presence",),
+    "parotid_swelling_activity_sjogren": ("parotid_gland_enlargement_presence",),
+    "parotitis_activity": ("parotitis_presence",),
+    "submandibular_gland_enlargement_activity": ("submandibular_gland_enlargement_presence",),
+    "submandibular_swelling_activity_sjogren": ("submandibular_gland_enlargement_presence",),
+    "xerostomia_activity": ("oral_dryness_presence",),
+    "regional_lymphadenopathy_activity": ("regional_lymphadenopathy_presence",),
+    "perianal_infection_activity": ("perianal_soft_tissue_infection_presence",),
+    "thyroid_riedel_fibrosis_activity": ("thyroid_fibrosis_presence",),
+    "carotidynia_neck_pain_activity_in_D-TAKAYASU-ARTERITIS": ("carotidynia_presence",),
+    "localized_pain_activity": ("localized_pain_presence",),
+    "neck_pain_activity": ("neck_pain_presence",),
+    "scalp_tenderness_activity": ("scalp_tenderness_presence",),
+    "hiccup_activity": ("hiccup_presence",),
+    "sleep_disturbance_activity": ("sleep_disturbance_presence",),
+    "irritability_activity": ("irritability_presence",),
+    "failure_to_thrive_activity": ("failure_to_thrive_presence",),
+    "prolonged_fever_activity": ("prolonged_fever_presence",),
+    "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER": ("fever_without_localizing_symptom_presence",),
+    "chills_or_discomfort_activity_in_D-DRUG-FEVER": ("systemic_discomfort_presence",),
+    "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR": ("fever_history_presence", "chills_presence"),
+    "shivering_activity": ("shivering_presence",),
+    "transfusion_associated_malaise_discomfort_activity_in_D-TRANSFUSION-REACTION-FNHTR": ("malaise_presence",),
+    "caps_continuous_inflammation_activity_in_D-CAPS": ("continuous_systemic_inflammation_course_presence",),
+    "caps_recurrent_systemic_inflammatory_episode_activity_in_D-CAPS": ("recurrent_systemic_inflammatory_episode_presence",),
+    "uv_relapsing_course_activity_in_D-URTICARIAL-VASCULITIS": ("relapsing_course_presence",),
+    "bradycardia_activity_in_D-ACUTE-MYOCARDITIS": ("bradycardia_presence",),
+    "bradycardia_activity_in_D-CHIKUNGUNYA": ("bradycardia_presence",),
+    "bradycardia_activity_in_D-LYME-DISEASE": ("bradycardia_presence",),
+    "bradycardia_activity_in_D-RHEUMATIC-FEVER": ("bradycardia_presence",),
+    "relative_bradycardia_activity_in_D-DRUG-FEVER": ("relative_bradycardia_presence",),
+    "faget_sign_relative_bradycardia_activity": ("faget_sign_presence",),
+    "pericardial_friction_rub_activity": ("pericardial_friction_rub_presence",),
+    "acute_systemic_reaction_after_heparin_activity": ("acute_systemic_reaction_after_heparin_presence",),
+    "organ_dysfunction_activity_in_D-DRUG-FEVER": ("organ_dysfunction_presence",),
+    "peripheral_skin_soft_tissue_infection_activity": ("skin_soft_tissue_infection_presence",),
+    "cellulitis_or_wound_infection_activity": ("skin_soft_tissue_infection_presence", "wound_infection_presence"),
+    "cellulitis_involved_skin_area_activity_in_D-CELLULITIS": ("cellulitis_presence",),
+    "cellulitis_erythema_extent_in_D-CELLULITIS": ("cellulitis_presence",),
+    "cellulitis_warmth_activity_in_D-CELLULITIS": ("cutaneous_warmth_presence",),
+    "cellulitis_edema_activity_in_D-CELLULITIS": ("localized_skin_edema_presence",),
+    "cellulitis_tenderness_activity_in_D-CELLULITIS": ("localized_skin_pain_presence",),
+    "cellulitis_lymphangitis_activity_in_D-CELLULITIS": ("lymphangitis_presence",),
+    "cellulitis_purulent_drainage_activity_in_D-CELLULITIS": ("purulent_skin_drainage_presence",),
+    "cellulitis_bullae_or_pustular_exudate_activity_in_D-CELLULITIS": ("bullous_skin_lesion_presence",),
+    "cellulitis_purpura_activity_in_D-CELLULITIS": ("petechiae_purpura_presence",),
+    "cellulitis_subcutaneous_edema_imaging_activity_in_D-CELLULITIS": ("subcutaneous_edema_imaging_presence",),
+    "diabetic_foot_wound_infection_activity_in_D-DIABETIC-FOOT-INFECTION": ("diabetic_foot_wound_infection_presence",),
+    "diabetic_foot_edema_activity_in_D-DIABETIC-FOOT-INFECTION": ("localized_skin_edema_presence",),
+    "diabetic_foot_warmth_activity_in_D-DIABETIC-FOOT-INFECTION": ("cutaneous_warmth_presence",),
+    "diabetic_foot_pain_tenderness_activity_in_D-DIABETIC-FOOT-INFECTION": ("localized_skin_pain_presence",),
+    "diabetic_foot_blister_bullae_activity_in_D-DIABETIC-FOOT-INFECTION": ("bullous_skin_lesion_presence",),
+    "soft_tissue_gas_imaging_activity_in_D-DIABETIC-FOOT-INFECTION": ("soft_tissue_gas_imaging_presence",),
+    "wound_dehiscence_activity_in_D-PROSTHETIC-JOINT-INFECTION": ("wound_dehiscence_presence",),
+    "skin_ulcer_or_necrosis_activity": ("skin_breakdown_presence", "skin_ulcer_presence", "skin_necrosis_presence"),
+    "skin_necrosis_activity": ("skin_necrosis_presence",),
+    "skin_necrosis_activity_in_D-CHIKUNGUNYA": ("skin_necrosis_presence",),
+    "localized_skin_or_mucosal_necrosis_activity": ("tissue_necrosis_presence", "mucosal_necrosis_presence"),
+    "erysipelas_bullous_lesion_activity_in_D-ERYSIPELAS": ("bullous_skin_lesion_presence",),
+    "erysipelas_edema_activity_in_D-ERYSIPELAS": ("localized_skin_edema_presence",),
+    "erysipelas_erythema_extent_in_D-ERYSIPELAS": ("erysipelas_presence",),
+    "erysipelas_exudation_erosion_activity_in_D-ERYSIPELAS": ("skin_erosion_or_exudation_presence",),
+    "erysipelas_hemorrhagic_bullae_purpura_activity_in_D-ERYSIPELAS": ("hemorrhagic_bullous_skin_lesion_presence",),
+    "erysipelas_like_erythema_activity_in_D-FAMILIAL-MEDITERRANEAN-FEVER": ("erysipelas_like_erythema_presence",),
+    "erysipelas_lymphangitis_activity_in_D-ERYSIPELAS": ("lymphangitis_presence",),
+    "erysipelas_sharply_demarcated_raised_border_activity_in_D-ERYSIPELAS": ("sharply_demarcated_erythema_presence",),
+    "erysipelas_superficial_induration_activity_in_D-ERYSIPELAS": ("skin_induration_presence",),
+    "erysipelas_superficial_skin_necrosis_activity_in_D-ERYSIPELAS": ("skin_necrosis_presence",),
+    "erysipelas_tenderness_pain_activity_in_D-ERYSIPELAS": ("localized_skin_pain_presence",),
+    "erysipelas_warmth_activity_in_D-ERYSIPELAS": ("cutaneous_warmth_presence",),
+    "deep_venous_thrombosis_activity": ("deep_venous_thrombosis_presence",),
+    "deep_venous_thrombosis_activity_behcet": ("deep_venous_thrombosis_presence",),
+    "limb_ischemia_activity": ("limb_ischemia_presence",),
+    "limb_ischemia_or_necrotic_ulcer_activity": ("limb_ischemia_presence", "skin_necrosis_presence"),
+    "digital_gangrene_activity": ("digital_gangrene_presence",),
+    "digital_ulcer_activity": ("digital_ulcer_presence",),
+    "penile_ischemia_activity_in_D-PAN": ("penile_ischemia_presence",),
+    "raynaud_phenomenon_activity": ("raynaud_phenomenon_presence",),
+    "livedo_reticularis_activity": ("livedo_reticularis_presence",),
+    "ie_janeway_lesion_activity": ("janeway_lesion_presence",),
+    "splinter_hemorrhage_activity": ("splinter_hemorrhage_presence",),
+    "jaw_claudication_activity": ("jaw_claudication_presence",),
+    "tongue_claudication_activity": ("tongue_claudication_presence",),
+    "temporal_artery_tenderness_activity_in_D-GCA": ("temporal_artery_tenderness_presence",),
+    "upper_extremity_claudication_activity_in_D-GCA": ("upper_extremity_claudication_presence",),
+    "upper_extremity_claudication_activity_in_D-TAKAYASU-ARTERITIS": ("upper_extremity_claudication_presence",),
+    "lower_extremity_claudication_activity_in_D-GCA": ("lower_extremity_claudication_presence",),
+    "lower_extremity_claudication_activity_in_D-TAKAYASU-ARTERITIS": ("lower_extremity_claudication_presence",),
+    "visual_disturbance_activity_in_D-GCA": ("visual_disturbance_presence",),
+    "visual_disturbance_activity_in_D-TAKAYASU-ARTERITIS": ("visual_disturbance_presence",),
+    "acute_vision_loss_activity_in_D-GCA": ("acute_vision_loss_presence",),
+    "transient_monocular_visual_loss_activity_in_D-GCA": ("transient_monocular_visual_loss_presence",),
+    "transient_vision_loss_activity": ("visual_disturbance_presence", "transient_vision_loss_presence"),
+    "ocular_ischemia_activity_in_D-GCA": ("ocular_ischemia_presence",),
+    "retinal_vasculitis_activity": ("retinal_vasculitis_presence",),
+    "retinal_hemorrhage_activity": ("retinal_hemorrhage_presence",),
+    "mucosal_barrier_injury_activity": ("mucosal_barrier_injury_presence",),
+    "mucosal_erosion_activity": ("mucosal_erosion_presence",),
+    "genital_mucosal_erosion_activity_in_D-SJS-TEN": ("genital_mucosal_erosion_presence",),
+    "oral_mucosal_ulcer_activity": ("oral_mucosal_ulcer_presence",),
+    "oral_ulcer_activity": ("oral_mucosal_ulcer_presence",),
+    "oral_aphthous_ulcer_activity": ("aphthous_oral_ulcer_presence",),
+    "genital_ulcer_activity": ("genital_ulcer_presence",),
+    "genital_ulcer_scarring_activity": ("genital_ulcer_scarring_presence",),
+    "genital_ulcer_vesicle_activity": ("genital_vesicle_presence",),
+    "mpp_mucositis_activity": ("oral_mucositis_presence",),
+    "oral_mucosal_changes_activity": ("oral_mucosal_lesion_presence",),
+    "oral_gingival_necrosis_activity": ("oral_gingival_necrosis_presence",),
+    "oral_hemorrhagic_bullae_activity": ("oral_hemorrhagic_bullae_presence",),
+    "mucosal_hyperemia_extent_in_D-TOXIC-SHOCK-SYNDROME": ("mucosal_hyperemia_presence",),
+    "strawberry_tongue_activity_in_D-TOXIC-SHOCK-SYNDROME": ("strawberry_tongue_presence",),
+    "koplik_spots_activity": ("koplik_spots_presence",),
+    "coated_tongue_activity_in_D-TYPHOID-FEVER": ("coated_tongue_presence",),
+    "gingival_infiltration_activity_in_D-AML": ("gingival_infiltration_presence",),
+    "oral_candidiasis_activity_sjogren": ("oral_candidiasis_presence",),
+    "oral_dryness_severity_sjogren": ("oral_dryness_presence",),
+    "oral_maxillofacial_cellulitis_activity": ("oral_maxillofacial_cellulitis_presence",),
+    "periodontal_or_oral_mucosal_source_activity": ("periodontal_or_oral_mucosal_source_presence",),
+    "poor_oral_hygiene_activity": ("poor_oral_hygiene_presence",),
+    "pharyngitis_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("pharyngitis_presence",),
+    "pharyngitis_or_upper_respiratory_source_activity": ("pharyngitis_presence", "upper_respiratory_source_presence"),
+    "recent_streptococcal_pharyngitis_activity": ("recent_streptococcal_pharyngitis_presence",),
+    "pharyngotonsillar_exudate_activity": ("pharyngotonsillar_exudate_presence",),
+    "dysphagia_activity": ("dysphagia_presence",),
+    "esophageal_dysmotility_or_dysphagia_activity": ("dysphagia_presence", "esophageal_dysmotility_presence"),
+    "poor_oral_intake_activity_in_D-MEASLES": ("poor_oral_intake_presence",),
+    "back_pain_activity": ("back_pain_presence",),
+    "back_pain_activity_in_D-BARTONELLA-ENDOCARDITIS": ("back_pain_presence",),
+    "back_pain_activity_in_D-Q-FEVER": ("back_pain_presence",),
+    "low_back_pain_activity_in_D-BRUCELLOSIS": ("low_back_pain_presence",),
+    "retroperitoneal_back_pain_activity_in_D-PERINEPHRIC-ABSCESS": ("retroperitoneal_back_pain_presence",),
+    "retroperitoneal_back_pain_activity_in_D-RENAL-ABSCESS": ("retroperitoneal_back_pain_presence",),
+    "bone_pain_limb_pain_activity": ("bone_pain_presence", "limb_pain_presence"),
+    "focal_bone_pain_activity": ("focal_bone_pain_presence",),
+    "limb_swelling_pain_activity": ("limb_pain_presence", "limb_swelling_presence"),
+    "prosthetic_joint_pain_activity_in_D-PROSTHETIC-JOINT-INFECTION": ("prosthetic_joint_pain_presence",),
+    "synovial_fluid_purulence_activity_in_D-PROSTHETIC-JOINT-INFECTION": ("synovial_fluid_purulence_presence",),
+    "tenosynovitis_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("tenosynovitis_presence",),
+    "migratory_polyarthralgia_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("migratory_polyarthralgia_presence",),
+    "muscle_tenderness_swelling_activity_in_D-TRICHINELLOSIS": ("muscle_tenderness_presence", "muscle_swelling_presence"),
+    "scrotal_swelling_activity": ("scrotal_swelling_presence",),
+    "testicular_pain_activity": ("testicular_pain_presence",),
+    "testicular_enlargement_activity": ("testicular_enlargement_presence",),
+    "epididymal_enlargement_activity": ("epididymal_enlargement_presence",),
+    "epididymal_tenderness_activity": ("epididymal_tenderness_presence",),
+    "epididymitis_activity_behcet": ("epididymitis_presence",),
+    "scrotal_erythema_activity": ("scrotal_erythema_presence",),
+    "scrotal_induration_activity": ("scrotal_induration_presence",),
+    "perineal_pain_activity": ("perineal_pain_presence",),
+    "prostate_enlargement_on_exam_activity": ("prostate_enlargement_on_exam_presence",),
+    "prostate_tenderness_on_dre_activity": ("prostate_tenderness_on_dre_presence",),
+    "urethral_discharge_activity": ("urethral_discharge_presence",),
+    "urethritis_or_cervicitis_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("urogenital_mucosal_inflammation_presence", "urethritis_presence", "cervicitis_presence"),
+    "dyspareunia_activity": ("dyspareunia_presence",),
+    "dermatomyositis_rash_activity": ("dermatomyositis_rash_presence",),
+    "gottron_papules_or_sign_activity": ("gottron_papules_or_sign_presence",),
+    "heliotrope_rash_activity": ("heliotrope_rash_presence",),
+    "mechanic_hands_activity": ("mechanic_hands_presence",),
+    "v_shawl_sign_rash_activity": ("shawl_sign_rash_presence",),
+    "sclerodactyly_activity": ("sclerodactyly_presence",),
+    "puffy_hands_activity": ("puffy_hands_presence",),
+    "telangiectasia_activity": ("telangiectasia_presence",),
+    "malar_rash_activity": ("malar_rash_presence",),
+    "discoid_rash_activity": ("discoid_rash_presence",),
+    "mctd_lupus_like_rash_activity": ("lupus_like_rash_presence",),
+    "alopecia_activity": ("alopecia_presence",),
+    "patchy_alopecia_activity_in_D-SECONDARY-SYPHILIS": ("patchy_alopecia_presence",),
+    "annular_erythema_activity_sjogren": ("annular_erythema_presence",),
+    "ocular_dryness_severity_sjogren": ("ocular_dryness_presence",),
+    "xerophthalmia_activity": ("xerophthalmia_presence",),
+    "auricular_chondritis_activity": ("auricular_chondritis_presence",),
+    "nasal_chondritis_activity": ("nasal_chondritis_presence",),
+    "chest_wall_costochondritis_activity": ("chest_wall_costochondritis_presence",),
+    "polymyalgia_rheumatica_activity_in_D-GCA": ("polymyalgia_rheumatica_presence",),
+    "hip_girdle_pain_stiffness_activity": ("hip_girdle_pain_stiffness_presence",),
+    "shoulder_girdle_pain_stiffness_activity": ("shoulder_girdle_pain_stiffness_presence",),
+    "peripheral_neuropathy_activity": ("peripheral_neuropathy_presence",),
+    "mononeuritis_multiplex_activity": ("mononeuritis_multiplex_presence",),
+    "mononeuritis_multiplex_activity_egpa": ("mononeuritis_multiplex_presence",),
+    "mononeuritis_multiplex_activity_sjogren": ("mononeuritis_multiplex_presence",),
+    "sensory_ataxic_neuropathy_activity_sjogren": ("sensory_ataxic_neuropathy_presence", "ataxia_presence"),
+    "burning_pain_dysautonomia_activity_sjogren": ("dysautonomic_neuropathic_pain_presence",),
+    "foot_drop_activity": ("foot_drop_presence",),
+    "cranial_neuropathy_activity_in_D-IGG4-RELATED-DISEASE": ("cranial_neuropathy_presence",),
+    "myelitis_demyelination_activity_sjogren": ("myelitis_presence",),
+    "myelitis_radiculitis_activity_in_D-VZV-ENCEPHALITIS": ("myelitis_or_radiculitis_presence",),
+    "myelitis_radiculitis_activity_in_D-WEST-NILE-NEUROINVASIVE-DISEASE": ("myelitis_or_radiculitis_presence",),
+    "radicular_pain_activity_in_D-LYME-DISEASE": ("radicular_pain_presence",),
+    "ataxia_activity_in_D-RICKETTSIOSIS-SCRUB-TYPHUS": ("ataxia_presence",),
+    "stroke_like_deficit_activity": ("stroke_like_deficit_presence",),
+    "neurobehavioral_change_activity": ("neurobehavioral_change_presence",),
+    "neuropsychiatric_sle_manifestation_activity": ("neuropsychiatric_manifestation_presence",),
+    "dizziness_activity": ("dizziness_presence",),
+    "vertigo_activity": ("vertigo_presence",),
+    "vestibular_dysfunction_activity": ("vestibular_dysfunction_presence",),
+    "anisocoria_activity": ("anisocoria_presence",),
+    "pupillary_light_response_abnormality_activity": ("pupillary_light_response_abnormality_presence",),
+    "cushing_reflex_activity": ("cushing_reflex_presence",),
+    "jolt_accentuation_activity": ("jolt_accentuation_presence",),
+    "meningismus_activity_in_D-RICKETTSIOSIS-SCRUB-TYPHUS": ("meningismus_presence",),
+    "aseptic_meningitis_activity_behcet": ("aseptic_meningitis_presence",),
+    "aseptic_meningitis_activity_in_D-SARCOIDOSIS": ("aseptic_meningitis_presence",),
+    "urinary_incontinence_activity": ("urinary_incontinence_presence",),
+    "nonproductive_cough_activity_in_D-PJP-PNEUMONIA": ("nonproductive_cough_presence",),
+    "rust_colored_sputum_activity_in_D-PNEUMOCOCCAL-PNEUMONIA": ("rust_colored_sputum_presence",),
+    "hemoptysis_activity_in_D-INVASIVE-ASPERGILLOSIS": ("hemoptysis_presence",),
+    "pleuritic_chest_pain_activity_in_D-INVASIVE-ASPERGILLOSIS": ("pleuritic_chest_pain_presence",),
+    "pulmonary_crackles_activity": ("crackles_presence",),
+    "exertional_desaturation_activity_in_D-PJP-PNEUMONIA": ("exertional_desaturation_presence",),
+    "wheeze_activity_mpp": ("wheezing_presence",),
+    "wheezing_activity": ("wheezing_presence",),
+    "wheezing_activity_in_D-INVASIVE-ASPERGILLOSIS": ("wheezing_presence",),
+    "stridor_activity": ("stridor_presence",),
+    "eosinophilic_asthma_activity_egpa": ("eosinophilic_asthma_presence",),
+    "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS": ("pulmonary_involvement_presence",),
+    "clubbing_activity": ("digital_clubbing_presence",),
+    "coryza_rhinitis_activity_in_D-MEASLES": ("coryza_rhinitis_presence",),
+    "anosmia_activity": ("anosmia_presence",),
+    "ageusia_activity": ("ageusia_presence",),
+    "abdominal_distension_activity_in_D-CLOSTRIDIOIDES-DIFFICILE-SEVERE": ("abdominal_distension_presence",),
+    "diffuse_abdominal_tenderness_activity": ("diffuse_abdominal_tenderness_presence",),
+    "constipation_activity": ("constipation_presence",),
+    "ileus_activity": ("ileus_presence",),
+    "intestinal_obstruction_activity": ("intestinal_obstruction_presence",),
+    "nausea_vomiting_activity_in_D-PYELONEPHRITIS": ("nausea_presence", "vomiting_presence"),
+    "right_upper_quadrant_pain_activity_in_D-PYOGENIC-LIVER-ABSCESS": ("right_upper_quadrant_pain_presence",),
+    "hepatic_tenderness_activity": ("hepatic_tenderness_presence",),
+    "acholic_stool_activity": ("acholic_stool_presence",),
+    "early_satiety_activity": ("early_satiety_presence",),
+    "intestinal_ulcer_activity_in_D-CAEBV": ("intestinal_ulcer_presence",),
+    "pelvic_mass_activity": ("pelvic_mass_presence",),
+    "pelvic_tenderness_activity": ("pelvic_tenderness_presence",),
+    "vaginal_bleeding_activity": ("vaginal_bleeding_presence",),
+    "abnormal_pregnancy_tissue_passage_history_activity": ("pregnancy_tissue_passage_history_presence",),
+    "rash_activity": ("rash_presence",),
+    "jaundice_activity": ("jaundice_presence",),
+    "hepatomegaly_activity": ("hepatomegaly_presence",),
+    "splenomegaly_activity": ("splenomegaly_presence",),
+    "lymphadenopathy_activity": ("pathologic_lymphadenopathy_presence",),
+    "bleeding_activity": ("bleeding_presence",),
+    "clinical_bleeding_activity": ("bleeding_presence",),
+    "mucosal_bleeding_activity": ("mucosal_bleeding_presence",),
+    "petechiae_purpura_activity": ("petechiae_purpura_presence",),
+    "petechial_purpuric_rash_activity": ("petechiae_purpura_presence",),
+    "palpable_purpura_activity": ("palpable_purpura_presence",),
+    "purpura_fulminans_activity": ("purpura_fulminans_presence",),
+}
 
-    def add_observation(axis_id, value, unit):
+
+RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES = {
+    "gastric_fluid_vomitus_presence",
+}
+
+
+def prepare_case_data(data):
+    data = dict(data)
+    observations = {}
+    snapshot_day = float(data.get("snapshot_day", 0.0) or 0.0)
+
+    def item_day(item, default=snapshot_day):
+        value = item.get("day")
+        if value is None:
+            value = item.get("relative_day")
+        if value is None:
+            return default
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+    def add_observation(axis_id, value, unit, day=None, meta=None):
         if not axis_id or value is None:
             return
         value = float(value)
+        obs_day = snapshot_day if day is None else float(day)
+        obs_distance = abs(obs_day - snapshot_day)
+        incoming = {
+            "value": value,
+            "unit": unit,
+            "day": obs_day,
+            "_snapshot_distance": obs_distance,
+        }
+        if isinstance(meta, dict):
+            for key in ("category", "axis_role", "parent_axis_id", "legacy_axis_id", "source_text_value"):
+                if meta.get(key):
+                    incoming[key] = meta.get(key)
+            if "use_in_time_conditioning" in meta:
+                incoming["use_in_time_conditioning"] = bool(meta.get("use_in_time_conditioning"))
         if axis_id in observations:
             old = observations[axis_id]
             normalized_unit = norm_unit(unit or old.get("unit"))
+            old_distance = float(old.get("_snapshot_distance", 0.0))
+            if obs_distance < old_distance:
+                observations[axis_id] = incoming
+                return
+            if obs_distance > old_distance:
+                return
             if normalized_unit in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01") or axis_id.endswith("_hazard") or "_hazard_" in axis_id:
                 if value > float(old.get("value", 0.0)):
-                    observations[axis_id] = {"value": value, "unit": unit or old.get("unit")}
+                    observations[axis_id] = incoming
+                return
+            if obs_day >= float(old.get("day", snapshot_day)):
+                observations[axis_id] = incoming
             return
-        observations[axis_id] = {"value": value, "unit": unit}
+        observations[axis_id] = incoming
 
     for obs in data.get("observations", []):
         if not case_item_rankable(obs):
@@ -838,7 +1552,7 @@ def load_case(path):
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
             value, unit = inferred
-            add_observation(obs.get("axis_id"), value, unit)
+            add_observation(obs.get("axis_id"), value, unit, item_day(obs), obs)
 
     for obs in data.get("course_observations", []):
         if not case_item_rankable(obs):
@@ -846,7 +1560,7 @@ def load_case(path):
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
             value, unit = inferred
-            add_observation(obs.get("axis_id"), value, unit)
+            add_observation(obs.get("axis_id"), value, unit, item_day(obs), obs)
 
     for traj in data.get("lab_trajectories", []):
         if not case_item_rankable(traj):
@@ -855,16 +1569,26 @@ def load_case(path):
         inferred = infer_direct_observation(axis_id, traj.get("value"), traj.get("unit"), traj.get("qualitative_value"))
         if inferred is not None:
             value, unit = inferred
-            add_observation(axis_id, value, unit)
+            add_observation(axis_id, value, unit, item_day(traj), traj)
         numeric = [
             o
-            for o in ((traj.get("observations") or []) + (traj.get("time_series") or []))
+            for o in (
+                (traj.get("observations") or [])
+                + (traj.get("time_series") or [])
+                + (traj.get("timepoints") or [])
+            )
             if o.get("value") is not None and case_item_rankable(o)
         ]
-        if not axis_id or not numeric or axis_id in observations:
+        if not axis_id or not numeric:
             continue
-        first = sorted(numeric, key=lambda o: float(o.get("day", 0)))[0]
-        observations[axis_id] = {"value": float(first["value"]), "unit": traj.get("unit")}
+        closest = min(numeric, key=lambda o: abs(item_day(o) - snapshot_day))
+        add_observation(
+            axis_id,
+            float(closest["value"]),
+            closest.get("unit") or traj.get("unit"),
+            item_day(closest),
+            traj,
+        )
 
     for section in MAPPED_EVIDENCE_SECTIONS:
         records = data.get(section)
@@ -878,7 +1602,7 @@ def load_case(path):
                 if inferred is None:
                     continue
                 value, unit = inferred
-                add_observation(axis_id, value, unit)
+                add_observation(axis_id, value, unit, item_day(axis_item, item_day(item)), axis_item)
 
     for _section, item in iter_direct_axis_section_items(data):
         if not case_item_rankable(item):
@@ -887,10 +1611,63 @@ def load_case(path):
         if inferred is None:
             continue
         value, unit = inferred
-        add_observation(item.get("axis_id"), value, unit)
+        add_observation(item.get("axis_id"), value, unit, item_day(item), item)
+
+    for child_axis_id, child in list(observations.items()):
+        parent_axis_id = child.get("parent_axis_id")
+        if not parent_axis_id or parent_axis_id in observations:
+            continue
+        if norm_unit(child.get("unit")) not in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+            continue
+        try:
+            child_value = float(child.get("value", 0.0))
+        except (TypeError, ValueError):
+            continue
+        if child_value < PARENT_FINDING_PRESENT_THRESHOLD:
+            continue
+        observations[parent_axis_id] = {
+            "value": 1.0,
+            "unit": "present_absent_0_1",
+            "day": float(child.get("day", snapshot_day)),
+            "_snapshot_distance": float(child.get("_snapshot_distance", 0.0)),
+            "category": child.get("category") or "symptom",
+            "axis_role": "finding",
+            "source_text_value": f"inferred parent finding from {child_axis_id}",
+            "_inferred_parent": True,
+        }
+
+    for legacy_axis_id, source_axis_ids in LEGACY_MANUAL_AXIS_BRIDGES.items():
+        sources = [
+            (source_axis_id, observations[source_axis_id])
+            for source_axis_id in source_axis_ids
+            if source_axis_id in observations
+        ]
+        if not sources:
+            continue
+        best_source_id, best_source = max(sources, key=lambda item: float(item[1].get("value", 0.0)))
+        if legacy_axis_id not in observations:
+            observations[legacy_axis_id] = {
+                "value": float(best_source.get("value", 0.0)),
+                "unit": "severity_score_0_1",
+                "day": float(best_source.get("day", snapshot_day)),
+                "_snapshot_distance": float(best_source.get("_snapshot_distance", 0.0)),
+                "_legacy_proxy": True,
+                "_derived_from_axes": [axis_id for axis_id, _obs in sources],
+                "source_text_value": f"legacy proxy from {best_source_id}",
+            }
+        for source_axis_id, source in sources:
+            source["_suppress_in_scoring"] = True
+            source["_legacy_proxy_axis_id"] = legacy_axis_id
+            proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+            if legacy_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(legacy_axis_id)
 
     data["observations_by_axis"] = observations
     return data
+
+
+def load_case(path):
+    return prepare_case_data(json.loads(path.read_text(encoding="utf-8-sig")))
 
 
 def sample_uniform(rng, interval):
@@ -906,6 +1683,8 @@ def inferred_t_max(manifold):
     horizons = []
     for axis in manifold.get("axes", {}).values():
         if axis.get("category") in ("derived_hazard", "treatment_modifier"):
+            continue
+        if "parent/satellite split avoids mixing" in str(axis.get("clinical_interpretation") or ""):
             continue
         peak = parse_interval(axis.get("peak_day_range"))
         plateau = parse_interval(axis.get("plateau_duration_days"))
@@ -1030,15 +1809,25 @@ def deterministic_seed(parts):
     return s
 
 
+def case_reported_sex(case):
+    demo = case.get("demographics") or {}
+    sex = str(demo.get("sex", "")).upper()
+    if sex in ("F", "FEMALE"):
+        return "female"
+    if sex in ("M", "MALE"):
+        return "male"
+    return None
+
+
 def auto_demographic_context(case, disease):
     out = []
     demo = case.get("demographics") or {}
     age = demo.get("age")
-    sex = str(demo.get("sex", "")).upper()
+    sex = case_reported_sex(case)
 
-    if sex in ("F", "FEMALE"):
+    if sex == "female":
         out.append({"factor": "sex", "category": "female", "source": "demographics"})
-    elif sex in ("M", "MALE"):
+    elif sex == "male":
         out.append({"factor": "sex", "category": "male", "source": "demographics"})
 
     if isinstance(age, (int, float)):
@@ -1065,6 +1854,29 @@ def case_risk_context(case, disease):
             ctx.append(item)
     ctx.extend(auto_demographic_context(case, disease))
     return ctx
+
+
+def anatomic_feasibility_prior(case, candidate):
+    """Apply hard anatomic feasibility as a prior, not as a diagnosis label.
+
+    This prevents anatomically impossible reproductive leaves from ranking high
+    on shared nonspecific axes such as abdominal pain, fever, or free fluid.
+    Unknown sex receives no penalty.
+    """
+    sex = case_reported_sex(case)
+    if sex is None:
+        return 0.0, []
+
+    penalty = 0.0
+    reasons = []
+    for disease in candidate:
+        if sex == "male" and disease in FEMALE_REPRODUCTIVE_DISEASE_IDS:
+            penalty += ANATOMIC_IMPOSSIBILITY_LOG_PENALTY
+            reasons.append(f"{disease}:female_reproductive_anatomy_absent_for_reported_male")
+        elif sex == "female" and disease in MALE_REPRODUCTIVE_DISEASE_IDS:
+            penalty += ANATOMIC_IMPOSSIBILITY_LOG_PENALTY
+            reasons.append(f"{disease}:male_reproductive_anatomy_absent_for_reported_female")
+    return penalty, reasons
 
 
 def matched_risk_payload(manifold, context):
@@ -1196,6 +2008,46 @@ def observed_absent(case, axis_id):
     return float(obs["value"]) < PARENT_FINDING_PRESENT_THRESHOLD
 
 
+def manifold_axis_set(manifold, include_derived=True):
+    key = "_axis_id_set" if include_derived else "_formal_axis_id_set"
+    cached = manifold.get(key)
+    if cached is not None:
+        return cached
+    if include_derived:
+        cached = set(manifold["axes"])
+    else:
+        cached = {
+            axis_id
+            for axis_id, axis in manifold["axes"].items()
+            if axis.get("category") != "derived_hazard"
+        }
+    manifold[key] = cached
+    return cached
+
+
+def candidate_axis_set(candidate, manifolds, include_derived=True):
+    if not candidate or not manifolds:
+        return set()
+    cache = _CANDIDATE_AXIS_SET_CACHE if include_derived else _CANDIDATE_FORMAL_AXIS_SET_CACHE
+    cached = cache.get(candidate)
+    if cached is not None:
+        return cached
+    out = set()
+    for disease in candidate:
+        out.update(manifold_axis_set(manifolds[disease], include_derived=include_derived))
+    cache[candidate] = out
+    return out
+
+
+def axis_has_formal_support(axis_id, candidate, manifolds, background_axes):
+    return axis_id in candidate_axis_set(candidate, manifolds, include_derived=True)
+
+
+def candidate_formal_axis_ids(axis_ids, candidate, manifolds):
+    formal = candidate_axis_set(candidate, manifolds, include_derived=False)
+    return [axis_id for axis_id in axis_ids if axis_id in formal]
+
+
 def conditional_axis_ids(case, candidate, manifolds, background_axes):
     """Observed axes eligible for likelihood under finding/measurement/satellite ontology.
 
@@ -1205,9 +2057,35 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
     size, or other satellite attributes.
     """
     obs = case["observations_by_axis"]
+
     eligible = set()
+    formal_by_axis = {}
     children_by_parent = {}
-    for axis_id in obs:
+    for axis_id, item in obs.items():
+        formal_axis = axis_has_formal_support(axis_id, candidate, manifolds, background_axes)
+        if item.get("_legacy_proxy"):
+            sources = item.get("_derived_from_axes") or []
+            source_formal = any(
+                axis_has_formal_support(source_axis_id, candidate, manifolds, background_axes)
+                for source_axis_id in sources
+            )
+            if source_formal or not formal_axis:
+                continue
+        else:
+            proxy_axis_ids = item.get("_legacy_proxy_axis_ids") or []
+            legacy_axis_id = item.get("_legacy_proxy_axis_id")
+            if legacy_axis_id and legacy_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(legacy_axis_id)
+            proxy_formal = any(
+                axis_has_formal_support(proxy_axis_id, candidate, manifolds, background_axes)
+                for proxy_axis_id in proxy_axis_ids
+            )
+            if observation_is_duration_axis(axis_id) and not formal_axis:
+                continue
+            if axis_id in RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES and not formal_axis:
+                continue
+            if proxy_formal and not formal_axis:
+                continue
         axis = eval_axis(axis_id, candidate, manifolds, background_axes)
         if axis is None:
             continue
@@ -1215,15 +2093,25 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
         if parent_axis_id and observed_absent(case, parent_axis_id):
             continue
         eligible.add(axis_id)
+        formal_by_axis[axis_id] = formal_axis
         if parent_axis_id:
             children_by_parent.setdefault(parent_axis_id, set()).add(axis_id)
 
     axis_ids = []
     for axis_id in eligible:
+        # Suppress a parent when observed child axes already represent the
+        # same fact, except for the migration case where this candidate knows
+        # the parent finding but does not yet have any of the observed child
+        # satellites. Background-only parents should not be added just because
+        # a child was observed.
         if (
             axis_id in children_by_parent
             and observed_value(case, axis_id) is not None
             and not observed_absent(case, axis_id)
+            and (
+                any(formal_by_axis.get(child_axis_id) for child_axis_id in children_by_parent[axis_id])
+                or not formal_by_axis.get(axis_id)
+            )
         ):
             continue
         axis_ids.append(axis_id)
@@ -1275,6 +2163,75 @@ def observed_axis_activity_against_disease(axis_id, axis, obs, background_axis):
         z_bg = z_base
     bg_span = abs(z_obs - z_bg) / max(abs(span), 1e-6)
     return clamp01(min(progress, bg_span))
+
+
+def axis_active_duration_window_days(axis):
+    """Approximate how long a positive axis can plausibly remain disease-active."""
+    category = str(axis.get("category") or "").strip().lower()
+    if category in ("derived_hazard", "event_hazard", LATENT_MECHANISM_CATEGORY, "treatment_modifier"):
+        return None
+    peak = parse_interval(axis.get("peak_day_range"))
+    if peak is None:
+        return None
+    plateau = parse_interval(axis.get("plateau_duration_days")) or (0.0, 0.0)
+    half_life = parse_interval(axis.get("decline_half_life_days"))
+    tail = 0.0 if half_life is None else 3.0 * max(half_life[1], 0.0)
+    return max(peak[1] + max(plateau[1], 0.0) + tail, 1e-6)
+
+
+def duration_compatible_axis_category(axis):
+    category = str(axis.get("category") or "").strip().lower()
+    return (
+        "symptom" in category
+        or "physical" in category
+        or "qualitative" in category
+        or "functional" in category
+        or "neurologic" in category
+    )
+
+
+def duration_compatibility_penalty(case, candidate, manifolds, background_axes):
+    duration_days = case_presentation_duration_days(case)
+    if duration_days is None:
+        return 0.0
+
+    penalties_by_axis = {}
+    for disease in candidate:
+        manifold = manifolds[disease]
+        for axis_id, obs in case["observations_by_axis"].items():
+            if observation_is_duration_axis(axis_id):
+                continue
+            axis = manifold["axes"].get(axis_id)
+            if axis is None or not duration_compatible_axis_category(axis):
+                continue
+            window_days = axis_active_duration_window_days(axis)
+            if window_days is None:
+                continue
+            if duration_days <= window_days * DURATION_COMPATIBILITY_GRACE_FACTOR:
+                continue
+
+            activity = observed_axis_activity_against_disease(
+                axis_id,
+                axis,
+                obs,
+                background_axes.get(axis_id),
+            )
+            if activity < 0.25:
+                continue
+
+            ratio = duration_days / max(window_days * DURATION_COMPATIBILITY_GRACE_FACTOR, 1e-6)
+            penalty = min(
+                DURATION_COMPATIBILITY_AXIS_CAP,
+                DURATION_COMPATIBILITY_PENALTY_SCALE * math.log(max(ratio, 1.0)) * activity,
+            )
+            if penalty <= 0:
+                continue
+            penalties_by_axis[(disease, axis_id)] = max(penalties_by_axis.get((disease, axis_id), 0.0), penalty)
+
+    if not penalties_by_axis:
+        return 0.0
+    total = min(sum(penalties_by_axis.values()), DURATION_COMPATIBILITY_TOTAL_CAP)
+    return -float(total)
 
 
 def generic_component_anchor_support(case, disease, manifolds, background_axes):
@@ -1391,16 +2348,47 @@ def component_anchor_support(case, disease, manifolds, background_axes):
         if ldh is not None and hb is not None and ldh >= 500 and hb <= 10:
             score += 1.0
 
+    elif disease == "D-APPENDICITIS":
+        appendicolith = observed_value(case, "appendicolith_presence")
+        if appendicolith is not None and appendicolith >= 0.5:
+            score += 2.5
+        diameter = observed_value(case, "appendiceal_diameter_mm")
+        if diameter is not None:
+            if diameter >= 15:
+                score += 2.5
+            elif diameter >= 10:
+                score += 1.8
+            elif diameter >= 6:
+                score += 1.0
+        for axis_id in ("appendiceal_dilation_activity", "appendiceal_wall_thickening_activity"):
+            value = observed_value(case, axis_id)
+            if value is not None and value >= 0.5:
+                score += 1.4
+        for axis_id in (
+            "periappendiceal_fat_stranding_activity",
+            "periappendiceal_free_fluid_activity",
+            "cecal_wall_thickening_activity",
+            "right_lower_quadrant_pain_activity",
+        ):
+            value = observed_value(case, axis_id)
+            if value is not None and value >= 0.4:
+                score += 0.6
+
     return max(score, generic_component_anchor_support(case, disease, manifolds, background_axes))
 
 
 def combo_anchor_penalty(case, candidate, manifolds, background_axes):
-    if len(candidate) <= 1:
-        return 0.0, {}
     support = {
         disease: component_anchor_support(case, disease, manifolds, background_axes)
         for disease in candidate
     }
+    if len(candidate) <= 1:
+        value = next(iter(support.values()), 0.0)
+        if value >= SINGLE_ANCHOR_THRESHOLD:
+            return 0.0, support
+        penalty = SINGLE_MISSING_ANCHOR_PENALTY * (SINGLE_ANCHOR_THRESHOLD - value)
+        return penalty, support
+
     penalty = 0.0
     for value in support.values():
         if value < COMBO_ANCHOR_THRESHOLD:
@@ -1568,11 +2556,22 @@ def mechanism_activity_for_axis(
     return cache[source_axis_id]
 
 
-def mechanism_gate_for_target(disease, target_axis_id, t_by_disease, manifolds, background_axes, risk_payloads, rng):
+def mechanism_gate_for_target(
+    disease,
+    target_axis_id,
+    t_by_disease,
+    manifolds,
+    background_axes,
+    risk_payloads,
+    rng,
+    mechanism_activity_cache=None,
+):
     """Return dominant latent-mechanism activity for a target axis, if modeled."""
     manifold = manifolds[disease]
     candidates = []
-    cache = {}
+    cache = None
+    if mechanism_activity_cache is not None:
+        cache = mechanism_activity_cache.setdefault(disease, {})
     for edge in mechanism_edges_to(manifold, target_axis_id):
         source_axis_id = edge.get("source_axis_id")
         source_axis = manifold["axes"].get(source_axis_id)
@@ -1594,7 +2593,16 @@ def mechanism_gate_for_target(disease, target_axis_id, t_by_disease, manifolds, 
     return max(candidates, key=lambda item: item[0])
 
 
-def combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_axes, risk_payloads, rng):
+def combo_axis_endpoint(
+    axis_id,
+    candidate,
+    t_by_disease,
+    manifolds,
+    background_axes,
+    risk_payloads,
+    rng,
+    mechanism_activity_cache=None,
+):
     axis_eval = eval_axis(axis_id, candidate, manifolds, background_axes)
     if axis_eval is None:
         return None
@@ -1619,7 +2627,16 @@ def combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_
         mu = convert_value(mu, axis.get("unit"), axis_eval.get("unit"), axis_id)
         z_mu = transform(axis_eval, mu)
         raw_delta = z_mu - z_bg
-        gate = mechanism_gate_for_target(disease, axis_id, t_by_disease, manifolds, background_axes, risk_payloads, rng)
+        gate = mechanism_gate_for_target(
+            disease,
+            axis_id,
+            t_by_disease,
+            manifolds,
+            background_axes,
+            risk_payloads,
+            rng,
+            mechanism_activity_cache,
+        )
         if gate is not None:
             activity, edge = gate
             raw_delta = edge_adjusted_delta(raw_delta, edge) * activity
@@ -1649,6 +2666,14 @@ def combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_
     if not axis_eval.get("log_scale") and axis_id != "body_temperature":
         mu_out = max(mu_out, 0.0)
     return axis_eval, mu_out, max(sigma, 1e-6), source
+
+
+def background_axis_endpoint(axis_id, background_axes, rng):
+    axis = background_axes.get(axis_id)
+    if axis is None:
+        return None
+    mu_value, _ = sample_mu_and_baseline(axis, -1.0, rng)
+    return axis, mu_value, axis_sigma(axis), axis.get("_source", "base_measure_background")
 
 
 def coupling_to_corr(c):
@@ -1751,14 +2776,81 @@ def mvn_logpdf(x, mu, sigmas, corr):
     return float("-inf")
 
 
+def mvn_logpdf_cached(x, mu, sigmas, corr, factor_cache):
+    sigmas = np.maximum(np.asarray(sigmas, dtype=float), 1e-6)
+    key = tuple(float(s) for s in sigmas)
+    cached = factor_cache.get(key)
+    if cached is None:
+        cov = corr * np.outer(sigmas, sigmas)
+        jitter = 1e-6
+        cached = False
+        for _ in range(5):
+            try:
+                chol = np.linalg.cholesky(cov + np.eye(len(x)) * jitter)
+                logdet = 2.0 * float(np.sum(np.log(np.diag(chol))))
+                cached = (chol, logdet)
+                break
+            except np.linalg.LinAlgError:
+                jitter *= 10.0
+        factor_cache[key] = cached
+    if cached is False:
+        return float("-inf")
+
+    chol, logdet = cached
+    diff = x - mu
+    sol = np.linalg.solve(chol, diff)
+    quad = float(sol @ sol)
+    return -0.5 * (quad + logdet + len(x) * math.log(2.0 * math.pi))
+
+
 def use_grid_scoring():
     return SCORE_MODE in {"grid", "fast", "deterministic"}
 
 
-def iter_candidate_time_samples(candidate, manifolds, rng):
+def duration_conditioned_time_values(duration_days, rng):
+    duration_days = max(float(duration_days), 1e-6)
     if use_grid_scoring():
+        seen = set()
+        for factor in DURATION_CONDITION_SAMPLE_FACTORS:
+            value = max(duration_days * factor, 1e-6)
+            key = round(value, 6)
+            if key in seen:
+                continue
+            seen.add(key)
+            yield value
+        return
+
+    for _ in range(N_MC):
+        yield float(rng.lognormal(mean=math.log(duration_days), sigma=DURATION_CONDITION_LOG_SIGMA))
+
+
+def iter_candidate_time_samples(candidate, manifolds, rng, case=None):
+    duration_days = case_presentation_duration_days(case) if case is not None else None
+    if duration_days is not None:
+        for t in duration_conditioned_time_values(duration_days, rng):
+            yield {disease: t for disease in candidate}, None if use_grid_scoring() else rng
+        return
+
+    if use_grid_scoring():
+        # Midpoint-only grids can miss short acute windows when a disease also
+        # has long context/risk axes that inflate t_max. Always include a few
+        # early absolute times so transient presentations remain testable.
+        seen = set()
+        for t in EARLY_GRID_TIME_DAYS:
+            key = ("abs", round(float(t), 6))
+            if key in seen:
+                continue
+            seen.add(key)
+            yield {
+                disease: min(float(t), disease_t_max(disease, manifolds[disease]))
+                for disease in candidate
+            }, None
         for i in range(TIME_GRID_N):
             q = (i + 0.5) / TIME_GRID_N
+            key = ("q", round(float(q), 6))
+            if key in seen:
+                continue
+            seen.add(key)
             yield {
                 disease: float(q * disease_t_max(disease, manifolds[disease]))
                 for disease in candidate
@@ -1790,7 +2882,9 @@ def score_candidate(case, candidate, manifolds, background_axes):
 
     risk_payloads = {}
     anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate, manifolds, background_axes)
-    log_prior = COMBO_LOG_PENALTY * (len(candidate) - 1) + anchor_penalty
+    duration_penalty = duration_compatibility_penalty(case, candidate, manifolds, background_axes)
+    feasibility_penalty, feasibility_reasons = anatomic_feasibility_prior(case, candidate)
+    log_prior = COMBO_LOG_PENALTY * (len(candidate) - 1) + anchor_penalty + duration_penalty + feasibility_penalty
     for disease in candidate:
         axis_mods, coupling_mods, lp = matched_risk_payload(
             manifolds[disease],
@@ -1804,27 +2898,128 @@ def score_candidate(case, candidate, manifolds, background_axes):
         log_prior += lp
 
     corr = build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes)
+    formal_axis_ids = candidate_formal_axis_ids(axis_ids, candidate, manifolds)
+    formal_axis_id_set = set(formal_axis_ids)
+    if not formal_axis_ids:
+        log_prior += NO_FORMAL_SUPPORT_LOG_PENALTY
+        log_joint = []
+        best = None
+        best_lp = float("-inf")
+        factor_cache = {}
+        for sample_rng in iter_background_samples(rng):
+            x = []
+            mu = []
+            sigmas = []
+            contrib_meta = []
+            for axis_id in axis_ids:
+                endpoint = background_axis_endpoint(axis_id, background_axes, sample_rng)
+                if endpoint is None:
+                    continue
+                axis, mu_value, sigma, source = endpoint
+                obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+                x.append(transform(axis, obs_value))
+                mu.append(transform(axis, mu_value))
+                sigmas.append(sigma)
+                contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, source))
+
+            lp = mvn_logpdf_cached(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr, factor_cache) + log_prior
+            log_joint.append(lp)
+            if lp > best_lp:
+                best_lp = lp
+                best = {
+                    "t_by_disease": {disease: 0.0 for disease in candidate},
+                    "mu": mu,
+                    "x": x,
+                    "sigmas": sigmas,
+                    "meta": contrib_meta,
+                }
+
+        log_marginal = float(logsumexp(log_joint) - math.log(len(log_joint)))
+        return {
+            "candidate": "+".join(candidate),
+            "candidate_tuple": candidate,
+            "log_marginal": log_marginal,
+            "mean_log_per_axis": log_marginal / len(axis_ids),
+            "n_axes": len(axis_ids),
+            "axis_ids": axis_ids,
+            "log_prior": log_prior,
+            "duration_penalty": duration_penalty,
+            "feasibility_penalty": feasibility_penalty,
+            "feasibility_reasons": feasibility_reasons,
+            "anchor_support": anchor_support,
+            "best": best,
+        }
+
     log_joint = []
     best = None
     best_lp = float("-inf")
+    factor_cache = {}
+    static_background_contrib = {}
+    if use_grid_scoring():
+        for axis_id in axis_ids:
+            if axis_id in formal_axis_id_set:
+                continue
+            endpoint = background_axis_endpoint(axis_id, background_axes, None)
+            if endpoint is None:
+                continue
+            axis, mu_value, sigma, source = endpoint
+            obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+            static_background_contrib[axis_id] = (
+                axis,
+                transform(axis, obs_value),
+                transform(axis, mu_value),
+                sigma,
+                (axis_id, obs_value, axis.get("unit"), mu_value, source),
+            )
 
-    for t_by_disease, sample_rng in iter_candidate_time_samples(candidate, manifolds, rng):
+    for t_by_disease, sample_rng in iter_candidate_time_samples(candidate, manifolds, rng, case):
+        mechanism_activity_cache = {} if sample_rng is None else None
         x = []
         mu = []
         sigmas = []
         contrib_meta = []
         for axis_id in axis_ids:
-            endpoint = combo_axis_endpoint(axis_id, candidate, t_by_disease, manifolds, background_axes, risk_payloads, sample_rng)
-            if endpoint is None:
-                continue
-            axis, mu_value, sigma, source = endpoint
-            obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
-            x.append(transform(axis, obs_value))
-            mu.append(transform(axis, mu_value))
-            sigmas.append(sigma)
-            contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, source))
+            if axis_id not in formal_axis_id_set:
+                cached = static_background_contrib.get(axis_id)
+                if cached is None:
+                    endpoint = background_axis_endpoint(axis_id, background_axes, sample_rng)
+                    if endpoint is None:
+                        continue
+                    axis, mu_value, sigma, source = endpoint
+                    obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+                    cached = (
+                        axis,
+                        transform(axis, obs_value),
+                        transform(axis, mu_value),
+                        sigma,
+                        (axis_id, obs_value, axis.get("unit"), mu_value, source),
+                    )
+                _axis, x_value, mu_value, sigma, meta = cached
+                x.append(x_value)
+                mu.append(mu_value)
+                sigmas.append(sigma)
+                contrib_meta.append(meta)
+            else:
+                endpoint = combo_axis_endpoint(
+                    axis_id,
+                    candidate,
+                    t_by_disease,
+                    manifolds,
+                    background_axes,
+                    risk_payloads,
+                    sample_rng,
+                    mechanism_activity_cache,
+                )
+                if endpoint is None:
+                    continue
+                axis, mu_value, sigma, source = endpoint
+                obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+                x.append(transform(axis, obs_value))
+                mu.append(transform(axis, mu_value))
+                sigmas.append(sigma)
+                contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, source))
 
-        lp = mvn_logpdf(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr) + log_prior
+        lp = mvn_logpdf_cached(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr, factor_cache) + log_prior
         log_joint.append(lp)
         if lp > best_lp:
             best_lp = lp
@@ -1845,6 +3040,9 @@ def score_candidate(case, candidate, manifolds, background_axes):
         "n_axes": len(axis_ids),
         "axis_ids": axis_ids,
         "log_prior": log_prior,
+        "duration_penalty": duration_penalty,
+        "feasibility_penalty": feasibility_penalty,
+        "feasibility_reasons": feasibility_reasons,
         "anchor_support": anchor_support,
         "best": best,
     }
@@ -1868,6 +3066,7 @@ def score_background_null(case, background_axes):
     log_joint = []
     best = None
     best_lp = float("-inf")
+    factor_cache = {}
 
     for sample_rng in iter_background_samples(rng):
         x = []
@@ -1883,7 +3082,7 @@ def score_background_null(case, background_axes):
             sigmas.append(axis_sigma(axis))
             contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, axis.get("_source", "base_measure_background")))
 
-        lp = mvn_logpdf(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr)
+        lp = mvn_logpdf_cached(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr, factor_cache)
         log_joint.append(lp)
         if lp > best_lp:
             best_lp = lp
@@ -1957,7 +3156,10 @@ def main():
         f"combo_anchor_threshold={COMBO_ANCHOR_THRESHOLD}"
     )
     if use_grid_scoring():
-        lines.append(f"Score mode: {SCORE_MODE} time_grid_n={TIME_GRID_N} (deterministic midpoint parameter sampling)")
+        lines.append(
+            f"Score mode: {SCORE_MODE} time_grid_n={TIME_GRID_N} "
+            f"(deterministic midpoint sampling + early anchors {EARLY_GRID_TIME_DAYS})"
+        )
     else:
         lines.append(f"Score mode: {SCORE_MODE} monte_carlo_samples={N_MC}")
     lines.append("Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.")
@@ -2016,18 +3218,24 @@ def main():
             anchor = ""
             if score["anchor_support"]:
                 anchor = " anchors=" + ",".join(f"{k}:{v:.1f}" for k, v in score["anchor_support"].items())
+            feasibility = ""
+            if score.get("feasibility_reasons"):
+                feasibility = " feasibility=" + "|".join(score["feasibility_reasons"])
             lines.append(
                 f"{marker} {score['candidate']:23s} logP={score['log_marginal']:+10.2f} "
-                f"mean={score['mean_log_per_axis']:+8.3f} n={score['n_axes']:2d} prior={score['log_prior']:+6.2f}{anchor}"
+                f"mean={score['mean_log_per_axis']:+8.3f} n={score['n_axes']:2d} prior={score['log_prior']:+6.2f}{anchor}{feasibility}"
             )
 
         lines.append("")
         lines.append("[best single-manifold diagnostic]")
         for score in sorted(single_scores, key=lambda s: -s["log_marginal"]):
             marker = "*" if score is best_single else " "
+            feasibility = ""
+            if score.get("feasibility_reasons"):
+                feasibility = " feasibility=" + "|".join(score["feasibility_reasons"])
             lines.append(
                 f"{marker} {score['candidate']:12s} logP={score['log_marginal']:+10.2f} "
-                f"mean={score['mean_log_per_axis']:+8.3f} prior={score['log_prior']:+6.2f}"
+                f"mean={score['mean_log_per_axis']:+8.3f} prior={score['log_prior']:+6.2f}{feasibility}"
             )
 
         lines.append("")
@@ -2084,11 +3292,13 @@ def main():
     lines.append(f"Combo-manifold validation:  {pass_combo}/{total_combo} PASS")
     lines.append("")
     lines.append("Notes:")
-    lines.append("  - This runtime consumes latent_mechanisms, mechanism_edges, axis_couplings, and risk-factor modulation fields.")
+    lines.append("  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.")
+    lines.append("  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.")
     lines.append("  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.")
     lines.append("  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.")
     lines.append("  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.")
     lines.append("  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.")
+    RESULT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     text = "\n".join(lines)
     RESULT_PATH.write_text(text, encoding="utf-8")
