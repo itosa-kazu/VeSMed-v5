@@ -1,0 +1,596 @@
+{
+  "schema_version": "blind_real_case_extraction_v1",
+  "extraction_type": "blind_clinical_case",
+  "source": {
+    "pmcid": "PMC9485698",
+    "pmid": "36147757",
+    "doi": "10.1177/19418744221112133",
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9485698/",
+    "source_metadata": {
+      "article_title": "Subarachnoid Hemorrhage due to Cerebral Cavernous Malformation in a Young Female",
+      "journal": "The Neurohospitalist",
+      "journal_abbreviation": "Neurohospitalist",
+      "publication_date": "2022 Jun 30",
+      "issue_date": "2022 Oct",
+      "volume": "12",
+      "issue": "4",
+      "pages": "669-671",
+      "authors": [
+        "Cleopatra Thurman",
+        "Kasim Qureshi",
+        "Baljit Deol",
+        "Muhammad U Farooq"
+      ],
+      "keywords": [
+        "cavernous malformation hemorrhage",
+        "subarachnoid hemorrhage",
+        "cavernous angioma"
+      ]
+    },
+    "access": {
+      "method": "PMC full-text HTML",
+      "accessed_date": "2026-05-17",
+      "blind_boundary": "Only article-stated source metadata and patient observations were extracted; local atlas, ranking cases, previous result files, and disease JSON files were not inspected."
+    }
+  },
+  "patient": {
+    "demographics": {
+      "age": {
+        "value": 33,
+        "unit": "years",
+        "source_text_value": "33-years-old female",
+        "source_section": "Abstract; Case Description"
+      },
+      "sex": {
+        "value": "female",
+        "source_text_value": "female",
+        "source_section": "Abstract; Case Description"
+      }
+    }
+  },
+  "risk_context": [
+    {
+      "context_id": "hypertension_history_presence",
+      "context_type": "past_medical_history",
+      "axis_id": "hypertension_history_presence",
+      "axis_label": "History of hypertension",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "source_text_value": "history of hypertension",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    }
+  ],
+  "rankable_observations": [
+    {
+      "axis_id": "sudden_onset_headache_presence",
+      "axis_label": "Sudden-onset headache",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "sudden onset severe holocephalic head ... pain",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "headache_severity",
+      "axis_label": "Headache severity",
+      "axis_category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "sudden_onset_headache_presence",
+      "value": 0.9,
+      "value_type": "numeric",
+      "unit": "severity_score_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "severe ... head ... pain",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "derived_value_note": "Mapped qualitative severe pain to high symptom severity."
+    },
+    {
+      "axis_id": "holocephalic_headache_presence",
+      "axis_label": "Holocephalic headache",
+      "axis_category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "sudden_onset_headache_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "holocephalic head ... pain",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "neck_pain_presence",
+      "axis_label": "Neck pain",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "head and neck pain",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "bending_over_triggered_pain_presence",
+      "axis_label": "Pain onset while bending over",
+      "axis_category": "trigger_context",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "symptom onset",
+      "source_text_value": "while bending over",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "photophobia_presence",
+      "axis_label": "Photophobia",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "photophobia",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_lower_extremity_numbness_presence",
+      "axis_label": "Right lower extremity numbness",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "right lower extremity numbness",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "transient_abnormal_motor_activity_presence",
+      "axis_label": "Transient abnormal motor activity",
+      "axis_category": "neurologic_event",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "en route to hospital",
+      "source_text_value": "bilateral abnormal motor movements",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "abnormal_motor_activity_bilateral_presence",
+      "axis_label": "Bilateral abnormal motor activity",
+      "axis_category": "neurologic_event",
+      "axis_role": "satellite",
+      "parent_axis_id": "transient_abnormal_motor_activity_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "en route to hospital",
+      "source_text_value": "bilateral abnormal motor movements",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "abnormal_motor_activity_duration_seconds",
+      "axis_label": "Abnormal motor activity duration",
+      "axis_category": "neurologic_event",
+      "axis_role": "measurement",
+      "parent_axis_id": "transient_abnormal_motor_activity_presence",
+      "value": 30,
+      "value_type": "numeric",
+      "unit": "seconds",
+      "timepoint": "en route to hospital",
+      "source_text_value": "lasting 30 seconds",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "post_event_fatigue_presence",
+      "axis_label": "Fatigue after transient motor event",
+      "axis_category": "neurologic_event",
+      "axis_role": "satellite",
+      "parent_axis_id": "transient_abnormal_motor_activity_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "en route to hospital",
+      "source_text_value": "followed by fatigue",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "nih_stroke_scale_score",
+      "axis_label": "NIH Stroke Scale score",
+      "axis_category": "neurologic_exam",
+      "axis_role": "measurement",
+      "value": 0,
+      "value_type": "numeric",
+      "unit": "points",
+      "timepoint": "presentation",
+      "source_text_value": "NIH Stroke Scale Score was 0",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "neck_flexion_worsened_pain_presence",
+      "axis_label": "Pain worsened with neck flexion",
+      "axis_category": "physical_exam",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "presentation",
+      "source_text_value": "increased pain with neck flexion",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "axis_label": "Systolic blood pressure",
+      "axis_category": "vital_sign",
+      "axis_role": "measurement",
+      "value": 169,
+      "value_type": "numeric",
+      "unit": "mmHg",
+      "timepoint": "presentation",
+      "source_text_value": "blood pressure (BP) was 169/75",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "axis_label": "Diastolic blood pressure",
+      "axis_category": "vital_sign",
+      "axis_role": "measurement",
+      "value": 75,
+      "value_type": "numeric",
+      "unit": "mmHg",
+      "timepoint": "presentation",
+      "source_text_value": "blood pressure (BP) was 169/75",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "subarachnoid_hemorrhage_presence",
+      "axis_label": "Subarachnoid hemorrhage on head CT",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "CT ... showed diffuse SAH",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "diffuse_subarachnoid_hemorrhage_pattern_presence",
+      "axis_label": "Diffuse subarachnoid hemorrhage pattern",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "diffuse SAH",
+      "source_section": "Case Description; Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "basal_cistern_subarachnoid_blood_presence",
+      "axis_label": "Basal cistern subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "SAH within the basal cistern",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "suprasellar_cistern_subarachnoid_blood_presence",
+      "axis_label": "Suprasellar cistern subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "SAH within the ... suprasellar cistern",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "sylvian_fissure_subarachnoid_blood_presence",
+      "axis_label": "Sylvian fissure subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "SAH within the ... sylvian fissures",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "anterior_interhemispheric_fissure_subarachnoid_blood_presence",
+      "axis_label": "Anterior interhemispheric fissure subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "SAH within the ... anterior interhemispheric fissure",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "ambient_cistern_subarachnoid_blood_presence",
+      "axis_label": "Ambient cistern subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "SAH within the ... ambient cistern",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "cortical_sulci_subarachnoid_blood_presence",
+      "axis_label": "Peripheral cortical sulci subarachnoid blood",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "hemispheric peripheral cortical sulci",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_anterior_cerebral_artery_region_possible_focus_presence",
+      "axis_label": "Possible right anterior cerebral artery region focus on CT",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "subarachnoid_hemorrhage_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial non-contrast head CT",
+      "source_text_value": "possible focus in the Right Anterior Cerebral Artery region",
+      "source_section": "Figure 1 caption",
+      "use_in_ranking": true,
+      "quality_note": "The figure caption describes this as possible rather than definitive."
+    },
+    {
+      "axis_id": "head_neck_ct_angiography_aneurysm_presence",
+      "axis_label": "Aneurysm on head/neck CTA",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial CTA",
+      "source_text_value": "CTA ... showed no aneurysm",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "head_neck_ct_angiography_stenosis_presence",
+      "axis_label": "Stenosis on head/neck CTA",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial CTA",
+      "source_text_value": "CTA ... showed no ... stenosis",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "head_neck_ct_angiography_dissection_presence",
+      "axis_label": "Dissection on head/neck CTA",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial CTA",
+      "source_text_value": "CTA ... showed no ... dissection",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "catheter_digital_subtraction_angiography_aneurysm_presence",
+      "axis_label": "Aneurysm on catheter digital subtraction angiography",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial catheter DSA",
+      "source_text_value": "DSA ... showed no aneurysm",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "catheter_digital_subtraction_angiography_stenosis_presence",
+      "axis_label": "Stenosis on catheter digital subtraction angiography",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial catheter DSA",
+      "source_text_value": "DSA ... showed no ... stenosis",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "catheter_digital_subtraction_angiography_dissection_presence",
+      "axis_label": "Dissection on catheter digital subtraction angiography",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 0,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "initial catheter DSA",
+      "source_text_value": "DSA ... showed no ... dissection",
+      "source_section": "Case Description",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "focal_brain_susceptibility_artifact_presence",
+      "axis_label": "Focal brain susceptibility artifact on MRI",
+      "axis_category": "imaging",
+      "axis_role": "finding",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "overnight brain MRI",
+      "source_text_value": "focal area of susceptibility artifact",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_parafalcine_frontal_lobe_lesion_presence",
+      "axis_label": "Right parafalcine frontal lobe focal lesion",
+      "axis_category": "imaging",
+      "axis_role": "satellite",
+      "parent_axis_id": "focal_brain_susceptibility_artifact_presence",
+      "value": 1,
+      "value_type": "present_absent_0_1",
+      "unit": "present_absent_0_1",
+      "timepoint": "overnight brain MRI",
+      "source_text_value": "right parafalcine frontal lobe",
+      "source_section": "Case Description",
+      "use_in_ranking": true
+    }
+  ],
+  "record_only": [
+    {
+      "record_type": "article_title_diagnostic_framing",
+      "description": "The article title frames the case causally; it is preserved as metadata only and not as ranking evidence.",
+      "source_text_value": "Subarachnoid Hemorrhage due to Cerebral Cavernous Malformation in a Young Female",
+      "source_section": "Title",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "abstract_diagnostic_framing",
+      "description": "The abstract states the authors' causal interpretation of the hemorrhage source.",
+      "source_text_value": "SAH secondary to cavernous malformation mimicking aneurysmal etiology",
+      "source_section": "Abstract",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "treatment",
+      "description": "The patient was given an antiseizure medication load.",
+      "source_text_value": "loaded with levetiracetam",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "treatment",
+      "description": "The patient received an antihypertensive infusion for strict blood pressure control.",
+      "source_text_value": "nicardipine infusion was initiated",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "treatment",
+      "description": "The patient was placed on nimodipine while repeat angiography was pending.",
+      "source_text_value": "placed on nimodipine",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "late_diagnostic_workup",
+      "description": "Over the next few days, transcranial Doppler showed no vasospasm.",
+      "source_text_value": "transcranial doppler showed no evidence of vasospasm",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "late_diagnostic_workup",
+      "description": "Repeat angiography on day 7 remained negative and contributed to the authors' diagnostic conclusion.",
+      "source_text_value": "day 7 repeat catheter DSA remained negative",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "diagnostic_conclusion",
+      "description": "The authors state the diagnostic conclusion after repeat angiography.",
+      "source_text_value": "SAH due to cavernoma",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "treatment_decision",
+      "description": "Resection was offered but declined.",
+      "source_text_value": "resection of lesion was offered however patient declined",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "discharge_course",
+      "description": "Nimodipine was stopped and the patient was discharged clinically stable on levetiracetam.",
+      "source_text_value": "Nimodipine was discontinued and the patient was discharged in stable condition on levetiracetam",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "follow_up_limitation",
+      "description": "The paper could not report repeat MRI because the patient was lost to follow-up.",
+      "source_text_value": "patient was lost to follow up",
+      "source_section": "Case Description",
+      "use_in_ranking": false
+    },
+    {
+      "record_type": "discussion_framing",
+      "description": "The discussion reviews rarity, differential implications, management implications, and literature context.",
+      "source_text_value": "patients presenting with angiogram negative ... SAH",
+      "source_section": "Discussion",
+      "use_in_ranking": false
+    }
+  ],
+  "extraction_caveats": [
+    "The article reports no laboratory values, temperature, respiratory rate, pulse, oxygen saturation, Glasgow Coma Scale score, medication history beyond hypertension context, family history, or trauma history.",
+    "The focal MRI susceptibility artifact is used as a neutral imaging observation; the article's interpretive phrase about the underlying lesion type is record-only.",
+    "Repeat day-7 angiography and transcranial Doppler findings were treated as late diagnostic/course facts rather than initial rankable observations."
+  ]
+}

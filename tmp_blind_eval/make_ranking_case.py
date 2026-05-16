@@ -248,7 +248,7 @@ def build_case(extraction, extraction_path, notes_path, expected):
         "case_id": f"{pmcid}_BLIND_FULLTEXT_PILOT",
         "source_pmid": source_value(extraction, source, "pmid"),
         "source_pmcid": pmcid,
-        "source_url": source_value(extraction, source, "source_url"),
+        "source_url": source_value(extraction, source, "source_url") or source_value(extraction, source, "url"),
         "source_doi": source_value(extraction, source, "doi"),
         "source_access_method": {
             "blind_extraction_file": str(extraction_path).replace("\\", "/"),

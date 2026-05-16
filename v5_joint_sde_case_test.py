@@ -153,6 +153,7 @@ NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
 GENERIC_ANCHOR_SCORE_CAP = 4.0
+HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP = 90.0
 DURATION_CONDITION_SAMPLE_FACTORS = (0.5, 0.75, 1.0, 1.33, 2.0)
 DURATION_CONDITION_LOG_SIGMA = 0.35
 DURATION_COMPATIBILITY_GRACE_FACTOR = 1.5
@@ -178,6 +179,22 @@ FEMALE_REPRODUCTIVE_DISEASE_IDS = {
     "D-SEPTIC-ABORTION",
     "D-THREATENED-PRETERM-LABOR",
     "D-TUBO-OVARIAN-ABSCESS",
+    "D-UTERINE-RUPTURE",
+}
+
+PREGNANCY_RELATED_DISEASE_IDS = {
+    "D-AMNIOTIC-FLUID-EMBOLISM",
+    "D-CHORIOAMNIONITIS",
+    "D-ECTOPIC-PREGNANCY",
+    "D-HELLP-SYNDROME",
+    "D-PERIPARTUM-CARDIOMYOPATHY",
+    "D-PLACENTA-PREVIA",
+    "D-PLACENTAL-ABRUPTION",
+    "D-POSTPARTUM-ENDOMETRITIS",
+    "D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+    "D-PREECLAMPSIA-ECLAMPSIA",
+    "D-SEPTIC-ABORTION",
+    "D-THREATENED-PRETERM-LABOR",
     "D-UTERINE-RUPTURE",
 }
 
@@ -404,7 +421,11 @@ EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS = ACUTE_VIRAL_HEPATITIS_DISEASE_IDS | {
     "D-ACETAMINOPHEN-TOXICITY",
     "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
     "D-DENGUE",
+    "D-HYPERKALEMIA",
     "D-INCARCERATED-GROIN-HERNIA",
+    "D-NECROTIZING-FASCIITIS",
+    "D-PNEUMOTHORAX",
+    "D-TUMOR-LYSIS-SYNDROME",
 } | TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS | SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
@@ -527,6 +548,8 @@ def norm_unit(unit):
         return ""
     return (
         str(unit)
+        .replace("\\u03bc", "u")
+        .replace("\u03bc", "u")
         .replace("µ", "u")
         .replace("μ", "u")
         .replace("^", "")
@@ -542,10 +565,24 @@ def convert_value(value, from_unit, to_unit, axis_id):
     if not src or not dst or src == dst:
         return value
 
+    if axis_id == "body_temperature":
+        if src in ("degf", "f", "fahrenheit", "°f") and dst in ("degc", "c", "celsius", "°c"):
+            return (value - 32.0) * 5.0 / 9.0
+        if src in ("degc", "c", "celsius", "°c") and dst in ("degf", "f", "fahrenheit", "°f"):
+            return value * 9.0 / 5.0 + 32.0
+
     if src in ("mg/dl", "mgperdl") and dst in ("mg/l", "mgperl"):
         return value * 10.0
     if src in ("mg/l", "mgperl") and dst in ("mg/dl", "mgperdl"):
         return value / 10.0
+    if src in ("g/l", "gperl") and dst in ("mg/dl", "mgperdl"):
+        return value * 100.0
+    if src in ("mg/dl", "mgperdl") and dst in ("g/l", "gperl"):
+        return value / 100.0
+    if src in ("mcg/ml", "mcgperml", "ug/ml", "ugperml") and dst in ("mg/dl", "mgperdl"):
+        return value / 10.0
+    if src in ("mg/dl", "mgperdl") and dst in ("mcg/ml", "mcgperml", "ug/ml", "ugperml"):
+        return value * 10.0
     if src in ("ng/ml", "ngperml") and dst in ("ng/l", "ngperl"):
         return value * 1000.0
     if src in ("ng/l", "ngperl") and dst in ("ng/ml", "ngperml"):
@@ -571,13 +608,40 @@ def convert_value(value, from_unit, to_unit, axis_id):
         "perul",
         "cells/ul",
         "cellsperul",
+        "/mm3",
+        "permm3",
+        "cells/mm3",
+        "cellspermm3",
     ) and dst in ("109/l", "109perl"):
         return value / 1000.0
     if axis_id in ("white_blood_cell_count", "absolute_neutrophil_count", "lymphocyte_count", "platelet_count", "reticulocyte_count") and src in (
         "109/l",
         "109perl",
-    ) and dst in ("/ul", "perul", "cells/ul", "cellsperul"):
+    ) and dst in ("/ul", "perul", "cells/ul", "cellsperul", "/mm3", "permm3", "cells/mm3", "cellspermm3"):
         return value * 1000.0
+    if axis_id == "csf_wbc_count" and src in ("x106/l", "106/l", "10e6/l", "10e6perl", "cells/ul", "cellsperul", "/ul", "perul") and dst in (
+        "cells/ul",
+        "cellsperul",
+        "/ul",
+        "perul",
+    ):
+        return value
+    if axis_id == "csf_wbc_count" and src in ("cells/ul", "cellsperul", "/ul", "perul") and dst in ("x106/l", "106/l", "10e6/l", "10e6perl"):
+        return value
+    if axis_id in ("serum_glucose", "blood_glucose", "capillary_blood_glucose", "csf_glucose") and src in ("mmol/l", "mmolperl") and dst in (
+        "mg/dl",
+        "mgperdl",
+    ):
+        return value * 18.018
+    if axis_id in ("serum_glucose", "blood_glucose", "capillary_blood_glucose", "csf_glucose") and src in ("mg/dl", "mgperdl") and dst in (
+        "mmol/l",
+        "mmolperl",
+    ):
+        return value / 18.018
+    if axis_id in ("arterial_pco2", "arterial_paco2", "venous_pco2") and src == "kpa" and dst == "mmhg":
+        return value * 7.50062
+    if axis_id in ("arterial_pco2", "arterial_paco2", "venous_pco2") and src == "mmhg" and dst == "kpa":
+        return value / 7.50062
     if src in ("kgpermonth", "kg/month") and dst in ("kgperweek", "kg/week"):
         return value / 4.345
     if src in ("kgperweek", "kg/week") and dst in ("kgpermonth", "kg/month"):
@@ -1773,6 +1837,12 @@ EXACT_AXIS_ALIASES = {
     "anti_hepatitis_a_virus_igg_positive": ("hav_igg_or_total_antibody_positivity",),
     "anti_hev_igm_positive": ("hev_igm_positivity",),
     "arterial_pH": ("arterial_ph",),
+    "arterial_bicarbonate": ("serum_bicarbonate",),
+    "arterial_blood_ph": ("arterial_ph",),
+    "arterial_oxygen_saturation": ("oxygen_saturation",),
+    "arterial_paco2": ("arterial_pco2",),
+    "arterial_pco2": ("arterial_paco2",),
+    "arterial_po2": ("arterial_pao2",),
     "adenovirus_immunohistochemistry_positive": ("adenovirus_tissue_immunohistochemistry_positive",),
     "altered_mental_status_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
     "aspartate_aminotransferase": ("serum_ast",),
@@ -1784,11 +1854,18 @@ EXACT_AXIS_ALIASES = {
     "bilateral_lower_leg_intermuscular_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
     "bilateral_mid_dilated_pupils_presence": ("mid_dilated_pupil_presence", "pupillary_abnormality_presence"),
     "bilateral_perilimbal_conjunctival_injection_presence": ("conjunctival_injection_presence",),
+    "bilateral_alveolar_consolidation_on_chest_xray_presence": ("bilateral_pulmonary_opacity_extent",),
+    "bilateral_pneumothorax_presence": ("pneumothorax_imaging_presence",),
     "bilateral_pulmonary_infiltrate_extent": ("bilateral_pulmonary_opacity_extent",),
+    "bilateral_lower_extremity_areflexia_presence": ("areflexia_hyporeflexia_severity",),
+    "bilateral_lower_extremity_numbness_presence": ("sensory_symptom_presence", "sensory_loss_presence"),
     "bilious_vomiting_presence": ("vomiting_activity",),
     "blood_glucose": ("serum_glucose",),
     "blood_gas_oxygen_saturation": ("oxygen_saturation",),
+    "blood_streptococcus_pneumoniae_pcr_positive_presence": ("blood_culture_positivity_probability",),
     "blood_urea": ("blood_urea_nitrogen",),
+    "bowel_invagination_on_ct_presence": ("intussusception_presence", "intussusception_imaging_presence"),
+    "bowel_pneumatosis_presence": ("pneumatosis_intestinalis_presence",),
     "bee_pollen_ingestion_presence": ("allergen_exposure_temporal_association_probability",),
     "body_temperature_celsius": ("body_temperature",),
     "chronic_heavy_alcohol_use_presence": ("alcohol_pancreatic_toxicity_context_probability", "chronic_heavy_beer_intake_presence"),
@@ -1796,6 +1873,17 @@ EXACT_AXIS_ALIASES = {
     "coma_presence": ("coma_activity",),
     "complete_atrioventricular_block_presence": ("atrioventricular_block_degree",),
     "confusion_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
+    "clear_watery_rhinorrhea_presence": ("csf_leak_history_status",),
+    "cardiac_troponin_i": ("serum_troponin_i", "serum_troponin"),
+    "carbon_monoxide_exposure_duration_hours": ("time_since_carbon_monoxide_exposure_hours",),
+    "carboxyhemoglobin_fraction_percent": ("carboxyhemoglobin_percent",),
+    "capillary_blood_glucose": ("serum_glucose",),
+    "csf_culture_positive_presence": ("csf_culture_positivity",),
+    "csf_gram_stain_positive_presence": ("csf_gram_stain_positivity",),
+    "csf_polymorph_percentage": ("csf_neutrophil_fraction",),
+    "csf_streptococcus_pneumoniae_pcr_positive_presence": ("csf_bacterial_pcr_positivity",),
+    "csf_turbidity_presence": ("turbid_csf_presence",),
+    "csf_white_cell_count": ("csf_wbc_count",),
     "conjugated_bilirubin": ("serum_bilirubin_direct",),
     "corneal_epithelial_edema_right_eye_presence": ("corneal_edema_presence",),
     "coronary_occlusion_presence": ("culprit_coronary_obstruction_presence",),
@@ -1807,8 +1895,23 @@ EXACT_AXIS_ALIASES = {
     "direct_bilirubin_mg_dl": ("serum_bilirubin_direct",),
     "direct_bilirubin_elevated_presence": ("direct_hyperbilirubinemia_presence",),
     "direct_antiglobulin_test_positive": ("direct_antiglobulin_test_activity",),
+    "decreased_conscious_level_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
+    "dengue_igm_mac_elisa_positive": ("dengue_igm_positivity",),
+    "dengue_igm_positive": ("dengue_igm_positivity",),
+    "dengue_igm_positive_presence": ("dengue_igm_positivity",),
+    "diffuse_subcutaneous_air_presence": ("soft_tissue_gas_imaging",),
     "decreased_vision_presence": ("visual_acuity_impairment_presence", "blurred_vision_presence"),
     "ecg_anterior_wall_acute_ischemic_pattern_presence": ("st_segment_elevation_presence",),
+    "emg_lower_extremity_motor_response_absent_presence": ("peripheral_neuropathy_presence", "axonal_polyneuropathy_presence", "reduced_cmap_snap_amplitude_severity"),
+    "emg_lower_extremity_nerve_conduction_velocity_absent_presence": ("peripheral_neuropathy_presence", "axonal_polyneuropathy_presence"),
+    "emg_lower_extremity_sensory_response_absent_presence": ("peripheral_neuropathy_presence", "axonal_polyneuropathy_presence", "reduced_cmap_snap_amplitude_severity"),
+    "emg_upper_extremity_motor_response_amplitude_diminished_presence": ("peripheral_neuropathy_presence", "axonal_polyneuropathy_presence", "reduced_cmap_snap_amplitude_severity"),
+    "emg_upper_extremity_nerve_conduction_velocity_diminished_presence": (
+        "peripheral_neuropathy_presence",
+        "demyelinating_polyneuropathy_presence",
+        "demyelinating_polyneuropathy_electrodiagnostic_degree",
+    ),
+    "emg_upper_extremity_sensory_response_amplitude_diminished_presence": ("peripheral_neuropathy_presence", "axonal_polyneuropathy_presence", "reduced_cmap_snap_amplitude_severity"),
     "facial_edema_presence": ("angioedema_presence", "facial_lip_tongue_angioedema_presence"),
     "facial_weakness_severity": ("facial_droop_severity",),
     "false_aortic_lumen_presence": ("aortic_false_lumen_patency",),
@@ -1819,8 +1922,11 @@ EXACT_AXIS_ALIASES = {
     "glasgow_coma_scale": ("glasgow_coma_scale_score",),
     "ground_glass_opacity_extent": ("diffuse_ground_glass_opacity_extent",),
     "generalized_urticaria_presence": ("urticaria_presence",),
+    "gum_bleeding_presence": ("mucosal_bleeding_activity", "bleeding_activity"),
     "heart_rate_bpm": ("heart_rate",),
+    "hematochezia_on_digital_rectal_exam_presence": ("hematochezia_presence", "gastrointestinal_bleeding_presence"),
     "hemoglobin_g_dL": ("hemoglobin",),
+    "hemorrhagic_blebs_presence": ("bleeding_activity", "soft_tissue_bleeding_activity"),
     "hepatitis_a_igm_positive": ("hav_igm_positivity",),
     "hepatitis_a_igm_positive_presence": ("hav_igm_positivity",),
     "hepatitis_a_igm_antibody_positive": ("hav_igm_positivity",),
@@ -1832,6 +1938,7 @@ EXACT_AXIS_ALIASES = {
     "hepatitis_b_core_igm_positive_presence": ("hepatitis_b_core_igm_positivity",),
     "hepatitis_b_surface_antigen_positive_presence": ("hepatitis_b_surface_antigen_positivity",),
     "hbv_dna_positive_presence": ("hbv_dna_positivity",),
+    "known_carbon_monoxide_exposure_presence": ("carbon_monoxide_exposure_presence",),
     "gallbladder_wall_thickening_presence": ("gallbladder_wall_thickening_activity",),
     "gallbladder_inflammation_imaging_presence": (
         "gallbladder_wall_thickening_activity",
@@ -1866,9 +1973,12 @@ EXACT_AXIS_ALIASES = {
     "biliary_duct_dilation_presence": ("biliary_obstruction_activity",),
     "hepatic_encephalopathy_presence": ("mental_status_abnormality_activity",),
     "hiv1_rna_copies_per_mL": ("hiv_plasma_rna_viral_load",),
+    "left_pneumothorax_presence": ("pneumothorax_imaging_presence",),
+    "lower_extremity_subcutaneous_air_presence": ("soft_tissue_gas_imaging",),
     "hiv_positive_sexual_partner_presence": ("known_hiv_positive_source_partner_presence",),
     "human_adenovirus_hexon_gene_typing_result": ("adenovirus_hexon_typing_positive_presence",),
     "hypoxemia_presence": ("supplemental_oxygen_requirement_presence",),
+    "lower_extremity_weakness_presence": ("muscle_weakness_presence", "limb_weakness_or_paralysis_presence", "lower_limb_weakness_presence"),
     "inability_to_follow_commands_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "incomprehensible_speech_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "inferior_vena_cava_collapse_presence": ("dehydration_presence",),
@@ -1899,8 +2009,11 @@ EXACT_AXIS_ALIASES = {
     "nih_stroke_scale": ("nihss_score",),
     "oxygen_desaturation_presence": ("supplemental_oxygen_requirement_presence",),
     "oxygen_flow_rate_l_per_min": ("oxygen_requirement_level",),
+    "oxygen_saturation_room_air": ("oxygen_saturation",),
     "palpitations_presence": ("palpitations_activity",),
     "partial_thromboplastin_time_seconds": ("partial_thromboplastin_time",),
+    "packed_cell_volume": ("hematocrit",),
+    "petechiae_presence": ("petechiae_purpura_activity", "rash_activity"),
     "perinephric_stranding_progression_presence": ("perinephric_stranding_presence",),
     "persistent_ocular_pain_presence": ("acute_eye_pain_presence",),
     "point_of_care_glucose": ("serum_glucose",),
@@ -1908,9 +2021,16 @@ EXACT_AXIS_ALIASES = {
     "pulmonary_infiltrate_presence": ("pulmonary_opacity_presence", "bilateral_pulmonary_opacity_presence"),
     "pulmonary_arterial_filling_defect_presence": ("ctpa_pulmonary_arterial_filling_defect_activity",),
     "pulmonary_hypertension_presence": ("pulmonary_hypertension_activity",),
+    "pulmonary_edema_on_chest_xray_presence": ("noncardiogenic_pulmonary_edema_presence", "pulmonary_edema_presence"),
+    "progressive_weakness_presence": ("muscle_weakness_presence", "limb_weakness_or_paralysis_presence"),
     "renal_allograft_tenderness_presence": ("allograft_tenderness_activity",),
     "renal_allograft_tenderness_severity": ("allograft_tenderness_activity",),
     "renal_allograft_tenderness_worsening_presence": ("allograft_tenderness_activity",),
+    "reported_aspirin_ingestion_presence": (
+        "aspirin_exposure_presence",
+        "salicylate_exposure_presence",
+        "acute_high_dose_salicylate_ingestion_presence",
+    ),
     "serum_human_adenovirus_pcr_viral_load": ("adenovirus_viral_load",),
     "right_renal_artery_involvement_by_aortic_flap_presence": ("renal_artery_malperfusion_presence",),
     "right_renal_artery_ostial_stenosis_presence": ("renal_artery_malperfusion_presence",),
@@ -1932,6 +2052,8 @@ EXACT_AXIS_ALIASES = {
         "pupillary_light_reaction_impairment_presence",
     ),
     "right_pupil_mid_dilated_presence": ("mid_dilated_pupil_presence", "pupillary_abnormality_presence"),
+    "right_pneumothorax_presence": ("pneumothorax_imaging_presence",),
+    "right_sided_pleural_effusion_presence": ("pleural_effusion_presence", "pleural_effusion_activity"),
     "right_popliteal_artery_occlusion_on_ct_angiography_presence": (
         "peripheral_arterial_occlusion_presence",
         "lower_extremity_arterial_occlusion_presence",
@@ -1947,10 +2069,16 @@ EXACT_AXIS_ALIASES = {
     "serum_creatinine_mg_dL": ("serum_creatinine",),
     "serum_acetaminophen_concentration": ("acetaminophen_serum_concentration",),
     "serum_ferritin_ng_mL": ("serum_ferritin",),
+    "serum_salicylate": ("serum_salicylate_concentration_mg_dl",),
+    "splenic_flexure_bowel_invagination_location_presence": ("intussusception_presence", "intussusception_imaging_presence"),
+    "severe_frontal_headache_presence": ("headache_presence", "headache_activity"),
     "shock_presence": ("shock_activity",),
     "scleral_icterus_presence": ("jaundice_activity",),
     "somnolence_presence": ("mental_status_abnormality_activity",),
     "superior_mesenteric_vein_thrombotic_occlusion_presence": ("mesenteric_vascular_occlusion_presence", "superior_mesenteric_vein_thrombosis_presence"),
+    "subcutaneous_emphysema_presence": ("soft_tissue_gas_imaging",),
+    "ascending_paralysis_presence": ("symmetric_ascending_weakness_severity", "limb_weakness_or_paralysis_presence", "muscle_weakness_presence"),
+    "beta_2_transferrin_positive_presence": ("csf_leak_history_status",),
     "acute_small_bowel_ischemia_ct_presence": ("mesenteric_bowel_ischemia_presence", "bowel_ischemia_imaging_presence"),
     "long_segment_venous_thrombus_presence": ("superior_mesenteric_vein_thrombosis_presence",),
     "portal_vein_thrombus_extension_presence": ("portal_vein_thrombosis_presence",),
@@ -1969,11 +2097,14 @@ EXACT_AXIS_ALIASES = {
     "urine_rbc_presence": ("hematuria_activity",),
     "urine_wbc_presence": ("pyuria_activity",),
     "venous_access_difficulty_presence": ("dehydration_presence", "dehydration_severity"),
+    "venous_blood_ph": ("arterial_ph",),
+    "venous_pco2": ("arterial_pco2",),
     "vomiting_presence": ("vomiting_activity",),
     "warm_dry_skin_presence": ("dehydration_presence",),
     "weak_peripheral_pulse_presence": ("dehydration_presence", "dehydration_severity"),
     "withdrawal_from_pain_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "white_blood_cell_count_per_uL": ("white_blood_cell_count",),
+    "worsening_pulmonary_edema_on_chest_xray_presence": ("noncardiogenic_pulmonary_edema_presence", "pulmonary_edema_presence"),
     "intraocular_pressure_right_eye": ("intraocular_pressure_mmHg",),
     "intraocular_pressure_left_eye": ("intraocular_pressure_mmHg",),
     "visual_acuity_right_eye_decimal": ("visual_acuity_decimal",),
@@ -2467,6 +2598,12 @@ def prepare_case_data(data):
             },
         )
 
+    def any_observed_positive(axis_ids, threshold=0.5):
+        return any(
+            (value is not None and value >= threshold)
+            for value in (observation_float(axis_id) for axis_id in axis_ids)
+        )
+
     apap_concentration = observation_float("acetaminophen_serum_concentration")
     apap_daily_dose = max(
         [
@@ -2504,6 +2641,94 @@ def prepare_case_data(data):
             "staggered_or_repeated_supratherapeutic_ingestion_probability",
             ("recent_acetaminophen_ingestion_dose", "reported_daily_acetaminophen_dose", "acetaminophen_exposure_duration"),
             category="toxic_exposure_context",
+        )
+
+    salicylate_level = observation_float("serum_salicylate")
+    if salicylate_level is not None and salicylate_level > 0.0:
+        add_derived_presence("salicylate_exposure_presence", ("serum_salicylate",), category="toxic_exposure_context")
+
+    if any_observed_positive(("respiratory_alkalosis_presence",)) and any_observed_positive(("metabolic_acidosis_presence",)):
+        add_derived_presence(
+            "mixed_respiratory_alkalosis_metabolic_acidosis_presence",
+            ("respiratory_alkalosis_presence", "metabolic_acidosis_presence"),
+            category="acid_base_finding",
+        )
+
+    anion_gap = observation_float("anion_gap")
+    if anion_gap is not None and anion_gap >= 16.0 and any_observed_positive(("metabolic_acidosis_presence",)):
+        add_derived_presence(
+            "anion_gap_metabolic_acidosis_presence",
+            ("anion_gap", "metabolic_acidosis_presence"),
+            category="acid_base_finding",
+        )
+
+    potassium = observation_float("serum_potassium")
+    if potassium is not None and potassium >= 5.5:
+        add_derived_presence("hyperkalemia_presence", ("serum_potassium",), category="electrolyte_finding")
+        if any_observed_positive(
+            (
+                "peaked_t_wave_presence",
+                "qrs_widening_presence",
+                "qrs_interval_abnormality_presence",
+                "de_winter_ecg_pattern_presence",
+            )
+        ):
+            add_derived_presence(
+                "hyperkalemia_ecg_change_presence",
+                ("serum_potassium", "peaked_t_wave_presence", "qrs_widening_presence", "de_winter_ecg_pattern_presence"),
+                category="ecg_finding",
+            )
+        if any_observed_positive(("peaked_t_wave_presence",)):
+            add_derived_presence(
+                "hyperkalemia_peaked_t_wave_presence",
+                ("serum_potassium", "peaked_t_wave_presence"),
+                category="ecg_finding",
+            )
+        if any_observed_positive(("qrs_widening_presence", "qrs_interval_abnormality_presence")):
+            add_derived_presence(
+                "hyperkalemia_qrs_widening_presence",
+                ("serum_potassium", "qrs_widening_presence"),
+                category="ecg_finding",
+            )
+
+    if any_observed_positive(("left_pneumothorax_presence", "right_pneumothorax_presence", "bilateral_pneumothorax_presence")):
+        add_derived_presence(
+            "pneumothorax_imaging_presence",
+            ("left_pneumothorax_presence", "right_pneumothorax_presence", "bilateral_pneumothorax_presence"),
+            category="imaging_finding",
+        )
+
+    if any_observed_positive(("bowel_invagination_on_ct_presence", "splenic_flexure_bowel_invagination_location_presence")):
+        add_derived_presence(
+            "intussusception_presence",
+            ("bowel_invagination_on_ct_presence", "splenic_flexure_bowel_invagination_location_presence"),
+            category="imaging_finding",
+        )
+        add_derived_presence(
+            "intussusception_imaging_presence",
+            ("bowel_invagination_on_ct_presence", "splenic_flexure_bowel_invagination_location_presence"),
+            category="imaging_finding",
+        )
+
+    if any_observed_positive(
+        (
+            "subcutaneous_emphysema_presence",
+            "lower_extremity_subcutaneous_air_presence",
+            "diffuse_subcutaneous_air_presence",
+            "psoas_muscle_gas_presence",
+            "retroperitoneal_gas_presence",
+        )
+    ):
+        add_derived_presence(
+            "soft_tissue_gas_imaging",
+            (
+                "subcutaneous_emphysema_presence",
+                "lower_extremity_subcutaneous_air_presence",
+                "diffuse_subcutaneous_air_presence",
+                "psoas_muscle_gas_presence",
+                "retroperitoneal_gas_presence",
+            ),
+            category="imaging_finding",
         )
 
     iop_value = observation_float("intraocular_pressure_mmHg")
@@ -2842,6 +3067,39 @@ def case_risk_context(case, disease):
     return ctx
 
 
+def case_has_pregnancy_or_postpartum_evidence(case):
+    axis_ids = (
+        "pregnancy_presence",
+        "pregnant_presence",
+        "current_pregnancy_presence",
+        "gestational_age_weeks",
+        "postpartum_context_presence",
+        "recent_delivery_presence",
+        "labor_presence",
+        "delivery_presence",
+    )
+    for container_name in ("observations_by_axis",):
+        container = case.get(container_name) or {}
+        for axis_id in axis_ids:
+            obs = container.get(axis_id)
+            if not obs:
+                continue
+            try:
+                if float(obs.get("value")) > 0.0:
+                    return True
+            except (TypeError, ValueError):
+                return True
+    for item in case.get("risk_context", []):
+        axis_id = str(item.get("axis_id") or item.get("factor") or "").lower()
+        if any(token in axis_id for token in ("pregnan", "gestation", "postpartum", "delivery", "labor")):
+            try:
+                if float(item.get("value", 1.0)) > 0.0:
+                    return True
+            except (TypeError, ValueError):
+                return True
+    return False
+
+
 def anatomic_feasibility_prior(case, candidate):
     """Apply hard anatomic feasibility as a prior, not as a diagnosis label.
 
@@ -2850,8 +3108,9 @@ def anatomic_feasibility_prior(case, candidate):
     Unknown sex receives no penalty.
     """
     sex = case_reported_sex(case)
-    if sex is None:
-        return 0.0, []
+    demo = case.get("demographics") or {}
+    age = demo.get("age_years", demo.get("age"))
+    has_pregnancy_context = case_has_pregnancy_or_postpartum_evidence(case)
 
     penalty = 0.0
     reasons = []
@@ -2862,6 +3121,15 @@ def anatomic_feasibility_prior(case, candidate):
         elif sex == "female" and disease in MALE_REPRODUCTIVE_DISEASE_IDS:
             penalty += ANATOMIC_IMPOSSIBILITY_LOG_PENALTY
             reasons.append(f"{disease}:male_reproductive_anatomy_absent_for_reported_female")
+        elif (
+            sex == "female"
+            and disease in PREGNANCY_RELATED_DISEASE_IDS
+            and isinstance(age, (int, float))
+            and age >= 55
+            and not has_pregnancy_context
+        ):
+            penalty += ANATOMIC_IMPOSSIBILITY_LOG_PENALTY
+            reasons.append(f"{disease}:pregnancy_or_postpartum_context_absent_for_age_ge55")
     return penalty, reasons
 
 
@@ -3558,6 +3826,457 @@ def dengue_anchor_support(case):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def guillain_barre_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "muscle_weakness_presence",
+            "limb_weakness_or_paralysis_presence",
+            "progressive_weakness_presence",
+            "lower_extremity_weakness_presence",
+        ),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "symmetric_ascending_weakness_severity",
+            "ascending_paralysis_presence",
+        ),
+        score=1.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "areflexia_hyporeflexia_severity",
+            "bilateral_lower_extremity_areflexia_presence",
+        ),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "sensory_symptom_presence",
+            "bilateral_lower_extremity_numbness_presence",
+        ),
+        score=0.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "demyelinating_polyneuropathy_presence",
+            "axonal_polyneuropathy_presence",
+            "ncs_conduction_block_presence",
+            "reduced_cmap_snap_amplitude_severity",
+            "emg_upper_extremity_nerve_conduction_velocity_diminished_presence",
+            "emg_lower_extremity_nerve_conduction_velocity_absent_presence",
+        ),
+        score=1.5,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def bacterial_meningitis_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "csf_bacterial_pcr_positivity",
+            "csf_streptococcus_pneumoniae_pcr_positive_presence",
+            "csf_gram_stain_positivity",
+            "csf_culture_positivity",
+        ),
+        score=3.0,
+    )
+    csf_wbc = observed_float(case, "csf_wbc_count")
+    if csf_wbc is None:
+        csf_wbc = observed_float(case, "csf_white_cell_count")
+    if csf_wbc is not None:
+        if csf_wbc >= 1000.0:
+            score += 1.2
+        elif csf_wbc >= 100.0:
+            score += 0.8
+
+    csf_neutrophil = observed_float(case, "csf_neutrophil_fraction")
+    if csf_neutrophil is None:
+        csf_neutrophil = observed_float(case, "csf_polymorph_percentage")
+    if csf_neutrophil is not None:
+        if csf_neutrophil > 1.0:
+            csf_neutrophil = csf_neutrophil / 100.0
+        if csf_neutrophil >= 0.8:
+            score += 1.0
+
+    csf_glucose = observed_float(case, "csf_glucose")
+    if csf_glucose is not None and csf_glucose <= 40.0:
+        score += 0.8
+    csf_protein = observed_float(case, "csf_protein")
+    if csf_protein is not None:
+        if 1.0 < csf_protein < 20.0:
+            csf_protein = csf_protein * 100.0
+        if csf_protein >= 100.0:
+            score += 0.8
+    score += positive_observed_axis_score(
+        case,
+        (
+            "neck_stiffness_presence",
+            "meningismus_presence",
+            "headache_presence",
+            "severe_frontal_headache_presence",
+            "mental_status_abnormality_presence",
+            "decreased_conscious_level_presence",
+        ),
+        score=0.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "csf_leak_history_status",
+            "clear_watery_rhinorrhea_presence",
+            "beta_2_transferrin_positive_presence",
+        ),
+        score=0.4,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def carbon_monoxide_poisoning_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "carbon_monoxide_exposure_presence",
+            "known_carbon_monoxide_exposure_presence",
+        ),
+        score=3.0,
+    )
+    cohb = max_observed_axis_value(case, ("carboxyhemoglobin_percent", "carboxyhemoglobin_fraction_percent"))
+    if cohb is not None:
+        if cohb >= 25.0:
+            score += 3.0
+        elif cohb >= 10.0:
+            score += 2.0
+        elif cohb > 3.0:
+            score += 1.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "coma_presence",
+            "reduced_consciousness_presence",
+            "syncope_presence",
+            "seizure_presence",
+            "mental_status_abnormality_presence",
+        ),
+        score=0.8,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "hypoxemia_presence",
+            "severe_hypoxemia_presence",
+            "pulmonary_edema_presence",
+            "noncardiogenic_pulmonary_edema_presence",
+            "brain_edema_on_ct_presence",
+        ),
+        score=0.6,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def salicylate_toxicity_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "salicylate_exposure_presence",
+            "aspirin_exposure_presence",
+            "reported_aspirin_ingestion_presence",
+            "acute_high_dose_salicylate_ingestion_presence",
+            "methyl_salicylate_exposure_presence",
+        ),
+        score=3.0,
+    )
+
+    salicylate = observed_float(case, "serum_salicylate_concentration_mg_dl")
+    if salicylate is None:
+        salicylate = observed_float(case, "serum_salicylate")
+    if salicylate is not None:
+        # Some blind case extractions preserve the source unit as mcg/mL.
+        # Clinically and numerically, 1000 mcg/mL is 100 mg/dL.
+        if salicylate > 300.0:
+            salicylate = salicylate / 10.0
+        if salicylate >= 100.0:
+            score += 3.0
+        elif salicylate >= 30.0:
+            score += 2.0
+        elif salicylate > 0.0:
+            score += 1.0
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "mixed_respiratory_alkalosis_metabolic_acidosis_presence",
+            "respiratory_alkalosis_presence",
+        ),
+        score=1.2,
+    )
+    bicarbonate = observed_float(case, "serum_bicarbonate")
+    if bicarbonate is not None and bicarbonate <= 18.0:
+        score += 0.8
+    anion_gap = observed_float(case, "anion_gap")
+    if anion_gap is not None and anion_gap >= 16.0:
+        score += 0.8
+    score += positive_observed_axis_score(case, ("anion_gap_metabolic_acidosis_presence",), score=0.8)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def hyperkalemia_anchor_support(case):
+    score = 0.0
+    potassium = observed_float(case, "serum_potassium")
+    if potassium is not None:
+        if potassium >= 7.0:
+            score += 4.0
+        elif potassium >= 6.0:
+            score += 3.0
+        elif potassium >= 5.5:
+            score += 2.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "hyperkalemia_presence",
+            "hyperkalemia_ecg_change_presence",
+            "hyperkalemia_peaked_t_wave_presence",
+            "peaked_t_wave_presence",
+            "hyperkalemia_qrs_widening_presence",
+            "hyperkalemia_sine_wave_ecg_presence",
+            "hyperkalemia_bradyarrhythmia_presence",
+        ),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "chronic_kidney_disease_history",
+            "acute_kidney_injury_presence",
+            "oliguria_history",
+            "potassium_raising_medication_context",
+        ),
+        score=0.4,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def adrenal_crisis_direct_evidence_score(case):
+    score = 0.0
+    cortisol = observed_float(case, "serum_cortisol")
+    acth = observed_float(case, "plasma_acth")
+    aldosterone = observed_float(case, "serum_aldosterone")
+    plasma_renin = observed_float(case, "plasma_renin_activity")
+    direct_renin = observed_float(case, "direct_renin_concentration")
+
+    if cortisol is not None:
+        if cortisol <= 3.0:
+            score += 2.0
+        elif cortisol <= 5.0:
+            score += 1.5
+        elif cortisol <= 10.0:
+            score += 0.8
+    if acth is not None:
+        if acth >= 200.0:
+            score += 1.5
+        elif acth >= 100.0:
+            score += 1.0
+    if cortisol is not None and cortisol <= 5.0 and acth is not None and acth >= 100.0:
+        score += 2.0
+
+    if aldosterone is not None:
+        if aldosterone <= 5.0:
+            score += 1.0
+        elif aldosterone <= 8.0:
+            score += 0.5
+    if plasma_renin is not None and plasma_renin >= 10.0:
+        score += 1.0
+    if direct_renin is not None and direct_renin >= 100.0:
+        score += 1.0
+
+    score += 2.0 * positive_observed_axis_score(case, ("adrenal_autoantibody_positive_presence",), score=1.0)
+    score += 1.5 * positive_observed_axis_score(case, ("bilateral_adrenal_gland_atrophy_presence",), score=1.0)
+
+    sodium = observed_float(case, "serum_sodium")
+    potassium = observed_float(case, "serum_potassium")
+    systolic_bp = observed_float(case, "systolic_blood_pressure")
+    glucose = observed_float(case, "serum_glucose")
+    if sodium is not None and sodium <= 130.0:
+        score += 0.6
+    if potassium is not None and potassium >= 5.5:
+        score += 0.6
+    if systolic_bp is not None and systolic_bp < 100.0:
+        score += 0.4
+    if glucose is not None and glucose <= 70.0:
+        score += 0.4
+    return score
+
+
+def adrenal_crisis_anchor_support(case):
+    return min(adrenal_crisis_direct_evidence_score(case), GENERIC_ANCHOR_SCORE_CAP)
+
+
+def tumor_lysis_syndrome_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "tumor_lysis_syndrome_presence",
+            "tumor_cell_lysis_context_presence",
+            "cytotoxic_chemotherapy_context_presence",
+            "targeted_anticancer_therapy_context_presence",
+            "steroid_triggered_tumor_lysis_context_presence",
+            "spontaneous_tumor_lysis_context_presence",
+            "high_tumor_burden_presence",
+        ),
+        score=2.5,
+    )
+
+    uric_acid = observed_float(case, "serum_uric_acid")
+    phosphate = observed_float(case, "serum_phosphate")
+    calcium = observed_float(case, "serum_calcium")
+    corrected_calcium = observed_float(case, "corrected_serum_calcium")
+    ionized_calcium = observed_float(case, "ionized_calcium")
+    ldh = observed_float(case, "serum_ldh")
+
+    if uric_acid is not None and uric_acid >= 8.0:
+        score += 1.5
+    score += positive_observed_axis_score(case, ("hyperuricemia_presence",), score=1.5)
+    if phosphate is not None and phosphate >= 4.5:
+        score += 1.5
+    score += positive_observed_axis_score(case, ("hyperphosphatemia_presence",), score=1.5)
+
+    lowest_calcium = min(
+        [value for value in (calcium, corrected_calcium) if value is not None],
+        default=None,
+    )
+    if lowest_calcium is not None and lowest_calcium <= 7.0:
+        score += 1.0
+    if ionized_calcium is not None and ionized_calcium <= 1.0:
+        score += 1.0
+    score += positive_observed_axis_score(case, ("hypocalcemia_presence",), score=1.0)
+
+    if ldh is not None and ldh >= 1000.0:
+        score += 0.8
+    score += positive_observed_axis_score(case, ("high_tumor_burden_severity", "metabolic_tumor_burden_activity"), score=0.8)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def pneumothorax_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "pneumothorax_imaging_presence",
+            "left_pneumothorax_presence",
+            "right_pneumothorax_presence",
+            "bilateral_pneumothorax_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "visceral_pleural_line_presence",
+            "absent_peripheral_lung_markings_presence",
+            "lung_collapse_extent",
+            "subcutaneous_emphysema_presence",
+        ),
+        score=1.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "pleuritic_chest_pain_presence",
+            "chest_pain_presence",
+            "dyspnea_presence",
+            "unilateral_decreased_breath_sounds_presence",
+        ),
+        score=0.5,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def intussusception_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "intussusception_presence",
+            "intussusception_imaging_presence",
+            "bowel_invagination_on_ct_presence",
+            "splenic_flexure_bowel_invagination_location_presence",
+            "ileocolic_intussusception_presence",
+            "colocolic_intussusception_presence",
+            "small_bowel_intussusception_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "bloody_diarrhea_presence",
+            "hematochezia_presence",
+            "hematochezia_on_digital_rectal_exam_presence",
+            "bowel_obstruction_presence",
+            "abdominal_pain_presence",
+            "vomiting_presence",
+        ),
+        score=0.6,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("bowel_pneumatosis_presence", "pneumatosis_intestinalis_presence", "pericolonic_fat_stranding_presence"),
+        score=0.4,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def necrotizing_fasciitis_anchor_support(case):
+    score = 0.0
+    soft_tissue_gas = positive_observed_axis_score(
+        case,
+        (
+            "soft_tissue_gas_imaging",
+            "subcutaneous_emphysema_presence",
+            "lower_extremity_subcutaneous_air_presence",
+            "diffuse_subcutaneous_air_presence",
+        ),
+        score=3.0,
+    )
+    score += soft_tissue_gas
+    score += positive_observed_axis_score(
+        case,
+        (
+            "plantar_foot_blister_presence",
+            "violaceous_bullae_activity",
+            "skin_necrosis_eschar_extent",
+            "rapidly_spreading_erythema_extent",
+            "brawny_edema_induration_activity",
+            "soft_tissue_pain_out_of_proportion_activity",
+        ),
+        score=1.0,
+    )
+    if soft_tissue_gas:
+        score += positive_observed_axis_score(
+            case,
+            (
+                "hypotension_presence",
+                "shock_presence",
+                "altered_mental_status_presence",
+                "type_2_diabetes_mellitus_presence",
+                "diabetes_mellitus_presence",
+            ),
+            score=0.6,
+        )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def acetaminophen_toxicity_anchor_support(case):
     score = 0.0
     score += positive_observed_axis_score(
@@ -3966,13 +4685,17 @@ def key_lab_anchor_support(case, disease):
     if disease == "D-DIABETIC-KETOACIDOSIS":
         glucose = observed_value(case, "serum_glucose") or observed_value(case, "blood_glucose")
         score = 0.0
+        ketone_support = positive_observed_axis_score(
+            case,
+            ("ketonemia_presence", "urine_ketones_presence", "ketosis_presence", "serum_beta_hydroxybutyrate"),
+            score=2.0,
+        )
+        has_dka_specific_biochemistry = (glucose is not None and float(glucose) >= 250.0) or ketone_support > 0.0
+        if not has_dka_specific_biochemistry:
+            return 0.0
         if glucose is not None and float(glucose) >= 250.0:
             score += 2.0
-            score += positive_observed_axis_score(
-                case,
-                ("ketonemia_presence", "urine_ketones_presence", "ketosis_presence", "serum_beta_hydroxybutyrate"),
-                score=2.0,
-            )
+        score += ketone_support
         ph = observed_value(case, "arterial_ph") or observed_value(case, "arterial_pH")
         if ph is not None and float(ph) <= 7.30:
             score += 1.5
@@ -4073,6 +4796,9 @@ def key_lab_anchor_support(case, disease):
         if potassium is not None and float(potassium) <= 3.0:
             return 3.0
         return 0.0
+
+    if disease == "D-HYPERKALEMIA":
+        return hyperkalemia_anchor_support(case)
 
     if disease == "D-SEVERE-HYPERCALCEMIA":
         score = 0.0
@@ -4960,8 +5686,38 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-DENGUE":
         score += dengue_anchor_support(case)
 
+    elif disease == "D-GUILLAIN-BARRE-SYNDROME":
+        score += guillain_barre_anchor_support(case)
+
+    elif disease == "D-BACTERIAL-MENINGITIS":
+        score += bacterial_meningitis_anchor_support(case)
+
+    elif disease == "D-CARBON-MONOXIDE-POISONING":
+        score += carbon_monoxide_poisoning_anchor_support(case)
+
+    elif disease == "D-SALICYLATE-TOXICITY":
+        score += salicylate_toxicity_anchor_support(case)
+
+    elif disease == "D-HYPERKALEMIA":
+        score += hyperkalemia_anchor_support(case)
+
+    elif disease == "D-PNEUMOTHORAX":
+        score += pneumothorax_anchor_support(case)
+
+    elif disease == "D-INTUSSUSCEPTION":
+        score += intussusception_anchor_support(case)
+
+    elif disease == "D-NECROTIZING-FASCIITIS":
+        score += necrotizing_fasciitis_anchor_support(case)
+
     elif disease == "D-ACETAMINOPHEN-TOXICITY":
         score += acetaminophen_toxicity_anchor_support(case)
+
+    elif disease == "D-ADRENAL-CRISIS":
+        score += adrenal_crisis_anchor_support(case)
+
+    elif disease == "D-TUMOR-LYSIS-SYNDROME":
+        score += tumor_lysis_syndrome_anchor_support(case)
 
     elif disease == "D-RETINAL-DETACHMENT":
         score += retinal_detachment_anchor_support(case)
@@ -5036,6 +5792,7 @@ def component_anchor_support(case, disease, manifolds, background_axes):
         "D-ACUTE-SYMPTOMATIC-HYPONATREMIA",
         "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA",
         "D-DIABETIC-KETOACIDOSIS",
+        "D-HYPERKALEMIA",
         "D-HYPOTHERMIA",
         "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
         "D-SEVERE-HYPERCALCEMIA",
@@ -5086,6 +5843,288 @@ def combo_anchor_penalty(case, candidate, manifolds, background_axes):
             if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS and value <= 0.0:
                 penalty += explicit_required_missing_anchor_penalty(case)
     return penalty, support
+
+
+def high_specificity_anchor_log_bonus(case, candidate):
+    """Reward direct observed anchors that identify a causal substrate.
+
+    Generic complications such as ARDS, shock, ischemia, or broad abdominal
+    pathology can otherwise outrank the disease that directly explains a
+    measured toxin level or pathognomonic imaging finding. This is deliberately
+    limited to diagnosis-neutral high-specificity observations.
+    """
+    bonus = 0.0
+    for disease in candidate:
+        disease_bonus = 0.0
+        if disease == "D-DENGUE":
+            disease_bonus += 80.0 * positive_observed_axis_score(
+                case,
+                (
+                    "dengue_ns1_antigen_positivity",
+                    "dengue_igm_positivity",
+                    "dengue_igm_mac_elisa_positive",
+                    "dengue_pcr_positivity",
+                    "dengue_rna_positivity",
+                ),
+                score=1.0,
+            )
+            platelet = observed_float(case, "platelet_count")
+            wbc = observed_float(case, "white_blood_cell_count")
+            if platelet is not None and platelet <= 50.0:
+                disease_bonus += 10.0
+            if wbc is not None and wbc <= 3.5:
+                disease_bonus += 5.0
+
+        elif disease == "D-GUILLAIN-BARRE-SYNDROME":
+            weakness = positive_observed_axis_score(
+                case,
+                ("muscle_weakness_presence", "limb_weakness_or_paralysis_presence", "progressive_weakness_presence", "lower_extremity_weakness_presence"),
+                score=1.0,
+            )
+            ascending = positive_observed_axis_score(case, ("symmetric_ascending_weakness_severity", "ascending_paralysis_presence"), score=1.0)
+            areflexia = positive_observed_axis_score(case, ("areflexia_hyporeflexia_severity", "bilateral_lower_extremity_areflexia_presence"), score=1.0)
+            electrodiagnostic = positive_observed_axis_score(
+                case,
+                (
+                    "demyelinating_polyneuropathy_presence",
+                    "axonal_polyneuropathy_presence",
+                    "ncs_conduction_block_presence",
+                    "reduced_cmap_snap_amplitude_severity",
+                    "emg_upper_extremity_nerve_conduction_velocity_diminished_presence",
+                    "emg_lower_extremity_nerve_conduction_velocity_absent_presence",
+                ),
+                score=1.0,
+            )
+            if weakness and ascending and areflexia:
+                disease_bonus += 55.0
+            if electrodiagnostic and weakness:
+                disease_bonus += 35.0
+
+        elif disease == "D-BACTERIAL-MENINGITIS":
+            direct_micro = positive_observed_axis_score(
+                case,
+                (
+                    "csf_bacterial_pcr_positivity",
+                    "csf_streptococcus_pneumoniae_pcr_positive_presence",
+                    "csf_gram_stain_positivity",
+                    "csf_culture_positivity",
+                ),
+                score=1.0,
+            )
+            if direct_micro:
+                disease_bonus += 60.0
+            csf_wbc = observed_float(case, "csf_wbc_count")
+            if csf_wbc is None:
+                csf_wbc = observed_float(case, "csf_white_cell_count")
+            csf_neutrophil = observed_float(case, "csf_neutrophil_fraction")
+            if csf_neutrophil is None:
+                csf_neutrophil = observed_float(case, "csf_polymorph_percentage")
+            if csf_neutrophil is not None and csf_neutrophil > 1.0:
+                csf_neutrophil = csf_neutrophil / 100.0
+            csf_glucose = observed_float(case, "csf_glucose")
+            csf_protein = observed_float(case, "csf_protein")
+            if csf_protein is not None and 1.0 < csf_protein < 20.0:
+                csf_protein = csf_protein * 100.0
+            if csf_wbc is not None and csf_wbc >= 1000.0 and csf_neutrophil is not None and csf_neutrophil >= 0.8:
+                disease_bonus += 20.0
+            if csf_glucose is not None and csf_glucose <= 40.0 and csf_protein is not None and csf_protein >= 100.0:
+                disease_bonus += 15.0
+
+        elif disease == "D-CARBON-MONOXIDE-POISONING":
+            exposure = positive_observed_axis_score(
+                case,
+                ("carbon_monoxide_exposure_presence", "known_carbon_monoxide_exposure_presence"),
+                score=1.0,
+            )
+            cohb = max_observed_axis_value(case, ("carboxyhemoglobin_percent", "carboxyhemoglobin_fraction_percent"))
+            if cohb is not None and cohb >= 25.0:
+                disease_bonus += 60.0
+            elif cohb is not None and cohb >= 10.0:
+                disease_bonus += 40.0
+            if exposure and cohb is not None and cohb > 3.0:
+                disease_bonus += 20.0
+
+        elif disease == "D-SALICYLATE-TOXICITY":
+            salicylate = observed_float(case, "serum_salicylate_concentration_mg_dl")
+            if salicylate is None:
+                salicylate = observed_float(case, "serum_salicylate")
+            if salicylate is not None and salicylate > 300.0:
+                salicylate = salicylate / 10.0
+            if salicylate is not None and salicylate >= 100.0:
+                disease_bonus += 50.0
+            elif salicylate is not None and salicylate >= 30.0:
+                disease_bonus += 35.0
+            disease_bonus += 15.0 * positive_observed_axis_score(
+                case,
+                ("reported_aspirin_ingestion_presence", "salicylate_exposure_presence", "aspirin_exposure_presence"),
+                score=1.0,
+            )
+
+        elif disease == "D-HYPERKALEMIA":
+            potassium = observed_float(case, "serum_potassium")
+            if potassium is not None and potassium >= 7.0:
+                disease_bonus += 45.0
+            elif potassium is not None and potassium >= 6.0:
+                disease_bonus += 30.0
+            disease_bonus += 15.0 * positive_observed_axis_score(
+                case,
+                ("hyperkalemia_ecg_change_presence", "hyperkalemia_peaked_t_wave_presence", "hyperkalemia_qrs_widening_presence"),
+                score=1.0,
+            )
+
+        elif disease == "D-ADRENAL-CRISIS":
+            direct_score = adrenal_crisis_direct_evidence_score(case)
+            if direct_score >= 6.0:
+                disease_bonus += 90.0
+            elif direct_score >= 4.0:
+                disease_bonus += 70.0
+            elif direct_score >= 2.5:
+                disease_bonus += 45.0
+
+        elif disease == "D-PNEUMOTHORAX":
+            disease_bonus += 90.0 * positive_observed_axis_score(
+                case,
+                (
+                    "pneumothorax_imaging_presence",
+                    "left_pneumothorax_presence",
+                    "right_pneumothorax_presence",
+                    "bilateral_pneumothorax_presence",
+                ),
+                score=1.0,
+            )
+
+        elif disease == "D-INTUSSUSCEPTION":
+            disease_bonus += 60.0 * positive_observed_axis_score(
+                case,
+                (
+                    "intussusception_presence",
+                    "intussusception_imaging_presence",
+                    "bowel_invagination_on_ct_presence",
+                    "ileocolic_intussusception_presence",
+                    "colocolic_intussusception_presence",
+                    "small_bowel_intussusception_presence",
+                ),
+                score=1.0,
+            )
+
+        elif disease == "D-NECROTIZING-FASCIITIS":
+            limb_or_deep_soft_tissue_gas = positive_observed_axis_score(
+                case,
+                (
+                    "lower_extremity_subcutaneous_air_presence",
+                    "diffuse_subcutaneous_air_presence",
+                    "soft_tissue_gas_imaging",
+                    "psoas_muscle_gas_presence",
+                    "retroperitoneal_gas_presence",
+                ),
+                score=1.0,
+            )
+            if limb_or_deep_soft_tissue_gas:
+                disease_bonus += 70.0
+                disease_bonus += 15.0 * positive_observed_axis_score(
+                    case,
+                    ("plantar_foot_blister_presence", "hypotension_presence", "shock_presence", "altered_mental_status_presence"),
+                    score=1.0,
+                )
+
+        bonus += min(disease_bonus, HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP)
+    return bonus
+
+
+def candidate_supports_any_axis(candidate, manifolds, axis_ids):
+    formal_axes = candidate_axis_set(candidate, manifolds, include_derived=True)
+    return any(axis_id in formal_axes for axis_id in axis_ids)
+
+
+def high_specificity_unexplained_evidence_penalty(case, candidate, manifolds):
+    """Penalize candidates that cannot explain direct diagnostic evidence.
+
+    Missing-axis fallback should already penalize unexplained observations, but
+    high-specificity tests and electrodiagnostic patterns need extra weight so
+    broad diseases do not float above clinically relevant mimics.
+    """
+    penalty = 0.0
+
+    peripheral_neuropathy_evidence = positive_observed_axis_score(
+        case,
+        (
+            "demyelinating_polyneuropathy_presence",
+            "axonal_polyneuropathy_presence",
+            "ncs_conduction_block_presence",
+            "reduced_cmap_snap_amplitude_severity",
+            "emg_upper_extremity_motor_response_amplitude_diminished_presence",
+            "emg_upper_extremity_sensory_response_amplitude_diminished_presence",
+            "emg_upper_extremity_nerve_conduction_velocity_diminished_presence",
+            "emg_lower_extremity_motor_response_absent_presence",
+            "emg_lower_extremity_sensory_response_absent_presence",
+            "emg_lower_extremity_nerve_conduction_velocity_absent_presence",
+        ),
+        score=1.0,
+    )
+    if peripheral_neuropathy_evidence and not candidate_supports_any_axis(
+        candidate,
+        manifolds,
+        (
+            "peripheral_neuropathy_presence",
+            "demyelinating_polyneuropathy_presence",
+            "axonal_polyneuropathy_presence",
+            "ncs_conduction_block_presence",
+            "reduced_cmap_snap_amplitude_severity",
+        ),
+    ):
+        penalty -= 80.0
+
+    dengue_direct_marker = positive_observed_axis_score(
+        case,
+        (
+            "dengue_ns1_antigen_positivity",
+            "dengue_igm_positivity",
+            "dengue_igm_mac_elisa_positive",
+            "dengue_pcr_positivity",
+            "dengue_rna_positivity",
+        ),
+        score=1.0,
+    )
+    if dengue_direct_marker and not candidate_supports_any_axis(
+        candidate,
+        manifolds,
+        ("dengue_ns1_antigen_positivity", "dengue_igm_positivity", "dengue_pcr_positivity", "dengue_rna_positivity"),
+    ):
+        penalty -= 60.0
+
+    bacterial_csf_direct_marker = positive_observed_axis_score(
+        case,
+        (
+            "csf_bacterial_pcr_positivity",
+            "csf_streptococcus_pneumoniae_pcr_positive_presence",
+            "csf_gram_stain_positivity",
+            "csf_culture_positivity",
+        ),
+        score=1.0,
+    )
+    if bacterial_csf_direct_marker and not candidate_supports_any_axis(
+        candidate,
+        manifolds,
+        ("csf_bacterial_pcr_positivity", "csf_gram_stain_positivity", "csf_culture_positivity", "csf_bacterial_antigen_positivity"),
+    ):
+        penalty -= 60.0
+
+    adrenal_direct_marker = adrenal_crisis_direct_evidence_score(case)
+    if adrenal_direct_marker >= 5.0 and not candidate_supports_any_axis(
+        candidate,
+        manifolds,
+        (
+            "serum_cortisol",
+            "plasma_acth",
+            "serum_aldosterone",
+            "plasma_renin_activity",
+            "adrenal_autoantibody_positive_presence",
+            "bilateral_adrenal_gland_atrophy_presence",
+        ),
+    ):
+        penalty -= 70.0
+
+    return penalty
 
 
 def is_bounded_0_1_axis(axis):
@@ -5585,9 +6624,18 @@ def score_candidate(case, candidate, manifolds, background_axes):
 
     risk_payloads = {}
     anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate, manifolds, background_axes)
+    anchor_bonus = high_specificity_anchor_log_bonus(case, candidate)
+    unexplained_evidence_penalty = high_specificity_unexplained_evidence_penalty(case, candidate, manifolds)
     duration_penalty = duration_compatibility_penalty(case, candidate, manifolds, background_axes)
     feasibility_penalty, feasibility_reasons = anatomic_feasibility_prior(case, candidate)
-    log_prior = COMBO_LOG_PENALTY * (len(candidate) - 1) + anchor_penalty + duration_penalty + feasibility_penalty
+    log_prior = (
+        COMBO_LOG_PENALTY * (len(candidate) - 1)
+        + anchor_penalty
+        + anchor_bonus
+        + unexplained_evidence_penalty
+        + duration_penalty
+        + feasibility_penalty
+    )
     for disease in candidate:
         axis_mods, coupling_mods, lp = matched_risk_payload(
             manifolds[disease],
