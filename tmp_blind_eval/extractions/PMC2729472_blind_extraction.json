@@ -1,0 +1,401 @@
+{
+  "case_id": "PMC2729472_blind",
+  "source_pmid": "19707473",
+  "source_pmcid": "PMC2729472",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2729472/",
+  "source_access_method": {
+    "primary": "PMC full-text HTML fetched from source_url with PowerShell Invoke-WebRequest on 2026-05-16.",
+    "fallback_metadata": "NCBI OA utility confirmed an open-access package for PMC2729472.",
+    "blind_constraints": [
+      "No local distillations/cases case JSON was read.",
+      "No expected diagnostic label field was read or added.",
+      "master_axes.json was used only as an axis_id naming registry."
+    ]
+  },
+  "demographics": {
+    "age_years": 68,
+    "sex": "male",
+    "race_ethnicity_source_text": "African-American",
+    "evidence_pointer": "Section 2, Case Report, opening sentence"
+  },
+  "snapshot_day": 0,
+  "snapshot_label": "hospital admission before cholecystectomy",
+  "risk_context": [
+    {
+      "axis_id": "recent_broad_spectrum_antibiotic_exposure_activity",
+      "axis_category": "treatment_modifier",
+      "axis_role": "finding",
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "temporal_context": "started 9 weeks before admission and still described as long-term empiric therapy",
+      "source_text_value": "ceftriaxone, caspofungin, and metronidazole for 9 weeks",
+      "evidence_pointer": "Section 2, Case Report, pre-admission treatment history",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "recent_high_risk_antibiotic_exposure_activity",
+      "axis_category": "risk_context",
+      "axis_role": "finding",
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "temporal_context": "high-dose ceftriaxone 2 g IV every 12 hours for 9 weeks",
+      "source_text_value": "high-dose ceftriaxone exposure",
+      "evidence_pointer": "Section 2, Case Report, pre-admission treatment history",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "chronic_steroid_exposure_context",
+      "axis_category": "risk_context",
+      "axis_role": "measurement",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "temporal_context": "corticosteroids started 9 weeks before admission",
+      "source_text_value": "corticosteroids as part of long-term empiric therapy",
+      "evidence_pointer": "Section 2, Case Report, pre-admission treatment history",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "immunosuppression_presence",
+      "axis_category": "risk_context",
+      "axis_role": "finding",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "temporal_context": "inferred from ongoing corticosteroid therapy; intensity not specified",
+      "source_text_value": "corticosteroid exposure",
+      "evidence_pointer": "Section 2, Case Report, pre-admission treatment history",
+      "use_in_ranking": true,
+      "quality_note": "Steroid dose and duration details are not provided beyond the 9-week treatment context."
+    },
+    {
+      "axis_id": "brain_abscess_presence",
+      "axis_category": "imaging_finding",
+      "axis_role": "finding",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "temporal_context": "historical; drained 9 weeks before the current admission",
+      "source_text_value": "multiple brain abscesses drained by craniotomy",
+      "evidence_pointer": "Section 2, Case Report, pre-admission history",
+      "use_in_ranking": false,
+      "quality_note": "Historical context only; the source does not establish active brain abscess at the abdominal-pain admission."
+    }
+  ],
+  "observations": [
+    {
+      "axis_id": "abdominal_pain_presence",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "2 days of worsening abdominal pain",
+      "evidence_pointer": "Section 2, Case Report, opening presentation",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "abdominal_pain_duration_days",
+      "axis_category": "trajectory_pattern",
+      "axis_role": "measurement",
+      "value": 2,
+      "unit": "days",
+      "source_text_value": "2 days of worsening pain",
+      "evidence_pointer": "Section 2, Case Report, opening presentation",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_upper_quadrant_pain_presence",
+      "axis_category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "right upper quadrant pain",
+      "evidence_pointer": "Section 2, Case Report, opening presentation",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_upper_quadrant_pain_severity",
+      "axis_category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "right_upper_quadrant_pain_presence",
+      "value": 0.7,
+      "unit": "severity_score_0_1",
+      "source_text_value": "6-8/10 pain intensity",
+      "evidence_pointer": "Section 2, Case Report, pain characterization",
+      "use_in_ranking": true,
+      "derived_value_note": "Mapped midpoint of 6-8/10 to 0.7 on a 0-1 severity scale."
+    },
+    {
+      "axis_id": "colicky_abdominal_pain_presence",
+      "axis_category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "value": 0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "noncolicky pain",
+      "evidence_pointer": "Section 2, Case Report, pain characterization",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "pain_radiation_presence",
+      "axis_category": "symptom",
+      "axis_role": "satellite",
+      "value": 0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "nonradiating pain",
+      "evidence_pointer": "Section 2, Case Report, pain characterization",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "nausea_presence",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "nausea",
+      "evidence_pointer": "Section 2, Case Report, symptom list",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "vomiting_presence",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "vomiting with attempted food intake",
+      "evidence_pointer": "Section 2, Case Report, symptom list",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "fever_presence",
+      "axis_category": "vital_sign",
+      "axis_role": "finding",
+      "value": 0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "no fevers",
+      "evidence_pointer": "Section 2, Case Report, symptom negatives",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "chills_presence",
+      "axis_category": "symptom",
+      "axis_role": "finding",
+      "value": 0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "no chills",
+      "evidence_pointer": "Section 2, Case Report, symptom negatives",
+      "use_in_ranking": true,
+      "negated": true
+    },
+    {
+      "axis_id": "abdominal_tenderness_presence",
+      "axis_category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "abdominal_pain_presence",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "abdominal tenderness",
+      "evidence_pointer": "Section 2, Case Report, physical examination",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_upper_quadrant_tenderness_presence",
+      "axis_category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_tenderness_presence",
+      "value": 1,
+      "unit": "present_absent_0_1",
+      "source_text_value": "marked right upper quadrant tenderness",
+      "evidence_pointer": "Section 2, Case Report, physical examination",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "right_upper_quadrant_tenderness_severity",
+      "axis_category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "right_upper_quadrant_tenderness_presence",
+      "value": 0.8,
+      "unit": "severity_score_0_1",
+      "source_text_value": "marked right upper quadrant tenderness",
+      "evidence_pointer": "Section 2, Case Report, physical examination",
+      "use_in_ranking": true,
+      "derived_value_note": "Mapped qualitative 'marked' tenderness to 0.8 on a 0-1 severity scale."
+    },
+    {
+      "axis_id": "murphy_sign_activity",
+      "axis_category": "physical_exam",
+      "axis_role": "satellite",
+      "parent_axis_id": "right_upper_quadrant_tenderness_activity",
+      "value": 1.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "positive Murphy sign",
+      "evidence_pointer": "Section 2, Case Report, physical examination",
+      "use_in_ranking": true
+    }
+  ],
+  "imaging": [
+    {
+      "axis_id": "gallbladder_wall_thickening_activity",
+      "axis_category": "imaging_finding",
+      "axis_role": "finding",
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "modality": "CT",
+      "source_text_value": "gallbladder wall thickening",
+      "evidence_pointer": "Section 2, Case Report, CT findings",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "pericholecystic_fluid_activity",
+      "axis_category": "imaging_finding",
+      "axis_role": "finding",
+      "value": 1.0,
+      "unit": "relative_activity_0_1",
+      "modality": "CT",
+      "source_text_value": "pericholecystic fluid",
+      "evidence_pointer": "Section 2, Case Report, CT findings",
+      "use_in_ranking": true
+    },
+    {
+      "axis_id": "cholelithiasis_sludge_context_probability",
+      "axis_category": "treatment_modifier",
+      "axis_role": "finding",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "modality": "CT",
+      "source_text_value": "multiple gallstones in the gallbladder",
+      "evidence_pointer": "Section 2, Case Report, CT findings",
+      "use_in_ranking": true
+    }
+  ],
+  "diagnostics": {
+    "labs": [
+      {
+        "axis_id": "white_blood_cell_count",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 5.4,
+        "unit": "10^9/L",
+        "source_original_value": "5400/mm3",
+        "normality": "reported_normal",
+        "source_text_value": "normal white blood cell count 5400/mm3",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "hemoglobin",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 10.3,
+        "unit": "g/dL",
+        "source_text_value": "hemoglobin 10.3 g/dL",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "serum_glucose",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 157,
+        "unit": "mg/dL",
+        "source_text_value": "blood glucose 157 mg/dL",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "serum_bilirubin_total",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 0.2,
+        "unit": "mg/dL",
+        "normality": "reported_normal",
+        "source_text_value": "total bilirubin 0.2 mg/dL",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "serum_alkaline_phosphatase",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 177,
+        "unit": "U/L",
+        "normality": "reported_slightly_elevated",
+        "source_text_value": "alkaline phosphatase 177 IU/L",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "aspartate_aminotransferase",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 21,
+        "unit": "U/L",
+        "normality": "reported_normal",
+        "source_text_value": "AST 21 IU/L",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      },
+      {
+        "axis_id": "alanine_aminotransferase",
+        "axis_category": "lab_value",
+        "axis_role": "measurement",
+        "value": 14,
+        "unit": "U/L",
+        "normality": "reported_normal",
+        "source_text_value": "ALT 14 IU/L",
+        "evidence_pointer": "Section 2, Case Report, laboratory data",
+        "use_in_ranking": true
+      }
+    ],
+    "microbiology": [
+      {
+        "description": "Prior brain abscess cultures were negative.",
+        "temporal_context": "9 weeks before current admission",
+        "evidence_pointer": "Section 2, Case Report, pre-admission history",
+        "use_in_ranking": false,
+        "quality_note": "Historical microbiology from a different clinical problem; not current abdominal-pain evidence."
+      }
+    ]
+  },
+  "record_only_evidence": [
+    {
+      "type": "paper_final_interpretation",
+      "description": "The article frames the case as acute cholecystitis caused by ceftriaxone-associated stones.",
+      "evidence_pointer": "Title and Abstract",
+      "use_in_ranking": false
+    },
+    {
+      "type": "operative_management",
+      "description": "Cholecystectomy was performed on the day of admission.",
+      "evidence_pointer": "Section 2, Case Report, operative sentence",
+      "use_in_ranking": false
+    },
+    {
+      "type": "operative_specimen",
+      "description": "The gallbladder contained numerous green-yellow, soft, compressible gallstones.",
+      "evidence_pointer": "Section 2, Case Report, operative specimen description",
+      "use_in_ranking": false
+    },
+    {
+      "type": "stone_composition_confirmation",
+      "description": "High-pressure liquid chromatography found minerals, pigments, minimal cholesterol, and ceftriaxone calcium salt in the stone sample.",
+      "evidence_pointer": "Section 2, Case Report, post-operative stone analysis",
+      "use_in_ranking": false
+    },
+    {
+      "type": "postoperative_course",
+      "description": "Postoperative course was uncomplicated.",
+      "evidence_pointer": "Section 2, Case Report, outcome sentence",
+      "use_in_ranking": false
+    }
+  ],
+  "quality_warnings": [
+    "The case report provides no admission vital signs other than absence of fever/chills by history.",
+    "No CRP, lipase/amylase, renal function values, platelet count, lactate, or culture results from the abdominal-pain admission are reported.",
+    "The phrase 'normal blood chemistry values' was not decomposed into separate absent/normal axes because individual analytes were not named.",
+    "CT findings are qualitative only; no gallbladder wall thickness measurement or bile duct diameter is provided.",
+    "The article title and abstract disclose the final diagnosis, but this extraction keeps that information record-only.",
+    "Historical brain abscess and culture-negative data are not treated as current ranking evidence."
+  ]
+}
