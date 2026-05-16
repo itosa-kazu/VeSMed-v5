@@ -1,0 +1,50 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=2500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: grid time_grid_n=17 (deterministic midpoint sampling + early anchors (0.02, 0.1, 0.5, 1.0, 3.0, 7.0))
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 1 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=1, total_ranked=1, max_combo_size=1
+Case filter: PMC6388855
+Cases loaded for this run: 1
+
+Manifolds:
+  D-ACUTE-HIV : axes=63, mechanisms= 9, mech_edges=39, couplings=13, risk_factors= 8
+Base-measure/background axes: 6317
+
+----------------------------------------------------------------------------------------------------
+PMC6388855_BLIND_FULLTEXT_PILOT  expected=D-ACUTE-HIV
+source: PMID 30820375 / PMC6388855 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6388855/
+paper diagnosis: Acute retroviral syndrome presenting as acute hepatitis
+observed axes: 84
+risk context: None=None; None=None; None=None; None=None; None=None
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-HIV             logP=   -571.69 mean= -12.993 n=44 prior= +0.00 anchors=D-ACUTE-HIV:4.0
+
+[best single-manifold diagnostic]
+* D-ACUTE-HIV  logP=   -571.69 mean= -12.993 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=   -571.69 candidate=D-ACUTE-HIV
+  logP_best_single=   -571.69 candidate=D-ACUTE-HIV
+  logP_background_only=  -2185.64 mean= -52.039 n=42
+  delta_to_null_best_known=  +1613.95
+  delta_to_null_best_single=  +1613.95
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-ACUTE-HIV  PASS
+best latent times: D-ACUTE-HIV=day6.0
+largest standardized residuals: transaminase_rising_trend_presence obs=1 present_absent_0_1 mu=0.025 via=case_observation_background_fallback z=12.2; total_bilirubin_normal_presence obs=1 present_absent_0_1 mu=0.025 via=case_observation_background_fallback z=12.2; serum_alkaline_phosphatase_normal_presence obs=1 present_absent_0_1 mu=0.025 via=case_observation_background_fallback z=12.2; recent_unprotected_sexual_exposure_probability obs=1 probability_0_1 mu=0.025 via=base_measure_background z=12.2; moderate_distress_presence obs=1 present_absent_0_1 mu=0.025 via=case_observation_background_fallback z=12.2
+
+====================================================================================================
+Single-manifold validation: 1/1 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.

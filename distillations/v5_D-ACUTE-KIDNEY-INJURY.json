@@ -1,0 +1,3718 @@
+{
+  "disease": "D-ACUTE-KIDNEY-INJURY",
+  "disease_id": "D-ACUTE-KIDNEY-INJURY",
+  "disease_name": "Acute kidney injury / 急性腎障害",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Acute kidney injury",
+    "disease_name_input": "Acute kidney injury / 急性腎障害",
+    "leaf_granularity": "First-layer clinical disease leaf for abrupt kidney excretory failure. Prerenal physiology, intrinsic tubular/glomerular/microvascular injury, postrenal obstruction, contrast exposure, rhabdomyolysis, sepsis, cardiorenal physiology, and nephrotoxin exposure are represented as mechanisms, context axes, risk factors, or future second-layer subtypes rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use abrupt creatinine/BUN rise, falling eGFR, oliguria/anuria, electrolyte and acid-base retention, fluid overload, uremic features, urinalysis pattern, obstruction imaging, nephrotoxin or contrast context, and RRT need when those facts are available. Etiologic labels and treatment response remain structured context, not hard diagnostic labels."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AKI_REDUCED_EFFECTIVE_RENAL_PERFUSION_ACTIVITY",
+      "display_name": "腎有効灌流低下",
+      "display_name_en": "Reduced effective renal perfusion",
+      "clinical_meaning": "Low effective arterial volume, hypotension, renal venous congestion, heart failure, cirrhosis physiology, bleeding, dehydration, or vasodilation lowers glomerular filtration pressure and can be reversible if corrected early.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "display_name": "尿細管障害",
+      "display_name_en": "Intrinsic tubular injury",
+      "clinical_meaning": "Ischemia, sepsis, pigment nephropathy, contrast, toxins, drugs, tumor lysis, and inflammatory stress injure tubular epithelium, causing impaired filtration, concentrating defects, granular casts, and delayed recovery.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        28
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_GLOMERULAR_MICROVASCULAR_INJURY_ACTIVITY",
+      "display_name": "糸球体・微小血管障害",
+      "display_name_en": "Glomerular or microvascular injury",
+      "clinical_meaning": "Immune-complex nephritis, rapidly progressive glomerulonephritis, infection-related glomerulonephritis, TMA, malignant hypertension, vasculitis, or endothelial injury produces active urinary sediment, proteinuria, hematuria, and abrupt GFR loss.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        2,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY",
+      "display_name": "尿路閉塞",
+      "display_name_en": "Postrenal obstruction",
+      "clinical_meaning": "Bilateral ureteral obstruction, bladder outlet obstruction, solitary kidney obstruction, clots, stones, tumor, retroperitoneal disease, or catheter obstruction raises collecting-system pressure and acutely reduces GFR.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "display_name": "濾過低下・高窒素血症",
+      "display_name_en": "Filtration failure and azotemia",
+      "clinical_meaning": "Abrupt GFR loss raises creatinine and BUN, lowers estimated GFR, and accumulates uremic solutes; BUN may be disproportionately high with catabolism, bleeding, steroids, or volume depletion.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        45
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_OLIGURIC_FLUID_RETENTION_ACTIVITY",
+      "display_name": "乏尿性水分貯留",
+      "display_name_en": "Oliguric fluid retention",
+      "clinical_meaning": "Reduced urine output and sodium-water excretion cause edema, weight gain, pulmonary congestion, respiratory failure, and diuretic or renal replacement therapy context.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_ELECTROLYTE_ACID_BASE_RETENTION_ACTIVITY",
+      "display_name": "電解質・酸塩基保持障害",
+      "display_name_en": "Electrolyte and acid-base retention",
+      "clinical_meaning": "Impaired renal excretion and tubular handling produce hyperkalemia, metabolic acidosis, phosphate retention, sodium disturbances, ECG instability, and dialysis indications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        21
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AKI_UREMIC_SYSTEMIC_TOXICITY_ACTIVITY",
+      "display_name": "尿毒症性全身障害",
+      "display_name_en": "Uremic systemic toxicity",
+      "clinical_meaning": "Severe or prolonged AKI can cause encephalopathy, pericarditis, bleeding tendency, nausea, anorexia, immune dysfunction, dialysis dependence, and mortality hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        45
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_AKI_REDUCED_EFFECTIVE_RENAL_PERFUSION_ACTIVITY",
+      "target_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Lower filtration pressure can rapidly lower GFR and raise creatinine/BUN.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_REDUCED_EFFECTIVE_RENAL_PERFUSION_ACTIVITY",
+      "target_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "persistent_hypoperfusion",
+      "clinical_rationale": "Sustained ischemia converts functional renal hypoperfusion into tubular injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "phase": "active_injury",
+      "clinical_rationale": "Tubular injury reduces filtration, secretion, and creatinine/BUN clearance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_GLOMERULAR_MICROVASCULAR_INJURY_ACTIVITY",
+      "target_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "active_nephritic_or_tma",
+      "clinical_rationale": "Glomerular inflammation or microvascular occlusion lowers filtration surface and renal blood flow.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY",
+      "target_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "obstructed",
+      "clinical_rationale": "Back pressure from urinary obstruction rapidly lowers net filtration pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Creatinine rises as filtration falls.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "blood_urea_nitrogen",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "BUN rises with reduced renal clearance and catabolic or volume-depleted contexts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "estimated_glomerular_filtration_rate",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Estimated GFR falls as filtration failure worsens.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "acute_kidney_injury_stage_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "AKI stage integrates creatinine rise and urine-output criteria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_OLIGURIC_FLUID_RETENTION_ACTIVITY",
+      "target_id": "urine_output_ml_per_day",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Oliguric AKI reduces daily urine volume.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_OLIGURIC_FLUID_RETENTION_ACTIVITY",
+      "target_id": "urine_output_ml_per_kg_hour",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Oliguria is clinically measured by mL/kg/hour urine output.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_OLIGURIC_FLUID_RETENTION_ACTIVITY",
+      "target_id": "oliguria_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Low urine output is the parent finding for oliguria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_OLIGURIC_FLUID_RETENTION_ACTIVITY",
+      "target_id": "volume_overload_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Reduced salt-water excretion promotes fluid overload.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_ELECTROLYTE_ACID_BASE_RETENTION_ACTIVITY",
+      "target_id": "serum_potassium",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "active_retention",
+      "clinical_rationale": "Reduced renal potassium excretion raises serum potassium.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_ELECTROLYTE_ACID_BASE_RETENTION_ACTIVITY",
+      "target_id": "serum_bicarbonate",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "active_retention",
+      "clinical_rationale": "Reduced acid excretion and tubular dysfunction lower bicarbonate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_ELECTROLYTE_ACID_BASE_RETENTION_ACTIVITY",
+      "target_id": "metabolic_acidosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "active_retention",
+      "clinical_rationale": "Acid retention produces a metabolic acidosis finding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_UREMIC_SYSTEMIC_TOXICITY_ACTIVITY",
+      "target_id": "uremic_encephalopathy_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        14
+      ],
+      "phase": "severe_or_prolonged",
+      "clinical_rationale": "Uremic toxins can cause altered mental status when severe or prolonged.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AKI_UREMIC_SYSTEMIC_TOXICITY_ACTIVITY",
+      "target_id": "dialysis_requirement_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Uremic symptoms, electrolyte derangements, acidosis, and fluid overload increase dialysis need.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY",
+      "target_id": "urinary_obstruction_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "obstructed",
+      "clinical_rationale": "Postrenal AKI requires a urinary obstruction context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY",
+      "target_id": "hydronephrosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "obstructed",
+      "clinical_rationale": "Obstruction commonly causes hydronephrosis when imaging is performed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "granular_casts_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "active_tubular_injury",
+      "clinical_rationale": "Muddy brown granular casts support intrinsic tubular injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "rhabdomyolysis_pigment_nephropathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "conditionality": "when rhabdomyolysis, hemolysis, or myoglobinuria is present",
+      "clinical_rationale": "Pigment load is a common intrinsic tubular injury mechanism in severe rhabdomyolysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "renal_replacement_therapy_need_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Severe filtration failure and its complications create RRT context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "severe_or_multiorgan",
+      "clinical_rationale": "Severe AKI, especially with shock, multiorgan failure, or dialysis need, raises near-term mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "serum_ast",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "conditionality": "most relevant when rhabdomyolysis_presence or serum_creatine_kinase is high",
+      "clinical_rationale": "Severe rhabdomyolysis in pigment-nephropathy AKI releases muscle AST.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "serum_alt",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "conditionality": "most relevant when rhabdomyolysis_presence or serum_creatine_kinase is high",
+      "clinical_rationale": "Severe rhabdomyolysis in pigment-nephropathy AKI can moderately raise ALT.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "serum_ldh",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "conditionality": "most relevant when rhabdomyolysis_presence or serum_creatine_kinase is high",
+      "clinical_rationale": "Muscle injury and tissue stress in pigment-nephropathy AKI raise LDH.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+      "target_id": "hemoglobinuria_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "conditionality": "most relevant when rhabdomyolysis_presence or serum_creatine_kinase is high",
+      "clinical_rationale": "Pigment load in rhabdomyolysis-associated AKI produces heme-positive urine.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AKI_FILTRATION_FAILURE_AZOTEMIA_ACTIVITY",
+      "target_id": "severe_hypervolemia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "severe_oliguric",
+      "clinical_rationale": "Filtration failure with oliguria/anuria can cause clinically severe volume overload.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "acute_kidney_injury_presence",
+      "display_name": "急性腎障害の存在",
+      "category": "renal_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.8,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        1,
+        45
+      ],
+      "clinical_interpretation": "Abrupt kidney dysfunction by creatinine, urine output, or clinical renal failure criteria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_kidney_injury_stage_activity",
+      "display_name": "AKI ステージ重症度",
+      "category": "renal_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "acute_kidney_injury_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        1,
+        45
+      ],
+      "clinical_interpretation": "Clinical severity integrating creatinine rise, eGFR loss, urine-output reduction, and complication burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "display_name": "血清クレアチニン",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.6,
+        1.2
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        1.5,
+        18.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        45
+      ],
+      "clinical_interpretation": "Creatinine rises with reduced filtration; baseline CKD and low muscle mass change interpretation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "creatinine_rise_from_baseline_ratio",
+      "display_name": "クレアチニン上昇倍率",
+      "category": "lab_value",
+      "unit": "fold_change",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "acute_kidney_injury_presence",
+      "baseline_range": [
+        0.8,
+        1.2
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        1.5,
+        8.0
+      ],
+      "plateau_duration_days": [
+        1,
+        45
+      ],
+      "decline_half_life_days": [
+        2,
+        45
+      ],
+      "clinical_interpretation": "Relative creatinine increase helps distinguish AKI from chronic kidney dysfunction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "display_name": "血中尿素窒素",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [
+        7,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        25,
+        180
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "clinical_interpretation": "BUN rises with filtration failure and can be amplified by hypovolemia, catabolism, bleeding, or steroids.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "estimated_glomerular_filtration_rate",
+      "display_name": "推算糸球体濾過量",
+      "category": "lab_value",
+      "unit": "mL/min/1.73m2",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        75,
+        130
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        3,
+        60
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        45
+      ],
+      "clinical_interpretation": "eGFR falls during AKI; creatinine-based estimates are least reliable during rapid change but still encode severe renal dysfunction when reported.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oliguria_presence",
+      "display_name": "乏尿の存在",
+      "category": "renal_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Low urine output is a parent finding; raw urine measurements sit underneath it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oliguria_severity",
+      "display_name": "乏尿重症度",
+      "category": "renal_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "oliguria_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Degree of oliguria when oliguria is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_output_ml_per_day",
+      "display_name": "1日尿量",
+      "category": "urine_measurement",
+      "unit": "mL_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "oliguria_presence",
+      "baseline_range": [
+        800,
+        2500
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        700
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Raw daily urine volume; low values support oliguria or anuria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_output_ml_per_kg_hour",
+      "display_name": "体重補正尿量",
+      "category": "urine_measurement",
+      "unit": "mL/kg/hr",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "oliguria_presence",
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Weight-normalized urine output used in AKI staging.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anuria_presence",
+      "display_name": "無尿の存在",
+      "category": "renal_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "oliguria_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14
+      ],
+      "decline_half_life_days": [
+        0.2,
+        10
+      ],
+      "clinical_interpretation": "Near-absent urine output as a severe oliguria satellite.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anuria_severity",
+      "display_name": "無尿重症度",
+      "category": "renal_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "anuria_presence",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14
+      ],
+      "decline_half_life_days": [
+        0.2,
+        10
+      ],
+      "clinical_interpretation": "Degree and persistence of anuria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "volume_depletion_presence",
+      "display_name": "循環血液量減少の存在",
+      "category": "hemodynamic_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -3,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "clinical_interpretation": "Hypovolemia or low effective volume context that strengthens benefit from fluid resuscitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "volume_depletion_severity",
+      "display_name": "循環血液量減少重症度",
+      "category": "hemodynamic_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "volume_depletion_presence",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -3,
+        1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "clinical_interpretation": "Severity of hypovolemia or low effective circulating volume.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "volume_overload_presence",
+      "display_name": "体液過剰の存在",
+      "category": "fluid_status",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Parent finding for clinically important salt-water retention, edema, weight gain, or pulmonary congestion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "volume_overload_severity",
+      "display_name": "体液過剰重症度",
+      "category": "fluid_status",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "volume_overload_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Severity of volume overload when the parent finding is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_presence",
+      "display_name": "肺水腫の存在",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "volume_overload_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7
+      ],
+      "clinical_interpretation": "Pulmonary congestion or edema as a volume-overload satellite.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_extent",
+      "display_name": "肺水腫範囲",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_edema_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7
+      ],
+      "clinical_interpretation": "Extent of pulmonary congestion or edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "display_name": "血清カリウム",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        3.5,
+        5.0
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        3.0,
+        8.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "clinical_interpretation": "Potassium can rise from reduced renal excretion, acidosis, tissue breakdown, medications, or rebound after temporary shifting therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hyperkalemia_presence",
+      "display_name": "高カリウム血症の存在",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "clinical_interpretation": "Parent finding for clinically meaningful hyperkalemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hyperkalemia_ecg_change_presence",
+      "display_name": "高カリウム血症性 ECG 変化",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "hyperkalemia_presence",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.02,
+        1
+      ],
+      "clinical_interpretation": "ECG manifestation of hyperkalemia when the hyperkalemia parent is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "display_name": "血清重炭酸",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        22,
+        29
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        6,
+        22
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "clinical_interpretation": "Bicarbonate falls with renal acid retention, shock, lactic acidosis, ketoacidosis, or diarrhea context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_pH",
+      "display_name": "動脈血 pH",
+      "category": "lab_value",
+      "unit": "pH",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        7.35,
+        7.45
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        6.9,
+        7.35
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "clinical_interpretation": "Blood pH can fall in severe AKI-associated metabolic acidosis or concurrent shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "display_name": "代謝性アシドーシスの存在",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "clinical_interpretation": "Parent finding for metabolic acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "display_name": "代謝性アシドーシス重症度",
+      "category": "lab_value",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "clinical_interpretation": "Acidosis severity when the parent finding is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_obstruction_presence",
+      "display_name": "尿路閉塞の存在",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Parent finding for obstructive uropathy context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urinary_obstruction_severity",
+      "display_name": "尿路閉塞重症度",
+      "category": "source_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "urinary_obstruction_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Degree of urinary obstruction when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "bilateral_or_solitary_kidney_obstruction_presence",
+      "display_name": "両側または単腎閉塞",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "urinary_obstruction_presence",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Obstruction pattern likely to raise creatinine quickly.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hydronephrosis_presence",
+      "display_name": "水腎症の存在",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "urinary_obstruction_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -3,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Hydronephrosis as an imaging satellite of urinary obstruction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hydronephrosis_grade",
+      "display_name": "水腎症グレード",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "hydronephrosis_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -3,
+        3
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Degree of hydronephrosis when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "nephrotoxin_exposure_presence",
+      "display_name": "腎毒性曝露の存在",
+      "category": "exposure_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -14,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "clinical_interpretation": "Medication, toxin, or contrast exposure context that can cause or worsen AKI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "nephrotoxin_exposure_severity",
+      "display_name": "腎毒性曝露強度",
+      "category": "exposure_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "nephrotoxin_exposure_presence",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -14,
+        1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "clinical_interpretation": "Dose, duration, and combination burden of nephrotoxic exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "iodinated_contrast_exposure_presence",
+      "display_name": "ヨード造影剤曝露",
+      "category": "exposure_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "nephrotoxin_exposure_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -3,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "clinical_interpretation": "Recent iodinated contrast exposure as a nephrotoxin satellite.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_urinary_sediment_presence",
+      "display_name": "活動性尿沈渣の存在",
+      "category": "urinalysis",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        60
+      ],
+      "clinical_interpretation": "Hematuria, cellular casts, or nephritic sediment indicating intrinsic renal inflammation or microvascular injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_urinary_sediment_severity",
+      "display_name": "活動性尿沈渣重症度",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "active_urinary_sediment_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        60
+      ],
+      "clinical_interpretation": "Degree of active urinary sediment when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hematuria_presence",
+      "display_name": "血尿の存在",
+      "category": "urinalysis",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        60
+      ],
+      "clinical_interpretation": "Hematuria may reflect glomerular, obstructive, stone, infection, catheter, or pigment contexts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hematuria_severity",
+      "display_name": "血尿重症度",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "hematuria_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        60
+      ],
+      "clinical_interpretation": "Degree of hematuria when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "proteinuria_presence",
+      "display_name": "蛋白尿の存在",
+      "category": "urinalysis",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "clinical_interpretation": "Proteinuria can mark glomerular injury, tubular injury, diabetic CKD background, or transient illness.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "proteinuria_severity",
+      "display_name": "蛋白尿重症度",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "proteinuria_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "clinical_interpretation": "Degree of proteinuria when present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "granular_casts_presence",
+      "display_name": "顆粒円柱の存在",
+      "category": "urinalysis",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ],
+      "clinical_interpretation": "Granular casts support intrinsic tubular injury when present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "granular_casts_severity",
+      "display_name": "顆粒円柱重症度",
+      "category": "urinalysis",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "granular_casts_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ],
+      "clinical_interpretation": "Degree of granular casts when present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "rhabdomyolysis_presence",
+      "display_name": "横紋筋融解の存在",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Rhabdomyolysis context for pigment nephropathy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rhabdomyolysis_severity",
+      "display_name": "横紋筋融解重症度",
+      "category": "source_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -3,
+        2
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Muscle injury burden when rhabdomyolysis is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_creatine_kinase",
+      "display_name": "血清 CK",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        30,
+        250
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        1000,
+        200000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "clinical_interpretation": "Raw CK measurement indicating muscle breakdown.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_myoglobin",
+      "display_name": "血清ミオグロビン",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        0,
+        90
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        500,
+        50000
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        5
+      ],
+      "clinical_interpretation": "Myoglobin burden that can cause pigment tubular injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rhabdomyolysis_pigment_nephropathy_activity",
+      "display_name": "色素性腎症活動性",
+      "category": "source_context",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Pigment nephropathy activity when rhabdomyolysis or myoglobinuria is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "renal_replacement_therapy_need_activity",
+      "display_name": "腎代替療法必要性",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Context axis for dialysis/CRRT need from refractory hyperkalemia, acidosis, fluid overload, uremia, or severe azotemia.",
+      "knowledge_confidence": "high",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a scored context/probability measurement."
+    },
+    {
+      "axis_id": "dialysis_requirement_hazard",
+      "display_name": "透析必要化ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.02,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.2,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "clinical_interpretation": "Event hazard for requiring renal replacement therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dialysis_access_feasibility",
+      "display_name": "透析アクセス実施可能性",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.4,
+        1.0
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "clinical_interpretation": "Context for whether vascular access, staffing, and anticoagulation tolerance allow dialysis/CRRT.",
+      "knowledge_confidence": "medium",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a scored context/probability measurement."
+    },
+    {
+      "axis_id": "rrt_hemodynamic_tolerance_context",
+      "display_name": "腎代替療法血行動態耐容性",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.2,
+        1.0
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Context for intermittent HD versus slower modalities when shock or cardiac instability is present.",
+      "knowledge_confidence": "medium",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a scored context/probability measurement."
+    },
+    {
+      "axis_id": "diuretic_responsive_urine_output_context",
+      "display_name": "利尿薬反応性尿量コンテキスト",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "oliguria_presence",
+      "baseline_range": [
+        0.1,
+        0.9
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "clinical_interpretation": "Context for whether loop diuretics can move fluid by increasing urine output.",
+      "knowledge_confidence": "medium",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a scored context/probability measurement."
+    },
+    {
+      "axis_id": "obstruction_relief_feasibility",
+      "display_name": "尿路閉塞解除可能性",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "urinary_obstruction_presence",
+      "baseline_range": [
+        0.2,
+        1.0
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "clinical_interpretation": "Context for decompression by catheter, stent, nephrostomy, or surgery.",
+      "knowledge_confidence": "high",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a scored context/probability measurement."
+    },
+    {
+      "axis_id": "uremic_encephalopathy_presence",
+      "display_name": "尿毒症性脳症の存在",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Altered mental status attributable to uremia when severe AKI is active.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uremic_encephalopathy_severity",
+      "display_name": "尿毒症性脳症重症度",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "uremic_encephalopathy_presence",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "clinical_interpretation": "Severity of uremic encephalopathy when present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "life_threatening_hyperkalemia_arrhythmia_hazard",
+      "display_name": "致死性高カリウム性不整脈ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-06,
+        2e-05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.02,
+        2
+      ],
+      "clinical_interpretation": "Event hazard from severe or rapidly rising hyperkalemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "severe_metabolic_acidosis_hazard",
+      "display_name": "重症代謝性アシドーシスハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "clinical_interpretation": "Event hazard from severe acidemia and its cardiopulmonary consequences.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "volume_overload_hazard",
+      "display_name": "体液過剰ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.2,
+        21
+      ],
+      "decline_half_life_days": [
+        0.2,
+        10
+      ],
+      "clinical_interpretation": "Event hazard from fluid overload, pulmonary edema, and oxygenation compromise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "kidney_nonrecovery_hazard",
+      "display_name": "腎機能非回復ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        7,
+        90
+      ],
+      "peak_value_range": [
+        0.001,
+        0.4
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "clinical_interpretation": "Risk of persistent dialysis dependence or incomplete renal recovery after AKI.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "display_name": "急性腎障害死亡ハザード",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        5e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.002,
+        0.25
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        2,
+        60
+      ],
+      "clinical_interpretation": "Lifespan outcome hazard from AKI severity, hyperkalemia, acidosis, volume overload, uremia, shock, and multiorgan context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_ast",
+      "display_name": "Serum AST",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        10,
+        40
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        80,
+        3000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "clinical_interpretation": "AST can rise substantially from skeletal muscle injury in rhabdomyolysis-associated AKI; this is a source-context muscle injury signal, not a liver-specific label.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_alt",
+      "display_name": "Serum ALT",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        7,
+        56
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        40,
+        1000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "clinical_interpretation": "ALT can rise moderately in severe rhabdomyolysis-associated AKI and should be interpreted with CK/myoglobin rather than as isolated hepatocellular disease.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_ldh",
+      "display_name": "Serum LDH",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        120,
+        250
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        400,
+        10000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "clinical_interpretation": "LDH rises with muscle injury, hemolysis, ischemia, and multiorgan stress in severe AKI contexts.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobinuria_presence",
+      "display_name": "Hemoglobin/myoglobin positive urine dipstick",
+      "category": "urinalysis",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": "rhabdomyolysis_presence",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "clinical_interpretation": "Heme-positive urine without infection can reflect pigment load from rhabdomyolysis or hemolysis and supports pigment nephropathy context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "severe_hypervolemia_presence",
+      "display_name": "Severe hypervolemia",
+      "category": "volume_status",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "clinical_interpretation": "Marked fluid overload can emerge when severe oliguria/anuria prevents excretion and often contributes to dialysis indication.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "serum_creatinine",
+      "target_axis_id": "estimated_glomerular_filtration_rate",
+      "relationship": "creatinine_to_egfr_inverse",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_decreases_target",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Higher creatinine mathematically and clinically corresponds to lower eGFR.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_creatinine",
+      "target_axis_id": "blood_urea_nitrogen",
+      "relationship": "filtration_markers_move_together",
+      "coupling_type": "noise_correlation",
+      "effect_direction": "same_direction",
+      "correlation_range": [
+        0.4,
+        0.85
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Creatinine and BUN are both downstream of filtration failure, though BUN has additional context modifiers.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urine_output_ml_per_day",
+      "target_axis_id": "oliguria_presence",
+      "relationship": "low_urine_output_to_oliguria",
+      "coupling_type": "drift",
+      "effect_direction": "source_down_increases_target",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Low measured urine output defines oliguria.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "oliguria_presence",
+      "target_axis_id": "volume_overload_presence",
+      "relationship": "oliguria_to_fluid_retention",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "oliguric_phase",
+      "clinical_rationale": "Oliguria reduces salt-water clearance and raises volume overload probability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "volume_overload_presence",
+      "target_axis_id": "pulmonary_edema_presence",
+      "relationship": "fluid_overload_to_pulmonary_edema",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.4,
+        0.85
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "oliguric_or_resuscitation_phase",
+      "clinical_rationale": "Fluid overload can manifest as pulmonary edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "volume_overload_presence",
+      "target_axis_id": "volume_overload_hazard",
+      "relationship": "fluid_overload_to_event_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Clinically significant overload increases respiratory and ICU risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_potassium",
+      "target_axis_id": "hyperkalemia_presence",
+      "relationship": "potassium_to_hyperkalemia_finding",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.6,
+        0.95
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "active_retention",
+      "clinical_rationale": "The hyperkalemia finding is driven by the measured potassium value.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_potassium",
+      "target_axis_id": "life_threatening_hyperkalemia_arrhythmia_hazard",
+      "relationship": "potassium_to_arrhythmia_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Severe or rapidly rising potassium increases malignant arrhythmia hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_bicarbonate",
+      "target_axis_id": "metabolic_acidosis_presence",
+      "relationship": "low_bicarbonate_to_acidosis",
+      "coupling_type": "drift",
+      "effect_direction": "source_down_increases_target",
+      "correlation_range": [
+        -0.85,
+        -0.4
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "active_retention",
+      "clinical_rationale": "Low bicarbonate supports metabolic acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "metabolic_acidosis_presence",
+      "target_axis_id": "severe_metabolic_acidosis_hazard",
+      "relationship": "acidosis_to_event_hazard",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Severe metabolic acidosis can destabilize cardiovascular and respiratory physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urinary_obstruction_presence",
+      "target_axis_id": "hydronephrosis_presence",
+      "relationship": "obstruction_to_hydronephrosis",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "obstructed",
+      "clinical_rationale": "Obstruction often produces hydronephrosis, especially when bilateral or prolonged.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "active_urinary_sediment_presence",
+      "target_axis_id": "hematuria_presence",
+      "relationship": "nephritic_sediment_includes_hematuria",
+      "coupling_type": "noise_correlation",
+      "effect_direction": "same_direction",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "glomerular_or_microvascular",
+      "clinical_rationale": "Active urinary sediment often includes hematuria, but either can be incompletely reported.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "rhabdomyolysis_presence",
+      "target_axis_id": "rhabdomyolysis_pigment_nephropathy_activity",
+      "relationship": "rhabdomyolysis_to_pigment_nephropathy",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "pigment_context",
+      "clinical_rationale": "Severe rhabdomyolysis can drive myoglobin-mediated tubular injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "dialysis_requirement_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "relationship": "dialysis_need_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Dialysis-requiring AKI marks severe kidney failure and often multiorgan illness.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "life_threatening_hyperkalemia_arrhythmia_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "relationship": "arrhythmia_hazard_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "emergency",
+      "clinical_rationale": "Hyperkalemic arrhythmia is an immediate mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "volume_overload_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "relationship": "volume_overload_hazard_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Pulmonary edema and fluid overload can worsen oxygenation and survival.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "severe_metabolic_acidosis_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+      "relationship": "acidosis_hazard_to_mortality",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "severe",
+      "clinical_rationale": "Severe acidemia contributes to hemodynamic and respiratory collapse.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "isotonic_volume_resuscitation_when_hypovolemic",
+      "drug_class": "hemodynamic_volume_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "volume_depletion_presence",
+        "volume_depletion_severity",
+        "volume_overload_presence",
+        "urine_output_ml_per_day",
+        "serum_creatinine"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "volume_depletion_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Volume repletion is most useful when low effective circulating volume is active."
+        },
+        {
+          "axis_id": "volume_overload_presence",
+          "condition": "present",
+          "effect": "weakens_or_increases_harm",
+          "factor_range": [
+            0.1,
+            0.6
+          ],
+          "clinical_rationale": "Additional fluid can worsen pulmonary edema or congestion."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_AKI_REDUCED_EFFECTIVE_RENAL_PERFUSION_ACTIVITY": {
+          "peak_value_factor": [
+            0.25,
+            0.75
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2
+          ]
+        },
+        "serum_creatinine": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            10
+          ]
+        },
+        "blood_urea_nitrogen": {
+          "peak_value_factor": [
+            0.45,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        }
+      },
+      "state_push": [
+        {
+          "axis_id": "urine_output_ml_per_day",
+          "direction": "up",
+          "magnitude_range": [
+            200,
+            1200
+          ],
+          "unit": "mL_per_day"
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "volume_overload_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.4
+          ],
+          "interpretation": "Fluid can worsen overload when renal excretion or cardiac reserve is limited."
+        }
+      ],
+      "failure_modes": [
+        "intrinsic_tubular_injury_dominates",
+        "postrenal_obstruction_not_relieved",
+        "volume_overload_or_pulmonary_edema"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "stop_nephrotoxins_and_adjust_renal_dosing",
+      "drug_class": "iatrogenic_exposure_removal",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "nephrotoxin_exposure_presence",
+        "nephrotoxin_exposure_severity",
+        "iodinated_contrast_exposure_presence",
+        "serum_creatinine",
+        "estimated_glomerular_filtration_rate"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "nephrotoxin_exposure_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Exposure removal is most relevant when a drug, toxin, or contrast burden is active."
+        },
+        {
+          "axis_id": "estimated_glomerular_filtration_rate",
+          "condition": "low",
+          "effect": "strengthens_safety_need",
+          "factor_range": [
+            1.0,
+            1.8
+          ],
+          "clinical_rationale": "Low eGFR increases drug accumulation and toxicity risk."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY": {
+          "peak_value_factor": [
+            0.45,
+            0.9
+          ],
+          "decline_half_life_days": [
+            2,
+            21
+          ]
+        },
+        "nephrotoxin_exposure_severity": {
+          "peak_value_factor": [
+            0.0,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "kidney_nonrecovery_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "decline_half_life_days": [
+            7,
+            60
+          ]
+        }
+      },
+      "failure_modes": [
+        "renal_injury_already_established",
+        "essential_drug_cannot_be_stopped_without_replacement",
+        "unrecognized_non_drug_driver"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "relieve_urinary_obstruction",
+      "drug_class": "source_control_decompression",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "urinary_obstruction_presence",
+        "urinary_obstruction_severity",
+        "bilateral_or_solitary_kidney_obstruction_presence",
+        "hydronephrosis_presence",
+        "obstruction_relief_feasibility"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "urinary_obstruction_presence",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Decompression only addresses an obstructive driver."
+        },
+        {
+          "axis_id": "obstruction_relief_feasibility",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Feasible catheter, stent, nephrostomy, or surgery makes obstruction relief more effective."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY": {
+          "peak_value_factor": [
+            0.05,
+            0.35
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "urinary_obstruction_severity": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "serum_creatinine": {
+          "peak_value_factor": [
+            0.35,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14
+          ]
+        }
+      },
+      "state_push": [
+        {
+          "axis_id": "urine_output_ml_per_day",
+          "direction": "up",
+          "magnitude_range": [
+            300,
+            3000
+          ],
+          "unit": "mL_per_day"
+        }
+      ],
+      "failure_modes": [
+        "no_obstruction_present",
+        "delayed_relief_with_tubular_damage",
+        "infected_obstruction_or_sepsis_requires_additional_source_and_antimicrobial_control"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "loop_diuretics_for_volume_overload_when_responsive",
+      "drug_class": "diuretic_fluid_removal",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "volume_overload_presence",
+        "volume_overload_severity",
+        "diuretic_responsive_urine_output_context",
+        "urine_output_ml_per_day",
+        "anuria_presence",
+        "serum_potassium"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "volume_overload_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.8
+          ],
+          "clinical_rationale": "Diuretics are used to move fluid when overload is active."
+        },
+        {
+          "axis_id": "anuria_presence",
+          "condition": "present",
+          "effect": "weakens",
+          "factor_range": [
+            0.0,
+            0.3
+          ],
+          "clinical_rationale": "Anuria implies little tubular response to diuretics."
+        },
+        {
+          "axis_id": "diuretic_responsive_urine_output_context",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Preserved urine response is needed for loop diuretic decongestion."
+        }
+      ],
+      "state_push": [
+        {
+          "axis_id": "urine_output_ml_per_day",
+          "direction": "up",
+          "magnitude_range": [
+            300,
+            2500
+          ],
+          "unit": "mL_per_day"
+        },
+        {
+          "axis_id": "volume_overload_severity",
+          "direction": "down",
+          "magnitude_range": [
+            0.1,
+            0.6
+          ],
+          "unit": "severity_score_0_1"
+        }
+      ],
+      "trajectory_modifications": {
+        "volume_overload_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5
+          ]
+        },
+        "pulmonary_edema_extent": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5
+          ]
+        }
+      },
+      "side_effects": [
+        {
+          "axis_id": "volume_depletion_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.3
+          ],
+          "interpretation": "Overdiuresis can worsen effective volume and renal perfusion."
+        }
+      ],
+      "failure_modes": [
+        "anuria",
+        "severe_intrinsic_tubular_injury",
+        "unrelieved_obstruction",
+        "hemodynamic_instability"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "renal_replacement_therapy_for_severe_aki_complications",
+      "drug_class": "renal_and_metabolic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "renal_replacement_therapy_need_activity",
+        "dialysis_requirement_hazard",
+        "dialysis_access_feasibility",
+        "rrt_hemodynamic_tolerance_context",
+        "serum_potassium",
+        "serum_bicarbonate",
+        "volume_overload_presence",
+        "blood_urea_nitrogen",
+        "uremic_encephalopathy_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "renal_replacement_therapy_need_activity",
+          "condition": "high",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1.0,
+            4.0
+          ],
+          "clinical_rationale": "RRT is useful when refractory electrolyte, acid-base, volume, uremic, or severe azotemic complications are active."
+        },
+        {
+          "axis_id": "dialysis_access_feasibility",
+          "condition": "low",
+          "effect": "weakens_or_delays",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Access or anticoagulation barriers can delay effective RRT."
+        },
+        {
+          "axis_id": "rrt_hemodynamic_tolerance_context",
+          "condition": "low",
+          "effect": "requires_slower_modality",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Shock or cardiac instability changes the tolerated dialysis mode."
+        }
+      ],
+      "trajectory_modifications": {
+        "serum_potassium": {
+          "peak_value_factor": [
+            0.45,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "serum_bicarbonate": {
+          "peak_value_factor": [
+            1.05,
+            1.6
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "blood_urea_nitrogen": {
+          "peak_value_factor": [
+            0.35,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "volume_overload_hazard": {
+          "peak_value_factor": [
+            0.25,
+            0.75
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "life_threatening_hyperkalemia_arrhythmia_hazard": {
+          "peak_value_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "severe_metabolic_acidosis_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        }
+      },
+      "state_push": [
+        {
+          "axis_id": "volume_overload_severity",
+          "direction": "down",
+          "magnitude_range": [
+            0.2,
+            0.8
+          ],
+          "unit": "severity_score_0_1"
+        }
+      ],
+      "failure_modes": [
+        "delayed_access",
+        "hemodynamic_intolerance",
+        "uncontrolled_underlying_injury",
+        "persistent_obstruction_or_nephrotoxin_exposure"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "alkali_therapy_for_severe_metabolic_acidosis_context",
+      "drug_class": "acid_base_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "metabolic_acidosis_presence",
+        "metabolic_acidosis_severity",
+        "serum_bicarbonate",
+        "arterial_pH",
+        "volume_overload_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "metabolic_acidosis_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Alkali support is meaningful when metabolic acidosis is present."
+        },
+        {
+          "axis_id": "volume_overload_presence",
+          "condition": "present",
+          "effect": "weakens_or_requires_caution",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Sodium load can worsen volume overload."
+        }
+      ],
+      "trajectory_modifications": {
+        "serum_bicarbonate": {
+          "peak_value_factor": [
+            1.05,
+            1.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2
+          ]
+        },
+        "severe_metabolic_acidosis_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2
+          ]
+        }
+      },
+      "failure_modes": [
+        "ongoing_lactate_or_ketoacid_generation",
+        "severe_volume_overload",
+        "dialysis_indication_present"
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "baseline_chronic_kidney_disease_or_low_renal_reserve",
+      "category": "host_background",
+      "clinical_rationale": "Lower nephron reserve raises AKI susceptibility, creatinine baseline, dialysis need, and nonrecovery risk.",
+      "modulation": [
+        {
+          "context": "ckd_stage_3_to_5_or_single_kidney",
+          "prior_modulation": {
+            "P_disease_ratio": [
+              1.2,
+              3.0
+            ]
+          },
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_creatinine",
+              "baseline_shift": [
+                0.3,
+                4.0
+              ],
+              "peak_value_factor": [
+                1.1,
+                2.0
+              ],
+              "clinical_rationale": "CKD raises baseline and peak creatinine for the same acute hit."
+            },
+            {
+              "axis_id": "estimated_glomerular_filtration_rate",
+              "baseline_shift": [
+                -80,
+                -20
+              ],
+              "peak_value_factor": [
+                0.2,
+                0.8
+              ],
+              "clinical_rationale": "Baseline eGFR is lower and can fall into dialysis-range values."
+            },
+            {
+              "axis_id": "kidney_nonrecovery_hazard",
+              "peak_value_factor": [
+                1.2,
+                3.0
+              ],
+              "clinical_rationale": "Low reserve raises persistent dysfunction risk."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "older_age_frailty_diabetes_or_vascular_disease",
+      "category": "host_background",
+      "clinical_rationale": "Vascular disease, diabetes, frailty, and older age reduce renal autoregulatory reserve and increase tubular, glomerular, and recovery vulnerability.",
+      "modulation": [
+        {
+          "context": "older_or_microvascular_disease",
+          "prior_modulation": {
+            "P_disease_ratio": [
+              1.1,
+              2.0
+            ]
+          },
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+              "peak_value_factor": [
+                1.0,
+                1.5
+              ],
+              "clinical_rationale": "Tubular injury risk is higher for the same hemodynamic or toxic exposure."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-ACUTE-KIDNEY-INJURY",
+              "peak_value_factor": [
+                1.1,
+                2.0
+              ],
+              "clinical_rationale": "Age and frailty increase short-term AKI mortality."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "nephrotoxin_or_contrast_exposure",
+      "category": "exposure_context",
+      "clinical_rationale": "NSAIDs, aminoglycosides, vancomycin, calcineurin inhibitors, amphotericin, cisplatin, IV contrast, toxins, or combinations can trigger or amplify AKI.",
+      "modulation": [
+        {
+          "context": "recent_exposure_or_accumulation",
+          "prior_modulation": {
+            "P_disease_ratio": [
+              1.2,
+              3.0
+            ]
+          },
+          "axis_response_modulation": [
+            {
+              "axis_id": "nephrotoxin_exposure_presence",
+              "peak_value_factor": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Exposure context anchors intrinsic tubular or hemodynamic injury."
+            },
+            {
+              "axis_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+              "peak_value_factor": [
+                1.1,
+                2.0
+              ],
+              "clinical_rationale": "Nephrotoxins amplify tubular injury."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment_id": "stop_nephrotoxins_and_adjust_renal_dosing",
+              "effect_factor_range": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Removing the ongoing exposure is more important when exposure is active."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "volume_depletion_or_low_effective_arterial_volume",
+      "category": "hemodynamic_context",
+      "clinical_rationale": "Vomiting, diarrhea, bleeding, diuretics, poor intake, sepsis vasodilation, cirrhosis, heart failure, or third spacing lowers effective renal perfusion.",
+      "modulation": [
+        {
+          "context": "hypovolemia_or_low_effective_volume",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_AKI_REDUCED_EFFECTIVE_RENAL_PERFUSION_ACTIVITY",
+              "peak_value_factor": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Perfusion mechanism is amplified."
+            },
+            {
+              "axis_id": "blood_urea_nitrogen",
+              "peak_value_factor": [
+                1.1,
+                1.8
+              ],
+              "clinical_rationale": "BUN can be disproportionately high in volume depletion."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment_id": "isotonic_volume_resuscitation_when_hypovolemic",
+              "effect_factor_range": [
+                1.2,
+                2.0
+              ],
+              "clinical_rationale": "Fluid resuscitation directly addresses low effective volume."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "urinary_obstruction_or_solitary_kidney_context",
+      "category": "source_context",
+      "clinical_rationale": "Bilateral obstruction, solitary kidney obstruction, urinary retention, catheter blockage, ureteral stones, tumor, or retroperitoneal disease can abruptly cause postrenal AKI.",
+      "modulation": [
+        {
+          "context": "postrenal_driver_present",
+          "prior_modulation": {
+            "P_disease_ratio": [
+              1.3,
+              4.0
+            ]
+          },
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_AKI_POSTRENAL_OBSTRUCTION_ACTIVITY",
+              "peak_value_factor": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Postrenal mechanism becomes the dominant driver."
+            },
+            {
+              "axis_id": "hydronephrosis_presence",
+              "peak_value_factor": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Imaging obstruction evidence is more likely."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment_id": "relieve_urinary_obstruction",
+              "effect_factor_range": [
+                1.5,
+                3.0
+              ],
+              "clinical_rationale": "Decompression addresses the causal obstruction."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "rhabdomyolysis_or_pigment_load",
+      "category": "source_context",
+      "clinical_rationale": "Severe muscle injury or pigment load can cause intrinsic tubular injury, hyperkalemia, acidosis, and dialysis-requiring AKI.",
+      "modulation": [
+        {
+          "context": "pigment_nephropathy_context",
+          "axis_response_modulation": [
+            {
+              "axis_id": "rhabdomyolysis_presence",
+              "peak_value_factor": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Rhabdomyolysis becomes a source axis."
+            },
+            {
+              "axis_id": "M_AKI_INTRINSIC_TUBULAR_INJURY_ACTIVITY",
+              "peak_value_factor": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Pigment toxicity amplifies tubular injury."
+            },
+            {
+              "axis_id": "serum_potassium",
+              "peak_value_factor": [
+                1.0,
+                1.6
+              ],
+              "clinical_rationale": "Cellular potassium release can amplify hyperkalemia."
+            }
+          ]
+        }
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Trend creatinine, BUN, eGFR, urine output, potassium, bicarbonate, pH, phosphate, volume status, and medication dosing at a cadence matched to AKI severity.",
+    "Use parent findings plus measurements: oliguria/anuria should include raw urine output when available; fluid overload should include pulmonary edema or weight gain when reported.",
+    "Review and stop or dose-adjust nephrotoxins; avoid repeat contrast exposure when safer diagnostic routes can answer the same question.",
+    "Evaluate reversible obstruction with bladder scan, catheter patency check, renal ultrasound, CT, or urology procedure when postrenal context is plausible.",
+    "Coordinate nephrology, critical care, and source-control teams when hyperkalemia, severe acidosis, pulmonary edema, uremic symptoms, or dialysis need is active.",
+    "Preserve etiologic context as axes or risk factors; do not collapse sepsis, rhabdomyolysis, obstruction, contrast exposure, or drug toxicity into disease-id qualifiers."
+  ],
+  "quality_notes": [
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-ACUTE-KIDNEY-INJURY.",
+    "AKI etiologies are mechanisms/context axes, not disease-name qualifiers.",
+    "Treatment objects use V5 modes without prohibited clinical judgment label keys."
+  ]
+}

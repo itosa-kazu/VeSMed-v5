@@ -234,6 +234,10 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-ACUTE-EPIGLOTTITIS",
     "D-ACUTE-CHOLECYSTITIS",
     "D-ACUTE-INTERMITTENT-PORPHYRIA",
+    "D-ACUTE-HIV",
+    "D-ACUTE-KIDNEY-INJURY",
+    "D-ACUTE-LIMB-ISCHEMIA",
+    "D-ACUTE-LIVER-FAILURE",
     "D-ACUTE-MESENTERIC-ISCHEMIA",
     "D-ACUTE-MYOCARDIAL-INFARCTION",
     "D-ACUTE-MYOCARDITIS",
@@ -315,7 +319,11 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
 SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-ACUTE-CHOLECYSTITIS": ("gallbladder", "murphy", "cholecystic", "cystic_duct"),
     "D-ACUTE-EPIGLOTTITIS": ("epiglottitis", "epiglottic", "stridor", "drooling", "sore_throat"),
+    "D-ACUTE-HIV": ("hiv", "seroconversion", "p24", "cd4", "sexual_exposure"),
     "D-ACUTE-INTERMITTENT-PORPHYRIA": ("porphobilinogen", "aminolevulinic", "porphyria", "dark_urine"),
+    "D-ACUTE-KIDNEY-INJURY": ("creatinine", "anuria", "oliguria", "rhabdomyolysis", "myoglobin", "creatine_kinase", "urea"),
+    "D-ACUTE-LIMB-ISCHEMIA": ("limb_ischemia", "arterial_occlusion", "pulse_deficit", "ankle_brachial", "limb_paresthesia", "limb_skin_coolness"),
+    "D-ACUTE-LIVER-FAILURE": ("prothrombin_time_inr", "hepatic_encephalopathy", "jaundice", "bilirubin", "ammonia", "meld"),
     "D-ACUTE-MESENTERIC-ISCHEMIA": ("mesenteric", "bowel_ischemia", "bowel_wall_hypoenhancement", "pneumatosis", "portal_vein_thrombosis"),
     "D-ACUTE-MYOCARDIAL-INFARCTION": ("coronary", "troponin", "st_segment", "myocardial_infarction"),
     "D-ACUTE-MYOCARDITIS": ("myocarditis", "troponin", "cardiac_mri", "left_ventricular", "myocardial", "bradycardia", "atrioventricular_block"),
@@ -328,7 +336,7 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-BURN-INJURY": ("burn", "scald", "thermal_injury", "burn_surface_area"),
     "D-CARDIOGENIC-SHOCK": ("cardiogenic", "left_ventricular", "ejection_fraction", "bnp", "cardiac_index", "myocardial_infarction"),
     "D-CAR-T-CRS": ("car_t", "chimeric_antigen", "tocilizumab", "cytokine_release", "serum_il6"),
-    "D-CIRRHOSIS-ACUTE-DECOMPENSATION": ("cirrhosis", "ascites", "variceal", "varices", "portal_hypertension", "chronic_liver"),
+    "D-CIRRHOSIS-ACUTE-DECOMPENSATION": ("cirrhosis", "variceal", "varices", "portal_hypertension", "chronic_liver"),
     "D-COMPLETE-ATRIOVENTRICULAR-BLOCK": ("complete_atrioventricular_block", "complete_av_block", "third_degree_av_block", "av_block"),
     "D-DIFFUSE-ALVEOLAR-HEMORRHAGE": ("alveolar_hemorrhage", "hemoptysis", "bloody_bronchoalveolar", "hemosiderin", "capillaritis"),
     "D-FAT-EMBOLISM-SYNDROME": ("fat_embolism", "long_bone_fracture", "orthopedic", "petechial_rash"),
@@ -552,6 +560,18 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value
     if src in ("109/l", "109perl") and dst in ("103/ul", "103perul", "10e3/ul", "10e3perul"):
         return value
+    if axis_id in ("white_blood_cell_count", "absolute_neutrophil_count", "lymphocyte_count", "platelet_count", "reticulocyte_count") and src in (
+        "/ul",
+        "perul",
+        "cells/ul",
+        "cellsperul",
+    ) and dst in ("109/l", "109perl"):
+        return value / 1000.0
+    if axis_id in ("white_blood_cell_count", "absolute_neutrophil_count", "lymphocyte_count", "platelet_count", "reticulocyte_count") and src in (
+        "109/l",
+        "109perl",
+    ) and dst in ("/ul", "perul", "cells/ul", "cellsperul"):
+        return value * 1000.0
     if src in ("kgpermonth", "kg/month") and dst in ("kgperweek", "kg/week"):
         return value / 4.345
     if src in ("kgperweek", "kg/week") and dst in ("kgpermonth", "kg/month"):
@@ -1731,17 +1751,28 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
 
 EXACT_AXIS_ALIASES = {
     "abdominal_pain_presence": ("abdominal_pain_activity",),
+    "abdominal_tenderness_presence": ("abdominal_pain_activity",),
+    "activated_partial_thromboplastin_time": ("partial_thromboplastin_time",),
     "alanine_aminotransferase": ("serum_alt",),
+    "alanine_aminotransferase_u_L": ("serum_alt",),
+    "alkaline_phosphatase": ("serum_alkaline_phosphatase",),
+    "alkaline_phosphatase_normal_presence": ("serum_alkaline_phosphatase_normal_presence",),
+    "anti_hav_antibody_positive": ("hav_igm_positivity",),
+    "anti_hev_igm_positive": ("hev_igm_positivity",),
     "arterial_pH": ("arterial_ph",),
     "aspartate_aminotransferase": ("serum_ast",),
+    "aspartate_aminotransferase_u_L": ("serum_ast",),
     "aortic_flap_or_membrane_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
     "aorto_right_renal_artery_pressure_gradient_maximum": ("renal_artery_dynamic_stenosis_pressure_gradient_mmHg",),
     "asymmetric_renal_ct_enhancement_presence": ("renal_artery_malperfusion_presence",),
     "bilateral_lower_leg_intermuscular_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
     "bilateral_pulmonary_infiltrate_extent": ("bilateral_pulmonary_opacity_extent",),
+    "bilious_vomiting_presence": ("vomiting_activity",),
     "blood_glucose": ("serum_glucose",),
     "blood_gas_oxygen_saturation": ("oxygen_saturation",),
+    "blood_urea": ("blood_urea_nitrogen",),
     "bee_pollen_ingestion_presence": ("allergen_exposure_temporal_association_probability",),
+    "body_temperature_celsius": ("body_temperature",),
     "chronic_heavy_alcohol_use_presence": ("alcohol_pancreatic_toxicity_context_probability", "chronic_heavy_beer_intake_presence"),
     "coagulation_inr": ("prothrombin_time_inr",),
     "coma_presence": ("coma_activity",),
@@ -1750,25 +1781,42 @@ EXACT_AXIS_ALIASES = {
     "coronary_thrombus_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
     "deep_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
     "descending_aortic_dissection_flap_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
+    "direct_bilirubin": ("serum_bilirubin_direct",),
+    "direct_bilirubin_elevated_presence": ("direct_hyperbilirubinemia_presence",),
+    "direct_antiglobulin_test_positive": ("direct_antiglobulin_test_activity",),
     "ecg_anterior_wall_acute_ischemic_pattern_presence": ("st_segment_elevation_presence",),
     "facial_edema_presence": ("angioedema_presence", "facial_lip_tongue_angioedema_presence"),
     "facial_weakness_severity": ("facial_droop_severity",),
     "false_aortic_lumen_presence": ("aortic_false_lumen_patency",),
     "false_lumen_prolapse_into_right_renal_artery_presence": ("renal_artery_malperfusion_presence",),
     "gamma_glutamyl_transferase": ("serum_gamma_glutamyl_transferase",),
+    "gamma_glutamyltransferase": ("serum_gamma_glutamyl_transferase",),
     "fever_presence": ("fever_history_presence",),
     "glasgow_coma_scale": ("glasgow_coma_scale_score",),
     "ground_glass_opacity_extent": ("diffuse_ground_glass_opacity_extent",),
     "generalized_urticaria_presence": ("urticaria_presence",),
+    "heart_rate_bpm": ("heart_rate",),
+    "hemoglobin_g_dL": ("hemoglobin",),
+    "hepatitis_a_igm_positive": ("hav_igm_positivity",),
+    "hepatitis_a_igm_antibody_positive": ("hav_igm_positivity",),
+    "hepatitis_e_igm_positive": ("hev_igm_positivity",),
+    "hepatitis_e_antibody_positive": ("hev_igm_positivity",),
     "hepatic_encephalopathy_presence": ("mental_status_abnormality_activity",),
+    "hiv1_rna_copies_per_mL": ("hiv_plasma_rna_viral_load",),
+    "hiv_positive_sexual_partner_presence": ("known_hiv_positive_source_partner_presence",),
     "hypoxemia_presence": ("supplemental_oxygen_requirement_presence",),
     "inferior_wall_akinesia_presence": ("regional_wall_motion_abnormality_presence",),
+    "international_normalized_ratio": ("prothrombin_time_inr",),
     "jaundice_presence": ("jaundice_activity",),
+    "jaundice_or_icterus_presence": ("jaundice_activity",),
     "kussmaul_respiration_presence": ("kussmaul_breathing_activity",),
+    "lactate_dehydrogenase": ("serum_ldh",),
     "limb_weakness_presence": ("limb_weakness_or_paralysis_presence",),
     "left_anterior_descending_territory_wall_motion_abnormality_presence": ("regional_wall_motion_abnormality_presence",),
     "left_main_coronary_artery_occlusion_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
     "low_solute_intake_context_presence": ("beer_potomania_context_presence",),
+    "leukocyte_count": ("white_blood_cell_count",),
+    "leukocyte_count_per_uL": ("white_blood_cell_count",),
     "main_and_bilateral_branch_pulmonary_arterial_filling_defect_presence": (
         "ctpa_pulmonary_arterial_filling_defect_activity",
         "pulmonary_embolic_burden_activity",
@@ -1781,22 +1829,52 @@ EXACT_AXIS_ALIASES = {
     "oxygen_desaturation_presence": ("supplemental_oxygen_requirement_presence",),
     "oxygen_flow_rate_l_per_min": ("oxygen_requirement_level",),
     "palpitations_presence": ("palpitations_activity",),
+    "partial_thromboplastin_time_seconds": ("partial_thromboplastin_time",),
+    "prothrombin_time": ("prothrombin_time_seconds",),
     "pulmonary_infiltrate_presence": ("pulmonary_opacity_presence", "bilateral_pulmonary_opacity_presence"),
     "pulmonary_arterial_filling_defect_presence": ("ctpa_pulmonary_arterial_filling_defect_activity",),
     "pulmonary_hypertension_presence": ("pulmonary_hypertension_activity",),
     "right_renal_artery_involvement_by_aortic_flap_presence": ("renal_artery_malperfusion_presence",),
     "right_renal_artery_ostial_stenosis_presence": ("renal_artery_malperfusion_presence",),
     "right_kidney_hypoperfusion_presence": ("renal_artery_malperfusion_presence",),
+    "right_ankle_brachial_index": ("ankle_brachial_index",),
+    "right_calf_pain_presence": ("limb_pain_presence", "lower_limb_pain_presence"),
+    "right_dorsalis_pedis_pulse_weak_presence": ("pulse_deficit_presence",),
+    "right_foot_cold_skin_presence": ("limb_skin_coolness_presence",),
+    "right_foot_mottled_skin_presence": ("limb_ischemia_presence", "peripheral_ischemia_presence"),
+    "right_lower_limb_paresthesia_presence": ("limb_paresthesia_presence", "limb_sensory_abnormality_presence"),
+    "right_popliteal_artery_occlusion_on_ct_angiography_presence": (
+        "peripheral_arterial_occlusion_presence",
+        "lower_extremity_arterial_occlusion_presence",
+        "cta_arterial_occlusion_presence",
+    ),
+    "right_popliteal_artery_total_occlusion_on_arteriography_presence": (
+        "peripheral_arterial_occlusion_presence",
+        "lower_extremity_arterial_occlusion_presence",
+        "arterial_occlusion_complete_presence",
+    ),
+    "right_popliteal_pulse_weak_presence": ("pulse_deficit_presence",),
     "seizure_presence": ("seizure_activity",),
+    "serum_creatinine_mg_dL": ("serum_creatinine",),
+    "serum_ferritin_ng_mL": ("serum_ferritin",),
     "shock_presence": ("shock_activity",),
+    "scleral_icterus_presence": ("jaundice_activity",),
+    "somnolence_presence": ("mental_status_abnormality_activity",),
     "superior_mesenteric_vein_thrombotic_occlusion_presence": ("mesenteric_vascular_occlusion_presence", "superior_mesenteric_vein_thrombosis_presence"),
     "acute_small_bowel_ischemia_ct_presence": ("mesenteric_bowel_ischemia_presence", "bowel_ischemia_imaging_presence"),
     "long_segment_venous_thrombus_presence": ("superior_mesenteric_vein_thrombosis_presence",),
     "portal_vein_thrombus_extension_presence": ("portal_vein_thrombosis_presence",),
+    "prior_liver_disease_history_presence": ("cirrhosis_context_presence",),
     "troponin_i": ("serum_troponin",),
+    "total_bilirubin": ("serum_bilirubin_total",),
+    "total_bilirubin_mg_dL": ("serum_bilirubin_total",),
+    "total_leukocyte_count": ("white_blood_cell_count",),
     "supplemental_oxygen_flow_rate": ("oxygen_requirement_level",),
     "syncope_presence": ("syncope_activity", "syncope_presyncope_activity"),
     "recent_alcohol_escalation_or_binge_activity": ("alcohol_pancreatic_toxicity_context_probability",),
+    "unprotected_anal_intercourse_presence": ("recent_unprotected_sexual_exposure_probability",),
+    "vomiting_presence": ("vomiting_activity",),
+    "white_blood_cell_count_per_uL": ("white_blood_cell_count",),
 }
 
 SUPPRESSION_ONLY_AXIS_ALIASES = {
@@ -3881,6 +3959,121 @@ def diffuse_alveolar_hemorrhage_anchor_support(case):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def acute_kidney_injury_anchor_support(case):
+    score = 0.0
+    creatinine = observed_value(case, "serum_creatinine")
+    if creatinine is not None:
+        creatinine = float(creatinine)
+        if creatinine >= 4.0:
+            score += 3.0
+        elif creatinine >= 2.0:
+            score += 2.0
+        elif creatinine >= 1.5:
+            score += 1.0
+    score += positive_observed_axis_score(case, ("anuria_presence", "oliguria_presence"), score=1.5)
+    score += positive_observed_axis_score(case, ("rhabdomyolysis_presence", "rhabdomyolysis_severity"), score=1.2)
+    ck = observed_value(case, "serum_creatine_kinase")
+    if ck is not None:
+        ck = float(ck)
+        if ck >= 5000:
+            score += 1.5
+        elif ck >= 1000:
+            score += 0.8
+    myoglobin = observed_value(case, "serum_myoglobin")
+    if myoglobin is not None and float(myoglobin) >= 1000:
+        score += 1.0
+    bun = observed_value(case, "blood_urea_nitrogen")
+    if bun is not None and float(bun) >= 40:
+        score += 0.6
+    score += positive_observed_axis_score(case, ("metabolic_acidosis_presence",), score=0.5)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acute_limb_ischemia_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "peripheral_arterial_occlusion_presence",
+            "lower_extremity_arterial_occlusion_presence",
+            "cta_arterial_occlusion_presence",
+            "arterial_occlusion_complete_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("limb_ischemia_presence", "peripheral_ischemia_presence", "limb_ischemia_activity"),
+        score=2.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("pulse_deficit_presence", "distal_limb_pulse_absence_presence"),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("limb_skin_coolness_presence", "limb_paresthesia_presence", "limb_sensory_abnormality_presence"),
+        score=0.8,
+    )
+    abi = observed_value(case, "ankle_brachial_index")
+    if abi is not None and float(abi) < 0.9:
+        score += 1.0
+    score += positive_observed_axis_score(case, ("sudden_onset_pain_presence",), score=0.5)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acute_hiv_anchor_support(case):
+    score = 0.0
+    viral_load = observed_value(case, "hiv_plasma_rna_viral_load")
+    if viral_load is not None:
+        viral_load = float(viral_load)
+        if viral_load >= 100000:
+            score += 4.0
+        elif viral_load >= 10000:
+            score += 3.0
+    score += positive_observed_axis_score(
+        case,
+        ("hiv_p24_antigen_positivity", "hiv_antibody_seroconversion_activity"),
+        score=2.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "hiv_positive_sexual_partner_presence",
+            "known_hiv_positive_source_partner_presence",
+            "unprotected_anal_intercourse_presence",
+            "recent_unprotected_sexual_exposure_probability",
+        ),
+        score=1.0,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acute_liver_failure_anchor_support(case):
+    score = 0.0
+    inr = observed_value(case, "prothrombin_time_inr")
+    if inr is not None:
+        inr = float(inr)
+        if inr >= 2.0:
+            score += 2.5
+        elif inr >= 1.5:
+            score += 2.0
+    score += positive_observed_axis_score(
+        case,
+        ("hepatic_encephalopathy_presence", "mental_status_abnormality_activity", "somnolence_presence"),
+        score=1.2,
+    )
+    bilirubin = observed_value(case, "serum_bilirubin_total")
+    if bilirubin is not None and float(bilirubin) >= 5.0:
+        score += 0.8
+    meld = observed_value(case, "meld_score")
+    if meld is not None and float(meld) >= 20:
+        score += 1.0
+    score += positive_observed_axis_score(case, ("jaundice_activity", "jaundice_presence", "scleral_icterus_presence"), score=0.5)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def component_anchor_support(case, disease, manifolds, background_axes):
     """Require disease-specific evidence before allowing a combo to turn on.
 
@@ -3988,6 +4181,18 @@ def component_anchor_support(case, disease, manifolds, background_axes):
 
     elif disease == "D-ACUTE-INTERMITTENT-PORPHYRIA":
         score += acute_intermittent_porphyria_anchor_support(case)
+
+    elif disease == "D-ACUTE-KIDNEY-INJURY":
+        score += acute_kidney_injury_anchor_support(case)
+
+    elif disease == "D-ACUTE-LIMB-ISCHEMIA":
+        score += acute_limb_ischemia_anchor_support(case)
+
+    elif disease == "D-ACUTE-HIV":
+        score += acute_hiv_anchor_support(case)
+
+    elif disease == "D-ACUTE-LIVER-FAILURE":
+        score += acute_liver_failure_anchor_support(case)
 
     elif disease == "D-ACUTE-MESENTERIC-ISCHEMIA":
         score += acute_mesenteric_ischemia_anchor_support(case)

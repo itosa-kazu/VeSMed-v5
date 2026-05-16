@@ -1,0 +1,50 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+N_MC=2500, seed=20260430, combo_penalty=-2.0, combo_anchor_threshold=2.0
+Score mode: grid time_grid_n=17 (deterministic midpoint sampling + early anchors (0.02, 0.1, 0.5, 1.0, 3.0, 7.0))
+Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.
+Manifold discovery: 1 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=1, total_ranked=1, max_combo_size=1
+Case filter: PMC8916920
+Cases loaded for this run: 1
+
+Manifolds:
+  D-ACUTE-KIDNEY-INJURY: axes=66, mechanisms= 8, mech_edges=24, couplings=17, risk_factors= 6
+Base-measure/background axes: 6332
+
+----------------------------------------------------------------------------------------------------
+PMC8916920_BLIND_FULLTEXT_PILOT  expected=D-ACUTE-KIDNEY-INJURY
+source: PMID 35295364 / PMC8916920 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8916920/
+paper diagnosis: Acute Kidney Injury Requiring Dialysis in McArdle Disease: A Case Report of a Rarely Seen Presentation
+observed axes: 91
+risk context: None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None; None=None
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-KIDNEY-INJURY   logP=-75817274.72 mean=-1648201.624 n=46 prior= +0.00 anchors=D-ACUTE-KIDNEY-INJURY:4.0
+
+[best single-manifold diagnostic]
+* D-ACUTE-KIDNEY-INJURY logP=-75817274.72 mean=-1648201.624 prior= +0.00
+
+[OOD/null-model check: known manifold(s) vs pure background]
+  logP_best_known=-75817274.72 candidate=D-ACUTE-KIDNEY-INJURY
+  logP_best_single=-75817274.72 candidate=D-ACUTE-KIDNEY-INJURY
+  logP_background_only=-75818933.85 mean=-1648237.692 n=46
+  delta_to_null_best_known=  +1659.14
+  delta_to_null_best_single=  +1659.14
+  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.
+single validation: best_single=D-ACUTE-KIDNEY-INJURY  PASS
+best latent times: D-ACUTE-KIDNEY-INJURY=day8.6
+largest standardized residuals: white_blood_cell_count obs=11540 10^9/L mu=7 via=base_measure_background z=11533.0; platelet_count obs=144000 10^9/L mu=250 via=base_measure_background z=4312.5; serum_ast obs=818 U/L mu=25 via=base_measure_background z=158.6; serum_alt obs=253 U/L mu=31.5 via=base_measure_background z=27.1; severe_hypervolemia_presence obs=1 present_absent_0_1 mu=0.025 via=case_observation_background_fallback z=12.2
+
+====================================================================================================
+Single-manifold validation: 1/1 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.
+  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.
