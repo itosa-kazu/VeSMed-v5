@@ -148,6 +148,7 @@ COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
 SINGLE_ANCHOR_THRESHOLD = 1.0
 SINGLE_MISSING_ANCHOR_PENALTY = -60.0
+EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY = -360.0
 NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
@@ -164,13 +165,17 @@ FEMALE_REPRODUCTIVE_DISEASE_IDS = {
     "D-AMNIOTIC-FLUID-EMBOLISM",
     "D-CHORIOAMNIONITIS",
     "D-ECTOPIC-PREGNANCY",
+    "D-FITZ-HUGH-CURTIS-SYNDROME",
     "D-HELLP-SYNDROME",
     "D-OVARIAN-TORSION",
     "D-PELVIC-INFLAMMATORY-DISEASE",
+    "D-PERIPARTUM-CARDIOMYOPATHY",
     "D-PLACENTA-PREVIA",
     "D-PLACENTAL-ABRUPTION",
+    "D-POSTPARTUM-ENDOMETRITIS",
     "D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
     "D-PREECLAMPSIA-ECLAMPSIA",
+    "D-SEPTIC-ABORTION",
     "D-THREATENED-PRETERM-LABOR",
     "D-TUBO-OVARIAN-ABSCESS",
     "D-UTERINE-RUPTURE",
@@ -181,6 +186,17 @@ MALE_REPRODUCTIVE_DISEASE_IDS = {
     "D-BPH-URINARY-RETENTION",
     "D-EPIDIDYMO-ORCHITIS",
     "D-TESTICULAR-TORSION",
+}
+
+ACUTE_VIRAL_HEPATITIS_DISEASE_IDS = {
+    "D-ACUTE-HEPATITIS-A",
+    "D-ACUTE-HEPATITIS-B",
+    "D-ACUTE-HEPATITIS-E",
+}
+
+EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS = ACUTE_VIRAL_HEPATITIS_DISEASE_IDS | {
+    "D-ACETAMINOPHEN-TOXICITY",
+    "D-DENGUE",
 }
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
@@ -1042,6 +1058,8 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "bloody_diarrhea_activity": ("bloody_diarrhea_presence",),
     "vomiting_activity": ("vomiting_presence", "gastric_fluid_vomitus_presence"),
     "nausea_vomiting_activity": ("nausea_presence", "vomiting_presence"),
+    "cholelithiasis_sludge_context_probability": ("gallstone_or_biliary_sludge_context_probability",),
+    "gallstone_or_biliary_sludge_context_probability": ("cholelithiasis_sludge_context_probability",),
     "gastrointestinal_bleeding_activity": ("gastrointestinal_bleeding_presence",),
     "hematochezia_activity": ("hematochezia_presence",),
     "iga_vasculitis_hematemesis_activity_in_D-IGA-VASCULITIS": ("hematemesis_presence",),
@@ -1773,6 +1791,43 @@ def axis_sigma(axis):
     return sigma
 
 
+def axis_sigma_in_eval_space(source_axis, eval_axis, axis_id):
+    """Return sigma in the same transformed coordinate used for likelihood.
+
+    `combo_axis_endpoint` evaluates observations and means with `eval_axis`.
+    If the background axis is linear but the disease axis is log-scale (or the
+    reverse), reusing the source axis sigma mixes coordinates and can make
+    normal labs almost unpenalized.
+    """
+    if source_axis is eval_axis:
+        return axis_sigma(source_axis)
+    cache_key = (
+        "_axis_sigma_eval",
+        eval_axis.get("unit"),
+        bool(eval_axis.get("log_scale", False)),
+        tuple(eval_axis.get("baseline_range") or ()),
+        tuple(eval_axis.get("peak_value_range") or ()),
+    )
+    cached = source_axis.get(cache_key)
+    if cached is not None:
+        return cached
+
+    values = []
+    for interval in (source_axis.get("baseline_range"), source_axis.get("peak_value_range")):
+        if interval is None:
+            continue
+        for value in interval:
+            converted = convert_value(value, source_axis.get("unit"), eval_axis.get("unit"), axis_id)
+            values.append(transform(eval_axis, converted))
+    if not values:
+        return axis_sigma(source_axis)
+
+    spread = max(values) - min(values)
+    sigma = max(spread / 6.0, 1e-6)
+    source_axis[cache_key] = sigma
+    return sigma
+
+
 def zero_inclusive_log_axis(axis):
     if not axis.get("log_scale"):
         return False
@@ -2284,6 +2339,182 @@ def generic_component_anchor_support(case, disease, manifolds, background_axes):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def positive_observed_axis_score(case, axis_ids, threshold=0.5, score=1.0):
+    best = 0.0
+    for axis_id in axis_ids:
+        value = observed_value(case, axis_id)
+        if value is not None and float(value) >= threshold:
+            best = max(best, score)
+    return best
+
+
+def aminotransferase_anchor_score(case):
+    values = []
+    for axis_id, upper_ref in (("serum_ast", 40.0), ("serum_alt", 56.0)):
+        value = observed_value(case, axis_id)
+        if value is None:
+            continue
+        value = float(value)
+        values.append(value)
+        ratio = value / upper_ref
+        if value >= 1000 or ratio >= 20:
+            return 3.0
+        if value >= 500 or ratio >= 10:
+            return 2.5
+        if value >= 200 or ratio >= 5:
+            return 2.0
+        if value >= 100 or ratio >= 2.5:
+            return 1.2
+        if value >= 70 or ratio >= 1.8:
+            return 0.6
+    return 0.0
+
+
+def acute_viral_hepatitis_anchor_support(case, disease):
+    serology_axes_by_disease = {
+        "D-ACUTE-HEPATITIS-A": (
+            "hav_igm_positivity",
+            "hav_rna_blood_positivity",
+            "hav_rna_stool_positivity",
+        ),
+        "D-ACUTE-HEPATITIS-B": (
+            "hepatitis_b_core_igm_positivity",
+            "hepatitis_b_surface_antigen_positivity",
+            "hbv_dna_positivity",
+        ),
+        "D-ACUTE-HEPATITIS-E": (
+            "hev_igm_positivity",
+            "hev_rna_blood_positivity",
+            "hev_rna_stool_positivity",
+        ),
+    }
+    score = 0.0
+    score += positive_observed_axis_score(case, serology_axes_by_disease.get(disease, ()), score=3.0)
+    score += aminotransferase_anchor_score(case)
+
+    bilirubin = observed_value(case, "serum_bilirubin_total")
+    if bilirubin is not None:
+        bilirubin = float(bilirubin)
+        if bilirubin >= 5.0:
+            score += 1.5
+        elif bilirubin >= 2.0:
+            score += 1.0
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "jaundice_presence",
+            "scleral_icterus_presence",
+            "dark_urine_presence",
+            "hepatic_encephalopathy_presence",
+        ),
+        score=0.8,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def dengue_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "dengue_ns1_antigen_positivity",
+            "dengue_igm_positivity",
+            "dengue_pcr_positivity",
+            "dengue_rna_positivity",
+        ),
+        score=3.0,
+    )
+
+    fever = observed_value(case, "fever_history_presence")
+    fever_activity = observed_value(case, "fever_history_activity")
+    temperature = observed_value(case, "body_temperature")
+    if (fever is not None and float(fever) >= 0.5) or (fever_activity is not None and float(fever_activity) >= 0.4):
+        score += 1.0
+    elif temperature is not None and float(temperature) >= 38.0:
+        score += 1.0
+
+    platelet = observed_value(case, "platelet_count")
+    if platelet is not None:
+        platelet = float(platelet)
+        if platelet <= 50.0:
+            score += 2.0
+        elif platelet <= 100.0:
+            score += 1.5
+        elif platelet <= 140.0:
+            score += 0.6
+
+    wbc = observed_value(case, "white_blood_cell_count")
+    if wbc is not None:
+        wbc = float(wbc)
+        if wbc <= 3.0:
+            score += 1.2
+        elif wbc <= 4.0:
+            score += 0.8
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "rash_presence",
+            "petechiae_purpura_activity",
+            "retro_orbital_pain_presence",
+            "tourniquet_test_positive",
+        ),
+        score=0.5,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acetaminophen_toxicity_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "acetaminophen_exposure_probability",
+            "staggered_or_repeated_supratherapeutic_ingestion_probability",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("hepatotoxic_drug_or_toxin_exposure_probability", "toxic_ingestion_presence"),
+        score=1.2,
+    )
+
+    concentration = observed_value(case, "acetaminophen_serum_concentration")
+    if concentration is not None:
+        concentration = float(concentration)
+        if concentration >= 150.0:
+            score += 3.0
+        elif concentration >= 30.0:
+            score += 2.0
+        elif concentration >= 10.0:
+            score += 1.0
+
+    dose = observed_value(case, "reported_acetaminophen_dose_mg_per_kg")
+    if dose is not None:
+        dose = float(dose)
+        if dose >= 150.0:
+            score += 3.0
+        elif dose >= 100.0:
+            score += 1.5
+
+    score += aminotransferase_anchor_score(case)
+
+    inr = observed_value(case, "prothrombin_time_inr")
+    if inr is not None and float(inr) >= 1.5:
+        score += 1.2
+
+    ph = observed_value(case, "arterial_ph")
+    lactate = observed_value(case, "serum_lactate")
+    if ph is not None and float(ph) <= 7.30:
+        score += 0.8
+    if lactate is not None and float(lactate) >= 3.0:
+        score += 0.8
+
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def component_anchor_support(case, disease, manifolds, background_axes):
     """Require disease-specific evidence before allowing a combo to turn on.
 
@@ -2374,6 +2605,17 @@ def component_anchor_support(case, disease, manifolds, background_axes):
             if value is not None and value >= 0.4:
                 score += 0.6
 
+    elif disease in ACUTE_VIRAL_HEPATITIS_DISEASE_IDS:
+        score += acute_viral_hepatitis_anchor_support(case, disease)
+
+    elif disease == "D-DENGUE":
+        score += dengue_anchor_support(case)
+
+    elif disease == "D-ACETAMINOPHEN-TOXICITY":
+        score += acetaminophen_toxicity_anchor_support(case)
+
+    if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS:
+        return min(score, GENERIC_ANCHOR_SCORE_CAP)
     return max(score, generic_component_anchor_support(case, disease, manifolds, background_axes))
 
 
@@ -2383,16 +2625,21 @@ def combo_anchor_penalty(case, candidate, manifolds, background_axes):
         for disease in candidate
     }
     if len(candidate) <= 1:
+        disease = next(iter(support.keys()), None)
         value = next(iter(support.values()), 0.0)
         if value >= SINGLE_ANCHOR_THRESHOLD:
             return 0.0, support
         penalty = SINGLE_MISSING_ANCHOR_PENALTY * (SINGLE_ANCHOR_THRESHOLD - value)
+        if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS and value <= 0.0:
+            penalty += EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY
         return penalty, support
 
     penalty = 0.0
-    for value in support.values():
+    for disease, value in support.items():
         if value < COMBO_ANCHOR_THRESHOLD:
             penalty += COMBO_MISSING_ANCHOR_PENALTY * (COMBO_ANCHOR_THRESHOLD - value)
+            if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS and value <= 0.0:
+                penalty += EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY
     return penalty, support
 
 
@@ -2613,7 +2860,7 @@ def combo_axis_endpoint(
 
     raw_deltas = []
     strengths = []
-    sigmas = [axis_sigma(bg_axis)]
+    sigmas = [axis_sigma_in_eval_space(bg_axis, axis_eval, axis_id)]
     sources = []
 
     for disease in candidate:
@@ -2622,8 +2869,11 @@ def combo_axis_endpoint(
             continue
         mu, baseline = sample_mu_and_baseline(axis, t_by_disease[disease], rng)
         axis_mods = risk_payloads[disease]["axis_mods"].get(axis_id, [])
-        sigma = axis_sigma(axis)
-        mu, baseline, sigma = apply_axis_modulations(axis_id, axis, mu, baseline, sigma, axis_mods, rng)
+        source_sigma = axis_sigma(axis)
+        mu, baseline, modulated_source_sigma = apply_axis_modulations(axis_id, axis, mu, baseline, source_sigma, axis_mods, rng)
+        sigma = axis_sigma_in_eval_space(axis, axis_eval, axis_id)
+        if source_sigma > 0 and modulated_source_sigma != source_sigma:
+            sigma *= modulated_source_sigma / source_sigma
         mu = convert_value(mu, axis.get("unit"), axis_eval.get("unit"), axis_id)
         z_mu = transform(axis_eval, mu)
         raw_delta = z_mu - z_bg
