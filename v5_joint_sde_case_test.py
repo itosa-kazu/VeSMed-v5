@@ -399,6 +399,7 @@ EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS = ACUTE_VIRAL_HEPATITIS_DISEASE_IDS | {
     "D-ACETAMINOPHEN-TOXICITY",
     "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
     "D-DENGUE",
+    "D-INCARCERATED-GROIN-HERNIA",
 } | TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS | SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
@@ -1760,6 +1761,8 @@ EXACT_AXIS_ALIASES = {
     "anti_hav_antibody_positive": ("hav_igm_positivity",),
     "anti_hev_igm_positive": ("hev_igm_positivity",),
     "arterial_pH": ("arterial_ph",),
+    "adenovirus_immunohistochemistry_positive": ("adenovirus_tissue_immunohistochemistry_positive",),
+    "altered_mental_status_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
     "aspartate_aminotransferase": ("serum_ast",),
     "aspartate_aminotransferase_u_L": ("serum_ast",),
     "aortic_flap_or_membrane_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
@@ -1777,8 +1780,10 @@ EXACT_AXIS_ALIASES = {
     "coagulation_inr": ("prothrombin_time_inr",),
     "coma_presence": ("coma_activity",),
     "complete_atrioventricular_block_presence": ("atrioventricular_block_degree",),
+    "confusion_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
     "coronary_occlusion_presence": ("culprit_coronary_obstruction_presence",),
     "coronary_thrombus_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
+    "decreased_oral_intake_presence": ("water_intake_impairment_presence",),
     "deep_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
     "descending_aortic_dissection_flap_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
     "direct_bilirubin": ("serum_bilirubin_direct",),
@@ -1804,7 +1809,11 @@ EXACT_AXIS_ALIASES = {
     "hepatic_encephalopathy_presence": ("mental_status_abnormality_activity",),
     "hiv1_rna_copies_per_mL": ("hiv_plasma_rna_viral_load",),
     "hiv_positive_sexual_partner_presence": ("known_hiv_positive_source_partner_presence",),
+    "human_adenovirus_hexon_gene_typing_result": ("adenovirus_hexon_typing_positive_presence",),
     "hypoxemia_presence": ("supplemental_oxygen_requirement_presence",),
+    "inability_to_follow_commands_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
+    "incomprehensible_speech_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
+    "inferior_vena_cava_collapse_presence": ("dehydration_presence",),
     "inferior_wall_akinesia_presence": ("regional_wall_motion_abnormality_presence",),
     "international_normalized_ratio": ("prothrombin_time_inr",),
     "jaundice_presence": ("jaundice_activity",),
@@ -1830,10 +1839,16 @@ EXACT_AXIS_ALIASES = {
     "oxygen_flow_rate_l_per_min": ("oxygen_requirement_level",),
     "palpitations_presence": ("palpitations_activity",),
     "partial_thromboplastin_time_seconds": ("partial_thromboplastin_time",),
+    "perinephric_stranding_progression_presence": ("perinephric_stranding_presence",),
+    "point_of_care_glucose": ("serum_glucose",),
     "prothrombin_time": ("prothrombin_time_seconds",),
     "pulmonary_infiltrate_presence": ("pulmonary_opacity_presence", "bilateral_pulmonary_opacity_presence"),
     "pulmonary_arterial_filling_defect_presence": ("ctpa_pulmonary_arterial_filling_defect_activity",),
     "pulmonary_hypertension_presence": ("pulmonary_hypertension_activity",),
+    "renal_allograft_tenderness_presence": ("allograft_tenderness_activity",),
+    "renal_allograft_tenderness_severity": ("allograft_tenderness_activity",),
+    "renal_allograft_tenderness_worsening_presence": ("allograft_tenderness_activity",),
+    "serum_human_adenovirus_pcr_viral_load": ("adenovirus_viral_load",),
     "right_renal_artery_involvement_by_aortic_flap_presence": ("renal_artery_malperfusion_presence",),
     "right_renal_artery_ostial_stenosis_presence": ("renal_artery_malperfusion_presence",),
     "right_kidney_hypoperfusion_presence": ("renal_artery_malperfusion_presence",),
@@ -1872,8 +1887,16 @@ EXACT_AXIS_ALIASES = {
     "supplemental_oxygen_flow_rate": ("oxygen_requirement_level",),
     "syncope_presence": ("syncope_activity", "syncope_presyncope_activity"),
     "recent_alcohol_escalation_or_binge_activity": ("alcohol_pancreatic_toxicity_context_probability",),
+    "speech_abnormality_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
+    "unable_to_provide_history_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "unprotected_anal_intercourse_presence": ("recent_unprotected_sexual_exposure_probability",),
+    "urine_rbc_presence": ("hematuria_activity",),
+    "urine_wbc_presence": ("pyuria_activity",),
+    "venous_access_difficulty_presence": ("dehydration_presence", "dehydration_severity"),
     "vomiting_presence": ("vomiting_activity",),
+    "warm_dry_skin_presence": ("dehydration_presence",),
+    "weak_peripheral_pulse_presence": ("dehydration_presence", "dehydration_severity"),
+    "withdrawal_from_pain_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "white_blood_cell_count_per_uL": ("white_blood_cell_count",),
 }
 
@@ -2272,6 +2295,51 @@ def prepare_case_data(data):
             "source_text_value": f"inferred parent finding from {child_axis_id}",
             "_inferred_parent": True,
         }
+
+    systolic = observations.get("systolic_blood_pressure")
+    diastolic = observations.get("diastolic_blood_pressure")
+    map_value = None
+    if systolic is not None and diastolic is not None:
+        try:
+            systolic_value = float(systolic.get("value"))
+            diastolic_value = float(diastolic.get("value"))
+            map_value = (systolic_value + 2.0 * diastolic_value) / 3.0
+            if "mean_arterial_pressure" not in observations:
+                add_observation(
+                    "mean_arterial_pressure",
+                    map_value,
+                    "mmHg",
+                    max(float(systolic.get("day", snapshot_day)), float(diastolic.get("day", snapshot_day))),
+                    {
+                        "category": "vital_sign",
+                        "axis_role": "measurement",
+                        "source_text_value": "derived from systolic_blood_pressure and diastolic_blood_pressure",
+                    },
+                )
+        except (TypeError, ValueError):
+            map_value = None
+
+    if "hypotension_presence" not in observations:
+        hypotension = False
+        if systolic is not None:
+            try:
+                hypotension = hypotension or float(systolic.get("value")) < 90.0
+            except (TypeError, ValueError):
+                pass
+        if map_value is not None:
+            hypotension = hypotension or map_value < 65.0
+        if hypotension:
+            add_observation(
+                "hypotension_presence",
+                1.0,
+                "present_absent_0_1",
+                snapshot_day,
+                {
+                    "category": "hemodynamic_finding",
+                    "axis_role": "finding",
+                    "source_text_value": "derived from low systolic_blood_pressure or mean_arterial_pressure",
+                },
+            )
 
     for source_axis_id, alias_axis_ids in EXACT_AXIS_ALIASES.items():
         source = observations.get(source_axis_id)
@@ -2823,6 +2891,21 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                 axis_has_formal_support(source_axis_id, candidate, manifolds, background_axes)
                 for source_axis_id in sources
             )
+            sibling_proxy_formal = False
+            for source_axis_id in sources:
+                source_item = obs.get(source_axis_id) or {}
+                for proxy_axis_id in source_item.get("_legacy_proxy_axis_ids", []):
+                    if proxy_axis_id == axis_id:
+                        continue
+                    if axis_has_formal_support(proxy_axis_id, candidate, manifolds, background_axes) or eval_axis(
+                        proxy_axis_id, candidate, manifolds, background_axes
+                    ) is not None:
+                        sibling_proxy_formal = True
+                        break
+                if sibling_proxy_formal:
+                    break
+            if sibling_proxy_formal and not formal_axis:
+                continue
             if source_formal or (not formal_axis and not item.get("_canonical_proxy_for_background")):
                 continue
         else:
@@ -3706,6 +3789,42 @@ def acute_mesenteric_ischemia_anchor_support(case):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def incarcerated_groin_hernia_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "irreducible_groin_hernia_presence",
+            "strangulated_hernia_presence",
+            "bowel_in_hernia_sac_imaging_presence",
+            "transition_point_at_groin_hernia_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "inguinal_hernia_presence",
+            "femoral_hernia_presence",
+            "inguinoscrotal_hernia_presence",
+            "appendix_in_groin_hernia_sac_presence",
+            "bladder_in_inguinal_hernia_sac_presence",
+        ),
+        score=2.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("groin_mass_presence", "hernia_sac_fat_stranding_presence"),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("groin_mass_tenderness_presence", "groin_pain_presence", "groin_skin_erythema_presence"),
+        score=0.6,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def obstructive_pyelonephritis_anchor_support(case):
     obstruction = positive_observed_axis_score(
         case,
@@ -4074,6 +4193,45 @@ def acute_liver_failure_anchor_support(case):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def adenovirus_anchor_support(case):
+    score = 0.0
+    viral_load = observed_value(case, "adenovirus_viral_load")
+    if viral_load is not None:
+        viral_load = float(viral_load)
+        if viral_load >= 100000.0:
+            score += 3.0
+        elif viral_load >= 1000.0:
+            score += 2.5
+        elif viral_load > 0.0:
+            score += 1.5
+    score += positive_observed_axis_score(
+        case,
+        (
+            "adenovirus_tissue_immunohistochemistry_positive",
+            "adenovirus_immunohistochemistry_positive",
+            "adenovirus_hexon_typing_positive_presence",
+            "human_adenovirus_hexon_gene_typing_result",
+        ),
+        score=2.0,
+    )
+    urinary_support = 0.0
+    urinary_support += positive_observed_axis_score(case, ("hematuria_activity", "hematuria_presence", "urine_rbc_presence"), score=0.4)
+    urinary_support += positive_observed_axis_score(case, ("dysuria_activity", "dysuria_presence"), score=0.4)
+    urinary_support += positive_observed_axis_score(case, ("pyuria_activity", "urine_wbc_presence"), score=0.3)
+    urinary_support += positive_observed_axis_score(
+        case,
+        (
+            "allograft_tenderness_activity",
+            "renal_allograft_tenderness_presence",
+            "renal_allograft_tenderness_severity",
+            "renal_allograft_tenderness_worsening_presence",
+        ),
+        score=0.6,
+    )
+    score += min(urinary_support, 1.2)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def component_anchor_support(case, disease, manifolds, background_axes):
     """Require disease-specific evidence before allowing a combo to turn on.
 
@@ -4194,8 +4352,14 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-ACUTE-LIVER-FAILURE":
         score += acute_liver_failure_anchor_support(case)
 
+    elif disease == "D-ADENOVIRUS-INFECTION":
+        score += adenovirus_anchor_support(case)
+
     elif disease == "D-ACUTE-MESENTERIC-ISCHEMIA":
         score += acute_mesenteric_ischemia_anchor_support(case)
+
+    elif disease == "D-INCARCERATED-GROIN-HERNIA":
+        score += incarcerated_groin_hernia_anchor_support(case)
 
     elif disease == "D-ACUTE-MYOCARDITIS":
         score += acute_myocarditis_anchor_support(case)
