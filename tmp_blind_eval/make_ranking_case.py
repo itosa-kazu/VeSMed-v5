@@ -143,6 +143,12 @@ def record_only_items(extraction):
 def source_value(extraction, source, key):
     if source.get(key) or extraction.get(key):
         return source.get(key) or extraction.get(key)
+    source_metadata = extraction.get("source_metadata")
+    if isinstance(source_metadata, dict) and source_metadata.get(key):
+        return source_metadata.get(key)
+    metadata = extraction.get("metadata")
+    if isinstance(metadata, dict) and metadata.get(key):
+        return metadata.get(key)
     article_ids = extraction.get("article_ids")
     if isinstance(article_ids, dict):
         return article_ids.get(key)
@@ -167,16 +173,27 @@ def pick_patient(extraction, payload):
 
 
 def pick_items(extraction, payload, key):
-    value = extraction.get(key)
-    if isinstance(value, list):
-        return value
-    value = payload.get(key)
-    if isinstance(value, list):
-        return value
+    aliases = {
+        "observations": (
+            "observations",
+            "rankable_observations",
+            "diagnosis_neutral_observations",
+            "rankable_evidence",
+        ),
+        "risk_context": ("risk_context", "risk_factors", "background_context"),
+    }.get(key, (key,))
+    for alias in aliases:
+        value = extraction.get(alias)
+        if isinstance(value, list):
+            return value
+        value = payload.get(alias)
+        if isinstance(value, list):
+            return value
     patient = pick_patient(extraction, payload)
-    value = patient.get(key)
-    if isinstance(value, list):
-        return value
+    for alias in aliases:
+        value = patient.get(alias)
+        if isinstance(value, list):
+            return value
     return []
 
 
@@ -186,10 +203,33 @@ def scalar_field(value):
     return value
 
 
+def derive_demographics_from_observations(items, age, sex):
+    for item in items or []:
+        axis_id = str(item.get("axis_id") or "").strip().lower()
+        value = normalize_value(item.get("value"))
+        if age is None and axis_id in {"age", "age_years", "patient_age_years"}:
+            age = value
+        if sex is None:
+            raw = item.get("value")
+            raw_text = str(raw).strip().lower() if raw is not None else ""
+            if axis_id in {"male_sex_presence", "male_sex"} and value == 1.0:
+                sex = "M"
+            elif axis_id in {"female_sex_presence", "female_sex"} and (value == 1.0 or raw_text == "female"):
+                sex = "F"
+            elif axis_id in {"sex", "patient_sex"}:
+                if raw_text in {"m", "male"}:
+                    sex = "M"
+                elif raw_text in {"f", "female"}:
+                    sex = "F"
+    return age, sex
+
+
 def build_case(extraction, extraction_path, notes_path, expected):
     payload = case_payload(extraction)
-    source = extraction.get("source") or {}
+    source = extraction.get("source") or extraction.get("source_metadata") or {}
     patient = pick_patient(extraction, payload)
+    observation_items = pick_items(extraction, payload, "observations")
+    risk_items = pick_items(extraction, payload, "risk_context")
     pmcid = source_value(extraction, source, "pmcid")
     sex = patient.get("sex")
     if isinstance(sex, str):
@@ -202,6 +242,7 @@ def build_case(extraction, extraction_path, notes_path, expected):
     age = scalar_field(patient.get("age_years")) or scalar_field(patient.get("age"))
     if age is None and isinstance(patient.get("demographics"), dict):
         age = scalar_field(patient["demographics"].get("age_years")) or scalar_field(patient["demographics"].get("age"))
+    age, sex = derive_demographics_from_observations(observation_items + risk_items, age, sex)
 
     case = {
         "case_id": f"{pmcid}_BLIND_FULLTEXT_PILOT",
@@ -221,8 +262,8 @@ def build_case(extraction, extraction_path, notes_path, expected):
         },
         "snapshot_day": 0,
         "snapshot_label": "index presentation / early objective case data before treatment response and final discussion framing",
-        "risk_context": flatten_items(pick_items(extraction, payload, "risk_context"), "case.risk_context"),
-        "observations": flatten_items(pick_items(extraction, payload, "observations"), "case.observations"),
+        "risk_context": flatten_items(risk_items, "case.risk_context"),
+        "observations": flatten_items(observation_items, "case.observations"),
         "record_only": record_only_items(extraction),
         "audit_notes": [
             "Blind extraction source JSON does not contain expected_manifold, expected_manifolds, or disease_label_per_paper.",

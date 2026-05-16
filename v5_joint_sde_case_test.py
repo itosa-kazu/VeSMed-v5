@@ -1759,6 +1759,8 @@ EXACT_AXIS_ALIASES = {
     "alkaline_phosphatase": ("serum_alkaline_phosphatase",),
     "alkaline_phosphatase_normal_presence": ("serum_alkaline_phosphatase_normal_presence",),
     "anti_hav_antibody_positive": ("hav_igm_positivity",),
+    "anti_hepatitis_a_virus_igm_positive": ("hav_igm_positivity",),
+    "anti_hepatitis_a_virus_igg_positive": ("hav_igg_or_total_antibody_positivity",),
     "anti_hev_igm_positive": ("hev_igm_positivity",),
     "arterial_pH": ("arterial_ph",),
     "adenovirus_immunohistochemistry_positive": ("adenovirus_tissue_immunohistochemistry_positive",),
@@ -1787,6 +1789,7 @@ EXACT_AXIS_ALIASES = {
     "deep_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
     "descending_aortic_dissection_flap_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
     "direct_bilirubin": ("serum_bilirubin_direct",),
+    "direct_bilirubin_mg_dl": ("serum_bilirubin_direct",),
     "direct_bilirubin_elevated_presence": ("direct_hyperbilirubinemia_presence",),
     "direct_antiglobulin_test_positive": ("direct_antiglobulin_test_activity",),
     "ecg_anterior_wall_acute_ischemic_pattern_presence": ("st_segment_elevation_presence",),
@@ -1803,9 +1806,48 @@ EXACT_AXIS_ALIASES = {
     "heart_rate_bpm": ("heart_rate",),
     "hemoglobin_g_dL": ("hemoglobin",),
     "hepatitis_a_igm_positive": ("hav_igm_positivity",),
+    "hepatitis_a_igm_positive_presence": ("hav_igm_positivity",),
     "hepatitis_a_igm_antibody_positive": ("hav_igm_positivity",),
+    "hepatitis_a_igm_antibody_positive_presence": ("hav_igm_positivity",),
     "hepatitis_e_igm_positive": ("hev_igm_positivity",),
+    "hepatitis_e_igm_positive_presence": ("hev_igm_positivity",),
     "hepatitis_e_antibody_positive": ("hev_igm_positivity",),
+    "hepatitis_e_antibody_positive_presence": ("hev_igm_positivity",),
+    "hepatitis_b_core_igm_positive_presence": ("hepatitis_b_core_igm_positivity",),
+    "hepatitis_b_surface_antigen_positive_presence": ("hepatitis_b_surface_antigen_positivity",),
+    "hbv_dna_positive_presence": ("hbv_dna_positivity",),
+    "gallbladder_wall_thickening_presence": ("gallbladder_wall_thickening_activity",),
+    "gallbladder_inflammation_imaging_presence": (
+        "gallbladder_wall_thickening_activity",
+        "pericholecystic_fat_stranding_activity",
+    ),
+    "gallbladder_wall_hyperemia_presence": ("gallbladder_wall_hyperemia_activity",),
+    "pericholecystic_fluid_presence": ("pericholecystic_fluid_activity",),
+    "pericholecystic_fat_stranding_presence": ("pericholecystic_fat_stranding_activity",),
+    "gallbladder_dilation_presence": ("gallbladder_distension_activity",),
+    "gallbladder_distension_presence": ("gallbladder_distension_activity",),
+    "gallbladder_hydrops_presence": ("gallbladder_hydrops_activity",),
+    "hydropic_gallbladder_presence": ("gallbladder_hydrops_activity",),
+    "gallstone_presence": ("cholelithiasis_sludge_context_probability",),
+    "cholelithiasis_presence": ("cholelithiasis_sludge_context_probability",),
+    "biliary_sludge_presence": ("cholelithiasis_sludge_context_probability",),
+    "gallstone_or_biliary_sludge_presence": ("cholelithiasis_sludge_context_probability",),
+    "prior_common_bile_duct_stone_history_presence": ("cholelithiasis_sludge_context_probability",),
+    "gallbladder_neck_impacted_stone_presence": ("impacted_gallbladder_neck_stone_activity",),
+    "nonmobile_gallstone_presence": ("impacted_gallbladder_neck_stone_activity",),
+    "impacted_gallstone_presence": ("impacted_gallbladder_neck_stone_activity",),
+    "sonographic_murphy_sign_presence": ("sonographic_murphy_sign_activity",),
+    "murphy_sign_presence": ("murphy_sign_activity",),
+    "right_upper_quadrant_pain_presence": ("right_upper_quadrant_pain_activity",),
+    "right_upper_quadrant_tenderness_presence": ("right_upper_quadrant_tenderness_activity",),
+    "epigastric_pain_presence": ("epigastric_pain_activity",),
+    "epigastric_tenderness_presence": ("abdominal_tenderness_activity",),
+    "gallbladder_fundal_wall_discontinuity_presence": ("gallbladder_perforation_activity",),
+    "gallbladder_adjacent_fluid_communication_with_liver_presence": ("gallbladder_perforation_activity",),
+    "right_upper_quadrant_abscess_presence": ("pericholecystic_abscess_activity",),
+    "right_upper_quadrant_phlegmonous_change_presence": ("pericholecystic_fat_stranding_activity",),
+    "common_bile_duct_dilation_presence": ("biliary_obstruction_activity",),
+    "biliary_duct_dilation_presence": ("biliary_obstruction_activity",),
     "hepatic_encephalopathy_presence": ("mental_status_abnormality_activity",),
     "hiv1_rna_copies_per_mL": ("hiv_plasma_rna_viral_load",),
     "hiv_positive_sexual_partner_presence": ("known_hiv_positive_source_partner_presence",),
@@ -1882,6 +1924,7 @@ EXACT_AXIS_ALIASES = {
     "prior_liver_disease_history_presence": ("cirrhosis_context_presence",),
     "troponin_i": ("serum_troponin",),
     "total_bilirubin": ("serum_bilirubin_total",),
+    "total_bilirubin_mg_dl": ("serum_bilirubin_total",),
     "total_bilirubin_mg_dL": ("serum_bilirubin_total",),
     "total_leukocyte_count": ("white_blood_cell_count",),
     "supplemental_oxygen_flow_rate": ("oxygen_requirement_level",),
@@ -3138,6 +3181,48 @@ def positive_observed_axis_score(case, axis_ids, threshold=0.5, score=1.0):
     return best
 
 
+VIRAL_HEPATITIS_DIRECT_MARKER_AXES = (
+    "hav_igm_positivity",
+    "anti_hepatitis_a_virus_igm_positive",
+    "hepatitis_a_igm_positive",
+    "hepatitis_a_igm_positive_presence",
+    "hepatitis_a_igm_antibody_positive",
+    "hepatitis_a_igm_antibody_positive_presence",
+    "hepatitis_b_core_igm_positivity",
+    "hepatitis_b_core_igm_positive_presence",
+    "hepatitis_b_surface_antigen_positivity",
+    "hepatitis_b_surface_antigen_positive_presence",
+    "hbv_dna_positivity",
+    "hbv_dna_positive_presence",
+    "hev_igm_positivity",
+    "anti_hev_igm_positive",
+    "hepatitis_e_igm_positive",
+    "hepatitis_e_igm_positive_presence",
+    "hepatitis_e_antibody_positive",
+    "hepatitis_e_antibody_positive_presence",
+)
+
+
+def direct_viral_hepatitis_marker_present(case):
+    return positive_observed_axis_score(case, VIRAL_HEPATITIS_DIRECT_MARKER_AXES, score=1.0) > 0.0
+
+
+ACETAMINOPHEN_SPECIFIC_ANCHOR_AXES = (
+    "acetaminophen_exposure_probability",
+    "staggered_or_repeated_supratherapeutic_ingestion_probability",
+    "acetaminophen_serum_concentration",
+    "reported_acetaminophen_dose_mg_per_kg",
+)
+
+
+def acetaminophen_specific_anchor_present(case):
+    for axis_id in ACETAMINOPHEN_SPECIFIC_ANCHOR_AXES:
+        value = observed_value(case, axis_id)
+        if value is not None and float(value) > 0.0:
+            return True
+    return False
+
+
 def aminotransferase_anchor_score(case):
     values = []
     for axis_id, upper_ref in (("serum_ast", 40.0), ("serum_alt", 56.0)):
@@ -3302,6 +3387,114 @@ def acetaminophen_toxicity_anchor_support(case):
     if lactate is not None and float(lactate) >= 3.0:
         score += 0.8
 
+    if not acetaminophen_specific_anchor_present(case):
+        score = min(score, 0.8)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def independent_biliary_cholecystitis_anchor_present(case):
+    return positive_observed_axis_score(
+        case,
+        (
+            "cholelithiasis_sludge_context_probability",
+            "gallstone_presence",
+            "cholelithiasis_presence",
+            "biliary_sludge_presence",
+            "gallstone_or_biliary_sludge_presence",
+            "nonmobile_gallstone_presence",
+            "impacted_gallbladder_neck_stone_activity",
+            "gallbladder_neck_impacted_stone_presence",
+            "impacted_gallstone_presence",
+            "cystic_duct_obstruction_activity",
+            "sonographic_murphy_sign_activity",
+            "sonographic_murphy_sign_presence",
+            "gallbladder_perforation_activity",
+            "gallbladder_fundal_wall_discontinuity_presence",
+            "gallbladder_adjacent_fluid_communication_with_liver_presence",
+            "gallbladder_gangrene_activity",
+            "pericholecystic_abscess_activity",
+            "right_upper_quadrant_abscess_presence",
+        ),
+        score=1.0,
+    ) > 0.0
+
+
+def acute_cholecystitis_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "gallbladder_perforation_activity",
+            "gallbladder_gangrene_activity",
+            "pericholecystic_abscess_activity",
+            "subcapsular_hepatic_abscess_activity",
+            "gallbladder_fundal_wall_discontinuity_presence",
+            "gallbladder_adjacent_fluid_communication_with_liver_presence",
+            "right_upper_quadrant_abscess_presence",
+        ),
+        score=2.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "gallbladder_wall_thickening_activity",
+            "gallbladder_wall_thickening_presence",
+            "pericholecystic_fluid_activity",
+            "pericholecystic_fluid_presence",
+            "sonographic_murphy_sign_activity",
+            "sonographic_murphy_sign_presence",
+            "impacted_gallbladder_neck_stone_activity",
+            "gallbladder_neck_impacted_stone_presence",
+            "cystic_duct_obstruction_activity",
+        ),
+        score=1.8,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "gallbladder_distension_activity",
+            "gallbladder_distension_presence",
+            "gallbladder_dilation_presence",
+            "gallbladder_hydrops_activity",
+            "pericholecystic_fat_stranding_activity",
+            "pericholecystic_fat_stranding_presence",
+            "right_upper_quadrant_phlegmonous_change_presence",
+        ),
+        score=1.1,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "cholelithiasis_sludge_context_probability",
+            "gallstone_presence",
+            "cholelithiasis_presence",
+            "biliary_sludge_presence",
+            "nonmobile_gallstone_presence",
+        ),
+        score=0.9,
+    )
+
+    if score > 0.0:
+        score += positive_observed_axis_score(
+            case,
+            (
+                "right_upper_quadrant_pain_activity",
+                "right_upper_quadrant_pain_presence",
+                "right_upper_quadrant_tenderness_activity",
+                "right_upper_quadrant_tenderness_presence",
+                "murphy_sign_activity",
+                "murphy_sign_presence",
+            ),
+            score=0.7,
+        )
+        score += positive_observed_axis_score(
+            case,
+            ("white_blood_cell_count", "serum_crp", "body_temperature"),
+            threshold=0.0,
+            score=0.3,
+        )
+    if direct_viral_hepatitis_marker_present(case) and not independent_biliary_cholecystitis_anchor_present(case):
+        score = min(score, 0.8)
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -4190,6 +4383,8 @@ def acute_liver_failure_anchor_support(case):
     if meld is not None and float(meld) >= 20:
         score += 1.0
     score += positive_observed_axis_score(case, ("jaundice_activity", "jaundice_presence", "scleral_icterus_presence"), score=0.5)
+    if direct_viral_hepatitis_marker_present(case):
+        score = min(score, 0.8)
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -4321,6 +4516,9 @@ def component_anchor_support(case, disease, manifolds, background_axes):
             value = observed_value(case, axis_id)
             if value is not None and value >= 0.4:
                 score += 0.6
+
+    elif disease == "D-ACUTE-CHOLECYSTITIS":
+        score += acute_cholecystitis_anchor_support(case)
 
     elif disease in ACUTE_VIRAL_HEPATITIS_DISEASE_IDS:
         score += acute_viral_hepatitis_anchor_support(case, disease)
