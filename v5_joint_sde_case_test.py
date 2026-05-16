@@ -231,6 +231,7 @@ TOXIDROME_ANCHOR_TOKENS = {
 }
 
 SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
+    "D-ACUTE-ANGLE-CLOSURE-GLAUCOMA",
     "D-ACUTE-EPIGLOTTITIS",
     "D-ACUTE-CHOLECYSTITIS",
     "D-ACUTE-INTERMITTENT-PORPHYRIA",
@@ -262,11 +263,13 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-HEPATIC-ENCEPHALOPATHY",
     "D-HYPOTHERMIA",
     "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+    "D-IGA-NEPHROPATHY",
     "D-INVASIVE-ASPERGILLOSIS",
     "D-PERIPARTUM-CARDIOMYOPATHY",
     "D-PHEOCHROMOCYTOMA-CRISIS",
     "D-PELVIC-FRACTURE",
     "D-PEDIATRIC-DEHYDRATION",
+    "D-PERFORATED-VISCUS",
     "D-LUNG-ABSCESS",
     "D-MALIGNANT-HYPERTHERMIA",
     "D-MALARIA-FALCIPARUM",
@@ -314,6 +317,8 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-TOXOPLASMOSIS",
     "D-VENTRICULAR-FIBRILLATION",
     "D-VENTRICULAR-TACHYCARDIA",
+    "D-RETINAL-DETACHMENT",
+    "D-SUBARACHNOID-HEMORRHAGE",
 }
 
 SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
@@ -1754,6 +1759,11 @@ EXACT_AXIS_ALIASES = {
     "abdominal_pain_presence": ("abdominal_pain_activity",),
     "abdominal_tenderness_presence": ("abdominal_pain_activity",),
     "activated_partial_thromboplastin_time": ("partial_thromboplastin_time",),
+    "acetaminophen_exposure_history_presence": (
+        "acetaminophen_exposure_probability",
+        "hepatotoxic_drug_or_toxin_exposure_probability",
+    ),
+    "acute_blurry_vision_presence": ("blurred_vision_presence", "visual_acuity_impairment_presence"),
     "alanine_aminotransferase": ("serum_alt",),
     "alanine_aminotransferase_u_L": ("serum_alt",),
     "alkaline_phosphatase": ("serum_alkaline_phosphatase",),
@@ -1770,7 +1780,10 @@ EXACT_AXIS_ALIASES = {
     "aortic_flap_or_membrane_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
     "aorto_right_renal_artery_pressure_gradient_maximum": ("renal_artery_dynamic_stenosis_pressure_gradient_mmHg",),
     "asymmetric_renal_ct_enhancement_presence": ("renal_artery_malperfusion_presence",),
+    "bilateral_corneal_epithelial_and_stromal_edema_presence": ("corneal_edema_presence",),
     "bilateral_lower_leg_intermuscular_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
+    "bilateral_mid_dilated_pupils_presence": ("mid_dilated_pupil_presence", "pupillary_abnormality_presence"),
+    "bilateral_perilimbal_conjunctival_injection_presence": ("conjunctival_injection_presence",),
     "bilateral_pulmonary_infiltrate_extent": ("bilateral_pulmonary_opacity_extent",),
     "bilious_vomiting_presence": ("vomiting_activity",),
     "blood_glucose": ("serum_glucose",),
@@ -1783,6 +1796,8 @@ EXACT_AXIS_ALIASES = {
     "coma_presence": ("coma_activity",),
     "complete_atrioventricular_block_presence": ("atrioventricular_block_degree",),
     "confusion_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_activity"),
+    "conjugated_bilirubin": ("serum_bilirubin_direct",),
+    "corneal_epithelial_edema_right_eye_presence": ("corneal_edema_presence",),
     "coronary_occlusion_presence": ("culprit_coronary_obstruction_presence",),
     "coronary_thrombus_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
     "decreased_oral_intake_presence": ("water_intake_impairment_presence",),
@@ -1792,6 +1807,7 @@ EXACT_AXIS_ALIASES = {
     "direct_bilirubin_mg_dl": ("serum_bilirubin_direct",),
     "direct_bilirubin_elevated_presence": ("direct_hyperbilirubinemia_presence",),
     "direct_antiglobulin_test_positive": ("direct_antiglobulin_test_activity",),
+    "decreased_vision_presence": ("visual_acuity_impairment_presence", "blurred_vision_presence"),
     "ecg_anterior_wall_acute_ischemic_pattern_presence": ("st_segment_elevation_presence",),
     "facial_edema_presence": ("angioedema_presence", "facial_lip_tongue_angioedema_presence"),
     "facial_weakness_severity": ("facial_droop_severity",),
@@ -1864,7 +1880,11 @@ EXACT_AXIS_ALIASES = {
     "lactate_dehydrogenase": ("serum_ldh",),
     "limb_weakness_presence": ("limb_weakness_or_paralysis_presence",),
     "left_anterior_descending_territory_wall_motion_abnormality_presence": ("regional_wall_motion_abnormality_presence",),
+    "left_intraocular_pressure_goldmann": ("intraocular_pressure_mmHg",),
+    "left_intraocular_pressure_tonopen": ("intraocular_pressure_mmHg",),
     "left_main_coronary_artery_occlusion_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
+    "left_pupil_diameter": ("pupil_diameter_mm",),
+    "left_pupil_diameter_mm": ("pupil_diameter_mm",),
     "low_solute_intake_context_presence": ("beer_potomania_context_presence",),
     "leukocyte_count": ("white_blood_cell_count",),
     "leukocyte_count_per_uL": ("white_blood_cell_count",),
@@ -1882,6 +1902,7 @@ EXACT_AXIS_ALIASES = {
     "palpitations_presence": ("palpitations_activity",),
     "partial_thromboplastin_time_seconds": ("partial_thromboplastin_time",),
     "perinephric_stranding_progression_presence": ("perinephric_stranding_presence",),
+    "persistent_ocular_pain_presence": ("acute_eye_pain_presence",),
     "point_of_care_glucose": ("serum_glucose",),
     "prothrombin_time": ("prothrombin_time_seconds",),
     "pulmonary_infiltrate_presence": ("pulmonary_opacity_presence", "bilateral_pulmonary_opacity_presence"),
@@ -1896,10 +1917,21 @@ EXACT_AXIS_ALIASES = {
     "right_kidney_hypoperfusion_presence": ("renal_artery_malperfusion_presence",),
     "right_ankle_brachial_index": ("ankle_brachial_index",),
     "right_calf_pain_presence": ("limb_pain_presence", "lower_limb_pain_presence"),
+    "right_corneal_epithelial_bullae_presence": ("corneal_epithelial_bullae_presence", "corneal_edema_presence"),
     "right_dorsalis_pedis_pulse_weak_presence": ("pulse_deficit_presence",),
     "right_foot_cold_skin_presence": ("limb_skin_coolness_presence",),
     "right_foot_mottled_skin_presence": ("limb_ischemia_presence", "peripheral_ischemia_presence"),
+    "right_intraocular_pressure_goldmann": ("intraocular_pressure_mmHg",),
+    "right_intraocular_pressure_tonopen": ("intraocular_pressure_mmHg",),
     "right_lower_limb_paresthesia_presence": ("limb_paresthesia_presence", "limb_sensory_abnormality_presence"),
+    "right_pupil_diameter": ("pupil_diameter_mm",),
+    "right_pupil_diameter_mm": ("pupil_diameter_mm",),
+    "right_pupil_fixed_presence": (
+        "fixed_dilated_pupil_presence",
+        "pupillary_abnormality_presence",
+        "pupillary_light_reaction_impairment_presence",
+    ),
+    "right_pupil_mid_dilated_presence": ("mid_dilated_pupil_presence", "pupillary_abnormality_presence"),
     "right_popliteal_artery_occlusion_on_ct_angiography_presence": (
         "peripheral_arterial_occlusion_presence",
         "lower_extremity_arterial_occlusion_presence",
@@ -1913,6 +1945,7 @@ EXACT_AXIS_ALIASES = {
     "right_popliteal_pulse_weak_presence": ("pulse_deficit_presence",),
     "seizure_presence": ("seizure_activity",),
     "serum_creatinine_mg_dL": ("serum_creatinine",),
+    "serum_acetaminophen_concentration": ("acetaminophen_serum_concentration",),
     "serum_ferritin_ng_mL": ("serum_ferritin",),
     "shock_presence": ("shock_activity",),
     "scleral_icterus_presence": ("jaundice_activity",),
@@ -1941,6 +1974,10 @@ EXACT_AXIS_ALIASES = {
     "weak_peripheral_pulse_presence": ("dehydration_presence", "dehydration_severity"),
     "withdrawal_from_pain_presence": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "white_blood_cell_count_per_uL": ("white_blood_cell_count",),
+    "intraocular_pressure_right_eye": ("intraocular_pressure_mmHg",),
+    "intraocular_pressure_left_eye": ("intraocular_pressure_mmHg",),
+    "visual_acuity_right_eye_decimal": ("visual_acuity_decimal",),
+    "visual_acuity_left_eye_decimal": ("visual_acuity_decimal",),
 }
 
 SUPPRESSION_ONLY_AXIS_ALIASES = {
@@ -2402,6 +2439,138 @@ def prepare_case_data(data):
                 proxy_axis_ids.append(alias_axis_id)
             source["_legacy_proxy_axis_id"] = alias_axis_id
 
+    def observation_float(axis_id):
+        item = observations.get(axis_id)
+        if item is None:
+            return None
+        try:
+            return float(item.get("value"))
+        except (TypeError, ValueError):
+            return None
+
+    def add_derived_presence(axis_id, source_axis_ids, category="derived_finding"):
+        if axis_id in observations:
+            return
+        source = next((observations[src] for src in source_axis_ids if src in observations), None)
+        if source is None:
+            return
+        add_observation(
+            axis_id,
+            1.0,
+            "present_absent_0_1",
+            float(source.get("day", snapshot_day)),
+            {
+                "category": category,
+                "axis_role": "finding",
+                "source_text_value": f"derived from {', '.join(src for src in source_axis_ids if src in observations)}",
+                "_derived_from_axes": [src for src in source_axis_ids if src in observations],
+            },
+        )
+
+    apap_concentration = observation_float("acetaminophen_serum_concentration")
+    apap_daily_dose = max(
+        [
+            value
+            for value in (
+                observation_float("recent_acetaminophen_ingestion_dose"),
+                observation_float("reported_daily_acetaminophen_dose"),
+            )
+            if value is not None
+        ],
+        default=None,
+    )
+    if (apap_concentration is not None and apap_concentration > 0.0) or (apap_daily_dose is not None and apap_daily_dose > 0.0):
+        add_derived_presence(
+            "acetaminophen_exposure_probability",
+            (
+                "acetaminophen_serum_concentration",
+                "recent_acetaminophen_ingestion_dose",
+                "reported_daily_acetaminophen_dose",
+            ),
+            category="toxic_exposure_context",
+        )
+        add_derived_presence(
+            "hepatotoxic_drug_or_toxin_exposure_probability",
+            (
+                "acetaminophen_serum_concentration",
+                "recent_acetaminophen_ingestion_dose",
+                "reported_daily_acetaminophen_dose",
+            ),
+            category="toxic_exposure_context",
+        )
+    apap_duration = observation_float("acetaminophen_exposure_duration")
+    if apap_daily_dose is not None and apap_daily_dose >= 4.0 and (apap_duration is None or apap_duration >= 2.0):
+        add_derived_presence(
+            "staggered_or_repeated_supratherapeutic_ingestion_probability",
+            ("recent_acetaminophen_ingestion_dose", "reported_daily_acetaminophen_dose", "acetaminophen_exposure_duration"),
+            category="toxic_exposure_context",
+        )
+
+    iop_value = observation_float("intraocular_pressure_mmHg")
+    if iop_value is not None and iop_value >= 21.0:
+        add_derived_presence("elevated_intraocular_pressure_presence", ("intraocular_pressure_mmHg",), category="ocular_finding")
+
+    peripheral_ac_depth = observation_float("anterior_chamber_depth_peripheral_corneal_thicknesses")
+    if peripheral_ac_depth is not None and peripheral_ac_depth <= 0.5:
+        add_derived_presence(
+            "shallow_anterior_chamber_presence",
+            ("anterior_chamber_depth_peripheral_corneal_thicknesses",),
+            category="ocular_anatomy",
+        )
+        add_derived_presence(
+            "narrow_anterior_chamber_angle_presence",
+            ("anterior_chamber_depth_peripheral_corneal_thicknesses",),
+            category="ocular_anatomy",
+        )
+
+    narrow_angle_extent = observation_float("gonioscopy_narrow_angle_extent_degrees_min")
+    if narrow_angle_extent is not None and narrow_angle_extent >= 180.0:
+        add_derived_presence(
+            "narrow_anterior_chamber_angle_presence",
+            ("gonioscopy_narrow_angle_extent_degrees_min",),
+            category="ocular_anatomy",
+        )
+
+    light_reactivity = observation_float("pupillary_light_reactivity_presence")
+    if light_reactivity is not None and light_reactivity < 0.5:
+        add_derived_presence(
+            "pupillary_light_reaction_impairment_presence",
+            ("pupillary_light_reactivity_presence",),
+            category="ocular_finding",
+        )
+        add_derived_presence("pupillary_abnormality_presence", ("pupillary_light_reactivity_presence",), category="ocular_finding")
+
+    visual_acuity = observation_float("visual_acuity_decimal")
+    if visual_acuity is not None and visual_acuity < 0.8:
+        add_derived_presence("visual_acuity_impairment_presence", ("visual_acuity_decimal",), category="ocular_finding")
+    if "right_eye_count_fingers_distance" in observations or "left_eye_count_fingers_distance" in observations:
+        add_derived_presence(
+            "visual_acuity_impairment_presence",
+            ("right_eye_count_fingers_distance", "left_eye_count_fingers_distance"),
+            category="ocular_finding",
+        )
+
+    if (
+        observation_float("mid_dilated_pupil_presence") is not None
+        and observation_float("mid_dilated_pupil_presence") >= 0.5
+        and (
+            (observation_float("fixed_dilated_pupil_presence") is not None and observation_float("fixed_dilated_pupil_presence") >= 0.5)
+            or (
+                observation_float("pupillary_light_reaction_impairment_presence") is not None
+                and observation_float("pupillary_light_reaction_impairment_presence") >= 0.5
+            )
+        )
+    ):
+        add_derived_presence(
+            "mid_dilated_fixed_pupil_presence",
+            (
+                "mid_dilated_pupil_presence",
+                "fixed_dilated_pupil_presence",
+                "pupillary_light_reaction_impairment_presence",
+            ),
+            category="ocular_finding",
+        )
+
     for source_axis_id, alias_axis_ids in SUPPRESSION_ONLY_AXIS_ALIASES.items():
         source = observations.get(source_axis_id)
         if source is None:
@@ -2815,6 +2984,16 @@ def observed_value(case, axis_id):
     return obs["value"]
 
 
+def observed_float(case, axis_id):
+    value = observed_value(case, axis_id)
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def observed_absent(case, axis_id):
     obs = case["observations_by_axis"].get(axis_id)
     if not obs:
@@ -3175,10 +3354,17 @@ def generic_component_anchor_support(case, disease, manifolds, background_axes):
 def positive_observed_axis_score(case, axis_ids, threshold=0.5, score=1.0):
     best = 0.0
     for axis_id in axis_ids:
-        value = observed_value(case, axis_id)
-        if value is not None and float(value) >= threshold:
+        value = observed_float(case, axis_id)
+        if value is not None and value >= threshold:
             best = max(best, score)
     return best
+
+
+def max_observed_axis_value(case, axis_ids):
+    values = [value for value in (observed_float(case, axis_id) for axis_id in axis_ids) if value is not None]
+    if not values:
+        return None
+    return max(values)
 
 
 VIRAL_HEPATITIS_DIRECT_MARKER_AXES = (
@@ -3209,16 +3395,45 @@ def direct_viral_hepatitis_marker_present(case):
 
 ACETAMINOPHEN_SPECIFIC_ANCHOR_AXES = (
     "acetaminophen_exposure_probability",
+    "acetaminophen_exposure_history_presence",
     "staggered_or_repeated_supratherapeutic_ingestion_probability",
     "acetaminophen_serum_concentration",
+    "serum_acetaminophen_concentration",
     "reported_acetaminophen_dose_mg_per_kg",
+    "recent_acetaminophen_ingestion_dose",
+    "reported_daily_acetaminophen_dose",
 )
 
 
 def acetaminophen_specific_anchor_present(case):
     for axis_id in ACETAMINOPHEN_SPECIFIC_ANCHOR_AXES:
-        value = observed_value(case, axis_id)
-        if value is not None and float(value) > 0.0:
+        value = observed_float(case, axis_id)
+        if value is not None and value > 0.0:
+            return True
+    return False
+
+
+def acetaminophen_toxic_exposure_anchor_present(case):
+    if positive_observed_axis_score(
+        case,
+        (
+            "staggered_or_repeated_supratherapeutic_ingestion_probability",
+            "acetaminophen_exposure_history_presence",
+        ),
+        score=1.0,
+    ):
+        return True
+    concentration = observed_float(case, "acetaminophen_serum_concentration")
+    if concentration is None:
+        concentration = observed_float(case, "serum_acetaminophen_concentration")
+    if concentration is not None and concentration >= 10.0:
+        return True
+    mg_per_kg = observed_float(case, "reported_acetaminophen_dose_mg_per_kg")
+    if mg_per_kg is not None and mg_per_kg >= 100.0:
+        return True
+    for axis_id in ("recent_acetaminophen_ingestion_dose", "reported_daily_acetaminophen_dose"):
+        dose_g_per_day = observed_float(case, axis_id)
+        if dose_g_per_day is not None and dose_g_per_day >= 4.0:
             return True
     return False
 
@@ -3285,6 +3500,9 @@ def acute_viral_hepatitis_anchor_support(case, disease):
         ),
         score=0.8,
     )
+    if not positive_observed_axis_score(case, serology_axes_by_disease.get(disease, ()), score=1.0):
+        if acetaminophen_toxic_exposure_anchor_present(case):
+            score = min(score, 0.8)
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -3346,6 +3564,7 @@ def acetaminophen_toxicity_anchor_support(case):
         case,
         (
             "acetaminophen_exposure_probability",
+            "acetaminophen_exposure_history_presence",
             "staggered_or_repeated_supratherapeutic_ingestion_probability",
         ),
         score=3.0,
@@ -3356,9 +3575,10 @@ def acetaminophen_toxicity_anchor_support(case):
         score=1.2,
     )
 
-    concentration = observed_value(case, "acetaminophen_serum_concentration")
+    concentration = observed_float(case, "acetaminophen_serum_concentration")
+    if concentration is None:
+        concentration = observed_float(case, "serum_acetaminophen_concentration")
     if concentration is not None:
-        concentration = float(concentration)
         if concentration >= 150.0:
             score += 3.0
         elif concentration >= 30.0:
@@ -3366,13 +3586,23 @@ def acetaminophen_toxicity_anchor_support(case):
         elif concentration >= 10.0:
             score += 1.0
 
-    dose = observed_value(case, "reported_acetaminophen_dose_mg_per_kg")
+    dose = observed_float(case, "reported_acetaminophen_dose_mg_per_kg")
     if dose is not None:
-        dose = float(dose)
         if dose >= 150.0:
             score += 3.0
         elif dose >= 100.0:
             score += 1.5
+
+    for axis_id in ("recent_acetaminophen_ingestion_dose", "reported_daily_acetaminophen_dose"):
+        dose_g_per_day = observed_float(case, axis_id)
+        if dose_g_per_day is None:
+            continue
+        if dose_g_per_day >= 4.0:
+            score += 2.0
+            break
+        if dose_g_per_day > 0.0:
+            score += 0.8
+            break
 
     score += aminotransferase_anchor_score(case)
 
@@ -3495,6 +3725,205 @@ def acute_cholecystitis_anchor_support(case):
         )
     if direct_viral_hepatitis_marker_present(case) and not independent_biliary_cholecystitis_anchor_present(case):
         score = min(score, 0.8)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acute_angle_closure_glaucoma_anchor_support(case):
+    score = 0.0
+    iop = max_observed_axis_value(
+        case,
+        (
+            "intraocular_pressure_mmHg",
+            "intraocular_pressure_right_eye",
+            "intraocular_pressure_left_eye",
+            "right_intraocular_pressure_goldmann",
+            "left_intraocular_pressure_goldmann",
+            "right_intraocular_pressure_tonopen",
+            "left_intraocular_pressure_tonopen",
+        ),
+    )
+    if iop is not None:
+        if iop >= 40.0:
+            score += 3.0
+        elif iop >= 30.0:
+            score += 2.2
+        elif iop >= 21.0:
+            score += 1.2
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "narrow_anterior_chamber_angle_presence",
+            "closed_angle_on_gonioscopy_presence",
+            "shallow_anterior_chamber_presence",
+            "fellow_eye_narrow_angle_presence",
+        ),
+        score=1.6,
+    )
+    peripheral_depth = observed_float(case, "anterior_chamber_depth_peripheral_corneal_thicknesses")
+    if peripheral_depth is not None and peripheral_depth <= 0.5:
+        score += 1.2
+    narrow_extent = observed_float(case, "gonioscopy_narrow_angle_extent_degrees_min")
+    if narrow_extent is not None and narrow_extent >= 180.0:
+        score += 1.2
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "mid_dilated_fixed_pupil_presence",
+            "mid_dilated_pupil_presence",
+            "fixed_dilated_pupil_presence",
+            "pupillary_light_reaction_impairment_presence",
+        ),
+        score=1.1,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "corneal_edema_presence",
+            "corneal_epithelial_bullae_presence",
+            "conjunctival_injection_presence",
+            "blurred_vision_presence",
+            "acute_eye_pain_presence",
+        ),
+        score=0.7,
+    )
+    score += positive_observed_axis_score(case, ("nausea_presence", "vomiting_presence", "photophobia_presence"), score=0.3)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def retinal_detachment_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "retinal_detachment_presence",
+            "rhegmatogenous_retinal_detachment_presence",
+            "tractional_retinal_detachment_presence",
+            "exudative_retinal_detachment_presence",
+            "macula_off_retinal_detachment_presence",
+            "macula_on_retinal_detachment_presence",
+            "retinal_break_presence",
+            "horseshoe_retinal_tear_presence",
+            "giant_retinal_tear_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "curtain_shadow_visual_field_presence",
+            "new_floaters_presence",
+            "photopsia_flashes_presence",
+            "retinal_tear_presence",
+        ),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("oct_macular_subretinal_fluid_presence", "subretinal_fluid_presence"),
+        score=0.7,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def subarachnoid_hemorrhage_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "subarachnoid_hemorrhage_presence",
+            "subarachnoid_blood_burden",
+            "csf_xanthochromia_presence",
+            "intracranial_aneurysm_presence",
+            "ruptured_intracranial_aneurysm_probability",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(case, ("thunderclap_headache_onset_activity",), score=1.8)
+    if observed_absent(case, "acute_intracranial_hemorrhage_on_head_ct_presence"):
+        score = min(score, 0.6)
+    score += positive_observed_axis_score(
+        case,
+        ("neck_stiffness_presence", "meningismus_presence", "loss_of_consciousness_presence"),
+        score=0.5,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def perforated_viscus_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "perforation_presence",
+            "pneumoperitoneum_presence",
+            "pneumoperitoneum_activity",
+            "contained_perforation_presence",
+            "extraluminal_gas_presence",
+            "bowel_wall_defect_presence",
+            "oral_contrast_leak_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "peritonitis_presence",
+            "abdominal_rigidity_presence",
+            "rebound_tenderness_presence",
+            "abdominal_guarding_presence",
+            "diffuse_peritoneal_irritation_presence",
+        ),
+        score=1.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("intra_abdominal_abscess_presence", "localized_intraabdominal_collection_presence"),
+        score=0.7,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def iga_nephropathy_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "hematuria_presence",
+            "microscopic_hematuria_presence",
+            "gross_hematuria_presence",
+            "persistent_microscopic_hematuria_presence",
+            "recurrent_gross_hematuria_pattern_presence",
+            "synpharyngitic_hematuria_pattern_presence",
+            "urine_rbc_presence",
+        ),
+        score=2.2,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "proteinuria_presence",
+            "nephrotic_range_proteinuria_presence",
+            "urine_protein_to_creatinine_ratio",
+            "urine_albumin_to_creatinine_ratio",
+            "urine_protein_presence",
+        ),
+        score=1.4,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "dysmorphic_urinary_rbc_presence",
+            "urinary_rbc_casts_presence",
+            "kidney_biopsy_iga_dominant_mesangial_deposition_presence",
+            "mesangial_iga_deposition_presence",
+        ),
+        score=2.5,
+    )
+    creatinine = observed_float(case, "serum_creatinine")
+    if score > 0.0 and creatinine is not None and creatinine >= 1.3:
+        score += 0.5
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -4385,6 +4814,8 @@ def acute_liver_failure_anchor_support(case):
     score += positive_observed_axis_score(case, ("jaundice_activity", "jaundice_presence", "scleral_icterus_presence"), score=0.5)
     if direct_viral_hepatitis_marker_present(case):
         score = min(score, 0.8)
+    if acetaminophen_toxic_exposure_anchor_present(case):
+        score = min(score, 0.8)
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -4520,6 +4951,9 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-ACUTE-CHOLECYSTITIS":
         score += acute_cholecystitis_anchor_support(case)
 
+    elif disease == "D-ACUTE-ANGLE-CLOSURE-GLAUCOMA":
+        score += acute_angle_closure_glaucoma_anchor_support(case)
+
     elif disease in ACUTE_VIRAL_HEPATITIS_DISEASE_IDS:
         score += acute_viral_hepatitis_anchor_support(case, disease)
 
@@ -4528,6 +4962,18 @@ def component_anchor_support(case, disease, manifolds, background_axes):
 
     elif disease == "D-ACETAMINOPHEN-TOXICITY":
         score += acetaminophen_toxicity_anchor_support(case)
+
+    elif disease == "D-RETINAL-DETACHMENT":
+        score += retinal_detachment_anchor_support(case)
+
+    elif disease == "D-SUBARACHNOID-HEMORRHAGE":
+        score += subarachnoid_hemorrhage_anchor_support(case)
+
+    elif disease == "D-PERFORATED-VISCUS":
+        score += perforated_viscus_anchor_support(case)
+
+    elif disease == "D-IGA-NEPHROPATHY":
+        score += iga_nephropathy_anchor_support(case)
 
     elif disease == "D-PULMONARY-EMBOLISM":
         score += pulmonary_embolism_anchor_support(case)
