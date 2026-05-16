@@ -148,7 +148,7 @@ COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
 SINGLE_ANCHOR_THRESHOLD = 1.0
 SINGLE_MISSING_ANCHOR_PENALTY = -60.0
-EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY = -360.0
+EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY = -900.0
 NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
@@ -194,10 +194,98 @@ ACUTE_VIRAL_HEPATITIS_DISEASE_IDS = {
     "D-ACUTE-HEPATITIS-E",
 }
 
+TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS = {
+    "D-BETA-BLOCKER-TOXICITY",
+    "D-CALCIUM-CHANNEL-BLOCKER-TOXICITY",
+    "D-CARBON-MONOXIDE-POISONING",
+    "D-CYANIDE-POISONING",
+    "D-DIGOXIN-TOXICITY",
+    "D-ETHYLENE-GLYCOL-POISONING",
+    "D-IRON-POISONING",
+    "D-LITHIUM-TOXICITY",
+    "D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS",
+    "D-METHANOL-POISONING",
+    "D-OPIOID-INTOXICATION",
+    "D-ORGANOPHOSPHATE-POISONING",
+    "D-SALICYLATE-TOXICITY",
+    "D-THEOPHYLLINE-TOXICITY",
+    "D-TRICYCLIC-ANTIDEPRESSANT-TOXICITY",
+}
+
+TOXIDROME_ANCHOR_TOKENS = {
+    "D-BETA-BLOCKER-TOXICITY": ("beta_blocker", "propranolol", "atenolol", "metoprolol"),
+    "D-CALCIUM-CHANNEL-BLOCKER-TOXICITY": ("calcium_channel_blocker", "amlodipine", "verapamil", "diltiazem", "nifedipine"),
+    "D-CARBON-MONOXIDE-POISONING": ("carbon_monoxide", "carboxyhemoglobin", "co_exposure"),
+    "D-CYANIDE-POISONING": ("cyanide", "thiocyanate", "cyanogenic"),
+    "D-DIGOXIN-TOXICITY": ("digoxin",),
+    "D-ETHYLENE-GLYCOL-POISONING": ("ethylene_glycol", "glycolate", "oxalate"),
+    "D-IRON-POISONING": ("iron", "ferrous", "ferric"),
+    "D-LITHIUM-TOXICITY": ("lithium",),
+    "D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS": ("metformin",),
+    "D-METHANOL-POISONING": ("methanol", "formate"),
+    "D-OPIOID-INTOXICATION": ("opioid", "opiate", "naloxone", "fentanyl", "morphine", "oxycodone", "heroin"),
+    "D-ORGANOPHOSPHATE-POISONING": ("organophosphate", "cholinesterase", "atropine", "pralidoxime"),
+    "D-SALICYLATE-TOXICITY": ("salicylate", "aspirin"),
+    "D-THEOPHYLLINE-TOXICITY": ("theophylline", "aminophylline"),
+    "D-TRICYCLIC-ANTIDEPRESSANT-TOXICITY": ("tricyclic", "amitriptyline", "nortriptyline", "imipramine"),
+}
+
+SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
+    "D-ACUTE-EPIGLOTTITIS",
+    "D-ACUTE-INTERMITTENT-PORPHYRIA",
+    "D-ACUTE-MYOCARDITIS",
+    "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA",
+    "D-ANAPHYLAXIS",
+    "D-ASTHMA-EXACERBATION",
+    "D-BURN-INJURY",
+    "D-CARDIOGENIC-SHOCK",
+    "D-CAR-T-CRS",
+    "D-DIABETIC-KETOACIDOSIS",
+    "D-FAT-EMBOLISM-SYNDROME",
+    "D-HEMOTHORAX",
+    "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+    "D-LUNG-ABSCESS",
+    "D-MALIGNANT-HYPERTHERMIA",
+    "D-MYXEDEMA-COMA",
+    "D-NEUROLEPTIC-MALIGNANT-SYNDROME",
+    "D-PULMONARY-EMBOLISM",
+    "D-SEROTONIN-SYNDROME",
+    "D-SEVERE-HYPOKALEMIA",
+    "D-SEVERE-HYPOGLYCEMIA",
+    "D-SICKLE-CELL-ACUTE-CHEST",
+    "D-STATUS-EPILEPTICUS",
+    "D-TETANUS",
+    "D-THYROID-STORM",
+}
+
+SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
+    "D-ACUTE-EPIGLOTTITIS": ("epiglottitis", "epiglottic", "stridor", "drooling", "sore_throat"),
+    "D-ACUTE-INTERMITTENT-PORPHYRIA": ("porphobilinogen", "aminolevulinic", "porphyria", "dark_urine"),
+    "D-ACUTE-MYOCARDITIS": ("myocarditis", "troponin", "cardiac_mri", "left_ventricular", "myocardial"),
+    "D-ANAPHYLAXIS": ("anaphylaxis", "allergen", "urticaria", "angioedema", "wheeze", "epinephrine"),
+    "D-ASTHMA-EXACERBATION": ("asthma", "wheezing", "bronchospasm", "bronchodilator"),
+    "D-BURN-INJURY": ("burn", "scald", "thermal_injury", "burn_surface_area"),
+    "D-CARDIOGENIC-SHOCK": ("cardiogenic", "left_ventricular", "ejection_fraction", "bnp", "cardiac_index", "myocardial_infarction"),
+    "D-CAR-T-CRS": ("car_t", "chimeric_antigen", "tocilizumab", "cytokine_release", "serum_il6"),
+    "D-FAT-EMBOLISM-SYNDROME": ("fat_embolism", "long_bone_fracture", "orthopedic", "petechial_rash"),
+    "D-HEMOTHORAX": ("hemothorax", "pleural_blood", "thoracic_trauma", "chest_trauma"),
+    "D-LUNG-ABSCESS": ("lung_abscess", "cavitary", "air_fluid_level"),
+    "D-MALIGNANT-HYPERTHERMIA": ("malignant_hyperthermia", "volatile_anesthetic", "succinylcholine", "anesthesia_trigger", "ryanodine"),
+    "D-MYXEDEMA-COMA": ("myxedema", "hypothyroidism", "tsh", "free_t4", "hypothermia"),
+    "D-NEUROLEPTIC-MALIGNANT-SYNDROME": ("neuroleptic", "antipsychotic", "dopamine_antagonist", "lead_pipe_rigidity", "creatine_kinase"),
+    "D-PULMONARY-EMBOLISM": ("pulmonary_embolism", "pulmonary_artery_filling_defect", "d_dimer", "deep_vein_thrombosis"),
+    "D-SEROTONIN-SYNDROME": ("serotonergic", "serotonin", "ssri", "maoi", "clonus", "hyperreflexia"),
+    "D-SICKLE-CELL-ACUTE-CHEST": ("sickle", "hemoglobin_s", "acute_chest_syndrome"),
+    "D-STATUS-EPILEPTICUS": ("seizure", "status_epilepticus", "convulsion", "epileptiform"),
+    "D-TETANUS": ("tetanus", "trismus", "lockjaw", "muscle_spasm", "wound"),
+    "D-THYROID-STORM": ("thyroid", "tsh", "free_t4", "goiter", "graves"),
+}
+
 EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS = ACUTE_VIRAL_HEPATITIS_DISEASE_IDS | {
     "D-ACETAMINOPHEN-TOXICITY",
+    "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
     "D-DENGUE",
-}
+} | TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS | SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS
 
 NOISE_COUPLING_TYPES = {"", "noise_correlation", "mixed"}
 DRIFT_COUPLING_TYPES = {"drift", "hazard_drift", "event_transition", "mixed"}
@@ -361,6 +449,14 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value * 88.4
     if axis_id == "serum_creatinine" and src in ("mg/l", "mgperl") and dst in ("mg/dl", "mgperdl"):
         return value / 10.0
+
+    if axis_id == "urine_output" and src in ("ml/h", "mlperh", "ml/hr", "mlperhr") and dst in ("ml/kg/hr", "ml/kg/h", "mlperkgperhr", "mlperkgperh"):
+        # Case reports often omit weight when reporting ICU oliguria as mL/h.
+        # Use a conservative adult-normalized default so "<10 mL/h" is not
+        # misread as 10 mL/kg/hr.
+        return value / 70.0
+    if axis_id == "urine_output" and src in ("ml/kg/hr", "ml/kg/h", "mlperkgperhr", "mlperkgperh") and dst in ("ml/h", "mlperh", "ml/hr", "mlperhr"):
+        return value * 70.0
 
     if axis_id == "blood_urea_nitrogen" and src in ("mmol/l", "mmolperl") and dst in ("mg/dl", "mgperdl"):
         return value * 2.801
@@ -1506,6 +1602,194 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "purpura_fulminans_activity": ("purpura_fulminans_presence",),
 }
 
+EXACT_AXIS_ALIASES = {
+    "alanine_aminotransferase": ("serum_alt",),
+    "gamma_glutamyl_transferase": ("serum_gamma_glutamyl_transferase",),
+    "fever_presence": ("fever_history_presence",),
+    "chronic_heavy_alcohol_use_presence": ("alcohol_pancreatic_toxicity_context_probability",),
+    "recent_alcohol_escalation_or_binge_activity": ("alcohol_pancreatic_toxicity_context_probability",),
+}
+
+
+EVENT_HAZARD_AXIS_PROXIES = {
+    "acute_respiratory_failure_hazard": {
+        "respiratory_distress_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "oxygen_desaturation_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physiology",
+        },
+        "increased_work_of_breathing_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "invasive_mechanical_ventilation_requirement_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "support_requirement",
+        },
+        "mechanical_ventilation_difficulty_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.01],
+            "peak_value_range": [0.1, 1.0],
+            "category": "support_requirement",
+        },
+        "pulmonary_compliance_reduction_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physiology",
+        },
+        "fio2_requirement_fraction": {
+            "unit": "fraction_0_1",
+            "baseline_range": [0.21, 0.3],
+            "peak_value_range": [0.4, 1.0],
+            "category": "support_requirement",
+        },
+        "arterial_pao2": {
+            "unit": "mmHg",
+            "baseline_range": [80.0, 105.0],
+            "peak_value_range": [40.0, 90.0],
+            "category": "blood_gas",
+        },
+        "pao2_fio2_ratio": {
+            "unit": "mmHg",
+            "baseline_range": [400.0, 500.0],
+            "peak_value_range": [50.0, 300.0],
+            "category": "blood_gas",
+        },
+        "arterial_pco2": {
+            "unit": "mmHg",
+            "baseline_range": [35.0, 45.0],
+            "peak_value_range": [45.0, 120.0],
+            "category": "blood_gas",
+        },
+        "peep_cm_h2o": {
+            "unit": "cmH2O",
+            "baseline_range": [0.0, 5.0],
+            "peak_value_range": [5.0, 20.0],
+            "category": "ventilator_setting",
+        },
+        "driving_pressure_cm_h2o": {
+            "unit": "cmH2O",
+            "baseline_range": [0.0, 8.0],
+            "peak_value_range": [8.0, 30.0],
+            "category": "ventilator_setting",
+        },
+        "tidal_volume_ml": {
+            "unit": "mL",
+            "baseline_range": [350.0, 600.0],
+            "peak_value_range": [100.0, 400.0],
+            "category": "ventilator_setting",
+        },
+        "pulmonary_edema_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.1, 0.8],
+            "category": "imaging_finding",
+        },
+        "atelectasis_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.05],
+            "peak_value_range": [0.1, 0.8],
+            "category": "imaging_finding",
+        },
+    },
+    "acute_kidney_injury_hazard": {
+        "acute_kidney_injury_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "diagnostic_finding",
+        },
+        "oliguria_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "renal_finding",
+        },
+        "urine_output": {
+            "unit": "mL/kg/hr",
+            "baseline_range": [0.5, 1.5],
+            "peak_value_range": [0.0, 0.5],
+            "category": "renal_measurement",
+        },
+        "serum_potassium": {
+            "unit": "mmol/L",
+            "baseline_range": [3.5, 5.0],
+            "peak_value_range": [4.5, 7.0],
+            "category": "lab_value",
+        },
+    },
+    "circulatory_collapse_shock_hazard": {
+        "vasopressor_requirement_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "support_requirement",
+        },
+        "skin_pallor_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.1, 0.8],
+            "category": "physical_finding",
+        },
+        "diaphoresis_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.05],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "serum_lactate": {
+            "unit": "mmol/L",
+            "baseline_range": [0.5, 2.0],
+            "peak_value_range": [2.0, 8.0],
+            "category": "lab_value",
+        },
+    },
+    "abdominal_compartment_syndrome_hazard": {
+        "intra_abdominal_pressure": {
+            "unit": "mmHg",
+            "baseline_range": [0.0, 12.0],
+            "peak_value_range": [12.0, 35.0],
+            "category": "physical_measurement",
+        },
+        "abdominal_distension_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.05],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "vasopressor_requirement_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "support_requirement",
+        },
+        "oliguria_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "renal_finding",
+        },
+        "urine_output": {
+            "unit": "mL/kg/hr",
+            "baseline_range": [0.5, 1.5],
+            "peak_value_range": [0.0, 0.5],
+            "category": "renal_measurement",
+        },
+    },
+}
+
 
 RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES = {
     "gastric_fluid_vomitus_presence",
@@ -1544,6 +1828,8 @@ def prepare_case_data(data):
             for key in ("category", "axis_role", "parent_axis_id", "legacy_axis_id", "source_text_value"):
                 if meta.get(key):
                     incoming[key] = meta.get(key)
+            if meta.get("_risk_context_observation"):
+                incoming["_risk_context_observation"] = True
             if "use_in_time_conditioning" in meta:
                 incoming["use_in_time_conditioning"] = bool(meta.get("use_in_time_conditioning"))
         if axis_id in observations:
@@ -1571,6 +1857,16 @@ def prepare_case_data(data):
         if inferred is not None:
             value, unit = inferred
             add_observation(obs.get("axis_id"), value, unit, item_day(obs), obs)
+
+    for obs in data.get("risk_context", []):
+        if not case_item_rankable(obs):
+            continue
+        inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
+        if inferred is not None:
+            value, unit = inferred
+            meta = dict(obs)
+            meta["_risk_context_observation"] = True
+            add_observation(obs.get("axis_id"), value, unit, item_day(obs), meta)
 
     for obs in data.get("course_observations", []):
         if not case_item_rankable(obs):
@@ -1653,6 +1949,23 @@ def prepare_case_data(data):
             "source_text_value": f"inferred parent finding from {child_axis_id}",
             "_inferred_parent": True,
         }
+
+    for source_axis_id, alias_axis_ids in EXACT_AXIS_ALIASES.items():
+        source = observations.get(source_axis_id)
+        if source is None:
+            continue
+        for alias_axis_id in alias_axis_ids:
+            if alias_axis_id not in observations:
+                observations[alias_axis_id] = {
+                    **source,
+                    "_legacy_proxy": True,
+                    "_derived_from_axes": [source_axis_id],
+                    "source_text_value": f"exact alias proxy from {source_axis_id}",
+                }
+            proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+            if alias_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(alias_axis_id)
+            source["_legacy_proxy_axis_id"] = alias_axis_id
 
     for legacy_axis_id, source_axis_ids in LEGACY_MANUAL_AXIS_BRIDGES.items():
         sources = [
@@ -2063,6 +2376,53 @@ def observed_absent(case, axis_id):
     return float(obs["value"]) < PARENT_FINDING_PRESENT_THRESHOLD
 
 
+def event_proxy_axis_ids_for_manifold(manifold):
+    cached = manifold.get("_event_proxy_axis_id_set")
+    if cached is not None:
+        return cached
+
+    axes = manifold["axes"]
+    proxy_axis_ids = set()
+    for hazard_axis_id, proxy_specs in EVENT_HAZARD_AXIS_PROXIES.items():
+        if hazard_axis_id in axes:
+            proxy_axis_ids.update(proxy_specs)
+    manifold["_event_proxy_axis_id_set"] = proxy_axis_ids
+    return proxy_axis_ids
+
+
+def event_proxy_axis_for(manifold, axis_id):
+    cache = manifold.setdefault("_event_proxy_axes", {})
+    if axis_id in cache:
+        return cache[axis_id]
+
+    axes = manifold["axes"]
+    for hazard_axis_id, proxy_specs in EVENT_HAZARD_AXIS_PROXIES.items():
+        hazard_axis = axes.get(hazard_axis_id)
+        spec = proxy_specs.get(axis_id)
+        if hazard_axis is None or spec is None:
+            continue
+
+        axis = {
+            "axis_id": axis_id,
+            "category": spec.get("category", "event_manifestation"),
+            "unit": spec["unit"],
+            "axis_role": spec.get("axis_role", "measurement"),
+            "parent_axis_id": spec.get("parent_axis_id"),
+            "log_scale": bool(spec.get("log_scale", False)),
+            "baseline_range": tuple(spec["baseline_range"]),
+            "peak_day_range": hazard_axis.get("peak_day_range"),
+            "peak_value_range": tuple(spec["peak_value_range"]),
+            "plateau_duration_days": hazard_axis.get("plateau_duration_days"),
+            "decline_half_life_days": hazard_axis.get("decline_half_life_days"),
+            "_event_proxy_hazard_axis_id": hazard_axis_id,
+        }
+        cache[axis_id] = axis
+        return axis
+
+    cache[axis_id] = None
+    return None
+
+
 def manifold_axis_set(manifold, include_derived=True):
     key = "_axis_id_set" if include_derived else "_formal_axis_id_set"
     cached = manifold.get(key)
@@ -2076,6 +2436,7 @@ def manifold_axis_set(manifold, include_derived=True):
             for axis_id, axis in manifold["axes"].items()
             if axis.get("category") != "derived_hazard"
         }
+    cached.update(event_proxy_axis_ids_for_manifold(manifold))
     manifold[key] = cached
     return cached
 
@@ -2138,6 +2499,8 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
             if observation_is_duration_axis(axis_id) and not formal_axis:
                 continue
             if axis_id in RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES and not formal_axis:
+                continue
+            if item.get("_risk_context_observation") and not formal_axis:
                 continue
             if proxy_formal and not formal_axis:
                 continue
@@ -2515,6 +2878,120 @@ def acetaminophen_toxicity_anchor_support(case):
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
+def token_context_anchor_support(case, disease, manifolds, token_map):
+    tokens = token_map.get(disease, ())
+    if not tokens:
+        return 0.0
+
+    formal_axes = manifold_axis_set(manifolds[disease], include_derived=True)
+    score = 0.0
+    for axis_id, obs in case["observations_by_axis"].items():
+        if axis_id not in formal_axes:
+            continue
+        if not any(token in axis_id for token in tokens):
+            continue
+
+        value = observed_value(case, axis_id)
+        if value is None:
+            continue
+        unit = norm_unit(obs.get("unit"))
+        if unit in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+            if float(value) >= 0.5:
+                score += 3.0
+        elif any(marker in axis_id for marker in ("concentration", "level", "dose", "ingestion", "exposure", "carboxyhemoglobin")):
+            if float(value) > 0.0:
+                score += 3.0
+
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def toxidrome_anchor_support(case, disease, manifolds):
+    return token_context_anchor_support(case, disease, manifolds, TOXIDROME_ANCHOR_TOKENS)
+
+
+def specific_context_anchor_support(case, disease, manifolds):
+    return token_context_anchor_support(case, disease, manifolds, SPECIFIC_CONTEXT_ANCHOR_TOKENS)
+
+
+def key_lab_anchor_support(case, disease):
+    if disease == "D-DIABETIC-KETOACIDOSIS":
+        glucose = observed_value(case, "serum_glucose") or observed_value(case, "blood_glucose")
+        if glucose is not None and float(glucose) >= 250.0:
+            return 2.0 + positive_observed_axis_score(
+                case,
+                ("ketonemia_presence", "urine_ketones_presence", "ketosis_presence", "serum_beta_hydroxybutyrate"),
+                score=2.0,
+            )
+        return 0.0
+
+    if disease == "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE":
+        glucose = observed_value(case, "serum_glucose") or observed_value(case, "blood_glucose")
+        osmolality = observed_value(case, "serum_osmolality")
+        score = 0.0
+        if glucose is not None and float(glucose) >= 600.0:
+            score += 3.0
+        if osmolality is not None and float(osmolality) >= 320.0:
+            score += 2.0
+        return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+    if disease == "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA":
+        sodium = observed_value(case, "serum_sodium")
+        if sodium is not None and float(sodium) >= 150.0:
+            return 3.0
+        return 0.0
+
+    if disease == "D-SEVERE-HYPOGLYCEMIA":
+        glucose = observed_value(case, "serum_glucose") or observed_value(case, "blood_glucose")
+        if glucose is not None and float(glucose) <= 55.0:
+            return 3.0
+        return 0.0
+
+    if disease == "D-SEVERE-HYPOKALEMIA":
+        potassium = observed_value(case, "serum_potassium")
+        if potassium is not None and float(potassium) <= 3.0:
+            return 3.0
+        return 0.0
+
+    return 0.0
+
+
+def ards_anchor_support(case):
+    if observed_absent(case, "acute_respiratory_distress_syndrome_presence"):
+        return 0.0
+
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        ("acute_respiratory_distress_syndrome_presence",),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "noncardiogenic_pulmonary_edema_presence",
+            "bilateral_pulmonary_opacities_presence",
+            "diffuse_bilateral_pulmonary_infiltrates_presence",
+        ),
+        score=2.0,
+    )
+
+    pf_ratio = observed_value(case, "pao2_fio2_ratio")
+    if pf_ratio is not None:
+        pf_ratio = float(pf_ratio)
+        if pf_ratio <= 100.0:
+            score += 2.0
+        elif pf_ratio <= 200.0:
+            score += 1.5
+        elif pf_ratio <= 300.0:
+            score += 1.0
+
+    peep = observed_value(case, "peep_cm_h2o")
+    if peep is not None and float(peep) >= 5.0:
+        score += 0.5
+
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
 def component_anchor_support(case, disease, manifolds, background_axes):
     """Require disease-specific evidence before allowing a combo to turn on.
 
@@ -2614,6 +3091,24 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-ACETAMINOPHEN-TOXICITY":
         score += acetaminophen_toxicity_anchor_support(case)
 
+    elif disease in TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS:
+        score += toxidrome_anchor_support(case, disease, manifolds)
+
+    elif disease in SPECIFIC_CONTEXT_ANCHOR_TOKENS:
+        score += specific_context_anchor_support(case, disease, manifolds)
+
+    elif disease in {
+        "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA",
+        "D-DIABETIC-KETOACIDOSIS",
+        "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+        "D-SEVERE-HYPOKALEMIA",
+        "D-SEVERE-HYPOGLYCEMIA",
+    }:
+        score += key_lab_anchor_support(case, disease)
+
+    elif disease == "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME":
+        score += ards_anchor_support(case)
+
     if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS:
         return min(score, GENERIC_ANCHOR_SCORE_CAP)
     return max(score, generic_component_anchor_support(case, disease, manifolds, background_axes))
@@ -2694,6 +3189,9 @@ def eval_axis(axis_id, candidate, manifolds, background_axes):
         axis = manifolds[disease]["axes"].get(axis_id)
         if axis and axis.get("category") != "derived_hazard":
             return axis
+        proxy_axis = event_proxy_axis_for(manifolds[disease], axis_id)
+        if proxy_axis is not None:
+            return proxy_axis
     return background_axes.get(axis_id)
 
 
@@ -2865,10 +3363,15 @@ def combo_axis_endpoint(
 
     for disease in candidate:
         axis = manifolds[disease]["axes"].get(axis_id)
+        if axis is None:
+            axis = event_proxy_axis_for(manifolds[disease], axis_id)
         if axis is None or axis.get("category") == "derived_hazard":
             continue
         mu, baseline = sample_mu_and_baseline(axis, t_by_disease[disease], rng)
-        axis_mods = risk_payloads[disease]["axis_mods"].get(axis_id, [])
+        hazard_axis_id = axis.get("_event_proxy_hazard_axis_id")
+        axis_mods = list(risk_payloads[disease]["axis_mods"].get(axis_id, []))
+        if hazard_axis_id:
+            axis_mods.extend(risk_payloads[disease]["axis_mods"].get(hazard_axis_id, []))
         source_sigma = axis_sigma(axis)
         mu, baseline, modulated_source_sigma = apply_axis_modulations(axis_id, axis, mu, baseline, source_sigma, axis_mods, rng)
         sigma = axis_sigma_in_eval_space(axis, axis_eval, axis_id)
@@ -2879,7 +3382,7 @@ def combo_axis_endpoint(
         raw_delta = z_mu - z_bg
         gate = mechanism_gate_for_target(
             disease,
-            axis_id,
+            hazard_axis_id or axis_id,
             t_by_disease,
             manifolds,
             background_axes,
