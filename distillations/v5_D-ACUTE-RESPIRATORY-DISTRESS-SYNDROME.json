@@ -1,0 +1,3841 @@
+{
+  "disease": "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+  "disease_id": "D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+  "disease_name": "ARDS",
+  "disease_name_ja": "急性呼吸窮迫症候群",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "ARDS / 急性呼吸窮迫症候群",
+    "leaf_granularity": "Pure first-layer disease leaf for acute respiratory distress syndrome across direct and indirect triggers.",
+    "boundary_policy": "COVID-19, sepsis, aspiration, pneumonia, trauma, transfusion, pancreatitis, inhalational injury, obstetric microangiopathy, and postoperative states are trigger/context axes or future comorbid manifolds; they are not disease-id qualifiers."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+      "display_name_ja": "肺胞上皮・内皮傷害",
+      "clinical_meaning": "Diffuse injury to alveolar epithelial and capillary endothelial barriers initiates permeability edema, inflammatory cell influx, and impaired gas exchange.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.45,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "display_name_ja": "透過性亢進性非心原性肺水腫",
+      "clinical_meaning": "Increased alveolar-capillary permeability moves protein-rich fluid into interstitium and alveoli without primary left atrial hypertension.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_SURFACTANT_DYSFUNCTION_ATELECTASIS_ACTIVITY",
+      "display_name_ja": "サーファクタント機能低下と無気肺",
+      "clinical_meaning": "Proteinaceous edema and epithelial injury impair surfactant, increase alveolar collapse, and make oxygenation dependent on recruitment and PEEP.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.35,
+        0.95
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "display_name_ja": "好中球・サイトカイン性肺炎症",
+      "clinical_meaning": "Neutrophil recruitment, cytokine release, protease injury, and oxidative stress amplify pulmonary permeability and systemic inflammatory spillover.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "display_name_ja": "シャント・換気血流不均等性低酸素血症",
+      "clinical_meaning": "Flooded and collapsed lung units create shunt and severe V/Q mismatch, causing low PaO2/FiO2 and oxygen saturation despite high inspired oxygen.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.45,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "display_name_ja": "低コンプライアンスと機械的ストレス",
+      "clinical_meaning": "Reduced aerated lung volume creates a small baby-lung compartment vulnerable to high driving pressure, volutrauma, atelectrauma, and barotrauma.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        2,
+        21
+      ],
+      "decline_half_life_days": [
+        5,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "display_name_ja": "肺血管抵抗上昇と右心負荷",
+      "clinical_meaning": "Hypoxic vasoconstriction, microthrombi, hypercapnia, and high airway pressures can raise pulmonary vascular resistance and right ventricular afterload.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        1,
+        10
+      ],
+      "peak_value_range": [
+        0.15,
+        0.85
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_ARDS_FIBROPROLIFERATIVE_REPAIR_ACTIVITY",
+      "display_name_ja": "線維増殖性修復相",
+      "clinical_meaning": "Persistent epithelial injury and inflammatory repair can progress to fibroproliferation, prolonged ventilation, low compliance, and delayed recovery.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        7,
+        28
+      ],
+      "peak_value_range": [
+        0.05,
+        0.75
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+      "target_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Barrier injury drives permeability edema.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+      "target_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Damaged alveolar-capillary units recruit inflammatory cells.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "M_ARDS_SURFACTANT_DYSFUNCTION_ATELECTASIS_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Protein-rich edema inactivates surfactant and promotes derecruitment.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Flooded lung units create shunt physiology.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SURFACTANT_DYSFUNCTION_ATELECTASIS_ACTIVITY",
+      "target_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Atelectatic units worsen V/Q mismatch.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SURFACTANT_DYSFUNCTION_ATELECTASIS_ACTIVITY",
+      "target_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Loss of aerated lung lowers compliance.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Hypoxic pulmonary vasoconstriction and high ventilatory pressures increase RV load.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "target_id": "M_ARDS_FIBROPROLIFERATIVE_REPAIR_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        5,
+        14
+      ],
+      "rationale": "Persistent inflammation promotes fibroproliferative repair.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+      "target_id": "acute_hypoxemic_respiratory_failure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Diffuse lung injury manifests as acute hypoxemic failure.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "acute_hypoxemic_respiratory_failure_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Worse shunt physiology increases respiratory failure severity.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "pao2_fio2_ratio",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "ARDS severity is reflected by a low PaO2/FiO2 ratio.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Shunt and V/Q mismatch lower arterial saturation.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "arterial_pao2",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Gas exchange impairment lowers PaO2.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "supplemental_oxygen_requirement_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Hypoxemia drives oxygen support need.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "oxygen_requirement_level",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "More severe hypoxemia requires more oxygen or ventilatory support.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "fio2_requirement_fraction",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "rationale": "Clinicians increase FiO2 to maintain oxygenation.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "noncardiogenic_pulmonary_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Permeability edema is central to ARDS.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "noncardiogenic_pulmonary_edema_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Greater leak produces more radiographic edema.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "pulmonary_opacity_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Alveolar edema and collapse produce pulmonary opacities.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "bilateral_pulmonary_opacity_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Typical ARDS affects both lungs with bilateral opacities.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "bilateral_pulmonary_opacity_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "More permeability edema increases bilateral opacity extent.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "diffuse_ground_glass_opacity_extent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Edema and diffuse alveolar damage often appear as ground-glass opacity.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "static_lung_compliance_ml_per_cm_h2o",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Reduced aerated lung volume lowers respiratory system compliance.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "plateau_pressure_cm_h2o",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Stiff lungs generate high plateau pressure at a given tidal volume.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "driving_pressure_cm_h2o",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Low compliance raises driving pressure unless tidal volume is reduced.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "positive_pressure_ventilation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Severe ARDS commonly needs positive-pressure support.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "invasive_mechanical_ventilation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Invasive ventilation is often needed when work of breathing or oxygenation cannot be supported noninvasively.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "peep_cm_h2o",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "PEEP is raised to recruit unstable alveoli.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "barotrauma_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "rationale": "Stiff, heterogeneously aerated lung exposed to positive pressure is vulnerable to air leak.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "ventilator_induced_lung_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "rationale": "High stress and strain increase VILI risk.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "arterial_paco2",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Protective ventilation and dead-space ventilation can produce hypercapnia.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "hypercapnia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Severe stiffness and protective settings may cause CO2 retention.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "hypercapnia_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Higher PaCO2 marks more severe ventilatory limitation.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "target_id": "right_ventricular_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "rationale": "Pulmonary vascular load can precipitate RV failure.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "target_id": "shock_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "RV strain and systemic critical illness can coexist with shock.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "target_id": "vasopressor_requirement_level",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Shock physiology often requires vasopressors.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "refractory_hypoxemia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Very low P/F despite high FiO2 and PEEP defines refractory oxygenation risk.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_FIBROPROLIFERATIVE_REPAIR_ACTIVITY",
+      "target_id": "prolonged_mechanical_ventilation_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        5,
+        21
+      ],
+      "rationale": "Fibroproliferation delays liberation from ventilation.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Systemic inflammation often raises CRP when the trigger is inflammatory.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Fever may reflect the trigger or sterile inflammatory lung injury.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Sterile or infectious ARDS triggers can produce systemic neutrophilic leukocytosis.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "pulmonary_crackles_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Alveolar flooding and atelectatic lung units can produce crackles on examination.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "cyanosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "rationale": "Severe hypoxemia can manifest as cyanosis.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_SURFACTANT_DYSFUNCTION_ATELECTASIS_ACTIVITY",
+      "target_id": "decreased_breath_sounds_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "rationale": "Atelectasis and poorly aerated dependent lung can reduce breath sounds.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY",
+      "target_id": "pulmonary_consolidation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        5
+      ],
+      "rationale": "ARDS can produce dependent consolidation from alveolar flooding and collapse.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "rationale": "Severe oxygenation failure is a major mortality driver.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "rationale": "Low compliance and high mechanical stress predict worse outcomes.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "rationale": "RV failure and shock worsen survival.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_FIBROPROLIFERATIVE_REPAIR_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_outcome",
+      "lag_days_range": [
+        7,
+        60
+      ],
+      "rationale": "Nonresolving fibroproliferative ARDS increases late mortality.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+      "target_id": "hypoxemia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Hypoxemia is the parent finding for low oxygen saturation; the raw SpO2 measurement remains separate.",
+      "knowledge_confidence": "moderate"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "time_from_respiratory_insult_days",
+      "display_name_ja": "呼吸障害誘因からの日数",
+      "category": "clinical_course_context",
+      "unit": "days",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ]
+    },
+    {
+      "axis_id": "acute_hypoxemic_respiratory_failure_presence",
+      "display_name_ja": "急性低酸素性呼吸不全",
+      "category": "respiratory_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "acute_hypoxemic_respiratory_failure_severity",
+      "display_name_ja": "急性低酸素性呼吸不全の重症度",
+      "category": "respiratory_finding",
+      "unit": "severity_score_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "acute_hypoxemic_respiratory_failure_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "display_name_ja": "呼吸困難",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "dyspnea_severity",
+      "display_name_ja": "呼吸困難の重症度",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "cough_presence",
+      "display_name_ja": "咳嗽",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "cough_severity",
+      "display_name_ja": "咳嗽の重症度",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "cough_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "display_name_ja": "呼吸数",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        12,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        24,
+        45
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ]
+    },
+    {
+      "axis_id": "heart_rate",
+      "display_name_ja": "心拍数",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        60,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        80,
+        140
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ]
+    },
+    {
+      "axis_id": "body_temperature",
+      "display_name_ja": "体温",
+      "category": "vital_sign",
+      "unit": "degC",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        36.0,
+        37.3
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        36.0,
+        40.0
+      ],
+      "plateau_duration_days": [
+        1,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "display_name_ja": "収縮期血圧",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        100,
+        140
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        70,
+        150
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "display_name_ja": "平均動脈圧",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        70,
+        105
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        50,
+        95
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "display_name_ja": "経皮的酸素飽和度",
+      "category": "vital_sign",
+      "unit": "%",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        95,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        55,
+        94
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "arterial_pao2",
+      "display_name_ja": "動脈血酸素分圧",
+      "category": "lab_value",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        80,
+        105
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        35,
+        85
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "pao2_fio2_ratio",
+      "display_name_ja": "PaO2/FiO2比",
+      "category": "lab_value",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        400,
+        500
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        50,
+        300
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "arterial_paco2",
+      "display_name_ja": "動脈血二酸化炭素分圧",
+      "category": "lab_value",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        35,
+        45
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        30,
+        120
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "arterial_ph",
+      "display_name_ja": "動脈血pH",
+      "category": "lab_value",
+      "unit": "pH",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        7.35,
+        7.45
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        7.0,
+        7.48
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "display_name_ja": "血清重炭酸",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        22,
+        28
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        12,
+        32
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "serum_crp",
+      "display_name_ja": "CRP",
+      "category": "lab_value",
+      "unit": "mg/L",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        0.1,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        10,
+        350
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        10
+      ]
+    },
+    {
+      "axis_id": "supplemental_oxygen_requirement_presence",
+      "display_name_ja": "酸素投与必要性",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.7,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "oxygen_requirement_level",
+      "display_name_ja": "酸素投与レベル",
+      "category": "treatment_modifier",
+      "unit": "ordinal_0_5",
+      "axis_role": "satellite",
+      "parent_axis_id": "supplemental_oxygen_requirement_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        2,
+        5
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "fio2_requirement_fraction",
+      "display_name_ja": "必要FiO2",
+      "category": "treatment_modifier",
+      "unit": "fraction",
+      "axis_role": "satellite",
+      "parent_axis_id": "supplemental_oxygen_requirement_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.21,
+        0.21
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "positive_pressure_ventilation_presence",
+      "display_name_ja": "陽圧換気",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ]
+    },
+    {
+      "axis_id": "invasive_mechanical_ventilation_presence",
+      "display_name_ja": "侵襲的人工呼吸",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "positive_pressure_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ]
+    },
+    {
+      "axis_id": "peep_cm_h2o",
+      "display_name_ja": "PEEP",
+      "category": "treatment_modifier",
+      "unit": "cmH2O",
+      "axis_role": "satellite",
+      "parent_axis_id": "positive_pressure_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        5,
+        20
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "tidal_volume_ml_per_kg_predicted_body_weight",
+      "display_name_ja": "予測体重あたり一回換気量",
+      "category": "ventilator_measurement",
+      "unit": "mL_per_kg_PBW",
+      "axis_role": "satellite",
+      "parent_axis_id": "invasive_mechanical_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        4,
+        8
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "plateau_pressure_cm_h2o",
+      "display_name_ja": "プラトー圧",
+      "category": "ventilator_measurement",
+      "unit": "cmH2O",
+      "axis_role": "satellite",
+      "parent_axis_id": "invasive_mechanical_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        20,
+        40
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "driving_pressure_cm_h2o",
+      "display_name_ja": "駆動圧",
+      "category": "ventilator_measurement",
+      "unit": "cmH2O",
+      "axis_role": "satellite",
+      "parent_axis_id": "invasive_mechanical_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        8,
+        25
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "static_lung_compliance_ml_per_cm_h2o",
+      "display_name_ja": "静的肺コンプライアンス",
+      "category": "ventilator_measurement",
+      "unit": "mL_per_cmH2O",
+      "axis_role": "satellite",
+      "parent_axis_id": "invasive_mechanical_ventilation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        60,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        5,
+        45
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        30
+      ]
+    },
+    {
+      "axis_id": "pulmonary_opacity_presence",
+      "display_name_ja": "肺陰影",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ]
+    },
+    {
+      "axis_id": "bilateral_pulmonary_opacity_presence",
+      "display_name_ja": "両側肺陰影",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_opacity_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.5,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ]
+    },
+    {
+      "axis_id": "bilateral_pulmonary_opacity_extent",
+      "display_name_ja": "両側肺陰影の範囲",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_opacity_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ]
+    },
+    {
+      "axis_id": "diffuse_ground_glass_opacity_extent",
+      "display_name_ja": "びまん性すりガラス陰影の範囲",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_opacity_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ]
+    },
+    {
+      "axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "display_name_ja": "非心原性肺水腫",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "noncardiogenic_pulmonary_edema_extent",
+      "display_name_ja": "非心原性肺水腫の範囲",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "cardiogenic_pulmonary_edema_evidence_probability",
+      "display_name_ja": "心原性肺水腫を示す所見",
+      "category": "diagnostic_context",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        0.25
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "hypercapnia_presence",
+      "display_name_ja": "高炭酸ガス血症",
+      "category": "lab_pattern",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "hypercapnia_severity",
+      "display_name_ja": "高炭酸ガス血症の重症度",
+      "category": "lab_pattern",
+      "unit": "severity_score_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "hypercapnia_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "shock_context_presence",
+      "display_name_ja": "ショック文脈",
+      "category": "hemodynamic_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ]
+    },
+    {
+      "axis_id": "vasopressor_requirement_level",
+      "display_name_ja": "昇圧薬必要度",
+      "category": "treatment_modifier",
+      "unit": "ordinal_0_5",
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_context_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        4
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ]
+    },
+    {
+      "axis_id": "fluid_overload_or_positive_balance_activity",
+      "display_name_ja": "体液過剰・正バランス",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -2,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ]
+    },
+    {
+      "axis_id": "prone_positioning_feasibility_activity",
+      "display_name_ja": "腹臥位可能性",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        1.0
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        3650
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ]
+    },
+    {
+      "axis_id": "neuromuscular_blockade_safety_context_activity",
+      "display_name_ja": "筋弛緩薬安全性文脈",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.4,
+        1.0
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        3650
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ]
+    },
+    {
+      "axis_id": "ecmo_candidate_context_activity",
+      "display_name_ja": "VV-ECMO候補文脈",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.4
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        3650
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ]
+    },
+    {
+      "axis_id": "anticoagulation_contraindication_context_activity",
+      "display_name_ja": "抗凝固禁忌文脈",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        3650
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ]
+    },
+    {
+      "axis_id": "inhaled_pulmonary_vasodilator_response_context_activity",
+      "display_name_ja": "吸入肺血管拡張薬反応文脈",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.5
+      ],
+      "peak_day_range": [
+        -365,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        3650
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ]
+    },
+    {
+      "axis_id": "refractory_hypoxemia_hazard",
+      "display_name_ja": "難治性低酸素血症ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.01,
+        0.45
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "ventilator_induced_lung_injury_hazard",
+      "display_name_ja": "人工呼吸器関連肺傷害ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.002,
+        0.18
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        30
+      ]
+    },
+    {
+      "axis_id": "barotrauma_hazard",
+      "display_name_ja": "圧外傷ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.001,
+        0.12
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        30
+      ]
+    },
+    {
+      "axis_id": "right_ventricular_failure_hazard",
+      "display_name_ja": "右心不全ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        5e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.001,
+        0.2
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ]
+    },
+    {
+      "axis_id": "ventilator_associated_pneumonia_hazard",
+      "display_name_ja": "人工呼吸器関連肺炎ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        3,
+        14
+      ],
+      "peak_value_range": [
+        0.002,
+        0.08
+      ],
+      "plateau_duration_days": [
+        3,
+        30
+      ],
+      "decline_half_life_days": [
+        3,
+        30
+      ]
+    },
+    {
+      "axis_id": "prolonged_mechanical_ventilation_hazard",
+      "display_name_ja": "人工呼吸長期化ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        3,
+        21
+      ],
+      "peak_value_range": [
+        0.01,
+        0.35
+      ],
+      "plateau_duration_days": [
+        7,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ]
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "display_name_ja": "急性腎障害ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0,
+        10
+      ],
+      "peak_value_range": [
+        0.002,
+        0.18
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        3,
+        30
+      ]
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "display_name_ja": "急性呼吸窮迫症候群の死亡ハザード",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.005,
+        0.35
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        5,
+        90
+      ]
+    },
+    {
+      "axis_id": "hypoxemia_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Presence of clinically significant hypoxemia; oxygen saturation remains the raw measurement.",
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "chemical_inhalation_exposure_presence",
+      "category": "trigger_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Observed inhalational chemical exposure as an ARDS trigger/context, not a disease label."
+    },
+    {
+      "axis_id": "chlorine_gas_exposure_probability",
+      "category": "trigger_context",
+      "unit": "probability_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "clinical_interpretation": "Probability that chlorine gas exposure is present as a direct lung-injury trigger."
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "lab",
+      "unit": "10^9/L",
+      "axis_role": "measurement",
+      "baseline_range": [
+        4.0,
+        10.0
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        4.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "pulmonary_crackles_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        21
+      ]
+    },
+    {
+      "axis_id": "cyanosis_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "decreased_breath_sounds_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ]
+    },
+    {
+      "axis_id": "pulmonary_consolidation_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        21
+      ]
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "pao2_fio2_ratio",
+      "target_axis_id": "refractory_hypoxemia_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "strength": [
+        0.5,
+        0.9
+      ],
+      "clinical_rationale": "Lower PaO2/FiO2 raises refractory hypoxemia event risk."
+    },
+    {
+      "source_axis_id": "oxygen_saturation",
+      "target_axis_id": "refractory_hypoxemia_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "strength": [
+        0.3,
+        0.7
+      ],
+      "clinical_rationale": "Low saturation despite support indicates immediate oxygenation hazard."
+    },
+    {
+      "source_axis_id": "peep_cm_h2o",
+      "target_axis_id": "pao2_fio2_ratio",
+      "coupling_type": "drift",
+      "direction": "positive_until_overdistension",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "strength": [
+        0.2,
+        0.6
+      ],
+      "clinical_rationale": "PEEP can recruit alveoli and improve oxygenation when recruitable lung exists."
+    },
+    {
+      "source_axis_id": "peep_cm_h2o",
+      "target_axis_id": "barotrauma_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive_at_high_levels",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "strength": [
+        0.1,
+        0.5
+      ],
+      "clinical_rationale": "Higher PEEP can increase air-leak risk when combined with high pressures or heterogeneous lung."
+    },
+    {
+      "source_axis_id": "plateau_pressure_cm_h2o",
+      "target_axis_id": "ventilator_induced_lung_injury_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "strength": [
+        0.4,
+        0.8
+      ],
+      "clinical_rationale": "High plateau pressure increases mechanical stress."
+    },
+    {
+      "source_axis_id": "driving_pressure_cm_h2o",
+      "target_axis_id": "ventilator_induced_lung_injury_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "strength": [
+        0.5,
+        0.9
+      ],
+      "clinical_rationale": "Driving pressure captures strain per aerated lung compartment."
+    },
+    {
+      "source_axis_id": "static_lung_compliance_ml_per_cm_h2o",
+      "target_axis_id": "plateau_pressure_cm_h2o",
+      "coupling_type": "drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "strength": [
+        0.4,
+        0.8
+      ],
+      "clinical_rationale": "Lower compliance increases airway pressure for a given tidal volume."
+    },
+    {
+      "source_axis_id": "arterial_paco2",
+      "target_axis_id": "right_ventricular_failure_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "strength": [
+        0.2,
+        0.6
+      ],
+      "clinical_rationale": "Hypercapnia can increase pulmonary vascular resistance."
+    },
+    {
+      "source_axis_id": "shock_context_presence",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "strength": [
+        0.3,
+        0.8
+      ],
+      "clinical_rationale": "Shock and vasopressor need increase ARDS mortality."
+    },
+    {
+      "source_axis_id": "refractory_hypoxemia_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "strength": [
+        0.5,
+        0.9
+      ],
+      "clinical_rationale": "Persistent refractory hypoxemia is a proximal mortality pathway."
+    },
+    {
+      "source_axis_id": "barotrauma_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "strength": [
+        0.2,
+        0.6
+      ],
+      "clinical_rationale": "Pneumothorax or pneumomediastinum can acutely destabilize severe ARDS."
+    },
+    {
+      "source_axis_id": "ventilator_associated_pneumonia_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        3,
+        21
+      ],
+      "strength": [
+        0.2,
+        0.6
+      ],
+      "clinical_rationale": "Secondary ventilator-associated infection worsens late ARDS outcomes."
+    },
+    {
+      "source_axis_id": "prolonged_mechanical_ventilation_hazard",
+      "target_axis_id": "ventilator_associated_pneumonia_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        3,
+        21
+      ],
+      "strength": [
+        0.3,
+        0.7
+      ],
+      "clinical_rationale": "Longer ventilation increases exposure time for ventilator-associated infection."
+    },
+    {
+      "source_axis_id": "noncardiogenic_pulmonary_edema_extent",
+      "target_axis_id": "pao2_fio2_ratio",
+      "coupling_type": "drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "strength": [
+        0.3,
+        0.8
+      ],
+      "clinical_rationale": "More edema worsens oxygen transfer."
+    }
+  ],
+  "treatments": [
+    {
+      "treatment": "lung_protective_ventilation_low_tidal_volume",
+      "display_name_ja": "肺保護換気",
+      "mode": "push_state",
+      "required_context_axes": [
+        "invasive_mechanical_ventilation_presence",
+        "tidal_volume_ml_per_kg_predicted_body_weight",
+        "plateau_pressure_cm_h2o",
+        "driving_pressure_cm_h2o"
+      ],
+      "trajectory_modifications": {
+        "tidal_volume_ml_per_kg_predicted_body_weight": {
+          "peak_value_factor": [
+            0.65,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            0.5
+          ]
+        },
+        "plateau_pressure_cm_h2o": {
+          "peak_value_factor": [
+            0.65,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            0.5
+          ]
+        },
+        "driving_pressure_cm_h2o": {
+          "peak_value_factor": [
+            0.65,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            0.5
+          ]
+        },
+        "ventilator_induced_lung_injury_hazard": {
+          "peak_value_factor": [
+            0.25,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME": {
+          "peak_value_factor": [
+            0.65,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            14
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "arterial_ph",
+          "condition": "very_low",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Severe acidemia may limit permissive hypercapnia tolerance."
+        },
+        {
+          "axis_id": "static_lung_compliance_ml_per_cm_h2o",
+          "condition": "very_low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.1,
+            1.5
+          ],
+          "clinical_rationale": "Very low compliance increases the value of lowering stress and strain."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.25
+      ],
+      "carryover_after_stop_days": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "peep_optimization_recruitment_strategy",
+      "display_name_ja": "PEEP最適化",
+      "mode": "push_state",
+      "required_context_axes": [
+        "positive_pressure_ventilation_presence",
+        "peep_cm_h2o",
+        "pao2_fio2_ratio",
+        "shock_context_presence"
+      ],
+      "trajectory_modifications": {
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.05,
+            1.6
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "oxygen_saturation": {
+          "peak_value_factor": [
+            1.02,
+            1.15
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "refractory_hypoxemia_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            3
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "shock_context_presence",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "High intrathoracic pressure can impair venous return in unstable shock."
+        },
+        {
+          "axis_id": "static_lung_compliance_ml_per_cm_h2o",
+          "condition": "low_with_recruitability",
+          "effect": "strengthens",
+          "factor_range": [
+            1.1,
+            1.5
+          ],
+          "clinical_rationale": "Recruitable collapsed units are more likely to improve with PEEP."
+        },
+        {
+          "axis_id": "barotrauma_hazard",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.1,
+            1.6
+          ],
+          "clinical_rationale": "High pressures and fragile lung increase air-leak risk."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.25
+      ],
+      "carryover_after_stop_days": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "prone_positioning",
+      "display_name_ja": "腹臥位療法",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "pao2_fio2_ratio",
+        "prone_positioning_feasibility_activity",
+        "invasive_mechanical_ventilation_presence"
+      ],
+      "trajectory_modifications": {
+        "M_ARDS_SHUNT_VQ_MISMATCH_HYPOXEMIA_ACTIVITY": {
+          "peak_value_factor": [
+            0.55,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.25,
+            2
+          ]
+        },
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.1,
+            2.0
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.25,
+            2
+          ]
+        },
+        "refractory_hypoxemia_hazard": {
+          "peak_value_factor": [
+            0.35,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            3
+          ]
+        },
+        "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME": {
+          "peak_value_factor": [
+            0.55,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            14
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "prone_positioning_feasibility_activity",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.6
+          ],
+          "clinical_rationale": "Unstable spine, open abdomen, or unsafe lines can limit proning."
+        },
+        {
+          "axis_id": "shock_context_presence",
+          "condition": "high_unstable",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Profound instability can delay or interrupt proning sessions."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.25
+      ],
+      "carryover_after_stop_days": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "neuromuscular_blockade_for_dyssynchrony",
+      "display_name_ja": "人工呼吸同調目的の筋弛緩",
+      "mode": "modulate_sigma",
+      "required_context_axes": [
+        "invasive_mechanical_ventilation_presence",
+        "neuromuscular_blockade_safety_context_activity",
+        "plateau_pressure_cm_h2o"
+      ],
+      "trajectory_modifications": {
+        "ventilator_induced_lung_injury_hazard": {
+          "peak_value_factor": [
+            0.45,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            3
+          ]
+        },
+        "driving_pressure_cm_h2o": {
+          "peak_value_factor": [
+            0.8,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.0,
+            1.35
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "neuromuscular_blockade_safety_context_activity",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.7
+          ],
+          "clinical_rationale": "Neuromuscular disease, prolonged paralysis risk, or inability to monitor sedation changes utility."
+        },
+        {
+          "axis_id": "shock_context_presence",
+          "condition": "severe",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.0,
+            1.3
+          ],
+          "clinical_rationale": "Deep sedation and paralysis can worsen hemodynamic support needs."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment": "conservative_fluid_management_after_shock_stabilization",
+      "display_name_ja": "保存的輸液管理",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "fluid_overload_or_positive_balance_activity",
+        "shock_context_presence",
+        "noncardiogenic_pulmonary_edema_extent"
+      ],
+      "trajectory_modifications": {
+        "M_ARDS_CAPILLARY_LEAK_NONCARDIOGENIC_EDEMA_ACTIVITY": {
+          "peak_value_factor": [
+            0.65,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "noncardiogenic_pulmonary_edema_extent": {
+          "peak_value_factor": [
+            0.55,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.0,
+            1.35
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "prolonged_mechanical_ventilation_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            2,
+            10
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "shock_context_presence",
+          "condition": "unstabilized",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.7
+          ],
+          "clinical_rationale": "Fluid restriction or removal before perfusion stabilization can worsen shock."
+        },
+        {
+          "axis_id": "acute_kidney_injury_hazard",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.0,
+            1.4
+          ],
+          "clinical_rationale": "Diuresis or fluid removal requires renal and perfusion monitoring."
+        }
+      ],
+      "onset_delay_days": [
+        0.5,
+        2
+      ],
+      "carryover_after_stop_days": [
+        1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "inhaled_pulmonary_vasodilator_rescue",
+      "display_name_ja": "吸入肺血管拡張薬レスキュー",
+      "mode": "push_state",
+      "required_context_axes": [
+        "refractory_hypoxemia_hazard",
+        "inhaled_pulmonary_vasodilator_response_context_activity",
+        "right_ventricular_failure_hazard"
+      ],
+      "trajectory_modifications": {
+        "M_ARDS_PULMONARY_VASCULAR_RV_STRAIN_ACTIVITY": {
+          "peak_value_factor": [
+            0.55,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.0,
+            1.5
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "right_ventricular_failure_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "inhaled_pulmonary_vasodilator_response_context_activity",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.7
+          ],
+          "clinical_rationale": "Benefit is most likely when pulmonary vascular mismatch or RV strain is prominent."
+        },
+        {
+          "axis_id": "pao2_fio2_ratio",
+          "condition": "not_low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Transient oxygenation rescue has less utility without severe hypoxemia."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment": "vv_ecmo_rescue_lung_rest",
+      "display_name_ja": "VV-ECMOレスキュー",
+      "mode": "push_state",
+      "required_context_axes": [
+        "ecmo_candidate_context_activity",
+        "refractory_hypoxemia_hazard",
+        "hypercapnia_presence",
+        "anticoagulation_contraindication_context_activity"
+      ],
+      "trajectory_modifications": {
+        "pao2_fio2_ratio": {
+          "peak_value_factor": [
+            1.3,
+            3.0
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "arterial_paco2": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "refractory_hypoxemia_hazard": {
+          "peak_value_factor": [
+            0.15,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "ventilator_induced_lung_injury_hazard": {
+          "peak_value_factor": [
+            0.25,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            5
+          ]
+        },
+        "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME": {
+          "peak_value_factor": [
+            0.45,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            21
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "ecmo_candidate_context_activity",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.6
+          ],
+          "clinical_rationale": "Irreversible comorbidity, prolonged injurious ventilation, or resource constraints reduce expected benefit."
+        },
+        {
+          "axis_id": "anticoagulation_contraindication_context_activity",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            1.2,
+            2.0
+          ],
+          "clinical_rationale": "VV-ECMO usually requires anticoagulation and cannulation risk management."
+        },
+        {
+          "axis_id": "refractory_hypoxemia_hazard",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.5
+          ],
+          "clinical_rationale": "ECMO is a rescue therapy when conventional support cannot maintain gas exchange."
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        1
+      ],
+      "carryover_after_stop_days": [
+        0.5,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment": "trigger_control_and_source_specific_therapy_context",
+      "display_name_ja": "誘因制御・原因別治療",
+      "mode": "modulate_theta",
+      "required_context_axes": [
+        "time_from_respiratory_insult_days"
+      ],
+      "trajectory_modifications": {
+        "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY": {
+          "peak_value_factor": [
+            0.55,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY": {
+          "peak_value_factor": [
+            0.55,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME": {
+          "peak_value_factor": [
+            0.6,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            21
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "time_from_respiratory_insult_days",
+          "condition": "long_delay",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Delayed control of the initiating insult allows established diffuse alveolar damage and fibroproliferation."
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        2
+      ],
+      "carryover_after_stop_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "direct_pulmonary_epithelial_injury_context",
+      "display_name_ja": "直接肺傷害文脈",
+      "examples": [
+        "pneumonia",
+        "aspiration",
+        "inhalational injury",
+        "near drowning"
+      ],
+      "modulation": {
+        "prior_probability_shift": [
+          1.2,
+          3.0
+        ],
+        "mechanism_modulation": [
+          {
+            "mechanism_id": "M_ARDS_ALVEOLAR_EPITHELIAL_ENDOTHELIAL_INJURY_ACTIVITY",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.8
+            ]
+          }
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "bilateral_pulmonary_opacity_extent",
+            "direction": "up",
+            "factor_range": [
+              1.0,
+              1.4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "indirect_systemic_inflammation_context",
+      "display_name_ja": "間接全身炎症文脈",
+      "examples": [
+        "sepsis",
+        "pancreatitis",
+        "trauma",
+        "massive transfusion",
+        "obstetric microangiopathy"
+      ],
+      "modulation": {
+        "prior_probability_shift": [
+          1.1,
+          2.5
+        ],
+        "mechanism_modulation": [
+          {
+            "mechanism_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.8
+            ]
+          }
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "shock_context_presence",
+            "direction": "up",
+            "factor_range": [
+              1.0,
+              1.6
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "older_age_or_frailty_context",
+      "display_name_ja": "高齢・フレイル文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          1.8
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+            "direction": "up",
+            "factor_range": [
+              1.2,
+              2.2
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "obesity_or_reduced_chest_wall_compliance_context",
+      "display_name_ja": "肥満・胸壁コンプライアンス低下文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          1.5
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "static_lung_compliance_ml_per_cm_h2o",
+            "direction": "down",
+            "factor_range": [
+              0.7,
+              0.95
+            ]
+          },
+          {
+            "axis_id": "peep_cm_h2o",
+            "direction": "up",
+            "factor_range": [
+              1.0,
+              1.4
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "positive_fluid_balance_context",
+      "display_name_ja": "正の水分バランス文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          1.6
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "noncardiogenic_pulmonary_edema_extent",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.6
+            ]
+          },
+          {
+            "axis_id": "pao2_fio2_ratio",
+            "direction": "down",
+            "factor_range": [
+              0.75,
+              0.95
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "shock_or_vasopressor_context",
+      "display_name_ja": "ショック・昇圧薬文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          2.0
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "mean_arterial_pressure",
+            "direction": "down",
+            "factor_range": [
+              0.7,
+              1.0
+            ]
+          },
+          {
+            "axis_id": "mortality_hazard_in_D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME",
+            "direction": "up",
+            "factor_range": [
+              1.3,
+              2.5
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "high_mechanical_power_or_large_tidal_volume_context",
+      "display_name_ja": "高機械的パワー・大きな換気量文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          1.4
+        ],
+        "mechanism_modulation": [
+          {
+            "mechanism_id": "M_ARDS_REDUCED_COMPLIANCE_MECHANICAL_STRESS_ACTIVITY",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.6
+            ]
+          }
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "ventilator_induced_lung_injury_hazard",
+            "direction": "up",
+            "factor_range": [
+              1.2,
+              2.0
+            ]
+          },
+          {
+            "axis_id": "barotrauma_hazard",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.8
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "factor": "delayed_trigger_control_context",
+      "display_name_ja": "誘因制御遅延文脈",
+      "modulation": {
+        "prior_probability_shift": [
+          1.0,
+          1.8
+        ],
+        "mechanism_modulation": [
+          {
+            "mechanism_id": "M_ARDS_NEUTROPHIL_CYTOKINE_INFLAMMATION_ACTIVITY",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              1.7
+            ]
+          },
+          {
+            "mechanism_id": "M_ARDS_FIBROPROLIFERATIVE_REPAIR_ACTIVITY",
+            "direction": "up",
+            "factor_range": [
+              1.1,
+              2.0
+            ]
+          }
+        ],
+        "axis_response_modulation": [
+          {
+            "axis_id": "prolonged_mechanical_ventilation_hazard",
+            "direction": "up",
+            "factor_range": [
+              1.2,
+              2.0
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "supportive_care": [
+    "低酸素血症、P/F比、SpO2、FiO2、PEEP、プラトー圧、駆動圧、換気量を継続評価する",
+    "酸素投与、HFNC、NIV、挿管人工呼吸を呼吸仕事量と酸素化に応じて調整する",
+    "肺保護換気では低一回換気量、プラトー圧抑制、駆動圧抑制を狙う",
+    "PEEPは酸素化改善と過膨張、血行動態、圧外傷リスクを同時に見て調整する",
+    "腹臥位は低P/Fで換気中の患者に対し実施可能性と安全性を確認して検討する",
+    "人工呼吸同調不良や強い自発努力では鎮静、鎮痛、短期筋弛緩の文脈を評価する",
+    "ショックが安定した後は水分バランスを保守的に管理し肺水腫の遷延を避ける",
+    "感染、吸引、輸血反応、膵炎、外傷、薬剤、吸入曝露など誘因を同時に評価し制御する",
+    "難治性低酸素血症では吸入肺血管拡張薬、リクルートメント、VV-ECMO文脈を評価する",
+    "圧外傷、右心不全、人工呼吸器関連肺炎、急性腎障害をイベントハザードとして追跡する",
+    "栄養、血栓予防、ストレス潰瘍予防、せん妄予防、早期リハビリをICU文脈で調整する"
+  ]
+}

@@ -147,7 +147,7 @@ EARLY_GRID_TIME_DAYS = (0.02, 0.1, 0.5, 1.0, 3.0, 7.0)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
 SINGLE_ANCHOR_THRESHOLD = 1.0
-SINGLE_MISSING_ANCHOR_PENALTY = -60.0
+SINGLE_MISSING_ANCHOR_PENALTY = -120.0
 EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY = -9000.0
 NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
@@ -234,6 +234,7 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-ACUTE-EPIGLOTTITIS",
     "D-ACUTE-CHOLECYSTITIS",
     "D-ACUTE-INTERMITTENT-PORPHYRIA",
+    "D-ACUTE-MYOCARDIAL-INFARCTION",
     "D-ACUTE-MYOCARDITIS",
     "D-ACUTE-SYMPTOMATIC-HYPONATREMIA",
     "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA",
@@ -247,20 +248,24 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-COMPLETE-ATRIOVENTRICULAR-BLOCK",
     "D-CIRRHOSIS-ACUTE-DECOMPENSATION",
     "D-DIABETIC-KETOACIDOSIS",
+    "D-DIFFUSE-ALVEOLAR-HEMORRHAGE",
     "D-FAT-EMBOLISM-SYNDROME",
     "D-HEMOTHORAX",
+    "D-HEPATIC-ENCEPHALOPATHY",
     "D-HYPOTHERMIA",
     "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
     "D-INVASIVE-ASPERGILLOSIS",
     "D-PERIPARTUM-CARDIOMYOPATHY",
     "D-PHEOCHROMOCYTOMA-CRISIS",
     "D-PELVIC-FRACTURE",
+    "D-PEDIATRIC-DEHYDRATION",
     "D-LUNG-ABSCESS",
     "D-MALIGNANT-HYPERTHERMIA",
     "D-MYXEDEMA-COMA",
     "D-NEUROLEPTIC-MALIGNANT-SYNDROME",
     "D-PULMONARY-EMBOLISM",
     "D-SEROTONIN-SYNDROME",
+    "D-SEVERE-HYPERCALCEMIA",
     "D-SEVERE-HYPOKALEMIA",
     "D-SEVERE-HYPOGLYCEMIA",
     "D-SICKLE-CELL-ACUTE-CHEST",
@@ -269,12 +274,32 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-TETANUS",
     "D-TB-DISSEMINATED",
     "D-THYROID-STORM",
+    "D-TRICHINELLOSIS",
     "D-TRAPS",
     "D-ULCERATIVE-COLITIS-SEVERE-FLARE",
     "D-ATRIAL-FIBRILLATION",
     "D-BRONCHIOLITIS",
+    "D-BOWEL-OBSTRUCTION",
+    "D-BUDD-CHIARI-SYNDROME",
+    "D-CHRONIC-SUBDURAL-HEMATOMA",
+    "D-CROHN-DISEASE-FLARE",
     "D-CROUP",
+    "D-ADENOVIRUS-INFECTION",
+    "D-ENTEROCOCCAL-BACTEREMIA",
+    "D-HISTOPLASMOSIS-DISSEMINATED",
+    "D-INTUSSUSCEPTION",
+    "D-IGA-VASCULITIS",
+    "D-NOCARDIOSIS",
+    "D-NONTYPHOID-SALMONELLA-BACTEREMIA",
+    "D-PSEUDOMONAS-BACTEREMIA",
+    "D-PYELONEPHRITIS",
+    "D-REFEEDING-SYNDROME",
     "D-SICK-SINUS-SYNDROME",
+    "D-STRANGULATED-BOWEL-OBSTRUCTION",
+    "D-STRONGYLOIDES-HYPERINFECTION",
+    "D-SUPERIOR-VENA-CAVA-SYNDROME",
+    "D-TAKOTSUBO-CARDIOMYOPATHY",
+    "D-TOXOPLASMOSIS",
     "D-VENTRICULAR-FIBRILLATION",
     "D-VENTRICULAR-TACHYCARDIA",
 }
@@ -283,6 +308,7 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-ACUTE-CHOLECYSTITIS": ("gallbladder", "murphy", "cholecystic", "cystic_duct"),
     "D-ACUTE-EPIGLOTTITIS": ("epiglottitis", "epiglottic", "stridor", "drooling", "sore_throat"),
     "D-ACUTE-INTERMITTENT-PORPHYRIA": ("porphobilinogen", "aminolevulinic", "porphyria", "dark_urine"),
+    "D-ACUTE-MYOCARDIAL-INFARCTION": ("coronary", "troponin", "st_segment", "myocardial_infarction"),
     "D-ACUTE-MYOCARDITIS": ("myocarditis", "troponin", "cardiac_mri", "left_ventricular", "myocardial"),
     "D-ALCOHOLIC-HEPATITIS": ("alcohol", "ethanol", "drinking", "alcoholic"),
     "D-AMNIOTIC-FLUID-EMBOLISM": ("pregnancy", "pregnant", "labor", "delivery", "postpartum", "amniotic"),
@@ -293,7 +319,9 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-CAR-T-CRS": ("car_t", "chimeric_antigen", "tocilizumab", "cytokine_release", "serum_il6"),
     "D-CIRRHOSIS-ACUTE-DECOMPENSATION": ("cirrhosis", "ascites", "variceal", "varices", "portal_hypertension", "chronic_liver"),
     "D-COMPLETE-ATRIOVENTRICULAR-BLOCK": ("complete_atrioventricular_block", "complete_av_block", "third_degree_av_block", "av_block"),
+    "D-DIFFUSE-ALVEOLAR-HEMORRHAGE": ("alveolar_hemorrhage", "hemoptysis", "bloody_bronchoalveolar", "hemosiderin", "capillaritis"),
     "D-FAT-EMBOLISM-SYNDROME": ("fat_embolism", "long_bone_fracture", "orthopedic", "petechial_rash"),
+    "D-HEPATIC-ENCEPHALOPATHY": ("hepatic", "ammonia", "cirrhosis", "asterixis", "jaundice", "liver_failure"),
     "D-HEMOTHORAX": ("hemothorax", "pleural_blood", "thoracic_trauma", "chest_trauma"),
     "D-HYPOTHERMIA": ("hypothermia", "cold_exposure", "rewarming"),
     "D-INVASIVE-ASPERGILLOSIS": ("aspergillus", "galactomannan", "halo_sign", "neutropenia", "immunosuppression"),
@@ -304,20 +332,42 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-PERIPARTUM-CARDIOMYOPATHY": ("pregnancy", "pregnant", "peripartum", "postpartum", "delivery", "cesarean"),
     "D-PHEOCHROMOCYTOMA-CRISIS": ("pheochromocytoma", "catecholamine", "metanephrine", "adrenal_mass", "paroxysmal_hypertension"),
     "D-PELVIC-FRACTURE": ("pelvic_fracture", "pelvis_fracture", "acetabular_fracture", "trauma", "fall"),
+    "D-PEDIATRIC-DEHYDRATION": ("pediatric", "infant", "child", "dehydration"),
     "D-PULMONARY-EMBOLISM": ("pulmonary_embolism", "pulmonary_artery_filling_defect", "d_dimer", "deep_vein_thrombosis"),
     "D-SEROTONIN-SYNDROME": ("serotonergic", "serotonin", "ssri", "maoi", "clonus", "hyperreflexia"),
+    "D-SEVERE-HYPERCALCEMIA": ("calcium", "hypercalcemia", "corrected_serum_calcium", "ionized_calcium"),
     "D-SICKLE-CELL-ACUTE-CHEST": ("sickle", "hemoglobin_s", "acute_chest_syndrome"),
     "D-STATUS-EPILEPTICUS": ("seizure", "status_epilepticus", "convulsion", "epileptiform"),
     "D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS": ("systemic_sclerosis", "scleroderma", "rna_polymerase", "sclerodactyly", "raynaud"),
     "D-TB-DISSEMINATED": ("tuberculosis", "mycobacterium", "afb", "miliary", "caseating_granuloma", "tb_exposure"),
     "D-TETANUS": ("tetanus", "trismus", "lockjaw", "muscle_spasm", "wound"),
     "D-THYROID-STORM": ("thyroid", "tsh", "free_t4", "goiter", "graves"),
+    "D-TRICHINELLOSIS": ("trichinella", "raw_pork", "undercooked_meat", "eosinophil", "myalgia", "periorbital_edema"),
     "D-TRAPS": ("traps", "tnfrsf1a", "periodic_fever", "recurrent_fever", "autoinflammatory"),
-    "D-ULCERATIVE-COLITIS-SEVERE-FLARE": ("ulcerative_colitis", "bloody_diarrhea", "diarrhea", "hematochezia", "rectal_bleeding", "tenesmus"),
+    "D-ULCERATIVE-COLITIS-SEVERE-FLARE": ("ulcerative_colitis", "bloody_diarrhea", "hematochezia", "rectal_bleeding", "tenesmus", "colitis"),
     "D-ATRIAL-FIBRILLATION": ("atrial_fibrillation", "irregularly_irregular"),
-    "D-BRONCHIOLITIS": ("bronchiolitis", "rsv", "wheezing", "infant"),
+    "D-BRONCHIOLITIS": ("bronchiolitis", "rsv", "infant"),
+    "D-BOWEL-OBSTRUCTION": ("bowel_obstruction", "intestinal_obstruction", "transition_point", "air_fluid_level", "bowel_dilation", "obstipation", "feculent"),
+    "D-BUDD-CHIARI-SYNDROME": ("budd_chiari", "hepatic_vein", "portal_vein_thrombosis", "caudate_lobe", "ascites", "hepatomegaly"),
+    "D-CHRONIC-SUBDURAL-HEMATOMA": ("subdural", "hematoma", "head_trauma", "fall", "ct_subdural"),
+    "D-CROHN-DISEASE-FLARE": ("crohn", "ileitis", "terminal_ileum", "skip_lesion", "fistula", "perianal", "bloody_diarrhea", "chronic_diarrhea"),
     "D-CROUP": ("croup", "barking_cough", "steeple_sign", "stridor"),
+    "D-ADENOVIRUS-INFECTION": ("adenovirus", "adenoviral", "conjunctivitis", "pharyngoconjunctival", "hemorrhagic_cystitis", "viral_pneumonia"),
+    "D-ENTEROCOCCAL-BACTEREMIA": ("enterococcus", "enterococcal", "e_faecalis", "e_faecium", "blood_culture", "endocarditis", "catheter"),
+    "D-HISTOPLASMOSIS-DISSEMINATED": ("histoplasma", "histoplasmosis", "intracellular_yeast", "fungal_antigen", "endemic_mycosis", "adrenal_involvement", "bone_marrow"),
+    "D-INTUSSUSCEPTION": ("intussusception", "target_sign", "sausage_mass", "currant_jelly", "bowel_telescoping", "lead_point"),
+    "D-IGA-VASCULITIS": ("iga_vasculitis", "palpable_purpura", "lower_limb_purpura", "iga_nephritis", "hematuria", "arthralgia"),
+    "D-NOCARDIOSIS": ("nocardia", "nocardiosis", "branching_filamentous", "acid_fast_filament", "brain_abscess", "skin_abscess"),
+    "D-NONTYPHOID-SALMONELLA-BACTEREMIA": ("salmonella", "nontyphoid_salmonella", "blood_culture", "gastroenteritis", "bacteremia"),
+    "D-PSEUDOMONAS-BACTEREMIA": ("pseudomonas", "p_aeruginosa", "pseudomonas_aeruginosa", "ecthyma_gangrenosum", "blood_culture", "central_line"),
+    "D-PYELONEPHRITIS": ("pyelonephritis", "flank_pain", "costovertebral_angle", "cva_tenderness", "pyuria", "bacteriuria", "urine_culture"),
+    "D-REFEEDING-SYNDROME": ("refeeding", "hypophosphatemia", "phosphate", "malnutrition", "starvation", "nutrition_restart", "thiamine"),
     "D-SICK-SINUS-SYNDROME": ("sick_sinus", "sinus_pause", "sinus_arrest", "tachy_brady"),
+    "D-STRANGULATED-BOWEL-OBSTRUCTION": ("strangulated_bowel", "closed_loop", "bowel_ischemia", "bowel_obstruction", "transition_point", "pneumatosis", "peritonitis"),
+    "D-STRONGYLOIDES-HYPERINFECTION": ("strongyloides", "larvae", "larva", "rhabditiform", "filariform", "htlv", "eosinophil"),
+    "D-SUPERIOR-VENA-CAVA-SYNDROME": ("superior_vena_cava", "svc_obstruction", "venous_distension", "upper_extremity_edema", "facial_neck_swelling", "mediastinal_mass"),
+    "D-TAKOTSUBO-CARDIOMYOPATHY": ("takotsubo", "apical_ballooning", "wall_motion_beyond_single_coronary", "emotional_stress"),
+    "D-TOXOPLASMOSIS": ("toxoplasma", "toxoplasmosis", "ring_enhancing", "brain_lesion", "hiv", "cd4", "cat_exposure"),
     "D-VENTRICULAR-FIBRILLATION": ("ventricular_fibrillation",),
     "D-VENTRICULAR-TACHYCARDIA": ("ventricular_tachycardia", "wide_complex_tachycardia"),
 }
@@ -491,6 +541,19 @@ def convert_value(value, from_unit, to_unit, axis_id):
         return value / 4.345
     if src in ("kgperweek", "kg/week") and dst in ("kgpermonth", "kg/month"):
         return value * 4.345
+
+    if axis_id == "oxygen_requirement_level" and src in ("l/min", "lpermin", "lpm") and dst in ("ordinal05", "ordinal0to5"):
+        if value <= 0.0:
+            return 0.0
+        if value <= 2.0:
+            return 1.0
+        if value <= 6.0:
+            return 2.0
+        if value <= 15.0:
+            return 3.0
+        if value <= 30.0:
+            return 4.0
+        return 5.0
 
     if axis_id == "serum_creatinine" and src in ("umol/l", "umolperl") and dst in ("mg/dl", "mgperdl"):
         return value / 88.4
@@ -1657,15 +1720,31 @@ EXACT_AXIS_ALIASES = {
     "arterial_pH": ("arterial_ph",),
     "aspartate_aminotransferase": ("serum_ast",),
     "bilateral_lower_leg_intermuscular_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
+    "bilateral_pulmonary_infiltrate_extent": ("bilateral_pulmonary_opacity_extent",),
     "blood_glucose": ("serum_glucose",),
+    "blood_gas_oxygen_saturation": ("oxygen_saturation",),
+    "bee_pollen_ingestion_presence": ("allergen_exposure_temporal_association_probability",),
+    "chronic_heavy_alcohol_use_presence": ("alcohol_pancreatic_toxicity_context_probability", "chronic_heavy_beer_intake_presence"),
     "coagulation_inr": ("prothrombin_time_inr",),
     "coma_presence": ("coma_activity",),
+    "coronary_occlusion_presence": ("culprit_coronary_obstruction_presence",),
+    "coronary_thrombus_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
     "deep_venous_thrombosis_presence": ("deep_venous_thrombosis_activity", "venous_thrombosis_activity"),
+    "ecg_anterior_wall_acute_ischemic_pattern_presence": ("st_segment_elevation_presence",),
+    "facial_edema_presence": ("angioedema_presence", "facial_lip_tongue_angioedema_presence"),
+    "facial_weakness_severity": ("facial_droop_severity",),
     "gamma_glutamyl_transferase": ("serum_gamma_glutamyl_transferase",),
     "fever_presence": ("fever_history_presence",),
+    "glasgow_coma_scale": ("glasgow_coma_scale_score",),
+    "ground_glass_opacity_extent": ("diffuse_ground_glass_opacity_extent",),
+    "generalized_urticaria_presence": ("urticaria_presence",),
     "hepatic_encephalopathy_presence": ("mental_status_abnormality_activity",),
+    "hypoxemia_presence": ("supplemental_oxygen_requirement_presence",),
     "jaundice_presence": ("jaundice_activity",),
     "kussmaul_respiration_presence": ("kussmaul_breathing_activity",),
+    "left_anterior_descending_territory_wall_motion_abnormality_presence": ("regional_wall_motion_abnormality_presence",),
+    "left_main_coronary_artery_occlusion_presence": ("coronary_occlusion_presence", "culprit_coronary_obstruction_presence"),
+    "low_solute_intake_context_presence": ("beer_potomania_context_presence",),
     "main_and_bilateral_branch_pulmonary_arterial_filling_defect_presence": (
         "ctpa_pulmonary_arterial_filling_defect_activity",
         "pulmonary_embolic_burden_activity",
@@ -1673,14 +1752,24 @@ EXACT_AXIS_ALIASES = {
     ),
     "mental_status_abnormality_presence": ("mental_status_abnormality_activity",),
     "nausea_presence": ("nausea_vomiting_activity",),
+    "nih_stroke_scale": ("nihss_score",),
+    "oxygen_desaturation_presence": ("supplemental_oxygen_requirement_presence",),
+    "oxygen_flow_rate_l_per_min": ("oxygen_requirement_level",),
     "palpitations_presence": ("palpitations_activity",),
+    "pulmonary_infiltrate_presence": ("pulmonary_opacity_presence", "bilateral_pulmonary_opacity_presence"),
     "pulmonary_arterial_filling_defect_presence": ("ctpa_pulmonary_arterial_filling_defect_activity",),
     "pulmonary_hypertension_presence": ("pulmonary_hypertension_activity",),
     "seizure_presence": ("seizure_activity",),
     "shock_presence": ("shock_activity",),
+    "supplemental_oxygen_flow_rate": ("oxygen_requirement_level",),
     "syncope_presence": ("syncope_activity", "syncope_presyncope_activity"),
-    "chronic_heavy_alcohol_use_presence": ("alcohol_pancreatic_toxicity_context_probability",),
     "recent_alcohol_escalation_or_binge_activity": ("alcohol_pancreatic_toxicity_context_probability",),
+}
+
+SUPPRESSION_ONLY_AXIS_ALIASES = {
+    "leukocytosis_presence": ("white_blood_cell_count",),
+    "tachycardia_presence": ("heart_rate",),
+    "tachypnea_presence": ("respiratory_rate",),
 }
 
 
@@ -2089,6 +2178,20 @@ def prepare_case_data(data):
             if alias_axis_id not in proxy_axis_ids:
                 proxy_axis_ids.append(alias_axis_id)
             source["_legacy_proxy_axis_id"] = alias_axis_id
+
+    for source_axis_id, alias_axis_ids in SUPPRESSION_ONLY_AXIS_ALIASES.items():
+        source = observations.get(source_axis_id)
+        if source is None:
+            continue
+        matched_proxy_axis_ids = [alias_axis_id for alias_axis_id in alias_axis_ids if alias_axis_id in observations]
+        if not matched_proxy_axis_ids:
+            continue
+        proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+        for alias_axis_id in matched_proxy_axis_ids:
+            if alias_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(alias_axis_id)
+        source["_legacy_proxy_axis_id"] = matched_proxy_axis_ids[0]
+        source["_suppress_if_proxy_observed"] = True
 
     for legacy_axis_id, source_axis_ids in LEGACY_MANUAL_AXIS_BRIDGES.items():
         sources = [
@@ -2625,6 +2728,8 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                 continue
             if item.get("_risk_context_observation") and not formal_axis:
                 continue
+            if item.get("_suppress_if_proxy_observed") and not formal_axis:
+                continue
             if proxy_formal and not formal_axis:
                 continue
         axis = eval_axis(axis_id, candidate, manifolds, background_axes)
@@ -3087,6 +3192,15 @@ def key_lab_anchor_support(case, disease):
                 score += 2.0
             elif sodium <= 130.0:
                 score += 1.0
+        osmolality = observed_value(case, "serum_osmolality")
+        if osmolality is not None and float(osmolality) <= 275.0:
+            score += 0.8
+        urine_osmolality = observed_value(case, "urine_osmolality")
+        if urine_osmolality is not None and float(urine_osmolality) <= 100.0:
+            score += 0.6
+        urine_sodium = observed_value(case, "urine_sodium")
+        if urine_sodium is not None and float(urine_sodium) <= 30.0:
+            score += 0.4
         score += positive_observed_axis_score(
             case,
             (
@@ -3097,6 +3211,18 @@ def key_lab_anchor_support(case, disease):
             ),
             score=1.0,
         )
+        score += positive_observed_axis_score(
+            case,
+            (
+                "beer_potomania_context_presence",
+                "low_solute_intake_context_presence",
+                "chronic_heavy_beer_intake_presence",
+            ),
+            score=1.0,
+        )
+        beer_cans = observed_value(case, "daily_beer_intake_cans")
+        if beer_cans is not None and float(beer_cans) >= 4.0:
+            score += 0.8
         return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
     if disease == "D-HYPOTHERMIA":
@@ -3127,6 +3253,24 @@ def key_lab_anchor_support(case, disease):
             return 3.0
         return 0.0
 
+    if disease == "D-SEVERE-HYPERCALCEMIA":
+        score = 0.0
+        calcium = observed_value(case, "corrected_serum_calcium") or observed_value(case, "serum_calcium")
+        ionized = observed_value(case, "ionized_calcium")
+        if calcium is not None:
+            calcium = float(calcium)
+            if calcium >= 14.0:
+                score += 3.0
+            elif calcium >= 12.0:
+                score += 2.0
+        if ionized is not None:
+            ionized = float(ionized)
+            if ionized >= 1.75:
+                score += 3.0
+            elif ionized >= 1.5:
+                score += 2.0
+        return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
     return 0.0
 
 
@@ -3146,8 +3290,24 @@ def ards_anchor_support(case):
             "noncardiogenic_pulmonary_edema_presence",
             "bilateral_pulmonary_opacities_presence",
             "diffuse_bilateral_pulmonary_infiltrates_presence",
+            "pulmonary_opacity_presence",
+            "bilateral_pulmonary_opacity_presence",
+            "pulmonary_infiltrate_presence",
+            "ground_glass_opacity_presence",
+            "pulmonary_consolidation_presence",
         ),
         score=2.0,
+    )
+
+    score += positive_observed_axis_score(
+        case,
+        (
+            "supplemental_oxygen_requirement_presence",
+            "hypoxemia_presence",
+            "oxygen_desaturation_presence",
+            "respiratory_distress_presence",
+        ),
+        score=1.2,
     )
 
     pf_ratio = observed_value(case, "pao2_fio2_ratio")
@@ -3159,6 +3319,27 @@ def ards_anchor_support(case):
             score += 1.5
         elif pf_ratio <= 300.0:
             score += 1.0
+
+    pao2 = observed_value(case, "arterial_pao2")
+    if pao2 is not None and float(pao2) <= 60.0:
+        score += 1.0
+    spo2 = observed_value(case, "oxygen_saturation")
+    if spo2 is not None and float(spo2) <= 90.0:
+        score += 1.0
+    oxygen_flow = observed_value(case, "oxygen_flow_rate_l_per_min") or observed_value(case, "supplemental_oxygen_flow_rate")
+    if oxygen_flow is not None and float(oxygen_flow) >= 6.0:
+        score += 0.8
+    ggo_extent = observed_value(case, "diffuse_ground_glass_opacity_extent") or observed_value(case, "ground_glass_opacity_extent")
+    if ggo_extent is not None and float(ggo_extent) >= 0.3:
+        score += 0.8
+    bilateral_extent = observed_value(case, "bilateral_pulmonary_opacity_extent") or observed_value(case, "bilateral_pulmonary_infiltrate_extent")
+    if bilateral_extent is not None and float(bilateral_extent) >= 0.3:
+        score += 0.8
+    score += positive_observed_axis_score(
+        case,
+        ("chemical_inhalation_exposure_presence", "chlorine_gas_exposure_probability"),
+        score=0.8,
+    )
 
     peep = observed_value(case, "peep_cm_h2o")
     if peep is not None and float(peep) >= 5.0:
@@ -3201,6 +3382,178 @@ def pulmonary_embolism_anchor_support(case):
         ),
         score=0.8,
     )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def acute_mi_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "coronary_occlusion_presence",
+            "left_main_coronary_artery_occlusion_presence",
+            "coronary_thrombus_presence",
+        ),
+        score=3.0,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "st_segment_elevation_presence",
+            "ecg_anterior_wall_acute_ischemic_pattern_presence",
+        ),
+        score=1.4,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("troponin_t_elevated_presence", "troponin_i_elevated_presence"),
+        score=1.0,
+    )
+    troponin = observed_value(case, "serum_troponin")
+    if troponin is not None and float(troponin) > 20.0:
+        score += 1.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "chest_pain_presence",
+            "regional_wall_motion_abnormality_presence",
+            "left_anterior_descending_territory_wall_motion_abnormality_presence",
+        ),
+        score=0.8,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def anaphylaxis_anchor_support(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "allergen_exposure_temporal_association_probability",
+            "bee_pollen_ingestion_presence",
+            "food_allergen_exposure_presence",
+            "drug_allergen_exposure_presence",
+        ),
+        score=1.6,
+    )
+    onset_hours = observed_value(case, "post_exposure_symptom_onset_hours")
+    if onset_hours is not None and float(onset_hours) <= 4.0:
+        score += 0.8
+    score += positive_observed_axis_score(
+        case,
+        (
+            "urticaria_presence",
+            "generalized_urticaria_presence",
+            "angioedema_presence",
+            "facial_edema_presence",
+            "facial_lip_tongue_angioedema_presence",
+        ),
+        score=1.4,
+    )
+    score += positive_observed_axis_score(
+        case,
+        (
+            "wheezing_presence",
+            "dyspnea_presence",
+            "oxygen_desaturation_presence",
+            "hypoxemia_presence",
+            "vomiting_presence",
+            "diarrhea_presence",
+            "abdominal_pain_presence",
+        ),
+        score=1.0,
+    )
+    score += positive_observed_axis_score(case, ("hypotension_presence", "shock_presence"), score=0.8)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def takotsubo_anchor_support(case):
+    if positive_observed_axis_score(
+        case,
+        (
+            "coronary_occlusion_presence",
+            "left_main_coronary_artery_occlusion_presence",
+            "coronary_thrombus_presence",
+        ),
+        score=1.0,
+    ):
+        return 0.0
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        (
+            "takotsubo_ballooning_pattern_presence",
+            "apical_ballooning_presence",
+            "apical_ballooning_activity_in_D-TAKOTSUBO-CARDIOMYOPATHY",
+        ),
+        score=2.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("wall_motion_beyond_single_coronary_territory_presence",),
+        score=1.5,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("emotional_stress_trigger_presence", "physical_stress_trigger_presence"),
+        score=0.8,
+    )
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
+
+
+def diffuse_alveolar_hemorrhage_anchor_support(case):
+    direct_score = positive_observed_axis_score(
+        case,
+        (
+            "diffuse_alveolar_hemorrhage_presence",
+            "alveolar_hemorrhage_presence",
+            "bloody_bronchoalveolar_lavage_presence",
+            "bronchoscopy_progressively_bloody_return_presence",
+            "hemosiderin_laden_macrophage_presence",
+            "pulmonary_capillaritis_presence",
+        ),
+        score=4.0,
+    )
+    if direct_score:
+        return direct_score
+
+    chemical_inhalation = positive_observed_axis_score(
+        case,
+        ("chemical_inhalation_exposure_presence", "chlorine_gas_exposure_probability"),
+        score=1.0,
+    )
+    immune_renal_context = positive_observed_axis_score(
+        case,
+        (
+            "glomerulonephritis_presence",
+            "hematuria_presence",
+            "anti_gbm_antibody_positivity",
+            "anca_positivity_probability",
+            "systemic_vasculitis_context_presence",
+        ),
+        score=1.0,
+    )
+    hemoglobin = observed_value(case, "hemoglobin")
+    anemia = hemoglobin is not None and float(hemoglobin) <= 10.0
+
+    if chemical_inhalation and not anemia and not immune_renal_context:
+        return 0.0
+
+    score = 0.0
+    score += positive_observed_axis_score(case, ("hemoptysis_presence",), score=0.7)
+    score += positive_observed_axis_score(
+        case,
+        (
+            "ground_glass_opacity_presence",
+            "diffuse_ground_glass_opacity_extent",
+            "bilateral_pulmonary_opacity_presence",
+            "pulmonary_infiltrate_presence",
+        ),
+        score=0.7,
+    )
+    if anemia:
+        score += 1.2
+    score += immune_renal_context
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -3306,6 +3659,18 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-PULMONARY-EMBOLISM":
         score += pulmonary_embolism_anchor_support(case)
 
+    elif disease == "D-ACUTE-MYOCARDIAL-INFARCTION":
+        score += acute_mi_anchor_support(case)
+
+    elif disease == "D-ANAPHYLAXIS":
+        score += anaphylaxis_anchor_support(case)
+
+    elif disease == "D-TAKOTSUBO-CARDIOMYOPATHY":
+        score += takotsubo_anchor_support(case)
+
+    elif disease == "D-DIFFUSE-ALVEOLAR-HEMORRHAGE":
+        score += diffuse_alveolar_hemorrhage_anchor_support(case)
+
     elif disease in TOXIDROME_EXPLICIT_ANCHOR_DISEASE_IDS:
         score += toxidrome_anchor_support(case, disease, manifolds)
 
@@ -3315,6 +3680,7 @@ def component_anchor_support(case, disease, manifolds, background_axes):
         "D-DIABETIC-KETOACIDOSIS",
         "D-HYPOTHERMIA",
         "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+        "D-SEVERE-HYPERCALCEMIA",
         "D-SEVERE-HYPOKALEMIA",
         "D-SEVERE-HYPOGLYCEMIA",
     }:
@@ -3331,6 +3697,12 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     return max(score, generic_component_anchor_support(case, disease, manifolds, background_axes))
 
 
+def explicit_required_missing_anchor_penalty(case):
+    n_axes = len(case.get("observations_by_axis", {}))
+    dense_case_extra = 250.0 * min(max(n_axes - 20, 0), 100)
+    return EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY - dense_case_extra
+
+
 def combo_anchor_penalty(case, candidate, manifolds, background_axes):
     support = {
         disease: component_anchor_support(case, disease, manifolds, background_axes)
@@ -3343,7 +3715,7 @@ def combo_anchor_penalty(case, candidate, manifolds, background_axes):
             return 0.0, support
         penalty = SINGLE_MISSING_ANCHOR_PENALTY * (SINGLE_ANCHOR_THRESHOLD - value)
         if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS and value <= 0.0:
-            penalty += EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY
+            penalty += explicit_required_missing_anchor_penalty(case)
         return penalty, support
 
     penalty = 0.0
@@ -3351,7 +3723,7 @@ def combo_anchor_penalty(case, candidate, manifolds, background_axes):
         if value < COMBO_ANCHOR_THRESHOLD:
             penalty += COMBO_MISSING_ANCHOR_PENALTY * (COMBO_ANCHOR_THRESHOLD - value)
             if disease in EXPLICIT_ANCHOR_REQUIRED_DISEASE_IDS and value <= 0.0:
-                penalty += EXPLICIT_REQUIRED_MISSING_ANCHOR_EXTRA_PENALTY
+                penalty += explicit_required_missing_anchor_penalty(case)
     return penalty, support
 
 
