@@ -153,7 +153,7 @@ NO_FORMAL_SUPPORT_LOG_PENALTY = -120.0
 PARENT_FINDING_PRESENT_THRESHOLD = 0.5
 GENERIC_ANCHOR_MAX_AXIS_FRACTION = 0.12
 GENERIC_ANCHOR_SCORE_CAP = 4.0
-HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP = 90.0
+HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP = 120.0
 DURATION_CONDITION_SAMPLE_FACTORS = (0.5, 0.75, 1.0, 1.33, 2.0)
 DURATION_CONDITION_LOG_SIGMA = 0.35
 DURATION_COMPATIBILITY_GRACE_FACTOR = 1.5
@@ -2111,6 +2111,215 @@ EXACT_AXIS_ALIASES = {
     "visual_acuity_left_eye_decimal": ("visual_acuity_decimal",),
 }
 
+EXACT_AXIS_ALIASES.update(
+    {
+        # Batch-8 blind extractor synonyms: keep these diagnosis-neutral and map
+        # source-specific phrasing onto existing generic atlas axes.
+        "nih_stroke_scale_score": ("nihss_score",),
+        "right_middle_cerebral_artery_hyperdense_sign_presence": ("hyperdense_artery_sign_presence",),
+        "right_m1_middle_cerebral_artery_occlusion_on_cta_presence": (
+            "intracranial_arterial_occlusion_presence",
+            "large_vessel_occlusion_presence",
+            "middle_cerebral_artery_occlusion_activity",
+        ),
+        "bilateral_m1_middle_cerebral_artery_occlusion_on_angiography_presence": (
+            "intracranial_arterial_occlusion_presence",
+            "large_vessel_occlusion_presence",
+            "middle_cerebral_artery_occlusion_activity",
+        ),
+        "sudden_speech_impairment_presence": (
+            "acute_onset_neurologic_symptom_presence",
+            "language_disturbance_presence",
+            "aphasia_presence",
+            "focal_neurologic_deficit_presence",
+        ),
+        "motor_aphasia_presence": ("aphasia_presence", "language_disturbance_presence"),
+        "left_limb_paralysis_presence": ("hemiparesis_presence", "focal_neurologic_deficit_presence"),
+        "left_central_facial_paralysis_presence": ("facial_droop_presence", "focal_neurologic_deficit_presence"),
+        "left_pyramidal_sign_presence": ("focal_neurologic_deficit_presence",),
+        "left_limb_sensory_loss_presence": ("focal_neurologic_deficit_presence", "sensory_loss_presence"),
+        "left_superficial_femoral_artery_occlusion_presence": (
+            "superficial_femoral_artery_occlusion_presence",
+            "lower_extremity_arterial_occlusion_presence",
+            "peripheral_arterial_occlusion_presence",
+            "cta_arterial_occlusion_presence",
+        ),
+        "left_deep_femoral_artery_occlusion_presence": (
+            "lower_extremity_arterial_occlusion_presence",
+            "peripheral_arterial_occlusion_presence",
+            "cta_arterial_occlusion_presence",
+        ),
+        "left_common_femoral_artery_occlusion_presence": (
+            "lower_extremity_arterial_occlusion_presence",
+            "peripheral_arterial_occlusion_presence",
+            "cta_arterial_occlusion_presence",
+        ),
+        "common_femoral_artery_stenosis_presence": (
+            "lower_extremity_arterial_occlusion_presence",
+            "peripheral_arterial_occlusion_presence",
+        ),
+        "prosthetic_vascular_graft_thrombus_on_ct_presence": ("vascular_graft_occlusion_presence",),
+        "lower_limb_emboli_on_ct_presence": (
+            "lower_extremity_arterial_occlusion_presence",
+            "peripheral_arterial_occlusion_presence",
+        ),
+        "left_toe_poor_color_presence": ("limb_ischemia_presence", "peripheral_ischemia_presence"),
+        "left_toe_necrosis_presence": ("limb_ischemia_presence", "peripheral_ischemia_presence"),
+        "epiglottic_swelling_on_neck_ct_presence": ("ct_epiglottic_swelling_presence", "upper_airway_edema_presence"),
+        "aryepiglottic_fold_swelling_presence": ("upper_airway_edema_presence",),
+        "upper_airway_effacement_presence": ("upper_airway_obstruction_presence", "supraglottic_airway_narrowing_presence"),
+        "thumbprint_sign_on_lateral_neck_xray_presence": ("ct_epiglottic_swelling_presence",),
+        "biphasic_stridor_presence": ("stridor_presence", "upper_airway_obstruction_presence"),
+        "language_delay_presence": ("developmental_language_delay_presence",),
+        "functional_speech_absence": ("expressive_language_impairment_severity",),
+        "brief_eye_contact_presence": ("reduced_eye_contact_presence",),
+        "response_to_name_impairment_presence": (
+            "social_communication_deficit_presence",
+            "social_emotional_reciprocity_impairment_presence",
+        ),
+        "imaginative_play_reduction_presence": ("restricted_repetitive_behavior_presence",),
+        "peer_play_interest_reduction_presence": ("peer_relationship_difficulty_presence",),
+        "motor_coordination_impairment_presence": ("developmental_language_delay_presence",),
+        "attention_focus_difficulty_presence": ("attention_deficit_hyperactivity_symptoms_presence",),
+        "childhood_autism_rating_scale_score": ("standardized_autism_observation_score",),
+        "arid1b_loss_of_function_variant_presence": ("known_pathogenic_neurodevelopmental_variant_presence",),
+        "inattention_presence": ("inattention_symptom_presence", "adhd_core_symptom_presence"),
+        "impulsivity_presence": ("adhd_impulsive_behavior_presence", "hyperactivity_impulsivity_symptom_presence"),
+        "forgetfulness_presence": ("forgetfulness_daily_activity_presence",),
+        "disorganization_presence": ("organization_planning_impairment_presence",),
+        "occupational_instability_presence": ("occupational_impairment_presence", "functional_impairment_due_to_adhd_presence"),
+        "adult_attention_functional_impairment_score": ("standardized_adhd_rating_scale_score",),
+        "bibasilar_fine_crackles_presence": ("bibasal_crackles_activity",),
+        "bilateral_basal_consolidative_opacities_presence": ("organizing_pneumonia_pattern_extent",),
+        "diffuse_ground_glass_opacity_presence": ("ground_glass_opacity_extent", "diffuse_ground_glass_opacity_extent"),
+        "honeycombing_presence": ("interstitial_lung_disease_extent",),
+        "fibrotic_interstitial_pneumonitis_presence": ("interstitial_lung_disease_extent",),
+        "anti_jo1_positive_presence": ("antisynthetase_autoantibody_positivity_probability",),
+        "heavy_alcohol_use_history": ("harmful_alcohol_use_context_activity", "chronic_heavy_alcohol_use_presence"),
+        "unknown_deaddiction_medication_exposure": ("alcohol_withdrawal_risk_activity",),
+        "recent_alcohol_cessation_or_reduction": (
+            "recent_alcohol_reduction_or_cessation_presence",
+            "alcohol_withdrawal_risk_activity",
+        ),
+        "fatty_liver_presence": ("hepatic_steatosis_imaging_activity",),
+        "complex_cystic_liver_lesion_presence": ("hepatic_abscess_presence",),
+        "liver_lesion_long_axis_cm": ("largest_hepatic_abscess_diameter_cm",),
+        "ct_liver_lesion_long_axis_cm": ("largest_hepatic_abscess_diameter_cm",),
+        "promyelocytes_presence": ("peripheral_blast_or_promyelocyte_presence",),
+        "circulating_blasts_or_immature_cells_presence": (
+            "peripheral_blast_or_promyelocyte_presence",
+            "peripheral_blood_blast_fraction",
+        ),
+        "left_hemispheric_acute_subdural_hematoma_presence": (
+            "subdural_hematoma_presence",
+            "acute_subdural_component_presence",
+        ),
+        "appendiceal_dilation_presence": ("appendiceal_dilation_activity",),
+        "periappendiceal_fat_stranding_presence": ("periappendiceal_fat_stranding_activity",),
+        "free_intraperitoneal_fluid_presence": ("periappendiceal_free_fluid_activity",),
+        "irregular_heart_rhythm_presence": ("atrial_fibrillation_presence",),
+        "oral_ulcer_presence": ("oral_mucosal_ulcer_activity",),
+        "recurrent_oral_ulcers_history": ("oral_mucosal_ulcer_activity",),
+        "panuveitis_history": ("posterior_uveitis_activity", "anterior_uveitis_activity"),
+        "photophobia_presence": ("ocular_pain_photophobia_activity",),
+        "right_body_weakness_presence": ("neurologic_deficit_activity",),
+        "gait_difficulty_presence": ("neurologic_deficit_activity",),
+        "thalamic_signal_abnormality_presence": ("neurologic_deficit_activity",),
+        "midbrain_signal_abnormality_presence": ("neurologic_deficit_activity",),
+        "t2_flair_hyperintensity_presence": ("neurologic_deficit_activity",),
+        "peripheral_blood_lymphoblast_percentage": ("peripheral_blood_blast_fraction",),
+        "bone_marrow_blast_infiltration_presence": ("peripheral_blood_blast_fraction",),
+        "tdt_positive_blasts_presence": ("cd19_target_expression_probability",),
+        "cd19_positive_blasts_presence": ("cd19_target_expression_probability",),
+        "cd10_positive_blasts_presence": ("cd19_target_expression_probability",),
+        "aspirated_airway_material_on_ct_presence": ("aspirated_airway_material_presence",),
+        "lung_infiltration_presence": ("pulmonary_infiltrate_presence",),
+        "direct_antiglobulin_test_c3_positive": ("direct_antiglobulin_test_activity", "dat_c3d_positivity_probability"),
+        "red_blood_cell_anisocytosis_presence": ("anisocytosis_activity",),
+        "indirect_bilirubin": ("serum_bilirubin_indirect",),
+        "mucocutaneous_hyperpigmentation_presence": ("hyperpigmentation_presence",),
+        "adrenocorticotropic_hormone": ("plasma_acth",),
+        "fasting_blood_glucose": ("serum_glucose",),
+        "orthostatic_hypotension_presence": ("hypotension_presence",),
+        "cosyntropin_60_min_cortisol": ("serum_cortisol",),
+        "ct_bowel_wall_decreased_enhancement_presence": (
+            "bowel_wall_hypoenhancement_presence",
+            "mesenteric_bowel_ischemia_presence",
+        ),
+        "arterial_or_venous_occlusion_on_ct_angiogram_presence": ("mesenteric_vascular_occlusion_presence",),
+        "urine_porphobilinogen_positive": ("urine_porphobilinogen_screen_positive_presence",),
+        "wine_colored_urine_after_light_exposure_presence": ("dark_urine_presence",),
+        "hmbs_gene_c445c_t_variant_presence": ("porphyria_genetic_variant_presence",),
+        "decreased_fetal_movement_presence": ("fetal_distress_presence",),
+        "placental_membrane_incomplete_presence": ("placental_disruption_context_presence",),
+        "decreased_responsiveness_presence": ("mental_status_abnormality_presence",),
+        "anti_glomerular_basement_membrane_antibody_positive_presence": ("anti_gbm_antibody_positivity_probability",),
+        "linear_igg_glomerular_capillary_deposition_presence": ("linear_gbm_igg_staining_activity",),
+        "linear_igg_alveolar_capillary_deposition_presence": ("linear_gbm_igg_staining_activity",),
+        "hemorrhagic_bronchoalveolar_lavage_presence": ("bloody_bronchoalveolar_lavage_presence", "diffuse_alveolar_hemorrhage_presence"),
+        "ct_pancreatic_inflammation_presence": ("pancreatic_edema_or_enlargement_activity",),
+        "ct_peripancreatic_fat_inflammation_presence": ("peripancreatic_fat_stranding_activity",),
+        "gallstones_presence": ("gallstone_presence", "cholelithiasis_sludge_context_probability"),
+        "ecg_t_wave_inversion_presence": ("ischemic_ecg_change_presence",),
+        "left_ventricular_regional_wall_motion_abnormality_presence": ("regional_wall_motion_abnormality_presence",),
+        "hiv_fourth_generation_test_positive": ("hiv_p24_antigen_positivity", "acute_hiv_diagnosis_confirmation_available"),
+        "hepatitis_b_surface_antigen_positive": ("hepatitis_b_surface_antigen_positivity",),
+        "hepatitis_b_core_igm_positive": ("hepatitis_b_core_igm_positivity",),
+        "lupus_anticoagulant_positive_presence": ("lupus_anticoagulant_activity",),
+        "prior_mesenteric_venous_thrombosis_presence": ("mesenteric_venous_thrombosis_presence", "venous_thrombosis_activity"),
+        "inferior_vena_cava_thrombus_presence": ("venous_thrombosis_activity",),
+        "hepatic_vein_opacification_absent_presence": (
+            "hepatic_vein_thrombosis_presence",
+            "absent_or_reversed_hepatic_vein_flow_presence",
+        ),
+        "positive_end_expiratory_pressure": ("peep_cm_h2o",),
+        "chest_xray_right_lung_consolidation_presence": ("pulmonary_consolidation_presence", "pulmonary_opacity_presence"),
+        "prostate_abscess_on_ultrasound_presence": ("prostatic_abscess_presence",),
+        "ct_multiple_prostatic_abscesses_presence": ("prostatic_abscess_presence",),
+        "prostatic_purulent_aspirate_presence": ("prostatic_abscess_presence",),
+        "urine_leukocyturia_presence": ("pyuria_presence",),
+        "urine_bacteriuria_presence": ("bacteriuria_presence",),
+        "renal_allograft_dysfunction_presence": ("acute_kidney_injury_presence",),
+        "renal_transplant_history": ("immunosuppression_activity",),
+        "immunosuppressive_medication_exposure": ("iatrogenic_immunosuppression_intensity", "immunosuppression_activity"),
+        "urine_erythrocytes_presence": ("hematuria_activity",),
+        "ascending_aorta_dissection_flap_presence": ("aortic_dissection_presence", "aortic_intimal_flap_presence"),
+        "ascending_aortic_segment_involvement_presence": ("aortic_arch_involvement_presence",),
+        "bilateral_hydronephrosis_on_ct_presence": ("bilateral_or_solitary_kidney_obstruction_presence",),
+        "bilateral_ureteric_stones_on_ct_presence": ("bilateral_or_solitary_kidney_obstruction_presence",),
+        "gross_hematuria_presence": ("hematuria_activity",),
+        "bilateral_temporal_lobe_lesions_presence": ("limbic_encephalitis_mri_pattern_presence",),
+        "hippocampal_lesions_presence": ("limbic_encephalitis_mri_pattern_presence",),
+        "amygdala_lesions_presence": ("limbic_encephalitis_mri_pattern_presence",),
+        "csf_nmdar_antibody_positive_presence": ("anti_nmdar_antibody_positivity_probability",),
+        "serum_nmdar_antibody_positive_presence": ("anti_nmdar_antibody_positivity_probability",),
+        "orofacial_dyskinesia_presence": ("dyskinesia_presence",),
+        "ovarian_teratoma_on_imaging_presence": ("ovarian_teratoma_context_presence",),
+        "systolic_murmur_presence": ("ie_new_heart_murmur_activity",),
+        "diastolic_murmur_presence": ("ie_new_heart_murmur_activity",),
+        "pulmonary_edema_on_chest_radiograph_presence": ("pulmonary_edema_extent",),
+        "pr3_antibody": ("pr3_anca_positivity_probability",),
+        "myeloperoxidase_antibody": ("mpo_anca_positivity_probability",),
+        "left_ventricular_hypocontractility_presence": ("myocardial_dysfunction_activity",),
+        "left_ventricular_dilation_presence": ("myocardial_dysfunction_activity", "left_ventricular_dilation_activity"),
+        "ventricular_tachycardia_on_ecg_presence": ("ventricular_tachycardia_presence", "ventricular_tachycardia_activity"),
+        "recent_upper_respiratory_symptom_presence": ("viral_prodrome_activity",),
+        "chest_xray_cardiomegaly_presence": ("cardiomegaly_activity",),
+        "pulmonary_congestion_on_chest_xray_presence": ("pulmonary_edema_activity",),
+        "ecg_st_elevation_presence": ("st_segment_elevation_presence", "st_segment_elevation_activity"),
+        "heart_rate_min": ("heart_rate",),
+        "fasting_propranolol_dose_presence": ("propranolol_exposure_probability", "beta_blocker_exposure_presence"),
+        "airway_spasm_presence": ("bronchospasm_presence", "acute_variable_airflow_obstruction_presence"),
+        "absent_breath_sounds_presence": ("decreased_air_entry_presence", "silent_chest_presence"),
+        "salbutamol_use_history": ("asthma_airway_disease_presence",),
+        "theophylline_use_history": ("asthma_airway_disease_presence",),
+        "intraerythrocytic_parasites_on_smear_presence": ("babesia_smear_positivity_probability",),
+        "babesia_dna_pcr_positive_presence": ("babesia_pcr_positivity_probability",),
+        "lymph_node_biopsy_malignant_or_clonal_population_presence": ("pathologic_lymphadenopathy_presence",),
+        "ct_chest_mass_or_lymphadenopathy_presence": ("pathologic_lymphadenopathy_presence",),
+    }
+)
+
 SUPPRESSION_ONLY_AXIS_ALIASES = {
     "leukocytosis_presence": ("white_blood_cell_count",),
     "tachycardia_presence": ("heart_rate",),
@@ -2604,6 +2813,98 @@ def prepare_case_data(data):
             for value in (observation_float(axis_id) for axis_id in axis_ids)
         )
 
+    if any_observed_positive(("fever_presence", "fever_history_presence", "body_temperature"), threshold=0.5):
+        add_observation(
+            "fever_history_activity",
+            1.0,
+            "severity_score_0_1",
+            snapshot_day,
+            {
+                "category": "symptom",
+                "axis_role": "satellite",
+                "source_text_value": "derived from fever observation",
+            },
+        )
+
+    abdominal_lymphadenopathy_source = next(
+        (
+            axis_id
+            for axis_id in (
+                "intraabdominal_lymphadenopathy_presence",
+                "abdominal_lymphadenopathy_presence",
+                "retroperitoneal_lymphadenopathy_presence",
+                "mediastinal_lymphadenopathy_presence",
+            )
+            if any_observed_positive((axis_id,))
+        ),
+        None,
+    )
+    if abdominal_lymphadenopathy_source:
+        source = observations.get(abdominal_lymphadenopathy_source, {})
+        add_observation(
+            "pathologic_lymphadenopathy_presence",
+            1.0,
+            "present_absent_0_1",
+            float(source.get("day", snapshot_day)),
+            {
+                "category": "imaging_finding",
+                "axis_role": "finding",
+                "source_text_value": f"derived from {abdominal_lymphadenopathy_source}",
+            },
+        )
+        add_observation(
+            "deep_abdominal_lymphadenopathy_activity",
+            1.0,
+            "severity_score_0_1",
+            float(source.get("day", snapshot_day)),
+            {
+                "category": "imaging_finding",
+                "axis_role": "satellite",
+                "parent_axis_id": "pathologic_lymphadenopathy_presence",
+                "source_text_value": f"derived from {abdominal_lymphadenopathy_source}",
+            },
+        )
+
+    retroperitoneal_nodal_mass_cm = observation_float("retroperitoneal_nodal_mass_diameter")
+    if retroperitoneal_nodal_mass_cm is not None and retroperitoneal_nodal_mass_cm >= 1.0:
+        source = observations.get("retroperitoneal_nodal_mass_diameter", {})
+        day = float(source.get("day", snapshot_day))
+        add_observation(
+            "largest_nodal_mass_diameter_cm",
+            retroperitoneal_nodal_mass_cm,
+            "cm",
+            day,
+            {
+                "category": "imaging_measurement",
+                "axis_role": "measurement",
+                "parent_axis_id": "pathologic_lymphadenopathy_presence",
+                "source_text_value": "derived from retroperitoneal_nodal_mass_diameter",
+            },
+        )
+        add_observation(
+            "bulky_nodal_mass_activity",
+            1.0 if retroperitoneal_nodal_mass_cm >= 3.0 else 0.5,
+            "severity_score_0_1",
+            day,
+            {
+                "category": "imaging_finding",
+                "axis_role": "satellite",
+                "parent_axis_id": "pathologic_lymphadenopathy_presence",
+                "source_text_value": "derived from retroperitoneal_nodal_mass_diameter",
+            },
+        )
+        add_observation(
+            "pathologic_lymphadenopathy_presence",
+            1.0,
+            "present_absent_0_1",
+            day,
+            {
+                "category": "imaging_finding",
+                "axis_role": "finding",
+                "source_text_value": "derived from retroperitoneal_nodal_mass_diameter",
+            },
+        )
+
     apap_concentration = observation_float("acetaminophen_serum_concentration")
     apap_daily_dose = max(
         [
@@ -2653,6 +2954,32 @@ def prepare_case_data(data):
             ("respiratory_alkalosis_presence", "metabolic_acidosis_presence"),
             category="acid_base_finding",
         )
+
+    asthma_duration_years = observation_float("asthma_history_duration")
+    if asthma_duration_years is not None and asthma_duration_years > 0.0:
+        add_derived_presence("asthma_airway_disease_presence", ("asthma_history_duration",), category="risk_context")
+
+    peak_airway_pressure = observation_float("peak_airway_pressure")
+    if peak_airway_pressure is not None and peak_airway_pressure >= 35.0:
+        add_derived_presence("dynamic_hyperinflation_presence", ("peak_airway_pressure",), category="ventilator_measurement")
+
+    pao2 = observation_float("arterial_pao2")
+    fio2 = observation_float("fio2")
+    if pao2 is not None and fio2 is not None:
+        fio2_fraction = fio2 / 100.0 if fio2 > 1.0 else fio2
+        if fio2_fraction > 0.0 and "pao2_fio2_ratio" not in observations:
+            add_observation(
+                "pao2_fio2_ratio",
+                pao2 / fio2_fraction,
+                "mmHg",
+                snapshot_day,
+                {
+                    "category": "blood_gas",
+                    "axis_role": "measurement",
+                    "source_text_value": "derived from arterial_pao2 and fio2",
+                    "_derived_from_axes": ["arterial_pao2", "fio2"],
+                },
+            )
 
     anion_gap = observation_float("anion_gap")
     if anion_gap is not None and anion_gap >= 16.0 and any_observed_positive(("metabolic_acidosis_presence",)):
@@ -3633,6 +3960,246 @@ def max_observed_axis_value(case, axis_ids):
     if not values:
         return None
     return max(values)
+
+
+SIMPLE_DISEASE_ANCHOR_SPECS = {
+    "D-ACUTE-ISCHEMIC-STROKE": {
+        "direct": (
+            "intracranial_arterial_occlusion_presence",
+            "large_vessel_occlusion_presence",
+            "middle_cerebral_artery_occlusion_activity",
+            "brain_mri_dwi_restricted_diffusion_presence",
+            "hyperdense_artery_sign_presence",
+        ),
+        "supportive": (
+            "acute_onset_neurologic_symptom_presence",
+            "focal_neurologic_deficit_presence",
+            "aphasia_presence",
+            "hemiparesis_presence",
+            "facial_droop_presence",
+            "nihss_score",
+        ),
+    },
+    "D-AUTISM-SPECTRUM-DISORDER": {
+        "direct": (
+            "autism_core_phenotype_presence",
+            "social_communication_deficit_presence",
+            "reduced_eye_contact_presence",
+            "joint_attention_impairment_presence",
+            "standardized_autism_observation_score",
+        ),
+        "supportive": (
+            "developmental_language_delay_presence",
+            "peer_relationship_difficulty_presence",
+            "known_pathogenic_neurodevelopmental_variant_presence",
+        ),
+    },
+    "D-ADHD": {
+        "direct": (
+            "adhd_core_symptom_presence",
+            "inattention_symptom_presence",
+            "adhd_impulsive_behavior_presence",
+            "standardized_adhd_rating_scale_score",
+        ),
+        "supportive": (
+            "organization_planning_impairment_presence",
+            "forgetfulness_daily_activity_presence",
+            "occupational_impairment_presence",
+            "functional_impairment_due_to_adhd_presence",
+        ),
+    },
+    "D-ANTISYNTHETASE-SYNDROME": {
+        "direct": ("anti_jo1_positive_presence", "antisynthetase_autoantibody_positivity_probability"),
+        "supportive": (
+            "interstitial_lung_disease_extent",
+            "ground_glass_opacity_extent",
+            "organizing_pneumonia_pattern_extent",
+            "mechanic_hands_activity",
+            "arthritis_activity",
+            "proximal_muscle_weakness_activity",
+        ),
+    },
+    "D-ALCOHOLIC-HEPATITIS": {
+        "direct": ("harmful_alcohol_use_context_activity", "chronic_heavy_alcohol_use_presence"),
+        "supportive": (
+            "jaundice_activity",
+            "hepatic_steatosis_imaging_activity",
+            "hepatomegaly_activity",
+            "maddrey_discriminant_function_score",
+            "ast_alt_ratio",
+        ),
+    },
+    "D-AMOEBIC-LIVER-ABSCESS": {
+        "direct": (
+            "hepatic_abscess_presence",
+            "solitary_right_lobe_hepatic_abscess_pattern",
+            "entamoeba_histolytica_abscess_aspirate_pcr_positivity_probability",
+        ),
+        "supportive": (
+            "largest_hepatic_abscess_diameter_cm",
+            "right_upper_quadrant_pain_activity",
+            "right_upper_quadrant_tenderness_activity",
+        ),
+    },
+    "D-APL": {
+        "direct": (
+            "peripheral_blast_or_promyelocyte_presence",
+            "bone_marrow_promyelocyte_burden",
+            "circulating_promyelocyte_fraction",
+        ),
+        "supportive": (
+            "bleeding_activity",
+            "mucosal_bleeding_activity",
+            "serum_fibrinogen",
+            "d_dimer",
+        ),
+    },
+    "D-ACUTE-SUBDURAL-HEMATOMA": {
+        "direct": ("subdural_hematoma_presence", "acute_subdural_component_presence"),
+        "supportive": ("midline_shift_presence", "traumatic_subarachnoid_hemorrhage_presence", "hemiparesis_presence"),
+    },
+    "D-ALL": {
+        "direct": (
+            "peripheral_blood_blast_fraction",
+            "circulating_blast_count",
+            "bone_marrow_blast_infiltration_presence",
+            "tdt_positive_blasts_presence",
+            "cd19_positive_blasts_presence",
+            "cd10_positive_blasts_presence",
+        ),
+        "supportive": ("splenomegaly_activity", "hepatomegaly_activity", "serum_ldh", "tumor_lysis_syndrome_signs_presence"),
+    },
+    "D-ASPIRATION-PNEUMONIA": {
+        "direct": (
+            "witnessed_aspiration_event_activity",
+            "aspirated_airway_material_presence",
+            "impaired_airway_protection_activity",
+        ),
+        "supportive": ("pulmonary_infiltrate_presence", "purulent_sputum_presence", "copious_sputum_presence"),
+    },
+    "D-AIHA": {
+        "direct": (
+            "direct_antiglobulin_test_activity",
+            "dat_igg_positivity_probability",
+            "dat_c3d_positivity_probability",
+        ),
+        "supportive": (
+            "serum_bilirubin_indirect",
+            "serum_haptoglobin",
+            "serum_ldh",
+            "hemoglobinuria_dark_urine_activity",
+            "jaundice_activity",
+        ),
+    },
+    "D-AMNIOTIC-FLUID-EMBOLISM": {
+        "direct": (
+            "pregnancy_or_postpartum_presence",
+            "pregnancy_context_probability",
+            "peripartum_labor_context_presence",
+            "placental_disruption_context_presence",
+            "fetal_distress_presence",
+        ),
+        "supportive": (
+            "abrupt_peripartum_collapse_presence",
+            "oxygen_desaturation_presence",
+            "hypotension_presence",
+            "mucocutaneous_bleeding_presence",
+            "mental_status_abnormality_presence",
+        ),
+    },
+    "D-ANTI-GBM-DISEASE": {
+        "direct": (
+            "anti_gbm_antibody_positivity_probability",
+            "linear_gbm_igg_staining_activity",
+            "anti_glomerular_basement_membrane_antibody_positive_presence",
+        ),
+        "supportive": (
+            "diffuse_alveolar_hemorrhage_presence",
+            "hemoptysis_presence",
+            "hematuria_activity",
+            "proteinuria_activity",
+        ),
+    },
+    "D-ACUTE-PANCREATITIS": {
+        "direct": ("serum_lipase", "pancreatic_edema_or_enlargement_activity", "peripancreatic_fat_stranding_activity"),
+        "supportive": ("abdominal_pain_activity", "abdominal_pain_radiation_presence", "gallstone_presence"),
+    },
+    "D-ANTIPHOSPHOLIPID-SYNDROME": {
+        "direct": ("lupus_anticoagulant_activity", "anticardiolipin_igg", "anticardiolipin_igm"),
+        "supportive": ("venous_thrombosis_activity", "mesenteric_venous_thrombosis_presence", "hepatic_vein_thrombosis_presence"),
+    },
+    "D-ACUTE-PROSTATITIS": {
+        "direct": ("prostatic_abscess_presence", "prostate_tenderness_on_dre_activity", "boggy_prostate_on_dre_activity"),
+        "supportive": ("dysuria_presence", "pyuria_presence", "bacteriuria_presence", "acute_urinary_retention_presence"),
+    },
+    "D-AUTOIMMUNE-ENCEPHALITIS": {
+        "direct": (
+            "anti_nmdar_antibody_positivity_probability",
+            "csf_nmdar_antibody_positive_presence",
+            "serum_nmdar_antibody_positive_presence",
+            "limbic_encephalitis_mri_pattern_presence",
+        ),
+        "supportive": ("seizure_presence", "behavioral_change_presence", "memory_impairment_presence", "orofacial_dyskinesia_presence"),
+    },
+    "D-BARTONELLA-ENDOCARDITIS": {
+        "direct": (
+            "bartonella_serology_positivity_probability",
+            "bartonella_ifa_igg_titer",
+            "bartonella_valve_tissue_pcr_positivity_probability",
+        ),
+        "supportive": (
+            "ie_new_heart_murmur_activity",
+            "ie_vegetation_presence",
+            "ie_culture_negative_probability",
+            "proteinuria_activity",
+            "hematuria_activity",
+        ),
+    },
+    "D-BEHCET-DISEASE": {
+        "direct": (
+            "oral_mucosal_ulcer_activity",
+            "genital_ulcer_activity",
+            "anterior_uveitis_activity",
+            "posterior_uveitis_activity",
+            "panuveitis_history",
+        ),
+        "supportive": (
+            "brainstem_meningoencephalitis_activity_behcet",
+            "neurologic_deficit_activity",
+            "ocular_pain_photophobia_activity",
+            "leptomeningeal_enhancement_presence",
+        ),
+    },
+    "D-ALCL": {
+        "direct": (
+            "alk_fusion_positivity_alcl",
+            "cd30_expression_intensity_alcl",
+            "lymph_node_biopsy_malignant_or_clonal_population_presence",
+        ),
+        "supportive": (
+            "pathologic_lymphadenopathy_presence",
+            "deep_abdominal_lymphadenopathy_activity",
+            "bulky_nodal_mass_activity",
+            "largest_nodal_mass_diameter_cm",
+            "serum_ldh",
+            "serum_ferritin",
+            "fever_history_activity",
+            "extranodal_disease_extent_alcl",
+        ),
+    },
+}
+
+
+def simple_disease_anchor_support(case, disease):
+    spec = SIMPLE_DISEASE_ANCHOR_SPECS.get(disease)
+    if not spec:
+        return 0.0
+    score = positive_observed_axis_score(case, spec.get("direct", ()), score=3.0)
+    if score > 0.0:
+        score += positive_observed_axis_score(case, spec.get("supportive", ()), score=0.8)
+    else:
+        score += positive_observed_axis_score(case, spec.get("supportive", ()), score=0.6)
+    return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
 VIRAL_HEPATITIS_DIRECT_MARKER_AXES = (
@@ -4847,6 +5414,12 @@ def alcohol_withdrawal_delirium_anchor_support(case):
         score += 2.0
     elif has_trigger:
         score += 1.0
+    elif has_dependence and positive_observed_axis_score(
+        case,
+        ("tremor_presence", "agitation_presence", "delirium_presence", "hallucination_presence"),
+        score=1.0,
+    ):
+        score += 1.8
     else:
         return 0.0
 
@@ -5069,8 +5642,12 @@ def acute_intermittent_porphyria_anchor_support(case):
 def acute_myocarditis_anchor_support(case):
     score = 0.0
     troponin = observed_value(case, "serum_troponin")
-    if troponin is not None and float(troponin) > 50.0:
-        score += 1.5
+    if troponin is not None:
+        troponin = float(troponin)
+        if troponin > 50.0:
+            score += 1.5
+        elif troponin > 0.04:
+            score += 0.8
     score += positive_observed_axis_score(
         case,
         ("troponin_elevation_presence", "troponin_i_elevated_presence", "troponin_t_elevated_presence"),
@@ -5082,6 +5659,7 @@ def acute_myocarditis_anchor_support(case):
             "complete_atrioventricular_block_presence",
             "bradycardia_presence",
             "bradycardia_activity",
+            "ventricular_tachycardia_presence",
         ),
         score=1.2,
     )
@@ -5094,6 +5672,7 @@ def acute_myocarditis_anchor_support(case):
             "regional_wall_motion_abnormality_presence",
             "inferior_wall_akinesia_presence",
             "acute_coronary_syndrome_mimic_activity",
+            "myocardial_dysfunction_activity",
         ),
         score=0.8,
     )
@@ -5279,8 +5858,12 @@ def acute_mi_anchor_support(case):
         score=1.0,
     )
     troponin = observed_value(case, "serum_troponin")
-    if troponin is not None and float(troponin) > 20.0:
-        score += 1.0
+    if troponin is not None:
+        troponin = float(troponin)
+        if troponin > 20.0:
+            score += 1.0
+        elif troponin > 0.04:
+            score += 0.8
     score += positive_observed_axis_score(
         case,
         (
@@ -5581,6 +6164,33 @@ def adenovirus_anchor_support(case):
         score=0.6,
     )
     score += min(urinary_support, 1.2)
+
+    transplant_immunosuppression = positive_observed_axis_score(
+        case,
+        (
+            "renal_transplant_history",
+            "immunosuppression_activity",
+            "iatrogenic_immunosuppression_intensity",
+            "immunosuppressive_medication_exposure",
+        ),
+        score=1.0,
+    )
+    allograft_urinary_features = sum(
+        1
+        for axes in (
+            ("renal_allograft_dysfunction_presence", "acute_kidney_injury_presence"),
+            ("hematuria_activity", "hematuria_presence"),
+            ("dysuria_activity", "dysuria_presence"),
+            ("pyuria_presence", "urine_wbc_presence"),
+        )
+        if positive_observed_axis_score(case, axes, score=1.0)
+    )
+    if transplant_immunosuppression and allograft_urinary_features >= 2:
+        score += 2.0
+        score += min(
+            positive_observed_axis_score(case, ("diarrhea_presence", "diarrhea_activity", "fever_presence"), score=0.5),
+            1.0,
+        )
     return min(score, GENERIC_ANCHOR_SCORE_CAP)
 
 
@@ -5804,6 +6414,9 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-ALCOHOL-WITHDRAWAL-DELIRIUM":
         score += alcohol_withdrawal_delirium_anchor_support(case)
 
+    elif disease in SIMPLE_DISEASE_ANCHOR_SPECS:
+        score += simple_disease_anchor_support(case, disease)
+
     elif disease in SPECIFIC_CONTEXT_ANCHOR_TOKENS:
         score += specific_context_anchor_support(case, disease, manifolds)
 
@@ -5962,24 +6575,29 @@ def high_specificity_anchor_log_bonus(case, candidate):
 
         elif disease == "D-HYPERKALEMIA":
             potassium = observed_float(case, "serum_potassium")
-            if potassium is not None and potassium >= 7.0:
-                disease_bonus += 45.0
-            elif potassium is not None and potassium >= 6.0:
-                disease_bonus += 30.0
-            disease_bonus += 15.0 * positive_observed_axis_score(
+            ecg_support = positive_observed_axis_score(
                 case,
                 ("hyperkalemia_ecg_change_presence", "hyperkalemia_peaked_t_wave_presence", "hyperkalemia_qrs_widening_presence"),
                 score=1.0,
             )
+            if potassium is not None and potassium >= 7.0 and ecg_support:
+                disease_bonus += 120.0
+            elif potassium is not None and potassium >= 7.0:
+                disease_bonus += 90.0
+            elif potassium is not None and potassium >= 6.0:
+                disease_bonus += 60.0
+            disease_bonus += 15.0 * ecg_support
 
         elif disease == "D-ADRENAL-CRISIS":
             direct_score = adrenal_crisis_direct_evidence_score(case)
             if direct_score >= 6.0:
-                disease_bonus += 90.0
+                disease_bonus += 120.0
             elif direct_score >= 4.0:
-                disease_bonus += 70.0
+                disease_bonus += 100.0
+            elif direct_score >= 3.0:
+                disease_bonus += 90.0
             elif direct_score >= 2.5:
-                disease_bonus += 45.0
+                disease_bonus += 60.0
 
         elif disease == "D-PNEUMOTHORAX":
             disease_bonus += 90.0 * positive_observed_axis_score(
@@ -6020,12 +6638,326 @@ def high_specificity_anchor_log_bonus(case, candidate):
                 score=1.0,
             )
             if limb_or_deep_soft_tissue_gas:
-                disease_bonus += 70.0
-                disease_bonus += 15.0 * positive_observed_axis_score(
+                disease_bonus += 110.0
+                disease_bonus += 10.0 * positive_observed_axis_score(
                     case,
                     ("plantar_foot_blister_presence", "hypotension_presence", "shock_presence", "altered_mental_status_presence"),
                     score=1.0,
                 )
+
+        elif disease == "D-ANTIPHOSPHOLIPID-SYNDROME":
+            apl_marker = positive_observed_axis_score(
+                case,
+                ("lupus_anticoagulant_activity", "lupus_anticoagulant_positive_presence", "anticardiolipin_igg", "anticardiolipin_igm"),
+                score=1.0,
+            )
+            unusual_venous_thrombosis = positive_observed_axis_score(
+                case,
+                (
+                    "venous_thrombosis_activity",
+                    "mesenteric_venous_thrombosis_presence",
+                    "hepatic_vein_thrombosis_presence",
+                    "inferior_vena_cava_thrombus_presence",
+                ),
+                score=1.0,
+            )
+            if apl_marker and unusual_venous_thrombosis:
+                disease_bonus += 120.0
+            elif apl_marker:
+                disease_bonus += 90.0
+
+        elif disease == "D-ALCL":
+            direct = positive_observed_axis_score(case, SIMPLE_DISEASE_ANCHOR_SPECS[disease].get("direct", ()), score=1.0)
+            lymphomatous_pattern = positive_observed_axis_score(
+                case,
+                (
+                    "pathologic_lymphadenopathy_presence",
+                    "deep_abdominal_lymphadenopathy_activity",
+                    "bulky_nodal_mass_activity",
+                    "largest_nodal_mass_diameter_cm",
+                ),
+                score=1.0,
+            )
+            inflammatory_b_symptom_pattern = positive_observed_axis_score(
+                case,
+                ("fever_history_activity", "serum_ldh", "serum_ferritin", "hypoalbuminemia_presence"),
+                score=1.0,
+            )
+            if direct:
+                disease_bonus += 120.0
+            elif lymphomatous_pattern and inflammatory_b_symptom_pattern >= 2.0:
+                disease_bonus += 110.0
+            elif lymphomatous_pattern:
+                disease_bonus += 70.0
+
+        elif disease in SIMPLE_DISEASE_ANCHOR_SPECS:
+            spec = SIMPLE_DISEASE_ANCHOR_SPECS[disease]
+            direct = positive_observed_axis_score(case, spec.get("direct", ()), score=1.0)
+            supportive = positive_observed_axis_score(case, spec.get("supportive", ()), score=1.0)
+            if direct:
+                disease_bonus += 80.0
+                if supportive:
+                    disease_bonus += 20.0
+            elif supportive:
+                disease_bonus += 20.0
+
+        elif disease == "D-APPENDICITIS":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "appendicolith_presence",
+                    "appendiceal_dilation_activity",
+                    "appendiceal_wall_thickening_activity",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 75.0
+                disease_bonus += 15.0 * positive_observed_axis_score(
+                    case,
+                    ("periappendiceal_fat_stranding_activity", "right_lower_quadrant_pain_activity"),
+                    score=1.0,
+                )
+
+        elif disease == "D-ATRIAL-FIBRILLATION":
+            if positive_observed_axis_score(case, ("atrial_fibrillation_presence", "fibrillatory_atrial_baseline_presence"), score=1.0):
+                disease_bonus += 80.0
+
+        elif disease in ACUTE_VIRAL_HEPATITIS_DISEASE_IDS:
+            serology_axes_by_disease = {
+                "D-ACUTE-HEPATITIS-A": ("hav_igm_positivity",),
+                "D-ACUTE-HEPATITIS-B": (
+                    "hepatitis_b_core_igm_positivity",
+                    "hepatitis_b_surface_antigen_positivity",
+                    "hbv_dna_positivity",
+                ),
+                "D-ACUTE-HEPATITIS-E": ("hev_igm_positivity",),
+            }
+            if positive_observed_axis_score(case, serology_axes_by_disease.get(disease, ()), score=1.0):
+                disease_bonus += 85.0
+
+        elif disease == "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA":
+            sodium = observed_float(case, "serum_sodium")
+            if sodium is not None and sodium >= 155.0:
+                disease_bonus += 85.0
+            elif sodium is not None and sodium >= 150.0:
+                disease_bonus += 60.0
+
+        elif disease == "D-BETA-BLOCKER-TOXICITY":
+            if positive_observed_axis_score(
+                case,
+                ("beta_blocker_exposure_presence", "propranolol_exposure_probability", "fasting_propranolol_dose_presence"),
+                score=1.0,
+            ):
+                disease_bonus += 85.0
+                heart_rate = observed_float(case, "heart_rate")
+                glucose = observed_float(case, "serum_glucose")
+                if heart_rate is not None and heart_rate <= 60.0:
+                    disease_bonus += 15.0
+                if glucose is not None and glucose <= 60.0:
+                    disease_bonus += 10.0
+
+        elif disease == "D-ASTHMA-EXACERBATION":
+            if positive_observed_axis_score(
+                case,
+                ("wheezing_presence", "bronchospasm_presence", "acute_variable_airflow_obstruction_presence", "asthma_airway_disease_presence"),
+                score=1.0,
+            ):
+                disease_bonus += 75.0
+                disease_bonus += 15.0 * positive_observed_axis_score(
+                    case,
+                    ("dynamic_hyperinflation_presence", "decreased_air_entry_presence", "silent_chest_presence"),
+                    score=1.0,
+                )
+
+        elif disease == "D-ALCOHOL-WITHDRAWAL-DELIRIUM":
+            dependence = positive_observed_axis_score(
+                case,
+                ("harmful_alcohol_use_context_activity", "chronic_heavy_alcohol_use_presence", "heavy_alcohol_use_history"),
+                score=1.0,
+            )
+            withdrawal_features = positive_observed_axis_score(
+                case,
+                ("alcohol_withdrawal_risk_activity", "tremor_presence", "agitation_presence", "delirium_presence"),
+                score=1.0,
+            )
+            if dependence and withdrawal_features:
+                disease_bonus += 95.0
+
+        elif disease == "D-ACUTE-KIDNEY-INJURY":
+            creatinine = observed_float(case, "serum_creatinine")
+            if creatinine is not None:
+                unit = norm_unit(case["observations_by_axis"].get("serum_creatinine", {}).get("unit"))
+                if unit in ("umol/l", "umolperl"):
+                    creatinine = creatinine / 88.4
+            bun = observed_float(case, "blood_urea_nitrogen")
+            ph = observed_float(case, "arterial_ph")
+            bicarbonate = observed_float(case, "serum_bicarbonate")
+            obstruction = positive_observed_axis_score(
+                case,
+                ("bilateral_or_solitary_kidney_obstruction_presence", "bilateral_hydronephrosis_on_ct_presence", "bilateral_ureteric_stones_on_ct_presence"),
+                score=1.0,
+            )
+            severe_creatinine = creatinine is not None and creatinine >= 10.0
+            severe_acidosis = (ph is not None and ph <= 7.15) or (bicarbonate is not None and bicarbonate <= 10.0)
+            if severe_creatinine or ((creatinine is not None and creatinine >= 4.0) and obstruction):
+                disease_bonus += 110.0
+                if severe_acidosis:
+                    disease_bonus += 10.0
+                if bun is not None and bun >= 40.0:
+                    disease_bonus += 10.0
+            elif (creatinine is not None and creatinine >= 4.0) or obstruction:
+                disease_bonus += 85.0
+                if bun is not None and bun >= 40.0:
+                    disease_bonus += 15.0
+
+        elif disease == "D-ADENOVIRUS-INFECTION":
+            direct = positive_observed_axis_score(
+                case,
+                (
+                    "adenovirus_viral_load",
+                    "adenovirus_tissue_immunohistochemistry_positive",
+                    "adenovirus_immunohistochemistry_positive",
+                    "adenovirus_hexon_typing_positive_presence",
+                ),
+                score=1.0,
+            )
+            transplant_immunosuppression = positive_observed_axis_score(
+                case,
+                (
+                    "renal_transplant_history",
+                    "immunosuppression_activity",
+                    "iatrogenic_immunosuppression_intensity",
+                    "immunosuppressive_medication_exposure",
+                ),
+                score=1.0,
+            )
+            urinary_renal_features = sum(
+                1
+                for axes in (
+                    ("renal_allograft_dysfunction_presence", "acute_kidney_injury_presence"),
+                    ("hematuria_activity", "hematuria_presence"),
+                    ("dysuria_activity", "dysuria_presence"),
+                    ("pyuria_presence", "urine_wbc_presence"),
+                )
+                if positive_observed_axis_score(case, axes, score=1.0)
+            )
+            if direct:
+                disease_bonus += 100.0
+            elif transplant_immunosuppression and urinary_renal_features >= 2:
+                disease_bonus += 105.0
+                disease_bonus += 15.0 * positive_observed_axis_score(case, ("diarrhea_presence", "diarrhea_activity"), score=1.0)
+
+        elif disease == "D-ACUTE-EPIGLOTTITIS":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "ct_epiglottic_swelling_presence",
+                    "laryngoscopy_epiglottic_swelling_presence",
+                    "upper_airway_edema_presence",
+                    "supraglottic_airway_narrowing_presence",
+                    "thumbprint_sign_on_lateral_neck_xray_presence",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 85.0
+
+        elif disease == "D-ACUTE-LIMB-ISCHEMIA":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "peripheral_arterial_occlusion_presence",
+                    "lower_extremity_arterial_occlusion_presence",
+                    "cta_arterial_occlusion_presence",
+                    "arterial_occlusion_complete_presence",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 85.0
+                disease_bonus += 15.0 * positive_observed_axis_score(
+                    case,
+                    ("limb_ischemia_presence", "peripheral_ischemia_presence", "pulse_deficit_presence"),
+                    score=1.0,
+                )
+
+        elif disease == "D-AORTIC-DISSECTION":
+            if positive_observed_axis_score(case, ("aortic_dissection_presence", "aortic_intimal_flap_presence"), score=1.0):
+                disease_bonus += 90.0
+                disease_bonus += 10.0 * positive_observed_axis_score(
+                    case,
+                    ("pericardial_effusion_presence", "renal_artery_malperfusion_presence"),
+                    score=1.0,
+                )
+
+        elif disease == "D-ACUTE-MESENTERIC-ISCHEMIA":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "mesenteric_vascular_occlusion_presence",
+                    "superior_mesenteric_artery_occlusion_presence",
+                    "superior_mesenteric_vein_thrombosis_presence",
+                    "mesenteric_bowel_ischemia_presence",
+                    "bowel_wall_hypoenhancement_presence",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 90.0
+
+        elif disease == "D-ACUTE-INTERMITTENT-PORPHYRIA":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "urine_porphobilinogen_screen_positive_presence",
+                    "urine_porphobilinogen_positive",
+                    "porphobilinogen_screen_positive_presence",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 90.0
+
+        elif disease == "D-ACUTE-HIV":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "hiv_p24_antigen_positivity",
+                    "hiv_fourth_generation_test_positive",
+                    "acute_hiv_diagnosis_confirmation_available",
+                    "hiv_antibody_seroconversion_activity",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 90.0
+
+        elif disease == "D-ACUTE-MYOCARDIAL-INFARCTION":
+            troponin = observed_float(case, "serum_troponin")
+            if positive_observed_axis_score(
+                case,
+                ("coronary_occlusion_presence", "st_segment_elevation_presence", "ischemic_ecg_change_presence"),
+                score=1.0,
+            ) or (troponin is not None and troponin > 0.04):
+                disease_bonus += 75.0
+                disease_bonus += 15.0 * positive_observed_axis_score(case, ("regional_wall_motion_abnormality_presence",), score=1.0)
+
+        elif disease == "D-ACUTE-MYOCARDITIS":
+            troponin = observed_float(case, "serum_troponin")
+            if positive_observed_axis_score(
+                case,
+                ("myocardial_dysfunction_activity", "ventricular_tachycardia_presence", "atrioventricular_block_degree"),
+                score=1.0,
+            ) and (troponin is not None and troponin > 0.04):
+                disease_bonus += 85.0
+
+        elif disease == "D-BABESIOSIS":
+            if positive_observed_axis_score(
+                case,
+                (
+                    "babesia_smear_positivity_probability",
+                    "babesia_pcr_positivity_probability",
+                    "intraerythrocytic_parasites_on_smear_presence",
+                    "babesia_dna_pcr_positive_presence",
+                ),
+                score=1.0,
+            ):
+                disease_bonus += 90.0
 
         bonus += min(disease_bonus, HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP)
     return bonus
@@ -6110,7 +7042,7 @@ def high_specificity_unexplained_evidence_penalty(case, candidate, manifolds):
         penalty -= 60.0
 
     adrenal_direct_marker = adrenal_crisis_direct_evidence_score(case)
-    if adrenal_direct_marker >= 5.0 and not candidate_supports_any_axis(
+    if adrenal_direct_marker >= 3.0 and not candidate_supports_any_axis(
         candidate,
         manifolds,
         (
@@ -6123,6 +7055,247 @@ def high_specificity_unexplained_evidence_penalty(case, candidate, manifolds):
         ),
     ):
         penalty -= 70.0
+
+    def penalize_unexplained_direct_marker(axis_ids, allowed_diseases, amount):
+        nonlocal penalty
+        marker = positive_observed_axis_score(case, axis_ids, score=1.0)
+        if not marker:
+            return
+        if any(disease in allowed_diseases for disease in candidate):
+            return
+        penalty -= amount
+
+    penalize_unexplained_direct_marker(
+        (
+            "ct_epiglottic_swelling_presence",
+            "epiglottic_swelling_on_neck_ct_presence",
+            "laryngoscopy_epiglottic_swelling_presence",
+            "thumbprint_sign_on_lateral_neck_xray_presence",
+        ),
+        {"D-ACUTE-EPIGLOTTITIS"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "intracranial_arterial_occlusion_presence",
+            "large_vessel_occlusion_presence",
+            "middle_cerebral_artery_occlusion_activity",
+            "right_m1_middle_cerebral_artery_occlusion_on_cta_presence",
+            "bilateral_m1_middle_cerebral_artery_occlusion_on_angiography_presence",
+        ),
+        {"D-ACUTE-ISCHEMIC-STROKE", "D-TRANSIENT-ISCHEMIC-ATTACK"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "peripheral_arterial_occlusion_presence",
+            "lower_extremity_arterial_occlusion_presence",
+            "cta_arterial_occlusion_presence",
+            "left_superficial_femoral_artery_occlusion_presence",
+            "left_common_femoral_artery_occlusion_presence",
+        ),
+        {"D-ACUTE-LIMB-ISCHEMIA"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "soft_tissue_gas_imaging",
+            "lower_extremity_subcutaneous_air_presence",
+            "diffuse_subcutaneous_air_presence",
+            "psoas_muscle_gas_presence",
+            "retroperitoneal_gas_presence",
+        ),
+        {"D-NECROTIZING-FASCIITIS", "D-DIABETIC-FOOT-INFECTION"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("aortic_dissection_presence", "aortic_intimal_flap_presence", "ascending_aorta_dissection_flap_presence"),
+        {"D-AORTIC-DISSECTION"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "mesenteric_vascular_occlusion_presence",
+            "arterial_or_venous_occlusion_on_ct_angiogram_presence",
+            "bowel_wall_hypoenhancement_presence",
+            "ct_bowel_wall_decreased_enhancement_presence",
+        ),
+        {"D-ACUTE-MESENTERIC-ISCHEMIA", "D-ISCHEMIC-COLITIS", "D-STRANGULATED-BOWEL-OBSTRUCTION"},
+        75.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("urine_porphobilinogen_screen_positive_presence", "urine_porphobilinogen_positive"),
+        {"D-ACUTE-INTERMITTENT-PORPHYRIA"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("hiv_p24_antigen_positivity", "hiv_fourth_generation_test_positive", "acute_hiv_diagnosis_confirmation_available"),
+        {"D-ACUTE-HIV"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("hepatic_abscess_presence", "complex_cystic_liver_lesion_presence"),
+        {"D-AMOEBIC-LIVER-ABSCESS", "D-PYOGENIC-LIVER-ABSCESS"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("peripheral_blast_or_promyelocyte_presence", "promyelocytes_presence"),
+        {"D-APL"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "tdt_positive_blasts_presence",
+            "cd19_positive_blasts_presence",
+            "cd10_positive_blasts_presence",
+            "peripheral_blood_lymphoblast_percentage",
+        ),
+        {"D-ALL"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "anti_glomerular_basement_membrane_antibody_positive_presence",
+            "anti_gbm_antibody_positivity_probability",
+            "linear_gbm_igg_staining_activity",
+        ),
+        {"D-ANTI-GBM-DISEASE"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("anti_jo1_positive_presence", "antisynthetase_autoantibody_positivity_probability"),
+        {"D-ANTISYNTHETASE-SYNDROME", "D-DERMATOMYOSITIS", "D-POLYMYOSITIS"},
+        80.0,
+    )
+    penalize_unexplained_direct_marker(
+        (
+            "babesia_smear_positivity_probability",
+            "babesia_pcr_positivity_probability",
+            "intraerythrocytic_parasites_on_smear_presence",
+            "babesia_dna_pcr_positive_presence",
+        ),
+        {"D-BABESIOSIS", "D-MALARIA-FALCIPARUM"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("anti_nmdar_antibody_positivity_probability", "csf_nmdar_antibody_positive_presence", "serum_nmdar_antibody_positive_presence"),
+        {"D-AUTOIMMUNE-ENCEPHALITIS"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("propranolol_exposure_probability", "beta_blocker_exposure_presence", "fasting_propranolol_dose_presence"),
+        {"D-BETA-BLOCKER-TOXICITY"},
+        90.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("aspirated_airway_material_presence", "aspirated_airway_material_on_ct_presence"),
+        {"D-ASPIRATION-PNEUMONIA", "D-AIRWAY-FOREIGN-BODY"},
+        70.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("lupus_anticoagulant_activity", "lupus_anticoagulant_positive_presence", "anticardiolipin_igg", "anticardiolipin_igm"),
+        {"D-ANTIPHOSPHOLIPID-SYNDROME", "D-CATASTROPHIC-APS"},
+        120.0,
+    )
+    penalize_unexplained_direct_marker(
+        ("lymph_node_biopsy_malignant_or_clonal_population_presence",),
+        {"D-ALCL", "D-DLBCL", "D-HODGKIN-LYMPHOMA", "D-CLL-TRANSFORMATION-RICHTER", "D-IVLBCL"},
+        80.0,
+    )
+
+    alcohol_dependence = positive_observed_axis_score(
+        case,
+        ("harmful_alcohol_use_context_activity", "chronic_heavy_alcohol_use_presence", "heavy_alcohol_use_history"),
+        score=1.0,
+    )
+    withdrawal_features = positive_observed_axis_score(
+        case,
+        ("alcohol_withdrawal_risk_activity", "tremor_presence", "agitation_presence", "delirium_presence"),
+        score=1.0,
+    )
+    if alcohol_dependence and withdrawal_features and "D-ALCOHOL-WITHDRAWAL-DELIRIUM" not in candidate:
+        penalty -= 80.0
+
+    asthma_context = positive_observed_axis_score(
+        case,
+        ("asthma_airway_disease_presence", "salbutamol_use_history", "theophylline_use_history"),
+        score=1.0,
+    )
+    severe_airflow_obstruction = positive_observed_axis_score(
+        case,
+        ("acute_variable_airflow_obstruction_presence", "airway_spasm_presence", "dynamic_hyperinflation_presence", "silent_chest_presence"),
+        score=1.0,
+    )
+    paco2 = observed_float(case, "arterial_paco2")
+    if paco2 is None:
+        paco2 = observed_float(case, "arterial_pco2")
+    if asthma_context and (severe_airflow_obstruction or (paco2 is not None and paco2 >= 60.0)) and not any(
+        disease in {"D-ASTHMA-EXACERBATION", "D-COPD-EXACERBATION", "D-ANAPHYLAXIS"} for disease in candidate
+    ):
+        penalty -= 100.0
+
+    creatinine = observed_float(case, "serum_creatinine")
+    if creatinine is not None:
+        unit = norm_unit(case["observations_by_axis"].get("serum_creatinine", {}).get("unit"))
+        if unit in ("umol/l", "umolperl"):
+            creatinine = creatinine / 88.4
+    obstructive_aki = positive_observed_axis_score(
+        case,
+        ("bilateral_or_solitary_kidney_obstruction_presence", "bilateral_hydronephrosis_on_ct_presence", "bilateral_ureteric_stones_on_ct_presence"),
+        score=1.0,
+    )
+    if (creatinine is not None and creatinine >= 4.0 and obstructive_aki) and not any(
+        disease in {"D-ACUTE-KIDNEY-INJURY", "D-OBSTRUCTIVE-PYELONEPHRITIS", "D-BPH-URINARY-RETENTION"}
+        for disease in candidate
+    ):
+        penalty -= 80.0
+
+    transplant_immunosuppression = positive_observed_axis_score(
+        case,
+        (
+            "renal_transplant_history",
+            "immunosuppression_activity",
+            "iatrogenic_immunosuppression_intensity",
+            "immunosuppressive_medication_exposure",
+        ),
+        score=1.0,
+    )
+    urinary_renal_features = sum(
+        1
+        for axes in (
+            ("renal_allograft_dysfunction_presence", "acute_kidney_injury_presence"),
+            ("hematuria_activity", "hematuria_presence"),
+            ("dysuria_activity", "dysuria_presence"),
+            ("pyuria_presence", "urine_wbc_presence"),
+        )
+        if positive_observed_axis_score(case, axes, score=1.0)
+    )
+    if transplant_immunosuppression and urinary_renal_features >= 2 and not any(
+        disease
+        in {
+            "D-ADENOVIRUS-INFECTION",
+            "D-CMV-INFECTION",
+            "D-BK-VIRUS-NEPHROPATHY",
+            "D-TRANSPLANT-REJECTION-ACUTE",
+            "D-PYELONEPHRITIS",
+            "D-CATHETER-ASSOCIATED-UTI",
+        }
+        for disease in candidate
+    ):
+        penalty -= 60.0
+
+    sodium = observed_float(case, "serum_sodium")
+    if sodium is not None and sodium >= 155.0 and not any(
+        disease
+        in {
+            "D-ACUTE-SYMPTOMATIC-HYPERNATREMIA",
+            "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+            "D-CENTRAL-DIABETES-INSIPIDUS",
+            "D-PEDIATRIC-DEHYDRATION",
+        }
+        for disease in candidate
+    ):
+        penalty -= 60.0
 
     return penalty
 
