@@ -1,11 +1,26 @@
 # VeSMed V5 PoC Agent Instructions
 
+## Highest-Priority Observation Axis Rule
+
+Observed clinical facts must use diagnosis-neutral generic axes. The same CT/lab/physical finding must be represented by the same observed axis for every disease candidate.
+
+Ambiguous bundle axes are forbidden at the same highest priority. Do not create or accept rankable axes such as `flu_like_symptoms`, `cold_like_symptoms`, `viral_prodrome`, `upper_respiratory_symptoms`, `constitutional_symptoms`, `nonspecific_symptoms`, or any axis that hides multiple concrete observations behind a subjective label. Split the source text into explicit observed facts, for example fever, chills, sweating, headache, sore throat, rhinorrhea, cough, vomiting, diarrhea, myalgia, fatigue, or timing satellites. If the source only says a vague phrase without components, preserve it as record-only provenance and exclude it from ranking.
+
+Geometry-first ranking is a highest-priority runtime rule. Diagnosis ranking must emerge from axis geometry: observed axes, disease trajectories, axis couplings, latent mechanism edges, risk/background modifiers, and case observations. Do not make a ranking look correct by adding disease-specific `if` rules, ad hoc bonuses, hard gates, or duplicated evidence scoring. If a ranking is wrong, first repair the axis / trajectory / coupling / background geometry fairly across competing diseases. Temporary runtime guardrails are allowed only as explicit scaffolding with a migration path back into geometry, and must not double-count the same clinical fact.
+
+Anti-overfitting is a highest-priority distillation and repair rule. The goal is not merely to make the expected answer win; the goal is to avoid ontology pollution and preserve fair geometry. Forbidden behaviors: case-specific disease edits, exclusive explanatory power for the expected disease when mimics share the observation, disease identity embedded in ordinary observation axes, runtime `if` / bonus / hard-gate ranking fixes, double-counting the same clinical fact, vague rankable bundles, deleting or weakening inconvenient true evidence, mixing post-workup evidence into presentation ranking, judging only top-1 while ignoring implausible top-10 neighbors, and fixing one leaf in a way that damages neighboring mimics. Required workflow: diagnose failures by clusters, classify the failure mode, repair through diagnosis-neutral axis / trajectory / coupling / mechanism / risk-background geometry, perform horizontal mimic/family fairness audit, then run focused and broad regression with top-10 plausibility review.
+
+Do not encode disease identity into ordinary case observations, e.g. `*_in_D-<DISEASE>` axes for CT findings, symptoms, physical findings, or routine labs. Disease-specific axes are allowed only for truly disease-defined latent mechanisms, derived hazards, treatment modifiers, or post-diagnostic context that is not an ordinary presentation observation.
+
+When a real finding is missing, fix the generic ontology and all medically relevant competing disease leaves fairly. Do not make a ranking pass by mapping a neutral observation into a disease-specific axis.
+
 本文件是 Codex / 其他 agent 进入 `vesmed_v5_poc` 时的项目级说明。新 session 先读本文件，再按需读 `V5_SDE_DESIGN_v0.md`。
 
 ## 语言与产物
 
 - 与用户交流用中文。
 - 面向最终 UI / 病名 / 变量名的成品文字优先日文；工程内部说明可以中文。
+- 向用户展示 ranking / 诊断候选 / disease leaf 病名时，必须同时给 **日本語病名 + English disease name + disease_id**。不要只给 disease_id 或只给英文名。
 - 医学 case 必须来自真实文献，优先 PMC / PubMed case report。不要用 synthetic case。
 
 ## 当前主线
@@ -125,9 +140,17 @@ LLM 只蒸数字和结构，不蒸临床判断标签。不要加入 `first_line`
 
 所有被派去做 disease distillation、axis ontology audit、real PMC case expansion、医学结构化或治疗语义补全的 subagent，默认必须使用 `reasoning_effort: "xhigh"`。这是质量优先的铁律；除非用户明确要求降级，或任务完全是非医学、非质量关键的机械操作，否则不要用 `high` / `medium` / `low`。
 
-新增 disease leaf 时默认采用 **one disease, one agent**：每个新病单独派一个 `xhigh` agent 负责该病的 distillation / ontology audit / real case 结构化与质量审查，写入范围按 disease 文件和对应 case 文件隔离，避免多个 agent 修改同一 disease 造成冲突。
+新增 disease leaf 时默认采用 **one disease, one agent**：每个新病单独派一个 `xhigh` agent 负责该病的 distillation / ontology audit，写入范围按 disease 文件隔离，避免多个 agent 修改同一 disease 造成冲突。
 
-扩展 atlas 的当前目标是 200 个 disease leaves。新增 disease 时优先 common + critical；每个 disease leaf 原则上配套至少 3 个真实 PMC/PubMed real cases，除非确实找不到，不能只新增 disease JSON 而没有病例压测。
+**Distillation / Real Case Separation（防过拟合硬规则）**：同一个 agent 不能同时负责同一 disease leaf 的 manifold distillation 和 real case 搜索/结构化。先由 distillation agent 只看病名和通用 schema 产出 disease JSON；再由独立 case agent 查找真实 PMC/PubMed 病例并结构化；最后由第三方 audit/reviewer 或主 agent 做 ranking 回归和 ontology fairness 审查。禁止把 case 细节回灌进 distillation prompt 或在 distillation 中迎合压测病例。
+
+**Case-First Atlas Expansion（默认扩展流程，2026-05-21 定稿）**：扩展 active atlas 时默认先从真实 PMC/PubMed case 出发，而不是先凭主观清单决定要蒸哪些病。标准流程是：先收集 blind real cases；用当前 active atlas 跑 ranking / OOD / top-10 plausibility；把失败按类型分类；只有当失败证明 atlas 缺少临床稳定的 disease leaf 时，才新增该 leaf。失败分类至少包括：atlas 缺 leaf、已有 leaf 缺 diagnosis-neutral axis / mechanism / phase geometry、case 结构化错误、presentation-only mimic 可接受、需要 family/posterior aggregation、需要通用 pretest prior 校准。新增 leaf 时仍必须遵守 disease-name-only distillation：case 只用于发现缺口和后验审查，不能进入 distillation prompt，不能让 distillation 迎合该病例。planned common/critical disease backlog 可以作为 case search seed，但不能替代 blind case discovery、独立 real-case validation、第三方 audit/fairness、focused + atlas regression。
+
+**Two-Step Diagnosis Reference（2026-05-22 定稿）**：诊断 runtime 的主结构是先与 `health_reference_manifold` 比较来回答是否偏离健康/基础生理，再只在 disease manifolds 之间比较来回答是什么病。`health_reference_manifold` 不是 active diagnosis candidate；它是无 active disease vector field 时的生理 reference measure。不要引入 `encounter_reference_measure` 来削弱主诉证据；主诉应证明偏离健康，并继续参与病间 geometry 比较。`manifold_entry_measure` 是 runtime 初始粒子质量 / pretest measure，不属于 disease geometry，不得实现成 disease-specific bonus。
+
+扩展 atlas 的当前目标是 250 个 disease leaves。新增 disease 时优先国試常见病、common + critical；每个 disease leaf 原则上配套至少 3 个真实 PMC/PubMed real cases，除非确实找不到，不能只新增 disease JSON 而没有病例压测。
+
+**No Provisional Active Disease（最高标准硬规则）**：未完成 per-disease 最高标准全栈蒸馏、独立 real-case agent 提供至少 3 个真实 PMC/PubMed 病例、第三方 audit/fairness 审查、focused + atlas regression 之前，任何新 disease JSON / case JSON 都不得进入 active `distillations/` / `distillations/cases/`。临时 seed、source-anchor、占位病、半成品 distillation 只能放在 quarantine / staging 目录，不能被 `v5_joint_sde_case_test.py` 的 active atlas 自动发现，也不能计入 `master_axes.json`。
 
 ### Disease Leaf Granularity
 
@@ -268,6 +291,10 @@ PoC 阶段接受 QOL 缺失；QOL 是未来第二维。
 - 例：先有 `pathologic_lymphadenopathy_presence=1`，再用 satellite/measurement 描述 `mediastinal_lymphadenopathy_activity`、`largest_nodal_mass_diameter_cm`。不要直接把“CT 有淋巴结包块”拍成 `0.5`。
 - V5 JSON 用 `axis_role` 标注三层角色：`finding` / `measurement` / `satellite`。当 satellite 或 child measurement 有明确上位 Finding 时，必须写 `parent_axis_id`；runtime 只在 parent present 时消费 child，并避免 parent + child 对同一临床事实粗细双算。
 - OPQRST 属于同一原则：先有症状是否存在的主变量，再把 onset/provocation/quality/radiation/severity/timing 作为卫星变量；没有完成拆分前可以保留旧的 compact activity axis，但不能为了排名删除原文证据。
+- 2026-05-09 OPQRST / 痛み・嘔吐性状决策：不要新增粗粒度 `acute/subacute/chronic` 或 `pain_onset_tempo` 这类标签；V5 已通过 observation timestamp + value trajectory 隐性表达普通急性/亚急性/缓慢变化。只把诊断价值稳定的 temporal phenotype 结构化为 satellite/measurement，例如 `sudden_onset_pain_presence`、`time_to_peak_pain_minutes`、`recurrent_episodic_pain_pattern_presence`、`intermittent_colicky_pain_presence`。
+- 疼痛 OPQRST 结构化粒度：补通用、可复用、会改变 likelihood 的 satellite，例如 laterality (`left_sided_pain_presence` / `right_sided_pain_presence` / `bilateral_pain_presence`)、radiation (`pain_radiation_presence` + back/shoulder/groin children)、provocation/functional impact (`movement_worsened_pain_presence`, `position_change_limited_by_pain_presence`)。不要把“太腿内側”这类过细解剖碎片升成通用核心 axis，除非后续真实病例反复证明有稳定诊断价值。
+- 疼痛分布结构化到临床区域级即可：`generalized_pain_presence`、`limb_pain_presence`、`upper_limb_pain_presence`、`lower_limb_pain_presence`、`thigh_pain_presence`、`bilateral_limb_pain_presence`。更细方向/局部描述先保留在 `source_text_value`。
+- 嘔吐/便性状必须作为 parent/satellite：`vomiting_presence` 为 parent，性状用 satellite，例如 `gastric_fluid_vomitus_presence`、`bilious_vomiting_presence`、`feculent_vomiting_presence`、`projectile_vomiting_presence`、`hematemesis_presence`、`coffee_ground_emesis_presence`；`diarrhea_presence` 为 parent，`watery_stool_presence` / `bloody_diarrhea_presence` 为 satellite。Manual UI label 必须日文，单位自动来自 axis registry，不要让用户手填单位。
 - **缺 axis 时允许补 ontology**：如果 audit 发现某个 disease manifold 漏了真实、重要、符合实际医学的临床 axis，agent 可以直接补进该 disease 的 `axes`，并同步补 `mechanism_edges` / case structured observations / `master_axes.json`。这不是排名补丁；禁止为了让某个 case 过而发明不存在或不稳定的特征、删除证据、调窄竞品疾病范围。补完必须跑相关 case 与全量回归，报告是否引入退化。
 - **新增 axis 必须横向公平审查**：给某个 disease / disease family 补 axis 时，必须同时检查当前 atlas 里的竞争病和近邻 mimic 是否也应医学真实地拥有该 axis 或其 parent axis / satellite。该补的同步补，不该有的明确不补；不能只给目标病增加解释力、让其他真实也会出现该证据的疾病被不公平扣分。横向补轴仍必须符合真实医学，不能为了“公平”把不存在或极罕见、非稳定的特征硬塞进别的病。
 - **补轴不是单病补丁**：任何因为 real case 失败而发现的漏轴，都要先判断这是目标病独有、某个疾病家族共有，还是多个 mimic 都应拥有。若是 family/near-neighbor 共有轴，必须同步补到医学上真实相关的竞争 manifold；若只给失败目标病补而不补其他同样会出现该证据的病，本质上就是变相过拟合，禁止这样做。
@@ -317,20 +344,20 @@ patient 有 CKD, creatinine = 2.0
 ```text
 病人来了
 系统从已知 N 个病里挑一个最像的
-但还要跟 "啥病也没有，纯背景" 比一下
-已知病比纯背景明显好 -> 真是这病
-已知病并不比纯背景好  -> 我们 atlas 里没有，这是未知病
+但还要跟 "没有 active disease 的 health reference" 比一下
+已知病比 health reference 明显好 -> 有病且 atlas 内有解释力
+已知病并不比 health reference 好  -> 可能健康、轻症观察、或 atlas 外未知病
 ```
 
 工程规则：
 
 - 诊断 runtime 对每个 case 同时输出：
   - `logP_best_disease`：在已知 manifolds 中的最佳 logP
-  - `logP_background_only`：不挂任何 disease，纯 base_measure_background 下的 logP（risk-factor-adjusted）
-  - `delta_to_null = logP_best_disease - logP_background_only`
+  - `logP_health_reference`：不挂任何 disease vector field 的 health/reference logP（risk-factor-adjusted）
+  - `delta_to_health = logP_best_disease - logP_health_reference`
 - runtime 不输出 "未知病/已知病" 二值标签，只输出 delta。是否把它二值化由下游消费者（UI / 医生工作流）按 Bayes factor 惯例（BF>10 ≈ delta>2.3）决定。
 - 不允许在 runtime 写 `if delta < threshold: return "unknown"`，**因为这又会变成拍脑袋的阈值**。
-- `base_measure_background` 由 `v5_background.py` 的 risk-factor-adjusted 合成器提供，与 missing-axis fallback 共用同一套底子。
+- `health_reference` 当前由 `v5_background.py` 的 risk-factor-adjusted 合成器提供，与 missing-axis fallback 共用同一套底子；未来可替换为独立蒸馏的 health reference manifold。
 
 防错规则：
 
@@ -347,17 +374,17 @@ PoC 阶段已知 atlas 只有 D137 / D-SEPSIS-GN / D-TTP 三片山。
 ```text
 case 1: 真 sepsis
   logP_D-SEPSIS-GN = -45
-  logP_background_only = -120
+  logP_health_reference = -120
   delta = +75 -> 强证据是 sepsis
 
 case 2: 肺炎 (atlas 没蒸)
   logP_D-SEPSIS-GN = -200 (best)
-  logP_background_only = -210
+  logP_health_reference = -210
   delta = +10 -> 弱证据，下游应判定为 "未知病/不在 atlas"
 
 case 3: 健康人
   logP_D-SEPSIS-GN = -300 (best)
-  logP_background_only = -50
+  logP_health_reference = -50
   delta = -250 -> 已知病比纯背景差太多，下游判定为 "未知病或健康"
 ```
 
@@ -405,7 +432,7 @@ case 3: 健康人
 - joint SDE PMC case test 当前结果（2026-05-03，atlas = D137 / D-SEPSIS-GN / D-TTP / D-HLH-MAS / D-SLE-FLARE）：single-manifold 11/12 PASS；combo-manifold 1/1 PASS。唯一 FAIL 是 SEPSIS_KIDNEY_TX_RALSTONIA 被 D-HLH-MAS 抢去；不要为通过该 case 打补丁，需先用纯病名 prompt 重蒸受旧 prompt 污染的 manifold，再按真实 case 复测。
 - `D-HLH-MAS` 现有 JSON：8 latent mechanisms、56 mechanism_edges、69 explicit axes、12 couplings、15 treatments、10 risk_factors；可解析，但来自旧 prompt 语义，后续应按纯病名 prompt 重蒸。
 - `D-SLE-FLARE` 现有 JSON (2026-05-02)：11 latent mechanisms、69 mechanism_edges、92 explicit axes、18 couplings、16 treatments、10 risk_factors；可解析，但后续应按纯病名 prompt 重蒸。
-- OOD / unknown-disease null-model check 已接入 `v5_joint_sde_case_test.py`：每个 case 输出 `logP_best_known`、`logP_background_only`、`delta_to_null_best_known`；runtime 不写硬阈值
+- OOD / unknown-disease health-reference check 已接入 `v5_joint_sde_case_test.py`：每个 case 输出 `logP_best_known`、`logP_health_reference`、`delta_to_health_best_known`；runtime 不写硬阈值
 - 已加入复杂 PMC cases：肾移植免疫抑制 sepsis、AOSD+TTP、SLE-associated TTP
 - treatment vector field runtime v0 已实现：治疗会改变 joint state target、push 指标、调 sigma、改变 mortality_hazard，并输出 30-day RMST 排名与 day-7 axis movement；runtime 已能消费 `required_context_axes` / `effect_modifiers`
 - treatment runtime 已支持同病多治疗 bundle：按 treatment lane 组合互补治疗，避免两个抗生素、TPE+plasma infusion bridge 这类替代方案混搭；同一 axis 的多治疗 `trajectory_modifications` 会先合并再应用，避免弱 add-on 覆盖强 core therapy

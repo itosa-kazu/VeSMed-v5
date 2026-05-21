@@ -10,6 +10,14 @@ This is the first full-vector runtime for current V5 distillations:
 For case ranking we score a presentation snapshot by marginalizing over latent
 disease day(s). The endpoint likelihood uses the Gaussian marginal of a
 mean-reverting joint SDE in transformed axis space.
+
+Default ranking is geometry-first: disease rank is computed from observed
+axis residuals, trajectories, couplings, mechanism gates, risk/background
+modifiers, and case observations. Legacy anchor/bonus scaffolds remain only
+as an opt-in regression comparison mode.
+
+Diagnostic reporting is two-step: first compare the case to a health/reference
+state to detect illness, then compare disease manifolds against each other.
 """
 import itertools
 import json
@@ -140,9 +148,13 @@ MAX_COMBO_SIZE = env_int("VESMED_MAX_COMBO_SIZE", 2)
 CASE_FILTER = env_csv("VESMED_CASE_FILTER")
 ONLY_COMBO_CASES = env_bool("VESMED_ONLY_COMBO_CASES", False)
 SCORE_MODE = os.environ.get("VESMED_SCORE_MODE", "mc").strip().lower()
+RANKING_PHILOSOPHY = os.environ.get("VESMED_RANKING_PHILOSOPHY", "geometry_first").strip().lower().replace("-", "_")
+EVIDENCE_MODE = os.environ.get("VESMED_EVIDENCE_MODE", "case").strip().lower().replace("-", "_")
 TIME_GRID_N = max(env_int("VESMED_TIME_GRID_N", 31), 1)
 REPORT_MODE = os.environ.get("VESMED_REPORT_MODE", "full").strip().lower()
 RANKING_TOP_N = env_int("VESMED_RANKING_TOP_N", 0)
+PROGRESS_EVERY_CASES = max(env_int("VESMED_PROGRESS_EVERY_CASES", 25), 0)
+ENABLE_STRUCTURAL_PRIORS = env_bool("VESMED_ENABLE_STRUCTURAL_PRIORS", True)
 EARLY_GRID_TIME_DAYS = (0.02, 0.1, 0.5, 1.0, 3.0, 7.0)
 COMBO_ANCHOR_THRESHOLD = 2.0
 COMBO_MISSING_ANCHOR_PENALTY = -60.0
@@ -161,6 +173,73 @@ DURATION_COMPATIBILITY_PENALTY_SCALE = 18.0
 DURATION_COMPATIBILITY_AXIS_CAP = 60.0
 DURATION_COMPATIBILITY_TOTAL_CAP = 420.0
 ANATOMIC_IMPOSSIBILITY_LOG_PENALTY = -600.0
+
+HEALTH_REFERENCE_CANDIDATE = "health_reference"
+
+DIAGNOSTIC_FAMILIES = {
+    "F-ACUTE-INFECTIOUS-GASTROENTERITIS": {
+        "display_name_ja": "急性感染性胃腸炎",
+        "display_name_en": "Acute infectious gastroenteritis",
+        "member_disease_ids": {
+            "D-CAMPYLOBACTER-ENTERITIS",
+            "D-NONTYPHOID-SALMONELLA-ENTERITIS",
+            "D-NOROVIRUS-GASTROENTERITIS",
+            "D-SHIGELLOSIS",
+            "D-STEC-ENTERITIS",
+        },
+    },
+}
+
+LEGACY_RANKING_PHILOSOPHIES = {"legacy", "legacy_scaffold", "anchor_scaffold", "anchor"}
+POST_WORKUP_EVIDENCE_MODES = {"post_workup", "postworkup", "all", "all_available", "full"}
+CASE_SCOPED_EVIDENCE_MODES = {"case", "case_stage", "auto"}
+
+
+def use_legacy_scoring_scaffolds():
+    return RANKING_PHILOSOPHY in LEGACY_RANKING_PHILOSOPHIES
+
+
+def normalize_evidence_mode(value):
+    return str(value or "").strip().lower().replace("-", "_")
+
+
+def case_evidence_mode(data):
+    if EVIDENCE_MODE not in CASE_SCOPED_EVIDENCE_MODES:
+        return EVIDENCE_MODE
+    mode = normalize_evidence_mode(
+        data.get("ranking_evidence_mode")
+        or data.get("evidence_mode")
+        or data.get("diagnostic_evidence_mode")
+        or data.get("case_evidence_mode")
+        or data.get("diagnostic_stage")
+    )
+    return mode or "presentation"
+
+
+def use_presentation_evidence_boundary(evidence_mode=None):
+    mode = normalize_evidence_mode(evidence_mode or EVIDENCE_MODE)
+    if mode in CASE_SCOPED_EVIDENCE_MODES:
+        mode = "presentation"
+    if mode.startswith("post_") or "microbiology" in mode or "pathology" in mode or "confirmatory" in mode:
+        return False
+    return mode not in POST_WORKUP_EVIDENCE_MODES
+
+
+def ranking_philosophy_label():
+    if use_legacy_scoring_scaffolds():
+        return "legacy_scaffold"
+    return "geometry_first"
+
+
+def report_is_summary():
+    return REPORT_MODE in {"summary", "brief", "top"}
+
+
+def report_score_slice(scores):
+    if not report_is_summary():
+        return scores
+    top_n = RANKING_TOP_N if RANKING_TOP_N > 0 else 10
+    return scores[:top_n]
 
 FEMALE_REPRODUCTIVE_DISEASE_IDS = {
     "D-AMNIOTIC-FLUID-EMBOLISM",
@@ -280,6 +359,7 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-HEPATIC-ENCEPHALOPATHY",
     "D-HYPOTHERMIA",
     "D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE",
+    "D-HYPERTENSIVE-EMERGENCY",
     "D-IGA-NEPHROPATHY",
     "D-INVASIVE-ASPERGILLOSIS",
     "D-PERIPARTUM-CARDIOMYOPATHY",
@@ -311,6 +391,7 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-BOWEL-OBSTRUCTION",
     "D-BUDD-CHIARI-SYNDROME",
     "D-CATHETER-ASSOCIATED-UTI",
+    "D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION",
     "D-CHRONIC-SUBDURAL-HEMATOMA",
     "D-CROHN-DISEASE-FLARE",
     "D-CROUP",
@@ -336,6 +417,7 @@ SPECIFIC_CONTEXT_EXPLICIT_ANCHOR_DISEASE_IDS = {
     "D-VENTRICULAR-TACHYCARDIA",
     "D-RETINAL-DETACHMENT",
     "D-SUBARACHNOID-HEMORRHAGE",
+    "D-TRANSFUSION-REACTION-HEMOLYTIC",
 }
 
 SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
@@ -392,6 +474,18 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-BOWEL-OBSTRUCTION": ("bowel_obstruction", "intestinal_obstruction", "transition_point", "air_fluid_level", "bowel_dilation", "obstipation", "feculent"),
     "D-BUDD-CHIARI-SYNDROME": ("budd_chiari", "hepatic_vein", "portal_vein_thrombosis", "caudate_lobe", "ascites", "hepatomegaly"),
     "D-CATHETER-ASSOCIATED-UTI": ("urinary_catheter", "foley", "catheter", "bacteriuria", "urine_culture", "pyuria"),
+    "D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION": (
+        "central_venous_catheter",
+        "central_line",
+        "catheter_source",
+        "infected_catheter",
+        "catheter_exit",
+        "catheter_tunnel",
+        "hemodialysis_access",
+        "differential_time_to_positivity",
+        "catheter_tip",
+        "clabsi",
+    ),
     "D-CHRONIC-SUBDURAL-HEMATOMA": ("subdural", "hematoma", "head_trauma", "fall", "ct_subdural"),
     "D-CROHN-DISEASE-FLARE": ("crohn", "ileitis", "terminal_ileum", "skip_lesion", "fistula", "perianal", "bloody_diarrhea", "chronic_diarrhea"),
     "D-CROUP": ("croup", "barking_cough", "steeple_sign", "stridor"),
@@ -413,6 +507,17 @@ SPECIFIC_CONTEXT_ANCHOR_TOKENS = {
     "D-SUPERIOR-VENA-CAVA-SYNDROME": ("superior_vena_cava", "svc_obstruction", "venous_distension", "upper_extremity_edema", "facial_neck_swelling", "mediastinal_mass"),
     "D-TAKOTSUBO-CARDIOMYOPATHY": ("takotsubo", "apical_ballooning", "wall_motion_beyond_single_coronary", "emotional_stress"),
     "D-TOXOPLASMOSIS": ("toxoplasma", "toxoplasmosis", "ring_enhancing", "brain_lesion", "hiv", "cd4", "cat_exposure"),
+    "D-TRANSFUSION-REACTION-HEMOLYTIC": (
+        "transfusion",
+        "blood_bank",
+        "incompatibility",
+        "direct_antiglobulin",
+        "hemoglobinuria",
+        "plasma_free_hemoglobin",
+        "haptoglobin",
+        "hemolysis",
+        "hemolytic",
+    ),
     "D-VENTRICULAR-FIBRILLATION": ("ventricular_fibrillation",),
     "D-VENTRICULAR-TACHYCARDIA": ("ventricular_tachycardia", "wide_complex_tachycardia"),
 }
@@ -954,13 +1059,45 @@ def apply_treatment_modifier_context_defaults(axis):
     return axis
 
 
+def canonical_runtime_axis_id(axis_id, axis, disease_id):
+    """Strip disease suffixes from ordinary axes as a migration bridge.
+
+    Active atlas files still contain many ordinary presentation axes named
+    ``*_in_D-...``. Observations must never use those names. Until the atlas is
+    migrated on disk, load them under a generic runtime axis id so neutral case
+    observations can match disease geometry without reintroducing diagnosis-
+    encoded observations.
+    """
+    axis_id = str(axis_id or "")
+    if not disease_specific_axis_id(axis_id):
+        return axis_id
+    if allowed_disease_specific_axis_for_observation(axis_id, axis):
+        return axis_id
+    disease_suffix = f"_in_{disease_id}"
+    if disease_id and axis_id.endswith(disease_suffix):
+        return axis_id[: -len(disease_suffix)]
+    return strip_disease_suffix_from_axis_id(axis_id)
+
+
+def canonicalize_axis_ref(axis_id, axis_aliases):
+    return axis_aliases.get(axis_id, axis_id)
+
+
 def load_manifold(path):
     data = json.loads(path.read_text(encoding="utf-8"))
+    disease_id = distillation_disease_id(path, data)
     axes = {}
+    axis_aliases = {}
     for raw in raw_axis_records(data):
         if not raw.get("axis_id"):
             continue
         axis = dict(raw)
+        original_axis_id = axis["axis_id"]
+        canonical_axis_id = canonical_runtime_axis_id(original_axis_id, axis, disease_id)
+        if canonical_axis_id != original_axis_id:
+            axis_aliases[original_axis_id] = canonical_axis_id
+            axis["axis_id"] = canonical_axis_id
+            axis["_legacy_axis_id"] = original_axis_id
         for key in [
             "baseline_range",
             "peak_day_range",
@@ -972,23 +1109,36 @@ def load_manifold(path):
         if axis["baseline_range"] is None:
             continue
         axis = apply_treatment_modifier_context_defaults(axis)
-        axes[axis["axis_id"]] = axis
+        axes.setdefault(axis["axis_id"], axis)
     mechanism_edges = []
     for raw in (data.get("mechanism_edges") or []) + (data.get("causal_edges") or []):
         edge = normalize_mechanism_edge(raw)
         if edge is not None:
+            edge = dict(edge)
+            edge["source_axis_id"] = canonicalize_axis_ref(edge.get("source_axis_id"), axis_aliases)
+            edge["target_axis_id"] = canonicalize_axis_ref(edge.get("target_axis_id"), axis_aliases)
             mechanism_edges.append(edge)
     mechanism_edges_by_target = {}
     for edge in mechanism_edges:
         mechanism_edges_by_target.setdefault(edge.get("target_axis_id"), []).append(edge)
+    axis_couplings = []
+    for raw in data.get("axis_couplings") or []:
+        if not isinstance(raw, dict):
+            continue
+        item = dict(raw)
+        for key in ("source_axis_id", "target_axis_id", "axis_id"):
+            if item.get(key):
+                item[key] = canonicalize_axis_ref(item.get(key), axis_aliases)
+        axis_couplings.append(item)
     return {
         "disease": data.get("disease", path.stem),
         "distillation_scope": data.get("distillation_scope") or {},
         "axes": axes,
+        "axis_aliases": axis_aliases,
         "latent_mechanisms": data.get("latent_mechanisms") or [],
         "mechanism_edges": mechanism_edges,
         "mechanism_edges_by_target": mechanism_edges_by_target,
-        "axis_couplings": data.get("axis_couplings") or [],
+        "axis_couplings": axis_couplings,
         "risk_factors": data.get("risk_factors") or [],
         "treatments": data.get("treatments") or [],
     }
@@ -1152,7 +1302,36 @@ MAPPED_EVIDENCE_SECTIONS = (
     "diagnostics",
     "physical_exam",
     "microbiology",
+    "confirmatory_findings",
     "clinical_course_events",
+)
+POST_WORKUP_DEFAULT_EXCLUDED_SECTIONS = {
+    "microbiology",
+    "pathology",
+    "confirmatory_findings",
+    "clinical_course_events",
+}
+POST_WORKUP_CATEGORY_TOKENS = (
+    "microbiology",
+    "virology",
+    "culture",
+    "pathology",
+    "histology",
+    "biopsy",
+    "autopsy",
+    "serology",
+    "antibody",
+    "antigen",
+    "pcr",
+    "sequencing",
+    "viral_panel",
+    "susceptibility",
+    "resistance",
+    "confirmatory",
+    "clinical_course",
+    "follow_up",
+    "outcome",
+    "treatment_response",
 )
 DIRECT_AXIS_SECTION_SKIP = {
     "demographics",
@@ -1170,6 +1349,132 @@ NON_RANKING_SECTION_PREFIXES = (
     "treatment",
     "supportive",
 )
+
+
+def disease_specific_axis_id(axis_id):
+    axis_id = str(axis_id or "")
+    return "_in_D-" in axis_id or re.search(r"_in_D[0-9A-Z-]+$", axis_id) is not None
+
+
+def strip_disease_suffix_from_axis_id(axis_id):
+    return re.sub(r"_in_D-?[0-9A-Z-]+$", "", str(axis_id or ""))
+
+
+def allowed_disease_specific_axis_for_observation(axis_id, item=None):
+    """Only latent/event/outcome/treatment context may keep disease-specific ids.
+
+    Ordinary symptoms, physical findings, imaging, routine labs, and procedure
+    observations must use generic diagnosis-neutral axes. In presentation mode,
+    even allowed disease-specific post-diagnostic context is kept out unless the
+    item is explicitly staged as available.
+    """
+    if not disease_specific_axis_id(axis_id):
+        return True
+    item = item or {}
+    category = str(item.get("category") or "").strip().lower()
+    axis_role = str(item.get("axis_role") or "").strip().lower()
+    if axis_id.startswith("mortality_hazard_in_") or "_hazard_in_D-" in axis_id:
+        return category in {"derived_hazard", "event_hazard", "hazard"} or "hazard" in axis_id
+    if category in {
+        LATENT_MECHANISM_CATEGORY,
+        "latent_mechanism",
+        "event_hazard",
+        "derived_hazard",
+        "treatment_modifier",
+        "treatment_context",
+        "post_diagnostic_context",
+    }:
+        return True
+    if axis_role in {"latent_mechanism", "event_hazard", "derived_hazard", "treatment_modifier"}:
+        return True
+    return False
+
+
+def canonical_case_observation_axis_id(axis_id, item=None):
+    """Sanitize legacy case evidence to neutral axis ids before scoring."""
+    if not disease_specific_axis_id(axis_id):
+        return axis_id
+    if allowed_disease_specific_axis_for_observation(axis_id, item):
+        return axis_id
+    return strip_disease_suffix_from_axis_id(axis_id)
+
+
+def item_explicitly_available_for_presentation(item):
+    if not isinstance(item, dict):
+        return False
+    explicit_true_keys = (
+        "available_for_presentation_ranking",
+        "available_at_presentation",
+        "initial_presentation_available",
+        "presentation_available",
+    )
+    if any(item.get(key) is True for key in explicit_true_keys):
+        return True
+    stage = str(
+        item.get("evidence_stage")
+        or item.get("available_stage")
+        or item.get("ranking_stage")
+        or ""
+    ).strip().lower().replace("-", "_")
+    return stage in {"presentation", "initial", "initial_presentation", "admission", "triage"}
+
+
+def item_is_post_workup_evidence(item, section=None):
+    if not isinstance(item, dict):
+        return False
+    section = str(section or item.get("_section") or "").strip().lower()
+    if section in POST_WORKUP_DEFAULT_EXCLUDED_SECTIONS:
+        return True
+    stage = str(
+        item.get("evidence_stage")
+        or item.get("available_stage")
+        or item.get("ranking_stage")
+        or ""
+    ).strip().lower().replace("-", "_")
+    if stage in {"post_workup", "postworkup", "confirmatory", "follow_up", "outcome", "treatment_response"}:
+        return True
+    haystack = " ".join(
+        str(item.get(key) or "").strip().lower()
+        for key in (
+            "axis_id",
+            "mapped_axis_id",
+            "category",
+            "axis_role",
+            "timepoint",
+            "evidence_type",
+            "test_name",
+            "method",
+            "finding",
+            "result",
+            "source_text_value",
+            "note",
+            "notes",
+        )
+    )
+    return any(token in haystack for token in POST_WORKUP_CATEGORY_TOKENS)
+
+
+def item_available_for_snapshot(item, snapshot_day, evidence_mode=None):
+    if not use_presentation_evidence_boundary(evidence_mode):
+        return True
+    for key in ("available_at_day", "result_day", "reported_day", "report_day"):
+        if item.get(key) is None:
+            continue
+        try:
+            if float(item.get(key)) > snapshot_day:
+                return False
+        except (TypeError, ValueError):
+            continue
+    value = item.get("day")
+    if value is None:
+        value = item.get("relative_day")
+    if value is not None:
+        try:
+            if float(value) > snapshot_day:
+                return False
+        except (TypeError, ValueError):
+            pass
+    return True
 
 
 def mapped_axis_ids(item):
@@ -1190,7 +1495,7 @@ def mapped_axis_ids(item):
 
 def mapped_axis_items(item):
     for axis_id in mapped_axis_ids(item):
-        yield axis_id, item
+        yield canonical_case_observation_axis_id(axis_id, item), item
 
     raw_axes = item.get("mapped_axes")
     if not isinstance(raw_axes, list):
@@ -1200,7 +1505,7 @@ def mapped_axis_items(item):
             continue
         axis_id = axis_item.get("axis_id") or axis_item.get("mapped_axis_id")
         if axis_id:
-            yield axis_id, axis_item
+            yield canonical_case_observation_axis_id(axis_id, axis_item), axis_item
 
 
 def can_infer_qualitative_mapped_axis(axis_id):
@@ -1211,9 +1516,6 @@ def can_infer_qualitative_mapped_axis(axis_id):
         "_severity",
         "_extent",
         "_need",
-        "presence_in_",
-        "activity_in_",
-        "hazard_in_",
     )
     measurement_markers = (
         "_size_",
@@ -1230,6 +1532,45 @@ def can_infer_qualitative_mapped_axis(axis_id):
     if axis_id.endswith("_hazard") or "_hazard_" in axis_id:
         return False
     return any(marker in axis_id for marker in qualitative_markers)
+
+
+QUALITATIVE_PROXY_UNITS = ("presentabsent01", "probability01", "relativeactivity01", "severityscore01")
+
+
+def qualitative_suffix_variant_axis_ids(axis_id, observations):
+    """Return same-stem qualitative axis variants for ontology migration.
+
+    The atlas still mixes finding parent axes such as ``cough_presence`` with
+    intensity satellites such as ``cough_activity`` and ``cough_severity``.
+    These are not disease-specific rules; they are neutral same-stem axis
+    variants. We only synthesize activity/severity intensity proxies. Presence
+    axes are used for suppression only when the corresponding intensity axis is
+    already explicitly observed, so we do not invent a positive parent finding
+    from a lone severity value.
+    """
+    axis_id = str(axis_id or "")
+    if disease_specific_axis_id(axis_id):
+        return []
+    variants = []
+    for suffix, peer_suffixes in (
+        ("_activity", ("_severity", "_presence")),
+        ("_severity", ("_activity", "_presence")),
+        ("_presence", ("_activity", "_severity")),
+    ):
+        if not axis_id.endswith(suffix):
+            continue
+        stem = axis_id[: -len(suffix)]
+        for peer_suffix in peer_suffixes:
+            peer_axis_id = stem + peer_suffix
+            if peer_axis_id == axis_id:
+                continue
+            if peer_suffix == "_presence" and peer_axis_id not in observations:
+                continue
+            if suffix == "_presence" and peer_axis_id not in observations:
+                continue
+            variants.append(peer_axis_id)
+        break
+    return variants
 
 
 def mapped_item_is_negative(item):
@@ -1253,11 +1594,13 @@ def mapped_item_is_negative(item):
     return any(re.search(pattern, text) for pattern in negative_patterns)
 
 
-def infer_mapped_observation(item, axis_id, axis_item=None):
+def infer_mapped_observation(item, axis_id, axis_item=None, section=None, snapshot_day=None, evidence_mode=None):
     if item.get("use_in_ranking") is False:
         return None
     axis_item = axis_item or item
-    if axis_item.get("use_in_ranking") is False:
+    if not case_item_rankable(item, section=section, axis_id=axis_id, snapshot_day=snapshot_day, evidence_mode=evidence_mode):
+        return None
+    if not case_item_rankable(axis_item, section=section, axis_id=axis_id, snapshot_day=snapshot_day, evidence_mode=evidence_mode):
         return None
     value = axis_item.get("value")
     if value is not None:
@@ -1349,44 +1692,157 @@ def background_axes_for_case(background_axes, case, candidate):
     return adjusted
 
 
-def case_item_rankable(item):
-    return item.get("use_in_ranking") is not False
+AMBIGUOUS_SYMPTOM_BUNDLE_AXIS_IDS = {
+    # Colloquial symptom bundles such as "感冒様", "flu-like illness", and
+    # "viral prodrome" are narrative text, not stable observed axes. Rank only
+    # the explicit components the source actually states.
+    "viral_prodrome_activity",
+    "viral_prodrome_presence",
+    "viral_prodrome_history_presence",
+    "viral_prodrome_severity",
+    "upper_respiratory_symptom_presence",
+    "upper_respiratory_prodrome_interval_days",
+    "cough_rhinorrhea_activity",
+    "recent_upper_respiratory_infection_presence",
+    "pharyngitis_or_upper_respiratory_source_activity",
+    "synpharyngitic_hematuria_timing_days_after_urt_symptoms",
+    "brain_mri_nonspecific_activity_in_D-AUTOIMMUNE-ENCEPHALITIS",
+    "subacute_respiratory_symptom_duration_days",
+    "nonspecific_st_t_change_presence",
+    "transfusion_associated_fever_chills_cluster_activity",
+    "chills_or_discomfort_activity",
+    "chills_or_hot_flushes_presence",
+    "chills_or_discomfort_activity_in_D-DRUG-FEVER",
+}
+
+AMBIGUOUS_SYMPTOM_BUNDLE_FACTORS = {
+    "recent_viral_or_flu_like_illness",
+    "viral_prodrome_context",
+    "recent_viral_or_upper_respiratory_illness",
+    "recent_upper_respiratory_or_gastrointestinal_infection",
+    "recent_viral_upper_respiratory_infection",
+    "new_onset_diabetes_prodrome",
+    "recurrent_upper_respiratory_infections_since_childhood",
+}
+
+
+AMBIGUOUS_SYMPTOM_BUNDLE_AXIS_PATTERNS = (
+    "flu_like",
+    "cold_like",
+    "viral_prodrome",
+    "constitutional_symptom",
+    "constitutional_symptoms",
+    "nonspecific_symptom",
+    "nonspecific_symptoms",
+)
+
+
+def ambiguous_symptom_bundle_axis(axis_id):
+    axis_id = str(axis_id or "")
+    return axis_id in AMBIGUOUS_SYMPTOM_BUNDLE_AXIS_IDS or any(
+        pattern in axis_id for pattern in AMBIGUOUS_SYMPTOM_BUNDLE_AXIS_PATTERNS
+    )
+
+
+DIAGNOSTIC_INTERPRETATION_OBSERVATION_AXIS_IDS = {
+    "siadh_context_presence",
+    "siadh_context_activity",
+    "siadh_driver_context_presence",
+    "pulmonary_siadh_driver_context_presence",
+    "cns_siadh_driver_context_presence",
+    "malignancy_siadh_driver_context_presence",
+    "medication_siadh_driver_context_presence",
+    "postoperative_pain_nausea_siadh_driver_context_presence",
+    "persistent_siadh_driver_activity",
+}
+
+DIAGNOSTIC_INTERPRETATION_OBSERVATION_FACTORS = {
+    "siadh_context",
+    "siadh_driver_context",
+    "pulmonary_siadh_driver_context",
+    "cns_siadh_driver_context",
+    "malignancy_siadh_driver_context",
+    "medication_siadh_driver_context",
+    "postoperative_pain_nausea_siadh_driver_context",
+}
+
+DIAGNOSTIC_INTERPRETATION_OBSERVATION_AXIS_PATTERNS = (
+    "_siadh_driver_context_",
+)
+
+
+def diagnostic_interpretation_observation_axis(axis_id):
+    axis_id = str(axis_id or "")
+    return axis_id in DIAGNOSTIC_INTERPRETATION_OBSERVATION_AXIS_IDS or any(
+        pattern in axis_id for pattern in DIAGNOSTIC_INTERPRETATION_OBSERVATION_AXIS_PATTERNS
+    )
+
+
+def case_item_rankable(item, section=None, axis_id=None, snapshot_day=None, evidence_mode=None):
+    if item.get("use_in_ranking") is False:
+        return False
+    axis_id = canonical_case_observation_axis_id(axis_id or item.get("axis_id") or item.get("mapped_axis_id"), item)
+    if ambiguous_symptom_bundle_axis(axis_id):
+        return False
+    item_factor = str(item.get("factor") or "").strip().lower()
+    if item_factor in AMBIGUOUS_SYMPTOM_BUNDLE_FACTORS:
+        return False
+    if diagnostic_interpretation_observation_axis(axis_id):
+        return False
+    if item_factor in DIAGNOSTIC_INTERPRETATION_OBSERVATION_FACTORS:
+        return False
+    if not allowed_disease_specific_axis_for_observation(axis_id, item):
+        return False
+    if snapshot_day is not None and not item_available_for_snapshot(item, snapshot_day, evidence_mode):
+        return False
+    if use_presentation_evidence_boundary(evidence_mode) and item_is_post_workup_evidence(item, section):
+        return item_explicitly_available_for_presentation(item)
+    return True
 
 
 LEGACY_MANUAL_AXIS_BRIDGES = {
-    "fever_history_activity": ("fever_history_presence",),
-    "fever_activity": ("fever_history_presence",),
-    "fatigue_activity": ("fatigue_presence",),
-    "malaise_fatigue_activity": ("fatigue_presence", "malaise_presence"),
-    "fatigue_malaise_activity": ("fatigue_presence", "malaise_presence"),
-    "malaise_activity": ("malaise_presence",),
-    "chills_rigors_activity": ("chills_presence", "rigors_presence"),
-    "rigor_activity": ("rigors_presence",),
-    "anorexia_activity": ("appetite_loss_presence",),
-    "anorexia_poor_appetite_activity": ("appetite_loss_presence",),
-    "weight_loss_activity": ("unintentional_weight_loss_presence",),
+    "fever_history_activity": ("fever_history_presence", "fever_history_severity"),
+    "fever_activity": ("fever_history_presence", "fever_history_severity"),
+    "infection_trigger_activity": ("fever_history_presence", "fever_history_activity", "fever_presence"),
+    "fatigue_activity": ("fatigue_presence", "fatigue_severity"),
+    "malaise_fatigue_activity": ("fatigue_presence", "fatigue_severity", "malaise_presence", "malaise_severity"),
+    "fatigue_malaise_activity": ("fatigue_presence", "fatigue_severity", "malaise_presence", "malaise_severity"),
+    "malaise_activity": ("malaise_presence", "malaise_severity"),
+    "chills_presence": ("chills_activity",),
+    "rigor_activity": ("rigors_presence", "rigors_activity"),
+    "anorexia_activity": ("appetite_loss_presence", "appetite_loss_severity"),
+    "anorexia_poor_appetite_activity": ("appetite_loss_presence", "appetite_loss_severity"),
+    "weight_loss_activity": (
+        "unintentional_weight_loss_presence",
+        "unintentional_weight_loss_severity",
+        "cachexia_activity",
+    ),
     "night_sweats_activity": ("night_sweats_presence",),
     "pruritus_activity": ("pruritus_presence",),
-    "diarrhea_activity": ("diarrhea_presence", "watery_stool_presence"),
+    "diarrhea_activity": ("diarrhea_presence", "diarrhea_severity", "watery_stool_presence"),
     "bloody_diarrhea_activity": ("bloody_diarrhea_presence",),
     "vomiting_activity": ("vomiting_presence", "gastric_fluid_vomitus_presence"),
-    "nausea_vomiting_activity": ("nausea_presence", "vomiting_presence"),
+    "nausea_vomiting_activity": ("nausea_presence", "nausea_severity", "vomiting_presence", "vomiting_severity"),
     "cholelithiasis_sludge_context_probability": ("gallstone_or_biliary_sludge_context_probability",),
     "gallstone_or_biliary_sludge_context_probability": ("cholelithiasis_sludge_context_probability",),
-    "gastrointestinal_bleeding_activity": ("gastrointestinal_bleeding_presence",),
+    "gastrointestinal_bleeding_activity": (
+        "gastrointestinal_bleeding_presence",
+        "gastrointestinal_bleeding_severity",
+    ),
     "hematochezia_activity": ("hematochezia_presence",),
     "iga_vasculitis_hematemesis_activity_in_D-IGA-VASCULITIS": ("hematemesis_presence",),
     "cough_activity": ("cough_presence",),
     "dyspnea_activity": ("dyspnea_presence",),
     "sore_throat_activity": ("sore_throat_presence",),
-    "abdominal_pain_activity": ("abdominal_pain_presence",),
+    "abdominal_pain_activity": ("abdominal_pain_presence", "abdominal_pain_severity"),
     "headache_activity": ("headache_presence",),
-    "myalgia_activity": ("myalgia_presence",),
-    "arthralgia_activity": ("arthralgia_presence",),
-    "arthritis_activity": ("arthritis_presence",),
-    "chest_pain_activity": ("chest_pain_presence",),
+    "myalgia_activity": ("myalgia_presence", "myalgia_severity"),
+    "arthralgia_activity": ("arthralgia_presence", "arthralgia_severity"),
+    "arthritis_activity": ("arthritis_presence", "arthritis_severity"),
+    "joint_swelling_activity": ("joint_swelling_presence", "joint_swelling_severity"),
+    "chest_pain_activity": ("chest_pain_presence", "chest_pain_severity"),
     "mental_status_abnormality_activity": ("mental_status_abnormality_presence",),
-    "altered_mental_status_activity": ("mental_status_abnormality_presence",),
+    "altered_mental_status_activity": ("mental_status_abnormality_presence", "mental_status_abnormality_severity"),
     "seizure_activity": ("seizure_presence",),
     "neurologic_deficit_activity": ("neurologic_deficit_presence",),
     "focal_neurologic_deficit_activity": ("focal_neurologic_deficit_presence",),
@@ -1395,9 +1851,18 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "meningismus_activity": ("meningismus_presence",),
     "meningeal_signs_activity": ("meningeal_signs_presence",),
     "photophobia_activity": ("photophobia_presence",),
-    "hemoptysis_activity": ("hemoptysis_presence",),
-    "hemoptysis_activity_in_D-NOCARDIOSIS": ("hemoptysis_presence",),
-    "pleural_effusion_activity": ("pleural_effusion_presence",),
+    "hemoptysis_activity": ("hemoptysis_presence", "hemoptysis_severity"),
+    "hemoptysis_activity_in_D-NOCARDIOSIS": ("hemoptysis_presence", "hemoptysis_severity"),
+    "pleural_effusion_activity": ("pleural_effusion_presence", "pleural_effusion_extent"),
+    "intra_abdominal_abscess_activity": ("intra_abdominal_abscess_extent",),
+    "source_control_need": ("source_control_problem_presence",),
+    "urinary_source_probability": ("urinary_source_presence",),
+    "intra_abdominal_source_probability": ("intra_abdominal_source_presence",),
+    "pulmonary_source_probability": ("pulmonary_source_presence",),
+    "catheter_source_probability": ("catheter_source_presence",),
+    "drainable_focus_probability": ("drainable_focus_presence",),
+    "shock_presence": ("septic_shock_activity",),
+    "vasopressor_requirement_presence": ("vasopressor_requirement_activity",),
     "pneumonia_infiltrate_extent": ("pulmonary_infiltrate_presence",),
     "pulmonary_infiltrate_extent_egpa": ("pulmonary_infiltrate_presence",),
     "pulmonary_consolidation_activity": ("pulmonary_consolidation_presence",),
@@ -1445,23 +1910,23 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "urine_white_blood_cell_casts_presence_in_D-PYELONEPHRITIS": ("urine_white_blood_cell_casts_presence",),
     "nephrotic_syndrome_activity": ("nephrotic_syndrome_presence",),
     "foamy_urine_activity": ("foamy_urine_presence",),
-    "pericardial_effusion_activity": ("pericardial_effusion_presence",),
+    "pericardial_effusion_activity": ("pericardial_effusion_presence", "pericardial_effusion_extent"),
     "serositis_activity": ("serositis_presence",),
     "pericarditis_activity_in_D-FAMILIAL-MEDITERRANEAN-FEVER": ("pericarditis_presence",),
     "pericarditis_activity_in_D-TRAPS": ("pericarditis_presence",),
     "jugular_venous_distension_activity": ("jugular_venous_distension_presence",),
     "distant_heart_sounds_activity": ("distant_heart_sounds_presence",),
     "pulsus_paradoxus_activity": ("pulsus_paradoxus_presence",),
-    "ascites_activity": ("ascites_presence",),
+    "ascites_activity": ("ascites_presence", "ascites_extent"),
     "peripheral_edema_activity": ("peripheral_edema_presence",),
     "capillary_leak_third_spacing_activity": ("capillary_leak_third_spacing_presence",),
     "abdominal_distension_activity": ("abdominal_distension_presence",),
-    "dehydration_activity": ("dehydration_presence",),
+    "dehydration_activity": ("dehydration_presence", "dehydration_severity"),
     "polydipsia_activity": ("polydipsia_presence",),
     "polyuria_activity": ("polyuria_presence",),
     "dehydration_volume_depletion_activity": ("volume_depletion_presence", "dehydration_presence"),
-    "orthostatic_hypotension_activity": ("orthostatic_hypotension_presence",),
-    "ecg_hyperkalemia_activity": ("hyperkalemia_ecg_change_presence",),
+    "orthostatic_hypotension_activity": ("orthostatic_hypotension_presence", "orthostatic_hypotension_severity"),
+    "ecg_hyperkalemia_activity": ("hyperkalemia_ecg_change_presence", "hyperkalemia_ecg_change_severity"),
     "rhabdomyolysis_activity": ("rhabdomyolysis_presence",),
     "allograft_dysfunction_activity": ("allograft_dysfunction_presence",),
     "kidney_allograft_dysfunction_activity": ("kidney_allograft_dysfunction_presence",),
@@ -1474,7 +1939,11 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "fluid_retention_weight_gain_activity_in_D-APL": ("fluid_retention_presence",),
     "flank_swelling_activity_in_D-PERINEPHRIC-ABSCESS": ("flank_swelling_presence",),
     "renal_inflammation_activity_in_D-RELAPSING-POLYCHONDRITIS": ("renal_inflammation_presence",),
-    "renal_tubulointerstitial_nephritis_activity_in_D-CAEBV": ("tubulointerstitial_nephritis_presence",),
+    "renal_tubulointerstitial_nephritis_activity_in_D-CAEBV": (
+        "renal_inflammation_presence",
+        "tubulointerstitial_nephritis_presence",
+        "tubulointerstitial_nephritis_severity",
+    ),
     "new_onset_diabetes_activity_in_D-IGG4-RELATED-DISEASE": ("new_onset_diabetes_presence",),
     "heat_intolerance_activity": ("heat_intolerance_presence",),
     "oliguria_activity": ("oliguria_presence",),
@@ -1483,7 +1952,6 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "syncope_presyncope_activity": ("syncope_presence", "presyncope_presence"),
     "syncope_activity": ("syncope_presence",),
     "palpitations_activity": ("palpitations_presence",),
-    "diaphoresis_sweats_activity": ("diaphoresis_presence",),
     "peritonitis_activity": ("peritoneal_irritation_presence",),
     "bile_peritonitis_activity": ("bile_peritonitis_presence",),
     "pelvic_pain_activity": ("pelvic_pain_presence",),
@@ -1504,7 +1972,12 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "hemoglobinuria_dark_urine_activity": ("dark_urine_presence", "pigmenturia_presence"),
     "proximal_muscle_weakness_activity": ("proximal_muscle_weakness_presence",),
     "generalized_weakness_activity": ("generalized_weakness_presence",),
-    "limb_weakness_paralysis_activity": ("limb_weakness_or_paralysis_presence",),
+    "limb_weakness_paralysis_activity": (
+        "limb_weakness_or_paralysis_presence",
+        "limb_weakness_or_paralysis_severity",
+        "muscle_weakness_presence",
+        "muscle_weakness_severity",
+    ),
     "neck_flexor_weakness_activity": ("neck_flexor_weakness_presence",),
     "respiratory_muscle_weakness_activity": ("respiratory_muscle_weakness_presence",),
     "generalized_muscle_rigidity_activity": ("generalized_muscle_rigidity_presence",),
@@ -1518,10 +1991,10 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "conjunctivitis_activity": ("conjunctivitis_presence",),
     "conjunctivitis_activity_in_D-URTICARIAL-VASCULITIS": ("conjunctivitis_presence",),
     "conjunctival_suffusion_activity": ("conjunctival_suffusion_presence",),
-    "diplopia_activity": ("diplopia_presence",),
+    "diplopia_activity": ("diplopia_presence", "diplopia_severity"),
     "diplopia_activity_in_D-GCA": ("diplopia_presence",),
     "papilledema_activity": ("papilledema_presence",),
-    "periorbital_edema_activity": ("periorbital_edema_presence",),
+    "periorbital_edema_activity": ("periorbital_edema_presence", "periorbital_edema_severity"),
     "proptosis_activity": ("proptosis_presence",),
     "restricted_extraocular_movement_activity_in_D-ORBITAL-CELLULITIS": ("restricted_extraocular_movement_presence",),
     "eyelid_erythema_activity_in_D-ORBITAL-CELLULITIS": ("eyelid_erythema_presence",),
@@ -1534,7 +2007,11 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "keratitis_activity": ("keratitis_presence",),
     "lacrimal_gland_enlargement_activity": ("lacrimal_gland_enlargement_presence",),
     "lacrimal_gland_enlargement_activity_in_D-SARCOIDOSIS": ("lacrimal_gland_enlargement_presence",),
-    "ocular_myositis_activity_in_D-CAEBV": ("ocular_myositis_presence",),
+    "ocular_myositis_activity_in_D-CAEBV": (
+        "extraocular_muscle_inflammation_presence",
+        "ocular_myositis_presence",
+        "ocular_myositis_severity",
+    ),
     "orbital_apex_syndrome_activity_in_D-INVASIVE-ASPERGILLOSIS": ("orbital_apex_syndrome_presence",),
     "pain_with_eye_movement_activity_in_D-ORBITAL-CELLULITIS": ("pain_with_eye_movement_presence",),
     "photophobia_activity_in_D-INVASIVE-ASPERGILLOSIS": ("photophobia_presence",),
@@ -1552,7 +2029,7 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "erythema_nodosum_activity": ("erythema_nodosum_presence",),
     "evanescent_rash_activity": ("evanescent_rash_presence",),
     "hydroa_vacciniforme_like_skin_lesion_activity": ("hydroa_vacciniforme_like_skin_lesion_presence",),
-    "hyperpigmentation_activity": ("hyperpigmentation_presence",),
+    "hyperpigmentation_activity": ("hyperpigmentation_presence", "hyperpigmentation_extent"),
     "ie_oslers_node_activity": ("osler_node_presence",),
     "leukemia_cutis_activity_in_D-ALL": ("leukemia_cutis_presence",),
     "leukemia_cutis_activity_in_D-AML": ("leukemia_cutis_presence",),
@@ -1590,8 +2067,6 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "failure_to_thrive_activity": ("failure_to_thrive_presence",),
     "prolonged_fever_activity": ("prolonged_fever_presence",),
     "fever_without_localizing_symptom_activity_in_D-DRUG-FEVER": ("fever_without_localizing_symptom_presence",),
-    "chills_or_discomfort_activity_in_D-DRUG-FEVER": ("systemic_discomfort_presence",),
-    "fnhtr_fever_chills_cluster_activity_in_D-TRANSFUSION-REACTION-FNHTR": ("fever_history_presence", "chills_presence"),
     "shivering_activity": ("shivering_presence",),
     "transfusion_associated_malaise_discomfort_activity_in_D-TRANSFUSION-REACTION-FNHTR": ("malaise_presence",),
     "caps_continuous_inflammation_activity_in_D-CAPS": ("continuous_systemic_inflammation_course_presence",),
@@ -1606,7 +2081,10 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "pericardial_friction_rub_activity": ("pericardial_friction_rub_presence",),
     "acute_systemic_reaction_after_heparin_activity": ("acute_systemic_reaction_after_heparin_presence",),
     "organ_dysfunction_activity_in_D-DRUG-FEVER": ("organ_dysfunction_presence",),
-    "peripheral_skin_soft_tissue_infection_activity": ("skin_soft_tissue_infection_presence",),
+    "peripheral_skin_soft_tissue_infection_activity": (
+        "skin_soft_tissue_infection_presence",
+        "skin_soft_tissue_infection_severity",
+    ),
     "cellulitis_or_wound_infection_activity": ("skin_soft_tissue_infection_presence", "wound_infection_presence"),
     "cellulitis_involved_skin_area_activity_in_D-CELLULITIS": ("cellulitis_presence",),
     "cellulitis_erythema_extent_in_D-CELLULITIS": ("cellulitis_presence",),
@@ -1643,8 +2121,20 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "erysipelas_warmth_activity_in_D-ERYSIPELAS": ("cutaneous_warmth_presence",),
     "deep_venous_thrombosis_activity": ("deep_venous_thrombosis_presence",),
     "deep_venous_thrombosis_activity_behcet": ("deep_venous_thrombosis_presence",),
-    "limb_ischemia_activity": ("limb_ischemia_presence",),
-    "limb_ischemia_or_necrotic_ulcer_activity": ("limb_ischemia_presence", "skin_necrosis_presence"),
+    "limb_ischemia_activity": (
+        "limb_ischemia_presence",
+        "limb_ischemia_severity",
+        "digital_ischemia_presence",
+        "peripheral_ischemia_presence",
+    ),
+    "limb_ischemia_or_necrotic_ulcer_activity": (
+        "limb_ischemia_presence",
+        "limb_ischemia_severity",
+        "skin_breakdown_presence",
+        "skin_ulcer_presence",
+        "skin_ulcer_severity",
+        "skin_necrosis_presence",
+    ),
     "digital_gangrene_activity": ("digital_gangrene_presence",),
     "digital_ulcer_activity": ("digital_ulcer_presence",),
     "penile_ischemia_activity_in_D-PAN": ("penile_ischemia_presence",),
@@ -1671,7 +2161,11 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "mucosal_erosion_activity": ("mucosal_erosion_presence",),
     "genital_mucosal_erosion_activity_in_D-SJS-TEN": ("genital_mucosal_erosion_presence",),
     "oral_mucosal_ulcer_activity": ("oral_mucosal_ulcer_presence",),
-    "oral_ulcer_activity": ("oral_mucosal_ulcer_presence",),
+    "oral_ulcer_activity": (
+        "mucosal_barrier_injury_presence",
+        "oral_mucosal_ulcer_presence",
+        "oral_mucosal_ulcer_severity",
+    ),
     "oral_aphthous_ulcer_activity": ("aphthous_oral_ulcer_presence",),
     "genital_ulcer_activity": ("genital_ulcer_presence",),
     "genital_ulcer_scarring_activity": ("genital_ulcer_scarring_presence",),
@@ -1687,11 +2181,16 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "gingival_infiltration_activity_in_D-AML": ("gingival_infiltration_presence",),
     "oral_candidiasis_activity_sjogren": ("oral_candidiasis_presence",),
     "oral_dryness_severity_sjogren": ("oral_dryness_presence",),
-    "oral_maxillofacial_cellulitis_activity": ("oral_maxillofacial_cellulitis_presence",),
-    "periodontal_or_oral_mucosal_source_activity": ("periodontal_or_oral_mucosal_source_presence",),
+    "oral_maxillofacial_cellulitis_activity": (
+        "oral_maxillofacial_cellulitis_presence",
+        "oral_maxillofacial_cellulitis_severity",
+    ),
+    "periodontal_or_oral_mucosal_source_activity": (
+        "periodontal_or_oral_mucosal_source_presence",
+        "periodontal_or_oral_mucosal_source_severity",
+    ),
     "poor_oral_hygiene_activity": ("poor_oral_hygiene_presence",),
     "pharyngitis_activity_in_D-DISSEMINATED-GONOCOCCAL-INFECTION": ("pharyngitis_presence",),
-    "pharyngitis_or_upper_respiratory_source_activity": ("pharyngitis_presence", "upper_respiratory_source_presence"),
     "recent_streptococcal_pharyngitis_activity": ("recent_streptococcal_pharyngitis_presence",),
     "pharyngotonsillar_exudate_activity": ("pharyngotonsillar_exudate_presence",),
     "dysphagia_activity": ("dysphagia_presence",),
@@ -1747,7 +2246,7 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "polymyalgia_rheumatica_activity_in_D-GCA": ("polymyalgia_rheumatica_presence",),
     "hip_girdle_pain_stiffness_activity": ("hip_girdle_pain_stiffness_presence",),
     "shoulder_girdle_pain_stiffness_activity": ("shoulder_girdle_pain_stiffness_presence",),
-    "peripheral_neuropathy_activity": ("peripheral_neuropathy_presence",),
+    "peripheral_neuropathy_activity": ("peripheral_neuropathy_presence", "peripheral_neuropathy_severity"),
     "mononeuritis_multiplex_activity": ("mononeuritis_multiplex_presence",),
     "mononeuritis_multiplex_activity_egpa": ("mononeuritis_multiplex_presence",),
     "mononeuritis_multiplex_activity_sjogren": ("mononeuritis_multiplex_presence",),
@@ -1787,7 +2286,6 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "eosinophilic_asthma_activity_egpa": ("eosinophilic_asthma_presence",),
     "pulmonary_involvement_activity_in_D-URTICARIAL-VASCULITIS": ("pulmonary_involvement_presence",),
     "clubbing_activity": ("digital_clubbing_presence",),
-    "coryza_rhinitis_activity_in_D-MEASLES": ("coryza_rhinitis_presence",),
     "anosmia_activity": ("anosmia_presence",),
     "ageusia_activity": ("ageusia_presence",),
     "abdominal_distension_activity_in_D-CLOSTRIDIOIDES-DIFFICILE-SEVERE": ("abdominal_distension_presence",),
@@ -1813,9 +2311,9 @@ LEGACY_MANUAL_AXIS_BRIDGES = {
     "bleeding_activity": ("bleeding_presence",),
     "clinical_bleeding_activity": ("bleeding_presence",),
     "mucosal_bleeding_activity": ("mucosal_bleeding_presence",),
-    "petechiae_purpura_activity": ("petechiae_purpura_presence",),
-    "petechial_purpuric_rash_activity": ("petechiae_purpura_presence",),
-    "palpable_purpura_activity": ("palpable_purpura_presence",),
+    "petechiae_purpura_activity": ("petechiae_purpura_presence", "petechiae_purpura_severity"),
+    "petechial_purpuric_rash_activity": ("petechiae_purpura_presence", "petechiae_purpura_severity"),
+    "palpable_purpura_activity": ("palpable_purpura_presence", "palpable_purpura_severity"),
     "purpura_fulminans_activity": ("purpura_fulminans_presence",),
 }
 
@@ -2303,7 +2801,6 @@ EXACT_AXIS_ALIASES.update(
         "left_ventricular_hypocontractility_presence": ("myocardial_dysfunction_activity",),
         "left_ventricular_dilation_presence": ("myocardial_dysfunction_activity", "left_ventricular_dilation_activity"),
         "ventricular_tachycardia_on_ecg_presence": ("ventricular_tachycardia_presence", "ventricular_tachycardia_activity"),
-        "recent_upper_respiratory_symptom_presence": ("viral_prodrome_activity",),
         "chest_xray_cardiomegaly_presence": ("cardiomegaly_activity",),
         "pulmonary_congestion_on_chest_xray_presence": ("pulmonary_edema_activity",),
         "ecg_st_elevation_presence": ("st_segment_elevation_presence", "st_segment_elevation_activity"),
@@ -2496,6 +2993,56 @@ EVENT_HAZARD_AXIS_PROXIES = {
             "category": "lab_value",
         },
     },
+    "progression_to_septic_shock_hazard": {
+        "shock_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.01],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "septic_shock_activity": {
+            "unit": "severity_score_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.3, 1.0],
+            "category": "hemodynamic_finding",
+        },
+        "hypotension_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.03],
+            "peak_value_range": [0.2, 1.0],
+            "category": "physical_finding",
+        },
+        "systolic_blood_pressure": {
+            "unit": "mmHg",
+            "baseline_range": [100.0, 140.0],
+            "peak_value_range": [40.0, 95.0],
+            "category": "vital_sign",
+        },
+        "mean_arterial_pressure": {
+            "unit": "mmHg",
+            "baseline_range": [70.0, 100.0],
+            "peak_value_range": [30.0, 65.0],
+            "category": "vital_sign",
+        },
+        "vasopressor_requirement_presence": {
+            "unit": "present_absent_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "support_requirement",
+        },
+        "vasopressor_requirement_activity": {
+            "unit": "relative_activity_0_1",
+            "baseline_range": [0.0, 0.02],
+            "peak_value_range": [0.2, 1.0],
+            "category": "support_requirement",
+        },
+        "serum_lactate": {
+            "unit": "mmol/L",
+            "baseline_range": [0.5, 2.0],
+            "peak_value_range": [2.0, 8.0],
+            "category": "lab_value",
+        },
+    },
     "obstructive_shock_hazard_in_D-PULMONARY-EMBOLISM": {
         "shock_presence": {
             "unit": "present_absent_0_1",
@@ -2562,10 +3109,56 @@ RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES = {
 }
 
 
+NEGATIVE_DRUG_TOXIN_CONTEXT_TOKENS = (
+    "no_alcohol_or_recent_drug_intake",
+    "no_recent_drug_intake",
+    "no_recent_drug_use",
+    "no_drug_intake",
+    "no_drug_use",
+    "no_medication_or_drug_exposure",
+    "no_new_medication",
+    "no_recent_new_medication",
+    "no_herbal_exposure",
+    "no_hepatotoxic_drug",
+    "no_toxin_exposure",
+    "drug_intake_absent",
+    "drug_exposure_absent",
+    "toxin_exposure_absent",
+)
+
+NEGATIVE_ACETAMINOPHEN_LEVEL_CONTEXT_TOKENS = (
+    "acetaminophen_level_not_elevated",
+    "acetaminophen_level_negative",
+    "acetaminophen_level_undetectable",
+    "acetaminophen_not_detected",
+    "acetaminophen_concentration_not_elevated",
+)
+
+
+def risk_context_axis_observation_items(item):
+    factor = str(item.get("factor") or item.get("axis_id") or "").strip().lower()
+    category = str(item.get("category") or item.get("qualitative_value") or "").strip().lower()
+    text = " ".join(
+        str(item.get(key) or "").strip().lower()
+        for key in ("source_text_value", "text", "note", "notes")
+    )
+    haystack = " ".join(part for part in (factor, category, text) if part)
+    out = []
+    if any(token in haystack for token in NEGATIVE_ACETAMINOPHEN_LEVEL_CONTEXT_TOKENS):
+        out.append(("acetaminophen_serum_concentration", 0.0, "mcg/mL"))
+    if any(token in haystack for token in NEGATIVE_DRUG_TOXIN_CONTEXT_TOKENS):
+        out.extend([
+            ("hepatotoxic_drug_or_toxin_exposure_probability", 0.0, "probability_0_1"),
+            ("acetaminophen_exposure_probability", 0.0, "probability_0_1"),
+        ])
+    return out
+
+
 def prepare_case_data(data):
     data = dict(data)
     observations = {}
     snapshot_day = float(data.get("snapshot_day", 0.0) or 0.0)
+    evidence_mode = case_evidence_mode(data)
 
     def item_day(item, default=snapshot_day):
         value = item.get("day")
@@ -2579,7 +3172,10 @@ def prepare_case_data(data):
             return default
 
     def add_observation(axis_id, value, unit, day=None, meta=None):
+        axis_id = canonical_case_observation_axis_id(axis_id, meta)
         if not axis_id or value is None:
+            return
+        if diagnostic_interpretation_observation_axis(axis_id):
             return
         value = float(value)
         obs_day = snapshot_day if day is None else float(day)
@@ -2592,6 +3188,18 @@ def prepare_case_data(data):
         }
         if isinstance(meta, dict):
             for key in ("category", "axis_role", "parent_axis_id", "legacy_axis_id", "source_text_value"):
+                if meta.get(key):
+                    incoming[key] = meta.get(key)
+            legacy_axis_id = meta.get("legacy_axis_id")
+            if legacy_axis_id:
+                legacy_axis_id = canonical_case_observation_axis_id(
+                    legacy_axis_id,
+                    {"category": "legacy_proxy"},
+                )
+                if legacy_axis_id and legacy_axis_id != axis_id:
+                    incoming["_legacy_proxy_axis_id"] = legacy_axis_id
+                    incoming["_legacy_proxy_axis_ids"] = [legacy_axis_id]
+            for key in ("_derived_from_axes", "_evidence_group", "evidence_group"):
                 if meta.get(key):
                     incoming[key] = meta.get(key)
             if meta.get("_risk_context_observation"):
@@ -2617,7 +3225,7 @@ def prepare_case_data(data):
         observations[axis_id] = incoming
 
     for obs in data.get("observations", []):
-        if not case_item_rankable(obs):
+        if not case_item_rankable(obs, section="observations", snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
@@ -2625,17 +3233,19 @@ def prepare_case_data(data):
             add_observation(obs.get("axis_id"), value, unit, item_day(obs), obs)
 
     for obs in data.get("risk_context", []):
-        if not case_item_rankable(obs):
+        if not case_item_rankable(obs, section="risk_context", snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
+        risk_meta = dict(obs)
+        risk_meta["_risk_context_observation"] = True
+        for axis_id, value, unit in risk_context_axis_observation_items(obs):
+            add_observation(axis_id, value, unit, item_day(obs), risk_meta)
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
             value, unit = inferred
-            meta = dict(obs)
-            meta["_risk_context_observation"] = True
-            add_observation(obs.get("axis_id"), value, unit, item_day(obs), meta)
+            add_observation(obs.get("axis_id"), value, unit, item_day(obs), risk_meta)
 
     for obs in data.get("course_observations", []):
-        if not case_item_rankable(obs):
+        if not case_item_rankable(obs, section="course_observations", snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
@@ -2643,7 +3253,7 @@ def prepare_case_data(data):
             add_observation(obs.get("axis_id"), value, unit, item_day(obs), obs)
 
     for traj in data.get("lab_trajectories", []):
-        if not case_item_rankable(traj):
+        if not case_item_rankable(traj, section="lab_trajectories", snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
         axis_id = traj.get("axis_id")
         inferred = infer_direct_observation(axis_id, traj.get("value"), traj.get("unit"), traj.get("qualitative_value"))
@@ -2657,7 +3267,8 @@ def prepare_case_data(data):
                 + (traj.get("time_series") or [])
                 + (traj.get("timepoints") or [])
             )
-            if o.get("value") is not None and case_item_rankable(o)
+            if o.get("value") is not None
+            and case_item_rankable(o, section="lab_trajectories", axis_id=axis_id, snapshot_day=snapshot_day, evidence_mode=evidence_mode)
         ]
         if not axis_id or not numeric:
             continue
@@ -2678,14 +3289,21 @@ def prepare_case_data(data):
             if not isinstance(item, dict):
                 continue
             for axis_id, axis_item in mapped_axis_items(item):
-                inferred = infer_mapped_observation(item, axis_id, axis_item)
+                inferred = infer_mapped_observation(
+                    item,
+                    axis_id,
+                    axis_item,
+                    section=section,
+                    snapshot_day=snapshot_day,
+                    evidence_mode=evidence_mode,
+                )
                 if inferred is None:
                     continue
                 value, unit = inferred
                 add_observation(axis_id, value, unit, item_day(axis_item, item_day(item)), axis_item)
 
     for _section, item in iter_direct_axis_section_items(data):
-        if not case_item_rankable(item):
+        if not case_item_rankable(item, section=_section, snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
         inferred = infer_direct_observation(item.get("axis_id"), item.get("value"), item.get("unit"), item.get("qualitative_value"))
         if inferred is None:
@@ -2696,6 +3314,8 @@ def prepare_case_data(data):
     for child_axis_id, child in list(observations.items()):
         parent_axis_id = child.get("parent_axis_id")
         if not parent_axis_id or parent_axis_id in observations:
+            continue
+        if diagnostic_interpretation_observation_axis(parent_axis_id):
             continue
         if norm_unit(child.get("unit")) not in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
             continue
@@ -2813,7 +3433,12 @@ def prepare_case_data(data):
             for value in (observation_float(axis_id) for axis_id in axis_ids)
         )
 
-    if any_observed_positive(("fever_presence", "fever_history_presence", "body_temperature"), threshold=0.5):
+    positive_fever_source_axis_ids = [
+        axis_id
+        for axis_id in ("fever_presence", "fever_history_presence")
+        if (observation_float(axis_id) is not None and observation_float(axis_id) >= 0.5)
+    ]
+    if positive_fever_source_axis_ids:
         add_observation(
             "fever_history_activity",
             1.0,
@@ -2823,6 +3448,7 @@ def prepare_case_data(data):
                 "category": "symptom",
                 "axis_role": "satellite",
                 "source_text_value": "derived from fever observation",
+                "_derived_from_axes": positive_fever_source_axis_ids,
             },
         )
 
@@ -3018,6 +3644,31 @@ def prepare_case_data(data):
                 category="ecg_finding",
             )
 
+    sodium = observation_float("serum_sodium")
+    serum_osmolality = observation_float("serum_osmolality")
+    urine_osmolality = observation_float("urine_osmolality")
+    urine_sodium = observation_float("urine_sodium")
+    if sodium is not None and sodium <= 134.0:
+        add_derived_presence("hyponatremia_presence", ("serum_sodium",), category="metabolic_finding")
+    if serum_osmolality is not None and serum_osmolality <= 275.0:
+        add_derived_presence("low_serum_osmolality_presence", ("serum_osmolality",), category="lab_finding")
+    if sodium is not None and sodium <= 134.0 and serum_osmolality is not None and serum_osmolality <= 275.0:
+        add_derived_presence(
+            "hypotonic_hyponatremia_presence",
+            ("serum_sodium", "serum_osmolality"),
+            category="metabolic_finding",
+        )
+    if urine_osmolality is not None and urine_osmolality > 100.0:
+        add_derived_presence("high_urine_osmolality_presence", ("urine_osmolality",), category="urine_finding")
+        if sodium is not None and sodium <= 134.0 and serum_osmolality is not None and serum_osmolality <= 275.0:
+            add_derived_presence(
+                "inappropriately_concentrated_urine_presence",
+                ("urine_osmolality", "serum_osmolality", "serum_sodium"),
+                category="urine_finding",
+            )
+    if urine_sodium is not None and urine_sodium >= 30.0:
+        add_derived_presence("high_urine_sodium_presence", ("urine_sodium",), category="urine_finding")
+
     if any_observed_positive(("left_pneumothorax_presence", "right_pneumothorax_presence", "bilateral_pneumothorax_presence")):
         add_derived_presence(
             "pneumothorax_imaging_presence",
@@ -3137,7 +3788,69 @@ def prepare_case_data(data):
         source["_legacy_proxy_axis_id"] = matched_proxy_axis_ids[0]
         source["_suppress_if_proxy_observed"] = True
 
+    for source_axis_id, source in list(observations.items()):
+        if norm_unit(source.get("unit")) not in QUALITATIVE_PROXY_UNITS:
+            continue
+        proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+        for proxy_axis_id in qualitative_suffix_variant_axis_ids(source_axis_id, observations):
+            if not allowed_disease_specific_axis_for_observation(proxy_axis_id, {"category": "legacy_proxy"}):
+                continue
+            if proxy_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(proxy_axis_id)
+        if proxy_axis_ids:
+            source.setdefault("_legacy_proxy_axis_id", proxy_axis_ids[0])
+
+    def choose_qualitative_proxy_source(sources):
+        """Prefer measured/satellite severity over parent presence for activity proxies."""
+        severity_sources = []
+        for source_axis_id, source in sources:
+            role = str(source.get("axis_role") or "").strip().lower()
+            unit = norm_unit(source.get("unit"))
+            if role == "satellite" or source_axis_id.endswith(("_severity", "_extent", "_degree")):
+                if unit in ("severityscore01", "relativeactivity01", "probability01", "presentabsent01"):
+                    severity_sources.append((source_axis_id, source))
+        candidates = severity_sources or sources
+        return max(candidates, key=lambda item: float(item[1].get("value", 0.0)))
+
+    item_legacy_sources = {}
+    for source_axis_id, source in list(observations.items()):
+        legacy_axis_ids = list(source.get("_legacy_proxy_axis_ids") or [])
+        legacy_axis_id = source.get("_legacy_proxy_axis_id")
+        if legacy_axis_id and legacy_axis_id not in legacy_axis_ids:
+            legacy_axis_ids.append(legacy_axis_id)
+        if not legacy_axis_ids:
+            continue
+        if norm_unit(source.get("unit")) not in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+            continue
+        for legacy_axis_id in legacy_axis_ids:
+            if not legacy_axis_id or legacy_axis_id == source_axis_id:
+                continue
+            if not allowed_disease_specific_axis_for_observation(legacy_axis_id, {"category": "legacy_proxy"}):
+                continue
+            item_legacy_sources.setdefault(legacy_axis_id, []).append((source_axis_id, source))
+
+    for legacy_axis_id, sources in item_legacy_sources.items():
+        if legacy_axis_id in observations:
+            continue
+        best_source_id, best_source = choose_qualitative_proxy_source(sources)
+        observations[legacy_axis_id] = {
+            "value": float(best_source.get("value", 0.0)),
+            "unit": "severity_score_0_1",
+            "day": float(best_source.get("day", snapshot_day)),
+            "_snapshot_distance": float(best_source.get("_snapshot_distance", 0.0)),
+            "_legacy_proxy": True,
+            "_derived_from_axes": [axis_id for axis_id, _obs in sources],
+            "source_text_value": f"item legacy proxy from {best_source_id}",
+        }
+        for source_axis_id, source in sources:
+            source["_legacy_proxy_axis_id"] = legacy_axis_id
+            proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+            if legacy_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(legacy_axis_id)
+
     for legacy_axis_id, source_axis_ids in LEGACY_MANUAL_AXIS_BRIDGES.items():
+        if not allowed_disease_specific_axis_for_observation(legacy_axis_id, {"category": "legacy_proxy"}):
+            continue
         sources = [
             (source_axis_id, observations[source_axis_id])
             for source_axis_id in source_axis_ids
@@ -3145,7 +3858,7 @@ def prepare_case_data(data):
         ]
         if not sources:
             continue
-        best_source_id, best_source = max(sources, key=lambda item: float(item[1].get("value", 0.0)))
+        best_source_id, best_source = choose_qualitative_proxy_source(sources)
         if legacy_axis_id not in observations:
             observations[legacy_axis_id] = {
                 "value": float(best_source.get("value", 0.0)),
@@ -3163,6 +3876,20 @@ def prepare_case_data(data):
             if legacy_axis_id not in proxy_axis_ids:
                 proxy_axis_ids.append(legacy_axis_id)
 
+    for derived_axis_id, derived in list(observations.items()):
+        derived_from = derived.get("_derived_from_axes") or []
+        if not isinstance(derived_from, list):
+            continue
+        for source_axis_id in derived_from:
+            source = observations.get(source_axis_id)
+            if source is None:
+                continue
+            proxy_axis_ids = source.setdefault("_legacy_proxy_axis_ids", [])
+            if derived_axis_id not in proxy_axis_ids:
+                proxy_axis_ids.append(derived_axis_id)
+            source.setdefault("_legacy_proxy_axis_id", derived_axis_id)
+
+    data["_effective_evidence_mode"] = evidence_mode
     data["observations_by_axis"] = observations
     return data
 
@@ -3384,8 +4111,10 @@ def auto_demographic_context(case, disease):
 
 def case_risk_context(case, disease):
     ctx = []
+    snapshot_day = float(case.get("snapshot_day", 0.0) or 0.0)
+    evidence_mode = case.get("_effective_evidence_mode") or case_evidence_mode(case)
     for item in case.get("risk_context", []):
-        if not case_item_rankable(item):
+        if not case_item_rankable(item, section="risk_context", snapshot_day=snapshot_day, evidence_mode=evidence_mode):
             continue
         applies = item.get("applies_to")
         if applies is None or disease in applies or "*" in applies:
@@ -3481,8 +4210,15 @@ def matched_risk_payload(manifold, context):
             if p_ratio > 0:
                 log_prior += math.log(min(max(p_ratio, 0.05), 50.0))
             for item in iter_axis_response_modulation_items(mod.get("axis_response_modulation")):
+                item = dict(item)
+                item["axis_id"] = canonicalize_axis_ref(item.get("axis_id"), manifold.get("axis_aliases") or {})
                 axis_mods.setdefault(item.get("axis_id"), []).append(item)
             for item in iter_risk_modulation_items(mod.get("coupling_modulation")):
+                item = dict(item)
+                aliases = manifold.get("axis_aliases") or {}
+                for key in ("source_axis_id", "target_axis_id", "axis_id"):
+                    if item.get(key):
+                        item[key] = canonicalize_axis_ref(item.get(key), aliases)
                 coupling_mods.append(item)
     return axis_mods, coupling_mods, log_prior
 
@@ -3542,7 +4278,10 @@ def risk_context_item_is_positive(item):
     if isinstance(value, (int, float)) and value <= 0:
         return False
 
-    category = str(item.get("category", "")).lower()
+    haystack = " ".join(
+        str(item.get(key) or "").lower()
+        for key in ("category", "factor", "axis_id", "qualitative_value", "source_text_value", "text", "note", "notes")
+    )
     negative_markers = (
         "absent",
         "denied",
@@ -3555,7 +4294,7 @@ def risk_context_item_is_positive(item):
         "without",
         "ruled_out",
     )
-    return not any(marker in category for marker in negative_markers)
+    return not any(marker in haystack for marker in negative_markers)
 
 
 def risk_factor_present_match(factor, category, by_factor):
@@ -3687,6 +4426,235 @@ def candidate_formal_axis_ids(axis_ids, candidate, manifolds):
     return [axis_id for axis_id in axis_ids if axis_id in formal]
 
 
+REQUIRED_CONTEXT_SUPPORT_CATEGORIES = {
+    "clinical_context",
+    "environmental_exposure",
+    "exposure_context",
+    "substrate_context",
+    "trigger_context",
+}
+
+REQUIRED_CONTEXT_SUPPORT_AXIS_IDS = {
+    "ascites_activity",
+    "chronic_heavy_alcohol_use_presence",
+    "organophosphate_exposure_presence",
+    "recent_alcohol_reduction_or_cessation_presence",
+    "recent_dopamine_antagonist_exposure",
+    "untreated_or_uncontrolled_hyperthyroidism_activity",
+}
+
+REQUIRED_CONTEXT_SUPPORT_TOKENS = (
+    "alcohol",
+    "ascites",
+    "antipsychotic",
+    "dopamine_antagonist",
+    "endemic_area",
+    "exposure",
+    "hyperthyroidism",
+    "ixodes_tick",
+    "neuroleptic",
+    "organophosphate",
+    "transfusion",
+)
+
+REQUIRED_CONTEXT_SUPPORT_EXCLUDED_TOKENS = (
+    "symptom_cluster",
+    "coinfection",
+    "feasibility",
+    "treatment",
+    "confirmatory",
+)
+
+
+def axis_is_required_context_support(axis_id, axis):
+    """Return whether an unobserved disease-owned axis should still score.
+
+    These axes are not ordinary symptoms. They represent the source, exposure,
+    or substrate that lets the disease manifold explain the rest of the case:
+    transfusion for transfusion reactions, Ixodes/endemic exposure for
+    babesiosis, ascites for SBP, etc. If the case has no support for such an
+    axis, geometry-first ranking should consume it at background level instead
+    of silently skipping it.
+    """
+    axis_key = str(axis_id or "").lower()
+    category = str(axis.get("category") or "").strip().lower()
+    if category in {LATENT_MECHANISM_CATEGORY, "derived_hazard", "event_hazard"}:
+        return False
+    if norm_unit(axis.get("unit")) not in QUALITATIVE_PROXY_UNITS:
+        return False
+    if any(token in axis_key for token in REQUIRED_CONTEXT_SUPPORT_EXCLUDED_TOKENS):
+        return False
+
+    baseline = midpoint(axis.get("baseline_range"), None)
+    peak = midpoint(axis.get("peak_value_range"), None)
+    if baseline is None or peak is None or baseline > 0.12 or peak < 0.20:
+        return False
+
+    if axis_key in REQUIRED_CONTEXT_SUPPORT_AXIS_IDS:
+        return True
+    if category in REQUIRED_CONTEXT_SUPPORT_CATEGORIES and any(
+        token in axis_key for token in REQUIRED_CONTEXT_SUPPORT_TOKENS
+    ):
+        return True
+    return False
+
+
+def context_support_group_id(manifold, axis_id):
+    for edge in manifold.get("mechanism_edges", []):
+        if edge.get("target_axis_id") != axis_id:
+            continue
+        source_axis_id = edge.get("source_axis_id")
+        if source_axis_id and (manifold["axes"].get(source_axis_id) or {}).get("category") == LATENT_MECHANISM_CATEGORY:
+            return source_axis_id
+    return axis_id
+
+
+def text_mentions_context_axis(text, axis_id):
+    text = str(text or "").lower()
+    axis_key = str(axis_id or "").lower()
+    if not text:
+        return False
+    token_groups = (
+        ("transfusion", ("transfusion", "blood product", "red cell", "rbc")),
+        ("ixodes_tick", ("ixodes", "tick")),
+        ("endemic_area", ("endemic", "travel", "residence", "outdoor", "hiking")),
+        ("ascites", ("ascites", "cirrhosis", "portal hypertension")),
+        ("exposure", ("exposure",)),
+    )
+    for axis_token, text_tokens in token_groups:
+        if axis_token in axis_key and any(token in text for token in text_tokens):
+            return True
+    return False
+
+
+def case_has_context_axis_support(case, axis_ids):
+    obs = case.get("observations_by_axis") or {}
+    if any(axis_id in obs for axis_id in axis_ids):
+        return True
+
+    for item in case.get("risk_context", []) or []:
+        haystack = " ".join(
+            str(item.get(key, ""))
+            for key in ("axis_id", "factor", "category", "source_text_value", "source", "note")
+        )
+        if any(text_mentions_context_axis(haystack, axis_id) for axis_id in axis_ids):
+            return True
+    return False
+
+
+def context_support_axis_priority(axis_id, axis):
+    parent_penalty = 1 if axis.get("parent_axis_id") else 0
+    exact_bonus = 0 if axis_id in REQUIRED_CONTEXT_SUPPORT_AXIS_IDS else 1
+    peak = midpoint(axis.get("peak_value_range"), 0.5)
+    return (parent_penalty, exact_bonus, -peak, axis_id)
+
+
+def virtual_required_context_observations(case, candidate, manifolds):
+    obs = case.get("observations_by_axis") or {}
+    virtual = {}
+    for disease in candidate:
+        manifold = manifolds.get(disease)
+        if not manifold:
+            continue
+        groups = {}
+        for axis_id, axis in manifold["axes"].items():
+            if axis_id in obs or not axis_is_required_context_support(axis_id, axis):
+                continue
+            group_id = context_support_group_id(manifold, axis_id)
+            groups.setdefault(group_id, []).append((axis_id, axis))
+
+        for axes in groups.values():
+            group_axis_ids = [axis_id for axis_id, _axis in axes]
+            if case_has_context_axis_support(case, group_axis_ids):
+                continue
+            axis_id, axis = sorted(axes, key=lambda item: context_support_axis_priority(item[0], item[1]))[0]
+            virtual.setdefault(
+                axis_id,
+                {
+                    "axis_id": axis_id,
+                    "value": 0.0,
+                    "unit": axis.get("unit") or "severity_score_0_1",
+                    "day": float(case.get("snapshot_day", 0.0) or 0.0),
+                    "_snapshot_distance": 0.0,
+                    "category": axis.get("category"),
+                    "axis_role": axis.get("axis_role"),
+                    "parent_axis_id": axis.get("parent_axis_id"),
+                    "source_text_value": "required context/source/substrate not observed in the case stage",
+                    "_virtual_required_context_support": True,
+                },
+            )
+    return virtual
+
+
+def case_with_required_context_geometry(case, candidate, manifolds):
+    virtual = virtual_required_context_observations(case, candidate, manifolds)
+    if not virtual:
+        return case
+    local_case = dict(case)
+    local_case["observations_by_axis"] = {**case.get("observations_by_axis", {}), **virtual}
+    local_case.pop("_background_axes_cache", None)
+    local_case["_virtual_required_context_axes"] = sorted(virtual)
+    return local_case
+
+
+def observation_adjusted_t_by_disease(t_by_disease, observation, case):
+    """Evaluate each observation at its own relative time on the disease path."""
+    if not observation:
+        return t_by_disease
+    try:
+        obs_day = float(observation.get("day", case.get("snapshot_day", 0.0) or 0.0))
+        snapshot_day = float(case.get("snapshot_day", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        return t_by_disease
+    delta = obs_day - snapshot_day
+    if abs(delta) < 1e-9:
+        return t_by_disease
+    return {disease: max(float(t) + delta, 0.0) for disease, t in t_by_disease.items()}
+
+
+def formal_source_axis_should_take_precedence(axis_id, item, candidate, manifolds):
+    """Return whether a source observation is the best scoring representative.
+
+    Legacy proxy axes are migration bridges, not extra evidence. If a source
+    finding is itself a strong formal observation for one candidate disease,
+    keep the source and suppress the proxy. If the only formal source geometry
+    is a low/negative expected axis, let the proxy carry the finding so a
+    comorbid disease can explain it without double counting.
+    """
+    formal_axes = []
+    for disease in candidate:
+        manifold = manifolds.get(disease)
+        if not manifold:
+            continue
+        axis = manifold["axes"].get(axis_id)
+        if axis is None:
+            axis = event_proxy_axis_for(manifold, axis_id)
+        if axis is None or axis.get("category") == "derived_hazard":
+            continue
+        formal_axes.append(axis)
+    if not formal_axes:
+        return False
+
+    try:
+        obs_value = float(item.get("value"))
+    except Exception:
+        return True
+
+    if norm_unit(item.get("unit")) not in QUALITATIVE_PROXY_UNITS:
+        return True
+
+    # Explicit absence is a real finding when a candidate has a formal source
+    # axis; keep it so negative evidence is not hidden by a proxy.
+    if obs_value < 0.5:
+        return True
+
+    for axis in formal_axes:
+        peak = parse_interval(axis.get("peak_value_range"))
+        if peak is not None and midpoint(peak) >= 0.35:
+            return True
+    return False
+
+
 def conditional_axis_ids(case, candidate, manifolds, background_axes):
     """Observed axes eligible for likelihood under finding/measurement/satellite ontology.
 
@@ -3702,10 +4670,23 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
     children_by_parent = {}
     for axis_id, item in obs.items():
         formal_axis = axis_has_formal_support(axis_id, candidate, manifolds, background_axes)
-        if item.get("_legacy_proxy"):
+        if item.get("_legacy_proxy") or item.get("_derived_from_axes"):
             sources = item.get("_derived_from_axes") or []
             source_formal = any(
                 axis_has_formal_support(source_axis_id, candidate, manifolds, background_axes)
+                for source_axis_id in sources
+            )
+            source_takes_precedence = any(
+                formal_source_axis_should_take_precedence(
+                    source_axis_id,
+                    obs.get(source_axis_id) or {},
+                    candidate,
+                    manifolds,
+                )
+                for source_axis_id in sources
+            )
+            source_usable = any(
+                eval_axis(source_axis_id, candidate, manifolds, background_axes) is not None
                 for source_axis_id in sources
             )
             sibling_proxy_formal = False
@@ -3723,7 +4704,14 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                     break
             if sibling_proxy_formal and not formal_axis:
                 continue
-            if source_formal or (not formal_axis and not item.get("_canonical_proxy_for_background")):
+            if source_formal and not formal_axis:
+                continue
+            if source_takes_precedence or (
+                not formal_axis
+                and not item.get("_canonical_proxy_for_background")
+                and source_usable
+                and not source_formal
+            ):
                 continue
         else:
             proxy_axis_ids = item.get("_legacy_proxy_axis_ids") or []
@@ -3734,10 +4722,17 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                 axis_has_formal_support(proxy_axis_id, candidate, manifolds, background_axes)
                 for proxy_axis_id in proxy_axis_ids
             )
-            proxy_usable = any(
-                eval_axis(proxy_axis_id, candidate, manifolds, background_axes) is not None
-                for proxy_axis_id in proxy_axis_ids
-            )
+            # Source observations that generated a formal legacy proxy should
+            # be suppressed only for candidates that can consume that proxy.
+            # Otherwise the neutral source axis must still score against the
+            # case-adjusted background measure, so missing-axis candidates do
+            # not get a free pass for unexplained findings.
+            if (
+                item.get("_suppress_in_scoring")
+                and proxy_formal
+                and not formal_source_axis_should_take_precedence(axis_id, item, candidate, manifolds)
+            ):
+                continue
             if observation_is_duration_axis(axis_id) and not formal_axis:
                 continue
             if axis_id in RECORD_ONLY_UNLESS_FORMAL_SUPPORT_AXES and not formal_axis:
@@ -3746,7 +4741,7 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                 continue
             if item.get("_suppress_if_proxy_observed") and not formal_axis:
                 continue
-            if (proxy_formal or proxy_usable) and not formal_axis:
+            if proxy_formal and not formal_axis:
                 continue
         axis = eval_axis(axis_id, candidate, manifolds, background_axes)
         if axis is None:
@@ -4686,6 +5681,82 @@ def adrenal_crisis_direct_evidence_score(case):
 
 def adrenal_crisis_anchor_support(case):
     return min(adrenal_crisis_direct_evidence_score(case), GENERIC_ANCHOR_SCORE_CAP)
+
+
+def hypertensive_crisis_bp_score(case):
+    score = 0.0
+    systolic_bp = observed_float(case, "systolic_blood_pressure")
+    if systolic_bp is not None:
+        if systolic_bp >= 220.0:
+            score += 2.8
+        elif systolic_bp >= 180.0:
+            score += 2.2
+        elif systolic_bp >= 160.0:
+            score += 1.2
+    score += positive_observed_axis_score(
+        case,
+        ("severe_hypertension_presence", "hypertensive_emergency_hazard"),
+        score=1.2,
+    )
+    return min(score, 3.0)
+
+
+def hypertensive_cns_autonomic_symptom_score(case):
+    score = 0.0
+    score += positive_observed_axis_score(
+        case,
+        ("headache_presence", "headache_activity", "headache_severity", "progressive_headache_pattern_presence"),
+        score=0.8,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("agitation_presence", "agitation_activity", "psychomotor_agitation_presence", "altered_mental_status_presence"),
+        score=0.6,
+    )
+    score += positive_observed_axis_score(
+        case,
+        ("visual_disturbance_presence", "seizure_presence", "focal_neurologic_deficit_presence"),
+        score=0.8,
+    )
+    return min(score, 1.5)
+
+
+def hypertensive_emergency_anchor_support(case):
+    bp_score = hypertensive_crisis_bp_score(case)
+    if bp_score <= 0.0:
+        return 0.0
+    return min(bp_score + hypertensive_cns_autonomic_symptom_score(case), GENERIC_ANCHOR_SCORE_CAP)
+
+
+def pheochromocytoma_crisis_anchor_support(case, manifolds):
+    direct_context = specific_context_anchor_support(case, "D-PHEOCHROMOCYTOMA-CRISIS", manifolds)
+    bp_score = hypertensive_crisis_bp_score(case)
+    if bp_score <= 0.0:
+        return min(direct_context, GENERIC_ANCHOR_SCORE_CAP)
+
+    adrenergic_score = 0.0
+    adrenergic_score += positive_observed_axis_score(
+        case,
+        ("headache_presence", "headache_activity", "headache_severity", "progressive_headache_pattern_presence"),
+        score=0.7,
+    )
+    adrenergic_score += positive_observed_axis_score(
+        case,
+        ("diaphoresis_presence", "diaphoresis_severity", "sweating_presence"),
+        score=0.8,
+    )
+    adrenergic_score += positive_observed_axis_score(
+        case,
+        ("tachycardia_presence", "palpitations_presence"),
+        score=0.5,
+    )
+    adrenergic_score += positive_observed_axis_score(
+        case,
+        ("agitation_presence", "agitation_activity", "psychomotor_agitation_presence"),
+        score=0.4,
+    )
+    clinical_score = bp_score + min(adrenergic_score, 1.6)
+    return min(max(direct_context, clinical_score), GENERIC_ANCHOR_SCORE_CAP)
 
 
 def tumor_lysis_syndrome_anchor_support(case):
@@ -6326,6 +7397,12 @@ def component_anchor_support(case, disease, manifolds, background_axes):
     elif disease == "D-ADRENAL-CRISIS":
         score += adrenal_crisis_anchor_support(case)
 
+    elif disease == "D-HYPERTENSIVE-EMERGENCY":
+        score += hypertensive_emergency_anchor_support(case)
+
+    elif disease == "D-PHEOCHROMOCYTOMA-CRISIS":
+        score += pheochromocytoma_crisis_anchor_support(case, manifolds)
+
     elif disease == "D-TUMOR-LYSIS-SYNDROME":
         score += tumor_lysis_syndrome_anchor_support(case)
 
@@ -7314,6 +8391,19 @@ def apply_axis_modulations(axis_id, axis, mu, baseline, sigma, mods, rng):
         effect = mod.get("effect")
         direction = str(mod.get("direction") or mod.get("effect_direction") or "").strip().lower()
         factor = midpoint(mod.get("magnitude_factor_range") or mod.get("factor_range"), 1.0)
+        peak_value_factor = midpoint(mod.get("peak_value_factor"), None)
+        baseline_value_factor = midpoint(mod.get("baseline_value_factor"), None)
+        sigma_factor = midpoint(
+            mod.get("sigma_factor") or mod.get("variability_factor") or mod.get("noise_factor"),
+            None,
+        )
+        if baseline_value_factor is not None:
+            baseline *= max(baseline_value_factor, 0.0)
+            mu *= max(baseline_value_factor, 0.0)
+        if peak_value_factor is not None:
+            mu = baseline + max(peak_value_factor, 0.0) * (mu - baseline)
+        if sigma_factor is not None:
+            sigma *= max(sigma_factor, 0.05)
         if effect in ("blunted_response", "lower_peak"):
             mu = baseline + factor * (mu - baseline)
         elif effect == "higher_peak":
@@ -7402,6 +8492,70 @@ def edge_adjusted_delta(raw_delta, edge):
     return raw_delta
 
 
+def edge_confidence_weight(edge):
+    confidence = str(edge.get("knowledge_confidence") or edge.get("confidence") or "").strip().lower()
+    if confidence == "high":
+        return 1.0
+    if confidence == "medium":
+        return 0.85
+    if confidence == "low":
+        return 0.65
+    return 0.8
+
+
+def observation_informed_mechanism_activity(
+    manifold,
+    source_axis_id,
+    background_axes,
+    case_observations,
+    exclude_target_axis_id=None,
+):
+    """Infer latent-mechanism activity from sibling observed axes.
+
+    This is deliberately leave-one-out: the target currently being scored is
+    excluded, so an axis cannot make itself easier to explain. The signal only
+    comes from other observations wired to the same latent mechanism.
+    """
+    if not case_observations:
+        return None
+    supports = []
+    direct_confirmatory_supports = []
+    for edge in manifold.get("mechanism_edges", []):
+        if edge.get("source_axis_id") != source_axis_id:
+            continue
+        child_axis_id = edge.get("target_axis_id")
+        if not child_axis_id or child_axis_id == exclude_target_axis_id:
+            continue
+        child_axis = manifold["axes"].get(child_axis_id)
+        if child_axis is None:
+            continue
+        child_category = child_axis.get("category")
+        if child_category in {LATENT_MECHANISM_CATEGORY, "derived_hazard", "treatment_modifier"}:
+            continue
+        obs = case_observations.get(child_axis_id)
+        if obs is None:
+            continue
+        try:
+            obs_value = observation_value_for_axis(obs, child_axis, child_axis_id)
+        except Exception:
+            continue
+        support = axis_activity(child_axis, obs_value, background_axes.get(child_axis_id))
+        support *= edge_confidence_weight(edge)
+        if support >= 0.12:
+            if direct_confirmatory_axis(child_axis):
+                direct_confirmatory_supports.append(clamp01(support))
+            else:
+                supports.append(clamp01(support))
+    if direct_confirmatory_supports:
+        return clamp01(max(direct_confirmatory_supports))
+    if not supports:
+        return None
+    supports.sort(reverse=True)
+    if len(supports) == 1:
+        return clamp01(0.6 * supports[0])
+    return clamp01(0.75 * supports[0] + 0.25 * supports[1])
+
+
 def mechanism_activity_for_axis(
     disease,
     source_axis_id,
@@ -7410,13 +8564,17 @@ def mechanism_activity_for_axis(
     background_axes,
     risk_payloads,
     rng,
+    case_observations=None,
+    exclude_target_axis_id=None,
     seen=None,
     cache=None,
 ):
     """Return effective 0..1 mechanism activity, including upstream mechanism gates."""
     cache = cache if cache is not None else {}
-    if source_axis_id in cache:
-        return cache[source_axis_id]
+    disease_time_key = round(float(t_by_disease.get(disease, 0.0)), 4)
+    cache_key = (source_axis_id, exclude_target_axis_id or "", disease_time_key)
+    if cache_key in cache:
+        return cache[cache_key]
 
     manifold = manifolds[disease]
     source_axis = manifold["axes"].get(source_axis_id)
@@ -7431,11 +8589,23 @@ def mechanism_activity_for_axis(
 
     seen = set(seen or ())
     if source_axis_id in seen:
-        cache[source_axis_id] = clamp01(activity)
-        return cache[source_axis_id]
+        cache[cache_key] = clamp01(activity)
+        return cache[cache_key]
     seen.add(source_axis_id)
 
-    parent_signals = []
+    if source_axis.get("category") == LATENT_MECHANISM_CATEGORY:
+        observed_activity = observation_informed_mechanism_activity(
+            manifold,
+            source_axis_id,
+            background_axes,
+            case_observations,
+            exclude_target_axis_id=exclude_target_axis_id,
+        )
+        if observed_activity is not None:
+            activity = max(activity, observed_activity)
+
+    positive_parent_signals = []
+    inhibitory_caps = []
     for edge in mechanism_edges_to(manifold, source_axis_id):
         parent_axis_id = edge.get("source_axis_id")
         parent_axis = manifold["axes"].get(parent_axis_id)
@@ -7449,41 +8619,123 @@ def mechanism_activity_for_axis(
             background_axes,
             risk_payloads,
             rng,
-            seen,
-            cache,
+            case_observations=case_observations,
+            exclude_target_axis_id=exclude_target_axis_id,
+            seen=seen,
+            cache=cache,
         )
         if edge.get("effect_on_target") == "decrease":
-            parent_activity = 1.0 - parent_activity
-        parent_signals.append(clamp01(parent_activity))
+            inhibitory_caps.append(clamp01(1.0 - parent_activity))
+        else:
+            positive_parent_signals.append(clamp01(parent_activity))
 
-    if parent_signals:
-        activity = min(activity, max(parent_signals))
+    if positive_parent_signals:
+        activity = max(activity, max(positive_parent_signals))
+    if inhibitory_caps:
+        activity = min(activity, min(inhibitory_caps))
 
-    cache[source_axis_id] = clamp01(activity)
-    return cache[source_axis_id]
+    gate_positive_parent_signals = []
+    gate_inhibitory_caps = []
+    for edge in mechanism_edges_to(manifold, source_axis_id):
+        gate_role = str(edge.get("gate_role") or edge.get("mechanism_gate_role") or "").strip().lower()
+        if gate_role not in {"required_positive_evidence", "required_context", "necessary_context"}:
+            continue
+        parent_axis_id = edge.get("source_axis_id")
+        parent_axis = manifold["axes"].get(parent_axis_id)
+        if parent_axis is None or parent_axis.get("category") == LATENT_MECHANISM_CATEGORY:
+            continue
+        obs = (case_observations or {}).get(parent_axis_id)
+        if obs is None:
+            baseline = parse_interval(parent_axis.get("baseline_range"))
+            obs_value = midpoint(baseline, 0.0) if baseline is not None else 0.0
+        else:
+            try:
+                obs_value = observation_value_for_axis(obs, parent_axis, parent_axis_id)
+            except Exception:
+                baseline = parse_interval(parent_axis.get("baseline_range"))
+                obs_value = midpoint(baseline, 0.0) if baseline is not None else 0.0
+        parent_activity = axis_activity(parent_axis, obs_value, background_axes.get(parent_axis_id))
+        if edge.get("effect_on_target") == "decrease":
+            gate_inhibitory_caps.append(clamp01(1.0 - parent_activity))
+        else:
+            gate_positive_parent_signals.append(clamp01(parent_activity))
+
+    if gate_positive_parent_signals:
+        activity = min(activity, max(gate_positive_parent_signals))
+    if gate_inhibitory_caps:
+        activity = min(activity, min(gate_inhibitory_caps))
+
+    cache[cache_key] = clamp01(activity)
+    return cache[cache_key]
+
+
+def direct_confirmatory_axis(axis):
+    if not isinstance(axis, dict):
+        return False
+    category = str(axis.get("category") or "").strip().lower()
+    if any(
+        token in category
+        for token in (
+            "microbiology",
+            "virology",
+            "pathology",
+            "histology",
+            "serology",
+            "confirmatory",
+        )
+    ):
+        return True
+    axis_id = str(axis.get("axis_id") or "").strip().lower()
+    return any(
+        token in axis_id
+        for token in (
+            "_pcr_",
+            "_pcr_positivity",
+            "_serology",
+            "_antigen",
+            "_antibody",
+            "_culture",
+            "_biopsy",
+            "_histology",
+            "_identification_probability",
+            "_immunophenotype",
+        )
+    )
 
 
 def mechanism_gate_for_target(
     disease,
     target_axis_id,
+    raw_delta,
     t_by_disease,
     manifolds,
     background_axes,
     risk_payloads,
     rng,
+    case_observations=None,
     mechanism_activity_cache=None,
 ):
-    """Return dominant latent-mechanism activity for a target axis, if modeled."""
+    """Return mechanism magnitude gate for a target axis, if modeled.
+
+    Disease trajectories define the target axis direction. Mechanism edges
+    should scale that disease-vector magnitude. An opposing edge is an
+    inhibitory/protective cap; it must not flip an increasing trajectory into a
+    decreasing one by itself.
+    """
     manifold = manifolds[disease]
-    candidates = []
+    drivers = []
+    inhibitors = []
     cache = None
     if mechanism_activity_cache is not None:
         cache = mechanism_activity_cache.setdefault(disease, {})
+    target_sign = 1 if raw_delta >= 0 else -1
     for edge in mechanism_edges_to(manifold, target_axis_id):
         source_axis_id = edge.get("source_axis_id")
         source_axis = manifold["axes"].get(source_axis_id)
         if source_axis is None:
             continue
+        target_axis = manifold["axes"].get(target_axis_id)
+        exclude_target_axis_id = None if direct_confirmatory_axis(target_axis) else target_axis_id
         activity = mechanism_activity_for_axis(
             disease,
             source_axis_id,
@@ -7492,12 +8744,89 @@ def mechanism_gate_for_target(
             background_axes,
             risk_payloads,
             rng,
+            case_observations=case_observations,
+            exclude_target_axis_id=exclude_target_axis_id,
             cache=cache,
         )
-        candidates.append((activity, edge))
-    if not candidates:
+        effect = edge.get("effect_on_target")
+        if effect == "increase":
+            edge_sign = 1
+        elif effect == "decrease":
+            edge_sign = -1
+        else:
+            edge_sign = target_sign
+        if edge_sign == target_sign:
+            drivers.append(clamp01(activity))
+        else:
+            inhibitors.append(clamp01(activity))
+    if not drivers and not inhibitors:
         return None
-    return max(candidates, key=lambda item: item[0])
+    driver_factor = max(drivers) if drivers else 1.0
+    inhibitory_factor = min((1.0 - activity) for activity in inhibitors) if inhibitors else 1.0
+    return clamp01(driver_factor * inhibitory_factor)
+
+
+def manifold_required_evidence_gate(
+    disease,
+    t_by_disease,
+    manifolds,
+    background_axes,
+    risk_payloads,
+    rng,
+    case_observations=None,
+    mechanism_activity_cache=None,
+):
+    """Return a disease-wide activity cap from declared required evidence gates.
+
+    Some source-defined diseases can otherwise explain generic fever, pain, or
+    inflammation through axes that have not yet been wired to a specific
+    mechanism edge. A required-positive-evidence edge says the latent disease
+    mechanism should stay near its background activity unless the source/context
+    geometry is actually present.
+    """
+    manifold = manifolds[disease]
+    cache = None
+    if mechanism_activity_cache is not None:
+        cache = mechanism_activity_cache.setdefault(disease, {})
+        disease_time_key = round(float(t_by_disease.get(disease, 0.0)), 4)
+        cache_key = ("__manifold_required_evidence_gate__", disease_time_key)
+        if cache_key in cache:
+            return cache[cache_key]
+    else:
+        cache_key = None
+    gated_mechanism_ids = []
+    for edge in manifold.get("mechanism_edges", []):
+        gate_role = str(edge.get("gate_role") or edge.get("mechanism_gate_role") or "").strip().lower()
+        if gate_role not in {"required_positive_evidence", "required_context", "necessary_context"}:
+            continue
+        target_axis_id = edge.get("target_axis_id")
+        target_axis = manifold["axes"].get(target_axis_id)
+        if target_axis is None or target_axis.get("category") != LATENT_MECHANISM_CATEGORY:
+            continue
+        if target_axis_id not in gated_mechanism_ids:
+            gated_mechanism_ids.append(target_axis_id)
+    if not gated_mechanism_ids:
+        if cache is not None:
+            cache[cache_key] = None
+        return None
+    activities = [
+        mechanism_activity_for_axis(
+            disease,
+            mechanism_id,
+            t_by_disease,
+            manifolds,
+            background_axes,
+            risk_payloads,
+            rng,
+            case_observations=case_observations,
+            cache=cache,
+        )
+        for mechanism_id in gated_mechanism_ids
+    ]
+    gate = clamp01(max(activities) if activities else 1.0)
+    if cache is not None:
+        cache[cache_key] = gate
+    return gate
 
 
 def combo_axis_endpoint(
@@ -7508,6 +8837,7 @@ def combo_axis_endpoint(
     background_axes,
     risk_payloads,
     rng,
+    case_observations=None,
     mechanism_activity_cache=None,
 ):
     axis_eval = eval_axis(axis_id, candidate, manifolds, background_axes)
@@ -7529,7 +8859,12 @@ def combo_axis_endpoint(
             axis = event_proxy_axis_for(manifolds[disease], axis_id)
         if axis is None or axis.get("category") == "derived_hazard":
             continue
+        required_context_axis = axis_is_required_context_support(axis_id, axis)
         mu, baseline = sample_mu_and_baseline(axis, t_by_disease[disease], rng)
+        if required_context_axis:
+            peak_range = parse_interval(axis.get("peak_value_range"))
+            if peak_range is not None:
+                mu = sample_uniform(rng, peak_range)
         hazard_axis_id = axis.get("_event_proxy_hazard_axis_id")
         axis_mods = list(risk_payloads[disease]["axis_mods"].get(axis_id, []))
         if hazard_axis_id:
@@ -7545,16 +8880,32 @@ def combo_axis_endpoint(
         gate = mechanism_gate_for_target(
             disease,
             hazard_axis_id or axis_id,
+            raw_delta,
             t_by_disease,
             manifolds,
             background_axes,
             risk_payloads,
             rng,
-            mechanism_activity_cache,
+            case_observations=case_observations,
+            mechanism_activity_cache=mechanism_activity_cache,
         )
-        if gate is not None:
-            activity, edge = gate
-            raw_delta = edge_adjusted_delta(raw_delta, edge) * activity
+        if required_context_axis:
+            pass
+        elif gate is not None:
+            raw_delta *= gate
+        else:
+            manifold_gate = manifold_required_evidence_gate(
+                disease,
+                t_by_disease,
+                manifolds,
+                background_axes,
+                risk_payloads,
+                rng,
+                case_observations=case_observations,
+                mechanism_activity_cache=mechanism_activity_cache,
+            )
+            if manifold_gate is not None:
+                raw_delta *= manifold_gate
         raw_deltas.append(raw_delta)
         strengths.append(abs(raw_delta) / max(sigma, 1e-6))
         sigmas.append(sigma)
@@ -7788,6 +9139,7 @@ def iter_background_samples(rng):
 
 
 def score_candidate(case, candidate, manifolds, background_axes):
+    case = case_with_required_context_geometry(case, candidate, manifolds)
     background_axes = background_axes_for_case(background_axes, case, candidate)
     rng = np.random.default_rng(deterministic_seed(candidate + (case.get("case_id"),)))
     obs = case["observations_by_axis"]
@@ -7796,11 +9148,22 @@ def score_candidate(case, candidate, manifolds, background_axes):
         return None
 
     risk_payloads = {}
-    anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate, manifolds, background_axes)
-    anchor_bonus = high_specificity_anchor_log_bonus(case, candidate)
-    unexplained_evidence_penalty = high_specificity_unexplained_evidence_penalty(case, candidate, manifolds)
-    duration_penalty = duration_compatibility_penalty(case, candidate, manifolds, background_axes)
-    feasibility_penalty, feasibility_reasons = anatomic_feasibility_prior(case, candidate)
+    no_formal_support_penalty = 0.0
+    if use_legacy_scoring_scaffolds():
+        anchor_penalty, anchor_support = combo_anchor_penalty(case, candidate, manifolds, background_axes)
+        anchor_bonus = high_specificity_anchor_log_bonus(case, candidate)
+        unexplained_evidence_penalty = high_specificity_unexplained_evidence_penalty(case, candidate, manifolds)
+        duration_penalty = duration_compatibility_penalty(case, candidate, manifolds, background_axes)
+    else:
+        anchor_penalty = 0.0
+        anchor_support = {}
+        anchor_bonus = 0.0
+        unexplained_evidence_penalty = 0.0
+        duration_penalty = 0.0
+    if ENABLE_STRUCTURAL_PRIORS:
+        feasibility_penalty, feasibility_reasons = anatomic_feasibility_prior(case, candidate)
+    else:
+        feasibility_penalty, feasibility_reasons = 0.0, []
     log_prior = (
         COMBO_LOG_PENALTY * (len(candidate) - 1)
         + anchor_penalty
@@ -7825,7 +9188,9 @@ def score_candidate(case, candidate, manifolds, background_axes):
     formal_axis_ids = candidate_formal_axis_ids(axis_ids, candidate, manifolds)
     formal_axis_id_set = set(formal_axis_ids)
     if not formal_axis_ids:
-        log_prior += NO_FORMAL_SUPPORT_LOG_PENALTY
+        if use_legacy_scoring_scaffolds():
+            no_formal_support_penalty = NO_FORMAL_SUPPORT_LOG_PENALTY
+            log_prior += no_formal_support_penalty
         log_joint = []
         best = None
         best_lp = float("-inf")
@@ -7868,9 +9233,14 @@ def score_candidate(case, candidate, manifolds, background_axes):
             "axis_ids": axis_ids,
             "log_prior": log_prior,
             "duration_penalty": duration_penalty,
+            "anchor_penalty": anchor_penalty,
+            "anchor_bonus": anchor_bonus,
+            "unexplained_evidence_penalty": unexplained_evidence_penalty,
+            "no_formal_support_penalty": no_formal_support_penalty,
             "feasibility_penalty": feasibility_penalty,
             "feasibility_reasons": feasibility_reasons,
             "anchor_support": anchor_support,
+            "ranking_philosophy": ranking_philosophy_label(),
             "best": best,
         }
 
@@ -7924,20 +9294,23 @@ def score_candidate(case, candidate, manifolds, background_axes):
                 sigmas.append(sigma)
                 contrib_meta.append(meta)
             else:
+                axis_observation = obs[axis_id]
+                axis_t_by_disease = observation_adjusted_t_by_disease(t_by_disease, axis_observation, case)
                 endpoint = combo_axis_endpoint(
                     axis_id,
                     candidate,
-                    t_by_disease,
+                    axis_t_by_disease,
                     manifolds,
                     background_axes,
                     risk_payloads,
                     sample_rng,
-                    mechanism_activity_cache,
+                    case_observations=obs,
+                    mechanism_activity_cache=mechanism_activity_cache,
                 )
                 if endpoint is None:
                     continue
                 axis, mu_value, sigma, source = endpoint
-                obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+                obs_value = observation_value_for_axis(axis_observation, axis, axis_id)
                 x.append(transform(axis, obs_value))
                 mu.append(transform(axis, mu_value))
                 sigmas.append(sigma)
@@ -7965,22 +9338,28 @@ def score_candidate(case, candidate, manifolds, background_axes):
         "axis_ids": axis_ids,
         "log_prior": log_prior,
         "duration_penalty": duration_penalty,
+        "anchor_penalty": anchor_penalty,
+        "anchor_bonus": anchor_bonus,
+        "unexplained_evidence_penalty": unexplained_evidence_penalty,
+        "no_formal_support_penalty": no_formal_support_penalty,
         "feasibility_penalty": feasibility_penalty,
         "feasibility_reasons": feasibility_reasons,
         "anchor_support": anchor_support,
+        "ranking_philosophy": ranking_philosophy_label(),
         "best": best,
     }
 
 
-def score_background_null(case, background_axes):
-    """Score the case under a pure risk-adjusted background model.
+def score_health_reference(case, background_axes):
+    """Score the case under a pure risk-adjusted health/reference model.
 
-    This is the OOD/null comparison: no disease vector field, no disease prior,
-    and no disease couplings. The runtime returns the delta; downstream decides
-    how much Bayes-factor evidence is enough for an in-atlas call.
+    This is the first diagnostic step: no disease vector field, no disease
+    entry measure, and no disease couplings. The runtime returns the delta from
+    disease manifolds to this reference; downstream decides how much evidence
+    is enough to call the patient "ill" or "in-atlas".
     """
     background_axes = background_axes_for_case(background_axes, case, ())
-    rng = np.random.default_rng(deterministic_seed(("background_null", case.get("case_id"))))
+    rng = np.random.default_rng(deterministic_seed((HEALTH_REFERENCE_CANDIDATE, case.get("case_id"))))
     obs = case["observations_by_axis"]
     axis_ids = conditional_axis_ids(case, tuple(), {}, background_axes)
     if not axis_ids:
@@ -8019,7 +9398,7 @@ def score_background_null(case, background_axes):
 
     log_marginal = float(logsumexp(log_joint) - math.log(len(log_joint)))
     return {
-        "candidate": "background_only",
+        "candidate": HEALTH_REFERENCE_CANDIDATE,
         "candidate_tuple": tuple(),
         "log_marginal": log_marginal,
         "mean_log_per_axis": log_marginal / len(axis_ids),
@@ -8029,6 +9408,44 @@ def score_background_null(case, background_axes):
         "anchor_support": {},
         "best": best,
     }
+
+
+def diagnostic_family_aggregates(single_scores, health_reference=None):
+    """Aggregate single-leaf disease scores into clinical family views.
+
+    Families are a reporting/posterior grouping layer. They do not change the
+    disease manifolds or the single-leaf validation target.
+    """
+    by_disease = {
+        score["candidate_tuple"][0]: score
+        for score in single_scores
+        if len(score.get("candidate_tuple") or ()) == 1
+    }
+    families = []
+    for family_id, spec in DIAGNOSTIC_FAMILIES.items():
+        member_scores = [
+            by_disease[disease_id]
+            for disease_id in sorted(spec["member_disease_ids"])
+            if disease_id in by_disease
+        ]
+        if not member_scores:
+            continue
+        family_logp = float(logsumexp([score["log_marginal"] for score in member_scores]))
+        best_leaf = max(member_scores, key=lambda score: score["log_marginal"])
+        out = {
+            "family_id": family_id,
+            "display_name_ja": spec["display_name_ja"],
+            "display_name_en": spec["display_name_en"],
+            "log_marginal": family_logp,
+            "member_count": len(member_scores),
+            "best_leaf": best_leaf["candidate"],
+            "best_leaf_log_marginal": best_leaf["log_marginal"],
+            "member_scores": sorted(member_scores, key=lambda score: -score["log_marginal"]),
+        }
+        if health_reference is not None:
+            out["delta_to_health_reference"] = family_logp - health_reference["log_marginal"]
+        families.append(out)
+    return sorted(families, key=lambda item: -item["log_marginal"])
 
 
 def expected_tuple(case):
@@ -8076,9 +9493,19 @@ def main():
     lines.append("V5 joint SDE PMC case ranking test")
     lines.append("=" * 100)
     lines.append(
-        f"N_MC={N_MC}, seed={SEED}, combo_penalty={COMBO_LOG_PENALTY}, "
-        f"combo_anchor_threshold={COMBO_ANCHOR_THRESHOLD}"
+        f"N_MC={N_MC}, seed={SEED}, combo_penalty={COMBO_LOG_PENALTY}"
     )
+    lines.append(
+        f"Ranking philosophy: {ranking_philosophy_label()} "
+        f"(legacy anchor/bonus/penalty scaffolds={'on' if use_legacy_scoring_scaffolds() else 'off'}, "
+        f"structural_priors={'on' if ENABLE_STRUCTURAL_PRIORS else 'off'})"
+    )
+    if use_legacy_scoring_scaffolds():
+        lines.append(
+            f"Legacy scaffold settings: combo_anchor_threshold={COMBO_ANCHOR_THRESHOLD}, "
+            f"single_anchor_threshold={SINGLE_ANCHOR_THRESHOLD}, "
+            f"high_specificity_bonus_cap={HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP}"
+        )
     if use_grid_scoring():
         lines.append(
             f"Score mode: {SCORE_MODE} time_grid_n={TIME_GRID_N} "
@@ -8086,7 +9513,8 @@ def main():
         )
     else:
         lines.append(f"Score mode: {SCORE_MODE} monte_carlo_samples={N_MC}")
-    lines.append("Runtime features: joint covariance from axis_couplings; risk-factor axis/coupling modulation; vector-field superposition for 2-disease candidates.")
+    lines.append(f"Report mode: {REPORT_MODE} ranking_top_n={RANKING_TOP_N if RANKING_TOP_N > 0 else 'all'}")
+    lines.append("Runtime features: two-step diagnosis (health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, family aggregation, and vector-field superposition for 2-disease candidates.")
     lines.append(f"Manifold discovery: {len(MANIFOLD_PATHS)} root distillation files from {DISTILL_DIR / 'v5_*.json'}")
     lines.append(f"Candidate sets: singles={len(manifolds)}, total_ranked={len(candidates)}, max_combo_size={MAX_COMBO_SIZE}")
     if CASE_FILTER:
@@ -8129,15 +9557,19 @@ def main():
             score = score_candidate(case, cand, manifolds, background_axes)
             if score is not None:
                 scores.append(score)
+        health_reference = score_health_reference(case, background_axes)
+        if health_reference is not None:
+            for score in scores:
+                score["delta_to_health_reference"] = score["log_marginal"] - health_reference["log_marginal"]
         scores.sort(key=lambda s: -s["log_marginal"])
         best_overall = scores[0]
         single_scores = [s for s in scores if len(s["candidate_tuple"]) == 1]
         best_single = max(single_scores, key=lambda s: s["log_marginal"])
-        background_null = score_background_null(case, background_axes)
+        family_scores = diagnostic_family_aggregates(single_scores, health_reference)
 
         lines.append("")
         lines.append("[joint SDE ranking: all candidates]")
-        for score in scores:
+        for score in report_score_slice(scores):
             marker = "*" if score is best_overall else " "
             anchor = ""
             if score["anchor_support"]:
@@ -8145,30 +9577,51 @@ def main():
             feasibility = ""
             if score.get("feasibility_reasons"):
                 feasibility = " feasibility=" + "|".join(score["feasibility_reasons"])
+            illness_delta = ""
+            if "delta_to_health_reference" in score:
+                illness_delta = f" dHealth={score['delta_to_health_reference']:+8.2f}"
             lines.append(
                 f"{marker} {score['candidate']:23s} logP={score['log_marginal']:+10.2f} "
-                f"mean={score['mean_log_per_axis']:+8.3f} n={score['n_axes']:2d} prior={score['log_prior']:+6.2f}{anchor}{feasibility}"
+                f"mean={score['mean_log_per_axis']:+8.3f} n={score['n_axes']:2d} prior={score['log_prior']:+6.2f}{illness_delta}{anchor}{feasibility}"
             )
 
         lines.append("")
         lines.append("[best single-manifold diagnostic]")
-        for score in sorted(single_scores, key=lambda s: -s["log_marginal"]):
+        for score in report_score_slice(sorted(single_scores, key=lambda s: -s["log_marginal"])):
             marker = "*" if score is best_single else " "
             feasibility = ""
             if score.get("feasibility_reasons"):
                 feasibility = " feasibility=" + "|".join(score["feasibility_reasons"])
+            illness_delta = ""
+            if "delta_to_health_reference" in score:
+                illness_delta = f" dHealth={score['delta_to_health_reference']:+8.2f}"
             lines.append(
                 f"{marker} {score['candidate']:12s} logP={score['log_marginal']:+10.2f} "
-                f"mean={score['mean_log_per_axis']:+8.3f} prior={score['log_prior']:+6.2f}{feasibility}"
+                f"mean={score['mean_log_per_axis']:+8.3f} prior={score['log_prior']:+6.2f}{illness_delta}{feasibility}"
             )
 
         lines.append("")
-        lines.append("[OOD/null-model check: known manifold(s) vs pure background]")
-        if background_null is None:
-            lines.append("  background_only: no scorable observed axes")
+        lines.append("[diagnostic family aggregation: disease leaves grouped after disease scoring]")
+        if family_scores:
+            for family in report_score_slice(family_scores):
+                illness_delta = ""
+                if "delta_to_health_reference" in family:
+                    illness_delta = f" dHealth={family['delta_to_health_reference']:+8.2f}"
+                lines.append(
+                    f"  {family['family_id']:36s} logP={family['log_marginal']:+10.2f}"
+                    f"{illness_delta} members={family['member_count']:2d} "
+                    f"best_leaf={family['best_leaf']}({family['best_leaf_log_marginal']:+.2f})"
+                )
         else:
-            delta_best = best_overall["log_marginal"] - background_null["log_marginal"]
-            delta_single = best_single["log_marginal"] - background_null["log_marginal"]
+            lines.append("  no configured diagnostic families represented in this candidate set")
+
+        lines.append("")
+        lines.append("[illness detection: best disease manifold vs health reference]")
+        if health_reference is None:
+            lines.append("  health_reference: no scorable observed axes")
+        else:
+            delta_best = best_overall["log_marginal"] - health_reference["log_marginal"]
+            delta_single = best_single["log_marginal"] - health_reference["log_marginal"]
             lines.append(
                 f"  logP_best_known={best_overall['log_marginal']:+10.2f} "
                 f"candidate={best_overall['candidate']}"
@@ -8178,12 +9631,12 @@ def main():
                 f"candidate={best_single['candidate']}"
             )
             lines.append(
-                f"  logP_background_only={background_null['log_marginal']:+10.2f} "
-                f"mean={background_null['mean_log_per_axis']:+8.3f} n={background_null['n_axes']:2d}"
+                f"  logP_health_reference={health_reference['log_marginal']:+10.2f} "
+                f"mean={health_reference['mean_log_per_axis']:+8.3f} n={health_reference['n_axes']:2d}"
             )
-            lines.append(f"  delta_to_null_best_known={delta_best:+10.2f}")
-            lines.append(f"  delta_to_null_best_single={delta_single:+10.2f}")
-            lines.append("  interpretation: runtime outputs deltas only; no hard unknown-disease threshold is applied.")
+            lines.append(f"  delta_to_health_best_known={delta_best:+10.2f}")
+            lines.append(f"  delta_to_health_best_single={delta_single:+10.2f}")
+            lines.append("  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.")
 
         if len(expected) == 1:
             total_single += 1
@@ -8195,6 +9648,15 @@ def main():
             ok = set(best_overall["candidate_tuple"]) == set(expected)
             pass_combo += int(ok)
             lines.append(f"combo validation: best_overall={best_overall['candidate']}  {'PASS' if ok else 'FAIL'}")
+
+        processed = total_single + total_combo
+        if PROGRESS_EVERY_CASES and processed % PROGRESS_EVERY_CASES == 0:
+            print(
+                f"[progress] processed={processed}/{len(cases)} "
+                f"single={pass_single}/{total_single} combo={pass_combo}/{total_combo}",
+                file=sys.stderr,
+                flush=True,
+            )
 
         best = best_overall["best"]
         if best:
@@ -8217,11 +9679,13 @@ def main():
     lines.append("")
     lines.append("Notes:")
     lines.append("  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.")
+    lines.append("  - geometry_first mode makes diagnosis ranking emerge from axis residuals, trajectories, couplings, mechanism gates, risk/background modifiers, and case observations.")
+    lines.append("  - legacy anchor/bonus/missing-anchor/duration penalties are retained only behind VESMED_RANKING_PHILOSOPHY=legacy_scaffold for regression comparison.")
     lines.append("  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.")
     lines.append("  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.")
     lines.append("  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.")
-    lines.append("  - OOD/null-model check reports logP_best_known - logP_background_only; it deliberately does not apply a hard unknown-disease threshold.")
-    lines.append("  - Culture/ADAMTS13-confirmatory axes are allowed if present in the case JSON; remove them from case evidence if testing presentation-only diagnosis.")
+    lines.append("  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.")
+    lines.append("  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.")
     RESULT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     text = "\n".join(lines)
