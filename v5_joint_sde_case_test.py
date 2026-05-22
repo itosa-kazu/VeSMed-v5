@@ -32,6 +32,7 @@ import numpy as np
 from scipy.special import logsumexp
 
 import v5_background
+import v5_reference_response
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -625,6 +626,11 @@ HEALTHY_OVERRIDES = {
     "blood_culture_positivity_probability": {"unit": "probability_0_1", "baseline_range": (0.0, 0.02), "log_scale": False},
     "blood_culture_bacterial_load": {"unit": "CFU_per_mL", "baseline_range": (1e-9, 1e-6), "log_scale": True},
 }
+
+
+HEALTH_REFERENCE_AXIS_OVERRIDES = v5_reference_response.health_reference_axis_overrides()
+RESPONSE_MODELS_BY_AXIS = v5_reference_response.response_models_by_axis()
+RESPONSE_MODEL_AXIS_IDS = v5_reference_response.response_model_axis_ids()
 
 
 def parse_interval(value):
@@ -1225,10 +1231,22 @@ def build_background_axes(manifolds, master_axes):
             "ranges": [],
         })
 
+    for axis_id, meta in HEALTH_REFERENCE_AXIS_OVERRIDES.items():
+        by_axis.setdefault(axis_id, {
+            "axis_id": axis_id,
+            "category": meta.get("category") or "background_measurement",
+            "unit": meta.get("unit"),
+            "log_scale": bool(meta.get("log_scale", False)),
+            "axis_role": meta.get("axis_role") or "measurement",
+            "parent_axis_id": meta.get("parent_axis_id"),
+            "ranges": [],
+        })
+
     background = {}
     for axis_id, entry in by_axis.items():
         override = (
-            HEALTHY_OVERRIDES.get(axis_id)
+            HEALTH_REFERENCE_AXIS_OVERRIDES.get(axis_id)
+            or HEALTHY_OVERRIDES.get(axis_id)
             or v5_background.BASE_MEASURE_OVERRIDES.get(axis_id)
             or generic_healthy_background_override(axis_id, entry)
         )
@@ -1236,16 +1254,19 @@ def build_background_axes(manifolds, master_axes):
             baseline = override["baseline_range"]
             unit = override["unit"]
             log_scale = override["log_scale"]
+            source = override.get("_source", "base_measure_background")
         elif entry.get("category") == LATENT_MECHANISM_CATEGORY:
             baseline = (0.0, 0.05)
             unit = entry.get("unit") or "relative_activity_0_1"
             log_scale = False
+            source = "base_measure_background"
         elif entry["ranges"]:
             lows = [r[0] for r in entry["ranges"]]
             highs = [r[1] for r in entry["ranges"]]
             baseline = (min(lows), max(highs))
             unit = entry.get("unit")
             log_scale = entry.get("log_scale", False)
+            source = "base_measure_background"
         else:
             unit = entry.get("unit")
             category = entry.get("category")
@@ -1256,6 +1277,7 @@ def build_background_axes(manifolds, master_axes):
             ):
                 baseline = (0.0, 0.05)
                 log_scale = False
+                source = "base_measure_background"
             else:
                 continue
         background[axis_id] = {
@@ -1270,7 +1292,7 @@ def build_background_axes(manifolds, master_axes):
             "peak_value_range": None,
             "plateau_duration_days": None,
             "decline_half_life_days": None,
-            "_source": "base_measure_background",
+            "_source": source,
         }
     return background
 
@@ -3353,6 +3375,7 @@ def prepare_case_data(data):
                     {
                         "category": "vital_sign",
                         "axis_role": "measurement",
+                        "_derived_from_axes": ["systolic_blood_pressure", "diastolic_blood_pressure"],
                         "source_text_value": "derived from systolic_blood_pressure and diastolic_blood_pressure",
                     },
                 )
@@ -3377,6 +3400,7 @@ def prepare_case_data(data):
                 {
                     "category": "hemodynamic_finding",
                     "axis_role": "finding",
+                    "_derived_from_axes": ["systolic_blood_pressure", "mean_arterial_pressure"],
                     "source_text_value": "derived from low systolic_blood_pressure or mean_arterial_pressure",
                 },
             )
@@ -4421,9 +4445,211 @@ def axis_has_formal_support(axis_id, candidate, manifolds, background_axes):
     return axis_id in candidate_axis_set(candidate, manifolds, include_derived=True)
 
 
-def candidate_formal_axis_ids(axis_ids, candidate, manifolds):
+OBSERVED_AXIS_PROXY_STEM_SUFFIXES = (
+    "_presence",
+    "_activity",
+    "_severity",
+    "_probability",
+)
+
+SPECIFIC_LEGACY_OBSERVATION_PROXY_ALIGNMENT = {
+    "diarrhea_activity": {"diarrhea_presence", "diarrhea_severity"},
+    "fever_history_activity": {"fever_history_presence", "fever_history_severity"},
+    "fever_activity": {"fever_presence", "fever_history_presence", "fever_history_severity"},
+    "nausea_vomiting_activity": {
+        "nausea_presence",
+        "nausea_severity",
+        "vomiting_presence",
+        "vomiting_severity",
+    },
+}
+
+OBSERVED_AXIS_EQUIVALENTS = {
+    "acute_kidney_injury_stage_activity": (
+        "acute_kidney_injury_severity",
+        "acute_kidney_injury_presence",
+    ),
+    "ascites_extent": ("ascites_activity",),
+    "ataxia_presence": (
+        "ataxia_activity",
+        "sensory_ataxic_neuropathy_activity_sjogren",
+    ),
+    "bullous_skin_lesion_presence": (
+        "bullous_skin_lesion_activity",
+        "skin_barrier_failure_activity",
+    ),
+    "cardiac_murmur_severity": (
+        "ie_new_heart_murmur_activity",
+        "cardiac_murmur_activity",
+        "systolic_murmur_presence",
+        "diastolic_murmur_presence",
+    ),
+    "crackles_severity": (
+        "crackles_activity",
+        "diffuse_crackles_activity",
+        "crackles_presence",
+    ),
+    "diarrhea_severity": ("diarrhea_activity",),
+    "digital_ischemia_presence": ("limb_ischemia_or_necrotic_ulcer_activity",),
+    "ground_glass_opacity_extent_score": (
+        "ground_glass_opacity_extent",
+        "ground_glass_opacity_extent_covid",
+        "diffuse_ground_glass_opacity_extent",
+    ),
+    "hematuria_severity": (
+        "hematuria_activity",
+        "hematuria_presence",
+    ),
+    "hemoptysis_severity": (
+        "hemoptysis_activity",
+        "hemoptysis_presence",
+    ),
+    "high_dose_glucocorticoid_exposure_context_activity": (
+        "glucocorticoid_cytoreduction_context_presence",
+    ),
+    "immunosuppression_intensity": ("immunosuppression_activity",),
+    "limb_ischemia_severity": ("limb_ischemia_or_necrotic_ulcer_activity",),
+    "lymphadenopathy_burden_extent": ("lymphadenopathy_activity",),
+    "myalgia_severity": ("myalgia_activity",),
+    "myelitis_presence": (
+        "myelitis_activity",
+        "myelitis_demyelination_activity_sjogren",
+    ),
+    "new_or_changed_cardiac_murmur_presence": (
+        "ie_new_heart_murmur_activity",
+        "cardiac_murmur_activity",
+        "cardiac_murmur_severity",
+        "systolic_murmur_presence",
+        "diastolic_murmur_presence",
+    ),
+    "oral_ulcer_activity": (
+        "oral_mucosal_ulcer_activity",
+        "mucosal_barrier_injury_activity",
+    ),
+    "peripheral_neuropathy_presence": (
+        "peripheral_neuropathy_activity",
+        "sensory_ataxic_neuropathy_activity_sjogren",
+    ),
+    "presyncope_presence": ("syncope_presyncope_activity",),
+    "pulmonary_consolidation_presence": (
+        "pulmonary_consolidation_extent",
+        "lobar_consolidation_extent",
+    ),
+    "pulmonary_infiltrate_extent": ("pneumonia_infiltrate_extent",),
+    "rash_presence": (
+        "rash_activity",
+        "evanescent_rash_activity",
+        "dusky_targetoid_macular_rash_activity",
+    ),
+    "respiratory_distress_presence": ("dyspnea_respiratory_distress_activity",),
+    "respiratory_distress_severity": (
+        "dyspnea_respiratory_distress_activity",
+        "respiratory_distress_activity",
+        "respiratory_distress_presence",
+    ),
+    "skin_breakdown_presence": (
+        "skin_breakdown_activity",
+        "peripheral_skin_soft_tissue_infection_activity",
+    ),
+    "skin_soft_tissue_infection_presence": (
+        "skin_soft_tissue_infection_activity",
+        "peripheral_skin_soft_tissue_infection_activity",
+    ),
+    "skin_soft_tissue_infection_severity": (
+        "skin_soft_tissue_infection_activity",
+        "peripheral_skin_soft_tissue_infection_activity",
+    ),
+    "sore_throat_severity": ("sore_throat_activity",),
+    "syncope_presence": (
+        "syncope_activity",
+        "syncope_presyncope_activity",
+    ),
+    "syncope_severity": (
+        "syncope_activity",
+        "syncope_presyncope_activity",
+    ),
+    "unintentional_weight_loss_severity": ("weight_loss_activity",),
+    "xerostomia_activity": ("oral_dryness_severity_sjogren",),
+}
+
+
+def observed_axis_proxy_stem(axis_id):
+    stem = str(axis_id or "")
+    changed = True
+    while changed:
+        changed = False
+        for suffix in OBSERVED_AXIS_PROXY_STEM_SUFFIXES:
+            if stem.endswith(suffix):
+                stem = stem[: -len(suffix)]
+                changed = True
+                break
+    return stem
+
+
+def allowed_observed_axis_proxy(axis_id, proxy_axis_id):
+    if not axis_id:
+        return True
+    if observed_axis_proxy_stem(axis_id) == observed_axis_proxy_stem(proxy_axis_id):
+        return True
+    return axis_id in SPECIFIC_LEGACY_OBSERVATION_PROXY_ALIGNMENT.get(proxy_axis_id, set())
+
+
+def observation_proxy_axis_ids(item, axis_id=None):
+    proxy_axis_ids = list(item.get("_legacy_proxy_axis_ids") or [])
+    legacy_axis_id = item.get("_legacy_proxy_axis_id")
+    if legacy_axis_id and legacy_axis_id not in proxy_axis_ids:
+        proxy_axis_ids.append(legacy_axis_id)
+    return [
+        proxy_axis_id
+        for proxy_axis_id in proxy_axis_ids
+        if allowed_observed_axis_proxy(axis_id, proxy_axis_id)
+    ]
+
+
+def observation_candidate_axis_ids(item, axis_id=None):
+    out = []
+    for proxy_axis_id in observation_proxy_axis_ids(item, axis_id):
+        if proxy_axis_id not in out:
+            out.append(proxy_axis_id)
+    for equivalent_axis_id in OBSERVED_AXIS_EQUIVALENTS.get(axis_id, ()):
+        if equivalent_axis_id not in out:
+            out.append(equivalent_axis_id)
+    return out
+
+
+def disease_axis_for_observed_axis(disease, axis_id, manifolds, case_observations=None):
+    manifold = manifolds[disease]
+    axis = manifold["axes"].get(axis_id)
+    if axis is None:
+        axis = event_proxy_axis_for(manifold, axis_id)
+    if axis is not None and axis.get("category") != "derived_hazard":
+        return axis_id, axis
+
+    item = (case_observations or {}).get(axis_id) or {}
+    for proxy_axis_id in observation_candidate_axis_ids(item, axis_id):
+        axis = manifold["axes"].get(proxy_axis_id)
+        if axis is None:
+            axis = event_proxy_axis_for(manifold, proxy_axis_id)
+        if axis is not None and axis.get("category") != "derived_hazard":
+            return proxy_axis_id, axis
+    return None, None
+
+
+def candidate_formal_axis_ids(axis_ids, candidate, manifolds, case_observations=None):
     formal = candidate_axis_set(candidate, manifolds, include_derived=False)
-    return [axis_id for axis_id in axis_ids if axis_id in formal]
+    out = []
+    for axis_id in axis_ids:
+        if axis_id in formal:
+            out.append(axis_id)
+            continue
+        item = (case_observations or {}).get(axis_id) or {}
+        if any(proxy_axis_id in formal for proxy_axis_id in observation_candidate_axis_ids(item, axis_id)):
+            out.append(axis_id)
+    return out
+
+
+def candidate_supports_observed_axis(axis_id, candidate, manifolds, case_observations=None):
+    return bool(candidate_formal_axis_ids([axis_id], candidate, manifolds, case_observations))
 
 
 REQUIRED_CONTEXT_SUPPORT_CATEGORIES = {
@@ -4739,14 +4965,14 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
                 continue
             if item.get("_risk_context_observation") and not formal_axis:
                 continue
-            if item.get("_suppress_if_proxy_observed") and not formal_axis:
+            if item.get("_suppress_if_proxy_observed"):
                 continue
             if proxy_formal and not formal_axis:
                 continue
         axis = eval_axis(axis_id, candidate, manifolds, background_axes)
         if axis is None:
             continue
-        parent_axis_id = axis.get("parent_axis_id")
+        parent_axis_id = item.get("parent_axis_id") or axis.get("parent_axis_id")
         if parent_axis_id and observed_absent(case, parent_axis_id):
             continue
         eligible.add(axis_id)
@@ -4773,6 +4999,25 @@ def conditional_axis_ids(case, candidate, manifolds, background_axes):
             continue
         axis_ids.append(axis_id)
     return sorted(axis_ids)
+
+
+def case_rankable_axis_ids(case, manifolds, background_axes):
+    """Return the fixed observed-axis set every disease candidate must score.
+
+    Disease-vs-disease likelihoods are only comparable when each candidate pays
+    rent on the same observed facts. Candidate-specific formal ownership should
+    decide whether an axis uses disease geometry or health/reference fallback,
+    not whether the axis disappears from the likelihood.
+    """
+    cache_key = "_case_rankable_axis_ids"
+    cached = case.get(cache_key)
+    if cached is not None:
+        return cached
+    reference_background_axes = background_axes_for_case(background_axes, case, ())
+    atlas_candidate = tuple(manifolds.keys()) if manifolds else tuple()
+    axis_ids = conditional_axis_ids(case, atlas_candidate, manifolds, reference_background_axes)
+    case[cache_key] = axis_ids
+    return axis_ids
 
 
 def axis_manifold_frequency(manifolds):
@@ -8766,6 +9011,145 @@ def mechanism_gate_for_target(
     return clamp01(driver_factor * inhibitory_factor)
 
 
+def directional_response_activity(axis, value, background_axis, direction):
+    """Map a stimulus observation into 0..1 in the declared direction."""
+    direction = str(direction or "increase").strip().lower()
+    if direction != "decrease":
+        return axis_activity(axis, value, background_axis)
+
+    baseline = parse_interval((background_axis or {}).get("baseline_range")) or parse_interval(axis.get("baseline_range"))
+    if baseline is None:
+        return 0.0
+    lo, hi = baseline
+    if value >= hi:
+        return 0.0
+    width = max(hi - lo, abs(0.5 * (hi + lo)) * 0.2, 1e-6)
+    return clamp01((lo - value) / width)
+
+
+def response_model_stimulus_activity(model, target_axis_id, candidate, manifolds, background_axes, case_observations):
+    supports = []
+    for spec in model.get("stimulus_axes") or []:
+        stimulus_axis_id = spec.get("axis_id")
+        if not stimulus_axis_id or stimulus_axis_id == target_axis_id:
+            continue
+        obs = (case_observations or {}).get(stimulus_axis_id)
+        if obs is None:
+            continue
+        if not candidate_supports_observed_axis(stimulus_axis_id, candidate, manifolds, case_observations):
+            continue
+        axis_eval = eval_axis(stimulus_axis_id, candidate, manifolds, background_axes)
+        if axis_eval is None:
+            continue
+        try:
+            obs_value = observation_value_for_axis(obs, axis_eval, stimulus_axis_id)
+        except Exception:
+            continue
+        activity = directional_response_activity(
+            axis_eval,
+            obs_value,
+            background_axes.get(stimulus_axis_id),
+            spec.get("direction", "increase"),
+        )
+        weight = float(spec.get("weight", 1.0))
+        supports.append(clamp01(activity * max(weight, 0.0)))
+    if not supports:
+        return None
+    supports.sort(reverse=True)
+    if len(supports) == 1:
+        return clamp01(supports[0])
+    return clamp01(0.7 * supports[0] + 0.3 * supports[1])
+
+
+def response_endpoint_for_axis(
+    axis_id,
+    axis_eval,
+    candidate,
+    manifolds,
+    background_axes,
+    case_observations,
+):
+    """Return a response-model endpoint when the axis is conditionally governed.
+
+    This is the runtime part of the reference-response factorization. The
+    model must see stimulus evidence independent of the target response axis.
+    When observed response is inadequate, use the response-failure branch
+    rather than double-counting the same WBC/HR/RR value as a direct disease
+    mismatch.
+    """
+    model_specs = RESPONSE_MODELS_BY_AXIS.get(axis_id) or []
+    if not model_specs:
+        return None
+    obs = (case_observations or {}).get(axis_id)
+    if obs is None:
+        return None
+    background_axis = background_axes.get(axis_id) or axis_eval
+    baseline = parse_interval(background_axis.get("baseline_range")) or parse_interval(axis_eval.get("baseline_range"))
+    if baseline is None:
+        return None
+
+    obs_value = observation_value_for_axis(obs, axis_eval, axis_id)
+    candidates = []
+    for model, response_spec in model_specs:
+        stimulus = response_model_stimulus_activity(
+            model,
+            axis_id,
+            candidate,
+            manifolds,
+            background_axes,
+            case_observations,
+        )
+        if stimulus is None:
+            continue
+        threshold = float(model.get("minimum_stimulus_activity", 0.35))
+        if stimulus < threshold:
+            continue
+        candidates.append((stimulus, threshold, model, response_spec))
+    if not candidates:
+        return None
+
+    stimulus, threshold, model, response_spec = max(candidates, key=lambda item: item[0])
+    adequate = parse_interval(response_spec.get("adequate_response_range"))
+    failure = parse_interval(response_spec.get("failure_branch_range"))
+    if adequate is None or failure is None:
+        return None
+
+    baseline_mid = midpoint(baseline, obs_value)
+    adequate_mid = midpoint(adequate, baseline_mid)
+    strength = clamp01((stimulus - threshold) / max(1.0 - threshold, 1e-6))
+    strength = 0.25 + 0.75 * strength
+    expected_mu = baseline_mid + strength * (adequate_mid - baseline_mid)
+
+    direction = str(response_spec.get("gap_direction") or "").strip().lower()
+    gap_scale = max(abs(expected_mu - baseline_mid), abs(adequate_mid - baseline_mid), 1e-6)
+    threshold_fraction = float(response_spec.get("gap_threshold_fraction", 0.25))
+    gap_fraction = 0.0
+    failure_branch = False
+    if direction == "lower_than_expected":
+        gap_fraction = max(0.0, (expected_mu - obs_value) / gap_scale)
+        failure_branch = gap_fraction >= threshold_fraction
+    elif direction == "higher_than_expected":
+        gap_fraction = max(0.0, (obs_value - expected_mu) / gap_scale)
+        failure_branch = gap_fraction >= threshold_fraction
+
+    if failure_branch:
+        lo, hi = failure
+        mu_value = min(max(obs_value, lo), hi)
+        branch = response_spec.get("failure_activity_axis_id") or "response_failure_activity"
+        sigma_multiplier = float(response_spec.get("failure_sigma_multiplier", 1.6))
+    else:
+        mu_value = expected_mu
+        branch = "expected_response"
+        sigma_multiplier = float(response_spec.get("adequate_sigma_multiplier", 1.25))
+
+    sigma = axis_sigma(axis_eval) * sigma_multiplier
+    source = (
+        f"response_model:{model['model_id']}:{branch}:"
+        f"stimulus={stimulus:.2f}:gap={gap_fraction:.2f}"
+    )
+    return axis_eval, mu_value, max(sigma, 1e-6), source
+
+
 def manifold_required_evidence_gate(
     disease,
     t_by_disease,
@@ -8848,29 +9232,43 @@ def combo_axis_endpoint(
     bg_mu = convert_value(bg_mu, bg_axis.get("unit"), axis_eval.get("unit"), axis_id)
     z_bg = transform(axis_eval, bg_mu)
 
+    response_endpoint = response_endpoint_for_axis(
+        axis_id,
+        axis_eval,
+        candidate,
+        manifolds,
+        background_axes,
+        case_observations,
+    )
+    if response_endpoint is not None:
+        return response_endpoint
+
     raw_deltas = []
     strengths = []
     sigmas = [axis_sigma_in_eval_space(bg_axis, axis_eval, axis_id)]
     sources = []
 
     for disease in candidate:
-        axis = manifolds[disease]["axes"].get(axis_id)
+        source_axis_id, axis = disease_axis_for_observed_axis(
+            disease,
+            axis_id,
+            manifolds,
+            case_observations=case_observations,
+        )
         if axis is None:
-            axis = event_proxy_axis_for(manifolds[disease], axis_id)
-        if axis is None or axis.get("category") == "derived_hazard":
             continue
-        required_context_axis = axis_is_required_context_support(axis_id, axis)
+        required_context_axis = axis_is_required_context_support(source_axis_id, axis)
         mu, baseline = sample_mu_and_baseline(axis, t_by_disease[disease], rng)
         if required_context_axis:
             peak_range = parse_interval(axis.get("peak_value_range"))
             if peak_range is not None:
                 mu = sample_uniform(rng, peak_range)
         hazard_axis_id = axis.get("_event_proxy_hazard_axis_id")
-        axis_mods = list(risk_payloads[disease]["axis_mods"].get(axis_id, []))
+        axis_mods = list(risk_payloads[disease]["axis_mods"].get(source_axis_id, []))
         if hazard_axis_id:
             axis_mods.extend(risk_payloads[disease]["axis_mods"].get(hazard_axis_id, []))
         source_sigma = axis_sigma(axis)
-        mu, baseline, modulated_source_sigma = apply_axis_modulations(axis_id, axis, mu, baseline, source_sigma, axis_mods, rng)
+        mu, baseline, modulated_source_sigma = apply_axis_modulations(source_axis_id, axis, mu, baseline, source_sigma, axis_mods, rng)
         sigma = axis_sigma_in_eval_space(axis, axis_eval, axis_id)
         if source_sigma > 0 and modulated_source_sigma != source_sigma:
             sigma *= modulated_source_sigma / source_sigma
@@ -8879,7 +9277,7 @@ def combo_axis_endpoint(
         raw_delta = z_mu - z_bg
         gate = mechanism_gate_for_target(
             disease,
-            hazard_axis_id or axis_id,
+            hazard_axis_id or source_axis_id,
             raw_delta,
             t_by_disease,
             manifolds,
@@ -8912,6 +9310,17 @@ def combo_axis_endpoint(
         sources.append(disease)
 
     if not raw_deltas:
+        parent_duration_endpoint = parent_conditioned_duration_background_endpoint(
+            axis_id,
+            case_observations,
+            candidate,
+            manifolds,
+            background_axes,
+            rng,
+        )
+        if parent_duration_endpoint is not None:
+            axis_eval, mu_out, sigma, source = parent_duration_endpoint
+            return axis_eval, mu_out, max(sigma, 1e-6), source
         z = z_bg
         sigma = axis_sigma(bg_axis)
         source = bg_axis.get("_source", "base_measure_background")
@@ -8940,6 +9349,76 @@ def background_axis_endpoint(axis_id, background_axes, rng):
         return None
     mu_value, _ = sample_mu_and_baseline(axis, -1.0, rng)
     return axis, mu_value, axis_sigma(axis), axis.get("_source", "base_measure_background")
+
+
+def parent_conditioned_duration_background_endpoint(
+    axis_id,
+    case_observations,
+    candidate,
+    manifolds,
+    background_axes,
+    rng,
+):
+    """Use a weak duration reference when the parent finding is explained.
+
+    A duration child such as ``diarrhea_duration_days`` says how long an
+    already-present symptom has been present. If a legacy disease leaf explains
+    the parent finding but lacks the child duration axis, comparing the child to
+    the pure healthy baseline effectively double-counts "no diarrhea" and can
+    swamp direct disease evidence.
+    """
+    obs = (case_observations or {}).get(axis_id) or {}
+    if not observation_is_duration_axis(axis_id):
+        return None
+    parent_axis_id = obs.get("parent_axis_id")
+    if not parent_axis_id:
+        return None
+    if not candidate_supports_observed_axis(parent_axis_id, candidate, manifolds, case_observations):
+        return None
+
+    duration_days = duration_value_to_days(obs.get("value"), obs.get("unit"), axis_id)
+    upper_days = 365.0
+    if duration_days is not None:
+        upper_days = max(upper_days, min(3650.0, duration_days * 2.0))
+
+    axis = dict(background_axes.get(axis_id) or {})
+    for cache_key in list(axis):
+        if cache_key == "_axis_sigma" or (
+            isinstance(cache_key, tuple) and cache_key[:1] == ("_axis_sigma_eval",)
+        ):
+            axis.pop(cache_key, None)
+    axis.update(
+        {
+            "axis_id": axis_id,
+            "category": obs.get("category") or axis.get("category") or "symptom_measurement",
+            "unit": "days",
+            "log_scale": True,
+            "axis_role": obs.get("axis_role") or axis.get("axis_role") or "measurement",
+            "parent_axis_id": parent_axis_id,
+            "baseline_range": [0.25, upper_days],
+            "peak_day_range": None,
+            "peak_value_range": None,
+            "plateau_duration_days": None,
+            "decline_half_life_days": None,
+            "_source": "parent_conditioned_duration_satellite_background",
+        }
+    )
+    mu_value, _ = sample_mu_and_baseline(axis, -1.0, rng)
+    return axis, mu_value, axis_sigma(axis), axis["_source"]
+
+
+def candidate_background_axis_endpoint(axis_id, case_observations, candidate, manifolds, background_axes, rng):
+    endpoint = parent_conditioned_duration_background_endpoint(
+        axis_id,
+        case_observations,
+        candidate,
+        manifolds,
+        background_axes,
+        rng,
+    )
+    if endpoint is not None:
+        return endpoint
+    return background_axis_endpoint(axis_id, background_axes, rng)
 
 
 def coupling_to_corr(c):
@@ -9139,11 +9618,13 @@ def iter_background_samples(rng):
 
 
 def score_candidate(case, candidate, manifolds, background_axes):
+    base_case = case
+    base_background_axes = background_axes
     case = case_with_required_context_geometry(case, candidate, manifolds)
     background_axes = background_axes_for_case(background_axes, case, candidate)
     rng = np.random.default_rng(deterministic_seed(candidate + (case.get("case_id"),)))
     obs = case["observations_by_axis"]
-    axis_ids = conditional_axis_ids(case, candidate, manifolds, background_axes)
+    axis_ids = case_rankable_axis_ids(base_case, manifolds, base_background_axes)
     if not axis_ids:
         return None
 
@@ -9185,7 +9666,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
         log_prior += lp
 
     corr = build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes)
-    formal_axis_ids = candidate_formal_axis_ids(axis_ids, candidate, manifolds)
+    formal_axis_ids = candidate_formal_axis_ids(axis_ids, candidate, manifolds, obs)
     formal_axis_id_set = set(formal_axis_ids)
     if not formal_axis_ids:
         if use_legacy_scoring_scaffolds():
@@ -9201,7 +9682,14 @@ def score_candidate(case, candidate, manifolds, background_axes):
             sigmas = []
             contrib_meta = []
             for axis_id in axis_ids:
-                endpoint = background_axis_endpoint(axis_id, background_axes, sample_rng)
+                endpoint = candidate_background_axis_endpoint(
+                    axis_id,
+                    obs,
+                    candidate,
+                    manifolds,
+                    background_axes,
+                    sample_rng,
+                )
                 if endpoint is None:
                     continue
                 axis, mu_value, sigma, source = endpoint
@@ -9253,7 +9741,14 @@ def score_candidate(case, candidate, manifolds, background_axes):
         for axis_id in axis_ids:
             if axis_id in formal_axis_id_set:
                 continue
-            endpoint = background_axis_endpoint(axis_id, background_axes, None)
+            endpoint = candidate_background_axis_endpoint(
+                axis_id,
+                obs,
+                candidate,
+                manifolds,
+                background_axes,
+                None,
+            )
             if endpoint is None:
                 continue
             axis, mu_value, sigma, source = endpoint
@@ -9276,7 +9771,14 @@ def score_candidate(case, candidate, manifolds, background_axes):
             if axis_id not in formal_axis_id_set:
                 cached = static_background_contrib.get(axis_id)
                 if cached is None:
-                    endpoint = background_axis_endpoint(axis_id, background_axes, sample_rng)
+                    endpoint = candidate_background_axis_endpoint(
+                        axis_id,
+                        obs,
+                        candidate,
+                        manifolds,
+                        background_axes,
+                        sample_rng,
+                    )
                     if endpoint is None:
                         continue
                     axis, mu_value, sigma, source = endpoint
@@ -9350,7 +9852,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
     }
 
 
-def score_health_reference(case, background_axes):
+def score_health_reference(case, manifolds, background_axes):
     """Score the case under a pure risk-adjusted health/reference model.
 
     This is the first diagnostic step: no disease vector field, no disease
@@ -9361,7 +9863,7 @@ def score_health_reference(case, background_axes):
     background_axes = background_axes_for_case(background_axes, case, ())
     rng = np.random.default_rng(deterministic_seed((HEALTH_REFERENCE_CANDIDATE, case.get("case_id"))))
     obs = case["observations_by_axis"]
-    axis_ids = conditional_axis_ids(case, tuple(), {}, background_axes)
+    axis_ids = case_rankable_axis_ids(case, manifolds, background_axes)
     if not axis_ids:
         return None
 
@@ -9514,7 +10016,7 @@ def main():
     else:
         lines.append(f"Score mode: {SCORE_MODE} monte_carlo_samples={N_MC}")
     lines.append(f"Report mode: {REPORT_MODE} ranking_top_n={RANKING_TOP_N if RANKING_TOP_N > 0 else 'all'}")
-    lines.append("Runtime features: two-step diagnosis (health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, family aggregation, and vector-field superposition for 2-disease candidates.")
+    lines.append("Runtime features: two-step diagnosis (formal health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, reusable response-gap models, family aggregation, and vector-field superposition for 2-disease candidates.")
     lines.append(f"Manifold discovery: {len(MANIFOLD_PATHS)} root distillation files from {DISTILL_DIR / 'v5_*.json'}")
     lines.append(f"Candidate sets: singles={len(manifolds)}, total_ranked={len(candidates)}, max_combo_size={MAX_COMBO_SIZE}")
     if CASE_FILTER:
@@ -9557,7 +10059,7 @@ def main():
             score = score_candidate(case, cand, manifolds, background_axes)
             if score is not None:
                 scores.append(score)
-        health_reference = score_health_reference(case, background_axes)
+        health_reference = score_health_reference(case, manifolds, background_axes)
         if health_reference is not None:
             for score in scores:
                 score["delta_to_health_reference"] = score["log_marginal"] - health_reference["log_marginal"]
@@ -9671,6 +10173,16 @@ def main():
                 f"{axis_id} obs={obs_value:g} {unit} mu={mu_value:g} via={source} z={z:.1f}"
                 for z, axis_id, obs_value, unit, mu_value, source in worst
             ))
+            response_rows = [
+                (axis_id, obs_value, unit, mu_value, source)
+                for (axis_id, obs_value, unit, mu_value, source) in best["meta"]
+                if str(source).startswith("response_model:")
+            ][:5]
+            if response_rows:
+                lines.append("response-model accounting: " + "; ".join(
+                    f"{axis_id} obs={obs_value:g} {unit} expected_mu={mu_value:g} via={source}"
+                    for axis_id, obs_value, unit, mu_value, source in response_rows
+                ))
         lines.append("")
 
     lines.append("=" * 100)
@@ -9685,6 +10197,7 @@ def main():
     lines.append("  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.")
     lines.append("  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.")
     lines.append("  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.")
+    lines.append("  - Formal health_reference_manifold axes and reusable response_models are loaded when present; response axes can be scored through expected-response / response-failure factorization instead of direct disease-axis double counting.")
     lines.append("  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.")
     RESULT_PATH.parent.mkdir(parents=True, exist_ok=True)
 

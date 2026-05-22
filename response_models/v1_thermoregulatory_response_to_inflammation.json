@@ -1,0 +1,25 @@
+{
+  "model_id": "thermoregulatory_response_to_inflammation",
+  "description": "Expected fever response to pathogen or inflammatory stimulus, with afebrile/hypothermic response failure in vulnerable hosts.",
+  "stimulus_field": "pyrogenic_inflammatory_stimulus",
+  "minimum_stimulus_activity": 0.4,
+  "stimulus_axes": [
+    {"axis_id": "serum_crp", "direction": "increase", "weight": 0.45},
+    {"axis_id": "serum_procalcitonin", "direction": "increase", "weight": 0.65},
+    {"axis_id": "blood_culture_positivity_probability", "direction": "increase", "weight": 0.75},
+    {"axis_id": "pathogen_identification_confidence", "direction": "increase", "weight": 0.55},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.45}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "body_temperature",
+      "expected_direction": "increase",
+      "adequate_response_range": [38.0, 40.0],
+      "failure_branch_range": [34.0, 37.8],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "thermoregulatory_response_failure_activity",
+      "hazard_meaning": "Afebrile or hypothermic presentation under strong infectious/inflammatory stimulus can mark immune blunting, age/frailty, severe sepsis, or terminal physiology."
+    }
+  ]
+}

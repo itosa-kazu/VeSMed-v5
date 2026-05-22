@@ -1,0 +1,54 @@
+{
+  "model_id": "myeloid_response_to_inflammation",
+  "description": "Expected WBC/ANC/band response to inflammatory or pathogen stimulus, with response failure when the observed myeloid response is inadequate for the stimulus.",
+  "stimulus_field": "inflammatory_pathogen_stimulus",
+  "minimum_stimulus_activity": 0.35,
+  "stimulus_axes": [
+    {"axis_id": "serum_crp", "direction": "increase", "weight": 0.55},
+    {"axis_id": "serum_procalcitonin", "direction": "increase", "weight": 0.8},
+    {"axis_id": "blood_culture_positivity_probability", "direction": "increase", "weight": 0.75},
+    {"axis_id": "pathogen_identification_confidence", "direction": "increase", "weight": 0.65},
+    {"axis_id": "gram_negative_bacteremia_probability", "direction": "increase", "weight": 0.85},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.45},
+    {"axis_id": "hypotension_presence", "direction": "increase", "weight": 0.45},
+    {"axis_id": "shock_presence", "direction": "increase", "weight": 0.55},
+    {"axis_id": "shock_activity", "direction": "increase", "weight": 0.55},
+    {"axis_id": "systolic_blood_pressure", "direction": "decrease", "weight": 0.35},
+    {"axis_id": "mean_arterial_pressure", "direction": "decrease", "weight": 0.35},
+    {"axis_id": "fever_history_presence", "direction": "increase", "weight": 0.30},
+    {"axis_id": "fever_history_severity", "direction": "increase", "weight": 0.35},
+    {"axis_id": "body_temperature", "direction": "increase", "weight": 0.25}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "white_blood_cell_count",
+      "expected_direction": "increase",
+      "adequate_response_range": [12.0, 25.0],
+      "failure_branch_range": [1.0, 10.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "myeloid_response_failure_activity",
+      "hazard_meaning": "In high inflammatory/pathogen stimulus, normal or low WBC can represent marrow exhaustion, immune paralysis, neutropenia, or overwhelmed host response."
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "expected_direction": "increase",
+      "adequate_response_range": [8.0, 20.0],
+      "failure_branch_range": [0.0, 7.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "myeloid_response_failure_activity",
+      "hazard_meaning": "In high inflammatory/pathogen stimulus, low or non-rising ANC is a response-failure severity marker."
+    },
+    {
+      "axis_id": "band_neutrophil_fraction",
+      "expected_direction": "increase",
+      "adequate_response_range": [0.10, 0.30],
+      "failure_branch_range": [0.0, 0.08],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "left_shift_response_failure_activity",
+      "hazard_meaning": "Absence of left shift despite strong pathogen stimulus can indicate inadequate marrow reserve or immune paralysis."
+    }
+  ]
+}

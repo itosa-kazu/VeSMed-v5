@@ -1,0 +1,58 @@
+{
+  "module_id": "v1_context_modifier_manifest",
+  "description": "Formal health-reference ownership of no-active-disease background modifier families. The runtime still reads detailed numeric modifiers from background_modifiers.json during migration.",
+  "modifier_modules": [
+    {
+      "factor_family": "age_sex",
+      "owned_by": "health_reference_manifold",
+      "examples": ["age bands", "male", "female"],
+      "meaning": "Changes no-active-disease reference ranges and base prevalence."
+    },
+    {
+      "factor_family": "pregnancy_postpartum",
+      "owned_by": "health_reference_manifold",
+      "examples": ["pregnancy", "third_trimester", "postpartum"],
+      "meaning": "Changes WBC, hemoglobin, creatinine, D-dimer, fibrinogen, and vital baselines before active disease is considered."
+    },
+    {
+      "factor_family": "chronic_kidney_disease",
+      "owned_by": "health_reference_manifold",
+      "examples": ["CKD stage 3-5", "dialysis", "kidney transplant history"],
+      "meaning": "Changes renal, hematology, and biomarker base measures."
+    },
+    {
+      "factor_family": "cirrhosis_portal_hypertension",
+      "owned_by": "health_reference_manifold",
+      "examples": ["cirrhosis", "portal hypertension", "decompensated chronic liver disease"],
+      "meaning": "Changes albumin, INR, platelet count, bilirubin, and infection-risk base measures."
+    },
+    {
+      "factor_family": "diabetes_metabolic_background",
+      "owned_by": "health_reference_manifold",
+      "examples": ["diabetes mellitus", "poorly controlled diabetes"],
+      "meaning": "Changes glucose and infection/source-risk base measures."
+    },
+    {
+      "factor_family": "immunosuppression_chemotherapy_steroids",
+      "owned_by": "health_reference_manifold",
+      "examples": ["chemotherapy", "glucocorticoids", "biologics", "neutropenia", "transplant immunosuppression"],
+      "meaning": "Changes WBC/ANC, fever, CRP, PCT, and infection base measures without itself selecting a disease manifold."
+    },
+    {
+      "factor_family": "medication_background",
+      "owned_by": "health_reference_manifold",
+      "examples": ["beta blockers", "diuretics", "anticoagulants", "lithium", "steroids"],
+      "meaning": "Changes expected no-active-disease measurements and modifies response reserve."
+    },
+    {
+      "factor_family": "sampling_environment",
+      "owned_by": "health_reference_manifold",
+      "examples": ["fasting", "dehydration", "altitude", "smoking", "exercise", "obesity"],
+      "meaning": "Changes reference distributions before active disease likelihood is scored."
+    }
+  ],
+  "migration_sources": [
+    "background_modifiers.json",
+    "condition_scope.json"
+  ]
+}

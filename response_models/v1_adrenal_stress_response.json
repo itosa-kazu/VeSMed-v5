@@ -1,0 +1,26 @@
+{
+  "model_id": "adrenal_stress_response",
+  "description": "Expected cortisol stress response under severe illness or shock stimulus.",
+  "stimulus_field": "endocrine_stress_stimulus",
+  "minimum_stimulus_activity": 0.35,
+  "stimulus_axes": [
+    {"axis_id": "shock_presence", "direction": "increase", "weight": 0.75},
+    {"axis_id": "shock_activity", "direction": "increase", "weight": 0.75},
+    {"axis_id": "hypotension_presence", "direction": "increase", "weight": 0.65},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.45},
+    {"axis_id": "serum_sodium", "direction": "decrease", "weight": 0.35},
+    {"axis_id": "serum_potassium", "direction": "increase", "weight": 0.35}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "serum_cortisol",
+      "expected_direction": "increase",
+      "adequate_response_range": [18.0, 45.0],
+      "failure_branch_range": [0.0, 18.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "adrenal_stress_response_failure_activity",
+      "hazard_meaning": "Low cortisol under major stress supports adrenal crisis or critical illness-related corticosteroid insufficiency."
+    }
+  ]
+}

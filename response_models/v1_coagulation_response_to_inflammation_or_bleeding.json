@@ -1,0 +1,46 @@
+{
+  "model_id": "coagulation_response_to_inflammation_or_bleeding",
+  "description": "Expected coagulation/fibrinolysis response to inflammatory, thrombotic, or bleeding stimulus.",
+  "stimulus_field": "coagulation_activation_stimulus",
+  "minimum_stimulus_activity": 0.35,
+  "stimulus_axes": [
+    {"axis_id": "serum_crp", "direction": "increase", "weight": 0.35},
+    {"axis_id": "serum_procalcitonin", "direction": "increase", "weight": 0.45},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.45},
+    {"axis_id": "shock_activity", "direction": "increase", "weight": 0.5},
+    {"axis_id": "major_bleeding_hazard", "direction": "increase", "weight": 0.65},
+    {"axis_id": "thrombosis_hazard", "direction": "increase", "weight": 0.65}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "d_dimer",
+      "expected_direction": "increase",
+      "adequate_response_range": [1.0, 15.0],
+      "failure_branch_range": [0.05, 1.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.35,
+      "failure_activity_axis_id": "fibrinolytic_response_failure_activity",
+      "hazard_meaning": "Low D-dimer under strong coagulation stimulus can reflect timing, sampling, or model uncertainty; it should be handled as conditional discordance rather than ordinary absence."
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "expected_direction": "increase",
+      "adequate_response_range": [400.0, 800.0],
+      "failure_branch_range": [50.0, 250.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.35,
+      "failure_activity_axis_id": "consumptive_coagulopathy_activity",
+      "hazard_meaning": "Low fibrinogen under inflammatory/coagulation stimulus suggests consumption or liver failure rather than absence of inflammation."
+    },
+    {
+      "axis_id": "platelet_count",
+      "expected_direction": "decrease",
+      "adequate_response_range": [20.0, 150.0],
+      "failure_branch_range": [150.0, 450.0],
+      "gap_direction": "higher_than_expected",
+      "gap_threshold_fraction": 0.35,
+      "failure_activity_axis_id": "coagulation_platelet_response_dissociation_activity",
+      "hazard_meaning": "Platelet preservation can occur early; thrombocytopenia under strong coagulation stimulus is organ/coagulopathy severity evidence."
+    }
+  ]
+}

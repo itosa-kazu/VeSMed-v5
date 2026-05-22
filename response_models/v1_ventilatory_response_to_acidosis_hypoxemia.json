@@ -1,0 +1,27 @@
+{
+  "model_id": "ventilatory_response_to_acidosis_hypoxemia",
+  "description": "Expected tachypneic compensation for metabolic acidosis or hypoxemia.",
+  "stimulus_field": "acidosis_or_hypoxemia_stimulus",
+  "minimum_stimulus_activity": 0.35,
+  "stimulus_axes": [
+    {"axis_id": "serum_bicarbonate", "direction": "decrease", "weight": 0.65},
+    {"axis_id": "anion_gap", "direction": "increase", "weight": 0.65},
+    {"axis_id": "anion_gap_metabolic_acidosis_presence", "direction": "increase", "weight": 0.8},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.55},
+    {"axis_id": "oxygen_saturation", "direction": "decrease", "weight": 0.65},
+    {"axis_id": "arterial_pao2", "direction": "decrease", "weight": 0.65},
+    {"axis_id": "hypoxemia_presence", "direction": "increase", "weight": 0.75}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "respiratory_rate",
+      "expected_direction": "increase",
+      "adequate_response_range": [22.0, 40.0],
+      "failure_branch_range": [6.0, 20.0],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "ventilatory_compensation_failure_activity",
+      "hazard_meaning": "In acidosis or hypoxemia, inadequate tachypnea can mark ventilatory drive failure, fatigue, CNS depression, or impending respiratory arrest."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "model_id": "renal_perfusion_response",
+  "description": "Expected renal output and filtration response to hypoperfusion or renal perfusion demand.",
+  "stimulus_field": "renal_hypoperfusion_stimulus",
+  "minimum_stimulus_activity": 0.35,
+  "stimulus_axes": [
+    {"axis_id": "systolic_blood_pressure", "direction": "decrease", "weight": 0.55},
+    {"axis_id": "mean_arterial_pressure", "direction": "decrease", "weight": 0.6},
+    {"axis_id": "hypotension_presence", "direction": "increase", "weight": 0.65},
+    {"axis_id": "shock_presence", "direction": "increase", "weight": 0.75},
+    {"axis_id": "shock_activity", "direction": "increase", "weight": 0.75},
+    {"axis_id": "serum_lactate", "direction": "increase", "weight": 0.55}
+  ],
+  "response_axes": [
+    {
+      "axis_id": "urine_output",
+      "expected_direction": "decrease",
+      "adequate_response_range": [0.0, 0.5],
+      "failure_branch_range": [0.5, 1.5],
+      "gap_direction": "higher_than_expected",
+      "gap_threshold_fraction": 0.25,
+      "failure_activity_axis_id": "renal_hypoperfusion_response_dissociation_activity",
+      "hazard_meaning": "Preserved urine output can dissociate early from hypoperfusion; low output is the expected organ-stress response and feeds AKI severity."
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "expected_direction": "increase",
+      "adequate_response_range": [1.3, 4.0],
+      "failure_branch_range": [0.4, 1.3],
+      "gap_direction": "lower_than_expected",
+      "gap_threshold_fraction": 0.35,
+      "failure_activity_axis_id": "renal_injury_not_yet_expressed_activity",
+      "hazard_meaning": "Creatinine may lag renal hypoperfusion; absence of elevation under strong shock stimulus should not erase shock evidence."
+    }
+  ]
+}
