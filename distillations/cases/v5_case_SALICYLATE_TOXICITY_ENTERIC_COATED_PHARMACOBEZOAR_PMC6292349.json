@@ -1,0 +1,364 @@
+{
+  "case_id": "SALICYLATE_TOXICITY_ENTERIC_COATED_PHARMACOBEZOAR_PMC6292349",
+  "source_pmid": "30559949",
+  "source_pmcid": "PMC6292349",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6292349/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6292349/fullTextXML",
+  "paper_diagnosis": "Severe salicylate poisoning resistant to conventional management",
+  "disease_label_per_paper": "Intentional enteric-coated aspirin overdose with severe salicylate poisoning and suspected pharmacobezoar",
+  "expected_disease_id": "D-SALICYLATE-TOXICITY",
+  "expected_manifold": "D-SALICYLATE-TOXICITY",
+  "demographics": {
+    "age": 22,
+    "sex": "F"
+  },
+  "presentation_summary": [
+    "22-year-old woman with depression and prior suicide history presented after intentional ingestion of 500 enteric-coated 325 mg aspirin tablets about 5 hours before arrival.",
+    "She complained of epigastric discomfort and nausea; initial examination showed GCS 12, sinus tachycardia, normal oxygen saturation, and no focal abnormalities.",
+    "Admission salicylate concentration was 97.5 mg/dL with compensated metabolic acidosis and normal renal function.",
+    "Urinary alkalinization, activated charcoal, and emergent hemodialysis were started, but salicylate levels remained elevated, prompting abdominal radiography that suggested an aspirin pharmacobezoar.",
+    "Endoscopy the following day showed gastritis without a visible bezoar; with prolonged hemodialysis, urine alkalinization, and repeated activated charcoal, salicylate levels declined and she was discharged to inpatient psychiatry."
+  ],
+  "snapshot_day": 0,
+  "time_anchor": "initial_ed_presentation_5_hours_after_enteric_coated_aspirin_overdose",
+  "risk_context": [
+    {
+      "factor": "intentional_massive_aspirin_overdose",
+      "category": "toxin_exposure_context",
+      "source_text_value": "ingesting 500 enteric-coated tablets of 325mg aspirin approximately 5 hours prior to presentation"
+    },
+    {
+      "factor": "enteric_coated_aspirin_delayed_absorption_context",
+      "category": "toxin_kinetic_context",
+      "source_text_value": "enteric-coated preparation with persistently elevated salicylate levels and concern for aspirin pharmacobezoar"
+    },
+    {
+      "factor": "psychiatric_self_harm_context",
+      "category": "host_context",
+      "source_text_value": "past medical history significant for depression and suicide"
+    }
+  ],
+  "observations": [
+    {
+      "axis_id": "time_since_salicylate_exposure_hours",
+      "value": 5.0,
+      "unit": "hours",
+      "source_text_value": "approximately 5 hours prior to presentation",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "parent_axis_id": "salicylate_exposure_presence"
+    },
+    {
+      "axis_id": "salicylate_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "intentional salicylate overdose",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "toxin_exposure"
+    },
+    {
+      "axis_id": "salicylate_exposure_intensity",
+      "value": 1.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "intentional salicylate overdose with serum salicylate 97.5 mg/dL",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "category": "toxin_exposure"
+    },
+    {
+      "axis_id": "aspirin_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "500 enteric-coated tablets of 325mg aspirin",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "category": "toxin_exposure"
+    },
+    {
+      "axis_id": "enteric_coated_aspirin_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "enteric-coated tablets",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "aspirin_exposure_presence",
+      "category": "toxin_kinetic_context"
+    },
+    {
+      "axis_id": "reported_salicylate_dose_g",
+      "value": 162.5,
+      "unit": "g",
+      "source_text_value": "500 enteric-coated tablets of 325mg aspirin",
+      "conversion_note": "500 * 325 mg = 162500 mg = 162.5 g.",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "category": "toxin_exposure"
+    },
+    {
+      "axis_id": "serum_salicylate_concentration_mg_dl",
+      "value": 97.5,
+      "unit": "mg/dL",
+      "source_text_value": "Initial blood tests revealed a salicylate level of 97.5 mg/dL",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "compensated metabolic acidosis",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "lab_value",
+      "quality_note": "The article did not report pH, pCO2, or bicarbonate for this initial acid-base finding."
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "value": 0.5,
+      "unit": "severity_score_0_1",
+      "source_text_value": "compensated metabolic acidosis",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "category": "lab_value",
+      "quality_note": "Qualitative severity proxy because exact acid-base numbers were not provided."
+    },
+    {
+      "axis_id": "nausea_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "complained of epigastric discomfort and nausea",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "symptom"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "epigastric discomfort",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "symptom"
+    },
+    {
+      "axis_id": "epigastric_pain_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "epigastric discomfort",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "category": "symptom"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "Glasgow Coma Scale score was 12",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "physical_finding"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
+      "value": 0.45,
+      "unit": "severity_score_0_1",
+      "source_text_value": "GCS 12",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "physical_finding"
+    },
+    {
+      "axis_id": "glasgow_coma_scale_score",
+      "value": 12.0,
+      "unit": "points",
+      "source_text_value": "Glasgow Coma Scale score was 12",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "neurologic_measurement"
+    },
+    {
+      "axis_id": "heart_rate",
+      "value": 113.0,
+      "unit": "beats_per_min",
+      "source_text_value": "heart rate of 113 beats per minute",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "sinus_tachycardia_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "Electrocardiogram revealed sinus tachycardia",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "ecg_finding",
+      "rationale": "Record-only: non-specific or duplicated by numeric vital/lab axes in this case file."
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "value": 130.0,
+      "unit": "mmHg",
+      "source_text_value": "blood pressure 130/81 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "value": 81.0,
+      "unit": "mmHg",
+      "source_text_value": "blood pressure 130/81 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "value": 97.3,
+      "unit": "mmHg",
+      "source_text_value": "blood pressure 130/81 mmHg",
+      "conversion_note": "(130 + 2*81) / 3 = 97.3.",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "value": 20.0,
+      "unit": "breaths_per_min",
+      "source_text_value": "respiratory rate 20 breaths per minute",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "value": 100.0,
+      "unit": "%",
+      "source_text_value": "oxygen saturation of 100% on room air",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "acute_high_dose_salicylate_ingestion_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "500 enteric-coated 325 mg aspirin tablets, total 162.5 g",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "category": "toxin_exposure"
+    }
+  ],
+  "lab_trajectories": [
+    {
+      "axis_id": "serum_salicylate_concentration_mg_dl",
+      "unit": "mg/dL",
+      "points": [
+        {
+          "day": 0,
+          "hours_from_presentation": 0,
+          "value": 97.5,
+          "source_text_value": "Initial blood tests revealed a salicylate level of 97.5 mg/dL",
+          "use_in_ranking": true
+        },
+        {
+          "day": 0,
+          "hours_from_presentation": 12,
+          "value": 52.4,
+          "source_text_value": "Despite the mentioned regimen, salicylate levels remained elevated at 52.4mg/dL",
+          "use_in_ranking": false
+        }
+      ],
+      "parent_axis_id": null
+    }
+  ],
+  "course_observations": [
+    {
+      "day": 0,
+      "hours_from_presentation": 12,
+      "axis_id": "aspirin_pharmacobezoar_suspicion_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "abdominal radiogram revealed a radiopaque density in the stomach fundus, which raised concerns for an aspirin pharmacobezoar",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "confirmatory_imaging"
+    },
+    {
+      "day": 1,
+      "axis_id": "endoscopic_bezoar_visualization_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "On endoscopy the following day, gastritis was noted, however there was no evidence of a bezoar.",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "confirmatory_endoscopy"
+    }
+  ],
+  "confirmatory_findings": [
+    {
+      "finding": "High serum salicylate concentration at presentation",
+      "axis_id": "serum_salicylate_concentration_mg_dl",
+      "value": 97.5,
+      "unit": "mg/dL",
+      "source_text_value": "Initial blood tests revealed a salicylate level of 97.5 mg/dL",
+      "use_in_ranking": true,
+      "parent_axis_id": null
+    },
+    {
+      "finding": "Abdominal radiograph suspicious for aspirin pharmacobezoar",
+      "axis_id": "aspirin_pharmacobezoar_suspicion_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "radiopaque density in the stomach fundus, which raised concerns for an aspirin pharmacobezoar",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "Paper diagnosis of severe salicylate poisoning resistant to conventional management",
+      "source_text_value": "Severe salicylate poisoning resistant to conventional management",
+      "use_in_ranking": false
+    }
+  ],
+  "actual_treatment": [
+    {
+      "name": "sodium_bicarbonate_bolus_and_infusion_for_urine_alkalinization",
+      "source_text_value": "bolus of 100ml of 8.4% sodium bicarbonate solution intravenously followed by an infusion of sodium bicarbonate in D5W",
+      "use_in_ranking": false
+    },
+    {
+      "name": "emergent_hemodialysis_prolonged",
+      "source_text_value": "Emergent hemodialysis was also initiated and continued for close to 30 hours because of persistently elevated salicylate levels.",
+      "use_in_ranking": false
+    },
+    {
+      "name": "activated_charcoal_single_then_repeated_doses",
+      "source_text_value": "She also received 50g of activated charcoal; due to delay in endoscopy, repeated doses of activated charcoal were administered.",
+      "use_in_ranking": false
+    },
+    {
+      "name": "gastroenterology_consult_and_delayed_endoscopy",
+      "source_text_value": "Gastroenterology was consulted, however an endoscopy was not performed till the next morning.",
+      "use_in_ranking": false
+    }
+  ],
+  "quality_warnings": [
+    "Case-only extraction: no disease manifold or axis registry files were modified.",
+    "Initial acid-base abnormality was described qualitatively as compensated metabolic acidosis without numeric pH, pCO2, or bicarbonate.",
+    "Radiograph-suspected pharmacobezoar, endoscopy result, prolonged hemodialysis course, and discharge outcome are diagnosis/course evidence and marked use_in_ranking:false.",
+    "New salicylate-specific case axes are used because master_axes.json did not yet contain salicylate exposure or serum salicylate concentration axes."
+  ]
+}

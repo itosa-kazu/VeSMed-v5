@@ -1,0 +1,5865 @@
+{
+  "disease": "D-SALICYLATE-TOXICITY",
+  "disease_name": "Salicylate toxicity",
+  "disease_name_ja": "サリチル酸中毒",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Salicylate toxicity",
+    "leaf_granularity": "First-layer toxicologic disease leaf for systemic salicylate poisoning. Acute ingestion, chronic accumulation, delayed absorption, enteric-coated preparations, topical or bismuth salicylate exposure, co-ingestion, and severity strata are represented as mechanisms, axes, risk factors, or treatment modifiers rather than disease-name qualifiers.",
+    "ranking_note": "Likelihood should consume exposure evidence, serum salicylate level and trend, mixed acid-base physiology, tachypnea, otologic symptoms, GI symptoms, CNS toxicity, pulmonary edema, renal clearance, glucose status, and treatment-context axes when observed."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "display_name": "Salicylate exposure and absorption burden",
+      "display_name_ja": "サリチル酸曝露・吸収負荷",
+      "clinical_meaning": "Systemic salicylate load from ingestion, chronic therapeutic accumulation, delayed gastric emptying, bezoar or enteric-coated absorption, topical absorption, or salicylate-containing preparations. This upstream burden drives serum concentration and supplies ongoing input to downstream toxicity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.15,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_RESPIRATORY_CENTER_STIMULATION",
+      "display_name": "Medullary respiratory center stimulation",
+      "display_name_ja": "延髄呼吸中枢刺激",
+      "clinical_meaning": "Salicylate directly stimulates the medullary respiratory center, producing tachypnea, hyperventilation, low PaCO2, and an early respiratory alkalosis that may coexist with metabolic acidosis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "display_name": "Mitochondrial oxidative phosphorylation uncoupling",
+      "display_name_ja": "ミトコンドリア酸化的リン酸化脱共役",
+      "clinical_meaning": "Salicylate uncouples oxidative phosphorylation, increasing heat production and oxygen demand while reducing ATP generation, driving hyperthermia, lactate production, ketosis, and organ stress.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "display_name": "Organic acid accumulation and high anion gap acidosis",
+      "display_name_ja": "有機酸蓄積・高アニオンギャップ性アシドーシス",
+      "clinical_meaning": "Lactate, ketoacids, salicylic acid, renal hypoperfusion, and impaired clearance lower bicarbonate and raise the anion gap. The acidemia component may emerge late in acute toxicity or dominate chronic toxicity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.1,
+        4
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.15,
+        4
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING",
+      "display_name": "Acidemia-driven tissue trapping",
+      "display_name_ja": "アシデミアによる組織内トラッピング",
+      "clinical_meaning": "Lower blood pH shifts salicylate toward the nonionized form, increasing CNS and tissue penetration. This creates a feed-forward loop where falling pH worsens neurologic toxicity even when serum concentration is not extremely high.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.2,
+        4
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "display_name": "Central nervous system salicylate toxicity",
+      "display_name_ja": "中枢神経サリチル酸毒性",
+      "clinical_meaning": "Direct CNS salicylate exposure, energy failure, acidemia, and glucose dysregulation produce tinnitus, agitation, delirium, coma, seizures, and cerebral edema risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        4
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "display_name": "Volume depletion and renal salicylate clearance failure",
+      "display_name_ja": "脱水・腎排泄低下",
+      "clinical_meaning": "Vomiting, diaphoresis, fever, poor intake, and salicylate renal effects reduce effective circulating volume and glomerular filtration. Impaired renal clearance sustains salicylate burden and makes urinary alkalinization less effective.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "display_name": "Noncardiogenic pulmonary edema",
+      "display_name_ja": "非心原性肺水腫",
+      "clinical_meaning": "Severe salicylate toxicity can increase pulmonary capillary permeability and produce noncardiogenic pulmonary edema, hypoxemia, and acute respiratory failure, sometimes worsened by volume loading or chronic toxicity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.2,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_PLATELET_COAGULATION_DYSFUNCTION",
+      "display_name": "Platelet and coagulation dysfunction",
+      "display_name_ja": "血小板・凝固機能障害",
+      "clinical_meaning": "Cyclooxygenase inhibition, platelet dysfunction, gastric mucosal injury, and in severe cases coagulation disturbance increase bleeding tendency, especially in patients taking antithrombotics or with gastrointestinal injury.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.05,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.2,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_SAL_TOX_GLUCOSE_DYSREGULATION",
+      "display_name": "Glucose dysregulation and neuroglycopenia",
+      "display_name_ja": "血糖異常・神経糖欠乏",
+      "clinical_meaning": "Increased cerebral glucose consumption and altered systemic glucose balance can produce hypoglycemia or CNS neuroglycopenia despite normal measured serum glucose, amplifying altered mental status and seizures.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.05,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.02,
+        4
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "serum_salicylate_concentration_mg_dl",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Systemic absorbed salicylate is reflected by measured serum salicylate concentration, with delayed or rising levels when absorption continues.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "salicylate_level_rebound_or_rising_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context_dependent",
+      "conditionality": "More likely with delayed absorption, enteric-coated preparations, bezoar physiology, or insufficient decontamination.",
+      "clinical_rationale": "Continuing gastrointestinal absorption can make serial salicylate levels rise or rebound after an initial measurement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "nausea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Salicylate irritates the gastrointestinal tract and stimulates nausea.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "vomiting_presence",
+      "effect_on_target": "increase",
+      "edge_type": "toxicity",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Vomiting is a common early manifestation and contributes to volume depletion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_RESPIRATORY_CENTER_STIMULATION",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Medullary stimulation causes tachypnea and hyperventilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_RESPIRATORY_CENTER_STIMULATION",
+      "target_id": "tachypnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "The clinical counterpart of respiratory center stimulation is rapid breathing, often out of proportion to pulmonary findings early.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_RESPIRATORY_CENTER_STIMULATION",
+      "target_id": "arterial_pco2",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Hyperventilation lowers PaCO2 and produces a respiratory alkalosis component.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_RESPIRATORY_CENTER_STIMULATION",
+      "target_id": "arterial_ph",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Early respiratory alkalosis can raise pH before metabolic acidosis predominates.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Uncoupled oxidative metabolism generates heat and can produce fever or hyperthermia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Energy failure and increased anaerobic metabolism raise lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "target_id": "serum_ketones_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Altered metabolism and fasting physiology can increase ketone production.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "target_id": "severe_hyperthermia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "High heat production and agitation can progress to dangerous hyperthermia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_MITOCHONDRIAL_UNCOUPLING",
+      "target_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Uncoupling increases lactate and ketoacid generation, feeding the high anion gap acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "target_id": "anion_gap",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Accumulation of lactate, ketoacids, and salicylate raises the anion gap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "target_id": "metabolic_acidosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe salicylate poisoning produces clinically apparent high-anion-gap metabolic acidosis from organic acid accumulation and impaired clearance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "target_id": "metabolic_acidosis_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "The intensity of organic acid burden tracks the severity of bicarbonate depletion and acidemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "target_id": "serum_bicarbonate",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Organic acid buffering consumes bicarbonate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION",
+      "target_id": "arterial_ph",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "When metabolic acid generation outstrips respiratory compensation, systemic pH falls.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "arterial_ph",
+      "target_id": "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        0.2
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Active when arterial or systemic pH is low.",
+      "clinical_rationale": "Acidemia increases the nonionized salicylate fraction and tissue penetration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING",
+      "target_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Greater nonionized salicylate penetration into CNS increases neurotoxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "tinnitus_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Tinnitus is a classic otologic manifestation of salicylate toxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "hearing_loss_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Auditory disturbance may include reversible hearing loss or muffled hearing.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "mental_status_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "CNS salicylate burden, acidemia, and energy failure cause confusion, delirium, or coma.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "mental_status_abnormality_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe CNS salicylate penetration and energy failure can progress from agitation or delirium to coma and absent airway protection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "seizure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Seizures are an observed manifestation of severe CNS salicylate toxicity, especially with acidemia or neuroglycopenia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "seizure_or_status_epilepticus_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe CNS toxicity can progress to seizures or status epilepticus.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "target_id": "cerebral_edema_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe poisoning can produce cerebral edema, especially when acidemia and energy failure are present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_GLUCOSE_DYSREGULATION",
+      "target_id": "serum_glucose",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Systemic hypoglycemia may occur, while CNS glucose deficit can be clinically important even with normal serum glucose.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_GLUCOSE_DYSREGULATION",
+      "target_id": "neuroglycopenia_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Neuroglycopenia is inferred when CNS toxicity is disproportionate to measured serum glucose or improves with dextrose support.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_GLUCOSE_DYSREGULATION",
+      "target_id": "M_SAL_TOX_CNS_NEUROTOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "CNS glucose deficit amplifies delirium, coma, and seizure tendency.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "dehydration_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Vomiting, diaphoresis, fever, and poor intake make volume depletion clinically visible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.2,
+        4
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Reduced renal perfusion or intrinsic kidney injury raises creatinine and impairs salicylate elimination.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "urine_output_ml_kg_hr",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Volume depletion and kidney injury reduce urine output, limiting renal salicylate clearance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.2,
+        4
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Sustained hypovolemia and salicylate toxicity increase AKI risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "hyperkalemia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Most relevant with severe acidemia, established kidney failure, anuria, or dialysis dependence; uncomplicated salicylate toxicity more often has low or normal potassium.",
+      "clinical_rationale": "Renal clearance failure and acidemia can produce clinically important hyperkalemia during severe salicylate poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE",
+      "target_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.1,
+        2
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Active when renal filtration, urine flow, or urine alkalinization is inadequate.",
+      "clinical_rationale": "Reduced renal clearance sustains systemic salicylate burden after absorption.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "serum_potassium",
+      "target_id": "urine_ph",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Adequate potassium facilitates urinary alkalinization; hypokalemia makes alkalinization difficult.",
+      "clinical_rationale": "Hypokalemia promotes renal hydrogen secretion and impairs the ability to alkalinize urine.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "urine_ph",
+      "target_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "decrease",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.1,
+        1
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Active when urine pH is alkaline and urine flow is adequate.",
+      "clinical_rationale": "Ion trapping in alkaline urine increases salicylate renal elimination.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "arterial_ph",
+      "target_id": "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING",
+      "effect_on_target": "decrease",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0,
+        0.2
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Active when pH is maintained in an alkalemic or non-acidemic range.",
+      "clinical_rationale": "Higher blood pH reduces nonionized salicylate fraction and CNS penetration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "dyspnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Pulmonary edema causes shortness of breath and increased work of breathing.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Alveolar edema impairs oxygenation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "noncardiogenic_pulmonary_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "The mechanism becomes visible as noncardiogenic pulmonary edema on exam, imaging, or oxygenation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "acute_respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Pulmonary edema and fatigue can progress to respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "respiratory_failure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Pulmonary edema, respiratory muscle fatigue, or loss of compensatory hyperventilation can make respiratory failure clinically present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "respiratory_failure_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe pulmonary edema, coma, or fatigue can progress to assisted ventilation or intubation in salicylate poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "hyperkalemia_presence",
+      "target_id": "hyperkalemia_qrs_widening_presence",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_axis",
+      "lag_days_range": [
+        0,
+        0.1
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Marked hyperkalemia can produce QRS widening in severe poisoning or renal failure contexts.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "hyperkalemia_presence",
+      "target_id": "ventricular_tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_axis",
+      "lag_days_range": [
+        0,
+        0.1
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Most relevant when potassium is markedly elevated or QRS widening is present.",
+      "clinical_rationale": "Severe hyperkalemia and acidemia can precipitate malignant ventricular arrhythmias.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_NONCARDIOGENIC_PULMONARY_EDEMA",
+      "target_id": "ards_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe permeability edema can meet ARDS-like physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_PLATELET_COAGULATION_DYSFUNCTION",
+      "target_id": "platelet_function_inhibition_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cyclooxygenase inhibition impairs platelet aggregation even when platelet count is not low.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_SAL_TOX_PLATELET_COAGULATION_DYSFUNCTION",
+      "target_id": "prothrombin_time_inr",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.2,
+        3
+      ],
+      "phase": "context_dependent",
+      "conditionality": "More likely with severe toxicity, hepatic stress, coagulopathy, anticoagulants, or vitamin K deficiency.",
+      "clinical_rationale": "Severe poisoning or comorbid anticoagulation can produce measurable coagulation abnormality.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_PLATELET_COAGULATION_DYSFUNCTION",
+      "target_id": "gastrointestinal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Gastric mucosal irritation plus platelet dysfunction can cause hematemesis, melena, or occult bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_PLATELET_COAGULATION_DYSFUNCTION",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Bleeding hazard rises when platelet dysfunction intersects with mucosal injury, anticoagulation, trauma, or severe coagulopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "acute_kidney_injury_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "AKI reduces clearance and worsens acid-base control, increasing death risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cerebral_edema_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Cerebral edema is a major terminal pathway in severe salicylate toxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "seizure_or_status_epilepticus_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Seizures worsen acidosis, hyperthermia, aspiration risk, and CNS injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "acute_respiratory_failure_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Failure to maintain ventilation and oxygenation can rapidly worsen acidemia and tissue salicylate distribution.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "refractory_acidemia_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Refractory acidemia accelerates tissue trapping and cardiovascular/CNS collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "severe_hyperthermia_hazard",
+      "target_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe hyperthermia increases metabolic demand, rhabdomyolysis risk, and neurologic injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "epigastric_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Salicylate exposure can irritate gastric mucosa and present as epigastric discomfort.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "salicylate_exposure_presence",
+      "display_name_ja": "サリチル酸曝露",
+      "category": "toxic_exposure",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Observed or strongly inferred exposure to salicylate-containing substances. Route, timing, dose, formulation, and chronic accumulation are child axes.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "salicylate_exposure_intensity",
+      "display_name_ja": "サリチル酸曝露強度",
+      "category": "toxic_exposure",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Dose and exposure intensity proxy integrating amount, concentration, duration, chronicity, formulation, and repeated dosing.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30,
+        0
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_high_dose_salicylate_ingestion_presence",
+      "display_name_ja": "急性高用量サリチル酸内服",
+      "category": "toxic_exposure",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "A short-window high-dose oral ingestion context; this is an exposure pattern, not a disease-name qualifier.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        -1,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "chronic_salicylate_accumulation_context_presence",
+      "display_name_ja": "慢性サリチル酸蓄積コンテキスト",
+      "category": "toxic_exposure",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Repeated therapeutic or supratherapeutic salicylate use with accumulation; clinical toxicity can occur at lower measured levels than in isolated acute ingestion.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        2,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Route/subtype context for salicylate poisoning. It should explain the case when present, but absence of this alternative exposure route must not be treated as evidence against salicylate toxicity."
+    },
+    {
+      "axis_id": "topical_or_bismuth_salicylate_exposure_presence",
+      "display_name_ja": "外用・ビスマス系サリチル酸曝露",
+      "category": "toxic_exposure",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Non-classic salicylate source such as topical preparations, methyl salicylate, or bismuth subsalicylate-containing products.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "knowledge_confidence": "medium",
+      "clinical_interpretation": "Route/subtype context for salicylate poisoning. It should explain the case when present, but absence of this alternative exposure route must not be treated as evidence against salicylate toxicity."
+    },
+    {
+      "axis_id": "enteric_coated_or_delayed_absorption_context_presence",
+      "display_name_ja": "腸溶・吸収遅延コンテキスト",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Enteric-coated tablets, bezoar physiology, pylorospasm, delayed gastric emptying, or persistent gastrointestinal reservoir.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        -1,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.2,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "estimated_salicylate_dose_mg_per_kg",
+      "display_name_ja": "推定サリチル酸量",
+      "category": "toxic_exposure",
+      "unit": "mg/kg",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Estimated salicylate dose normalized by body weight when history, pill count, or product concentration allows calculation.",
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        -1,
+        0
+      ],
+      "peak_value_range": [
+        10,
+        1000
+      ],
+      "plateau_duration_days": [
+        0,
+        1
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "time_since_salicylate_exposure_hours",
+      "display_name_ja": "サリチル酸曝露からの時間",
+      "category": "toxic_exposure",
+      "unit": "hours",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Time from last meaningful salicylate exposure or ingestion to clinical assessment or sampling.",
+      "baseline_range": [
+        0.01,
+        0.1
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        720
+      ],
+      "plateau_duration_days": [
+        0,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "co_ingestion_or_mixed_overdose_presence",
+      "display_name_ja": "併用中毒・混合過量内服",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Co-ingested sedative, acetaminophen, alcohol, anticholinergic, or other toxic exposure that can mask salicylate physiology or add independent hazards.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        -1,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_salicylate_concentration_mg_dl",
+      "display_name_ja": "血清サリチル酸濃度",
+      "category": "diagnostic_measurement",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured serum salicylate concentration. Interpretation depends on timing, chronicity, pH, renal function, and clinical toxicity.",
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        15,
+        150
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.15,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "salicylate_level_rebound_or_rising_presence",
+      "display_name_ja": "血清サリチル酸再上昇・上昇傾向",
+      "category": "diagnostic_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Serial salicylate levels rise, fail to fall as expected, or rebound after an initial decline.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mixed_respiratory_alkalosis_metabolic_acidosis_presence",
+      "display_name_ja": "呼吸性アルカローシス・代謝性アシドーシス混合所見",
+      "category": "diagnostic_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Acid-base pattern combining low PaCO2 with low bicarbonate and elevated anion gap, with pH variable by phase and severity.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "display_name_ja": "代謝性アシドーシス",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Presence of metabolic acidosis, typically high-anion-gap physiology from salicylate, lactate, ketoacids, renal impairment, or loss of respiratory compensation.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "display_name_ja": "代謝性アシドーシス重症度",
+      "category": "lab_value",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "shape_free_text": "Severity of metabolic acidosis from bicarbonate depletion, high anion gap, and low systemic pH.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_ph",
+      "display_name_ja": "動脈血pH",
+      "category": "lab_value",
+      "unit": "pH",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured arterial or venous pH interpreted with respiratory and metabolic components; acidemia greatly increases salicylate tissue penetration.",
+      "baseline_range": [
+        7.35,
+        7.45
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        6.8,
+        7.58
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_pco2",
+      "display_name_ja": "PaCO2",
+      "category": "lab_value",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Arterial carbon dioxide tension; typically low from salicylate-induced hyperventilation unless respiratory fatigue, sedative co-ingestion, or ventilation failure occurs.",
+      "baseline_range": [
+        35,
+        45
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        10,
+        60
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "display_name_ja": "血清重炭酸",
+      "category": "lab_value",
+      "unit": "mEq/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum bicarbonate decreases from metabolic acidosis and compensation; also directly affected by bicarbonate therapy.",
+      "baseline_range": [
+        22,
+        28
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        3,
+        24
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anion_gap",
+      "display_name_ja": "血清アニオンギャップ",
+      "category": "lab_value",
+      "unit": "mEq/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Anion gap rises from lactate, ketoacids, salicylate, and renal impairment.",
+      "baseline_range": [
+        6,
+        14
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        14,
+        45
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "display_name_ja": "血清乳酸",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Lactate reflects mitochondrial uncoupling, tissue stress, seizures, hypoperfusion, and coexisting shock.",
+      "baseline_range": [
+        0.5,
+        2
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        1.5,
+        15
+      ],
+      "plateau_duration_days": [
+        0.05,
+        4
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_ph",
+      "display_name_ja": "尿pH",
+      "category": "lab_value",
+      "unit": "pH",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Urine pH determines renal ion trapping of salicylate and is a treatment-response axis during alkalinization.",
+      "baseline_range": [
+        5,
+        7.5
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        4.5,
+        8.5
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "display_name_ja": "血清カリウム",
+      "category": "lab_value",
+      "unit": "mEq/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Potassium is often low from alkalosis, vomiting, and renal losses, but severe acidemia or renal failure can produce dangerous hyperkalemia; hypokalemia impairs urinary alkalinization.",
+      "baseline_range": [
+        3.5,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        2,
+        8.8
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hyperkalemia_presence",
+      "display_name_ja": "高カリウム血症",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinically relevant hyperkalemia in severe salicylate poisoning, especially with marked acidemia, renal failure, or dialysis dependence.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_glucose",
+      "display_name_ja": "血糖",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured serum glucose; low or low-normal values may be clinically important because CNS glucose deficit can occur even when serum glucose is not profoundly low.",
+      "baseline_range": [
+        70,
+        140
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        30,
+        300
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_ketones_presence",
+      "display_name_ja": "血中ケトン陽性",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Ketosis or ketone positivity contributing to high anion gap physiology.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nausea_presence",
+      "display_name_ja": "悪心",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Patient-reported nausea in the toxicologic presentation.",
+      "baseline_range": [
+        0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vomiting_presence",
+      "display_name_ja": "嘔吐",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Vomiting as a parent finding; severity and dehydration are represented separately.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vomiting_severity",
+      "display_name_ja": "嘔吐の重症度",
+      "category": "qualitative",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "vomiting_presence",
+      "shape_free_text": "Frequency, persistence, or clinical consequence of vomiting.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "display_name_ja": "腹痛",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Abdominal pain from gastric irritation, vomiting, or coexisting pathology.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_severity",
+      "display_name_ja": "腹痛の重症度",
+      "category": "qualitative",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "shape_free_text": "Intensity or functional impact of abdominal pain.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "tinnitus_presence",
+      "display_name_ja": "耳鳴",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Tinnitus or ringing in the ears associated with salicylate effect.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hearing_loss_presence",
+      "display_name_ja": "聴力低下",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Reduced hearing or muffled hearing during salicylate toxicity.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "diaphoresis_presence",
+      "display_name_ja": "発汗",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Sweating from sympathetic activation, hyperthermia, or illness stress.",
+      "baseline_range": [
+        0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dehydration_presence",
+      "display_name_ja": "脱水",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinical volume depletion from vomiting, diaphoresis, fever, poor intake, or osmotic/renal losses.",
+      "baseline_range": [
+        0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dehydration_severity",
+      "display_name_ja": "脱水の重症度",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "dehydration_presence",
+      "shape_free_text": "Degree of volume depletion based on orthostasis, mucous membranes, urine output, weight loss, or perfusion.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tachypnea_presence",
+      "display_name_ja": "頻呼吸",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Rapid breathing or hyperventilation, especially when early and disproportionate to lung findings.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "display_name_ja": "呼吸数",
+      "category": "vital_sign",
+      "unit": "breaths/min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured respiratory rate.",
+      "baseline_range": [
+        12,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        18,
+        60
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "body_temperature",
+      "display_name_ja": "体温",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured body temperature; salicylate toxicity can produce hyperthermia from uncoupled metabolism, agitation, or seizures.",
+      "baseline_range": [
+        36.1,
+        37.2
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        36.5,
+        42
+      ],
+      "plateau_duration_days": [
+        0.02,
+        4
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "display_name_ja": "心拍数",
+      "category": "vital_sign",
+      "unit": "beats/min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured heart rate, often elevated with dehydration, fever, agitation, pain, or hypoxemia.",
+      "baseline_range": [
+        55,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        80,
+        180
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "display_name_ja": "平均動脈圧",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Perfusion pressure; may fall with dehydration, severe acidemia, shock, or co-ingestion.",
+      "baseline_range": [
+        70,
+        105
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        35,
+        120
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "display_name_ja": "酸素飽和度",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Pulse oximetry or oxygen saturation; may fall with pulmonary edema, aspiration, ARDS-like physiology, or respiratory failure.",
+      "baseline_range": [
+        95,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        55,
+        100
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "display_name_ja": "呼吸困難",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Subjective shortness of breath or clinically noted breathing discomfort.",
+      "baseline_range": [
+        0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "display_name_ja": "意識・精神状態異常",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any altered mental status including confusion, agitation, delirium, somnolence, coma, or poor arousal.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
+      "display_name_ja": "意識・精神状態異常重症度",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Severity of altered mental status, from mild confusion or agitation to coma, unresponsiveness, and loss of airway protection.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "agitation_or_delirium_presence",
+      "display_name_ja": "興奮・せん妄",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Agitation, delirium, restlessness, hallucination, or unsafe hyperactive mental status.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "somnolence_or_coma_presence",
+      "display_name_ja": "傾眠・昏睡",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Depressed consciousness, somnolence, stupor, or coma.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "seizure_presence",
+      "display_name_ja": "けいれん",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Observed seizure activity in the clinical course.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "neuroglycopenia_context_presence",
+      "display_name_ja": "神経糖欠乏コンテキスト",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinical context suggesting CNS glucose deficit, such as altered mental status or seizures with low, low-normal, or rapidly falling glucose.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "display_name_ja": "血清クレアチニン",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured serum creatinine reflecting kidney function and salicylate clearance capacity.",
+      "baseline_range": [
+        0.5,
+        1.2
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.8,
+        10
+      ],
+      "plateau_duration_days": [
+        0.1,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "display_name_ja": "BUN",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Blood urea nitrogen; rises with dehydration, kidney dysfunction, or gastrointestinal bleeding.",
+      "baseline_range": [
+        7,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        15,
+        120
+      ],
+      "plateau_duration_days": [
+        0.1,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "urine_output_ml_kg_hr",
+      "display_name_ja": "尿量",
+      "category": "lab_value",
+      "unit": "mL/kg/hr",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Urine output; low values indicate poor renal clearance capacity and limit urinary alkalinization.",
+      "baseline_range": [
+        0.5,
+        2
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        4
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "display_name_ja": "PT-INR",
+      "category": "lab_value",
+      "unit": "INR",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Coagulation measurement; severe toxicity, liver stress, anticoagulants, or bleeding context can raise INR.",
+      "baseline_range": [
+        0.8,
+        1.2
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        1,
+        6
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "platelet_function_inhibition_presence",
+      "display_name_ja": "血小板機能抑制",
+      "category": "lab_value",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Platelet functional inhibition inferred from salicylate exposure, platelet function testing, mucosal bleeding, or antiplatelet effect.",
+      "baseline_range": [
+        0,
+        0.06
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.5,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "gastrointestinal_bleeding_presence",
+      "display_name_ja": "消化管出血",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Hematemesis, melena, hematochezia, occult blood loss, or clinically suspected salicylate-associated gastrointestinal bleeding.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "display_name_ja": "非心原性肺水腫",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinical or radiographic pulmonary edema not primarily explained by cardiogenic volume overload.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bilateral_pulmonary_opacity_presence",
+      "display_name_ja": "両側肺陰影",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "shape_free_text": "Bilateral airspace or interstitial opacities compatible with pulmonary edema or ARDS-like physiology.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pulmonary_edema_extent_score",
+      "display_name_ja": "肺水腫範囲スコア",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "shape_free_text": "Radiographic or clinical extent of pulmonary edema.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "respiratory_failure_presence",
+      "display_name_ja": "呼吸不全",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinical respiratory failure in severe salicylate poisoning, including failure of compensatory ventilation, pulmonary edema, apnea, or need for ventilatory support.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_failure_severity",
+      "display_name_ja": "呼吸不全重症度",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "respiratory_failure_presence",
+      "shape_free_text": "Severity of respiratory failure, including ventilatory fatigue, apnea, intubation, mechanical ventilation, or severe hypoxemia.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sodium_bicarbonate_therapy_context_presence",
+      "display_name_ja": "重炭酸ナトリウム治療コンテキスト",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Context in which alkalinization is being considered or delivered: salicylate toxicity with acid-base disturbance, renal clearance goal, or urine alkalinization target.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "alkalinization_feasibility_context_presence",
+      "display_name_ja": "アルカリ化実施可能性",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Adequate vascular access, potassium repletion, urine flow, monitoring capacity, and absence of prohibitive fluid overload for bicarbonate-based alkalinization.",
+      "baseline_range": [
+        0,
+        0.2
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "volume_overload_or_pulmonary_edema_context_presence",
+      "display_name_ja": "体液過剰・肺水腫コンテキスト",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Context where fluid or bicarbonate volume may worsen pulmonary edema or oxygenation.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemodialysis_access_feasibility_context_presence",
+      "display_name_ja": "血液透析アクセス可能性",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Availability of dialysis-capable access, anticoagulation plan, hemodynamic tolerance, and extracorporeal clearance resources.",
+      "baseline_range": [
+        0,
+        0.2
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "airway_protection_need_presence",
+      "display_name_ja": "気道保護必要性",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Need for airway protection from coma, severe agitation, aspiration risk, or respiratory failure.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "post_intubation_hypoventilation_risk_context_presence",
+      "display_name_ja": "挿管後低換気リスク",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Risk that sedation, paralysis, or insufficient minute ventilation after intubation will abruptly raise PaCO2, lower pH, and worsen tissue salicylate trapping.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0.01,
+        2
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "display_name_ja": "急性腎障害ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of AKI from hypovolemia, toxicity, or comorbidity, with salicylate clearance implications.",
+      "baseline_range": [
+        0.0005,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.01,
+        0.35
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "refractory_acidemia_hazard",
+      "display_name_ja": "難治性アシデミアハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of persistent or worsening systemic acidemia despite ventilation, bicarbonate, volume, and clearance efforts.",
+      "baseline_range": [
+        0.0002,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.01,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cerebral_edema_hazard",
+      "display_name_ja": "脳浮腫ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of cerebral edema from severe CNS salicylate toxicity, acidemia, or energy failure.",
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0.005,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "seizure_or_status_epilepticus_hazard",
+      "display_name_ja": "けいれん・てんかん重積ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of seizures or status epilepticus during CNS salicylate toxicity.",
+      "baseline_range": [
+        0.0005,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        4
+      ],
+      "peak_value_range": [
+        0.005,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard",
+      "display_name_ja": "急性呼吸不全ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of respiratory failure from pulmonary edema, fatigue, aspiration, or loss of compensatory hyperventilation.",
+      "baseline_range": [
+        0.0005,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.01,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.02,
+        5
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "ards_hazard",
+      "display_name_ja": "ARDSハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of ARDS-like acute hypoxemic respiratory failure from permeability edema or aspiration.",
+      "baseline_range": [
+        0.0002,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.005,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "severe_hyperthermia_hazard",
+      "display_name_ja": "重症高体温ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard from dangerous hyperthermia and metabolic acceleration.",
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.003,
+        0.25
+      ],
+      "plateau_duration_days": [
+        0.01,
+        2
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "display_name_ja": "大出血ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "finding",
+      "shape_free_text": "Hazard of clinically important bleeding from platelet dysfunction, gastrointestinal injury, anticoagulants, or severe coagulopathy.",
+      "baseline_range": [
+        0.0003,
+        0.006
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.002,
+        0.25
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "display_name_ja": "サリチル酸中毒死亡ハザード",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Lifespan outcome hazard emerging from refractory acidemia, CNS toxicity, cerebral edema, respiratory failure, AKI, hyperthermia, pulmonary edema, seizures, and delayed clearance.",
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.002,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "aspirin_exposure_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Aspirin or aspirin-containing product as the salicylate source; formulation-specific details are child satellites.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "enteric_coated_aspirin_exposure_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "aspirin_exposure_presence",
+      "shape_free_text": "Enteric-coated aspirin exposure, which can delay absorption, prolong salicylate levels, or contribute to pharmacobezoar behavior.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -7,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "methyl_salicylate_exposure_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Methyl salicylate source such as oil of wintergreen or topical salicylate products.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oral_methyl_salicylate_ingestion_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "methyl_salicylate_exposure_presence",
+      "shape_free_text": "Oral ingestion of methyl salicylate, a high-concentration salicylate exposure route.",
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "reported_salicylate_dose_g",
+      "category": "treatment_modifier",
+      "unit": "g",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "salicylate_exposure_presence",
+      "shape_free_text": "Reported or estimated salicylate mass ingested, when body weight is unavailable for mg/kg normalization.",
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        1.0,
+        200.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ventricular_tachycardia_presence",
+      "display_name_ja": "心室頻拍",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Ventricular tachycardia or malignant ventricular rhythm during severe salicylate poisoning, usually mediated by severe acidemia, hyperkalemia, hypoxemia, or underlying cardiac substrate.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ventricular_tachycardia_severity",
+      "display_name_ja": "心室頻拍重症度",
+      "category": "ecg_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "ventricular_tachycardia_presence",
+      "shape_free_text": "Burden and severity of ventricular tachycardia, from brief runs to sustained unstable ventricular tachycardia.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.1,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hyperkalemia_qrs_widening_presence",
+      "category": "ecg",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "hyperkalemia_presence",
+      "shape_free_text": "QRS widening in the context of severe hyperkalemia or metabolic poisoning physiology; not specific to salicylate but relevant to severe presentations.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "epigastric_pain_presence",
+      "category": "qualitative",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.85
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Epigastric discomfort or pain is a reusable satellite of abdominal pain from gastric irritation, including salicylate overdose.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "abdominal_pain_presence"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "serum_salicylate_concentration_mg_dl",
+      "target_axis_id": "anion_gap",
+      "relationship": "positive_correlation",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        0.25,
+        0.65
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Higher salicylate burden tends to co-vary with high anion gap physiology, though timing and chronicity create exceptions.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "arterial_pco2",
+      "target_axis_id": "arterial_ph",
+      "relationship": "negative_correlation",
+      "coupling_type": "mixed",
+      "correlation_range": [
+        -0.75,
+        -0.25
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [
+        0.1,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Respiratory alkalosis couples low PaCO2 with higher pH early; later metabolic acidosis can override this relationship.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_bicarbonate",
+      "target_axis_id": "arterial_ph",
+      "relationship": "same_direction",
+      "coupling_type": "drift",
+      "effect_direction": "source_down_decreases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Loss of bicarbonate buffer contributes directly to systemic acidemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_ph",
+      "target_axis_id": "refractory_acidemia_hazard",
+      "relationship": "opposite_direction",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [
+        0.3,
+        1
+      ],
+      "activation_threshold_range": [
+        7,
+        7.25
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Falling pH defines acidemia severity and increases the hazard of refractory acid-base failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "urine_ph",
+      "target_axis_id": "serum_salicylate_concentration_mg_dl",
+      "relationship": "opposite_direction",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "activation_threshold_range": [
+        7.5,
+        8.2
+      ],
+      "lag_days_range": [
+        0.05,
+        1
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Alkaline urine increases ion trapping and renal elimination of salicylate when urine flow is adequate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_potassium",
+      "target_axis_id": "urine_ph",
+      "relationship": "same_direction",
+      "coupling_type": "drift",
+      "effect_direction": "source_down_decreases_target",
+      "effect_size_range": [
+        0.2,
+        0.7
+      ],
+      "activation_threshold_range": [
+        2.8,
+        3.5
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Hypokalemia makes urine alkalinization difficult, so potassium and urine pH move together during treatment response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_creatinine",
+      "target_axis_id": "serum_salicylate_concentration_mg_dl",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.15,
+        0.7
+      ],
+      "lag_days_range": [
+        0.1,
+        2
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Renal dysfunction reduces clearance and sustains serum salicylate concentration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "noncardiogenic_pulmonary_edema_presence",
+      "target_axis_id": "acute_respiratory_failure_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.25,
+        0.9
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Pulmonary edema increases the risk of oxygenation failure and ventilatory collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mental_status_abnormality_presence",
+      "target_axis_id": "airway_protection_need_presence",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe altered mental status increases aspiration and airway-protection needs.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "seizure_presence",
+      "target_axis_id": "seizure_or_status_epilepticus_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "event_transition",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.3,
+        1
+      ],
+      "lag_days_range": [
+        0,
+        0.2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Observed seizure activity is direct evidence that recurrent or sustained seizure hazard is high.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "gastrointestinal_bleeding_presence",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "event_transition",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Active gastrointestinal bleeding increases near-term major bleeding hazard, especially with platelet dysfunction or anticoagulants.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "refractory_acidemia_hazard",
+      "target_axis_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Refractory acidemia is a direct near-term death pathway through CNS trapping, cardiovascular instability, and respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cerebral_edema_hazard",
+      "target_axis_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Cerebral edema is a high-lethality complication in severe salicylate poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "acute_respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.3,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Respiratory failure removes compensatory hyperventilation and can rapidly worsen salicylate distribution and hypoxemia.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "salicylate_exposure_termination_and_source_removal",
+      "display_name_ja": "曝露中止・サリチル酸源除去",
+      "drug_class": "toxin_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "salicylate_exposure_presence",
+        "topical_or_bismuth_salicylate_exposure_presence",
+        "chronic_salicylate_accumulation_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "salicylate_exposure_presence",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1,
+            2
+          ],
+          "clinical_rationale": "Exposure termination only has causal effect when ongoing or repeat salicylate input exists."
+        },
+        {
+          "axis_id": "chronic_salicylate_accumulation_context_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.1,
+            2
+          ],
+          "clinical_rationale": "Stopping repeated dosing removes the persistent input term sustaining toxicity."
+        }
+      ],
+      "failure_modes": [
+        "unrecognized_hidden_salicylate_source",
+        "continued_access_or_repeat_dosing",
+        "delayed_absorption_already_in_progress"
+      ],
+      "trajectory_modifications": {
+        "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "serum_salicylate_concentration_mg_dl": {
+          "peak_value_factor": [
+            0.5,
+            1
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        1,
+        365
+      ],
+      "side_effects": [],
+      "context_specific_role": "Stops the upstream toxin input so clearance and antidotal supportive vector fields can dominate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "activated_charcoal_single_or_repeated_dose",
+      "display_name_ja": "活性炭単回または反復投与",
+      "drug_class": "gastrointestinal_decontamination_adsorbent",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "time_since_salicylate_exposure_hours",
+        "enteric_coated_or_delayed_absorption_context_presence",
+        "salicylate_level_rebound_or_rising_presence",
+        "mental_status_abnormality_presence",
+        "airway_protection_need_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "time_since_salicylate_exposure_hours",
+          "condition": "above_threshold",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Benefit decreases as unabsorbed gastrointestinal salicylate disappears, though delayed absorption can preserve benefit."
+        },
+        {
+          "axis_id": "enteric_coated_or_delayed_absorption_context_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "Delayed absorption or persistent tablets provide ongoing luminal toxin that charcoal can bind."
+        },
+        {
+          "axis_id": "airway_protection_need_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.2,
+            1
+          ],
+          "clinical_rationale": "Aspiration risk can block or delay enteral charcoal unless the airway is protected."
+        }
+      ],
+      "failure_modes": [
+        "late_presentation_without_gastrointestinal_reservoir",
+        "unsafe_airway_or_uncontrolled_vomiting",
+        "incomplete_ingestion_or_refusal",
+        "massive_bezoar_like_tablet_burden"
+      ],
+      "trajectory_modifications": {
+        "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN": {
+          "peak_value_factor": [
+            0.2,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1.5
+          ]
+        },
+        "serum_salicylate_concentration_mg_dl": {
+          "peak_value_factor": [
+            0.4,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "salicylate_level_rebound_or_rising_presence": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        1
+      ],
+      "side_effects": [
+        {
+          "axis_id": "vomiting_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.2
+          ],
+          "interpretation": "Charcoal can worsen nausea or vomiting."
+        },
+        {
+          "axis_id": "airway_protection_need_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.2
+          ],
+          "interpretation": "Aspiration risk matters when mental status is impaired or vomiting is uncontrolled."
+        }
+      ],
+      "context_specific_role": "Reduces ongoing gastrointestinal absorption when timing or delayed absorption leaves salicylate in the gut.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intravenous_sodium_bicarbonate_alkalinization",
+      "display_name_ja": "静注重炭酸ナトリウムによる血液・尿アルカリ化",
+      "drug_class": "systemic_and_urinary_alkalinization",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "sodium_bicarbonate_therapy_context_presence",
+        "arterial_ph",
+        "serum_bicarbonate",
+        "urine_ph",
+        "serum_potassium",
+        "urine_output_ml_kg_hr",
+        "volume_overload_or_pulmonary_edema_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "arterial_ph",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "Correcting acidemia reduces nonionized salicylate and tissue trapping."
+        },
+        {
+          "axis_id": "serum_potassium",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Hypokalemia prevents effective urine alkalinization unless potassium is repleted."
+        },
+        {
+          "axis_id": "urine_output_ml_kg_hr",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.7
+          ],
+          "clinical_rationale": "Low urine flow limits renal salicylate elimination even if urine pH rises."
+        },
+        {
+          "axis_id": "volume_overload_or_pulmonary_edema_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Bicarbonate infusion volume or sodium load may worsen pulmonary edema."
+        }
+      ],
+      "failure_modes": [
+        "severe_renal_failure_or_oliguria",
+        "unrepleted_hypokalemia",
+        "progressive_pulmonary_edema_or_volume_overload",
+        "refractory_acidemia_requiring_extracorporeal_clearance"
+      ],
+      "trajectory_modifications": {
+        "arterial_ph": {
+          "peak_value_factor": [
+            0.7,
+            1.15
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.2
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "serum_bicarbonate": {
+          "peak_value_factor": [
+            1.1,
+            2
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.4
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "urine_ph": {
+          "peak_value_factor": [
+            1.1,
+            1.7
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING": {
+          "peak_value_factor": [
+            0.1,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN": {
+          "peak_value_factor": [
+            0.4,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2
+          ]
+        },
+        "refractory_acidemia_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "arterial_ph",
+          "direction": "up",
+          "magnitude_range": [
+            0.03,
+            0.25
+          ],
+          "unit": "pH"
+        },
+        {
+          "axis_id": "urine_ph",
+          "direction": "up",
+          "magnitude_range": [
+            0.5,
+            2
+          ],
+          "unit": "pH"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_potassium",
+          "direction": "down",
+          "magnitude_range": [
+            0.1,
+            1
+          ],
+          "interpretation": "Alkalinization can lower potassium and impair its own urine-pH effect if not replaced."
+        },
+        {
+          "axis_id": "volume_overload_or_pulmonary_edema_context_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.3
+          ],
+          "interpretation": "Sodium and fluid load may worsen pulmonary edema or fluid overload."
+        }
+      ],
+      "context_specific_role": "Raises serum and urine pH to reduce tissue trapping and enhance renal salicylate elimination.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "potassium_repletion",
+      "display_name_ja": "カリウム補正",
+      "drug_class": "electrolyte_repletion",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "serum_potassium",
+        "urine_ph",
+        "sodium_bicarbonate_therapy_context_presence",
+        "urine_output_ml_kg_hr"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_potassium",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.3,
+            3
+          ],
+          "clinical_rationale": "Correction is most beneficial when hypokalemia is blocking urinary alkalinization."
+        },
+        {
+          "axis_id": "urine_output_ml_kg_hr",
+          "condition": "low",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.4,
+            1
+          ],
+          "clinical_rationale": "Oliguria or severe renal impairment increases hyperkalemia risk and reduces alkalinization effect."
+        }
+      ],
+      "failure_modes": [
+        "ongoing_large_potassium_losses",
+        "severe_renal_failure_with_hyperkalemia_risk",
+        "inadequate_monitoring"
+      ],
+      "trajectory_modifications": {
+        "serum_potassium": {
+          "peak_value_factor": [
+            1.05,
+            1.6
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "urine_ph": {
+          "peak_value_factor": [
+            1.02,
+            1.3
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.2
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "serum_potassium",
+          "direction": "up",
+          "magnitude_range": [
+            0.3,
+            2
+          ],
+          "unit": "mEq/L"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.2
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_potassium",
+          "direction": "up",
+          "magnitude_range": [
+            0.2,
+            1.5
+          ],
+          "interpretation": "Over-repletion can cause hyperkalemia, especially when renal function is poor."
+        }
+      ],
+      "context_specific_role": "Enables urinary alkalinization and corrects arrhythmia-relevant electrolyte disturbance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "isotonic_crystalloid_volume_repletion",
+      "display_name_ja": "等張晶質液による循環血液量補正",
+      "drug_class": "volume_resuscitation",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "dehydration_presence",
+        "dehydration_severity",
+        "mean_arterial_pressure",
+        "urine_output_ml_kg_hr",
+        "serum_creatinine",
+        "volume_overload_or_pulmonary_edema_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "dehydration_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "Restoring volume improves renal salicylate clearance and perfusion when depleted."
+        },
+        {
+          "axis_id": "volume_overload_or_pulmonary_edema_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.2,
+            0.9
+          ],
+          "clinical_rationale": "Fluid can worsen pulmonary edema or oxygenation if permeability edema is present."
+        }
+      ],
+      "failure_modes": [
+        "unrecognized_pulmonary_edema",
+        "persistent_vomiting_or_insensible_losses",
+        "renal_failure_not_responsive_to_volume"
+      ],
+      "trajectory_modifications": {
+        "M_SAL_TOX_VOLUME_DEPLETION_RENAL_CLEARANCE_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2
+          ]
+        },
+        "urine_output_ml_kg_hr": {
+          "peak_value_factor": [
+            1.1,
+            2
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.3
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2
+          ]
+        },
+        "acute_kidney_injury_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.5,
+            5
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            3,
+            25
+          ],
+          "unit": "mmHg"
+        },
+        {
+          "axis_id": "urine_output_ml_kg_hr",
+          "direction": "up",
+          "magnitude_range": [
+            0.2,
+            2
+          ],
+          "unit": "mL/kg/hr"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "volume_overload_or_pulmonary_edema_context_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.4
+          ],
+          "interpretation": "Excess volume can worsen pulmonary edema or oxygen requirement."
+        }
+      ],
+      "context_specific_role": "Restores perfusion and urine flow needed for renal elimination and bicarbonate therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "dextrose_support_for_neuroglycopenia",
+      "display_name_ja": "神経糖欠乏に対するブドウ糖補正",
+      "drug_class": "glucose_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "serum_glucose",
+        "neuroglycopenia_context_presence",
+        "mental_status_abnormality_presence",
+        "seizure_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "neuroglycopenia_context_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "CNS symptoms with low or low-normal glucose increase the expected benefit of dextrose."
+        },
+        {
+          "axis_id": "serum_glucose",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Marked hyperglycemia reduces need for additional glucose except in special contexts."
+        }
+      ],
+      "failure_modes": [
+        "dominant_acidemia_or_cns_salicylate_trapping",
+        "unrecognized_recurrent_hypoglycemia",
+        "lack_of_serial_glucose_monitoring"
+      ],
+      "trajectory_modifications": {
+        "M_SAL_TOX_GLUCOSE_DYSREGULATION": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "neuroglycopenia_context_presence": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "serum_glucose",
+          "direction": "up",
+          "magnitude_range": [
+            20,
+            150
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.02,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_glucose",
+          "direction": "up",
+          "magnitude_range": [
+            50,
+            250
+          ],
+          "interpretation": "Dextrose can cause hyperglycemia if continued without monitoring."
+        }
+      ],
+      "context_specific_role": "Offsets CNS glucose deficit that can amplify altered mental status and seizures.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "benzodiazepine_control_of_seizure_or_severe_agitation",
+      "display_name_ja": "けいれん・高度興奮に対するベンゾジアゼピン",
+      "drug_class": "gabaergic_sedative_anticonvulsant",
+      "mode": "modulate_sigma",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "seizure_presence",
+        "agitation_or_delirium_presence",
+        "mental_status_abnormality_presence",
+        "arterial_pco2",
+        "post_intubation_hypoventilation_risk_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "seizure_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.5,
+            4
+          ],
+          "clinical_rationale": "Active seizure is the direct target of anticonvulsant effect."
+        },
+        {
+          "axis_id": "arterial_pco2",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Respiratory suppression or rising PaCO2 can worsen acidemia in salicylate toxicity."
+        }
+      ],
+      "failure_modes": [
+        "undertreated_recurrent_seizures",
+        "respiratory_depression_with_inadequate_ventilation",
+        "dominant_acidemia_requiring_clearance"
+      ],
+      "trajectory_modifications": {
+        "seizure_or_status_epilepticus_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "seizure_presence": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "severe_hyperthermia_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        }
+      },
+      "sigma_modulation": {
+        "axes": [
+          "seizure_presence",
+          "agitation_or_delirium_presence",
+          "body_temperature",
+          "arterial_pco2"
+        ],
+        "factor": [
+          0.3,
+          0.8
+        ]
+      },
+      "onset_delay_days": [
+        0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.02,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "arterial_pco2",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            15
+          ],
+          "interpretation": "Sedation can reduce compensatory hyperventilation and raise PaCO2."
+        },
+        {
+          "axis_id": "airway_protection_need_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.4
+          ],
+          "interpretation": "Sedation can increase airway-protection needs."
+        }
+      ],
+      "context_specific_role": "Controls seizure and dangerous agitation while preserving ventilation monitoring as a salicylate-specific safety constraint.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "active_external_cooling",
+      "display_name_ja": "能動的冷却",
+      "drug_class": "temperature_control_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "body_temperature",
+        "severe_hyperthermia_hazard",
+        "agitation_or_delirium_presence",
+        "seizure_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "body_temperature",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "Cooling directly targets dangerous hyperthermia."
+        },
+        {
+          "axis_id": "seizure_presence",
+          "condition": "present",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Ongoing seizures generate heat and require simultaneous seizure control."
+        }
+      ],
+      "failure_modes": [
+        "continued_uncoupled_heat_generation",
+        "uncontrolled_seizures_or_agitation",
+        "delayed_core_temperature_monitoring"
+      ],
+      "trajectory_modifications": {
+        "body_temperature": {
+          "peak_value_factor": [
+            0.85,
+            0.98
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "severe_hyperthermia_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "body_temperature",
+          "direction": "down",
+          "magnitude_range": [
+            0.5,
+            4
+          ],
+          "unit": "degC"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.02,
+        0.5
+      ],
+      "side_effects": [],
+      "context_specific_role": "Lowers heat burden while definitive salicylate clearance and acid-base control proceed.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "endotracheal_intubation_with_maintained_hyperventilation",
+      "display_name_ja": "過換気維持を伴う気管挿管・人工換気",
+      "drug_class": "airway_and_ventilation_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "airway_protection_need_presence",
+        "acute_respiratory_failure_hazard",
+        "arterial_pco2",
+        "arterial_ph",
+        "post_intubation_hypoventilation_risk_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "airway_protection_need_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            3
+          ],
+          "clinical_rationale": "Airway control is most useful when coma, aspiration, or respiratory failure creates an airway emergency."
+        },
+        {
+          "axis_id": "post_intubation_hypoventilation_risk_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Failure to maintain pre-intubation minute ventilation can abruptly raise PaCO2 and worsen acidemia."
+        },
+        {
+          "axis_id": "arterial_pco2",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2.5
+          ],
+          "clinical_rationale": "Controlled ventilation can reduce PaCO2 when respiratory failure has already emerged."
+        }
+      ],
+      "failure_modes": [
+        "insufficient_minute_ventilation_after_induction",
+        "sedation_related_loss_of_compensatory_hyperventilation",
+        "delayed_bicarbonate_or_dialysis_during_airway_management"
+      ],
+      "trajectory_modifications": {
+        "acute_respiratory_failure_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2
+          ]
+        },
+        "oxygen_saturation": {
+          "peak_value_factor": [
+            1.02,
+            1.3
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.2
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "arterial_pco2",
+          "direction": "down",
+          "magnitude_range": [
+            5,
+            25
+          ],
+          "unit": "mmHg"
+        },
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "up",
+          "magnitude_range": [
+            2,
+            30
+          ],
+          "unit": "%"
+        }
+      ],
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.02,
+        1
+      ],
+      "side_effects": [
+        {
+          "axis_id": "post_intubation_hypoventilation_risk_context_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.6
+          ],
+          "interpretation": "Induction and ventilation mismatch can worsen salicylate tissue trapping if PaCO2 rises."
+        }
+      ],
+      "context_specific_role": "Rescue airway vector field that must preserve compensatory hyperventilation physiology while oxygenation and clearance are addressed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "hemodialysis_high_flux_extracorporeal_clearance",
+      "display_name_ja": "高効率血液透析・体外除去",
+      "drug_class": "extracorporeal_toxin_clearance_and_acid_base_rescue",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "serum_salicylate_concentration_mg_dl",
+        "arterial_ph",
+        "mental_status_abnormality_presence",
+        "acute_kidney_injury_hazard",
+        "noncardiogenic_pulmonary_edema_presence",
+        "hemodialysis_access_feasibility_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_salicylate_concentration_mg_dl",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.3,
+            5
+          ],
+          "clinical_rationale": "Extracorporeal clearance directly removes salicylate, so higher burden increases absolute benefit."
+        },
+        {
+          "axis_id": "mental_status_abnormality_presence",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            4
+          ],
+          "clinical_rationale": "CNS toxicity indicates dangerous tissue penetration and benefit from rapid clearance plus pH correction."
+        },
+        {
+          "axis_id": "arterial_ph",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.3,
+            5
+          ],
+          "clinical_rationale": "Dialysis corrects acidemia and removes salicylate when bicarbonate alone is insufficient."
+        },
+        {
+          "axis_id": "hemodialysis_access_feasibility_context_presence",
+          "condition": "absent",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.8
+          ],
+          "clinical_rationale": "Access and dialysis availability determine how quickly the clearance vector can start."
+        }
+      ],
+      "failure_modes": [
+        "delayed_access_or_transfer",
+        "hemodynamic_instability_without_support",
+        "post_dialysis_rebound_from_delayed_absorption",
+        "insufficient_session_duration_or_clearance"
+      ],
+      "trajectory_modifications": {
+        "M_SAL_TOX_EXPOSURE_ABSORPTION_BURDEN": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "serum_salicylate_concentration_mg_dl": {
+          "peak_value_factor": [
+            0.1,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "M_SAL_TOX_ORGANIC_ACID_ACCUMULATION": {
+          "peak_value_factor": [
+            0.1,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "M_SAL_TOX_ACIDEMIA_TISSUE_TRAPPING": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "M_SAL_TOX_CNS_NEUROTOXICITY": {
+          "peak_value_factor": [
+            0.1,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1
+          ]
+        },
+        "refractory_acidemia_hazard": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "acute_kidney_injury_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "mortality_hazard_in_D-SALICYLATE-TOXICITY": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.2
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0,
+            20
+          ],
+          "interpretation": "Extracorporeal therapy can cause hypotension in unstable patients."
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0,
+            0.2
+          ],
+          "interpretation": "Vascular access and anticoagulation can increase bleeding hazard in selected contexts."
+        }
+      ],
+      "context_specific_role": "Rapidly removes salicylate and corrects acid-base failure when endogenous clearance and alkalinization are insufficient.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "older_age_or_frailty",
+      "type": "continuous",
+      "modulation": {
+        "high": {
+          "P_disease_ratio": [
+            1,
+            3
+          ],
+          "trajectory_modulation": "Chronic accumulation and severe toxicity can occur at lower serum concentrations, with higher pulmonary edema, renal clearance failure, and mortality hazards.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "chronic_salicylate_accumulation_context_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            },
+            {
+              "axis_id": "mental_status_abnormality_presence",
+              "direction": "up",
+              "factor_range": [
+                1.1,
+                2
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "serum_salicylate_concentration_mg_dl",
+              "target_axis_id": "mental_status_abnormality_presence",
+              "direction": "strengthen",
+              "factor_range": [
+                1.1,
+                2
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "hemodialysis_access_feasibility_context_presence",
+              "direction": "variable",
+              "factor_range": [
+                0.5,
+                1.2
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "isotonic_crystalloid_volume_repletion",
+              "direction": "toxicity_up_if_pulmonary_or_cardiac_reserve_low",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "chronic_kidney_disease_or_renal_impairment",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5
+          ],
+          "trajectory_modulation": "Reduced renal salicylate clearance sustains serum concentration, weakens urinary alkalinization when urine flow is low, and increases dialysis relevance.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_creatinine",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                5
+              ]
+            },
+            {
+              "axis_id": "urine_output_ml_kg_hr",
+              "direction": "down",
+              "factor_range": [
+                0.2,
+                0.9
+              ]
+            },
+            {
+              "axis_id": "serum_potassium",
+              "direction": "up",
+              "conditionality": "especially when acidemic or dialysis dependent",
+              "factor_range": [
+                1.1,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "hyperkalemia_presence",
+              "direction": "up",
+              "conditionality": "especially when acidemic or dialysis dependent",
+              "factor_range": [
+                1.5,
+                5
+              ]
+            },
+            {
+              "axis_id": "acute_kidney_injury_hazard",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                6
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "serum_creatinine",
+              "target_axis_id": "serum_salicylate_concentration_mg_dl",
+              "direction": "strengthen",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "hemodialysis_access_feasibility_context_presence",
+              "direction": "up",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "intravenous_sodium_bicarbonate_alkalinization",
+              "direction": "weaken_if_oliguric",
+              "factor_range": [
+                0.2,
+                0.8
+              ]
+            },
+            {
+              "treatment": "hemodialysis_high_flux_extracorporeal_clearance",
+              "direction": "benefit_up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "dehydration_or_poor_oral_intake",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.1,
+            3
+          ],
+          "trajectory_modulation": "Volume depletion reduces renal clearance and amplifies tachycardia, AKI hazard, and acid-base instability.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "dehydration_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4
+              ]
+            },
+            {
+              "axis_id": "blood_urea_nitrogen",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            },
+            {
+              "axis_id": "urine_output_ml_kg_hr",
+              "direction": "down",
+              "factor_range": [
+                0.3,
+                0.9
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "dehydration_presence",
+              "target_axis_id": "acute_kidney_injury_hazard",
+              "direction": "strengthen",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "alkalinization_feasibility_context_presence",
+              "direction": "down_until_resuscitated",
+              "factor_range": [
+                0.4,
+                0.9
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "isotonic_crystalloid_volume_repletion",
+              "direction": "benefit_up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "enteric_coated_or_delayed_absorption_formulation",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1,
+            2
+          ],
+          "trajectory_modulation": "Serum levels can rise late or rebound, prolonging absorption and requiring serial levels and decontamination context.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "enteric_coated_or_delayed_absorption_context_presence",
+              "direction": "up",
+              "factor_range": [
+                2,
+                8
+              ]
+            },
+            {
+              "axis_id": "salicylate_level_rebound_or_rising_presence",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                5
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "time_since_salicylate_exposure_hours",
+              "target_axis_id": "serum_salicylate_concentration_mg_dl",
+              "direction": "weaken_expected_decline",
+              "factor_range": [
+                0.3,
+                0.8
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "enteric_coated_or_delayed_absorption_context_presence",
+              "direction": "up",
+              "factor_range": [
+                1.1,
+                2
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "activated_charcoal_single_or_repeated_dose",
+              "direction": "benefit_up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "sedative_or_respiratory_depressant_coingestion",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2
+          ],
+          "trajectory_modulation": "Co-ingestion may blunt compensatory hyperventilation, mask tinnitus or tachypnea, and accelerate acidemia and tissue trapping.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "co_ingestion_or_mixed_overdose_presence",
+              "direction": "up",
+              "factor_range": [
+                2,
+                8
+              ]
+            },
+            {
+              "axis_id": "arterial_pco2",
+              "direction": "up",
+              "factor_range": [
+                1.1,
+                2
+              ]
+            },
+            {
+              "axis_id": "mental_status_abnormality_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "arterial_pco2",
+              "target_axis_id": "arterial_ph",
+              "direction": "strengthen_acidemia_effect",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "post_intubation_hypoventilation_risk_context_presence",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                4
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "benzodiazepine_control_of_seizure_or_severe_agitation",
+              "direction": "toxicity_up_if_ventilation_unmonitored",
+              "factor_range": [
+                1.1,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pregnancy",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2
+          ],
+          "trajectory_modulation": "Maternal acid-base and salicylate burden can affect fetal exposure; maternal physiology and fetal risk make pH control and clearance context more consequential.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "refractory_acidemia_hazard",
+              "direction": "up",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "arterial_ph",
+              "target_axis_id": "refractory_acidemia_hazard",
+              "direction": "strengthen",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "hemodialysis_access_feasibility_context_presence",
+              "direction": "up_if_severe",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "hemodialysis_high_flux_extracorporeal_clearance",
+              "direction": "benefit_context_dependent",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "anticoagulant_or_antiplatelet_background",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2
+          ],
+          "trajectory_modulation": "Bleeding event hazards increase when salicylate platelet effects intersect with anticoagulants, antiplatelet drugs, or baseline coagulopathy.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "major_bleeding_hazard",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                5
+              ]
+            },
+            {
+              "axis_id": "gastrointestinal_bleeding_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "platelet_function_inhibition_presence",
+              "target_axis_id": "major_bleeding_hazard",
+              "direction": "strengthen",
+              "factor_range": [
+                1.5,
+                5
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "hemodialysis_access_feasibility_context_presence",
+              "direction": "variable_with_anticoagulation_plan",
+              "factor_range": [
+                0.5,
+                1.2
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "hemodialysis_high_flux_extracorporeal_clearance",
+              "direction": "access_bleeding_toxicity_up",
+              "factor_range": [
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_presentation_or_delayed_recognition",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1,
+            2
+          ],
+          "trajectory_modulation": "More time for acidemia, tissue trapping, renal failure, pulmonary edema, and CNS toxicity to accumulate before treatment.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "time_since_salicylate_exposure_hours",
+              "direction": "up",
+              "factor_range": [
+                2,
+                10
+              ]
+            },
+            {
+              "axis_id": "mental_status_abnormality_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4
+              ]
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-SALICYLATE-TOXICITY",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4
+              ]
+            }
+          ],
+          "coupling_modulation": [
+            {
+              "source_axis_id": "arterial_ph",
+              "target_axis_id": "mental_status_abnormality_presence",
+              "direction": "strengthen",
+              "factor_range": [
+                1.2,
+                3
+              ]
+            }
+          ],
+          "context_axis_prior_modulation": [
+            {
+              "axis_id": "hemodialysis_access_feasibility_context_presence",
+              "direction": "up_if_advanced_toxicity",
+              "factor_range": [
+                1,
+                3
+              ]
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "activated_charcoal_single_or_repeated_dose",
+              "direction": "benefit_down_unless_delayed_absorption",
+              "factor_range": [
+                0.2,
+                0.9
+              ]
+            },
+            {
+              "treatment": "hemodialysis_high_flux_extracorporeal_clearance",
+              "direction": "benefit_up_if_advanced_toxicity",
+              "factor_range": [
+                1.1,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "intentional_massive_aspirin_overdose",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "acute_high_dose_salicylate_ingestion_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "salicylate_exposure_intensity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "serum_salicylate_concentration_mg_dl",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.15,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "abdominal_pain_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "epigastric_pain_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "nausea_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Massive aspirin/salicylate ingestion strongly supports salicylate toxicity and raises acute exposure burden, level, acid-base, and GI-irritation axes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "intentional_massive_salicylate_overdose",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "acute_high_dose_salicylate_ingestion_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "salicylate_exposure_intensity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "serum_salicylate_concentration_mg_dl",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.15,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "abdominal_pain_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "epigastric_pain_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "nausea_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Massive aspirin/salicylate ingestion strongly supports salicylate toxicity and raises acute exposure burden, level, acid-base, and GI-irritation axes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "enteric_coated_aspirin_delayed_absorption_context",
+      "type": "toxin_kinetic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "enteric_coated_aspirin_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "salicylate_level_rebound_or_rising_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "serum_salicylate_concentration_mg_dl",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Enteric-coated aspirin or pharmacobezoar context prolongs absorption and makes delayed or persistent salicylate levels plausible.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Serial salicylate concentrations until clearly falling with clinical improvement.",
+    "Serial blood gas, electrolytes, anion gap, glucose, renal function, urine pH, and urine output monitoring.",
+    "Continuous cardiorespiratory monitoring and frequent neurologic reassessment.",
+    "Avoid sedative-induced loss of compensatory hyperventilation unless airway and minute ventilation are actively controlled.",
+    "Treat vomiting, maintain potassium and volume status, and monitor for pulmonary edema during alkalinization.",
+    "Early toxicology, nephrology, and critical care coordination when CNS toxicity, acidemia, renal failure, pulmonary edema, or rising levels are present."
+  ],
+  "quality_notes": [
+    "No real case was searched, read, or structured for this distillation.",
+    "Disease-specific prompt scope is pure disease name: Salicylate toxicity.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-SALICYLATE-TOXICITY.",
+    "Acute, chronic, delayed-absorption, and formulation contexts are represented as axes and risk/context modifiers, not disease-name qualifiers."
+  ]
+}

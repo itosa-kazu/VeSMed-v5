@@ -1,0 +1,495 @@
+{
+  "case_id": "METHANOL_POISONING_EARLY_INGESTION_NO_GAP_PMC12450070",
+  "source_pmid": "40978925",
+  "source_pmcid": "PMC12450070",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12450070/",
+  "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12450070/fullTextXML",
+  "paper_diagnosis": "Methanol poisoning without typical diagnostic clues or standard antidotes",
+  "disease_label_per_paper": "Early intentional methanol ingestion treated empirically with CRRT and enteral ethanol despite normal anion gap",
+  "expected_disease_id": "D-METHANOL-POISONING",
+  "expected_manifold": "D-METHANOL-POISONING",
+  "demographics": {
+    "age": 43,
+    "sex": "F",
+    "history": [
+      "bipolar disorder",
+      "adjustment disorder"
+    ]
+  },
+  "presentation_summary": [
+    "43-year-old woman was brought to the ED drowsy but arousable after intentionally ingesting 200-250 mL of a solution containing 95% methanol and 5% ethanol, bought online and mixed with juice.",
+    "She also reported ingesting about 80 flunitrazepam 2 mg tablets, total about 160 mg, creating a competing central respiratory depression context.",
+    "She presented about 1.5 hours after ingestion with stable vital signs and GCS E4V5M6; initial VBG showed pH 7.296, pCO2 58 mmHg, bicarbonate 27.4 mmol/L, base excess +3.1 mmol/L, and anion gap 8.6 mmol/L.",
+    "Serum osmolality and serum methanol were unavailable at the treating facility, and urine methanol testing was not immediately available.",
+    "On ICU admission she developed respiratory acidosis, pH 7.187 and pCO2 71.1 mmHg, attributed to central hypoventilation from flunitrazepam co-ingestion rather than formate acidosis.",
+    "Because of the credible high-dose methanol ingestion history, she received early gastric aspiration, CRRT, enteral ethanol, and folinic acid before objective confirmation.",
+    "Retrospective admission urine testing confirmed methanol, while she remained without visual symptoms or neurologic deterioration and was transferred to psychiatric care on hospital day 3."
+  ],
+  "snapshot_day": 0,
+  "time_anchor": "early_ed_presentation_1_5_hours_after_reported_methanol_ingestion",
+  "risk_context": [
+    {
+      "factor": "intentional_high_dose_methanol_ingestion",
+      "category": "toxin_exposure_context",
+      "source_text_value": "intentionally ingesting 200-250 mL of a solution containing 95% methanol and 5% ethanol"
+    },
+    {
+      "factor": "ethanol_coformulation_delayed_formate_context",
+      "category": "toxin_kinetic_context",
+      "source_text_value": "ingested solution contained approximately 5% ethanol"
+    },
+    {
+      "factor": "flunitrazepam_coingestion_respiratory_depression_context",
+      "category": "coingestion_context",
+      "source_text_value": "approximately 80 tablets of flunitrazepam 2 mg per tablet, total about 160 mg"
+    },
+    {
+      "factor": "limited_confirmatory_testing_availability",
+      "category": "care_context",
+      "source_text_value": "serum osmolarity and serum methanol levels could not be measured at the facility"
+    },
+    {
+      "factor": "reported_95_percent_methanol_solution_ingestion_context",
+      "category": "toxin_exposure_context",
+      "source_text_value": "intentionally ingesting 200-250 mL of a solution containing 95% methanol"
+    },
+    {
+      "factor": "early_presentation_before_formate_acidosis_context",
+      "category": "toxin_kinetic_context",
+      "source_text_value": "presentation about 1.5 hours after ingestion with normal anion gap and bicarbonate before formate acidosis emerged"
+    }
+  ],
+  "observations": [
+    {
+      "axis_id": "time_from_methanol_exposure_to_care_hours",
+      "value": 1.5,
+      "unit": "hours",
+      "source_text_value": "ingestion occurred approximately 1.5 hours before ED arrival",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "source_context",
+      "parent_axis_id": "methanol_exposure_probability"
+    },
+    {
+      "axis_id": "toxic_alcohol_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "patient admitted intentionally ingesting methanol-containing solution and flunitrazepam",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "methanol_exposure_probability",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "source_text_value": "intentional ingestion of a solution containing 95% methanol",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "toxic_alcohol_exposure_presence",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "reported_methanol_ingestion_volume_ml",
+      "value": 225.0,
+      "unit": "mL",
+      "value_range": [
+        200.0,
+        250.0
+      ],
+      "source_text_value": "ingesting 200-250 mL of a solution containing 95% methanol and 5% ethanol",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "methanol_exposure_probability",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "coingested_ethanol_probability",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "source_text_value": "solution contained ethanol as a co-formulation; fraction was approximately 5%",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "methanol_exposure_probability",
+      "category": "toxin_kinetic_context"
+    },
+    {
+      "axis_id": "sedative_opioid_or_anesthetic_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "approximately 80 tablets of flunitrazepam 2 mg per tablet",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "coingestion_context"
+    },
+    {
+      "axis_id": "sedative_opioid_or_anesthetic_exposure_degree",
+      "value": 1.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "80 tablets of flunitrazepam 2 mg per tablet; total about 160 mg (mapped to exposure degree; original dose recorded in source text)",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "sedative_opioid_or_anesthetic_exposure_presence",
+      "category": "coingestion_context"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "drowsy but arousable on arrival",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "neurologic_finding"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
+      "value": 0.25,
+      "unit": "severity_score_0_1",
+      "source_text_value": "drowsy but arousable; GCS E4V5M6",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "neurologic_finding"
+    },
+    {
+      "axis_id": "glasgow_coma_scale_score",
+      "value": 15.0,
+      "unit": "points",
+      "source_text_value": "Glasgow Coma Scale E4V5M6",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "neurologic_measurement"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "value": 123.0,
+      "unit": "mmHg",
+      "source_text_value": "blood pressure 123/89 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "value": 89.0,
+      "unit": "mmHg",
+      "source_text_value": "blood pressure 123/89 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "heart_rate",
+      "value": 66.0,
+      "unit": "beats_per_min",
+      "source_text_value": "heart rate 66 bpm",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "value": 17.0,
+      "unit": "breaths_per_min",
+      "source_text_value": "respiratory rate 17/min",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "body_temperature",
+      "value": 35.9,
+      "unit": "C",
+      "source_text_value": "temperature 35.9 C",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "value": 97.0,
+      "unit": "%",
+      "source_text_value": "SpO2 97% on room air",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "initial AG 8.6 mmol/L and bicarbonate 27.4 mmol/L; no progression of acidemia during ICU stay",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "value": 0.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "no metabolic acidosis despite suspected methanol ingestion",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "arterial_ph",
+      "value": 7.296,
+      "unit": "pH",
+      "source_text_value": "initial venous blood gas pH 7.296",
+      "specimen_type": "venous_blood_gas",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "blood_gas"
+    },
+    {
+      "axis_id": "arterial_pco2",
+      "value": 58.0,
+      "unit": "mmHg",
+      "source_text_value": "initial venous pCO2 58.0 mmHg",
+      "specimen_type": "venous_blood_gas",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "blood_gas"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "value": 27.4,
+      "unit": "mmol/L",
+      "source_text_value": "initial VBG HCO3 27.4 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "base_excess",
+      "value": 3.1,
+      "unit": "mmol/L",
+      "source_text_value": "base excess +3.1 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "anion_gap",
+      "value": 8.6,
+      "unit": "mEq/L",
+      "source_text_value": "anion gap 8.6 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "serum_sodium",
+      "value": 139.0,
+      "unit": "mmol/L",
+      "source_text_value": "sodium 139 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "serum_chloride",
+      "value": 103.0,
+      "unit": "mmol/L",
+      "source_text_value": "chloride 103 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "value": 3.9,
+      "unit": "mmol/L",
+      "source_text_value": "potassium 3.9 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "visual_disturbance_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "no visual symptoms during ICU stay",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "neurologic_finding"
+    },
+    {
+      "axis_id": "vision_loss_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "no visual complaints and no visual sequelae",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "category": "symptom"
+    },
+    {
+      "axis_id": "serum_methanol_unavailable_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "serum methanol levels could not be measured at the facility",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "diagnostic_limitation"
+    }
+  ],
+  "course_observations": [
+    {
+      "day": 0.08,
+      "axis_id": "arterial_ph",
+      "value": 7.187,
+      "unit": "pH",
+      "source_text_value": "ICU admission arterial blood gas pH 7.187",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "arterial_blood_gas"
+    },
+    {
+      "day": 0.08,
+      "axis_id": "arterial_pco2",
+      "value": 71.1,
+      "unit": "mmHg",
+      "source_text_value": "ICU admission pCO2 71.1 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "arterial_blood_gas"
+    },
+    {
+      "day": 0.08,
+      "axis_id": "serum_bicarbonate",
+      "value": 25.9,
+      "unit": "mmol/L",
+      "source_text_value": "ICU admission HCO3 25.9 mEq/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "day": 0.08,
+      "axis_id": "respiratory_acidosis_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "severe respiratory acidosis suggesting hypoventilation due to central respiratory depression",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "lab_value",
+      "rationale": "Record-only later respiratory component likely reflecting sedative coingestion/ventilation rather than methanol core diagnosis."
+    },
+    {
+      "day": 3.0,
+      "axis_id": "neurologic_sequelae_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "discharged without neurological or visual sequelae",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "outcome_confirmation"
+    }
+  ],
+  "lab_trajectories": [
+    {
+      "axis_id": "arterial_ph",
+      "unit": "pH",
+      "observations": [
+        {
+          "day": 0.0,
+          "value": 7.296,
+          "source_text_value": "initial VBG pH 7.296 shortly after ED arrival",
+          "specimen_type": "venous_blood_gas",
+          "use_in_ranking": true
+        },
+        {
+          "day": 0.08,
+          "value": 7.187,
+          "source_text_value": "ICU admission ABG pH 7.187",
+          "use_in_ranking": true
+        }
+      ]
+    },
+    {
+      "axis_id": "anion_gap",
+      "unit": "mEq/L",
+      "observations": [
+        {
+          "day": 0.0,
+          "value": 8.6,
+          "source_text_value": "initial anion gap 8.6 mmol/L",
+          "use_in_ranking": true
+        }
+      ]
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "unit": "mmol/L",
+      "observations": [
+        {
+          "day": 0.0,
+          "value": 27.4,
+          "source_text_value": "initial VBG HCO3 27.4 mmol/L",
+          "use_in_ranking": true
+        },
+        {
+          "day": 0.08,
+          "value": 25.9,
+          "source_text_value": "ICU admission ABG HCO3 25.9 mEq/L",
+          "use_in_ranking": true
+        }
+      ]
+    }
+  ],
+  "confirmatory_findings": [
+    {
+      "finding": "Retrospective urine methanol confirmed exposure",
+      "axis_id": "urine_methanol_concentration",
+      "value": 1370.0,
+      "unit": "mg/L",
+      "source_text_value": "retrospective analysis of the admission urine sample revealed methanol concentration of 1370 mg/L in the discussion/table comparison",
+      "source_unit_warning": "The case-presentation table text also renders the unit as mg/dL; the discussion estimates serum methanol from 1370 mg/L, so mg/L is used here and the inconsistency is preserved in quality_warnings.",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "Estimated serum methanol in fatal range based on urine-to-serum ratio",
+      "axis_id": "estimated_serum_methanol_concentration",
+      "value": 1680.0,
+      "unit": "mg/L",
+      "source_text_value": "based on urine-to-serum ratio, this corresponds to estimated serum methanol approximately 1680 mg/L",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "No visual or neurologic sequelae",
+      "axis_id": "neurologic_sequelae_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "discharged without any neurological or visual sequelae",
+      "use_in_ranking": false
+    },
+    {
+      "finding": "Paper diagnosis of methanol poisoning without typical diagnostic clues",
+      "axis_id": "paper_diagnosis_confirmation",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "Methanol Poisoning Without Typical Diagnostic Clues or Standard Antidotes: A Case Report on Clinical Decision-Making",
+      "use_in_ranking": false
+    }
+  ],
+  "actual_treatment": [
+    "nasogastric tube placement and aspiration of gastric contents about 2 hours after ED arrival",
+    "continuous renal replacement therapy started approximately 3.5 hours after ED arrival and continued for 27 hours",
+    "enteral ethanol infusion through nasogastric route, with 50 mL loading dose of 43% ethanol solution followed by 10 mL/h maintenance",
+    "oral folinic acid twice daily",
+    "ethanol infusion stopped after 24 hours because of absence of metabolic acidosis or visual complaints",
+    "transfer to psychiatric hospital on hospital day 3"
+  ],
+  "quality_warnings": [
+    "This is an intentionally atypical early-presenting methanol case: normal anion gap, no metabolic acidosis, and no visual symptoms are encoded as true negative observations and not deleted.",
+    "The retrospective urine methanol result and estimated serum methanol are confirmatory, not available for presentation diagnosis, and are marked use_in_ranking:false.",
+    "The article contains a unit inconsistency for urine methanol: the case table renders mg/dL, while the discussion/table comparison and estimated serum calculation use mg/L. The JSON uses mg/L and records this warning.",
+    "Serum methanol and serum osmolality were unavailable at the treating facility; no numeric serum_methanol_concentration or serum_osmolality is invented.",
+    "The source reports initial pH/pCO2 as venous; these are encoded on shared blood-gas axes with specimen_type='venous_blood_gas'.",
+    "The axis_ids methanol_exposure_probability, methanol_ingested_volume, coingested_ethanol_fraction, flunitrazepam_overdose_presence, flunitrazepam_ingested_dose, serum_methanol_unavailable_presence, respiratory_acidosis_presence, urine_methanol_concentration, estimated_serum_methanol_concentration, and neurologic_sequelae_presence may not yet exist in master_axes.json; they are used here as case-only structured observations and master_axes.json was not modified."
+  ]
+}

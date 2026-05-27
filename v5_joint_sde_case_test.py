@@ -8,8 +8,11 @@ This is the first full-vector runtime for current V5 distillations:
   - risk_factors modulate prior, axis response, sigma, and coupling strength
 
 For case ranking we score a presentation snapshot by marginalizing over latent
-disease day(s). The endpoint likelihood uses the Gaussian marginal of a
-mean-reverting joint SDE in transformed axis space.
+disease day(s). The clinical default uses a deterministic ensemble of fixed
+time-phase and severity/background particles so the same case is reproducible;
+Monte Carlo remains available as an explicit uncertainty/sensitivity mode. The
+endpoint likelihood uses the Gaussian marginal of a mean-reverting joint SDE in
+transformed axis space.
 
 Default ranking is geometry-first: disease rank is computed from observed
 axis residuals, trajectories, couplings, mechanism gates, risk/background
@@ -67,6 +70,25 @@ def env_bool(name, default=False):
 def env_csv(name):
     raw = os.environ.get(name, "")
     return [part.strip() for part in raw.split(",") if part.strip()]
+
+
+def env_float_tuple(name, default):
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    values = []
+    for part in raw.split(","):
+        part = part.strip()
+        if not part:
+            continue
+        try:
+            value = float(part)
+        except ValueError:
+            return default
+        if not math.isfinite(value):
+            return default
+        values.append(float(np.clip(value, 0.0, 1.0)))
+    return tuple(values) or default
 
 
 MANIFOLD_FILTER = env_csv("VESMED_MANIFOLD_FILTER")
@@ -148,10 +170,13 @@ COMBO_LOG_PENALTY = -2.0
 MAX_COMBO_SIZE = env_int("VESMED_MAX_COMBO_SIZE", 2)
 CASE_FILTER = env_csv("VESMED_CASE_FILTER")
 ONLY_COMBO_CASES = env_bool("VESMED_ONLY_COMBO_CASES", False)
-SCORE_MODE = os.environ.get("VESMED_SCORE_MODE", "mc").strip().lower()
+SCORE_MODE = os.environ.get("VESMED_SCORE_MODE", "clinical").strip().lower()
 RANKING_PHILOSOPHY = os.environ.get("VESMED_RANKING_PHILOSOPHY", "geometry_first").strip().lower().replace("-", "_")
 EVIDENCE_MODE = os.environ.get("VESMED_EVIDENCE_MODE", "case").strip().lower().replace("-", "_")
 TIME_GRID_N = max(env_int("VESMED_TIME_GRID_N", 31), 1)
+CLINICAL_TIME_GRID_N = max(env_int("VESMED_CLINICAL_TIME_GRID_N", 15), 1)
+CLINICAL_PARAMETER_QUANTILES = env_float_tuple("VESMED_CLINICAL_PARAMETER_QUANTILES", (0.2, 0.5, 0.8))
+CLINICAL_BACKGROUND_QUANTILES = env_float_tuple("VESMED_CLINICAL_BACKGROUND_QUANTILES", CLINICAL_PARAMETER_QUANTILES)
 REPORT_MODE = os.environ.get("VESMED_REPORT_MODE", "full").strip().lower()
 RANKING_TOP_N = env_int("VESMED_RANKING_TOP_N", 0)
 PROGRESS_EVERY_CASES = max(env_int("VESMED_PROGRESS_EVERY_CASES", 25), 0)
@@ -194,6 +219,89 @@ DIAGNOSTIC_FAMILIES = {
 LEGACY_RANKING_PHILOSOPHIES = {"legacy", "legacy_scaffold", "anchor_scaffold", "anchor"}
 POST_WORKUP_EVIDENCE_MODES = {"post_workup", "postworkup", "all", "all_available", "full"}
 CASE_SCOPED_EVIDENCE_MODES = {"case", "case_stage", "auto"}
+
+
+def load_manifold_entry_measures(path=ROOT / "manifold_entry_measures.json"):
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out = {}
+    for item in data.get("disease_entry_measures", []):
+        disease_id = item.get("disease_id")
+        if not disease_id:
+            continue
+        try:
+            log_entry = float(item.get("baseline_log_entry_measure", 0.0))
+        except (TypeError, ValueError):
+            log_entry = 0.0
+        if not math.isfinite(log_entry):
+            log_entry = 0.0
+        out[disease_id] = {
+            "baseline_log_entry_measure": log_entry,
+            "rationale": item.get("rationale"),
+        }
+    return out
+
+
+MANIFOLD_ENTRY_MEASURES = load_manifold_entry_measures()
+
+
+RISK_CONTEXT_FACTOR_ALIASES = {
+    "water_aerosol_exposure_probability": (
+        ("water_aerosol_exposure_within_2_to_10_days", "cooling_tower_or_industrial_aerosol_exposure"),
+    ),
+    "endemic_area_residence_or_travel_activity": (
+        ("endemic_area_residence_or_recent_travel", "present"),
+    ),
+    "endemic_area_exposure_activity": (
+        ("endemic_area_residence_or_recent_travel", "present"),
+    ),
+    "fecal_oral_enteric_exposure_probability": (
+        ("unsafe_food_water_travel_or_sanitation_exposure", "present"),
+        ("high_inoculum_or_high_risk_food_exposure", "present"),
+    ),
+    "unsafe_food_or_water_exposure_probability": (
+        ("unsafe_food_water_travel_or_sanitation_exposure", "present"),
+        ("high_inoculum_or_high_risk_food_exposure", "present"),
+    ),
+    "contaminated_food_water_exposure_probability": (
+        ("Food, water, or animal-source exposure", "contaminated_food_water_exposure_probability_high"),
+        ("high_inoculum_or_high_risk_food_exposure", "present"),
+    ),
+    "acute_gastroenteritis_close_contact_exposure_probability": (
+        ("childcare_household_crowding_or_outbreak_contact", "present"),
+        ("high_inoculum_or_close_contact_outbreak_exposure", "present"),
+    ),
+    "chronic_heavy_alcohol_use_presence": (
+        ("heavy_alcohol_use", "heavy_alcohol_use"),
+    ),
+    "travel_to_chikungunya_outbreak_area": (
+        ("mosquito_exposure_or_outbreak_travel", "present"),
+    ),
+    "kidney_transplant": (
+        ("solid_organ_transplant_or_immunosuppression", "present"),
+        ("solid_organ_transplant_or_intense_iatrogenic_immunosuppression", "present"),
+        ("transplant_or_hematologic_malignancy_context", "present"),
+    ),
+    "tacrolimus_myccophenolate_prednisone": (
+        ("solid_organ_transplant_or_immunosuppression", "present"),
+        ("solid_organ_transplant_or_intense_iatrogenic_immunosuppression", "present"),
+        ("transplant_or_hematologic_malignancy_context", "present"),
+        ("non_hiv_immunosuppressed_context", "present"),
+    ),
+    "recent_dopamine_antagonist_exposure": (
+        ("high_potency_or_parenteral_dopamine_antagonist_exposure", "present"),
+    ),
+    "occult_metastatic_malignancy_context": (
+        ("high_tumor_burden_or_rapid_cell_turnover", "present"),
+    ),
+    "recent_high_dose_prednisone": (
+        ("cytotoxic_therapy_or_steroid_sensitive_cytoreduction_context", "present"),
+    ),
+    "spontaneous_or_steroid_triggered_tls": (
+        ("spontaneous_tls_context", "present"),
+    ),
+}
 
 
 def use_legacy_scoring_scaffolds():
@@ -629,6 +737,7 @@ HEALTHY_OVERRIDES = {
 
 
 HEALTH_REFERENCE_AXIS_OVERRIDES = v5_reference_response.health_reference_axis_overrides()
+HEALTH_REFERENCE_COVARIANCE_GROUPS = tuple(v5_reference_response.load_health_reference()["covariance_groups"])
 RESPONSE_MODELS_BY_AXIS = v5_reference_response.response_models_by_axis()
 RESPONSE_MODEL_AXIS_IDS = v5_reference_response.response_model_axis_ids()
 
@@ -1157,10 +1266,159 @@ def load_master_axes(path=ROOT / "master_axes.json"):
     return {a["axis_id"]: a for a in data.get("axes", []) if a.get("axis_id")}
 
 
+CONTEXT_REFERENCE_CATEGORY_TOKENS = (
+    "context",
+    "exposure",
+    "risk",
+    "trigger",
+    "medication",
+    "treatment_modifier",
+    "toxic",
+    "environmental",
+)
+
+CONTEXT_REFERENCE_AXIS_IDS = {
+    "atrial_fibrillation_presence",
+    "cardiovascular_low_reserve_context_probability",
+    "chronic_heavy_alcohol_use_presence",
+    "chronic_kidney_disease_presence",
+    "chronic_liver_disease_presence",
+    "cirrhosis_presence",
+    "coronary_artery_disease_presence",
+    "diabetes_mellitus_presence",
+    "heart_failure_presence",
+    "hyperlipidemia_presence",
+    "hypertension_presence",
+    "immunosuppression_presence",
+    "obesity_context_presence",
+    "peripheral_arterial_disease_presence",
+    "pregnancy_context_probability",
+    "smoking_context_presence",
+}
+
+
+HIGH_SPECIFICITY_SOURCE_AXIS_TOKENS = (
+    "acetaminophen",
+    "aspirin",
+    "beta_blocker",
+    "calcium_channel_blocker",
+    "carbon_monoxide",
+    "cyanide",
+    "digoxin",
+    "ethylene_glycol",
+    "iron_poison",
+    "lithium",
+    "metformin",
+    "methanol",
+    "metoprolol",
+    "opioid",
+    "organophosphate",
+    "propranolol",
+    "salicylate",
+    "sotalol",
+    "tca",
+    "theophylline",
+    "toxic_alcohol",
+    "tricyclic",
+    "verapamil",
+    "diltiazem",
+)
+
+
+def high_specificity_source_axis(axis_id, category=None):
+    axis_key = str(axis_id or "").lower()
+    category_key = str(category or "").lower()
+    if not any(token in axis_key for token in HIGH_SPECIFICITY_SOURCE_AXIS_TOKENS):
+        return False
+    return any(
+        token in axis_key or token in category_key
+        for token in (
+            "context",
+            "exposure",
+            "toxic",
+            "source",
+            "ingestion",
+            "overdose",
+            "poison",
+        )
+    )
+
+
+def category_is_context_reference(category):
+    category = str(category or "").lower()
+    return any(token in category for token in CONTEXT_REFERENCE_CATEGORY_TOKENS)
+
+
+def axis_id_is_context_reference(axis_id):
+    axis_key = str(axis_id or "").lower()
+    if axis_key in CONTEXT_REFERENCE_AXIS_IDS:
+        return True
+    return any(
+        token in axis_key
+        for token in (
+            "_context_",
+            "_context_presence",
+            "_context_activity",
+            "_context_probability",
+            "_exposure_",
+            "_exposure_presence",
+            "_exposure_activity",
+            "_exposure_probability",
+            "_risk_",
+            "_risk_presence",
+            "_risk_activity",
+            "_risk_probability",
+        )
+    )
+
+
+def is_context_reference_axis(axis_id, category=None):
+    return category_is_context_reference(category) or axis_id_is_context_reference(axis_id)
+
+NO_ACTIVE_DISEASE_FINDING_CATEGORY_TOKENS = (
+    "symptom",
+    "physical",
+    "finding",
+    "skin",
+    "neurologic",
+    "musculoskeletal",
+    "ophthalmic",
+    "visual",
+    "qualitative",
+)
+
+
 def generic_healthy_background_override(axis_id, entry):
     axis_key = axis_id.lower()
     unit = entry.get("unit")
     unit_norm = norm_unit(unit)
+    category = str(entry.get("category") or "").lower()
+
+    if unit_norm in ("presentabsent01", "probability01", "relativeactivity01", "severityscore01"):
+        if high_specificity_source_axis(axis_id, category=category):
+            return {
+                "unit": unit,
+                "baseline_range": (0.0, 0.05),
+                "log_scale": False,
+                "_source": "health_reference_manifold:specific_source_absent_axes",
+            }
+        if is_context_reference_axis(axis_id, category=category):
+            return {
+                "unit": unit,
+                "baseline_range": (0.0, 1.0),
+                "log_scale": False,
+                "_source": "health_reference_manifold:generic_context_axes",
+            }
+        source = "health_reference_manifold:generic_no_active_disease_bounded_axes"
+        if any(token in category for token in NO_ACTIVE_DISEASE_FINDING_CATEGORY_TOKENS):
+            source = "health_reference_manifold:generic_no_active_disease_qualitative_axes"
+        return {
+            "unit": unit,
+            "baseline_range": (0.0, 0.05),
+            "log_scale": False,
+            "_source": source,
+        }
+
     is_antibody_axis = any(token in axis_key for token in (
         "antibody",
         "autoantibody",
@@ -1254,11 +1512,17 @@ def build_background_axes(manifolds, master_axes):
             baseline = override["baseline_range"]
             unit = override["unit"]
             log_scale = override["log_scale"]
+            category = override.get("category", entry.get("category"))
+            axis_role = override.get("axis_role", entry.get("axis_role"))
+            parent_axis_id = override.get("parent_axis_id", entry.get("parent_axis_id"))
             source = override.get("_source", "base_measure_background")
         elif entry.get("category") == LATENT_MECHANISM_CATEGORY:
             baseline = (0.0, 0.05)
             unit = entry.get("unit") or "relative_activity_0_1"
             log_scale = False
+            category = entry.get("category")
+            axis_role = entry.get("axis_role")
+            parent_axis_id = entry.get("parent_axis_id")
             source = "base_measure_background"
         elif entry["ranges"]:
             lows = [r[0] for r in entry["ranges"]]
@@ -1266,6 +1530,9 @@ def build_background_axes(manifolds, master_axes):
             baseline = (min(lows), max(highs))
             unit = entry.get("unit")
             log_scale = entry.get("log_scale", False)
+            category = entry.get("category")
+            axis_role = entry.get("axis_role")
+            parent_axis_id = entry.get("parent_axis_id")
             source = "base_measure_background"
         else:
             unit = entry.get("unit")
@@ -1277,16 +1544,18 @@ def build_background_axes(manifolds, master_axes):
             ):
                 baseline = (0.0, 0.05)
                 log_scale = False
+                axis_role = entry.get("axis_role")
+                parent_axis_id = entry.get("parent_axis_id")
                 source = "base_measure_background"
             else:
                 continue
         background[axis_id] = {
             "axis_id": axis_id,
-            "category": entry.get("category"),
+            "category": category,
             "unit": unit,
             "log_scale": log_scale,
-            "axis_role": entry.get("axis_role"),
-            "parent_axis_id": entry.get("parent_axis_id"),
+            "axis_role": axis_role,
+            "parent_axis_id": parent_axis_id,
             "baseline_range": baseline,
             "peak_day_range": None,
             "peak_value_range": None,
@@ -1301,19 +1570,27 @@ def fallback_axis_from_observation(axis_id, obs):
     unit = obs.get("unit")
     if norm_unit(unit) not in ("severityscore01", "probability01", "relativeactivity01", "presentabsent01"):
         return None
+    category = obs.get("category") or "qualitative"
+    override = generic_healthy_background_override(axis_id, {
+        "unit": unit,
+        "category": category,
+        "log_scale": False,
+    })
+    baseline = override.get("baseline_range", (0.0, 0.05)) if override else (0.0, 0.05)
+    source = override.get("_source", "health_reference_manifold:generic_no_active_disease_bounded_axes") if override else "health_reference_manifold:generic_no_active_disease_bounded_axes"
     return {
         "axis_id": axis_id,
-        "category": obs.get("category") or "qualitative",
+        "category": category,
         "unit": unit,
         "log_scale": False,
         "axis_role": obs.get("axis_role"),
         "parent_axis_id": obs.get("parent_axis_id"),
-        "baseline_range": [0.0, 0.05],
+        "baseline_range": baseline,
         "peak_day_range": None,
         "peak_value_range": None,
         "plateau_duration_days": None,
         "decline_half_life_days": None,
-        "_source": "case_observation_background_fallback",
+        "_source": source,
     }
 
 
@@ -2440,6 +2717,7 @@ EXACT_AXIS_ALIASES = {
     "gamma_glutamyltransferase": ("serum_gamma_glutamyl_transferase",),
     "fever_presence": ("fever_history_presence",),
     "glasgow_coma_scale": ("glasgow_coma_scale_score",),
+    "glasgow_coma_scale_score": ("glasgow_coma_scale",),
     "ground_glass_opacity_extent": ("diffuse_ground_glass_opacity_extent",),
     "generalized_urticaria_presence": ("urticaria_presence",),
     "gum_bleeding_presence": ("mucosal_bleeding_activity", "bleeding_activity"),
@@ -4213,10 +4491,44 @@ def anatomic_feasibility_prior(case, candidate):
     return penalty, reasons
 
 
+def disease_entry_log_measure(disease_id):
+    entry = MANIFOLD_ENTRY_MEASURES.get(disease_id)
+    if not entry:
+        return 0.0
+    return float(entry.get("baseline_log_entry_measure", 0.0) or 0.0)
+
+
+def expanded_risk_context_items(item):
+    factor = item.get("factor") or item.get("axis_id")
+    if factor:
+        base = dict(item)
+        base["factor"] = factor
+        if not base.get("category"):
+            base["category"] = "present"
+        yield base
+
+    axis_id = item.get("axis_id") or item.get("factor")
+    if not axis_id:
+        return
+    for alias_factor, alias_category in RISK_CONTEXT_FACTOR_ALIASES.get(axis_id, ()):
+        alias = dict(item)
+        alias["factor"] = alias_factor
+        alias["category"] = alias_category
+        alias["_alias_from_axis_id"] = axis_id
+        yield alias
+
+
 def matched_risk_payload(manifold, context):
-    by_key = {(c.get("factor"), c.get("category")) for c in context}
-    by_factor = {}
+    expanded_context = []
     for item in context:
+        expanded_context.extend(expanded_risk_context_items(item))
+    by_key = {
+        (c.get("factor"), c.get("category"))
+        for c in expanded_context
+        if risk_context_item_is_positive(c)
+    }
+    by_factor = {}
+    for item in expanded_context:
         by_factor.setdefault(item.get("factor"), []).append(item)
     axis_mods = {}
     coupling_mods = []
@@ -4656,7 +4968,10 @@ REQUIRED_CONTEXT_SUPPORT_CATEGORIES = {
     "clinical_context",
     "environmental_exposure",
     "exposure_context",
+    "medication_exposure",
     "substrate_context",
+    "toxic_exposure",
+    "toxic_exposure_context",
     "trigger_context",
 }
 
@@ -4673,13 +4988,33 @@ REQUIRED_CONTEXT_SUPPORT_TOKENS = (
     "alcohol",
     "ascites",
     "antipsychotic",
+    "aminophylline",
+    "aspirin",
+    "beta_blocker",
+    "calcium_channel_blocker",
+    "carbon_monoxide",
+    "cyanide",
+    "digoxin",
     "dopamine_antagonist",
+    "drug_or_toxin",
     "endemic_area",
+    "ethylene_glycol",
     "exposure",
     "hyperthyroidism",
+    "iron",
     "ixodes_tick",
+    "lithium",
+    "metformin",
+    "methanol",
+    "methylxanthine",
     "neuroleptic",
+    "opioid",
     "organophosphate",
+    "salicylate",
+    "theophylline",
+    "toxic",
+    "toxin",
+    "tricyclic",
     "transfusion",
 )
 
@@ -4745,7 +5080,6 @@ def text_mentions_context_axis(text, axis_id):
         ("ixodes_tick", ("ixodes", "tick")),
         ("endemic_area", ("endemic", "travel", "residence", "outdoor", "hiking")),
         ("ascites", ("ascites", "cirrhosis", "portal hypertension")),
-        ("exposure", ("exposure",)),
     )
     for axis_token, text_tokens in token_groups:
         if axis_token in axis_key and any(token in text for token in text_tokens):
@@ -4819,6 +5153,7 @@ def case_with_required_context_geometry(case, candidate, manifolds):
     local_case = dict(case)
     local_case["observations_by_axis"] = {**case.get("observations_by_axis", {}), **virtual}
     local_case.pop("_background_axes_cache", None)
+    local_case.pop("_case_rankable_axis_ids", None)
     local_case["_virtual_required_context_axes"] = sorted(virtual)
     return local_case
 
@@ -9351,6 +9686,39 @@ def background_axis_endpoint(axis_id, background_axes, rng):
     return axis, mu_value, axis_sigma(axis), axis.get("_source", "base_measure_background")
 
 
+def health_reference_context_axis(axis):
+    source = str(axis.get("_source") or "")
+    if not source.startswith("health_reference_manifold:"):
+        return False
+    return is_context_reference_axis(axis.get("axis_id"), category=axis.get("category"))
+
+
+def observation_context_reference_axis(axis_id, obs):
+    if not obs:
+        return False
+    if obs.get("_risk_context_observation"):
+        return True
+    return is_context_reference_axis(axis_id, category=obs.get("category") or obs.get("section") or obs.get("stage"))
+
+
+def context_neutral_background_endpoint(axis_id, case_observations, background_axes):
+    axis = background_axes.get(axis_id)
+    obs = (case_observations or {}).get(axis_id)
+    if axis is None or obs is None:
+        return None
+    if high_specificity_source_axis(axis_id, category=axis.get("category") or obs.get("category")):
+        return None
+    if not (health_reference_context_axis(axis) or observation_context_reference_axis(axis_id, obs)):
+        return None
+    obs_value = observation_value_for_axis(obs, axis, axis_id)
+    return (
+        axis,
+        obs_value,
+        axis_sigma(axis),
+        f"{axis.get('_source', 'health_reference_manifold')}:context_neutral",
+    )
+
+
 def parent_conditioned_duration_background_endpoint(
     axis_id,
     case_observations,
@@ -9418,6 +9786,9 @@ def candidate_background_axis_endpoint(axis_id, case_observations, candidate, ma
     )
     if endpoint is not None:
         return endpoint
+    endpoint = context_neutral_background_endpoint(axis_id, case_observations, background_axes)
+    if endpoint is not None:
+        return endpoint
     return background_axis_endpoint(axis_id, background_axes, rng)
 
 
@@ -9478,6 +9849,18 @@ def nearest_corr_psd(corr):
 def build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes):
     idx = {a: i for i, a in enumerate(axis_ids)}
     corr = np.eye(len(axis_ids))
+
+    for group in HEALTH_REFERENCE_COVARIANCE_GROUPS:
+        group_axis_ids = [axis_id for axis_id in group.get("axis_ids", []) if axis_id in idx]
+        if len(group_axis_ids) < 2:
+            continue
+        r = midpoint(group.get("correlation_range"), 0.25)
+        r = float(np.clip(r, -0.95, 0.95))
+        for i_pos, src in enumerate(group_axis_ids):
+            for tgt in group_axis_ids[i_pos + 1:]:
+                i, j = idx[src], idx[tgt]
+                if abs(r) > abs(corr[i, j]):
+                    corr[i, j] = corr[j, i] = r
 
     for disease in candidate:
         for c in manifolds[disease]["axis_couplings"]:
@@ -9548,8 +9931,39 @@ def mvn_logpdf_cached(x, mu, sigmas, corr, factor_cache):
     return -0.5 * (quad + logdet + len(x) * math.log(2.0 * math.pi))
 
 
-def use_grid_scoring():
+class DeterministicQuantileSampler:
+    """Small deterministic stand-in for the rng interface used by trajectories."""
+
+    def __init__(self, quantile, label=None):
+        self.quantile = float(np.clip(quantile, 0.0, 1.0))
+        self.label = label or f"q{self.quantile:g}"
+
+    def uniform(self, lo, hi):
+        lo = float(lo)
+        hi = float(hi)
+        return lo + (hi - lo) * self.quantile
+
+
+def use_clinical_scoring():
+    return SCORE_MODE in {"clinical", "clinical_deterministic", "clinical_ensemble"}
+
+
+def use_midpoint_grid_scoring():
     return SCORE_MODE in {"grid", "fast", "deterministic"}
+
+
+def use_grid_scoring():
+    return use_clinical_scoring() or use_midpoint_grid_scoring()
+
+
+def clinical_parameter_samplers():
+    for q in CLINICAL_PARAMETER_QUANTILES:
+        yield DeterministicQuantileSampler(q, label=f"clinical_param_q{q:g}")
+
+
+def clinical_background_samplers():
+    for q in CLINICAL_BACKGROUND_QUANTILES:
+        yield DeterministicQuantileSampler(q, label=f"clinical_background_q{q:g}")
 
 
 def duration_conditioned_time_values(duration_days, rng):
@@ -9572,8 +9986,40 @@ def duration_conditioned_time_values(duration_days, rng):
 def iter_candidate_time_samples(candidate, manifolds, rng, case=None):
     duration_days = case_presentation_duration_days(case) if case is not None else None
     if duration_days is not None:
+        if use_clinical_scoring():
+            for t in duration_conditioned_time_values(duration_days, rng):
+                for sample_rng in clinical_parameter_samplers():
+                    yield {disease: t for disease in candidate}, sample_rng
+            return
         for t in duration_conditioned_time_values(duration_days, rng):
             yield {disease: t for disease in candidate}, None if use_grid_scoring() else rng
+        return
+
+    if use_clinical_scoring():
+        seen = set()
+        for t in EARLY_GRID_TIME_DAYS:
+            key = ("abs", round(float(t), 6))
+            if key in seen:
+                continue
+            seen.add(key)
+            t_by_disease = {
+                disease: min(float(t), disease_t_max(disease, manifolds[disease]))
+                for disease in candidate
+            }
+            for sample_rng in clinical_parameter_samplers():
+                yield t_by_disease, sample_rng
+        for i in range(CLINICAL_TIME_GRID_N):
+            q = (i + 0.5) / CLINICAL_TIME_GRID_N
+            key = ("clinical_q", round(float(q), 6))
+            if key in seen:
+                continue
+            seen.add(key)
+            t_by_disease = {
+                disease: float(q * disease_t_max(disease, manifolds[disease]))
+                for disease in candidate
+            }
+            for sample_rng in clinical_parameter_samplers():
+                yield t_by_disease, sample_rng
         return
 
     if use_grid_scoring():
@@ -9610,7 +10056,10 @@ def iter_candidate_time_samples(candidate, manifolds, rng, case=None):
 
 
 def iter_background_samples(rng):
-    if use_grid_scoring():
+    if use_clinical_scoring():
+        yield from clinical_background_samplers()
+        return
+    if use_midpoint_grid_scoring():
         yield None
         return
     for _ in range(N_MC):
@@ -9618,13 +10067,11 @@ def iter_background_samples(rng):
 
 
 def score_candidate(case, candidate, manifolds, background_axes):
-    base_case = case
-    base_background_axes = background_axes
     case = case_with_required_context_geometry(case, candidate, manifolds)
     background_axes = background_axes_for_case(background_axes, case, candidate)
     rng = np.random.default_rng(deterministic_seed(candidate + (case.get("case_id"),)))
     obs = case["observations_by_axis"]
-    axis_ids = case_rankable_axis_ids(base_case, manifolds, base_background_axes)
+    axis_ids = case_rankable_axis_ids(case, manifolds, background_axes)
     if not axis_ids:
         return None
 
@@ -9653,6 +10100,8 @@ def score_candidate(case, candidate, manifolds, background_axes):
         + duration_penalty
         + feasibility_penalty
     )
+    entry_log_prior = sum(disease_entry_log_measure(disease) for disease in candidate)
+    log_prior += entry_log_prior
     for disease in candidate:
         axis_mods, coupling_mods, lp = matched_risk_payload(
             manifolds[disease],
@@ -9723,6 +10172,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
             "duration_penalty": duration_penalty,
             "anchor_penalty": anchor_penalty,
             "anchor_bonus": anchor_bonus,
+            "entry_log_prior": entry_log_prior,
             "unexplained_evidence_penalty": unexplained_evidence_penalty,
             "no_formal_support_penalty": no_formal_support_penalty,
             "feasibility_penalty": feasibility_penalty,
@@ -9737,7 +10187,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
     best_lp = float("-inf")
     factor_cache = {}
     static_background_contrib = {}
-    if use_grid_scoring():
+    if use_midpoint_grid_scoring():
         for axis_id in axis_ids:
             if axis_id in formal_axis_id_set:
                 continue
@@ -9842,6 +10292,7 @@ def score_candidate(case, candidate, manifolds, background_axes):
         "duration_penalty": duration_penalty,
         "anchor_penalty": anchor_penalty,
         "anchor_bonus": anchor_bonus,
+        "entry_log_prior": entry_log_prior,
         "unexplained_evidence_penalty": unexplained_evidence_penalty,
         "no_formal_support_penalty": no_formal_support_penalty,
         "feasibility_penalty": feasibility_penalty,
@@ -9880,12 +10331,18 @@ def score_health_reference(case, manifolds, background_axes):
         contrib_meta = []
         for axis_id in axis_ids:
             axis = background_axes[axis_id]
-            mu_value, _ = sample_mu_and_baseline(axis, -1.0, sample_rng)
             obs_value = observation_value_for_axis(obs[axis_id], axis, axis_id)
+            endpoint = context_neutral_background_endpoint(axis_id, obs, background_axes)
+            if endpoint is not None:
+                axis, mu_value, sigma, source = endpoint
+            else:
+                mu_value, _ = sample_mu_and_baseline(axis, -1.0, sample_rng)
+                sigma = axis_sigma(axis)
+                source = axis.get("_source", "base_measure_background")
             x.append(transform(axis, obs_value))
             mu.append(transform(axis, mu_value))
-            sigmas.append(axis_sigma(axis))
-            contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, axis.get("_source", "base_measure_background")))
+            sigmas.append(sigma)
+            contrib_meta.append((axis_id, obs_value, axis.get("unit"), mu_value, source))
 
         lp = mvn_logpdf_cached(np.asarray(x), np.asarray(mu), np.asarray(sigmas), corr, factor_cache)
         log_joint.append(lp)
@@ -9995,7 +10452,8 @@ def main():
     lines.append("V5 joint SDE PMC case ranking test")
     lines.append("=" * 100)
     lines.append(
-        f"N_MC={N_MC}, seed={SEED}, combo_penalty={COMBO_LOG_PENALTY}"
+        f"seed={SEED}, combo_penalty={COMBO_LOG_PENALTY}, "
+        f"N_MC={N_MC} (used only in mc score mode)"
     )
     lines.append(
         f"Ranking philosophy: {ranking_philosophy_label()} "
@@ -10008,7 +10466,14 @@ def main():
             f"single_anchor_threshold={SINGLE_ANCHOR_THRESHOLD}, "
             f"high_specificity_bonus_cap={HIGH_SPECIFICITY_ANCHOR_LOG_BONUS_CAP}"
         )
-    if use_grid_scoring():
+    if use_clinical_scoring():
+        lines.append(
+            f"Score mode: {SCORE_MODE} deterministic_ensemble "
+            f"time_grid_n={CLINICAL_TIME_GRID_N} early_anchors={EARLY_GRID_TIME_DAYS} "
+            f"parameter_quantiles={CLINICAL_PARAMETER_QUANTILES} "
+            f"background_quantiles={CLINICAL_BACKGROUND_QUANTILES}"
+        )
+    elif use_midpoint_grid_scoring():
         lines.append(
             f"Score mode: {SCORE_MODE} time_grid_n={TIME_GRID_N} "
             f"(deterministic midpoint sampling + early anchors {EARLY_GRID_TIME_DAYS})"

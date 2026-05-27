@@ -1,0 +1,530 @@
+{
+  "case_id": "BETA_BLOCKER_TOXICITY_METOPROLOL_ECMO_PMC8103398",
+  "source_pmid": "33952561",
+  "source_pmcid": "PMC8103398",
+  "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8103398/",
+  "source_fulltext_xml": null,
+  "paper_diagnosis": "Massive metoprolol overdose requiring ECMO",
+  "disease_label_per_paper": "Massive metoprolol tartrate overdose with coma, refractory cardiogenic shock, bradycardia, complete heart block, CRRT, and VA-ECMO rescue",
+  "expected_disease_id": "D-BETA-BLOCKER-TOXICITY",
+  "expected_manifold": "D-BETA-BLOCKER-TOXICITY",
+  "demographics": {
+    "age": 69,
+    "sex": "M"
+  },
+  "presentation_summary": [
+    "A man in his late 60s was found unresponsive at home after suspected ingestion of 100 tablets of 75-mg metoprolol tartrate, total 7500 mg, with possible lorazepam and hydroxyzine coingestion.",
+    "The estimated ingestion-to-hospital interval was 6 to 8 hours; initial ED evaluation showed GCS 7, shallow breathing, BP 63/57 mmHg, HR 73/min, temperature 35.6 C, RR 10/min, and SpO2 70%.",
+    "He was intubated, received crystalloid and norepinephrine, and initially improved, but later developed bradycardia around 44/min, MAP near 60 mmHg, and echocardiographic EF below 20%.",
+    "Glucagon, calcium chloride, escalating norepinephrine/epinephrine/vasopressin, hyperinsulinemic euglycemia therapy, intravenous lipid emulsion, bicarbonate, and CRRT were used before ECMO.",
+    "Despite HIE and lipid therapy he deteriorated to HR 26/min with complete heart block, temporary pacing, worsening acidosis, pulmonary edema, and refractory shock requiring VA-ECMO.",
+    "ECMO response, later weaning, and recovery are retained as non-ranking treatment/outcome evidence."
+  ],
+  "snapshot_day": 0.0,
+  "time_anchor": "initial_ed_presentation_after_massive_metoprolol_overdose",
+  "rankable_evidence_window": "Initial ED presentation plus same-episode pre-ECMO deterioration from metoprolol cardiotoxicity. Treatment administration is context only; ECMO response, hemodynamic recovery, and later outcome are non-ranking.",
+  "risk_context": [
+    {
+      "factor": "intentional_self_poisoning_context",
+      "category": "toxin_exposure_context",
+      "source_text_value": "history of suicide attempts and empty home medication bottles"
+    },
+    {
+      "factor": "massive_metoprolol_overdose_context",
+      "category": "exposure_severity_context",
+      "source_text_value": "100 tablets of 75 mg metoprolol tartrate, total 7500 mg"
+    },
+    {
+      "factor": "possible_sedative_coingestion_context",
+      "category": "coingestion_context",
+      "source_text_value": "possible lorazepam and hydroxyzine ingestion; urine drug screen positive only for benzodiazepines",
+      "use_in_ranking": false
+    },
+    {
+      "factor": "pre_existing_coronary_artery_disease_context",
+      "category": "host_context",
+      "source_text_value": "history of coronary artery disease with prior coronary bypass and previously normal ejection fraction"
+    }
+  ],
+  "observations": [
+    {
+      "axis_id": "drug_or_toxin_exposure_probability",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "source_text_value": "overdose of home medications with empty metoprolol bottle",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "exposure_context"
+    },
+    {
+      "axis_id": "beta_blocker_exposure_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "metoprolol tartrate overdose",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "drug_or_toxin_exposure_probability",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "metoprolol_exposure_probability",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "source_text_value": "100 tablets of 75 mg metoprolol tartrate",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "beta_blocker_exposure_presence",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "metoprolol_ingested_dose_mg",
+      "value": 7500.0,
+      "unit": "mg",
+      "source_text_value": "100 tablets of 75 mg metoprolol tartrate",
+      "conversion_note": "100 x 75 mg = 7500 mg.",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "metoprolol_exposure_probability",
+      "category": "exposure_measurement"
+    },
+    {
+      "axis_id": "time_from_ingestion_or_injury_to_care_hours",
+      "value": 7.0,
+      "unit": "hours",
+      "value_range": [
+        6.0,
+        8.0
+      ],
+      "source_text_value": "overdose was thought to be 6 to 8 hours prior to admission",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "metoprolol_exposure_probability",
+      "category": "temporal_context"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "found unresponsive; GCS 7/15 in the emergency department",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "neurologic_finding"
+    },
+    {
+      "axis_id": "somnolence_or_coma_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "minimally responsive with GCS 7/15",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "neurologic_finding"
+    },
+    {
+      "axis_id": "glasgow_coma_scale_score",
+      "value": 7.0,
+      "unit": "points",
+      "source_text_value": "GCS was 7/15",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "category": "neurologic_measurement"
+    },
+    {
+      "axis_id": "respiratory_depression_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "breathing appeared shallow with respiratory rate 10/min",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "respiratory_finding"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "value": 10.0,
+      "unit": "breaths_per_min",
+      "source_text_value": "respiratory rate 10/min",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "respiratory_depression_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "hypoxemia_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "SpO2 70% at presentation",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "respiratory_finding"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "value": 70.0,
+      "unit": "%",
+      "source_text_value": "SpO2 70%",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypoxemia_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "hypotension_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "blood pressure 63/57 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "value": 63.0,
+      "unit": "mmHg",
+      "source_text_value": "BP 63/57 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "value": 57.0,
+      "unit": "mmHg",
+      "source_text_value": "BP 63/57 mmHg",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "value": 59.0,
+      "unit": "mmHg",
+      "source_text_value": "BP 63/57 mmHg",
+      "conversion_note": "(63 + 2*57) / 3 = 59.0.",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "heart_rate",
+      "value": 73.0,
+      "unit": "beats_per_min",
+      "source_text_value": "HR 73 beats/min at initial evaluation",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "body_temperature",
+      "value": 35.6,
+      "unit": "C",
+      "source_text_value": "temperature 35.6 C",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "serum_glucose",
+      "value": 192.0,
+      "unit": "mg/dL",
+      "source_text_value": "blood glucose 192 mg/dL",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "value": 5.4,
+      "unit": "mmol/L",
+      "source_text_value": "potassium 5.4 mmol/L",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "value": 1.4,
+      "unit": "mmol/L",
+      "source_text_value": "lactic acid was 1.4 mmol/L initially",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "beta_blocker_exposure_intensity",
+      "value": 1.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "100 tablets of 75 mg metoprolol tartrate, total 7500 mg",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "beta_blocker_exposure_presence",
+      "category": "toxin_exposure_context"
+    },
+    {
+      "axis_id": "time_since_beta_blocker_exposure_hours",
+      "value": 7.0,
+      "unit": "hours",
+      "value_range": [
+        6.0,
+        8.0
+      ],
+      "source_text_value": "overdose was thought to be 6 to 8 hours prior to admission",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "beta_blocker_exposure_presence",
+      "category": "temporal_context"
+    }
+  ],
+  "course_observations": [
+    {
+      "axis_id": "bradycardia_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.12,
+      "source_text_value": "a few hours later HR was down to 44/min",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "heart_rate",
+      "value": 44.0,
+      "unit": "beats_per_min",
+      "day": 0.12,
+      "source_text_value": "HR down to 44/min",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "bradycardia_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "reduced_myocardial_contractility_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.12,
+      "source_text_value": "bedside echocardiogram showed EF below 20%",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "parent_axis_id": "shock_presence",
+      "category": "echocardiography_finding"
+    },
+    {
+      "axis_id": "left_ventricular_ejection_fraction_percent",
+      "value": 20.0,
+      "unit": "%",
+      "day": 0.12,
+      "source_text_value": "EF less than 20%",
+      "quality_note": "Encoded as upper-bound value from source wording.",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "reduced_myocardial_contractility_presence",
+      "category": "echocardiography_measurement"
+    },
+    {
+      "axis_id": "shock_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.5,
+      "source_text_value": "MAP remained tenuous despite maximum norepinephrine, epinephrine, vasopressin, HIE, ILE, and CRRT",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "physical_finding"
+    },
+    {
+      "axis_id": "cardiogenic_shock_hazard",
+      "value": 0.95,
+      "unit": "events_per_day",
+      "day": 0.5,
+      "source_text_value": "EF below 20% with refractory shock from metoprolol overdose",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "shock_presence",
+      "category": "event_hazard"
+    },
+    {
+      "axis_id": "lactic_acidosis_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.5,
+      "source_text_value": "lactate increased to 4.6 mmol/L during worsening shock and metabolic acidosis",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "lab_finding"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "value": 4.6,
+      "unit": "mmol/L",
+      "day": 0.5,
+      "source_text_value": "lactate increased to 4.6 mmol/L during worsening shock",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "lactic_acidosis_presence",
+      "category": "lab_value"
+    },
+    {
+      "axis_id": "atrioventricular_block_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.75,
+      "source_text_value": "complete heart block developed during continued deterioration",
+      "use_in_ranking": true,
+      "axis_role": "finding",
+      "category": "ecg_finding"
+    },
+    {
+      "axis_id": "complete_heart_block_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.75,
+      "source_text_value": "complete heart block with HR 26/min",
+      "use_in_ranking": true,
+      "axis_role": "satellite",
+      "parent_axis_id": "atrioventricular_block_presence",
+      "category": "ecg_finding"
+    },
+    {
+      "axis_id": "heart_rate",
+      "value": 26.0,
+      "unit": "beats_per_min",
+      "day": 0.75,
+      "source_text_value": "HR dropping to 26 beats/min",
+      "use_in_ranking": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "bradycardia_presence",
+      "category": "vital_sign"
+    },
+    {
+      "axis_id": "high_dose_insulin_euglycemia_therapy_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.5,
+      "source_text_value": "insulin infusion started at 1 unit/kg/h and titrated up to 5 units/kg/h with dextrose",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "treatment_context"
+    },
+    {
+      "axis_id": "lipid_emulsion_rescue_context_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.6,
+      "source_text_value": "20% intravenous lipid emulsion was initiated after HIE did not immediately improve hemodynamics",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "treatment_context"
+    },
+    {
+      "axis_id": "vasopressor_requirement_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.5,
+      "source_text_value": "norepinephrine, epinephrine, and vasopressin were required for refractory shock",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "parent_axis_id": "shock_presence",
+      "category": "treatment_context"
+    },
+    {
+      "axis_id": "continuous_renal_replacement_therapy_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 0.75,
+      "source_text_value": "CRRT was started for volume overload and attempted metoprolol removal",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "treatment_context"
+    },
+    {
+      "axis_id": "ecmo_support_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 1.0,
+      "source_text_value": "VA-ECMO was initiated at bedside for refractory shock",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "treatment_context"
+    },
+    {
+      "axis_id": "hemodynamic_improvement_after_ecmo_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "day": 1.02,
+      "source_text_value": "within 30 minutes of ECMO, MAP was close to 70 mmHg",
+      "use_in_ranking": false,
+      "axis_role": "finding",
+      "category": "treatment_response"
+    }
+  ],
+  "actual_treatments": [
+    {
+      "treatment": "intubation_and_mechanical_ventilation",
+      "source_text_value": "emergently intubated for airway protection",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "crystalloid_resuscitation",
+      "source_text_value": "2 L of intravenous crystalloid",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "norepinephrine_epinephrine_vasopressin",
+      "source_text_value": "norepinephrine was escalated; epinephrine and vasopressin were added",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "atropine",
+      "source_text_value": "1 mg atropine was given to no effect",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "glucagon_bolus_and_infusion",
+      "source_text_value": "two 5-mg IV glucagon boluses followed by infusion 1 to 5 mg/h",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "calcium_chloride",
+      "source_text_value": "1 g calcium chloride was given during refractory shock",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "hyperinsulinemic_euglycemia_therapy",
+      "source_text_value": "insulin infusion 1 to 5 units/kg/h with 20% dextrose",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "intravenous_lipid_emulsion",
+      "source_text_value": "20% intravenous lipid emulsion was initiated",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "temporary_pacing",
+      "source_text_value": "temporary percutaneous pacemaker was placed for complete heart block",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "continuous_renal_replacement_therapy",
+      "source_text_value": "CRRT was started for volume overload and possible metoprolol clearance",
+      "use_in_ranking": false
+    },
+    {
+      "treatment": "venoarterial_ecmo",
+      "source_text_value": "VA-ECMO was initiated for refractory shock",
+      "use_in_ranking": false
+    }
+  ],
+  "outcome": {
+    "use_in_ranking": false,
+    "source_text_value": "VA-ECMO improved perfusion; he was on VA-ECMO for 3 days before hemodynamics were restored and later downgraded to VV-ECMO.",
+    "clinical_outcome": "survived_after_ecmo"
+  },
+  "case_structuring_notes": [
+    "Real PMC/PubMed case report with PMID 33952561 and PMCID PMC8103398.",
+    "Possible lorazepam/hydroxyzine coingestion and benzodiazepine-positive urine are retained as coingestion context instead of deleted.",
+    "Rankable observations preserve initial toxicity and pre-ECMO deterioration; glucagon, HIE, ILE, CRRT, pacing, ECMO, and treatment response are record-only context.",
+    "Case-only beta-blocker-specific axes may not yet exist in master_axes.json; master_axes.json and disease distillation files were not modified."
+  ]
+}

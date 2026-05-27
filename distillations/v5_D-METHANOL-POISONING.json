@@ -1,0 +1,5708 @@
+{
+  "disease": "D-METHANOL-POISONING",
+  "disease_id": "D-METHANOL-POISONING",
+  "disease_name": "Methanol poisoning",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Methanol poisoning",
+    "leaf_granularity": "First-layer disease leaf for the full clinical spectrum of methanol poisoning. Exposure source, dose, latency, optic toxicity, formate acidosis, dialysis context, antidote access, co-ingested ethanol, and delayed presentation are represented as mechanisms, axes, event hazards, risk modifiers, or treatment modifiers, not as disease-name qualifiers.",
+    "case_separation_note": "This disease distillation was created without searching, reading, or structuring methanol poisoning real cases."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "display_name": "Methanol exposure and absorption burden",
+      "clinical_meaning": "Hidden absorbed methanol load across ingestion, inhalational, dermal, contaminated alcohol, solvent, or uncertain exposure contexts. It gates serum methanol, osmolar gap, latent period, early CNS symptoms, and later toxic metabolite formation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -1,
+        1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM",
+      "display_name": "Alcohol dehydrogenase conversion to formaldehyde",
+      "clinical_meaning": "ADH-mediated metabolism of methanol to formaldehyde and downstream formate. Fomepizole and ethanol suppress this mechanism; co-ingested ethanol delays it while prolonging methanol presence.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "display_name": "Formate accumulation and clearance failure",
+      "clinical_meaning": "Net accumulation of formate when production exceeds hepatic folate-dependent metabolism and renal or extracorporeal clearance. It is the dominant driver of acidosis, optic injury, CNS injury, and mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        10
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "display_name": "Formate mitochondrial respiratory inhibition",
+      "clinical_meaning": "Formate inhibition of mitochondrial cytochrome oxidase with histotoxic hypoxia, lactate generation, retinal and basal ganglia vulnerability, and impaired cellular ATP production.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        1,
+        4
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "display_name": "High anion gap metabolic acidosis",
+      "clinical_meaning": "Systemic acidemia from formate and secondary mitochondrial dysfunction. It gates low bicarbonate, high anion gap, low pH, Kussmaul respiration, potassium instability, shock physiology, and hazard escalation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "display_name": "Optic nerve and retinal toxicity",
+      "clinical_meaning": "Selective vulnerability of retina and optic nerve to formate-related mitochondrial injury, producing blurred vision, visual field loss, pupillary abnormalities, optic disc edema, and permanent blindness risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "display_name": "CNS and basal ganglia toxicity",
+      "clinical_meaning": "Central nervous system injury from acidemia and mitochondrial toxicity, especially putaminal and white matter vulnerability. It gates altered mental status, seizures, coma, basal ganglia lesions, and cerebral edema hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        14
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "display_name": "Respiratory and circulatory decompensation",
+      "clinical_meaning": "Final common pathway of severe acidemia, CNS depression, shock, respiratory failure, and multi-organ injury. It gates MAP decline, ventilation requirement, circulatory collapse, AKI, and mortality hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.5,
+        4
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "toxic_alcohol_exposure_presence",
+      "target_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context",
+      "clinical_rationale": "Toxic alcohol exposure context gates methanol body burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "methanol_exposure_probability",
+      "target_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context",
+      "clinical_rationale": "History, container analysis, exposure source, or compatible laboratory context supports methanol-specific exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "reported_methanol_ingestion_volume_ml",
+      "target_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "context",
+      "clinical_rationale": "Reported dose helps estimate absorbed methanol burden when history is reliable.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "serum_methanol_concentration",
+      "target_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early_to_delayed",
+      "clinical_rationale": "Serum methanol is direct body-burden evidence, but can be low after metabolism or dialysis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "osmolar_gap",
+      "target_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Elevated osmolar gap reflects unmetabolized parent alcohol early or during ongoing absorption.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "time_from_methanol_exposure_to_care_hours",
+      "target_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "delayed",
+      "clinical_rationale": "Long untreated latency allows methanol metabolism to formate and increases toxicity despite falling parent alcohol.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "coingested_ethanol_probability",
+      "target_id": "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM",
+      "effect_on_target": "decrease_or_delay",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Ethanol competes for ADH, delaying formate generation while methanol remains present longer.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "serum_ethanol_concentration",
+      "target_id": "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM",
+      "effect_on_target": "decrease_or_delay",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Measured ethanol concentration is pharmacologic evidence of ADH competition.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "serum_methanol_concentration",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Higher absorbed methanol burden raises measured parent alcohol concentration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "osmolar_gap",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Unmetabolized methanol raises the osmolar gap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "nausea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early_to_delayed",
+      "clinical_rationale": "Methanol intoxication and acidosis commonly produce nonspecific gastrointestinal symptoms.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "vomiting_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early_to_delayed",
+      "clinical_rationale": "GI irritation and systemic toxicity increase vomiting probability.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "early_to_delayed",
+      "clinical_rationale": "Parent methanol provides substrate for ADH conversion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM",
+      "target_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.25,
+        2
+      ],
+      "phase": "metabolic",
+      "clinical_rationale": "ADH and aldehyde dehydrogenase metabolism produces formate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "target_id": "serum_formate_concentration",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "metabolic",
+      "clinical_rationale": "Formate accumulation raises measured serum formate when available.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "target_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Formate is the major unmeasured anion driving methanol acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "target_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Formate inhibits mitochondrial respiratory chain activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "anion_gap",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Accumulated formate increases the anion gap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "arterial_ph",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Metabolic acid load lowers arterial pH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "serum_bicarbonate",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Buffer consumption lowers serum bicarbonate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "kussmaul_respiration_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "compensatory",
+      "clinical_rationale": "Respiratory compensation produces deep tachypneic breathing when ventilatory reserve is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "compensatory",
+      "clinical_rationale": "Metabolic acidosis increases minute ventilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "serum_potassium",
+      "effect_on_target": "dysregulate",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Severe acidosis and renal dysfunction can raise potassium; treatment can also shift potassium downward.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Histotoxic hypoxia and shock physiology can raise lactate, although lactate is not the main anion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.5,
+        3
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "Retina and optic nerve are vulnerable to formate mitochondrial toxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.5,
+        3
+      ],
+      "phase": "toxic",
+      "clinical_rationale": "CNS and basal ganglia injury follows severe mitochondrial inhibition and acidemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_disturbance_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Optic and retinal toxicity causes visual complaints.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "blurred_vision_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Blurred or foggy vision is a common early visual phenotype.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "vision_loss_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Severe optic toxicity can progress to partial or complete visual loss.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_acuity_logmar",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Higher logMAR represents worse acuity during optic toxicity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_field_deficit_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Optic neuropathy can produce central scotoma or other field defects.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "pupillary_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Optic nerve dysfunction can impair pupillary responses.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "optic_disc_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        5
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Optic nerve head edema can appear during acute methanol optic neuropathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "optic_neuropathy_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "ocular",
+      "clinical_rationale": "Active optic toxicity raises the transition hazard to clinically significant optic neuropathy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "mental_status_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "neurologic",
+      "clinical_rationale": "CNS toxicity and acidemia cause confusion, somnolence, or coma.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "glasgow_coma_scale_score",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "neurologic",
+      "clinical_rationale": "Severe CNS toxicity lowers measured consciousness score.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "seizure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurologic",
+      "clinical_rationale": "Severe acidemia and CNS injury increase seizure risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "basal_ganglia_lesion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        7
+      ],
+      "phase": "neurologic_imaging",
+      "clinical_rationale": "Putaminal and basal ganglia lesions are a recognized severe CNS injury pattern.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "cerebral_edema_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "neurologic",
+      "clinical_rationale": "Severe CNS toxicity and acidemia can progress to cerebral edema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Severe acidemia drives hemodynamic instability, respiratory failure, and organ injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "hypotension_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Severe poisoning can cause shock physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Circulatory decompensation lowers perfusion pressure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        3
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Shock, severe acidemia, and rhabdomyolysis contexts can cause AKI.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "critical",
+      "clinical_rationale": "CNS depression and exhausted compensation raise respiratory failure risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "circulatory_collapse_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Severe acidemia and shock physiology raise collapse hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE",
+      "target_id": "dialysis_requirement_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "treatment_context",
+      "clinical_rationale": "High formate, severe acidosis, or high methanol burden increases need for extracorporeal removal.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "mortality_hazard_in_D-METHANOL-POISONING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "outcome",
+      "clinical_rationale": "Depth of acidemia is a major short-term mortality driver.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "mortality_hazard_in_D-METHANOL-POISONING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "outcome",
+      "clinical_rationale": "Shock, respiratory failure, cerebral edema, and multi-organ injury raise lifespan hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "metabolic_acidosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "acidotic",
+      "clinical_rationale": "Formate accumulation drives severe high anion gap metabolic acidosis and related measurements.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "metabolic_acidosis_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "acidotic",
+      "clinical_rationale": "Formate accumulation drives severe high anion gap metabolic acidosis and related measurements.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "arterial_pco2",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "acidotic",
+      "clinical_rationale": "Formate accumulation drives severe high anion gap metabolic acidosis and related measurements.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_HIGH_ANION_GAP_METABOLIC_ACIDOSIS",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "acidotic",
+      "clinical_rationale": "Formate accumulation drives severe high anion gap metabolic acidosis and related measurements.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "serum_osmolality",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "phase": "early",
+      "clinical_rationale": "Unmetabolized methanol raises measured osmolality and osmolar gap early after exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "cardiac_arrest_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "mitochondrial_toxicity",
+      "clinical_rationale": "Formate inhibits mitochondrial respiration, worsening lactic acidosis, shock, and arrest risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "mitochondrial_toxicity",
+      "clinical_rationale": "Formate inhibits mitochondrial respiration, worsening lactic acidosis, shock, and arrest risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_FORMATE_MITOCHONDRIAL_RESPIRATORY_INHIBITION",
+      "target_id": "vasopressor_requirement_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "mitochondrial_toxicity",
+      "clinical_rationale": "Formate inhibits mitochondrial respiration, worsening lactic acidosis, shock, and arrest risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "mental_status_abnormality_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurotoxicity",
+      "clinical_rationale": "Methanol/formate CNS and optic toxicity can cause coma, seizures, and pupillary light-response abnormalities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "coma_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurotoxicity",
+      "clinical_rationale": "Methanol/formate CNS and optic toxicity can cause coma, seizures, and pupillary light-response abnormalities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "seizure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurotoxicity",
+      "clinical_rationale": "Methanol/formate CNS and optic toxicity can cause coma, seizures, and pupillary light-response abnormalities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "recurrent_seizures_without_recovery_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurotoxicity",
+      "clinical_rationale": "Methanol/formate CNS and optic toxicity can cause coma, seizures, and pupillary light-response abnormalities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_CNS_BASAL_GANGLIA_TOXICITY",
+      "target_id": "pupillary_light_response_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "neurotoxicity",
+      "clinical_rationale": "Methanol/formate CNS and optic toxicity can cause coma, seizures, and pupillary light-response abnormalities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "respiratory_failure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Severe methanol poisoning can progress to respiratory/circulatory decompensation requiring ventilation and resuscitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "invasive_mechanical_ventilation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Severe methanol poisoning can progress to respiratory/circulatory decompensation requiring ventilation and resuscitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "cardiac_arrest_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Severe methanol poisoning can progress to respiratory/circulatory decompensation requiring ventilation and resuscitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Severe methanol poisoning can progress to respiratory/circulatory decompensation requiring ventilation and resuscitation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "serum_creatine_kinase",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "post_arrest_severe_poisoning",
+      "clinical_rationale": "Post-arrest physiology, seizures, shock, and prolonged coma can raise CK, transaminases, and WBC in severe methanol poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "serum_ast",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "post_arrest_severe_poisoning",
+      "clinical_rationale": "Post-arrest physiology, seizures, shock, and prolonged coma can raise CK, transaminases, and WBC in severe methanol poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "serum_alt",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "post_arrest_severe_poisoning",
+      "clinical_rationale": "Post-arrest physiology, seizures, shock, and prolonged coma can raise CK, transaminases, and WBC in severe methanol poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_RESPIRATORY_CIRCULATORY_DECOMPENSATION",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "post_arrest_severe_poisoning",
+      "clinical_rationale": "Post-arrest physiology, seizures, shock, and prolonged coma can raise CK, transaminases, and WBC in severe methanol poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_acuity_impairment_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_acuity_counting_fingers_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "visual_function_loss_fraction",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "unilateral_visual_loss_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "bilateral_eye_involvement_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "right_eye_involvement_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "left_eye_involvement_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "right_eye_visual_acuity_logmar",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_METHANOL_OPTIC_RETINAL_TOXICITY",
+      "target_id": "left_eye_visual_acuity_logmar",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        180.0
+      ],
+      "confidence": "medium",
+      "clinical_rationale": "Methanol poisoning is a toxic visual-loss mimic and should share generic vision impairment axes only.",
+      "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "toxic_alcohol_exposure_presence",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any history, environmental context, container analysis, cluster exposure, or laboratory pattern supporting toxic alcohol exposure.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        30
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "methanol_exposure_probability",
+      "category": "source_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "toxic_alcohol_exposure_presence",
+      "shape_free_text": "Probability that the toxic alcohol exposure is methanol rather than ethylene glycol, isopropanol, ethanol alone, or another toxin.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        30
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "contaminated_alcohol_or_solvent_exposure_probability",
+      "category": "source_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "methanol_exposure_probability",
+      "shape_free_text": "Context suggesting contaminated spirits, windshield fluid, fuel, solvent, industrial product, or other methanol source.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        30
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "reported_methanol_ingestion_volume_ml",
+      "category": "source_context",
+      "unit": "mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "methanol_exposure_probability",
+      "shape_free_text": "Estimated ingested methanol-containing liquid volume. Concentration uncertainty means this is supportive rather than definitive.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        -7,
+        0
+      ],
+      "peak_value_range": [
+        5,
+        500
+      ],
+      "plateau_duration_days": [
+        0,
+        30
+      ],
+      "decline_half_life_days": [
+        30,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "time_from_methanol_exposure_to_care_hours",
+      "category": "source_context",
+      "unit": "hours",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "methanol_exposure_probability",
+      "shape_free_text": "Elapsed time from suspected methanol exposure to medical evaluation or antidote-capable care.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        1,
+        96
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        30,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "coingested_ethanol_probability",
+      "category": "source_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "methanol_exposure_probability",
+      "shape_free_text": "Probability of ethanol co-ingestion, which can delay toxic formate generation while extending parent methanol persistence.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        -1,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_methanol_concentration",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured serum methanol concentration. High early; may fall as formate and acidosis worsen, or after dialysis.",
+      "baseline_range": [
+        0,
+        2
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        20,
+        300
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_formate_concentration",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured serum formate concentration when available; more directly linked to acidemia and ocular toxicity than parent methanol.",
+      "baseline_range": [
+        0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        3,
+        30
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "osmolar_gap",
+      "category": "lab_value",
+      "unit": "mOsm/kg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured or calculated osmolar gap. Often high early from parent methanol and can normalize as anion gap acidosis worsens.",
+      "baseline_range": [
+        0,
+        10
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        10,
+        100
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.3,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anion_gap",
+      "category": "lab_value",
+      "unit": "mEq/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "High anion gap driven mainly by formate accumulation; may rise as osmolar gap falls.",
+      "baseline_range": [
+        6,
+        12
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        18,
+        55
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_ph",
+      "category": "lab_value",
+      "unit": "pH",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Arterial or venous pH reflecting severity of methanol-associated metabolic acidosis.",
+      "baseline_range": [
+        7.35,
+        7.45
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        6.75,
+        7.25
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum bicarbonate consumed by formate-driven high anion gap acidosis.",
+      "baseline_range": [
+        22,
+        28
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        2,
+        18
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Secondary lactate elevation from shock or mitochondrial dysfunction; does not fully explain the anion gap in classic methanol poisoning.",
+      "baseline_range": [
+        0.5,
+        2
+      ],
+      "peak_day_range": [
+        0.5,
+        3
+      ],
+      "peak_value_range": [
+        1.5,
+        10
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_ethanol_concentration",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Measured ethanol concentration from co-ingestion or therapeutic ethanol. It competes for ADH and changes methanol kinetics.",
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        20,
+        200
+      ],
+      "plateau_duration_days": [
+        0,
+        2
+      ],
+      "decline_half_life_days": [
+        0.1,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Potassium instability during severe acidosis, renal impairment, bicarbonate therapy, or dialysis.",
+      "baseline_range": [
+        3.5,
+        5.0
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        2.5,
+        6.8
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Creatinine elevation from baseline CKD, shock, AKI, or concurrent renal injury; affects dialysis logistics and acid-base reserve.",
+      "baseline_range": [
+        0.6,
+        1.2
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        1.0,
+        8.0
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_urea_nitrogen",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "BUN as renal reserve and dehydration context; not specific for methanol but modifies clearance and dialysis context.",
+      "baseline_range": [
+        7,
+        20
+      ],
+      "peak_day_range": [
+        1,
+        5
+      ],
+      "peak_value_range": [
+        15,
+        120
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "urine_output_ml_per_kg_hr",
+      "category": "lab_value",
+      "unit": "mL/kg/hr",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Urine output reflecting renal perfusion and AKI context during severe poisoning.",
+      "baseline_range": [
+        0.8,
+        2.5
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nausea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Nausea during early intoxication or metabolic acidosis.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "vomiting_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Vomiting during early intoxication, acidosis, or increased intracranial pressure context.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Abdominal discomfort or pain in toxic alcohol ingestion or acidosis; nonspecific.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.1,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        4
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "headache_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Headache from methanol intoxication, acidosis, visual toxicity, or CNS injury.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dizziness_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Dizziness, vertigo-like symptoms, or intoxication feeling during early methanol exposure.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "visual_disturbance_presence",
+      "category": "neurologic_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any visual complaint or objective visual abnormality related to methanol optic-retinal toxicity.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blurred_vision_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "shape_free_text": "Blurred, foggy, snowy, or dim vision when visual disturbance is present.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        21
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vision_loss_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "shape_free_text": "Partial or complete visual loss as a severe visual phenotype.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "visual_acuity_logmar",
+      "category": "physical_finding",
+      "unit": "logMAR",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "visual_disturbance_presence",
+      "shape_free_text": "Best measured visual acuity in logMAR; higher values mean worse acuity.",
+      "baseline_range": [
+        0,
+        0.2
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0.3,
+        3.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "visual_field_deficit_presence",
+      "category": "neurologic_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "shape_free_text": "Central scotoma or other visual field deficit during optic neuropathy.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pupillary_abnormality_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any abnormal pupillary response, asymmetry, or light reflex abnormality.",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "relative_afferent_pupillary_defect_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pupillary_abnormality_presence",
+      "shape_free_text": "Relative afferent pupillary defect indicating optic nerve dysfunction.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "optic_disc_edema_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "shape_free_text": "Optic disc hyperemia or edema during acute methanol optic neuropathy.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Confusion, somnolence, agitation, delirium, obtundation, or coma in methanol poisoning.",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Severity of altered mental status when present.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "glasgow_coma_scale_score",
+      "category": "neurologic_measurement",
+      "unit": "points",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Glasgow Coma Scale score. Lower score reflects more severe CNS toxicity or sedation.",
+      "baseline_range": [
+        15,
+        15
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        3,
+        14
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "coma_severity",
+      "category": "neuropsychiatric_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "shape_free_text": "Coma depth when severe consciousness impairment is present.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "seizure_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Observed clinical seizure during methanol-related CNS toxicity or severe acidemia.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "basal_ganglia_lesion_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "CT or MRI evidence of basal ganglia injury compatible with severe methanol CNS toxicity.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        10
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        3,
+        90
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "putaminal_necrosis_or_hemorrhage_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "basal_ganglia_lesion_presence",
+      "shape_free_text": "Putaminal necrosis, hemorrhage, or symmetric basal ganglia injury pattern.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        1,
+        10
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        3,
+        90
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "kussmaul_respiration_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Deep rapid compensatory breathing during severe metabolic acidosis.",
+      "baseline_range": [
+        0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Respiratory rate reflecting acid-base compensation, CNS depression, or respiratory failure.",
+      "baseline_range": [
+        12,
+        20
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        20,
+        45
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypotension_presence",
+      "category": "vital_sign",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Hypotension or shock physiology during severe methanol poisoning.",
+      "baseline_range": [
+        0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "shape_free_text": "Mean arterial pressure; low values reflect shock and poor perfusion.",
+      "baseline_range": [
+        70,
+        105
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        45,
+        75
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fomepizole_availability_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Local probability that fomepizole can be obtained and dosed without clinically meaningful delay.",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "therapeutic_ethanol_monitoring_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Ability to administer ethanol safely with concentration monitoring, glucose monitoring, airway monitoring, and dosing support.",
+      "baseline_range": [
+        0.3,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dialysis_access_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Feasibility of timely extracorporeal treatment, including vascular access, staffing, machine access, transfer, and anticoagulation context.",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "renal_replacement_therapy_availability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Availability of intermittent hemodialysis or continuous renal replacement therapy for toxin and formate removal.",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "renal_replacement_therapy_need_activity",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Composite treatment-context activity for extracorporeal removal need, driven by severe acidosis, high methanol or formate, visual findings, renal failure, or clinical deterioration.",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.3,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "folate_rescue_availability_probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Availability of folinic acid or folate therapy to support formate metabolism.",
+      "baseline_range": [
+        0.5,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "folate_deficiency_or_malnutrition_context_probability",
+      "category": "risk_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Probability of low folate reserve, malnutrition, or chronic alcohol-associated nutritional depletion that reduces formate metabolism.",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        -30,
+        0
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        7,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "optic_neuropathy_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Transition hazard into clinically significant methanol-related optic neuropathy.",
+      "baseline_range": [
+        1e-05,
+        0.0001
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.03,
+        0.8
+      ],
+      "plateau_duration_days": [
+        1,
+        14
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "permanent_blindness_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Transition hazard from acute optic toxicity to persistent severe visual loss or blindness.",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        1,
+        14
+      ],
+      "peak_value_range": [
+        0.01,
+        0.5
+      ],
+      "plateau_duration_days": [
+        3,
+        60
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "seizure_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Seizure transition hazard from severe acidemia or CNS toxicity.",
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.01,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cerebral_edema_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Cerebral edema hazard in severe methanol poisoning with profound acidosis or CNS injury.",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.005,
+        0.3
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "AKI hazard from shock, severe acidosis, dehydration, or co-toxic exposures in methanol poisoning.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.5,
+        5
+      ],
+      "peak_value_range": [
+        0.01,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0,
+        10
+      ],
+      "decline_half_life_days": [
+        2,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "respiratory_failure_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Respiratory failure hazard from CNS depression, severe acidemia, aspiration, or failure of compensation.",
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.02,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "circulatory_collapse_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Circulatory collapse hazard from severe acidemia, shock, arrhythmia, or refractory multi-organ dysfunction.",
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.02,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dialysis_requirement_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Transition hazard into needing extracorporeal treatment based on toxin burden, acidemia, renal failure, visual involvement, or deterioration.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.05,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-METHANOL-POISONING",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Disease-specific lifespan hazard emerging from severe formate acidosis, respiratory/circulatory decompensation, cerebral edema, seizures, delayed antidote or dialysis, and multi-organ injury.",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0,
+        5
+      ],
+      "peak_value_range": [
+        0.005,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sedative_opioid_or_anesthetic_exposure_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Sedative, opioid, benzodiazepine, or anesthetic co-exposure that can alter mental status, ventilation, and airway risk in a toxic alcohol presentation.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "sedative_opioid_or_anesthetic_exposure_degree",
+      "category": "treatment_modifier",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "sedative_opioid_or_anesthetic_exposure_presence",
+      "shape_free_text": "Approximate magnitude of sedative/opioid/anesthetic co-exposure when dose or clinical effect is known.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "basal_ganglia_involvement_extent",
+      "category": "imaging_finding",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "basal_ganglia_lesion_presence",
+      "shape_free_text": "Extent of basal ganglia injury or imaging involvement in toxic alcohol neurotoxicity.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        14,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "display_name_ja": "代謝性アシドーシス",
+      "category": "acid_base",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "High anion gap metabolic acidosis from formate accumulation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "display_name_ja": "代謝性アシドーシス重症度",
+      "category": "acid_base",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Severity of methanol-related metabolic acidosis.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "metabolic_acidosis_presence"
+    },
+    {
+      "axis_id": "arterial_pco2",
+      "display_name_ja": "動脈血PCO2",
+      "category": "acid_base",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        35,
+        45
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        15,
+        70
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Arterial carbon dioxide tension in methanol poisoning acid-base assessment.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "metabolic_acidosis_presence"
+    },
+    {
+      "axis_id": "serum_osmolality",
+      "display_name_ja": "血清浸透圧",
+      "category": "lab_value",
+      "unit": "mOsm/kg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        275,
+        295
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        295,
+        500
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Measured serum osmolality; elevated with parent methanol burden before metabolism.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "coma_activity",
+      "display_name_ja": "昏睡活動度",
+      "category": "neurologic_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Coma or profound depressed consciousness in severe methanol poisoning.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "mental_status_abnormality_presence"
+    },
+    {
+      "axis_id": "recurrent_seizures_without_recovery_presence",
+      "display_name_ja": "回復なき反復発作",
+      "category": "neurologic_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Recurrent seizures or status-like course without recovery in severe methanol poisoning.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "seizure_presence"
+    },
+    {
+      "axis_id": "cardiac_arrest_hazard",
+      "display_name_ja": "心停止ハザード",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.01,
+        2.0
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Short-term hazard or occurrence of cardiac arrest during severe methanol acidosis, shock, or hypoxic injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_presence",
+      "display_name_ja": "ショック",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Circulatory shock from severe acidosis, mitochondrial toxicity, hypoxia, or post-arrest state.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vasopressor_requirement_activity",
+      "display_name_ja": "昇圧薬必要度",
+      "category": "supportive_care_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Need for vasopressor support in methanol-related shock or post-arrest physiology.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "shock_presence"
+    },
+    {
+      "axis_id": "respiratory_failure_presence",
+      "display_name_ja": "呼吸不全",
+      "category": "respiratory_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Respiratory failure or inability to maintain ventilation/airway in severe methanol poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "invasive_mechanical_ventilation_presence",
+      "display_name_ja": "侵襲的人工換気",
+      "category": "supportive_care_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Endotracheal intubation or invasive ventilation for coma, arrest, or respiratory failure.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "respiratory_failure_presence"
+    },
+    {
+      "axis_id": "pupillary_light_response_abnormality_presence",
+      "display_name_ja": "対光反射異常",
+      "category": "physical_exam",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0,
+        1
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Abnormal pupillary light response from optic/retinal toxicity, coma, or brain injury.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pupillary_abnormality_presence"
+    },
+    {
+      "axis_id": "serum_creatine_kinase",
+      "display_name_ja": "クレアチンキナーゼ",
+      "category": "lab_value",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [
+        30,
+        200
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        200,
+        100000
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Creatine kinase elevation from seizures, prolonged coma, hypoperfusion, or rhabdomyolysis in severe poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_ast",
+      "display_name_ja": "AST",
+      "category": "liver_muscle_lab",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [
+        10,
+        40
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        40,
+        5000
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "AST elevation from hypoperfusion, hepatic injury, muscle injury, or seizures in severe methanol poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_alt",
+      "display_name_ja": "ALT",
+      "category": "liver_lab",
+      "unit": "U/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "baseline_range": [
+        7,
+        45
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        40,
+        2000
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "ALT elevation from hypoperfusion or hepatic injury in severe poisoning.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "display_name_ja": "白血球数",
+      "category": "hematology_lab",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        4,
+        10
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        6,
+        30
+      ],
+      "plateau_duration_days": [
+        0,
+        5
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "shape_free_text": "Stress leukocytosis can occur in severe methanol poisoning or post-arrest physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "visual_acuity_impairment_presence",
+      "display_name": "Visual acuity impairment",
+      "display_name_ja": "視力障害",
+      "category": "visual_symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "vision_loss_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Clinically observed impaired acuity without embedding the cause.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "visual_acuity_counting_fingers_presence",
+      "display_name": "Counting-fingers visual acuity",
+      "display_name_ja": "手動弁・指数弁レベルの視力",
+      "category": "ocular_measurement",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_acuity_impairment_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.05,
+        0.7
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Severe visual-acuity impairment recorded as counting fingers or comparable low vision.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "low_to_moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "visual_function_loss_fraction",
+      "display_name": "Visual function loss fraction",
+      "display_name_ja": "視機能喪失率",
+      "category": "ocular_measurement",
+      "unit": "fraction_0_1",
+      "axis_role": "measurement",
+      "parent_axis_id": "visual_acuity_impairment_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.1,
+        0.95
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "unilateral_visual_loss_presence",
+      "display_name": "Unilateral visual loss",
+      "display_name_ja": "片眼性視力低下",
+      "category": "visual_symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "vision_loss_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.06
+      ],
+      "peak_day_range": [
+        1.0,
+        180.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.75
+      ],
+      "plateau_duration_days": [
+        7.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "low_to_moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "bilateral_eye_involvement_presence",
+      "display_name": "Bilateral eye involvement",
+      "display_name_ja": "両眼病変",
+      "category": "laterality",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        7.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.15,
+        0.85
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Bilateral ocular involvement as a generic laterality satellite.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "right_eye_involvement_presence",
+      "display_name": "Right eye involvement",
+      "display_name_ja": "右眼病変",
+      "category": "laterality",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "low_to_moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "left_eye_involvement_presence",
+      "display_name": "Left eye involvement",
+      "display_name_ja": "左眼病変",
+      "category": "laterality",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "visual_disturbance_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "low_to_moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "right_eye_visual_acuity_logmar",
+      "display_name": "Right eye visual acuity logMAR",
+      "display_name_ja": "右眼logMAR視力",
+      "category": "visual_measurement",
+      "unit": "logMAR",
+      "axis_role": "measurement",
+      "parent_axis_id": "right_eye_involvement_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.3,
+        2.3
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "left_eye_visual_acuity_logmar",
+      "display_name": "Left eye visual acuity logMAR",
+      "display_name_ja": "左眼logMAR視力",
+      "category": "visual_measurement",
+      "unit": "logMAR",
+      "axis_role": "measurement",
+      "parent_axis_id": "left_eye_involvement_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.3,
+        2.3
+      ],
+      "plateau_duration_days": [
+        14.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Diagnosis-neutral staging-local ophthalmic axis added during ontology normalization.",
+      "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
+      "knowledge_confidence": "moderate",
+      "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "serum_methanol_concentration",
+      "target_axis_id": "osmolar_gap",
+      "coupling_type": "noise_correlation",
+      "effect": "positive_correlation early while parent methanol is present",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "osmolar_gap",
+      "target_axis_id": "anion_gap",
+      "coupling_type": "mixed",
+      "effect": "osmolar gap tends to fall as anion gap rises during metabolism to formate",
+      "lag_days_range": [
+        0.5,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_formate_concentration",
+      "target_axis_id": "anion_gap",
+      "coupling_type": "drift",
+      "effect": "higher formate raises the anion gap",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "anion_gap",
+      "target_axis_id": "arterial_ph",
+      "coupling_type": "mixed",
+      "effect": "higher anion gap tends to lower pH when respiratory compensation is insufficient",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_bicarbonate",
+      "target_axis_id": "arterial_ph",
+      "coupling_type": "mixed",
+      "effect": "lower bicarbonate tends to lower pH",
+      "lag_days_range": [
+        0,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_ph",
+      "target_axis_id": "mortality_hazard_in_D-METHANOL-POISONING",
+      "coupling_type": "hazard_drift",
+      "effect": "lower pH raises mortality hazard",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_ph",
+      "target_axis_id": "seizure_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "lower pH raises seizure hazard",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_formate_concentration",
+      "target_axis_id": "optic_neuropathy_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "higher formate raises optic neuropathy hazard",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "optic_neuropathy_hazard",
+      "target_axis_id": "permanent_blindness_hazard",
+      "coupling_type": "event_transition",
+      "effect": "optic neuropathy increases transition to persistent severe visual loss",
+      "lag_days_range": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cerebral_edema_hazard",
+      "target_axis_id": "mortality_hazard_in_D-METHANOL-POISONING",
+      "coupling_type": "event_transition",
+      "effect": "cerebral edema increases lifespan hazard",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_potassium",
+      "target_axis_id": "circulatory_collapse_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "marked potassium dysregulation raises collapse hazard",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "acute_kidney_injury_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "lower perfusion pressure raises AKI hazard",
+      "lag_days_range": [
+        0.5,
+        3
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "serum_methanol_concentration",
+      "target_axis_id": "dialysis_requirement_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "higher parent methanol concentration raises extracorporeal removal need when access is available",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_formate_concentration",
+      "target_axis_id": "dialysis_requirement_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "higher formate concentration raises extracorporeal removal need",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "Fomepizole",
+      "drug_class": "alcohol_dehydrogenase_inhibitor",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Suppress ADH-mediated conversion of methanol to formate while definitive clearance and acidosis management proceed.",
+      "required_context_axes": [
+        "methanol_exposure_probability",
+        "fomepizole_availability_probability"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "fomepizole_availability_probability",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [
+            0,
+            0.2
+          ],
+          "clinical_rationale": "The antidote cannot reshape metabolism if it is unavailable or substantially delayed."
+        },
+        {
+          "axis_id": "methanol_exposure_probability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.6
+          ],
+          "clinical_rationale": "ADH inhibition is most useful when methanol exposure is probable or cannot be excluded."
+        },
+        {
+          "axis_id": "serum_formate_concentration",
+          "condition": "high",
+          "effect": "weakens_downstream_only",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Fomepizole prevents new formate generation but does not rapidly remove already accumulated formate."
+        },
+        {
+          "axis_id": "dialysis_requirement_hazard",
+          "condition": "high",
+          "effect": "requires_combination",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Severe poisoning often needs extracorporeal removal in addition to ADH inhibition."
+        }
+      ],
+      "failure_modes": [
+        "antidote_unavailable_or_delayed",
+        "late_presentation_after_formate_accumulation",
+        "ongoing_absorption_or_massive_exposure",
+        "missed_need_for_extracorporeal_clearance"
+      ],
+      "trajectory_modifications": {
+        "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM": {
+          "peak_value_factor": [
+            0.02,
+            0.15
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "serum_formate_concentration": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "anion_gap": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            5
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            10
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        1
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_ast",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.2
+          ],
+          "interpretation": "Mild transaminase elevation is possible but usually not the limiting toxicity."
+        },
+        {
+          "axis_id": "nausea_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.2
+          ],
+          "interpretation": "Nausea or infusion intolerance can occur."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Therapeutic ethanol",
+      "drug_class": "competitive_alcohol_dehydrogenase_substrate",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Compete with methanol for alcohol dehydrogenase when fomepizole is not available or as a monitored bridge.",
+      "required_context_axes": [
+        "methanol_exposure_probability",
+        "therapeutic_ethanol_monitoring_feasibility",
+        "serum_ethanol_concentration"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "therapeutic_ethanol_monitoring_feasibility",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.5
+          ],
+          "clinical_rationale": "Ethanol therapy requires concentration, glucose, airway, and dosing monitoring."
+        },
+        {
+          "axis_id": "mental_status_abnormality_severity",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.8
+          ],
+          "clinical_rationale": "CNS depression makes ethanol harder to administer safely without airway support."
+        },
+        {
+          "axis_id": "serum_ethanol_concentration",
+          "condition": "therapeutic_range",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.4
+          ],
+          "clinical_rationale": "Adequate ethanol concentration is needed for ADH competition."
+        }
+      ],
+      "failure_modes": [
+        "subtherapeutic_or_supratherapeutic_ethanol_level",
+        "hypoglycemia",
+        "aspiration_or_cns_depression",
+        "interrupted_monitoring"
+      ],
+      "trajectory_modifications": {
+        "M_METHANOL_ALCOHOL_DEHYDROGENASE_METABOLISM": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "serum_formate_concentration": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "serum_ethanol_concentration": {
+          "peak_value_factor": [
+            1.5,
+            4.0
+          ],
+          "plateau_duration_factor": [
+            1.0,
+            3.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            1
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1,
+            10
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mental_status_abnormality_severity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Therapeutic ethanol can worsen sedation or airway risk."
+        },
+        {
+          "axis_id": "serum_glucose",
+          "direction": "down",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Hypoglycemia risk, especially in children, malnutrition, or liver disease."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Intermittent hemodialysis",
+      "drug_class": "extracorporeal_toxin_and_formate_removal",
+      "mode": "push_state",
+      "therapeutic_intent": "Remove methanol and formate, correct severe acidosis, and reduce ongoing optic/CNS hazard when extracorporeal clearance is needed.",
+      "required_context_axes": [
+        "dialysis_access_feasibility",
+        "renal_replacement_therapy_availability",
+        "renal_replacement_therapy_need_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "dialysis_access_feasibility",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [
+            0,
+            0.3
+          ],
+          "clinical_rationale": "Extracorporeal removal depends on timely access and machine availability."
+        },
+        {
+          "axis_id": "renal_replacement_therapy_need_activity",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2.5
+          ],
+          "clinical_rationale": "High toxin burden, formate, acidosis, visual toxicity, renal injury, or deterioration makes extracorporeal removal more consequential."
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Hemodynamic instability can limit intermittent dialysis delivery or require vasopressors/CRRT."
+        }
+      ],
+      "failure_modes": [
+        "dialysis_access_delay",
+        "hemodynamic_instability_limiting_session",
+        "rebound_methanol_after_session",
+        "antidote_under_dosing_during_dialysis"
+      ],
+      "trajectory_modifications": {
+        "serum_methanol_concentration": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.3
+          ]
+        },
+        "serum_formate_concentration": {
+          "peak_value_factor": [
+            0.05,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.3
+          ]
+        },
+        "anion_gap": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "serum_bicarbonate": {
+          "peak_value_factor": [
+            1.5,
+            5.0
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "arterial_ph": {
+          "peak_value_factor": [
+            1.02,
+            1.08
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "optic_neuropathy_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.15,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0.05,
+        0.5
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.05,
+            0.3
+          ],
+          "interpretation": "Intermittent dialysis can worsen hypotension in unstable patients."
+        },
+        {
+          "axis_id": "serum_potassium",
+          "direction": "dysregulate",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Dialysis changes potassium and requires electrolyte monitoring."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Continuous renal replacement therapy",
+      "drug_class": "continuous_extracorporeal_toxin_and_acid_base_support",
+      "mode": "push_state",
+      "therapeutic_intent": "Provide slower continuous toxin/formate removal and acid-base control when intermittent hemodialysis is delayed, unavailable, or poorly tolerated.",
+      "required_context_axes": [
+        "renal_replacement_therapy_availability",
+        "dialysis_access_feasibility",
+        "renal_replacement_therapy_need_activity"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "renal_replacement_therapy_availability",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [
+            0,
+            0.3
+          ],
+          "clinical_rationale": "CRRT cannot operate without equipment, access, anticoagulation plan, and ICU support."
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "strengthens_relative_to_intermittent_hemodialysis",
+          "factor_range": [
+            1.0,
+            1.4
+          ],
+          "clinical_rationale": "Continuous therapy may be deliverable in patients who cannot tolerate intermittent fluid shifts."
+        }
+      ],
+      "failure_modes": [
+        "slower_toxin_clearance_than_intermittent_hemodialysis",
+        "filter_clotting_or_access_failure",
+        "antidote_under_dosing_during_extracorporeal_clearance"
+      ],
+      "trajectory_modifications": {
+        "serum_methanol_concentration": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.2,
+            1.5
+          ]
+        },
+        "serum_formate_concentration": {
+          "peak_value_factor": [
+            0.2,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.2,
+            1.5
+          ]
+        },
+        "anion_gap": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "arterial_ph": {
+          "peak_value_factor": [
+            1.01,
+            1.06
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.25,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0.1,
+        1
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_potassium",
+          "direction": "dysregulate",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Continuous clearance changes electrolytes and requires replacement."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Sodium bicarbonate",
+      "drug_class": "alkalinizing_buffer",
+      "mode": "push_state",
+      "therapeutic_intent": "Raise extracellular pH and bicarbonate while antidote and extracorporeal clearance address formate production and removal.",
+      "required_context_axes": [
+        "arterial_ph",
+        "serum_bicarbonate",
+        "serum_potassium"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "arterial_ph",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2.5
+          ],
+          "clinical_rationale": "Buffering has greatest physiologic effect when acidemia is severe."
+        },
+        {
+          "axis_id": "serum_potassium",
+          "condition": "low",
+          "effect": "requires_caution",
+          "factor_range": [
+            0.5,
+            0.9
+          ],
+          "clinical_rationale": "Alkalinization can shift potassium intracellularly and worsen hypokalemia."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "requires_caution",
+          "factor_range": [
+            0.6,
+            1.0
+          ],
+          "clinical_rationale": "Renal failure and volume status affect sodium load tolerance."
+        }
+      ],
+      "failure_modes": [
+        "does_not_remove_methanol_or_formate",
+        "sodium_or_volume_overload",
+        "hypokalemia_or_ionized_calcium_shift",
+        "delayed_extracorporeal_clearance_if_used_alone"
+      ],
+      "trajectory_modifications": {
+        "arterial_ph": {
+          "peak_value_factor": [
+            1.01,
+            1.06
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "serum_bicarbonate": {
+          "peak_value_factor": [
+            1.5,
+            5.0
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            1
+          ]
+        },
+        "circulatory_collapse_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            5
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_potassium",
+          "direction": "down",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Alkalinization can lower potassium."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Folinic acid or folate",
+      "drug_class": "formate_metabolism_cofactor_support",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Support folate-dependent formate metabolism and reduce formate-driven toxicity.",
+      "required_context_axes": [
+        "folate_rescue_availability_probability",
+        "serum_formate_concentration",
+        "folate_deficiency_or_malnutrition_context_probability"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "folate_rescue_availability_probability",
+          "condition": "low",
+          "effect": "blocks",
+          "factor_range": [
+            0,
+            0.4
+          ],
+          "clinical_rationale": "Cofactor support cannot operate if not available."
+        },
+        {
+          "axis_id": "folate_deficiency_or_malnutrition_context_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.5
+          ],
+          "clinical_rationale": "Low folate reserve makes cofactor repletion more consequential."
+        }
+      ],
+      "failure_modes": [
+        "too_slow_for_severe_acidosis_without_antidote_and_clearance",
+        "missed_extracorporeal_removal_need"
+      ],
+      "trajectory_modifications": {
+        "M_FORMATE_ACCUMULATION_CLEARANCE_FAILURE": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "serum_formate_concentration": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        },
+        "optic_neuropathy_hazard": {
+          "peak_value_factor": [
+            0.6,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            30
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.6,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3,
+            30
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0.1,
+        1
+      ],
+      "carryover_after_stop_days": [
+        1,
+        7
+      ],
+      "side_effects": [],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "Airway, ventilation, and hemodynamic support",
+      "drug_class": "critical_care_support",
+      "mode": "push_state",
+      "therapeutic_intent": "Maintain oxygenation, ventilation, perfusion, and safe delivery of antidote and dialysis in severe CNS depression or shock.",
+      "required_context_axes": [
+        "mental_status_abnormality_severity",
+        "respiratory_failure_hazard",
+        "mean_arterial_pressure"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "respiratory_failure_hazard",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Support is most consequential when respiratory compensation or airway protection is failing."
+        },
+        {
+          "axis_id": "circulatory_collapse_hazard",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Vasopressors and resuscitation preserve perfusion while toxin removal proceeds."
+        }
+      ],
+      "failure_modes": [
+        "hyperventilation_not_matched_to_acidosis_after_intubation",
+        "delayed_antidote_or_dialysis_despite_stabilization",
+        "aspiration_or_ventilator_complication"
+      ],
+      "trajectory_modifications": {
+        "respiratory_failure_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "circulatory_collapse_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "mean_arterial_pressure": {
+          "peak_value_factor": [
+            1.05,
+            1.4
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.2
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "respiratory_rate",
+          "direction": "modulate",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Mechanical ventilation must preserve compensatory minute ventilation until acidosis improves."
+        }
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "Antiseizure therapy",
+      "drug_class": "acute_neurostabilization",
+      "mode": "modulate_sigma",
+      "therapeutic_intent": "Suppress seizure excursions while acidosis, formate, and CNS injury are corrected.",
+      "required_context_axes": [
+        "seizure_presence",
+        "seizure_hazard",
+        "arterial_ph"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "seizure_hazard",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.8
+          ],
+          "clinical_rationale": "Neurostabilization is active when seizure risk is present."
+        },
+        {
+          "axis_id": "arterial_ph",
+          "condition": "low",
+          "effect": "weakens_without_acidosis_correction",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Persistent severe acidemia keeps seizure risk high despite symptomatic control."
+        }
+      ],
+      "failure_modes": [
+        "seizure_recurrence_if_acidosis_persists",
+        "respiratory_depression_from_sedatives",
+        "delayed_toxin_clearance"
+      ],
+      "trajectory_modifications": {
+        "seizure_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5
+          ]
+        },
+        "mental_status_abnormality_severity": {
+          "peak_value_factor": [
+            0.8,
+            1.2
+          ],
+          "plateau_duration_factor": [
+            0.8,
+            1.2
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "mortality_hazard_in_D-METHANOL-POISONING": {
+          "peak_value_factor": [
+            0.7,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.7,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        2
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mental_status_abnormality_severity",
+          "direction": "up",
+          "magnitude_range": [
+            0.1,
+            0.5
+          ],
+          "interpretation": "Sedating agents can worsen mental status and airway risk."
+        }
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "large_or_concentrated_methanol_exposure",
+      "category": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5,
+            100
+          ],
+          "trajectory_modulation": "Raises parent methanol burden, osmolar gap, formate generation potential, dialysis need, and mortality hazard.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_methanol_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                10
+              ],
+              "clinical_rationale": "Larger absorbed dose produces higher parent alcohol concentration."
+            },
+            {
+              "axis_id": "dialysis_requirement_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5
+              ],
+              "clinical_rationale": "Large burden increases need for extracorporeal removal."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_presentation_or_delayed_antidote",
+      "category": "course_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            3.0
+          ],
+          "trajectory_modulation": "Allows parent methanol to be metabolized into formate before ADH inhibition or dialysis.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "time_from_methanol_exposure_to_care_hours",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                2,
+                40
+              ],
+              "clinical_rationale": "Delay is observed as longer time to care."
+            },
+            {
+              "axis_id": "serum_formate_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                8
+              ],
+              "clinical_rationale": "More untreated metabolism raises formate."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-METHANOL-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                8
+              ],
+              "clinical_rationale": "Late care increases severe acidemia, CNS injury, and death risk."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "Fomepizole",
+              "effect": "weakens_downstream_only",
+              "magnitude_factor_range": [
+                0.4,
+                0.9
+              ],
+              "clinical_rationale": "ADH inhibition still prevents further formate but cannot remove existing formate."
+            },
+            {
+              "treatment": "Intermittent hemodialysis",
+              "effect": "strengthens",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ],
+              "clinical_rationale": "Late severe formate acidosis makes extracorporeal removal more consequential."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "coingested_ethanol_or_therapeutic_ethanol_present",
+      "category": "exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2.0
+          ],
+          "trajectory_modulation": "Delays formate generation and symptom onset while prolonging parent methanol and osmolar gap.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_ethanol_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2,
+                20
+              ],
+              "clinical_rationale": "Ethanol co-ingestion is measured directly when available."
+            },
+            {
+              "axis_id": "serum_methanol_concentration",
+              "effect": "prolonged_plateau",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "ADH competition slows methanol metabolism."
+            },
+            {
+              "axis_id": "serum_formate_concentration",
+              "effect": "delayed_peak",
+              "magnitude_factor_range": [
+                0.5,
+                1.5
+              ],
+              "clinical_rationale": "Formate production is delayed while ethanol occupies ADH."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "folate_deficiency_malnutrition_or_chronic_alcohol_use",
+      "category": "host_background",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "trajectory_modulation": "Weakens endogenous formate metabolism and increases optic/CNS vulnerability.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "folate_deficiency_or_malnutrition_context_probability",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                3,
+                20
+              ],
+              "clinical_rationale": "Nutrition context is the observable modifier."
+            },
+            {
+              "axis_id": "serum_formate_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                3.0
+              ],
+              "clinical_rationale": "Lower folate reserve reduces formate clearance."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "Folinic acid or folate",
+              "effect": "strengthens",
+              "magnitude_factor_range": [
+                1.0,
+                1.5
+              ],
+              "clinical_rationale": "Cofactor replacement is more relevant when endogenous folate reserve is low."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "preexisting_chronic_kidney_disease_or_acute_renal_hypoperfusion",
+      "category": "host_background",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            1.5
+          ],
+          "trajectory_modulation": "Reduces renal reserve for acid-base handling and raises risk from potassium, volume, and extracorporeal access constraints.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_creatinine",
+              "effect": "higher_baseline_or_peak",
+              "magnitude_factor_range": [
+                1.5,
+                8
+              ],
+              "clinical_rationale": "Renal dysfunction raises creatinine and modifies clearance context."
+            },
+            {
+              "axis_id": "serum_potassium",
+              "effect": "higher_variance",
+              "magnitude_factor_range": [
+                1.2,
+                3.0
+              ],
+              "clinical_rationale": "Renal dysfunction increases potassium instability in acidosis."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "Sodium bicarbonate",
+              "effect": "requires_caution",
+              "magnitude_factor_range": [
+                0.6,
+                1.0
+              ],
+              "clinical_rationale": "Sodium and volume load are harder to tolerate with low renal reserve."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "severe_acidemia_at_presentation",
+      "category": "presentation_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2,
+            30
+          ],
+          "trajectory_modulation": "Indicates active formate toxicity, high event hazards, and need for rapid acid-base and clearance therapy.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "arterial_ph",
+              "effect": "lower_peak_value",
+              "magnitude_factor_range": [
+                0.92,
+                0.99
+              ],
+              "clinical_rationale": "Severe acidemia is directly observed in pH."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-METHANOL-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2,
+                10
+              ],
+              "clinical_rationale": "Profound acidemia raises death hazard."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "Sodium bicarbonate",
+              "effect": "strengthens",
+              "magnitude_factor_range": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Buffering is more consequential when acidemia is severe."
+            },
+            {
+              "treatment": "Intermittent hemodialysis",
+              "effect": "strengthens",
+              "magnitude_factor_range": [
+                1.2,
+                2.5
+              ],
+              "clinical_rationale": "Dialysis removes formate and corrects acid-base derangement."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "antidote_unavailable_or_substantially_delayed",
+      "category": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "trajectory_modulation": "Allows ongoing ADH conversion and formate accumulation.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "fomepizole_availability_probability",
+              "effect": "lower_baseline",
+              "magnitude_factor_range": [
+                0.0,
+                0.5
+              ],
+              "clinical_rationale": "Availability axis captures this context."
+            },
+            {
+              "axis_id": "serum_formate_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Delayed ADH inhibition allows formate production."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "Therapeutic ethanol",
+              "effect": "strengthens_as_bridge",
+              "magnitude_factor_range": [
+                1.0,
+                1.6
+              ],
+              "clinical_rationale": "Ethanol can provide ADH competition if fomepizole is not accessible and monitoring is feasible."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "extracorporeal_clearance_unavailable_or_delayed",
+      "category": "treatment_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "trajectory_modulation": "Prolongs methanol/formate exposure and increases optic, CNS, and mortality hazards when severe poisoning needs clearance.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "renal_replacement_therapy_availability",
+              "effect": "lower_baseline",
+              "magnitude_factor_range": [
+                0.0,
+                0.6
+              ],
+              "clinical_rationale": "Availability axis captures local access and transfer context."
+            },
+            {
+              "axis_id": "serum_formate_concentration",
+              "effect": "prolonged_plateau",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Delayed clearance prolongs formate exposure."
+            },
+            {
+              "axis_id": "optic_neuropathy_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Prolonged formate exposure increases optic injury risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "intentional_high_dose_methanol_ingestion",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "toxic_alcohol_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "methanol_exposure_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "reported_methanol_ingestion_volume_ml",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "time_from_methanol_exposure_to_care_hours",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                8.0,
+                25.0
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "A credible high-dose methanol ingestion history is upstream source geometry even before osmolal gap, anion gap, or serum methanol results are available.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ethanol_coformulation_delayed_formate_context",
+      "type": "toxin_kinetic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3.0,
+            20.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "coingested_ethanol_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_presence",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.1,
+                0.4
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_severity",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.1,
+                0.4
+              ]
+            },
+            {
+              "axis_id": "anion_gap",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.2,
+                0.6
+              ]
+            },
+            {
+              "axis_id": "serum_bicarbonate",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                1.5,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Co-formulated or therapeutic ethanol can delay ADH conversion to formate, so early methanol presentations may lack high anion gap metabolic acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "flunitrazepam_coingestion_respiratory_depression_context",
+      "type": "coingestion_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "sedative_opioid_or_anesthetic_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "sedative_opioid_or_anesthetic_exposure_degree",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "arterial_pco2",
+              "baseline_value_factor": [
+                1.2,
+                1.5
+              ],
+              "sigma_factor": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "respiratory_rate",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.4,
+                0.8
+              ]
+            },
+            {
+              "axis_id": "mental_status_abnormality_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Sedative coingestion can explain early hypercapnia and drowsiness without requiring formate-driven acidosis at presentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "reported_95_percent_methanol_solution_ingestion_context",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            20.0,
+            100.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "toxic_alcohol_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "methanol_exposure_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "reported_methanol_ingestion_volume_ml",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                2.0
+              ],
+              "sigma_factor": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "time_from_methanol_exposure_to_care_hours",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                10.0,
+                30.0
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "A reported ingestion of a 95 percent methanol solution is high-specificity methanol source evidence even when confirmatory methanol testing is unavailable at presentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "early_presentation_before_formate_acidosis_context",
+      "type": "toxin_kinetic_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3.0,
+            20.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "metabolic_acidosis_presence",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.05,
+                0.25
+              ]
+            },
+            {
+              "axis_id": "metabolic_acidosis_severity",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.05,
+                0.25
+              ]
+            },
+            {
+              "axis_id": "anion_gap",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.1,
+                0.4
+              ]
+            },
+            {
+              "axis_id": "serum_bicarbonate",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                2.0,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "time_from_methanol_exposure_to_care_hours",
+              "effect": "more_variable",
+              "magnitude_factor_range": [
+                10.0,
+                30.0
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Very early methanol presentations can be dominated by parent-alcohol exposure and coingestants before formate accumulation produces high anion gap metabolic acidosis.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Keep the first-layer leaf name pure: Methanol poisoning. Do not encode severe, optic neuropathy, formate acidosis, dialysis-needed, contaminated alcohol, or delayed-presentation qualifiers into disease_name.",
+    "Represent exposure with parent and child axes: toxic_alcohol_exposure_presence -> methanol_exposure_probability -> source, dose, timing, and ethanol co-ingestion satellites.",
+    "Serially track methanol, formate when available, osmolar gap, anion gap, pH, bicarbonate, potassium, lactate, creatinine, BUN, urine output, vital signs, mental status, visual symptoms, and dialysis/antidote context.",
+    "Do not use treatment response, final blindness outcome, or final survival status as presentation-ranking evidence.",
+    "If intubating severe acidosis, preserve compensatory minute ventilation while definitive toxin removal and buffering are underway.",
+    "Monitor for rebound methanol or formate after extracorporeal therapy and adjust ADH inhibitor dosing during dialysis or CRRT.",
+    "Use ophthalmologic examination and visual-axis observations as disease axes, not as a separate optic-neuropathy disease-name qualifier."
+  ],
+  "quality_notes": [
+    "The disease-specific medical input used for this distillation is only the disease name: Methanol poisoning.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-METHANOL-POISONING.",
+    "No prohibited treatment-ranking label keys are used.",
+    "Parent finding plus satellite/measurement structure is explicit for exposure, visual findings, mental status, pupillary findings, basal ganglia imaging, and hypotension/MAP.",
+    "No methanol poisoning real cases were searched, read, or structured for this file.",
+    "2026-05-25 DSFUS ophthalmic mimic fairness repair: added diagnosis-neutral shared visual/uveitis/retinal-imaging axes where medically true so this active mimic can explain ordinary DSFUS-overlapping observations without disease-specific shortcuts."
+  ]
+}

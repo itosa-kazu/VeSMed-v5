@@ -1,0 +1,5560 @@
+{
+  "disease": "D-CYANIDE-POISONING",
+  "disease_id": "D-CYANIDE-POISONING",
+  "disease_name": "Cyanide poisoning",
+  "disease_name_ja": "シアン化物中毒",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Cyanide poisoning",
+    "leaf_granularity": "First-layer disease leaf for the full clinical spectrum of cyanide poisoning across inhalational smoke exposure, industrial or laboratory exposure, ingestion of cyanide salts or cyanogenic materials, nitroprusside-related toxicity, dermal or inhaled nitrile contexts, rapid cardiovascular collapse, seizures, coma, severe lactic acidosis, and antidote/supportive-care contexts.",
+    "boundary_policy": "Smoke inhalation, carbon monoxide coexposure, thermal airway injury, burn trauma, intentional ingestion, occupational exposure, nitroprusside infusion, and severe poisoning are represented as exposure/source/context axes, event hazards, risk modifiers, or treatment modifiers. They are not disease-name qualifiers and do not collapse this manifold into carbon monoxide poisoning.",
+    "case_separation_note": "This distillation was created from the disease name only and without searching, reading, or structuring real cyanide poisoning cases."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "display_name": "Cyanide exposure and absorbed body burden",
+      "clinical_meaning": "Hidden absorbed cyanide load across smoke inhalation, enclosed fires, industrial or laboratory salts, ingestion, cyanogenic plant or nitrile exposure, dermal/inhalational occupational exposure, or nitroprusside-derived cyanide generation. It gates onset speed, blood cyanide when available, and all downstream toxic physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.03
+      ],
+      "peak_value_range": [
+        0.15,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.02,
+        0.3
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION",
+      "display_name": "Mitochondrial cytochrome c oxidase inhibition",
+      "clinical_meaning": "Cyanide binds the ferric iron of cytochrome c oxidase (complex IV), blocks oxidative phosphorylation, and prevents mitochondrial oxygen utilization despite oxygen delivery to tissues.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.03
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.02,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "display_name": "Histotoxic hypoxia and oxygen-extraction failure",
+      "clinical_meaning": "Cells cannot use delivered oxygen, producing high venous oxygen saturation and low arteriovenous oxygen difference when measured, with rapid transition to global cellular energy failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.05
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.7
+      ],
+      "decline_half_life_days": [
+        0.03,
+        1.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "display_name": "Severe lactic acidosis from anaerobic metabolism",
+      "clinical_meaning": "Blocked oxidative phosphorylation forces anaerobic glycolysis and lactate generation. Marked lactate elevation and acidemia are central likelihood and severity axes, especially when disproportionate to measured hypoxemia or COHb.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.08
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "display_name": "Central nervous system energy failure",
+      "clinical_meaning": "Brain ATP failure causes headache, dizziness, agitation, altered mental status, syncope, seizures, coma, respiratory drive failure, and hypoxic-ischemic brain injury risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.08
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "display_name": "Myocardial energy failure and circulatory collapse",
+      "clinical_meaning": "Myocardial mitochondrial poisoning, profound acidosis, catecholamine stress, and tissue hypoxia drive tachycardia followed by hypotension, dysrhythmia, shock, cardiac arrest, and short-term death hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.08
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "display_name": "Smoke co-toxin and airway injury context",
+      "clinical_meaning": "Fire smoke can deliver cyanide from combustion of nitrogen-containing materials while simultaneously adding carbon monoxide exposure, airway thermal injury, bronchospasm, pulmonary edema, burns, and trauma. This context modifies respiratory and oxygen-delivery hazards without redefining cyanide poisoning as CO poisoning.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CNP_DETOXIFICATION_CLEARANCE_LIMIT",
+      "display_name": "Rhodanese-thiosulfate detoxification and clearance limit",
+      "clinical_meaning": "Endogenous sulfur-donor availability, hepatic mitochondrial rhodanese activity, renal thiocyanate clearance, nitroprusside cyanide generation rate, and antidote access determine whether cyanide can be converted to thiocyanate fast enough to avoid persistent toxicity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_CNP_ACCUMULATED_HYPOXIC_SHOCK_INJURY",
+      "display_name": "Accumulated hypoxic, acidemic, seizure, and shock injury",
+      "clinical_meaning": "Irreversible injury accumulates during untreated histotoxic hypoxia, severe acidemia, seizures, respiratory failure, shock, or cardiac arrest. This mechanism explains residual hazard after the cyanide-binding mechanism is suppressed.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "cyanide_exposure_presence",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.03
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "A compatible cyanide exposure context is the upstream evidence for absorbed body burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cyanide_exposure_probability",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.03
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Source documentation, co-exposed persons, container evidence, workplace context, or toxicology history raises the probability that the exposure is cyanide-specific.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cyanide_exposure_intensity",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.03
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Dose, concentration, duration, enclosed space, and respiratory minute ventilation determine absorbed burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "time_since_cyanide_exposure_minutes",
+      "target_id": "M_CNP_ACCUMULATED_HYPOXIC_SHOCK_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "untreated_interval",
+      "clinical_rationale": "Even short untreated intervals can accumulate irreversible hypoxic and shock injury in severe cyanide poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "smoke_inhalation_context_presence",
+      "target_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.1
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Smoke inhalation is a common cyanide exposure context and adds airway injury and carbon monoxide coexposure possibilities.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "enclosed_fire_exposure_presence",
+      "target_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.1
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Enclosed structure fires with synthetic material combustion raise cyanide and CO co-toxin burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "nitroprusside_infusion_context_presence",
+      "target_id": "M_CNP_DETOXIFICATION_CLEARANCE_LIMIT",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        5.0
+      ],
+      "phase": "iatrogenic_context",
+      "clinical_rationale": "High-dose or prolonged nitroprusside can generate cyanide faster than detoxification and thiocyanate clearance can compensate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "blood_cyanide_concentration",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Blood cyanide is direct body-burden evidence when measured, but sampling and availability often lag clinical decisions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.03
+      ],
+      "phase": "early",
+      "clinical_rationale": "Absorbed cyanide rapidly binds mitochondrial complex IV.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_DETOXIFICATION_CLEARANCE_LIMIT",
+      "target_id": "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Insufficient sulfur-donor detoxification or impaired clearance permits active cyanide to persist.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION",
+      "target_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.03
+      ],
+      "phase": "early",
+      "clinical_rationale": "Complex IV blockade prevents cellular oxygen extraction and oxidative phosphorylation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "central_venous_oxygen_saturation_percent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Venous oxygen saturation can be abnormally high because tissues cannot extract oxygen.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "arteriovenous_oxygen_saturation_difference",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Oxygen extraction failure lowers the arteriovenous oxygen saturation difference when paired samples are available.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "venous_blood_bright_red_appearance_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "High venous oxyhemoglobin can make venous blood appear unusually bright red, although this sign is insensitive.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION",
+      "target_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.08
+      ],
+      "phase": "early",
+      "clinical_rationale": "Mitochondrial respiration blockade forces anaerobic metabolism and lactate generation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Marked lactate elevation is the most useful widely available biochemical signature of severe cyanide physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "arterial_ph",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Lactic acidemia lowers arterial pH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "serum_bicarbonate",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Buffer consumption lowers serum bicarbonate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "anion_gap",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Lactate is a major unmeasured anion in severe cyanide poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "kussmaul_respiration_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "compensation",
+      "clinical_rationale": "Metabolic acidosis can produce deep compensatory tachypnea before respiratory collapse.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "respiratory_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "compensation",
+      "clinical_rationale": "Acidemia increases ventilatory drive when CNS and muscle reserve remain intact.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "acute",
+      "clinical_rationale": "The brain is highly vulnerable to ATP failure from histotoxic hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe acidemia worsens neuronal dysfunction and seizure risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "headache_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Milder CNS energy failure can present with headache.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "dizziness_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "early",
+      "clinical_rationale": "Global cerebral dysfunction can cause dizziness before collapse.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "mental_status_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Confusion, agitation, somnolence, or coma reflects increasing CNS energy failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "mental_status_abnormality_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severity tracks the depth of CNS depression.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "glasgow_coma_scale_score",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe CNS toxicity lowers GCS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "seizure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe energy failure and acidemia can trigger generalized seizures.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "seizure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Ongoing CNS toxicity raises recurrent seizure or status epilepticus risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "hypoxic_ischemic_brain_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "acute_to_subacute",
+      "clinical_rationale": "Prolonged coma, seizure, shock, or arrest can cause structural brain injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Myocardial ATP failure and systemic cellular hypoxia destabilize circulation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Profound acidemia depresses myocardium and worsens vasoplegia and arrhythmia risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase_then_decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Early sympathetic response often causes tachycardia; terminal poisoning may cause bradycardia or pulseless rhythm.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "hypotension_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Circulatory failure manifests as hypotension.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Shock lowers MAP and accelerates organ injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "circulatory_collapse_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Mitochondrial myocardial failure and acidemia raise collapse risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "cardiac_arrhythmia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Acidemia, myocardial hypoxia, and catecholamine stress increase dysrhythmia risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "cardiac_arrest_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Untreated severe cyanide poisoning can progress to pulseless electrical activity, asystole, or refractory arrest.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "serum_troponin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.1,
+        2.0
+      ],
+      "phase": "acute_to_subacute",
+      "clinical_rationale": "Severe myocardial energy failure and shock can cause myocardial injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "carbon_monoxide_coexposure_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "smoke_context",
+      "clinical_rationale": "Combustion smoke often contains both cyanide and carbon monoxide.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "carboxyhemoglobin_percent",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "smoke_context",
+      "clinical_rationale": "COHb quantifies carbon monoxide coexposure, which modifies oxygen delivery but is not cyanide itself.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "smoke_airway_injury_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "smoke_context",
+      "clinical_rationale": "Thermal and chemical airway injury can coexist with cyanide physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "acute_respiratory_failure_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "smoke_context",
+      "clinical_rationale": "Airway edema, bronchospasm, pulmonary injury, coma, and acidosis can converge on respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_ACCUMULATED_HYPOXIC_SHOCK_INJURY",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        3.0
+      ],
+      "phase": "subacute",
+      "clinical_rationale": "Shock, arrest, rhabdomyolysis, and antidote-related thiocyanate burden can contribute to AKI risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_ACCUMULATED_HYPOXIC_SHOCK_INJURY",
+      "target_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Cumulative hypoxic, seizure, shock, and arrest injury drives lifespan hazard even after antidote therapy begins.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Shock and cardiac arrest are the dominant immediate lethal pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Coma, seizures, loss of airway protection, and central respiratory failure raise death hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "occupational_chemical_exposure_context_presence",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.05
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Exposure source, concentration, duration, and cyanide salt access increase the inferred absorbed cyanide burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "environmental_cyanide_concentration_ppm",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.05
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Exposure source, concentration, duration, and cyanide salt access increase the inferred absorbed cyanide burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cyanide_exposure_duration_minutes",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.05
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Exposure source, concentration, duration, and cyanide salt access increase the inferred absorbed cyanide burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cyanide_salt_ingestion_context_presence",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.05
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Exposure source, concentration, duration, and cyanide salt access increase the inferred absorbed cyanide burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "toxic_ingestion_presence",
+      "target_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -0.05,
+        0.05
+      ],
+      "phase": "trigger",
+      "clinical_rationale": "Toxic ingestion is a source-context signal that becomes cyanide-specific when paired with cyanide access or systemic asphyxiant physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "systemic_asphyxiant_toxidrome_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "The combined syndrome of preserved oxygen delivery with cellular oxygen-use failure is a systemic asphyxiant toxidrome.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE",
+      "target_id": "cherry_red_skin_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Impaired tissue oxygen extraction can preserve oxyhemoglobin-rich coloration, producing a bright red appearance in some severe cases.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "soot_in_airway_or_face_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Soot on the face, mouth, or airway is a physical marker of smoke exposure context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "carbon_monoxide_exposure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Smoke inhalation often produces carbon monoxide coexposure alongside cyanide exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "respiratory_failure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Coma, seizure, and central respiratory drive failure can produce acute respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "apnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe CNS energy failure or arrest can suppress spontaneous respirations.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "invasive_mechanical_ventilation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Deep coma and loss of airway protection often require intubation and ventilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "respiratory_failure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Smoke airway injury, soot exposure, and co-toxins can contribute to respiratory failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "metabolic_acidosis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Lactic acid accumulation creates metabolic acidosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "metabolic_acidosis_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "The degree of lactate and acidemia determines metabolic acidosis severity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "arterial_pco2",
+      "effect_on_target": "decrease_then_increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Ventilatory compensation can lower pCO2, while coma or arrest can later raise it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "base_excess",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe lactic acidosis produces a negative base excess.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "generalized_tonic_clonic_seizure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Severe CNS energy failure can trigger generalized tonic-clonic seizures.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "systolic_blood_pressure",
+      "effect_on_target": "decrease_then_increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Blood pressure may initially be preserved or catecholamine-elevated but falls with cyanide circulatory collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CARDIOVASCULAR_COLLAPSE",
+      "target_id": "diastolic_blood_pressure",
+      "effect_on_target": "decrease_then_increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Diastolic pressure varies by phase and falls with shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SMOKE_COTOXIN_AIRWAY_CONTEXT",
+      "target_id": "blood_gas_oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Smoke injury and respiratory failure can lower measured blood-gas oxygen saturation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_CNS_ENERGY_FAILURE",
+      "target_id": "blood_gas_oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Apnea or arrest can lower oxygen saturation despite cyanide being primarily histotoxic.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CNP_SEVERE_LACTIC_ACIDOSIS",
+      "target_id": "body_temperature",
+      "effect_on_target": "variable",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Temperature is phase- and context-dependent; severe collapse may be hypothermic while seizures or smoke injury can raise temperature.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CNP_EXPOSURE_ABSORPTION_BURDEN",
+      "target_id": "methemoglobin_percent",
+      "effect_on_target": "no_primary_change",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Cyanide itself does not usually raise methemoglobin before nitrite therapy; low values support absence of primary oxidant poisoning.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "cyanide_exposure_presence",
+      "display_name": "Cyanide exposure context present",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Any credible cyanide source context, including smoke inhalation, industrial/lab exposure, ingestion, cyanogenic materials, nitriles, or nitroprusside.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.03
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanide_exposure_probability",
+      "display_name": "Cyanide-specific exposure probability",
+      "category": "source_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Probability that the observed exposure context specifically involved cyanide rather than a nonspecific toxic exposure.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.03
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanide_exposure_intensity",
+      "display_name": "Cyanide exposure intensity",
+      "category": "source_context",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Composite of concentration, dose, enclosed-space duration, respiratory minute ventilation, dermal area, or infusion generation rate.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.03
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "time_since_cyanide_exposure_minutes",
+      "display_name": "Time since cyanide exposure",
+      "category": "source_context",
+      "unit": "minutes",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Elapsed time from last plausible cyanide exposure or start of high-risk infusion to medical assessment or antidote.",
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        1.0,
+        1440.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "smoke_inhalation_context_presence",
+      "display_name": "Smoke inhalation context",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Exposure to fire smoke or combustion products that can contain cyanide, carbon monoxide, particulates, and airway irritants.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "enclosed_fire_exposure_presence",
+      "display_name": "Enclosed fire exposure",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "smoke_inhalation_context_presence",
+      "clinical_meaning": "Enclosed structure or vehicle fire exposure, especially with synthetic nitrogen-containing material combustion.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "industrial_cyanide_exposure_presence",
+      "display_name": "Industrial or laboratory cyanide exposure",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Occupational or laboratory access to cyanide salts, electroplating, mining, metal processing, chemical synthesis, or similar settings.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanide_salt_ingestion_context_presence",
+      "display_name": "Cyanide salt ingestion context",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Known or suspected ingestion of cyanide salt, contaminated substance, or capsule/powder/liquid with cyanide access.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanogenic_plant_or_nitrile_exposure_context_presence",
+      "display_name": "Cyanogenic plant or nitrile exposure context",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Cassava or other cyanogenic glycoside context, acetonitrile or nitrile exposure, or other delayed cyanide-generating exposure.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -0.05,
+        1.0
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nitroprusside_infusion_context_presence",
+      "display_name": "Nitroprusside infusion context",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Sodium nitroprusside use with potential cyanide generation, especially high dose, prolonged infusion, renal/hepatic dysfunction, or limited thiosulfate reserve.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        5.0
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_cyanide_concentration",
+      "display_name": "Blood cyanide concentration",
+      "category": "diagnostic_measurement",
+      "unit": "mg/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Direct blood cyanide concentration when available; useful retrospectively but often not rapidly available enough for acute treatment decisions.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.02,
+        0.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_thiocyanate_concentration",
+      "display_name": "Serum thiocyanate concentration",
+      "category": "diagnostic_measurement",
+      "unit": "mg/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Thiocyanate reflects cyanide detoxification and can accumulate during nitroprusside exposure, thiosulfate therapy, or renal impairment.",
+      "baseline_range": [
+        0.0,
+        10.0
+      ],
+      "peak_day_range": [
+        0.5,
+        7.0
+      ],
+      "peak_value_range": [
+        10.0,
+        150.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        10.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "carbon_monoxide_coexposure_probability",
+      "display_name": "Carbon monoxide coexposure probability",
+      "category": "source_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "smoke_inhalation_context_presence",
+      "clinical_meaning": "Probability that the same smoke exposure also caused carbon monoxide poisoning physiology; kept as context rather than folded into cyanide identity.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "carboxyhemoglobin_percent",
+      "display_name": "Carboxyhemoglobin",
+      "category": "diagnostic_measurement",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "carbon_monoxide_coexposure_probability",
+      "clinical_meaning": "Measured COHb quantifies carbon monoxide coexposure in smoke cases and modifies oxygen-delivery reserve; it does not diagnose cyanide itself.",
+      "baseline_range": [
+        0.0,
+        5.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        3.0,
+        50.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        0.35
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "methemoglobin_fraction",
+      "display_name": "Methemoglobin fraction",
+      "category": "lab_value",
+      "unit": "fraction",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Methemoglobin level is usually baseline unless nitrite donors are used or another oxidant is present; it creates a cyanide sink but reduces oxygen-carrying capacity.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.03,
+        0.35
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "central_venous_oxygen_saturation_percent",
+      "display_name": "Central venous oxygen saturation",
+      "category": "hemodynamic_measurement",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "ScvO2 or mixed venous oxygen saturation may be high in histotoxic hypoxia because tissues cannot extract oxygen.",
+      "baseline_range": [
+        60.0,
+        80.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        80.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arteriovenous_oxygen_saturation_difference",
+      "display_name": "Arteriovenous oxygen saturation difference",
+      "category": "hemodynamic_measurement",
+      "unit": "percentage_points",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Difference between arterial and venous oxygen saturation; may be abnormally low in oxygen extraction failure.",
+      "baseline_range": [
+        20.0,
+        35.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        15.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "venous_blood_bright_red_appearance_presence",
+      "display_name": "Bright red venous blood appearance",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Unusually bright venous blood appearance from high venous oxyhemoglobin; insensitive and not required.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.0,
+        0.5
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.0
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "display_name": "Serum lactate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Markedly elevated lactate from histotoxic hypoxia; severe cyanide physiology often produces rapid, high lactate out of proportion to routine hypoxemia measures.",
+      "baseline_range": [
+        0.6,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        6.0,
+        25.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_ph",
+      "display_name": "Arterial pH",
+      "category": "lab_value",
+      "unit": "pH",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Arterial pH decreases with lactic acidosis and respiratory failure.",
+      "baseline_range": [
+        7.35,
+        7.45
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        6.8,
+        7.25
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_bicarbonate",
+      "display_name": "Serum bicarbonate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Bicarbonate falls with lactic acid buffer consumption.",
+      "baseline_range": [
+        22.0,
+        28.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        4.0,
+        18.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anion_gap",
+      "display_name": "Anion gap",
+      "category": "lab_value",
+      "unit": "mEq/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Anion gap rises with lactic acidosis.",
+      "baseline_range": [
+        8.0,
+        16.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        18.0,
+        45.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "kussmaul_respiration_presence",
+      "display_name": "Kussmaul or deep compensatory respiration",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Deep tachypneic respiratory compensation for severe metabolic acidosis when respiratory drive is preserved.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "display_name": "Peripheral oxygen saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Pulse oximetry may be normal in pure cyanide histotoxic hypoxia; low values suggest smoke lung injury, respiratory failure, shock, or coexisting oxygen-delivery pathology.",
+      "baseline_range": [
+        95.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        70.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "display_name": "Respiratory rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Acidemia can produce tachypnea, but coma, seizure, apnea, or arrest can cause a low respiratory rate.",
+      "baseline_range": [
+        12.0,
+        20.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        45.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "display_name": "Heart rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Cyanide poisoning can cause early tachycardia, preserved pulse, bradycardia near arrest, or pulseless rhythms depending on phase.",
+      "baseline_range": [
+        60.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        40.0,
+        180.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypotension_presence",
+      "display_name": "Hypotension present",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Clinically significant low blood pressure from cardiovascular collapse.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "display_name": "Mean arterial pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "clinical_meaning": "MAP falls in shock and directly affects perfusion support needs.",
+      "baseline_range": [
+        70.0,
+        105.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        35.0,
+        70.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_presence",
+      "display_name": "Shock present",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Clinical shock with hypotension, poor perfusion, vasopressor need, arrest physiology, or severe lactate/hypoperfusion context.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_severity",
+      "display_name": "Shock severity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_presence",
+      "clinical_meaning": "Severity of shock, integrating vasopressor requirement, hypotension depth, perfusion markers, and arrest proximity.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_troponin",
+      "display_name": "Serum troponin",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Myocardial injury marker after severe cyanide-related shock, hypoxia, acidosis, or arrest.",
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.1,
+        2.0
+      ],
+      "peak_value_range": [
+        0.05,
+        10.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        10.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "headache_presence",
+      "display_name": "Headache present",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Early or mild CNS symptom; often absent in fulminant collapse.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dizziness_presence",
+      "display_name": "Dizziness present",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Early nonspecific CNS symptom from histotoxic hypoxia.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nausea_presence",
+      "display_name": "Nausea present",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Nonspecific early toxic symptom or ingestion/smoke-related symptom.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "vomiting_presence",
+      "display_name": "Vomiting present",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Nonspecific toxic or ingestion-associated symptom; also modifies aspiration risk in coma.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "display_name": "Dyspnea present",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Subjective breathlessness from acidosis, smoke inhalation, airway injury, pulmonary edema, or panic during exposure.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "smoke_airway_injury_presence",
+      "display_name": "Smoke airway injury present",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "smoke_inhalation_context_presence",
+      "clinical_meaning": "Soot, facial/oropharyngeal burns, hoarseness, stridor, bronchospasm, or airway edema suggesting thermal/chemical airway injury.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mental_status_abnormality_presence",
+      "display_name": "Altered mental status present",
+      "category": "neuropsychiatric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Agitation, confusion, somnolence, coma, or other altered consciousness from CNS energy failure.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
+      "display_name": "Altered mental status severity",
+      "category": "neuropsychiatric_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "clinical_meaning": "Depth of encephalopathy from mild confusion to unresponsive coma.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "glasgow_coma_scale_score",
+      "display_name": "Glasgow coma scale score",
+      "category": "neurologic_measurement",
+      "unit": "score_3_15",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "clinical_meaning": "Structured consciousness score; lower values indicate deeper coma and airway risk.",
+      "baseline_range": [
+        15.0,
+        15.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        3.0,
+        14.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "coma_severity",
+      "display_name": "Coma severity",
+      "category": "neuropsychiatric_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "clinical_meaning": "Severity of coma as a child phenotype of altered mental status.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "syncope_presence",
+      "display_name": "Syncope present",
+      "category": "neuropsychiatric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Transient loss of consciousness from CNS energy failure, dysrhythmia, or shock.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "seizure_presence",
+      "display_name": "Seizure present",
+      "category": "neuropsychiatric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Generalized or focal seizure from CNS energy failure or severe acidemia.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "seizure_severity",
+      "display_name": "Seizure severity",
+      "category": "neuropsychiatric_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "seizure_presence",
+      "clinical_meaning": "Severity, recurrence, or status-epilepticus-like burden of seizure activity.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "seizure_hazard",
+      "display_name": "Seizure hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of recurrent seizure or status epilepticus during active poisoning.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.01,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypoxic_ischemic_brain_injury_hazard",
+      "display_name": "Hypoxic-ischemic brain injury hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of structural brain injury after prolonged coma, seizure, shock, or cardiac arrest.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        1.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_respiratory_failure_hazard",
+      "display_name": "Acute respiratory failure hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of needing ventilatory support from coma, seizure, acidosis, smoke inhalation, airway edema, pulmonary edema, or arrest.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.01,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "circulatory_collapse_hazard",
+      "display_name": "Circulatory collapse hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of rapid progression to severe shock or refractory hypotension.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.02,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cardiac_arrhythmia_hazard",
+      "display_name": "Cardiac arrhythmia hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of clinically significant dysrhythmia during cyanide-related acidemia, myocardial hypoxia, shock, or antidote/toxin context.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.005,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cardiac_arrest_hazard",
+      "display_name": "Cardiac arrest hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of cardiac arrest from severe mitochondrial poisoning, acidemia, hypoxia, and shock.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.01,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "display_name": "Acute kidney injury hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of AKI after shock/arrest, rhabdomyolysis, smoke injury, or thiocyanate accumulation context.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.5,
+        3.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.3
+      ],
+      "plateau_duration_days": [
+        1.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        21.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "display_name": "Serum creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Renal function measurement used to track AKI after shock/arrest, smoke injury, nitroprusside/thiocyanate context, or assay interference context.",
+      "baseline_range": [
+        0.6,
+        1.2
+      ],
+      "peak_day_range": [
+        0.5,
+        5.0
+      ],
+      "peak_value_range": [
+        1.2,
+        6.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        30.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "barotrauma_hazard",
+      "display_name": "Barotrauma hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk of pneumothorax or ventilator-associated pressure injury during positive-pressure ventilation.",
+      "baseline_range": [
+        0.0001,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.05
+      ],
+      "plateau_duration_days": [
+        0.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hydroxocobalamin_availability_probability",
+      "display_name": "Hydroxocobalamin availability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Availability and feasibility of prompt hydroxocobalamin administration.",
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sodium_thiosulfate_availability_probability",
+      "display_name": "Sodium thiosulfate availability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Availability and feasibility of sodium thiosulfate as sulfur-donor therapy.",
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "nitrite_donor_safety_context_probability",
+      "display_name": "Nitrite donor safety context",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Probability that nitrite-donor methemoglobin induction can be tolerated without unacceptable oxygen-delivery harm; reduced by smoke/CO coexposure, anemia, severe hypoxemia, hypotension, pregnancy, or cardiovascular disease.",
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanide_antidote_access_delay_minutes",
+      "display_name": "Cyanide antidote access delay",
+      "category": "treatment_modifier",
+      "unit": "minutes",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Delay until any cyanide-specific antidote can be delivered.",
+      "baseline_range": [
+        0.0,
+        120.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        720.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": null,
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "renal_impairment_thiocyanate_accumulation_risk_context",
+      "display_name": "Renal impairment thiocyanate accumulation risk",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Risk context for thiocyanate accumulation during nitroprusside exposure or thiosulfate therapy, especially with renal impairment.",
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        30.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "display_name": "Mortality hazard in cyanide poisoning",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Lifespan outcome hazard emerging from cyanide body burden, cytochrome oxidase inhibition, histotoxic hypoxia, severe lactic acidosis, coma/seizure, cardiovascular collapse, respiratory failure, arrest, treatment delay, and accumulated injury.",
+      "baseline_range": [
+        1e-05,
+        0.0001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.01,
+        2.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "occupational_chemical_exposure_context_presence",
+      "display_name": "Occupational chemical exposure context",
+      "display_name_ja": "?????????",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Occupational or laboratory chemical exposure context that can include cyanide salts, electroplating tanks, metal processing, or laboratory access.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "environmental_cyanide_concentration_ppm",
+      "display_name": "Environmental cyanide concentration",
+      "display_name_ja": "??????????",
+      "category": "source_context",
+      "unit": "ppm",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Measured or reported ambient cyanide concentration in workplace, enclosed fire, or hazardous-material settings.",
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        1.0,
+        1000.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cyanide_exposure_duration_minutes",
+      "display_name": "Cyanide exposure duration",
+      "display_name_ja": "?????????",
+      "category": "source_context",
+      "unit": "minutes",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "cyanide_exposure_presence",
+      "clinical_meaning": "Duration of plausible cyanide exposure; longer exposure increases absorbed dose unless ventilation and removal are rapid.",
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.1,
+        240.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "toxic_ingestion_presence",
+      "display_name": "Toxic ingestion present",
+      "display_name_ja": "????",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Known or suspected ingestion of a toxic substance; for cyanide this becomes more specific when paired with cyanide salt access, powder/capsule evidence, or systemic asphyxiant physiology.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -0.05,
+        0.05
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "systemic_asphyxiant_toxidrome_presence",
+      "display_name": "Systemic asphyxiant toxidrome present",
+      "display_name_ja": "???????????",
+      "category": "toxicologic_syndrome",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Clinical toxidrome of cellular oxygen-utilization failure with coma, respiratory failure or gasping, cardiovascular collapse, severe lactate/acidemia, and relatively preserved pulse oximetry when oxygen delivery is not the primary problem.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cherry_red_skin_presence",
+      "display_name": "Cherry-red skin or mucosal color",
+      "display_name_ja": "????????",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Bright red or cherry-red skin or mucosal color from high oxyhemoglobin or impaired extraction; insensitive but recognized in severe cyanide and other asphyxiant poisonings.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "soot_in_airway_or_face_presence",
+      "display_name": "Soot on airway, mouth, or face",
+      "display_name_ja": "????????????",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "smoke_inhalation_context_presence",
+      "clinical_meaning": "Soot on face, mouth, nares, or airway supporting smoke inhalation and possible cyanide plus carbon monoxide coexposure.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_failure_presence",
+      "display_name": "Respiratory failure present",
+      "display_name_ja": "????",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Respiratory failure from coma, apnea, seizure, arrest, smoke airway injury, severe acidemia, or ventilatory collapse during cyanide poisoning.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "apnea_presence",
+      "display_name": "Apnea present",
+      "display_name_ja": "???",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "respiratory_failure_presence",
+      "clinical_meaning": "Absent spontaneous respiration from coma, arrest, seizure, or terminal respiratory drive failure.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "invasive_mechanical_ventilation_presence",
+      "display_name": "Invasive mechanical ventilation",
+      "display_name_ja": "???????",
+      "category": "supportive_care_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "respiratory_failure_presence",
+      "clinical_meaning": "Endotracheal intubation and invasive ventilation needed because of coma, apnea, seizure, arrest, smoke airway injury, or severe acidemia.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_presence",
+      "display_name": "Metabolic acidosis present",
+      "display_name_ja": "?????????",
+      "category": "arterial_blood_gas",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "clinical_meaning": "Metabolic acidosis, usually lactic, from mitochondrial oxidative phosphorylation failure.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "metabolic_acidosis_severity",
+      "display_name": "Metabolic acidosis severity",
+      "display_name_ja": "????????????",
+      "category": "arterial_blood_gas",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "clinical_meaning": "Severity of metabolic acidosis integrating pH, bicarbonate, base excess, anion gap, and lactate.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "arterial_pco2",
+      "display_name": "Arterial pCO2",
+      "display_name_ja": "??????????",
+      "category": "arterial_blood_gas",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "clinical_meaning": "Arterial carbon dioxide tension; severe metabolic acidosis can drive very low pCO2 if ventilation is preserved, while coma or arrest can raise it.",
+      "baseline_range": [
+        35.0,
+        45.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        5.0,
+        55.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "base_excess",
+      "display_name": "Base excess",
+      "display_name_ja": "????",
+      "category": "arterial_blood_gas",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "metabolic_acidosis_presence",
+      "clinical_meaning": "Base excess becomes strongly negative in severe lactic metabolic acidosis.",
+      "baseline_range": [
+        -2.0,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        -30.0,
+        -5.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        1.5
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "generalized_tonic_clonic_seizure_presence",
+      "display_name": "Generalized tonic-clonic seizure present",
+      "display_name_ja": "????????",
+      "category": "neuropsychiatric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "seizure_presence",
+      "clinical_meaning": "Generalized seizure phenotype from severe CNS energy failure and acidemia.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "display_name": "Systolic blood pressure",
+      "display_name_ja": "?????",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "clinical_meaning": "Systolic blood pressure may be normal early, high from catecholamine stress, or low during cyanide-related circulatory collapse.",
+      "baseline_range": [
+        100.0,
+        140.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        40.0,
+        160.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "display_name": "Diastolic blood pressure",
+      "display_name_ja": "?????",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "clinical_meaning": "Diastolic blood pressure can be preserved early or fall with shock; values must be interpreted with the timing of collapse.",
+      "baseline_range": [
+        60.0,
+        90.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        20.0,
+        105.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "carbon_monoxide_exposure_presence",
+      "display_name": "Carbon monoxide coexposure present",
+      "display_name_ja": "????????",
+      "category": "source_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "smoke_inhalation_context_presence",
+      "clinical_meaning": "Carbon monoxide exposure commonly co-occurs in smoke inhalation cases and modifies oxygen delivery without replacing cyanide physiology.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "methemoglobin_percent",
+      "display_name": "Methemoglobin percent",
+      "display_name_ja": "??????????",
+      "category": "lab_value",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Methemoglobin percent is usually low before nitrite therapy in cyanide poisoning; elevation suggests nitrite treatment or another oxidant context.",
+      "baseline_range": [
+        0.0,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_gas_oxygen_saturation",
+      "display_name": "Blood gas oxygen saturation",
+      "display_name_ja": "?????????",
+      "category": "arterial_blood_gas",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "respiratory_failure_presence",
+      "clinical_meaning": "Blood gas oxygen saturation may be preserved in pure histotoxic hypoxia but can be low during arrest, smoke inhalation, respiratory failure, or sampling from venous/mixed blood.",
+      "baseline_range": [
+        95.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        30.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        2.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "body_temperature",
+      "display_name": "Body temperature",
+      "display_name_ja": "??",
+      "category": "vital_sign",
+      "unit": "degC",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": null,
+      "clinical_meaning": "Body temperature is variable in cyanide poisoning and may be low after collapse or normal unless smoke injury, seizure, or coexisting exposure modifies it.",
+      "baseline_range": [
+        36.0,
+        37.5
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        34.0,
+        39.5
+      ],
+      "plateau_duration_days": [
+        0.0,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3.0
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "serum_lactate",
+      "target_axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "High lactate is a severity marker and residual driver of short-term death hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_ph",
+      "target_axis_id": "cardiac_arrhythmia_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Lower pH increases dysrhythmia risk and myocardial instability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arterial_ph",
+      "target_axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Severe acidemia depresses myocardial and neurologic function and raises mortality hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "central_venous_oxygen_saturation_percent",
+      "target_axis_id": "serum_lactate",
+      "coupling_type": "mixed",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "The combination of high venous oxygen saturation with high lactate reflects oxygen extraction failure rather than simple oxygen delivery failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "arteriovenous_oxygen_saturation_difference",
+      "target_axis_id": "serum_lactate",
+      "coupling_type": "mixed",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Low arteriovenous oxygen extraction with rising lactate supports histotoxic hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "serum_lactate",
+      "coupling_type": "drift",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Shock compounds histotoxic lactate generation through hypoperfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Lower MAP increases short-term death hazard through perfusion collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "seizure_presence",
+      "target_axis_id": "hypoxic_ischemic_brain_injury_hazard",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Seizures increase brain oxygen demand and worsen injury risk during mitochondrial poisoning.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "acute_respiratory_failure_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Respiratory failure adds oxygen-delivery failure, aspiration risk, and ventilatory instability to cyanide physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cardiac_arrest_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+      "coupling_type": "event_transition",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Cardiac arrest is the most direct terminal event chain.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "smoke_inhalation_context_presence",
+      "target_axis_id": "acute_respiratory_failure_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Smoke exposure adds airway edema, bronchospasm, inhalational lung injury, and burn context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "carboxyhemoglobin_percent",
+      "target_axis_id": "nitrite_donor_safety_context_probability",
+      "coupling_type": "mixed",
+      "direction": "negative",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "COHb lowers oxygen-carrying reserve, making methemoglobin induction less tolerable.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "methemoglobin_fraction",
+      "target_axis_id": "acute_respiratory_failure_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "positive",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Excess methemoglobin can worsen oxygen delivery, especially in smoke inhalation, anemia, or respiratory failure.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment": "exposure_termination_and_decontamination",
+      "display_name": "Exposure termination and decontamination",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Stop ongoing cyanide absorption or generation and protect rescuers.",
+      "required_context_axes": [
+        "cyanide_exposure_presence",
+        "industrial_cyanide_exposure_presence",
+        "cyanide_salt_ingestion_context_presence",
+        "smoke_inhalation_context_presence",
+        "nitroprusside_infusion_context_presence"
+      ],
+      "trajectory_modifications": {
+        "M_CNP_EXPOSURE_ABSORPTION_BURDEN": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.3
+          ]
+        },
+        "M_CNP_DETOXIFICATION_CLEARANCE_LIMIT": {
+          "peak_value_factor": [
+            0.4,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "nitroprusside_infusion_context_presence",
+          "condition": "present",
+          "effect": "required_for_specific_effect",
+          "factor_range": [
+            1.0,
+            1.0
+          ],
+          "clinical_rationale": "Stopping or reducing nitroprusside removes ongoing cyanide generation."
+        },
+        {
+          "axis_id": "industrial_cyanide_exposure_presence",
+          "condition": "present",
+          "effect": "strengthens_decontamination_value",
+          "factor_range": [
+            1.0,
+            1.8
+          ],
+          "clinical_rationale": "Contaminated clothing, skin, or environment can continue exposure and threaten responders."
+        }
+      ],
+      "failure_modes": [
+        "unrecognized ongoing exposure",
+        "rescuer contamination",
+        "delayed source removal",
+        "continued nitroprusside infusion despite toxicity"
+      ],
+      "side_effects": [],
+      "onset_delay_days": [
+        0.0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.0,
+        1.0
+      ],
+      "context_specific_role": "Upstream exposure control; it cannot reverse already-bound cyanide fast enough when severe physiology is active.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "high_flow_oxygen_and_airway_support",
+      "display_name": "High-flow oxygen and airway support",
+      "mode": "push_state",
+      "therapeutic_intent": "Maximize oxygen delivery, support ventilation, and manage smoke airway injury while antidote therapy addresses mitochondrial poisoning.",
+      "required_context_axes": [
+        "oxygen_saturation",
+        "respiratory_rate",
+        "mental_status_abnormality_presence",
+        "smoke_airway_injury_presence",
+        "acute_respiratory_failure_hazard",
+        "carboxyhemoglobin_percent"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            25.0
+          ],
+          "unit": "percentage_points"
+        },
+        {
+          "axis_id": "arterial_ph",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.15
+          ],
+          "unit": "pH"
+        }
+      ],
+      "trajectory_modifications": {
+        "acute_respiratory_failure_hazard": {
+          "peak_value_factor": [
+            0.25,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        },
+        "M_CNP_ACCUMULATED_HYPOXIC_SHOCK_INJURY": {
+          "peak_value_factor": [
+            0.55,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            30.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "smoke_airway_injury_presence",
+          "condition": "present",
+          "effect": "strengthens_airway_component",
+          "factor_range": [
+            1.1,
+            2.0
+          ],
+          "clinical_rationale": "Airway edema, soot, stridor, or burns increase the value of early airway control."
+        },
+        {
+          "axis_id": "mental_status_abnormality_presence",
+          "condition": "severe",
+          "effect": "strengthens_airway_component",
+          "factor_range": [
+            1.2,
+            2.0
+          ],
+          "clinical_rationale": "Coma increases aspiration and hypoventilation risk."
+        }
+      ],
+      "failure_modes": [
+        "oxygen_support_does_not_reverse_complex_IV_blockade",
+        "delayed_antidote",
+        "unrecognized_airway_edema",
+        "ventilation_not_matched_to_severe_acidosis"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "barotrauma_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.04
+          ],
+          "interpretation": "Positive-pressure ventilation can add barotrauma risk."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        7.0
+      ],
+      "context_specific_role": "Supportive oxygen and airway intervention; it is especially important in smoke inhalation or coma, but cyanide-specific detoxification still requires antidote mechanisms.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "hydroxocobalamin",
+      "display_name": "Hydroxocobalamin",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Bind free cyanide to form cyanocobalamin, lowering mitochondrial complex IV inhibition without intentionally impairing oxygen-carrying capacity.",
+      "required_context_axes": [
+        "cyanide_exposure_probability",
+        "serum_lactate",
+        "arterial_ph",
+        "hydroxocobalamin_availability_probability",
+        "cyanide_antidote_access_delay_minutes"
+      ],
+      "trajectory_modifications": {
+        "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION": {
+          "peak_value_factor": [
+            0.1,
+            0.45
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.2
+          ]
+        },
+        "M_CNP_HISTOTOXIC_OXYGEN_EXTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.15,
+            0.55
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.03,
+            0.3
+          ]
+        },
+        "M_CNP_SEVERE_LACTIC_ACIDOSIS": {
+          "peak_value_factor": [
+            0.25,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.6
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.25,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "hydroxocobalamin_availability_probability",
+          "condition": "low",
+          "effect": "weakens_by_access",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "No pharmacologic effect occurs until the antidote can be administered."
+        },
+        {
+          "axis_id": "cyanide_antidote_access_delay_minutes",
+          "condition": "long_delay",
+          "effect": "weakens_after_accumulated_injury",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Delayed therapy can bind cyanide but cannot erase completed arrest or hypoxic brain injury."
+        },
+        {
+          "axis_id": "serum_lactate",
+          "condition": "markedly_high",
+          "effect": "strengthens_expected_benefit",
+          "factor_range": [
+            1.1,
+            2.0
+          ],
+          "clinical_rationale": "Marked lactic acidosis is a strong marker of active cyanide physiology."
+        }
+      ],
+      "failure_modes": [
+        "antidote_unavailable_or_delayed",
+        "non_cyanide_cause_of_lactate",
+        "completed_cardiac_arrest_or_irreversible_injury",
+        "laboratory_interference_from_red_chromophore"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            20.0
+          ],
+          "interpretation": "Transient hypertension can occur."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "direction": "variable",
+          "magnitude_range": [
+            0.0,
+            0.5
+          ],
+          "interpretation": "Chromophore can interfere with some laboratory assays; true renal effects are uncommon but reported."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.5,
+        7.0
+      ],
+      "context_specific_role": "Cyanide-binding antidote particularly compatible with smoke inhalation because it does not require therapeutic methemoglobinemia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "sodium_thiosulfate",
+      "display_name": "Sodium thiosulfate",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Provide sulfur donor substrate for rhodanese-mediated conversion of cyanide to thiocyanate.",
+      "required_context_axes": [
+        "cyanide_exposure_probability",
+        "sodium_thiosulfate_availability_probability",
+        "renal_impairment_thiocyanate_accumulation_risk_context",
+        "serum_thiocyanate_concentration"
+      ],
+      "trajectory_modifications": {
+        "M_CNP_DETOXIFICATION_CLEARANCE_LIMIT": {
+          "peak_value_factor": [
+            0.25,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION": {
+          "peak_value_factor": [
+            0.45,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2.0
+          ]
+        },
+        "serum_thiocyanate_concentration": {
+          "peak_value_factor": [
+            1.2,
+            4.0
+          ],
+          "plateau_duration_factor": [
+            1.0,
+            4.0
+          ],
+          "decline_half_life_days": [
+            2.0,
+            10.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "sodium_thiosulfate_availability_probability",
+          "condition": "low",
+          "effect": "weakens_by_access",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Sulfur-donor effect requires drug availability."
+        },
+        {
+          "axis_id": "renal_impairment_thiocyanate_accumulation_risk_context",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Renal impairment increases thiocyanate accumulation risk, especially after repeated dosing or nitroprusside exposure."
+        }
+      ],
+      "failure_modes": [
+        "slower_onset_than_cyanide_binding_needed_for_fulminant_collapse",
+        "delayed_administration",
+        "thiocyanate_accumulation_in_renal_impairment",
+        "hypotension_or_volume_load"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            10.0
+          ],
+          "interpretation": "Hypotension can occur, especially with rapid administration or severe baseline shock."
+        },
+        {
+          "axis_id": "serum_thiocyanate_concentration",
+          "direction": "up",
+          "magnitude_range": [
+            5.0,
+            80.0
+          ],
+          "interpretation": "Thiocyanate rises as detoxification product and can accumulate with renal impairment."
+        }
+      ],
+      "onset_delay_days": [
+        0.02,
+        0.2
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        7.0
+      ],
+      "context_specific_role": "Sulfur-donor detoxification support; effect is slower than direct cyanide binding and shaped by renal thiocyanate clearance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "nitrite_donor_methemoglobin_induction",
+      "display_name": "Nitrite donor methemoglobin induction",
+      "mode": "reshape_landscape",
+      "therapeutic_intent": "Generate methemoglobin as an alternate cyanide binding sink, while balancing oxygen-carrying capacity, hypotension, and smoke/CO coexposure risk.",
+      "required_context_axes": [
+        "cyanide_exposure_probability",
+        "nitrite_donor_safety_context_probability",
+        "methemoglobin_fraction",
+        "carboxyhemoglobin_percent",
+        "oxygen_saturation",
+        "mean_arterial_pressure"
+      ],
+      "trajectory_modifications": {
+        "M_CNP_CYTOCHROME_C_OXIDASE_INHIBITION": {
+          "peak_value_factor": [
+            0.25,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.5
+          ]
+        },
+        "methemoglobin_fraction": {
+          "peak_value_factor": [
+            4.0,
+            20.0
+          ],
+          "plateau_duration_factor": [
+            1.0,
+            3.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.4,
+            1.1
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.1
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "nitrite_donor_safety_context_probability",
+          "condition": "low",
+          "effect": "weakens_or_harms_by_oxygen_delivery",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Low oxygen reserve, smoke/CO coexposure, anemia, severe hypotension, or pregnancy lowers tolerance for methemoglobinemia."
+        },
+        {
+          "axis_id": "carboxyhemoglobin_percent",
+          "condition": "high",
+          "effect": "weakens_or_harms_by_oxygen_delivery",
+          "factor_range": [
+            0.0,
+            0.7
+          ],
+          "clinical_rationale": "COHb plus methemoglobin can critically reduce oxygen-carrying capacity."
+        },
+        {
+          "axis_id": "methemoglobin_fraction",
+          "condition": "high",
+          "effect": "toxicity_limit",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Excess methemoglobin worsens oxygen delivery and constrains repeat dosing."
+        }
+      ],
+      "failure_modes": [
+        "worsened_oxygen_delivery_in_smoke_or_CO_coexposure",
+        "excess_methemoglobinemia",
+        "hypotension",
+        "delayed_effect_in_cardiac_arrest"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "methemoglobin_fraction",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.3
+          ],
+          "interpretation": "Therapeutic mechanism and dose-limiting toxicity."
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            20.0
+          ],
+          "interpretation": "Nitrite donors can cause hypotension."
+        },
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            15.0
+          ],
+          "interpretation": "Methemoglobin and co-toxins can lower effective oxygen carriage and pulse oximetry behavior."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        2.0
+      ],
+      "context_specific_role": "Methemoglobin-based cyanide sink; context-sensitive because smoke inhalation and CO coexposure can make oxygen-delivery cost clinically important.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "hemodynamic_resuscitation_and_vasopressors",
+      "display_name": "Hemodynamic resuscitation and vasopressors",
+      "mode": "push_state",
+      "therapeutic_intent": "Maintain perfusion while cyanide-specific antidote therapy reverses mitochondrial poisoning.",
+      "required_context_axes": [
+        "hypotension_presence",
+        "mean_arterial_pressure",
+        "shock_presence",
+        "serum_lactate",
+        "circulatory_collapse_hazard",
+        "cardiac_arrest_hazard"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            5.0,
+            40.0
+          ],
+          "unit": "mmHg"
+        },
+        {
+          "axis_id": "serum_lactate",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            4.0
+          ],
+          "unit": "mmol/L"
+        }
+      ],
+      "trajectory_modifications": {
+        "circulatory_collapse_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.1,
+            5.0
+          ]
+        },
+        "cardiac_arrest_hazard": {
+          "peak_value_factor": [
+            0.35,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2.0
+          ],
+          "clinical_rationale": "Perfusion support is most consequential when MAP is low."
+        },
+        {
+          "axis_id": "serum_lactate",
+          "condition": "markedly_high",
+          "effect": "signals_need_for_parallel_antidote",
+          "factor_range": [
+            0.8,
+            1.2
+          ],
+          "clinical_rationale": "Vasopressors do not reverse histotoxic hypoxia; high lactate should keep antidote urgency active."
+        }
+      ],
+      "failure_modes": [
+        "vasopressors_without_antidote_do_not_reverse_mitochondrial_blockade",
+        "refractory_acidemia",
+        "arrhythmia_or_ischemia"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "cardiac_arrhythmia_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.08
+          ],
+          "interpretation": "Adrenergic support can increase dysrhythmia risk in acidemic myocardium."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        3.0
+      ],
+      "context_specific_role": "Organ support for the lethal shock pathway while antidotes and exposure control suppress upstream cyanide activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "sodium_bicarbonate_for_severe_acidemia",
+      "display_name": "Sodium bicarbonate for severe acidemia",
+      "mode": "push_state",
+      "therapeutic_intent": "Buffer life-threatening acidemia while antidote, ventilation, and perfusion support reduce ongoing lactate generation.",
+      "required_context_axes": [
+        "arterial_ph",
+        "serum_bicarbonate",
+        "serum_lactate",
+        "mean_arterial_pressure",
+        "acute_kidney_injury_hazard"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "arterial_ph",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.25
+          ],
+          "unit": "pH"
+        },
+        {
+          "axis_id": "serum_bicarbonate",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            12.0
+          ],
+          "unit": "mmol/L"
+        }
+      ],
+      "trajectory_modifications": {
+        "cardiac_arrhythmia_hazard": {
+          "peak_value_factor": [
+            0.55,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "arterial_ph",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.2,
+            2.0
+          ],
+          "clinical_rationale": "Buffering is more relevant when acidemia is severe."
+        },
+        {
+          "axis_id": "acute_kidney_injury_hazard",
+          "condition": "high",
+          "effect": "changes_toxicity_monitoring",
+          "factor_range": [
+            0.7,
+            1.0
+          ],
+          "clinical_rationale": "Sodium and volume load require monitoring when renal reserve is poor."
+        }
+      ],
+      "failure_modes": [
+        "buffering_without_antidote_does_not_stop_lactate_generation",
+        "sodium_or_volume_load",
+        "hypercapnia_if_ventilation_is_inadequate"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_bicarbonate",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            12.0
+          ],
+          "interpretation": "Desired buffer effect; overshoot alkalemia and sodium load require monitoring."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        1.0
+      ],
+      "context_specific_role": "Bridge for severe acidemia; it stabilizes pH but does not substitute for cyanide detoxification.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment": "seizure_control_and_neurocritical_support",
+      "display_name": "Seizure control and neurocritical support",
+      "mode": "modulate_sigma",
+      "therapeutic_intent": "Suppress seizure excursions and secondary brain injury while antidote, oxygenation, pH, and perfusion are corrected.",
+      "required_context_axes": [
+        "seizure_presence",
+        "seizure_hazard",
+        "mental_status_abnormality_presence",
+        "hypoxic_ischemic_brain_injury_hazard",
+        "acute_respiratory_failure_hazard"
+      ],
+      "trajectory_modifications": {
+        "seizure_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            5.0
+          ]
+        },
+        "hypoxic_ischemic_brain_injury_hazard": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1.0,
+            30.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.65,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.7,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "sigma_modulation": {
+        "axes": [
+          "seizure_presence",
+          "seizure_severity",
+          "oxygen_saturation",
+          "respiratory_rate",
+          "mental_status_abnormality_severity"
+        ],
+        "factor": [
+          0.45,
+          0.85
+        ],
+        "clinical_rationale": "Seizure treatment and neurocritical monitoring reduce physiologic variance and secondary excursions."
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "seizure_presence",
+          "condition": "present",
+          "effect": "required_for_specific_effect",
+          "factor_range": [
+            1.0,
+            1.0
+          ],
+          "clinical_rationale": "Seizure-directed therapy modifies seizure hazard when seizure activity or high risk is present."
+        },
+        {
+          "axis_id": "mental_status_abnormality_presence",
+          "condition": "severe",
+          "effect": "requires_airway_monitoring",
+          "factor_range": [
+            0.8,
+            1.2
+          ],
+          "clinical_rationale": "Sedating antiseizure therapy can interact with airway protection needs."
+        }
+      ],
+      "failure_modes": [
+        "seizures_recur_if_acidemia_and_cyanide_activity_persist",
+        "respiratory_depression_from_sedatives",
+        "delayed_antidote"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "acute_respiratory_failure_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.08
+          ],
+          "interpretation": "Sedating antiseizure drugs can worsen airway or ventilation risk without monitoring."
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        7.0
+      ],
+      "context_specific_role": "Controls a secondary injury pathway while cyanide-specific therapy and resuscitation address upstream mechanisms.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment": "renal_replacement_for_thiocyanate_or_refractory_acidosis_context",
+      "display_name": "Renal replacement support for thiocyanate or refractory acid-base context",
+      "mode": "push_state",
+      "therapeutic_intent": "Support clearance and acid-base control when thiocyanate accumulation, renal failure, or refractory acidemia complicates cyanide/nitroprusside physiology.",
+      "required_context_axes": [
+        "renal_impairment_thiocyanate_accumulation_risk_context",
+        "serum_thiocyanate_concentration",
+        "arterial_ph",
+        "serum_bicarbonate",
+        "acute_kidney_injury_hazard"
+      ],
+      "push_targets": [
+        {
+          "axis_id": "arterial_ph",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.25
+          ],
+          "unit": "pH"
+        },
+        {
+          "axis_id": "serum_bicarbonate",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            12.0
+          ],
+          "unit": "mmol/L"
+        }
+      ],
+      "trajectory_modifications": {
+        "serum_thiocyanate_concentration": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2.0
+          ]
+        },
+        "acute_kidney_injury_hazard": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        },
+        "mortality_hazard_in_D-CYANIDE-POISONING": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.6,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_thiocyanate_concentration",
+          "condition": "high",
+          "effect": "strengthens_clearance_component",
+          "factor_range": [
+            1.2,
+            2.0
+          ],
+          "clinical_rationale": "Thiocyanate accumulation is a clearance indication context."
+        },
+        {
+          "axis_id": "arterial_ph",
+          "condition": "persistently_low",
+          "effect": "strengthens_acid_base_component",
+          "factor_range": [
+            1.1,
+            1.8
+          ],
+          "clinical_rationale": "Persistent severe acidemia may require extracorporeal support when standard measures fail."
+        }
+      ],
+      "failure_modes": [
+        "vascular_access_delay",
+        "hemodynamic_instability",
+        "not_a_substitute_for_immediate_antidote_in_fulminant_poisoning"
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            10.0
+          ],
+          "interpretation": "Extracorporeal therapy can worsen hypotension depending on modality and volume status."
+        }
+      ],
+      "onset_delay_days": [
+        0.05,
+        1.0
+      ],
+      "carryover_after_stop_days": [
+        0.5,
+        7.0
+      ],
+      "context_specific_role": "Adjunct for clearance and acid-base complications, most relevant to nitroprusside/thiocyanate or renal failure contexts.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "enclosed_fire_or_smoke_inhalation_context",
+      "type": "exposure_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3.0,
+            50.0
+          ],
+          "trajectory_modulation": "Raises cyanide exposure probability and adds CO coexposure, airway injury, respiratory failure, and burn/trauma contexts.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "smoke_inhalation_context_presence",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                5.0,
+                50.0
+              ],
+              "clinical_rationale": "Observed fire smoke is the source context."
+            },
+            {
+              "axis_id": "carbon_monoxide_coexposure_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Smoke commonly contains carbon monoxide as a co-toxin."
+            },
+            {
+              "axis_id": "acute_respiratory_failure_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                6.0
+              ],
+              "clinical_rationale": "Smoke airway and lung injury add respiratory risk."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "nitrite_donor_methemoglobin_induction",
+              "effect": "weakens_or_increases_toxicity_risk",
+              "magnitude_factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "COHb and smoke-related hypoxemia reduce tolerance for therapeutic methemoglobinemia."
+            },
+            {
+              "treatment": "high_flow_oxygen_and_airway_support",
+              "effect": "strengthens",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ],
+              "clinical_rationale": "Airway and CO coexposure increase the value of oxygen and airway support."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "large_or_concentrated_cyanide_exposure",
+      "type": "exposure_intensity_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            100.0
+          ],
+          "trajectory_modulation": "Raises absorbed cyanide burden, speed of cytochrome oxidase inhibition, lactate peak, cardiovascular collapse, and mortality hazard.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "cyanide_exposure_intensity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ],
+              "clinical_rationale": "Dose and duration are represented directly in the intensity axis."
+            },
+            {
+              "axis_id": "blood_cyanide_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Higher absorbed dose raises measured concentration when sampled."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Dose and rapidity strongly shape death hazard."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_exposure_removal_or_antidote_access",
+      "type": "care_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "trajectory_modulation": "Does not define disease identity but increases accumulated hypoxic, seizure, shock, and arrest injury.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "cyanide_antidote_access_delay_minutes",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                2.0,
+                60.0
+              ],
+              "clinical_rationale": "Delay is directly captured by the treatment context axis."
+            },
+            {
+              "axis_id": "hypoxic_ischemic_brain_injury_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                8.0
+              ],
+              "clinical_rationale": "Untreated histotoxic hypoxia increases brain injury risk."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Delayed reversal increases completed injury."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "hydroxocobalamin",
+              "effect": "weakens_after_accumulated_injury",
+              "magnitude_factor_range": [
+                0.4,
+                0.9
+              ],
+              "clinical_rationale": "Binding cyanide is less outcome-changing after irreversible injury or prolonged arrest."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "nitroprusside_high_dose_or_prolonged_infusion_context",
+      "type": "iatrogenic_exposure_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3.0,
+            40.0
+          ],
+          "trajectory_modulation": "Raises ongoing cyanide generation and thiocyanate accumulation risk, especially with renal or hepatic dysfunction.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "nitroprusside_infusion_context_presence",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                5.0,
+                100.0
+              ],
+              "clinical_rationale": "Nitroprusside context is the observed exposure route."
+            },
+            {
+              "axis_id": "serum_thiocyanate_concentration",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                8.0
+              ],
+              "clinical_rationale": "Thiocyanate accumulates during detoxification and impaired clearance."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "exposure_termination_and_decontamination",
+              "effect": "strengthens_specific_effect",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ],
+              "clinical_rationale": "Stopping the infusion removes ongoing cyanide generation."
+            },
+            {
+              "treatment": "sodium_thiosulfate",
+              "effect": "strengthens_detoxification_component",
+              "magnitude_factor_range": [
+                1.0,
+                1.8
+              ],
+              "clinical_rationale": "Sulfur donor support can increase detoxification of nitroprusside-derived cyanide."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "renal_impairment",
+      "type": "host_clearance_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2.0
+          ],
+          "trajectory_modulation": "Reduces thiocyanate clearance and complicates sodium thiosulfate or nitroprusside-related courses.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "renal_impairment_thiocyanate_accumulation_risk_context",
+              "effect": "higher_baseline",
+              "magnitude_factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Low renal clearance is the key observable risk context."
+            },
+            {
+              "axis_id": "serum_thiocyanate_concentration",
+              "effect": "prolonged_plateau",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Thiocyanate clearance is renal."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "renal_replacement_for_thiocyanate_or_refractory_acidosis_context",
+              "effect": "strengthens_clearance_component",
+              "magnitude_factor_range": [
+                1.1,
+                2.0
+              ],
+              "clinical_rationale": "Extracorporeal support becomes more relevant when clearance is impaired."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "hepatic_dysfunction_or_low_sulfur_donor_reserve",
+      "type": "host_detoxification_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2.0
+          ],
+          "trajectory_modulation": "Can reduce endogenous rhodanese/thiosulfate detoxification reserve for a given exposure.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "serum_lactate",
+              "effect": "higher_or_prolonged_peak",
+              "magnitude_factor_range": [
+                1.1,
+                3.0
+              ],
+              "clinical_rationale": "Impaired detoxification allows mitochondrial inhibition to persist longer."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                3.0
+              ],
+              "clinical_rationale": "Reduced detox reserve increases hazard for the same exposure."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "sodium_thiosulfate",
+              "effect": "strengthens_substrate_replacement_logic",
+              "magnitude_factor_range": [
+                1.0,
+                1.5
+              ],
+              "clinical_rationale": "Sulfur donor provision is more relevant when endogenous reserve is low."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "preexisting_cardiovascular_disease_anemia_or_chronic_hypoxemia",
+      "type": "host_reserve_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2.0
+          ],
+          "trajectory_modulation": "Lowers tolerance for histotoxic hypoxia, methemoglobinemia, CO coexposure, shock, and dysrhythmia.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "cardiac_arrhythmia_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Baseline cardiac disease increases rhythm vulnerability during acidosis and hypoxia."
+            },
+            {
+              "axis_id": "nitrite_donor_safety_context_probability",
+              "effect": "lower_baseline",
+              "magnitude_factor_range": [
+                0.0,
+                0.8
+              ],
+              "clinical_rationale": "Lower oxygen reserve makes methemoglobin induction less tolerable."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Reduced reserve raises hazard for the same toxic field."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "pregnancy_context",
+      "type": "host_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            1.5
+          ],
+          "trajectory_modulation": "Maternal hypoxia, shock, and antidote context carry fetal oxygen-delivery implications; pregnancy also lowers tolerance for avoidable oxygen-carrying-capacity loss.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "nitrite_donor_safety_context_probability",
+              "effect": "lower_baseline",
+              "magnitude_factor_range": [
+                0.0,
+                0.9
+              ],
+              "clinical_rationale": "Therapeutic methemoglobinemia may reduce maternal-fetal oxygen delivery reserve."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "slightly_higher_peak_if_shock_or_hypoxemia",
+              "magnitude_factor_range": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Pregnancy changes oxygen reserve and monitoring stakes, but maternal survival is still governed by the same mechanisms."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pediatric_or_frail_patient_context",
+      "type": "host_reserve_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            2.0
+          ],
+          "trajectory_modulation": "Lower physiologic reserve and smaller exposure margins can speed decompensation and complicate history.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "acute_respiratory_failure_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Small airway reserve, coma, or smoke injury can decompensate rapidly."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CYANIDE-POISONING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                5.0
+              ],
+              "clinical_rationale": "Lower physiologic reserve increases outcome hazard."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "occupational_sodium_cyanide_tank_exposure",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "cyanide_exposure_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "cyanide_exposure_intensity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "industrial_cyanide_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "hypotension_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "systolic_blood_pressure",
+              "baseline_value_factor": [
+                0.55,
+                0.75
+              ],
+              "sigma_factor": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "diastolic_blood_pressure",
+              "baseline_value_factor": [
+                0.65,
+                0.85
+              ],
+              "sigma_factor": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "glasgow_coma_scale_score",
+              "peak_value_factor": [
+                2.0,
+                3.0
+              ],
+              "sigma_factor": [
+                1.1,
+                1.6
+              ]
+            },
+            {
+              "axis_id": "serum_lactate",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Documented occupational sodium-cyanide exposure is high-specificity source geometry and can drive rapid coma, lactic acidosis, and cardiovascular collapse.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "cyanide_gas_environment_detected",
+      "type": "toxin_exposure_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "cyanide_exposure_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "cyanide_exposure_intensity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "industrial_cyanide_exposure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "hypotension_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "systolic_blood_pressure",
+              "baseline_value_factor": [
+                0.55,
+                0.75
+              ],
+              "sigma_factor": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "diastolic_blood_pressure",
+              "baseline_value_factor": [
+                0.65,
+                0.85
+              ],
+              "sigma_factor": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "axis_id": "glasgow_coma_scale_score",
+              "peak_value_factor": [
+                2.0,
+                3.0
+              ],
+              "sigma_factor": [
+                1.1,
+                1.6
+              ]
+            },
+            {
+              "axis_id": "serum_lactate",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ]
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Documented occupational sodium-cyanide exposure is high-specificity source geometry and can drive rapid coma, lactic acidosis, and cardiovascular collapse.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Keep the first-layer leaf name pure: Cyanide poisoning. Do not encode smoke, fire, severe, coma, cardiac arrest, nitroprusside, or ingestion qualifiers into disease_name.",
+    "Record exposure with parent and satellite axes: cyanide_exposure_presence -> cyanide_exposure_probability, exposure intensity, timing, smoke/fire, industrial/lab, ingestion, cyanogenic/nitrile, and nitroprusside contexts.",
+    "In smoke exposure, preserve carbon monoxide and airway injury separately: carboxyhemoglobin_percent and carbon_monoxide_coexposure_probability modify oxygen reserve but do not replace the cyanide manifold.",
+    "Track serum lactate, pH, bicarbonate, anion gap, MAP, respiratory rate, oxygen saturation, mental status/GCS, seizures, ECG/troponin, and event hazards serially because the disease can evolve over minutes.",
+    "When observed, high central or mixed venous oxygen saturation and low arteriovenous oxygen saturation difference should support oxygen-extraction failure rather than be treated as normal physiology.",
+    "Do not wait for blood cyanide concentration when the exposure/lactate/shock pattern is strong; blood_cyanide_concentration is a measurement axis, not a prerequisite label.",
+    "For nitrite donors, explicitly model methemoglobin_fraction, carboxyhemoglobin_percent, oxygen saturation, anemia/cardiopulmonary reserve, hypotension, and pregnancy context; do not treat nitrite chemistry as universally harmless.",
+    "For hydroxocobalamin, monitor for chromophore-related lab interference, transient hypertension, urine/skin discoloration, and compatibility with dialysis or lab workflows.",
+    "For sodium thiosulfate and nitroprusside contexts, track thiocyanate accumulation and renal impairment as treatment/context axes.",
+    "In coma, seizure, smoke inhalation, or severe acidosis, airway and ventilation support should preserve minute ventilation while antidote and perfusion support reduce ongoing lactate generation.",
+    "Post-stabilization follow-up should preserve neurologic and cardiac injury hazards rather than deleting the early toxic evidence."
+  ],
+  "notes": {
+    "prompt_input_used": "Disease: Cyanide poisoning",
+    "distillation_method": "Mechanism-first disease-name-only distillation. No real case search or case-specific evidence was used.",
+    "ontology_notes": [
+      "Exactly one derived_hazard axis is included: mortality_hazard_in_D-CYANIDE-POISONING.",
+      "Smoke inhalation and carbon monoxide coexposure are source/context axes; carbon monoxide poisoning remains a separate disease manifold.",
+      "Hydroxocobalamin, sodium thiosulfate, and nitrite donor therapies are represented by general V5 treatment modes and context modifiers rather than treatment-rank labels.",
+      "Parent finding plus satellite/measurement structure is explicit for cyanide exposure/source contexts, smoke context, carbon monoxide coexposure, hypotension/MAP, shock severity, altered mental status/GCS/coma, seizure severity, and smoke airway injury."
+    ]
+  },
+  "quality_checks": [
+    "Disease-specific prompt input is only Cyanide poisoning.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-CYANIDE-POISONING.",
+    "No prohibited treatment-ranking label fields or diagnosis-forcing fields are used.",
+    "All axes include axis_role; satellite and child measurement axes include parent_axis_id.",
+    "Every parent_axis_id used in this file points to an axis_id defined in this file.",
+    "No real cyanide poisoning cases were searched, read, structured, or encoded."
+  ],
+  "ontology_completion_notes": [
+    "2026-05-09: added general cyanide exposure-source, systemic asphyxiant, acid-base, respiratory failure, and ventilation axes observed in independent real cases; no case-specific diagnostic label or ranking patch was added."
+  ]
+}
