@@ -25,31 +25,41 @@
     {
       "factor": "corticosteroid_or_tnf_inhibitor_exposure",
       "category": "long_term_low_dose_multiple_steroids",
-      "applies_to": ["D-CRYPTOCOCCOSIS-DISSEMINATED"],
+      "applies_to": [
+        "D-CRYPTOCOCCOSIS-DISSEMINATED"
+      ],
       "source_text_value": "dexamethasone for 3 years, 1 mg/day ... prednisolone for 10 years, 2.5 mg/day"
     },
     {
       "factor": "renal_failure_or_chronic_kidney_disease",
       "category": "chronic_kidney_disease_with_creatinine_4_09",
-      "applies_to": ["D-CRYPTOCOCCOSIS-DISSEMINATED"],
+      "applies_to": [
+        "D-CRYPTOCOCCOSIS-DISSEMINATED"
+      ],
       "source_text_value": "medical history of chronic kidney disease ... serum creatinine, 4.09 mg/dL"
     },
     {
       "factor": "diabetes_mellitus",
       "category": "present",
-      "applies_to": ["D-CRYPTOCOCCOSIS-DISSEMINATED"],
+      "applies_to": [
+        "D-CRYPTOCOCCOSIS-DISSEMINATED"
+      ],
       "source_text_value": "diabetes mellitus (DM)"
     },
     {
       "factor": "hiv_status",
       "category": "negative",
-      "applies_to": ["D-CRYPTOCOCCOSIS-DISSEMINATED"],
+      "applies_to": [
+        "D-CRYPTOCOCCOSIS-DISSEMINATED"
+      ],
       "source_text_value": "Serology testing for HIV was negative"
     },
     {
       "factor": "high_fungal_burden_or_cryptococcemia",
       "category": "blood_csf_fascia_skin_cultures_positive",
-      "applies_to": ["D-CRYPTOCOCCOSIS-DISSEMINATED"],
+      "applies_to": [
+        "D-CRYPTOCOCCOSIS-DISSEMINATED"
+      ],
       "source_text_value": "cultured from a blood sample, the fascia of the right thigh, and the CSF"
     }
   ],
@@ -98,28 +108,71 @@
       "source_text_value": "O2 saturation was 98% (ambient room air)"
     },
     {
-      "axis_id": "altered_mental_status_activity",
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 0.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "consciousness was clear",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "legacy_axis_id": "altered_mental_status_activity"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
       "value": 0.0,
       "unit": "severity_score_0_1",
-      "source_text_value": "consciousness was clear"
+      "source_text_value": "consciousness was clear",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "legacy_axis_id": "altered_mental_status_activity"
     },
     {
-      "axis_id": "soft_tissue_infection_extent_in_D-CRYPTOCOCCOSIS-DISSEMINATED",
+      "axis_id": "skin_soft_tissue_infection_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "right thigh pain ... erythema, swelling, and a worsening pain",
+      "axis_role": "finding",
+      "category": "physical_finding",
+      "legacy_axis_id": "soft_tissue_infection_extent_in_D-CRYPTOCOCCOSIS-DISSEMINATED"
+    },
+    {
+      "axis_id": "soft_tissue_infection_extent_score",
       "value": 0.85,
       "unit": "relative_extent_0_1",
-      "source_text_value": "right thigh pain ... erythema, swelling, and a worsening pain"
+      "source_text_value": "right thigh pain ... erythema, swelling, and a worsening pain",
+      "axis_role": "satellite",
+      "category": "physical_finding",
+      "parent_axis_id": "skin_soft_tissue_infection_presence",
+      "legacy_axis_id": "soft_tissue_infection_extent_in_D-CRYPTOCOCCOSIS-DISSEMINATED"
     },
     {
-      "axis_id": "skin_necrosis_extent_in_D-CRYPTOCOCCOSIS-DISSEMINATED",
+      "axis_id": "skin_necrosis_extent",
       "value": 0.4,
       "unit": "relative_extent_0_1",
-      "source_text_value": "clinical diagnosis of necrotizing fasciitis"
+      "source_text_value": "clinical diagnosis of necrotizing fasciitis",
+      "category": "vascular_or_tissue_injury_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "skin_soft_tissue_infection_presence",
+      "legacy_axis_id": "skin_necrosis_extent_in_D-CRYPTOCOCCOSIS-DISSEMINATED"
+    },
+    {
+      "axis_id": "source_control_problem_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "Surgical debridement was carried out on day 2",
+      "category": "source_control",
+      "axis_role": "finding",
+      "inferred_from_child_axis_id": "source_control_need",
+      "conversion_note": "Parent observation inferred from child observation for parent/satellite ontology."
     },
     {
       "axis_id": "source_control_need",
       "value": 0.9,
       "unit": "relative_activity_0_1",
-      "source_text_value": "Surgical debridement was carried out on day 2"
+      "source_text_value": "Surgical debridement was carried out on day 2",
+      "axis_role": "measurement",
+      "parent_axis_id": "source_control_problem_presence",
+      "category": "source_control"
     },
     {
       "axis_id": "white_blood_cell_count",
@@ -166,15 +219,19 @@
     },
     {
       "axis_id": "iatrogenic_immunosuppression_intensity",
-      "value": 0.75,
-      "unit": "relative_activity_0_1",
-      "source_text_value": "dexamethasone for 3 years ... prednisolone for 10 years"
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "dexamethasone for 3 years ... prednisolone for 10 years",
+      "axis_role": "finding",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a context presence/absence axis."
     },
     {
       "axis_id": "hiv_advanced_immunosuppression_activity",
       "value": 0.0,
-      "unit": "relative_activity_0_1",
-      "source_text_value": "Serology testing for HIV was negative"
+      "unit": "present_absent_0_1",
+      "source_text_value": "Serology testing for HIV was negative",
+      "axis_role": "finding",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a context presence/absence axis."
     },
     {
       "axis_id": "active_antifungal_coverage_probability",
@@ -194,10 +251,24 @@
     },
     {
       "day_from_admission": 3,
-      "axis_id": "altered_mental_status_activity",
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "a disturbance of consciousness",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "legacy_axis_id": "altered_mental_status_activity"
+    },
+    {
+      "day_from_admission": 3,
+      "axis_id": "mental_status_abnormality_severity",
       "value": 1.0,
       "unit": "severity_score_0_1",
-      "source_text_value": "a disturbance of consciousness"
+      "source_text_value": "a disturbance of consciousness",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "legacy_axis_id": "altered_mental_status_activity"
     },
     {
       "day_from_admission": 3,
@@ -215,10 +286,36 @@
     },
     {
       "day_from_admission": 3,
-      "axis_id": "papulopustular_skin_lesion_activity",
+      "axis_id": "rash_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "a new skin lesion appeared on the patient's right arm",
+      "axis_role": "finding",
+      "category": "skin_finding",
+      "legacy_axis_id": "papulopustular_skin_lesion_activity",
+      "conversion_note": "Parent finding inferred from child finding."
+    },
+    {
+      "day_from_admission": 3,
+      "axis_id": "papulopustular_skin_lesion_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "a new skin lesion appeared on the patient's right arm",
+      "axis_role": "satellite",
+      "category": "physical_finding",
+      "parent_axis_id": "rash_presence",
+      "legacy_axis_id": "papulopustular_skin_lesion_activity"
+    },
+    {
+      "day_from_admission": 3,
+      "axis_id": "papulopustular_skin_lesion_severity",
       "value": 0.7,
       "unit": "severity_score_0_1",
-      "source_text_value": "a new skin lesion appeared on the patient's right arm"
+      "source_text_value": "a new skin lesion appeared on the patient's right arm",
+      "axis_role": "satellite",
+      "category": "physical_finding",
+      "parent_axis_id": "papulopustular_skin_lesion_presence",
+      "legacy_axis_id": "papulopustular_skin_lesion_activity"
     },
     {
       "day_from_admission": 3,
