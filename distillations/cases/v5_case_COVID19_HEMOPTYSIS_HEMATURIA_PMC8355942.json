@@ -27,10 +27,13 @@
   ],
   "observations": [
     {
-      "axis_id": "fever_history_activity",
+      "axis_id": "fever_history_presence",
       "value": 1.0,
-      "unit": "severity_score_0_1",
-      "source_text_value": "seven-day history of fever"
+      "unit": "present_absent_0_1",
+      "source_text_value": "seven-day history of fever",
+      "category": "symptom",
+      "axis_role": "finding",
+      "legacy_axis_id": "fever_history_activity"
     },
     {
       "axis_id": "chills_activity",
@@ -39,22 +42,61 @@
       "source_text_value": "seven-day history of chills"
     },
     {
-      "axis_id": "hemoptysis_activity",
-      "value": 0.8,
-      "unit": "severity_score_0_1",
-      "source_text_value": "seven-day history of hemoptysis"
+      "axis_id": "hemoptysis_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "seven-day history of hemoptysis",
+      "category": "symptom",
+      "axis_role": "finding",
+      "legacy_axis_id": "hemoptysis_activity"
     },
     {
-      "axis_id": "hematuria_activity",
+      "axis_id": "hemoptysis_severity",
       "value": 0.8,
       "unit": "severity_score_0_1",
-      "source_text_value": "seven-day history of hematuria; urinalysis showed RBC 20-25 and blood 2+"
+      "source_text_value": "seven-day history of hemoptysis",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemoptysis_presence",
+      "legacy_axis_id": "hemoptysis_activity"
     },
     {
-      "axis_id": "dyspnea_activity",
+      "axis_id": "hematuria_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "seven-day history of hematuria; urinalysis showed RBC 20-25 and blood 2+",
+      "category": "urinalysis",
+      "axis_role": "finding",
+      "legacy_axis_id": "hematuria_activity"
+    },
+    {
+      "axis_id": "hematuria_severity",
+      "value": 0.8,
+      "unit": "severity_score_0_1",
+      "source_text_value": "seven-day history of hematuria; urinalysis showed RBC 20-25 and blood 2+",
+      "category": "urinalysis",
+      "axis_role": "satellite",
+      "parent_axis_id": "hematuria_presence",
+      "legacy_axis_id": "hematuria_activity"
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "tachypnea on admission with oxygen saturation 86% on room air",
+      "category": "symptom",
+      "axis_role": "finding",
+      "legacy_axis_id": "dyspnea_activity"
+    },
+    {
+      "axis_id": "dyspnea_severity",
       "value": 0.7,
       "unit": "severity_score_0_1",
-      "source_text_value": "tachypnea on admission with oxygen saturation 86% on room air"
+      "source_text_value": "tachypnea on admission with oxygen saturation 86% on room air",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "legacy_axis_id": "dyspnea_activity"
     },
     {
       "axis_id": "oxygen_saturation",
@@ -114,22 +156,69 @@
       "source_text_value": "HCO3 27.3"
     },
     {
-      "axis_id": "pneumonia_infiltrate_extent",
-      "value": 0.8,
-      "unit": "relative_extent_0_1",
-      "source_text_value": "bilateral ground-glass opacity and multifocal consolidation along subpleural regions"
+      "axis_id": "pulmonary_infiltrate_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "bilateral ground-glass opacity and multifocal consolidation along subpleural regions",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "legacy_axis_id": "pneumonia_infiltrate_extent"
     },
     {
-      "axis_id": "ground_glass_opacity_extent_covid",
+      "axis_id": "pulmonary_infiltrate_extent",
       "value": 0.8,
       "unit": "relative_extent_0_1",
-      "source_text_value": "bilateral ground-glass opacity on chest CT"
+      "source_text_value": "bilateral ground-glass opacity and multifocal consolidation along subpleural regions",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_infiltrate_presence",
+      "legacy_axis_id": "pneumonia_infiltrate_extent"
+    },
+    {
+      "axis_id": "interstitial_lung_disease_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "bilateral ground-glass opacity on chest CT",
+      "axis_role": "finding",
+      "category": "imaging_finding",
+      "legacy_axis_id": "ground_glass_opacity_extent_covid",
+      "conversion_note": "Parent finding inferred from child finding."
+    },
+    {
+      "axis_id": "ground_glass_opacity_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "bilateral ground-glass opacity on chest CT",
+      "axis_role": "satellite",
+      "category": "imaging_finding",
+      "parent_axis_id": "interstitial_lung_disease_presence",
+      "legacy_axis_id": "ground_glass_opacity_extent_covid"
+    },
+    {
+      "axis_id": "ground_glass_opacity_extent_score",
+      "value": 0.8,
+      "unit": "relative_extent_0_1",
+      "source_text_value": "bilateral ground-glass opacity on chest CT",
+      "axis_role": "satellite",
+      "category": "imaging_finding",
+      "parent_axis_id": "ground_glass_opacity_presence",
+      "legacy_axis_id": "ground_glass_opacity_extent_covid"
     },
     {
       "axis_id": "blood_culture_positivity_probability",
       "value": 0.0,
       "unit": "probability_0_1",
       "source_text_value": "blood cultures yielded no growth"
+    },
+    {
+      "axis_id": "fever_history_severity",
+      "value": 1.0,
+      "unit": "severity_score_0_1",
+      "source_text_value": "seven-day history of fever",
+      "axis_role": "satellite",
+      "parent_axis_id": "fever_history_presence",
+      "category": "symptom",
+      "legacy_axis_id": "fever_history_activity"
     }
   ],
   "confirmatory_findings": [
