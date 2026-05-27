@@ -419,11 +419,11 @@
       "effect_on_target": "increase",
       "edge_type": "mechanism_to_axis",
       "lag_days_range": [
-        0,
-        3
+        0.0,
+        7.0
       ],
       "phase": "whole_course",
-      "clinical_rationale": "Persistent candidemia implies a removable catheter, undrained focus, infected thrombus, or endovascular source until proven otherwise.",
+      "clinical_rationale": "Persistent catheter or deep focus requires source control in candidemia.",
       "knowledge_confidence": "high"
     },
     {
@@ -628,11 +628,11 @@
       "effect_on_target": "increase",
       "edge_type": "mechanism_to_axis",
       "lag_days_range": [
-        0,
-        3
+        -14.0,
+        7.0
       ],
       "phase": "whole_course",
-      "clinical_rationale": "Central lines and ports are common removable sources for candidemia.",
+      "clinical_rationale": "Candida biofilm on central venous catheters is a common source of candidemia.",
       "knowledge_confidence": "high"
     },
     {
@@ -911,6 +911,30 @@
       ],
       "clinical_rationale": "Severe systemic infection, shock, hypoxemia, ARDS, pulmonary edema, or fluid overload can increase oxygen or ventilatory support needs; this parallels the existing ards_hazard pathway.",
       "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CAND_INNATE_CYTOKINE_RESPONSE",
+      "target_id": "fever_history_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Innate cytokine response to candidemia drives fever.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CAND_BIOFILM_DEVICE_SEEDING",
+      "target_id": "central_venous_catheter_present",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -14.0,
+        7.0
+      ],
+      "clinical_rationale": "Candida biofilm on central venous catheters is a common source of candidemia.",
+      "knowledge_confidence": "high"
     }
   ],
   "axes": [
@@ -1651,10 +1675,10 @@
     },
     {
       "axis_id": "candida_auris_probability",
-      "category": "treatment_modifier",
+      "category": "microbiology",
       "unit": "probability_0_1",
       "log_scale": false,
-      "axis_role": "finding",
+      "axis_role": "measurement",
       "shape_free_text": "Probability that the isolate is Candida auris or clinically managed as C. auris pending confirmation; drives isolation, public health reporting, and resistance expectations.",
       "baseline_range": [
         0,
@@ -1664,14 +1688,27 @@
         0,
         1
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "ontology_note": "Candida species identity is post-workup microbiology/pathogen identity; treatment implications are handled separately by treatment modifiers.",
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ]
     },
     {
       "axis_id": "candida_glabrata_probability",
-      "category": "treatment_modifier",
+      "category": "microbiology",
       "unit": "probability_0_1",
       "log_scale": false,
-      "axis_role": "finding",
+      "axis_role": "measurement",
       "shape_free_text": "Probability that the isolate is Candida glabrata; increases azole resistance concern and may require higher-dose or non-azole therapy.",
       "baseline_range": [
         0.05,
@@ -1681,14 +1718,27 @@
         0,
         1
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "ontology_note": "Candida species identity is post-workup microbiology/pathogen identity; treatment implications are handled separately by treatment modifiers.",
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ]
     },
     {
       "axis_id": "candida_parapsilosis_probability",
-      "category": "treatment_modifier",
+      "category": "microbiology",
       "unit": "probability_0_1",
       "log_scale": false,
-      "axis_role": "finding",
+      "axis_role": "measurement",
       "shape_free_text": "Probability that the isolate is Candida parapsilosis; strongly associated with catheter biofilm and can have higher echinocandin MICs or emerging azole resistance.",
       "baseline_range": [
         0.05,
@@ -1698,14 +1748,27 @@
         0,
         1
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "ontology_note": "Candida species identity is post-workup microbiology/pathogen identity; treatment implications are handled separately by treatment modifiers.",
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ]
     },
     {
       "axis_id": "candida_krusei_probability",
-      "category": "treatment_modifier",
+      "category": "microbiology",
       "unit": "probability_0_1",
       "log_scale": false,
-      "axis_role": "finding",
+      "axis_role": "measurement",
       "shape_free_text": "Probability that the isolate is Candida krusei; implies intrinsic fluconazole resistance.",
       "baseline_range": [
         0,
@@ -1715,10 +1778,23 @@
         0,
         1
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "ontology_note": "Candida species identity is post-workup microbiology/pathogen identity; treatment implications are handled separately by treatment modifiers.",
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ]
     },
     {
-      "axis_id": "central_venous_catheter_present_in_D-CANDIDEMIA",
+      "axis_id": "central_venous_catheter_present",
       "category": "source_control",
       "unit": "present_absent_0_1",
       "log_scale": false,
@@ -1729,10 +1805,22 @@
         0.2
       ],
       "peak_value_range": [
-        0,
-        1
+        0.5,
+        1.0
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "peak_day_range": [
+        -365.0,
+        0.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ]
     },
     {
       "axis_id": "catheter_source_probability",
@@ -1746,10 +1834,22 @@
         0.2
       ],
       "peak_value_range": [
-        0,
-        1
+        0.3,
+        1.0
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        21.0
+      ]
     },
     {
       "axis_id": "infected_catheter_probability",
@@ -1780,10 +1880,22 @@
         0.1
       ],
       "peak_value_range": [
-        0,
-        1
+        0.2,
+        1.0
       ],
-      "knowledge_confidence": "high"
+      "knowledge_confidence": "high",
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        90.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ]
     },
     {
       "axis_id": "source_control_adequacy",
@@ -2562,6 +2674,36 @@
       ],
       "shape_free_text": "Oral thrush is a structured host-context clue for advanced cellular immunodeficiency or Candida overgrowth; it is not a disease-specific mechanism for this leaf.",
       "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fever_history_activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "knowledge_confidence": "high",
+      "axis_role": "satellite",
+      "parent_axis_id": "fever_history_presence",
+      "shape_free_text": "Candida bloodstream infection commonly produces fever despite antibacterial therapy."
     }
   ],
   "axis_couplings": [

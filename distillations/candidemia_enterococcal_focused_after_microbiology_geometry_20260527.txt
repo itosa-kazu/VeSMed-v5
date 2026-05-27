@@ -1,0 +1,360 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+seed=20260430, combo_penalty=-2.0, N_MC=2500 (used only in mc score mode)
+Ranking philosophy: geometry_first (legacy anchor/bonus/penalty scaffolds=off, structural_priors=on)
+Score mode: clinical deterministic_ensemble time_grid_n=17 early_anchors=(0.02, 0.1, 0.5, 1.0, 3.0, 7.0) parameter_quantiles=(0.2, 0.5, 0.8) background_quantiles=(0.2, 0.5, 0.8)
+Report mode: top ranking_top_n=10
+Runtime features: two-step diagnosis (formal health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, reusable response-gap models, family aggregation, and vector-field superposition for 2-disease candidates.
+Manifold discovery: 13 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=13, total_ranked=13, max_combo_size=1
+Case filter: CANDIDEMIA, ENTEROCOCCAL_BACTEREMIA
+Cases loaded for this run: 7
+
+Manifolds:
+  D-SEPSIS-GN : axes=94, mechanisms=11, mech_edges=61, couplings=17, risk_factors=16
+  D-ACUTE-CHOLANGITIS: axes=95, mechanisms=11, mech_edges=66, couplings=17, risk_factors=14
+  D-CANDIDEMIA: axes=76, mechanisms=10, mech_edges=50, couplings=13, risk_factors=13
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION: axes=66, mechanisms= 9, mech_edges=58, couplings= 9, risk_factors= 8
+  D-DIABETIC-FOOT-INFECTION: axes=85, mechanisms=12, mech_edges=71, couplings=15, risk_factors=11
+  D-ENTEROCOCCAL-BACTEREMIA: axes=80, mechanisms=10, mech_edges=56, couplings=17, risk_factors=11
+  D-FEBRILE-NEUTROPENIA: axes=76, mechanisms=12, mech_edges=52, couplings=22, risk_factors=12
+  D-INVASIVE-ASPERGILLOSIS: axes=87, mechanisms= 9, mech_edges=43, couplings=13, risk_factors= 9
+  D-PYOGENIC-LIVER-ABSCESS: axes=101, mechanisms=12, mech_edges=78, couplings=12, risk_factors=12
+  D-STAPH-AUREUS-BACTEREMIA: axes=69, mechanisms=10, mech_edges=53, couplings=11, risk_factors= 9
+  D-STREP-PYOGENES-BACTEREMIA: axes=62, mechanisms= 9, mech_edges=58, couplings=15, risk_factors= 9
+  D-STRONGYLOIDES-HYPERINFECTION: axes=72, mechanisms= 8, mech_edges=28, couplings=14, risk_factors= 9
+  D-TOXIC-SHOCK-SYNDROME: axes=95, mechanisms=18, mech_edges=80, couplings= 8, risk_factors= 9
+Base-measure/background axes: 9039
+
+----------------------------------------------------------------------------------------------------
+CANDIDEMIA_AURIS_PICC_TPN_PMC7386129  expected=D-CANDIDEMIA
+source: PMID 32754391 / PMC7386129 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7386129/
+paper diagnosis: Candida auris candidemia after traumatic brain injury, VP shunt, and PICC line for TPN
+observed axes: 12
+risk context: prolonged_icu_stay=healthcare_exposure; mechanical_ventilation_tracheostomy=invasive_device_context; picc_line_for_tpn=central_line_tpn_context
+
+[joint SDE ranking: all candidates]
+* D-CANDIDEMIA            logP=    -21.00 mean=  -2.626 n= 8 prior= +0.00 dHealth= +249.92
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=    -72.33 mean=  -9.041 n= 8 prior= +0.00 dHealth= +198.59
+  D-ENTEROCOCCAL-BACTEREMIA logP=    -74.61 mean=  -9.326 n= 8 prior= +0.00 dHealth= +196.31
+  D-FEBRILE-NEUTROPENIA   logP=   -103.47 mean= -12.934 n= 8 prior= +0.00 dHealth= +167.45
+  D-STAPH-AUREUS-BACTEREMIA logP=   -141.54 mean= -17.692 n= 8 prior= +0.00 dHealth= +129.38
+  D-SEPSIS-GN             logP=   -157.29 mean= -19.661 n= 8 prior= +0.72 dHealth= +113.63
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -173.20 mean= -21.651 n= 8 prior= +0.00 dHealth=  +97.71
+  D-STREP-PYOGENES-BACTEREMIA logP=   -174.86 mean= -21.857 n= 8 prior= +0.00 dHealth=  +96.06
+  D-PYOGENIC-LIVER-ABSCESS logP=   -175.23 mean= -21.903 n= 8 prior= +0.00 dHealth=  +95.69
+  D-ACUTE-CHOLANGITIS     logP=   -182.87 mean= -22.858 n= 8 prior= +0.00 dHealth=  +88.05
+
+[best single-manifold diagnostic]
+* D-CANDIDEMIA logP=    -21.00 mean=  -2.626 prior= +0.00 dHealth= +249.92
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=    -72.33 mean=  -9.041 prior= +0.00 dHealth= +198.59
+  D-ENTEROCOCCAL-BACTEREMIA logP=    -74.61 mean=  -9.326 prior= +0.00 dHealth= +196.31
+  D-FEBRILE-NEUTROPENIA logP=   -103.47 mean= -12.934 prior= +0.00 dHealth= +167.45
+  D-STAPH-AUREUS-BACTEREMIA logP=   -141.54 mean= -17.692 prior= +0.00 dHealth= +129.38
+  D-SEPSIS-GN  logP=   -157.29 mean= -19.661 prior= +0.72 dHealth= +113.63
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -173.20 mean= -21.651 prior= +0.00 dHealth=  +97.71
+  D-STREP-PYOGENES-BACTEREMIA logP=   -174.86 mean= -21.857 prior= +0.00 dHealth=  +96.06
+  D-PYOGENIC-LIVER-ABSCESS logP=   -175.23 mean= -21.903 prior= +0.00 dHealth=  +95.69
+  D-ACUTE-CHOLANGITIS logP=   -182.87 mean= -22.858 prior= +0.00 dHealth=  +88.05
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -21.00 candidate=D-CANDIDEMIA
+  logP_best_single=    -21.00 candidate=D-CANDIDEMIA
+  logP_health_reference=   -270.92 mean= -33.865 n= 8
+  delta_to_health_best_known=   +249.92
+  delta_to_health_best_single=   +249.92
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-CANDIDEMIA  PASS
+best latent times: D-CANDIDEMIA=day7.0
+largest standardized residuals: candida_auris_probability obs=1 probability_0_1 mu=0.04 via=D-CANDIDEMIA z=5.8; central_venous_catheter_present obs=1 present_absent_0_1 mu=0.728 via=D-CANDIDEMIA z=1.6; source_control_need obs=0.7 relative_activity_0_1 mu=0.468 via=D-CANDIDEMIA z=1.4; catheter_source_probability obs=0.7 probability_0_1 mu=0.4908 via=D-CANDIDEMIA z=1.3; total_parenteral_nutrition_exposure_activity obs=1 relative_activity_0_1 mu=0.8 via=D-CANDIDEMIA z=1.2
+response-model accounting: body_temperature obs=38.7 °C expected_mu=38.375 via=response_model:thermoregulatory_response_to_inflammation:expected_response:stimulus=0.75:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+CANDIDEMIA_ENDOPHTHALMITIS_TPN_PMC4531989  expected=D-CANDIDEMIA
+source: PMID 9439162 / PMC4531989 / https://pmc.ncbi.nlm.nih.gov/articles/PMC4531989/
+paper diagnosis: Hematogenous Candida endophthalmitis in candidemia after intravenous hyperalimentation through a femoral line
+observed axes: 13
+risk context: femoral_central_line=central_line_context; intravenous_hyperalimentation=tpn_context
+
+[joint SDE ranking: all candidates]
+* D-CANDIDEMIA            logP=    -35.81 mean=  -3.581 n=10 prior= +0.00 dHealth= +315.30
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -236.47 mean= -23.647 n=10 prior= +0.00 dHealth= +114.63
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -238.50 mean= -23.850 n=10 prior= +0.00 dHealth= +112.61
+  D-FEBRILE-NEUTROPENIA   logP=   -262.77 mean= -26.277 n=10 prior= +0.00 dHealth=  +88.33
+  D-SEPSIS-GN             logP=   -302.65 mean= -30.265 n=10 prior= +0.72 dHealth=  +48.46
+  D-STAPH-AUREUS-BACTEREMIA logP=   -305.37 mean= -30.537 n=10 prior= +0.00 dHealth=  +45.74
+  D-STREP-PYOGENES-BACTEREMIA logP=   -305.67 mean= -30.567 n=10 prior= +0.00 dHealth=  +45.43
+  D-DIABETIC-FOOT-INFECTION logP=   -305.98 mean= -30.598 n=10 prior= +0.00 dHealth=  +45.12
+  D-INVASIVE-ASPERGILLOSIS logP=   -311.93 mean= -31.193 n=10 prior= -2.50 dHealth=  +39.17
+  D-ACUTE-CHOLANGITIS     logP=   -318.58 mean= -31.858 n=10 prior= +0.00 dHealth=  +32.52
+
+[best single-manifold diagnostic]
+* D-CANDIDEMIA logP=    -35.81 mean=  -3.581 prior= +0.00 dHealth= +315.30
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -236.47 mean= -23.647 prior= +0.00 dHealth= +114.63
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -238.50 mean= -23.850 prior= +0.00 dHealth= +112.61
+  D-FEBRILE-NEUTROPENIA logP=   -262.77 mean= -26.277 prior= +0.00 dHealth=  +88.33
+  D-SEPSIS-GN  logP=   -302.65 mean= -30.265 prior= +0.72 dHealth=  +48.46
+  D-STAPH-AUREUS-BACTEREMIA logP=   -305.37 mean= -30.537 prior= +0.00 dHealth=  +45.74
+  D-STREP-PYOGENES-BACTEREMIA logP=   -305.67 mean= -30.567 prior= +0.00 dHealth=  +45.43
+  D-DIABETIC-FOOT-INFECTION logP=   -305.98 mean= -30.598 prior= +0.00 dHealth=  +45.12
+  D-INVASIVE-ASPERGILLOSIS logP=   -311.93 mean= -31.193 prior= -2.50 dHealth=  +39.17
+  D-ACUTE-CHOLANGITIS logP=   -318.58 mean= -31.858 prior= +0.00 dHealth=  +32.52
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -35.81 candidate=D-CANDIDEMIA
+  logP_best_single=    -35.81 candidate=D-CANDIDEMIA
+  logP_health_reference=   -351.11 mean= -35.111 n=10
+  delta_to_health_best_known=   +315.30
+  delta_to_health_best_single=   +315.30
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-CANDIDEMIA  PASS
+best latent times: D-CANDIDEMIA=day21.4
+largest standardized residuals: hemoglobin obs=9.3 g/dL mu=16 via=health_reference_manifold:v1_core_axes z=5.8; candida_vitritis_presence obs=1 present_absent_0_1 mu=0.694616 via=D-CANDIDEMIA z=1.8; central_venous_catheter_present obs=1 present_absent_0_1 mu=0.728 via=D-CANDIDEMIA z=1.6; absolute_neutrophil_count obs=11.5 10^9/L mu=8.49037 via=D-CANDIDEMIA z=1.2; total_parenteral_nutrition_exposure_activity obs=1 relative_activity_0_1 mu=0.8 via=D-CANDIDEMIA z=1.2
+
+----------------------------------------------------------------------------------------------------
+CANDIDEMIA_GLABRATA_URINARY_SEPSIS_PMC4052353  expected=D-CANDIDEMIA
+source: PMID 24936401 / PMC4052353 / https://pmc.ncbi.nlm.nih.gov/articles/PMC4052353/
+paper diagnosis: Candida glabrata severe urinary sepsis with candidemia successfully treated with micafungin
+observed axes: 25
+risk context: diabetes_mellitus=poorly_controlled; diabetes_mellitus_or_uncontrolled_hyperglycemia=present; urinary_catheter_or_urinary_retention_context=present; recent_broad_spectrum_antibacterial_exposure=present
+
+[joint SDE ranking: all candidates]
+* D-CANDIDEMIA            logP=   -147.76 mean=  -8.209 n=18 prior= +1.01 dHealth=+1870.64
+  D-INVASIVE-ASPERGILLOSIS logP=   -214.83 mean= -11.935 n=18 prior= -2.50 dHealth=+1803.57
+  D-SEPSIS-GN             logP=   -216.78 mean= -12.043 n=18 prior= +2.04 dHealth=+1801.63
+  D-PYOGENIC-LIVER-ABSCESS logP=   -220.91 mean= -12.273 n=18 prior= +1.32 dHealth=+1797.50
+  D-TOXIC-SHOCK-SYNDROME  logP=   -239.34 mean= -13.297 n=18 prior= -4.50 dHealth=+1779.06
+  D-ACUTE-CHOLANGITIS     logP=   -250.55 mean= -13.919 n=18 prior= +0.00 dHealth=+1767.85
+  D-DIABETIC-FOOT-INFECTION logP=   -255.91 mean= -14.217 n=18 prior= +2.48 dHealth=+1762.49
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -271.53 mean= -15.085 n=18 prior= +0.00 dHealth=+1746.88
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -272.03 mean= -15.113 n=18 prior= +0.00 dHealth=+1746.37
+  D-STREP-PYOGENES-BACTEREMIA logP=   -274.60 mean= -15.256 n=18 prior= +0.00 dHealth=+1743.80
+
+[best single-manifold diagnostic]
+* D-CANDIDEMIA logP=   -147.76 mean=  -8.209 prior= +1.01 dHealth=+1870.64
+  D-INVASIVE-ASPERGILLOSIS logP=   -214.83 mean= -11.935 prior= -2.50 dHealth=+1803.57
+  D-SEPSIS-GN  logP=   -216.78 mean= -12.043 prior= +2.04 dHealth=+1801.63
+  D-PYOGENIC-LIVER-ABSCESS logP=   -220.91 mean= -12.273 prior= +1.32 dHealth=+1797.50
+  D-TOXIC-SHOCK-SYNDROME logP=   -239.34 mean= -13.297 prior= -4.50 dHealth=+1779.06
+  D-ACUTE-CHOLANGITIS logP=   -250.55 mean= -13.919 prior= +0.00 dHealth=+1767.85
+  D-DIABETIC-FOOT-INFECTION logP=   -255.91 mean= -14.217 prior= +2.48 dHealth=+1762.49
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -271.53 mean= -15.085 prior= +0.00 dHealth=+1746.88
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -272.03 mean= -15.113 prior= +0.00 dHealth=+1746.37
+  D-STREP-PYOGENES-BACTEREMIA logP=   -274.60 mean= -15.256 prior= +0.00 dHealth=+1743.80
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -147.76 candidate=D-CANDIDEMIA
+  logP_best_single=   -147.76 candidate=D-CANDIDEMIA
+  logP_health_reference=  -2018.40 mean=-112.133 n=18
+  delta_to_health_best_known=  +1870.64
+  delta_to_health_best_single=  +1870.64
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-CANDIDEMIA  PASS
+best latent times: D-CANDIDEMIA=day5.8
+largest standardized residuals: mental_status_abnormality_activity obs=1 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.0; altered_mental_status_activity obs=0.6 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=7.0; candida_glabrata_probability obs=1 probability_0_1 mu=0.21 via=D-CANDIDEMIA z=4.7; serum_glucose obs=679 mg/dL mu=428 via=D-CANDIDEMIA z=3.5; serum_creatinine obs=6.41 mg/dL mu=4.24 via=D-CANDIDEMIA z=3.0
+response-model accounting: body_temperature obs=39.2 °C expected_mu=38.3 via=response_model:thermoregulatory_response_to_inflammation:expected_response:stimulus=0.72:gap=0.00; white_blood_cell_count obs=15.8 10^9/L expected_mu=15.6471 via=response_model:myeloid_response_to_inflammation:expected_response:stimulus=0.78:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+ENTEROCOCCAL_BACTEREMIA_ECASSELIFLAVUS_HD_CATHETER_PMC7768448  expected=D-ENTEROCOCCAL-BACTEREMIA
+source: PMID 33158120 / PMC7768448 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7768448/
+paper diagnosis: Enterococcus casseliflavus bacteremia with hemodialysis catheter-associated septic thrombophlebitis
+observed axes: 34
+risk context: central_line_hemodialysis_or_intravascular_device=present; chronic_kidney_disease_hemodialysis_or_crrt=present; solid_organ_transplant_malignancy_steroids_or_iatrogenic_immunosuppression=present; advanced_age_or_high_comorbidity_burden=present
+
+[joint SDE ranking: all candidates]
+* D-ENTEROCOCCAL-BACTEREMIA logP=   -160.74 mean=  -7.654 n=21 prior= +5.54 dHealth= +656.53
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -312.70 mean= -14.891 n=21 prior= +0.00 dHealth= +504.57
+  D-SEPSIS-GN             logP=   -480.78 mean= -22.894 n=21 prior= +0.72 dHealth= +336.49
+  D-STREP-PYOGENES-BACTEREMIA logP=   -498.16 mean= -23.722 n=21 prior= +0.00 dHealth= +319.12
+  D-PYOGENIC-LIVER-ABSCESS logP=   -501.78 mean= -23.894 n=21 prior= +0.00 dHealth= +315.49
+  D-CANDIDEMIA            logP=   -530.20 mean= -25.247 n=21 prior= +0.00 dHealth= +287.08
+  D-FEBRILE-NEUTROPENIA   logP=   -565.60 mean= -26.933 n=21 prior= +0.00 dHealth= +251.67
+  D-INVASIVE-ASPERGILLOSIS logP=   -565.62 mean= -26.934 n=21 prior= -2.50 dHealth= +251.65
+  D-STAPH-AUREUS-BACTEREMIA logP=   -603.60 mean= -28.743 n=21 prior= +0.96 dHealth= +213.67
+  D-ACUTE-CHOLANGITIS     logP=   -657.05 mean= -31.288 n=21 prior= +0.00 dHealth= +160.22
+
+[best single-manifold diagnostic]
+* D-ENTEROCOCCAL-BACTEREMIA logP=   -160.74 mean=  -7.654 prior= +5.54 dHealth= +656.53
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -312.70 mean= -14.891 prior= +0.00 dHealth= +504.57
+  D-SEPSIS-GN  logP=   -480.78 mean= -22.894 prior= +0.72 dHealth= +336.49
+  D-STREP-PYOGENES-BACTEREMIA logP=   -498.16 mean= -23.722 prior= +0.00 dHealth= +319.12
+  D-PYOGENIC-LIVER-ABSCESS logP=   -501.78 mean= -23.894 prior= +0.00 dHealth= +315.49
+  D-CANDIDEMIA logP=   -530.20 mean= -25.247 prior= +0.00 dHealth= +287.08
+  D-FEBRILE-NEUTROPENIA logP=   -565.60 mean= -26.933 prior= +0.00 dHealth= +251.67
+  D-INVASIVE-ASPERGILLOSIS logP=   -565.62 mean= -26.934 prior= -2.50 dHealth= +251.65
+  D-STAPH-AUREUS-BACTEREMIA logP=   -603.60 mean= -28.743 prior= +0.96 dHealth= +213.67
+  D-ACUTE-CHOLANGITIS logP=   -657.05 mean= -31.288 prior= +0.00 dHealth= +160.22
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -160.74 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_best_single=   -160.74 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_health_reference=   -817.27 mean= -38.918 n=21
+  delta_to_health_best_known=   +656.53
+  delta_to_health_best_single=   +656.53
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ENTEROCOCCAL-BACTEREMIA  PASS
+best latent times: D-ENTEROCOCCAL-BACTEREMIA=day10.9
+largest standardized residuals: rigors_severity obs=1 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.0; rigor_activity obs=1 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.0; white_blood_cell_count obs=13.59 10^9/L mu=28.2 via=D-ENTEROCOCCAL-BACTEREMIA z=2.6; hemoglobin obs=10.4 g/dL mu=14.4211 via=D-ENTEROCOCCAL-BACTEREMIA z=2.5; serum_procalcitonin obs=2.7 ng/mL mu=29.5725 via=D-ENTEROCOCCAL-BACTEREMIA z=1.7
+
+----------------------------------------------------------------------------------------------------
+ENTEROCOCCAL_BACTEREMIA_ECECORUM_COLITIS_PMC10324793  expected=D-ENTEROCOCCAL-BACTEREMIA
+source: PMID 37427050 / PMC10324793 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10324793/
+paper diagnosis: Enterococcus cecorum human bacteremia with epigastric pain, diarrhea, colonic thickening, and shaking chills
+observed axes: 35
+risk context: advanced_age_or_high_comorbidity_burden=present; gastrointestinal_mucosal_barrier_injury_or_intra_abdominal_source=present
+
+[joint SDE ranking: all candidates]
+* D-ENTEROCOCCAL-BACTEREMIA logP=   -175.67 mean=  -8.783 n=20 prior= +2.51 dHealth= +431.95
+  D-PYOGENIC-LIVER-ABSCESS logP=   -286.81 mean= -14.341 n=20 prior= +0.00 dHealth= +320.81
+  D-SEPSIS-GN             logP=   -311.28 mean= -15.564 n=20 prior= +0.72 dHealth= +296.34
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -348.40 mean= -17.420 n=20 prior= +0.00 dHealth= +259.22
+  D-STREP-PYOGENES-BACTEREMIA logP=   -352.81 mean= -17.641 n=20 prior= +0.00 dHealth= +254.80
+  D-TOXIC-SHOCK-SYNDROME  logP=   -373.28 mean= -18.664 n=20 prior= -4.50 dHealth= +234.33
+  D-FEBRILE-NEUTROPENIA   logP=   -404.11 mean= -20.206 n=20 prior= +0.00 dHealth= +203.50
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -422.07 mean= -21.103 n=20 prior= +0.00 dHealth= +185.55
+  D-INVASIVE-ASPERGILLOSIS logP=   -435.56 mean= -21.778 n=20 prior= -2.50 dHealth= +172.05
+  D-ACUTE-CHOLANGITIS     logP=   -453.39 mean= -22.670 n=20 prior= +0.00 dHealth= +154.22
+
+[best single-manifold diagnostic]
+* D-ENTEROCOCCAL-BACTEREMIA logP=   -175.67 mean=  -8.783 prior= +2.51 dHealth= +431.95
+  D-PYOGENIC-LIVER-ABSCESS logP=   -286.81 mean= -14.341 prior= +0.00 dHealth= +320.81
+  D-SEPSIS-GN  logP=   -311.28 mean= -15.564 prior= +0.72 dHealth= +296.34
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -348.40 mean= -17.420 prior= +0.00 dHealth= +259.22
+  D-STREP-PYOGENES-BACTEREMIA logP=   -352.81 mean= -17.641 prior= +0.00 dHealth= +254.80
+  D-TOXIC-SHOCK-SYNDROME logP=   -373.28 mean= -18.664 prior= -4.50 dHealth= +234.33
+  D-FEBRILE-NEUTROPENIA logP=   -404.11 mean= -20.206 prior= +0.00 dHealth= +203.50
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -422.07 mean= -21.103 prior= +0.00 dHealth= +185.55
+  D-INVASIVE-ASPERGILLOSIS logP=   -435.56 mean= -21.778 prior= -2.50 dHealth= +172.05
+  D-ACUTE-CHOLANGITIS logP=   -453.39 mean= -22.670 prior= +0.00 dHealth= +154.22
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -175.67 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_best_single=   -175.67 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_health_reference=   -607.62 mean= -30.381 n=20
+  delta_to_health_best_known=   +431.95
+  delta_to_health_best_single=   +431.95
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ENTEROCOCCAL-BACTEREMIA  PASS
+best latent times: D-ENTEROCOCCAL-BACTEREMIA=day3.0
+largest standardized residuals: rigor_activity obs=1 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.0; rigors_severity obs=0.9 severity_score_0_1 mu=0.04 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=10.8; heart_rate obs=58 beats_per_min mu=132 via=D-ENTEROCOCCAL-BACTEREMIA z=4.9; serum_creatinine obs=1.76 mg/dL mu=6.80742 via=D-ENTEROCOCCAL-BACTEREMIA z=3.1; abdominal_pain_activity obs=1 severity_score_0_1 mu=0.549647 via=D-ENTEROCOCCAL-BACTEREMIA z=2.7
+
+----------------------------------------------------------------------------------------------------
+ENTEROCOCCAL_BACTEREMIA_EFAECALIS_GI_IE_STEMI_PMC9340997  expected=D-ENTEROCOCCAL-BACTEREMIA
+source: PMID 35899534 / PMC9340997 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9340997/
+paper diagnosis: Enterococcus faecalis bacteremia with infective endocarditis, septic coronary embolus, splenic infarct, and rectosigmoid perforation source
+observed axes: 31
+risk context: advanced_age_or_high_comorbidity_burden=present; gastrointestinal_mucosal_barrier_injury_or_intra_abdominal_source=present; prosthetic_valve_prior_valve_disease_or_unknown_source=present
+
+[joint SDE ranking: all candidates]
+* D-ENTEROCOCCAL-BACTEREMIA logP=    -33.07 mean=  -2.067 n=16 prior= +2.92 dHealth= +515.67
+  D-SEPSIS-GN             logP=   -197.71 mean= -12.357 n=16 prior= +0.72 dHealth= +351.03
+  D-PYOGENIC-LIVER-ABSCESS logP=   -200.86 mean= -12.554 n=16 prior= +0.00 dHealth= +347.88
+  D-TOXIC-SHOCK-SYNDROME  logP=   -214.50 mean= -13.406 n=16 prior= -4.50 dHealth= +334.24
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -239.32 mean= -14.958 n=16 prior= +0.00 dHealth= +309.42
+  D-STREP-PYOGENES-BACTEREMIA logP=   -286.73 mean= -17.921 n=16 prior= +0.00 dHealth= +262.01
+  D-INVASIVE-ASPERGILLOSIS logP=   -288.18 mean= -18.012 n=16 prior= -2.50 dHealth= +260.55
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -294.59 mean= -18.412 n=16 prior= +0.00 dHealth= +254.15
+  D-FEBRILE-NEUTROPENIA   logP=   -296.69 mean= -18.543 n=16 prior= +0.00 dHealth= +252.05
+  D-ACUTE-CHOLANGITIS     logP=   -298.56 mean= -18.660 n=16 prior= +0.00 dHealth= +250.18
+
+[best single-manifold diagnostic]
+* D-ENTEROCOCCAL-BACTEREMIA logP=    -33.07 mean=  -2.067 prior= +2.92 dHealth= +515.67
+  D-SEPSIS-GN  logP=   -197.71 mean= -12.357 prior= +0.72 dHealth= +351.03
+  D-PYOGENIC-LIVER-ABSCESS logP=   -200.86 mean= -12.554 prior= +0.00 dHealth= +347.88
+  D-TOXIC-SHOCK-SYNDROME logP=   -214.50 mean= -13.406 prior= -4.50 dHealth= +334.24
+  D-STRONGYLOIDES-HYPERINFECTION logP=   -239.32 mean= -14.958 prior= +0.00 dHealth= +309.42
+  D-STREP-PYOGENES-BACTEREMIA logP=   -286.73 mean= -17.921 prior= +0.00 dHealth= +262.01
+  D-INVASIVE-ASPERGILLOSIS logP=   -288.18 mean= -18.012 prior= -2.50 dHealth= +260.55
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=   -294.59 mean= -18.412 prior= +0.00 dHealth= +254.15
+  D-FEBRILE-NEUTROPENIA logP=   -296.69 mean= -18.543 prior= +0.00 dHealth= +252.05
+  D-ACUTE-CHOLANGITIS logP=   -298.56 mean= -18.660 prior= +0.00 dHealth= +250.18
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -33.07 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_best_single=    -33.07 candidate=D-ENTEROCOCCAL-BACTEREMIA
+  logP_health_reference=   -548.74 mean= -34.296 n=16
+  delta_to_health_best_known=   +515.67
+  delta_to_health_best_single=   +515.67
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ENTEROCOCCAL-BACTEREMIA  PASS
+best latent times: D-ENTEROCOCCAL-BACTEREMIA=day15.2
+largest standardized residuals: systolic_blood_pressure obs=93 mmHg mu=132.666 via=D-ENTEROCOCCAL-BACTEREMIA z=3.2; diastolic_blood_pressure obs=60 mmHg mu=82.4006 via=D-ENTEROCOCCAL-BACTEREMIA z=2.4; mean_arterial_pressure obs=71 mmHg mu=94.1811 via=D-ENTEROCOCCAL-BACTEREMIA z=2.3; abdominal_pain_activity obs=1 severity_score_0_1 mu=0.6176 via=D-ENTEROCOCCAL-BACTEREMIA z=2.3; ie_septic_embolization_activity obs=0.8 severity_score_0_1 mu=0.474355 via=D-ENTEROCOCCAL-BACTEREMIA z=2.0
+
+----------------------------------------------------------------------------------------------------
+FEBRILE_NEUTROPENIA_ALL_MUCOSITIS_CANDIDEMIA_PMC2920006  expected=D-FEBRILE-NEUTROPENIA
+source: PMID 20740203 / PMC2920006 / https://pmc.ncbi.nlm.nih.gov/articles/PMC2920006/
+paper diagnosis: Febrile neutropenia during ALL induction with grade IV mucositis, candidemia, central-line removal, and Candida retinitis
+observed axes: 25
+risk context: acute_lymphoblastic_leukemia=background_disease_confirmatory; induction_chemotherapy=treatment_context; hickman_line=central_line_context; severe_mucositis=barrier_context
+
+[joint SDE ranking: all candidates]
+* D-FEBRILE-NEUTROPENIA   logP=    -41.18 mean=  -2.941 n=14 prior= +0.00 dHealth=+5375.80
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=  -5205.99 mean=-371.857 n=14 prior= +0.00 dHealth= +210.99
+  D-CANDIDEMIA            logP=  -5207.14 mean=-371.939 n=14 prior= +0.00 dHealth= +209.84
+  D-ENTEROCOCCAL-BACTEREMIA logP=  -5210.77 mean=-372.198 n=14 prior= +0.00 dHealth= +206.21
+  D-STREP-PYOGENES-BACTEREMIA logP=  -5290.10 mean=-377.864 n=14 prior= +0.00 dHealth= +126.88
+  D-SEPSIS-GN             logP=  -5291.81 mean=-377.987 n=14 prior= +0.72 dHealth= +125.17
+  D-PYOGENIC-LIVER-ABSCESS logP=  -5292.82 mean=-378.058 n=14 prior= +0.00 dHealth= +124.16
+  D-INVASIVE-ASPERGILLOSIS logP=  -5296.94 mean=-378.353 n=14 prior= -2.50 dHealth= +120.05
+  D-STAPH-AUREUS-BACTEREMIA logP=  -5333.43 mean=-380.959 n=14 prior= +0.00 dHealth=  +83.56
+  D-TOXIC-SHOCK-SYNDROME  logP=  -5340.73 mean=-381.481 n=14 prior= -4.50 dHealth=  +76.25
+
+[best single-manifold diagnostic]
+* D-FEBRILE-NEUTROPENIA logP=    -41.18 mean=  -2.941 prior= +0.00 dHealth=+5375.80
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION logP=  -5205.99 mean=-371.857 prior= +0.00 dHealth= +210.99
+  D-CANDIDEMIA logP=  -5207.14 mean=-371.939 prior= +0.00 dHealth= +209.84
+  D-ENTEROCOCCAL-BACTEREMIA logP=  -5210.77 mean=-372.198 prior= +0.00 dHealth= +206.21
+  D-STREP-PYOGENES-BACTEREMIA logP=  -5290.10 mean=-377.864 prior= +0.00 dHealth= +126.88
+  D-SEPSIS-GN  logP=  -5291.81 mean=-377.987 prior= +0.72 dHealth= +125.17
+  D-PYOGENIC-LIVER-ABSCESS logP=  -5292.82 mean=-378.058 prior= +0.00 dHealth= +124.16
+  D-INVASIVE-ASPERGILLOSIS logP=  -5296.94 mean=-378.353 prior= -2.50 dHealth= +120.05
+  D-STAPH-AUREUS-BACTEREMIA logP=  -5333.43 mean=-380.959 prior= +0.00 dHealth=  +83.56
+  D-TOXIC-SHOCK-SYNDROME logP=  -5340.73 mean=-381.481 prior= -4.50 dHealth=  +76.25
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -41.18 candidate=D-FEBRILE-NEUTROPENIA
+  logP_best_single=    -41.18 candidate=D-FEBRILE-NEUTROPENIA
+  logP_health_reference=  -5416.98 mean=-386.927 n=14
+  delta_to_health_best_known=  +5375.80
+  delta_to_health_best_single=  +5375.80
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-FEBRILE-NEUTROPENIA  PASS
+best latent times: D-FEBRILE-NEUTROPENIA=day9.3
+largest standardized residuals: source_control_need obs=0.7 relative_activity_0_1 mu=0.1008 via=D-FEBRILE-NEUTROPENIA z=3.6; fever_history_activity obs=1 severity_score_0_1 mu=0.42872 via=D-FEBRILE-NEUTROPENIA z=3.4; catheter_source_probability obs=0.6 probability_0_1 mu=0.054925 via=D-FEBRILE-NEUTROPENIA z=3.3; central_venous_catheter_present obs=1 present_absent_0_1 mu=0.512625 via=D-FEBRILE-NEUTROPENIA z=2.9; active_antifungal_coverage_probability obs=0.4 probability_0_1 mu=0.8 via=D-FEBRILE-NEUTROPENIA z=2.4
+
+====================================================================================================
+Single-manifold validation: 7/7 PASS
+Combo-manifold validation:  0/0 PASS
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - geometry_first mode makes diagnosis ranking emerge from axis residuals, trajectories, couplings, mechanism gates, risk/background modifiers, and case observations.
+  - legacy anchor/bonus/missing-anchor/duration penalties are retained only behind VESMED_RANKING_PHILOSOPHY=legacy_scaffold for regression comparison.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.
+  - Formal health_reference_manifold axes and reusable response_models are loaded when present; response axes can be scored through expected-response / response-failure factorization instead of direct disease-axis double counting.
+  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.

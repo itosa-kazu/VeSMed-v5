@@ -6,6 +6,7 @@
   "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7386129/fullTextXML",
   "disease_label_per_paper": "Candida auris candidemia after traumatic brain injury, VP shunt, and PICC line for TPN",
   "expected_manifold": "D-CANDIDEMIA",
+  "ranking_evidence_mode": "post_workup",
   "demographics": {
     "age": 61,
     "sex": "M"
@@ -42,7 +43,7 @@
       "conversion_note": "(101.7 - 32) * 5/9"
     },
     {
-      "axis_id": "central_venous_catheter_present_in_D-CANDIDEMIA",
+      "axis_id": "central_venous_catheter_present",
       "value": 1.0,
       "unit": "present_absent_0_1",
       "source_text_value": "A PICC line was also placed"
@@ -50,42 +51,89 @@
     {
       "axis_id": "total_parenteral_nutrition_exposure_activity",
       "value": 1.0,
-      "unit": "relative_activity_0_1",
-      "source_text_value": "to start TPN"
+      "unit": "present_absent_0_1",
+      "source_text_value": "to start TPN",
+      "axis_role": "finding",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a context presence/absence axis."
+    },
+    {
+      "axis_id": "catheter_source_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "PICC line was discontinued on the same day",
+      "category": "source_control",
+      "axis_role": "finding",
+      "inferred_from_child_axis_id": "catheter_source_probability",
+      "conversion_note": "Parent observation inferred from child observation for parent/satellite ontology."
     },
     {
       "axis_id": "catheter_source_probability",
       "value": 0.7,
       "unit": "probability_0_1",
-      "source_text_value": "PICC line was discontinued on the same day"
+      "source_text_value": "PICC line was discontinued on the same day",
+      "axis_role": "measurement",
+      "parent_axis_id": "catheter_source_presence",
+      "category": "source_control"
+    },
+    {
+      "axis_id": "source_control_problem_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "The PICC line was discontinued on the same day",
+      "category": "source_control",
+      "axis_role": "finding",
+      "inferred_from_child_axis_id": "source_control_need",
+      "conversion_note": "Parent observation inferred from child observation for parent/satellite ontology."
     },
     {
       "axis_id": "source_control_need",
       "value": 0.7,
       "unit": "relative_activity_0_1",
-      "source_text_value": "The PICC line was discontinued on the same day"
+      "source_text_value": "The PICC line was discontinued on the same day",
+      "axis_role": "measurement",
+      "parent_axis_id": "source_control_problem_presence",
+      "category": "source_control"
     },
     {
       "axis_id": "recent_broad_spectrum_antibiotic_exposure_activity",
-      "value": 0.8,
-      "unit": "relative_activity_0_1",
-      "source_text_value": "Broad-spectrum antibiotics namely IV vancomycin and meropenem were started"
-    },
-    {
-      "axis_id": "active_antifungal_coverage_probability",
-      "value": 0.0,
-      "unit": "probability_0_1",
-      "source_text_value": "Micafungin was added after blood culture was growing candida"
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "Broad-spectrum antibiotics namely IV vancomycin and meropenem were started",
+      "axis_role": "finding",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a context presence/absence axis."
     }
   ],
   "confirmatory_findings": [
     {
       "finding": "Blood culture grew Candida auris",
+      "mapped_axes": [
+        {
+          "axis_id": "blood_culture_positivity_probability",
+          "value": 1.0,
+          "unit": "probability_0_1"
+        },
+        {
+          "axis_id": "candida_auris_probability",
+          "value": 1.0,
+          "unit": "probability_0_1"
+        }
+      ],
       "source_text_value": "blood culture was growing candida ... the candida was identified as auris"
     },
     {
       "finding": "Micafungin susceptibility",
       "source_text_value": "C. auris was found to be sensitive to micafungin (MIC < 4)"
+    }
+  ],
+  "actual_treatment": [
+    {
+      "axis_id": "active_antifungal_coverage_probability",
+      "value": 0.0,
+      "unit": "probability_0_1",
+      "source_text_value": "Micafungin was added after blood culture was growing candida",
+      "use_in_ranking": false,
+      "ranking_exclusion_reason": "Treatment coverage timing is management context, not disease-identity geometry.",
+      "category": "treatment_context"
     }
   ]
 }

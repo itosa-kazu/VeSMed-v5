@@ -6,6 +6,7 @@
   "source_fulltext_xml": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4052353/fullTextXML",
   "disease_label_per_paper": "Candida glabrata severe urinary sepsis with candidemia successfully treated with micafungin",
   "expected_manifold": "D-CANDIDEMIA",
+  "diagnostic_stage": "post_microbiology_source_context",
   "demographics": {
     "age": 56,
     "sex": "F"
@@ -65,10 +66,23 @@
       "conversion_note": "(90 + 2*56) / 3"
     },
     {
-      "axis_id": "mental_status_abnormality_activity",
+      "axis_id": "mental_status_abnormality_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "altered mental status ... alert and confabulating",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "legacy_axis_id": "mental_status_abnormality_activity"
+    },
+    {
+      "axis_id": "mental_status_abnormality_severity",
       "value": 0.6,
       "unit": "severity_score_0_1",
-      "source_text_value": "altered mental status ... alert and confabulating"
+      "source_text_value": "altered mental status ... alert and confabulating",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "mental_status_abnormality_presence",
+      "legacy_axis_id": "mental_status_abnormality_activity"
     },
     {
       "axis_id": "white_blood_cell_count",
@@ -116,27 +130,65 @@
     },
     {
       "axis_id": "recent_broad_spectrum_antibiotic_exposure_activity",
-      "value": 0.7,
-      "unit": "relative_activity_0_1",
-      "source_text_value": "ciprofloxacin ... without improvement; meropenem and levofloxacin were started"
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "ciprofloxacin ... without improvement; meropenem and levofloxacin were started",
+      "axis_role": "finding",
+      "treatment_modifier_ontology_note": "Treatment modifier normalized as a context presence/absence axis."
+    },
+    {
+      "axis_id": "urinary_source_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "six days of high-grade fever associated with dysuria and opalescent urine; after bladder catheterization pyuria was evident",
+      "category": "source_control",
+      "axis_role": "finding",
+      "inferred_from_child_axis_id": "urinary_source_probability",
+      "conversion_note": "Parent observation inferred from child observation for parent/satellite ontology."
     },
     {
       "axis_id": "urinary_source_probability",
       "value": 0.85,
       "unit": "probability_0_1",
-      "source_text_value": "six days of high-grade fever associated with dysuria and opalescent urine; after bladder catheterization pyuria was evident"
+      "source_text_value": "six days of high-grade fever associated with dysuria and opalescent urine; after bladder catheterization pyuria was evident",
+      "axis_role": "measurement",
+      "parent_axis_id": "urinary_source_presence",
+      "category": "source_control"
+    },
+    {
+      "axis_id": "source_control_problem_presence",
+      "value": 1.0,
+      "unit": "present_absent_0_1",
+      "source_text_value": "During the hospital stay dysfunction of the bladder due to diabetic dysautonomia was suspected",
+      "category": "source_control",
+      "axis_role": "finding",
+      "inferred_from_child_axis_id": "source_control_need",
+      "conversion_note": "Parent observation inferred from child observation for parent/satellite ontology."
     },
     {
       "axis_id": "source_control_need",
       "value": 0.5,
       "unit": "relative_activity_0_1",
-      "source_text_value": "During the hospital stay dysfunction of the bladder due to diabetic dysautonomia was suspected"
+      "source_text_value": "During the hospital stay dysfunction of the bladder due to diabetic dysautonomia was suspected",
+      "axis_role": "measurement",
+      "parent_axis_id": "source_control_problem_presence",
+      "category": "source_control"
     },
     {
-      "axis_id": "active_antifungal_coverage_probability",
-      "value": 0.0,
+      "axis_id": "blood_culture_positivity_probability",
+      "value": 1.0,
       "unit": "probability_0_1",
-      "source_text_value": "Antibacterial treatment was stopped and micafungin ... was added after cultures turned positive"
+      "category": "microbiology",
+      "axis_role": "finding",
+      "source_text_value": "blood and urine cultures turned positive for C. glabrata infection resistant to fluconazole"
+    },
+    {
+      "axis_id": "candida_glabrata_probability",
+      "value": 1.0,
+      "unit": "probability_0_1",
+      "category": "microbiology",
+      "axis_role": "measurement",
+      "source_text_value": "blood and urine cultures turned positive for C. glabrata infection resistant to fluconazole"
     }
   ],
   "confirmatory_findings": [
@@ -147,6 +199,17 @@
     {
       "finding": "No ocular candidiasis",
       "source_text_value": "There were no signs of ocular candidiasis on ophthalmic examination"
+    }
+  ],
+  "actual_treatment": [
+    {
+      "axis_id": "active_antifungal_coverage_probability",
+      "value": 0.0,
+      "unit": "probability_0_1",
+      "source_text_value": "Antibacterial treatment was stopped and micafungin ... was added after cultures turned positive",
+      "use_in_ranking": false,
+      "ranking_exclusion_reason": "Treatment coverage timing is management context, not disease-identity geometry.",
+      "category": "treatment_context"
     }
   ]
 }
