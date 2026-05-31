@@ -1,0 +1,85 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+seed=20260430, combo_penalty=-2.0, N_MC=2500 (used only in mc score mode)
+Ranking philosophy: geometry_first (legacy anchor/bonus/penalty scaffolds=off, structural_priors=on)
+Score mode: grid time_grid_n=17 (deterministic midpoint sampling + early anchors (0.02, 0.1, 0.5, 1.0, 3.0, 7.0))
+Report mode: top ranking_top_n=10
+Runtime features: two-step diagnosis (formal health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, reusable response-gap models, family aggregation, and vector-field superposition for 2-disease candidates.
+Manifold discovery: 8 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=8, total_ranked=36, max_combo_size=2
+Case filter: DIC_PLACENTAL_ABRUPTION_PMC10345462
+Cases loaded for this run: 1
+
+Manifolds:
+  D-AMNIOTIC-FLUID-EMBOLISM: axes=116, mechanisms=10, mech_edges=73, couplings=16, risk_factors=11
+  D-DIC       : axes=69, mechanisms=10, mech_edges=52, couplings=17, risk_factors=11
+  D-HELLP-SYNDROME: axes=104, mechanisms= 9, mech_edges=64, couplings=21, risk_factors=12
+  D-HEMORRHAGIC-SHOCK: axes=111, mechanisms= 8, mech_edges=216, couplings=18, risk_factors= 9
+  D-PLACENTAL-ABRUPTION: axes=97, mechanisms= 8, mech_edges=79, couplings=14, risk_factors=10
+  D-SEPTIC-ABORTION: axes=76, mechanisms= 9, mech_edges=53, couplings=15, risk_factors=12
+  D-UTERINE-RUPTURE: axes=96, mechanisms= 8, mech_edges=53, couplings=12, risk_factors=13
+  D-VON-WILLEBRAND-DISEASE: axes=68, mechanisms= 8, mech_edges=34, couplings=12, risk_factors=13
+Base-measure/background axes: 9088
+Parallel workers: 1 (case-level; set VESMED_N_WORKERS=1 for sequential or 0/auto for capped auto)
+Candidate workers: 1 (per-case candidate chunks; set VESMED_N_CANDIDATE_WORKERS=auto or an integer)
+
+----------------------------------------------------------------------------------------------------
+DIC_PLACENTAL_ABRUPTION_PMC10345462  expected=D-DIC+D-PLACENTAL-ABRUPTION
+source: PMID 37456143 / PMC10345462 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10345462/
+paper diagnosis: Placental abruption leading to disseminated intravascular coagulation at 21 weeks gestation
+observed axes: 35
+risk context: obstetric_tissue_factor_trigger=trigger_context; pregnancy=host_context
+
+[joint SDE ranking: all candidates]
+* D-DIC+D-PLACENTAL-ABRUPTION logP=    -77.10 mean=  -3.505 n=22 prior= -0.69 dHealth= +684.89
+  D-PLACENTAL-ABRUPTION+D-VON-WILLEBRAND-DISEASE logP=   -202.09 mean=  -9.186 n=22 prior= -2.00 dHealth= +559.90
+  D-HEMORRHAGIC-SHOCK+D-PLACENTAL-ABRUPTION logP=   -208.05 mean=  -9.457 n=22 prior= -2.00 dHealth= +553.94
+  D-AMNIOTIC-FLUID-EMBOLISM+D-PLACENTAL-ABRUPTION logP=   -211.74 mean=  -9.625 n=22 prior= -2.00 dHealth= +550.25
+  D-HELLP-SYNDROME+D-PLACENTAL-ABRUPTION logP=   -212.76 mean=  -9.671 n=22 prior= -2.00 dHealth= +549.23
+  D-PLACENTAL-ABRUPTION+D-SEPTIC-ABORTION logP=   -249.73 mean= -11.351 n=22 prior= -2.00 dHealth= +512.26
+  D-DIC+D-SEPTIC-ABORTION logP=   -249.83 mean= -11.356 n=22 prior= -0.69 dHealth= +512.16
+  D-DIC+D-UTERINE-RUPTURE logP=   -250.62 mean= -11.392 n=22 prior= -0.69 dHealth= +511.37
+  D-PLACENTAL-ABRUPTION+D-UTERINE-RUPTURE logP=   -255.74 mean= -11.625 n=22 prior= -2.00 dHealth= +506.25
+  D-PLACENTAL-ABRUPTION   logP=   -257.48 mean= -11.704 n=22 prior= +0.00 dHealth= +504.51
+
+[best single-manifold diagnostic]
+* D-PLACENTAL-ABRUPTION logP=   -257.48 mean= -11.704 prior= +0.00 dHealth= +504.51
+  D-UTERINE-RUPTURE logP=   -463.92 mean= -21.087 prior= +0.00 dHealth= +298.08
+  D-SEPTIC-ABORTION logP=   -464.47 mean= -21.112 prior= +0.00 dHealth= +297.52
+  D-DIC        logP=   -472.84 mean= -21.493 prior= +1.31 dHealth= +289.15
+  D-HELLP-SYNDROME logP=   -504.77 mean= -22.944 prior= +0.00 dHealth= +257.22
+  D-HEMORRHAGIC-SHOCK logP=   -517.99 mean= -23.545 prior= +0.00 dHealth= +244.00
+  D-AMNIOTIC-FLUID-EMBOLISM logP=   -551.41 mean= -25.064 prior= +0.00 dHealth= +210.58
+  D-VON-WILLEBRAND-DISEASE logP=   -593.52 mean= -26.978 prior= +0.00 dHealth= +168.47
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -77.10 candidate=D-DIC+D-PLACENTAL-ABRUPTION
+  logP_best_single=   -257.48 candidate=D-PLACENTAL-ABRUPTION
+  logP_health_reference=   -761.99 mean= -34.636 n=22
+  delta_to_health_best_known=   +684.89
+  delta_to_health_best_single=   +504.51
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+combo validation: best_overall=D-DIC+D-PLACENTAL-ABRUPTION  PASS
+best latent times: D-DIC=day2.1, D-PLACENTAL-ABRUPTION=day3.2
+largest standardized residuals: activated_partial_thromboplastin_time obs=38 seconds mu=152.5 via=D-DIC+D-PLACENTAL-ABRUPTION z=4.7; uterine_hypertonus_presence obs=1 present_absent_0_1 mu=0.396651 via=D-PLACENTAL-ABRUPTION z=3.1; heart_rate obs=70 beats_per_minute mu=135 via=D-PLACENTAL-ABRUPTION z=2.8; fetal_demise_presence obs=1 present_absent_0_1 mu=0.462563 via=D-PLACENTAL-ABRUPTION z=2.8; disseminated_intravascular_coagulation_presence obs=1 present_absent_0_1 mu=0.462941 via=D-PLACENTAL-ABRUPTION z=2.8
+response-model accounting: d_dimer obs=4 ug/mL_FEU expected_mu=4.88029 via=response_model:coagulation_response_to_inflammation_or_bleeding:expected_response:stimulus=0.65:gap=0.11; platelet_count obs=47 10^9/L expected_mu=151.635 via=response_model:coagulation_response_to_inflammation_or_bleeding:expected_response:stimulus=0.65:gap=0.00; serum_fibrinogen obs=160 mg/dL expected_mu=160 via=response_model:coagulation_response_to_inflammation_or_bleeding:consumptive_coagulopathy_activity:stimulus=0.65:gap=1.06
+
+====================================================================================================
+Single-manifold validation: 0/0 PASS
+Combo-manifold validation:  1/1 PASS
+Skipped validation:        0 case(s)
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - geometry_first mode makes diagnosis ranking emerge from axis residuals, trajectories, couplings, mechanism gates, risk/background modifiers, and case observations.
+  - legacy anchor/bonus/missing-anchor/duration penalties are retained only behind VESMED_RANKING_PHILOSOPHY=legacy_scaffold for regression comparison.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.
+  - Formal health_reference_manifold axes and reusable response_models are loaded when present; response axes can be scored through expected-response / response-failure factorization instead of direct disease-axis double counting.
+  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.

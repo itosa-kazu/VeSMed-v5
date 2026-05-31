@@ -1,0 +1,72 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+seed=20260430, combo_penalty=-2.0, N_MC=2500 (used only in mc score mode)
+Ranking philosophy: geometry_first (legacy anchor/bonus/penalty scaffolds=off, structural_priors=on)
+Score mode: grid time_grid_n=17 (deterministic midpoint sampling + early anchors (0.02, 0.1, 0.5, 1.0, 3.0, 7.0))
+Report mode: top ranking_top_n=10
+Runtime features: two-step diagnosis (formal health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, reusable response-gap models, family aggregation, and vector-field superposition for 2-disease candidates.
+Manifold discovery: 5 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=5, total_ranked=5, max_combo_size=1
+Case filter: SKILL20_ACUTE_MYOCARDITIS_VIRAL_DILATED_CARDIOMYOPATHY_PMC11379340
+Cases loaded for this run: 1
+
+Manifolds:
+  D-ACUTE-MYOCARDITIS: axes=63, mechanisms= 9, mech_edges=141, couplings=17, risk_factors= 8
+  D-DIC       : axes=69, mechanisms=10, mech_edges=52, couplings=17, risk_factors=11
+  D-REFEEDING-SYNDROME: axes=83, mechanisms= 9, mech_edges=76, couplings=13, risk_factors= 7
+  D-THYROID-STORM: axes=61, mechanisms= 9, mech_edges=64, couplings=12, risk_factors=10
+  D-TRANSPLANT-REJECTION-ACUTE: axes=78, mechanisms=10, mech_edges=55, couplings=16, risk_factors=10
+Base-measure/background axes: 9041
+Parallel workers: 1 (case-level; set VESMED_N_WORKERS=1 for sequential or 0/auto for capped auto)
+Candidate workers: 1 (per-case candidate chunks; set VESMED_N_CANDIDATE_WORKERS=auto or an integer)
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACUTE_MYOCARDITIS_VIRAL_DILATED_CARDIOMYOPATHY_PMC11379340  expected=D-ACUTE-MYOCARDITIS
+source: PMID 39246964 / PMC11379340 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11379340/
+paper diagnosis: acute viral myocarditis complicated by gastroenteritis and congestive hepatopathy
+observed axes: 27
+
+[joint SDE ranking: all candidates]
+* D-REFEEDING-SYNDROME    logP=   -700.78 mean= -35.039 n=20 prior= +0.00 dHealth=+17308.17
+  D-DIC                   logP=   -705.02 mean= -35.251 n=20 prior= -2.00 dHealth=+17303.92
+  D-TRANSPLANT-REJECTION-ACUTE logP=   -751.27 mean= -37.564 n=20 prior= +0.00 dHealth=+17257.67
+  D-THYROID-STORM         logP=   -761.37 mean= -36.256 n=21 prior= +0.00 dHealth=+17247.58
+  D-ACUTE-MYOCARDITIS     logP= -17694.51 mean=-884.726 n=20 prior= +0.00 dHealth= +314.43
+
+[best single-manifold diagnostic]
+* D-REFEEDING-SYNDROME logP=   -700.78 mean= -35.039 prior= +0.00 dHealth=+17308.17
+  D-DIC        logP=   -705.02 mean= -35.251 prior= -2.00 dHealth=+17303.92
+  D-TRANSPLANT-REJECTION-ACUTE logP=   -751.27 mean= -37.564 prior= +0.00 dHealth=+17257.67
+  D-THYROID-STORM logP=   -761.37 mean= -36.256 prior= +0.00 dHealth=+17247.58
+  D-ACUTE-MYOCARDITIS logP= -17694.51 mean=-884.726 prior= +0.00 dHealth= +314.43
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  no configured diagnostic families represented in this candidate set
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -700.78 candidate=D-REFEEDING-SYNDROME
+  logP_best_single=   -700.78 candidate=D-REFEEDING-SYNDROME
+  logP_health_reference= -18008.94 mean=-900.447 n=20
+  delta_to_health_best_known= +17308.17
+  delta_to_health_best_single= +17308.17
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-REFEEDING-SYNDROME  FAIL
+best latent times: D-REFEEDING-SYNDROME=day4.5
+largest standardized residuals: watery_stool_presence obs=1 present_absent_0_1 mu=0.015 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.3; right_axis_deviation_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; myocardial_dysfunction_activity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; intraventricular_conduction_delay_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; heart_murmur_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2
+
+====================================================================================================
+Single-manifold validation: 0/1 PASS
+Combo-manifold validation:  0/0 PASS
+Skipped validation:        0 case(s)
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - geometry_first mode makes diagnosis ranking emerge from axis residuals, trajectories, couplings, mechanism gates, risk/background modifiers, and case observations.
+  - legacy anchor/bonus/missing-anchor/duration penalties are retained only behind VESMED_RANKING_PHILOSOPHY=legacy_scaffold for regression comparison.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.
+  - Formal health_reference_manifold axes and reusable response_models are loaded when present; response axes can be scored through expected-response / response-failure factorization instead of direct disease-axis double counting.
+  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.

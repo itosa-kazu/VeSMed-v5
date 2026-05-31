@@ -1,0 +1,1251 @@
+====================================================================================================
+V5 joint SDE PMC case ranking test
+====================================================================================================
+seed=20260430, combo_penalty=-2.0, N_MC=2500 (used only in mc score mode)
+Ranking philosophy: geometry_first (legacy anchor/bonus/penalty scaffolds=off, structural_priors=on)
+Score mode: grid time_grid_n=17 (deterministic midpoint sampling + early anchors (0.02, 0.1, 0.5, 1.0, 3.0, 7.0))
+Report mode: top ranking_top_n=10
+Runtime features: two-step diagnosis (formal health-reference illness detection, then disease-vs-disease discrimination), axis-geometry likelihood, joint covariance from axis_couplings, mechanism-edge gating, risk-factor modulation, reusable response-gap models, family aggregation, and vector-field superposition for 2-disease candidates.
+Manifold discovery: 318 root distillation files from C:\Users\wangw\Desktop\vesmed_v5_poc\distillations\v5_*.json
+Candidate sets: singles=318, total_ranked=318, max_combo_size=1
+Cases loaded for this run: 20
+
+Manifolds:
+  D137        : axes=70, mechanisms=11, mech_edges=60, couplings= 7, risk_factors= 6
+  D-SEPSIS-GN : axes=101, mechanisms=11, mech_edges=237, couplings=17, risk_factors=16
+  D-TTP       : axes=58, mechanisms= 6, mech_edges=48, couplings= 6, risk_factors=14
+  D-ACETAMINOPHEN-TOXICITY: axes=88, mechanisms=11, mech_edges=118, couplings=17, risk_factors=13
+  D-ACUTE-ANGLE-CLOSURE-GLAUCOMA: axes=76, mechanisms= 9, mech_edges=54, couplings=10, risk_factors=10
+  D-ACUTE-CHOLANGITIS: axes=95, mechanisms=11, mech_edges=66, couplings=17, risk_factors=14
+  D-ACUTE-CHOLECYSTITIS: axes=66, mechanisms= 9, mech_edges=56, couplings=18, risk_factors= 8
+  D-ACUTE-EPIGLOTTITIS: axes=52, mechanisms= 7, mech_edges=31, couplings= 8, risk_factors= 6
+  D-ACUTE-HEART-FAILURE: axes=71, mechanisms= 9, mech_edges=39, couplings=15, risk_factors= 8
+  D-ACUTE-HEPATITIS-A: axes=87, mechanisms= 9, mech_edges=94, couplings=17, risk_factors= 9
+  D-ACUTE-HEPATITIS-B: axes=69, mechanisms= 9, mech_edges=37, couplings=15, risk_factors= 9
+  D-ACUTE-HEPATITIS-E: axes=81, mechanisms= 9, mech_edges=82, couplings=20, risk_factors= 9
+  D-ACUTE-HIV : axes=73, mechanisms= 9, mech_edges=41, couplings=13, risk_factors=11
+  D-ACUTE-INTERMITTENT-PORPHYRIA: axes=108, mechanisms= 8, mech_edges=67, couplings=15, risk_factors=10
+  D-ACUTE-ISCHEMIC-STROKE: axes=89, mechanisms=10, mech_edges=57, couplings=15, risk_factors=10
+  D-ACUTE-KIDNEY-INJURY: axes=71, mechanisms= 8, mech_edges=29, couplings=17, risk_factors= 6
+  D-ACUTE-LIMB-ISCHEMIA: axes=109, mechanisms=10, mech_edges=253, couplings=15, risk_factors= 8
+  D-ACUTE-LIVER-FAILURE: axes=99, mechanisms=10, mech_edges=244, couplings=21, risk_factors=14
+  D-ACUTE-MESENTERIC-ISCHEMIA: axes=81, mechanisms= 8, mech_edges=54, couplings= 9, risk_factors=11
+  D-ACUTE-MYOCARDIAL-INFARCTION: axes=93, mechanisms=11, mech_edges=67, couplings=16, risk_factors=10
+  D-ACUTE-MYOCARDITIS: axes=68, mechanisms= 9, mech_edges=148, couplings=17, risk_factors= 8
+  D-ACUTE-PANCREATITIS: axes=78, mechanisms=11, mech_edges=62, couplings=18, risk_factors=10
+  D-ACUTE-PROSTATITIS: axes=63, mechanisms= 8, mech_edges=48, couplings=15, risk_factors= 8
+  D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME: axes=69, mechanisms= 8, mech_edges=50, couplings=14, risk_factors= 8
+  D-ACUTE-SUBDURAL-HEMATOMA: axes=70, mechanisms= 9, mech_edges=53, couplings=18, risk_factors= 8
+  D-ACUTE-SUPPURATIVE-THYROIDITIS: axes=46, mechanisms= 7, mech_edges=46, couplings= 5, risk_factors= 3
+  D-ACUTE-SYMPTOMATIC-HYPERNATREMIA: axes=116, mechanisms= 9, mech_edges=69, couplings=12, risk_factors= 8
+  D-ACUTE-SYMPTOMATIC-HYPONATREMIA: axes=81, mechanisms= 8, mech_edges=68, couplings=11, risk_factors=11
+  D-ADENOVIRUS-INFECTION: axes=101, mechanisms= 9, mech_edges=282, couplings=14, risk_factors=15
+  D-ADHD      : axes=38, mechanisms= 7, mech_edges=32, couplings= 9, risk_factors= 9
+  D-ADRENAL-CRISIS: axes=65, mechanisms=10, mech_edges=56, couplings=13, risk_factors=10
+  D-AIHA      : axes=65, mechanisms= 8, mech_edges=46, couplings= 8, risk_factors=12
+  D-AIRWAY-FOREIGN-BODY: axes=83, mechanisms=10, mech_edges=81, couplings=12, risk_factors= 8
+  D-ALCL      : axes=80, mechanisms=14, mech_edges=71, couplings=10, risk_factors=10
+  D-ALCOHOL-WITHDRAWAL-DELIRIUM: axes=86, mechanisms= 8, mech_edges=40, couplings=18, risk_factors= 9
+  D-ALCOHOLIC-HEPATITIS: axes=60, mechanisms= 8, mech_edges=48, couplings=15, risk_factors= 8
+  D-ALL       : axes=91, mechanisms=10, mech_edges=48, couplings=20, risk_factors= 7
+  D-AML       : axes=71, mechanisms= 8, mech_edges=53, couplings=15, risk_factors= 8
+  D-AMNIOTIC-FLUID-EMBOLISM: axes=116, mechanisms=10, mech_edges=73, couplings=16, risk_factors=11
+  D-AMOEBIC-LIVER-ABSCESS: axes=88, mechanisms=10, mech_edges=109, couplings=12, risk_factors= 9
+  D-ANAPHYLAXIS: axes=71, mechanisms= 9, mech_edges=37, couplings=12, risk_factors= 8
+  D-ANKYLOSING-SPONDYLITIS-FLARE: axes=56, mechanisms= 7, mech_edges=42, couplings=10, risk_factors= 8
+  D-ANTI-GBM-DISEASE: axes=29, mechanisms= 4, mech_edges=28, couplings= 3, risk_factors= 1
+  D-ANTIPHOSPHOLIPID-SYNDROME: axes=41, mechanisms= 6, mech_edges=25, couplings= 4, risk_factors= 3
+  D-ANTISYNTHETASE-SYNDROME: axes=50, mechanisms= 5, mech_edges=48, couplings= 4, risk_factors= 0
+  D-AORTIC-DISSECTION: axes=85, mechanisms= 9, mech_edges=53, couplings=18, risk_factors=10
+  D-APL       : axes=60, mechanisms= 8, mech_edges=36, couplings=15, risk_factors= 7
+  D-APLASTIC-ANEMIA: axes=53, mechanisms= 8, mech_edges=35, couplings=12, risk_factors= 9
+  D-APPENDICITIS: axes=52, mechanisms= 9, mech_edges=47, couplings=14, risk_factors= 8
+  D-ASPIRATION-PNEUMONIA: axes=73, mechanisms= 9, mech_edges=62, couplings=14, risk_factors=12
+  D-ASTHMA-EXACERBATION: axes=51, mechanisms= 8, mech_edges=45, couplings=10, risk_factors= 9
+  D-ATRIAL-FIBRILLATION: axes=88, mechanisms=10, mech_edges=57, couplings=15, risk_factors=10
+  D-AUTISM-SPECTRUM-DISORDER: axes=57, mechanisms= 9, mech_edges=52, couplings=12, risk_factors=10
+  D-AUTOIMMUNE-ENCEPHALITIS: axes=92, mechanisms=10, mech_edges=57, couplings=10, risk_factors= 6
+  D-BABESIOSIS: axes=83, mechanisms=10, mech_edges=56, couplings=14, risk_factors= 9
+  D-BACTERIAL-MENINGITIS: axes=127, mechanisms=20, mech_edges=89, couplings=12, risk_factors=13
+  D-BARTONELLA-ENDOCARDITIS: axes=90, mechanisms=10, mech_edges=61, couplings=11, risk_factors= 7
+  D-BEHCET-DISEASE: axes=128, mechanisms=12, mech_edges=75, couplings=17, risk_factors=11
+  D-BETA-BLOCKER-TOXICITY: axes=105, mechanisms=10, mech_edges=96, couplings=12, risk_factors=12
+  D-BIPOLAR-DISORDER: axes=32, mechanisms= 6, mech_edges=24, couplings= 4, risk_factors= 3
+  D-BOWEL-OBSTRUCTION: axes=97, mechanisms= 8, mech_edges=47, couplings=10, risk_factors= 6
+  D-BPH-URINARY-RETENTION: axes=90, mechanisms= 9, mech_edges=55, couplings=12, risk_factors= 9
+  D-BRAIN-ABSCESS: axes=79, mechanisms= 9, mech_edges=53, couplings=20, risk_factors=11
+  D-BRONCHIOLITIS: axes=79, mechanisms=10, mech_edges=77, couplings=11, risk_factors=10
+  D-BRUCELLOSIS: axes=99, mechanisms=11, mech_edges=60, couplings=13, risk_factors=10
+  D-BUDD-CHIARI-SYNDROME: axes=98, mechanisms= 8, mech_edges=47, couplings=13, risk_factors=10
+  D-BURN-INJURY: axes=110, mechanisms=12, mech_edges=67, couplings=19, risk_factors=10
+  D-CAEBV     : axes=101, mechanisms=12, mech_edges=68, couplings=19, risk_factors= 9
+  D-CALCIUM-CHANNEL-BLOCKER-TOXICITY: axes=101, mechanisms= 8, mech_edges=87, couplings=12, risk_factors= 8
+  D-CALCIUM-PYROPHOSPHATE-ARTHRITIS: axes=49, mechanisms= 7, mech_edges=39, couplings=11, risk_factors= 9
+  D-CAMPYLOBACTER-ENTERITIS: axes=104, mechanisms= 7, mech_edges=98, couplings=18, risk_factors=10
+  D-CANDIDEMIA: axes=76, mechanisms=10, mech_edges=50, couplings=13, risk_factors=13
+  D-CAPS      : axes=57, mechanisms= 8, mech_edges=56, couplings=15, risk_factors= 9
+  D-CAR-T-CRS : axes=64, mechanisms=10, mech_edges=58, couplings=23, risk_factors= 8
+  D-CARBON-MONOXIDE-POISONING: axes=89, mechanisms= 9, mech_edges=112, couplings=14, risk_factors= 8
+  D-CARDIAC-TAMPONADE: axes=59, mechanisms= 9, mech_edges=48, couplings=14, risk_factors=10
+  D-CARDIOGENIC-SHOCK: axes=128, mechanisms= 8, mech_edges=256, couplings=13, risk_factors=10
+  D-CATASTROPHIC-APS: axes=84, mechanisms= 8, mech_edges=59, couplings=16, risk_factors=12
+  D-CATHETER-ASSOCIATED-UTI: axes=56, mechanisms=10, mech_edges=50, couplings=14, risk_factors=10
+  D-CAUDA-EQUINA-SYNDROME: axes=56, mechanisms= 6, mech_edges=48, couplings=15, risk_factors=10
+  D-CELLULITIS: axes=102, mechanisms= 9, mech_edges=66, couplings=14, risk_factors= 8
+  D-CENTRAL-DIABETES-INSIPIDUS: axes=78, mechanisms= 8, mech_edges=62, couplings=11, risk_factors= 9
+  D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION: axes=72, mechanisms= 9, mech_edges=59, couplings= 9, risk_factors= 8
+  D-CEREBRAL-VENOUS-SINUS-THROMBOSIS: axes=113, mechanisms= 9, mech_edges=72, couplings=12, risk_factors= 9
+  D-CHIKUNGUNYA: axes=75, mechanisms= 8, mech_edges=48, couplings=15, risk_factors= 8
+  D-CHORIOAMNIONITIS: axes=99, mechanisms= 8, mech_edges=74, couplings=23, risk_factors=14
+  D-CHRONIC-SUBDURAL-HEMATOMA: axes=65, mechanisms= 8, mech_edges=65, couplings=17, risk_factors= 8
+  D-CIRRHOSIS-ACUTE-DECOMPENSATION: axes=127, mechanisms= 9, mech_edges=71, couplings=15, risk_factors=11
+  D-CLL-TRANSFORMATION-RICHTER: axes=67, mechanisms=12, mech_edges=45, couplings=12, risk_factors=10
+  D-CLOSTRIDIOIDES-DIFFICILE-SEVERE: axes=49, mechanisms=10, mech_edges=52, couplings=16, risk_factors=11
+  D-CML-BLAST-CRISIS: axes=67, mechanisms=11, mech_edges=54, couplings=14, risk_factors= 9
+  D-CMV-MONO  : axes=60, mechanisms=11, mech_edges=45, couplings=10, risk_factors= 7
+  D-COCCIDIOIDOMYCOSIS: axes=78, mechanisms=12, mech_edges=51, couplings=11, risk_factors=10
+  D-COMPARTMENT-SYNDROME: axes=81, mechanisms= 8, mech_edges=53, couplings=16, risk_factors=10
+  D-COMPLEMENT-MEDIATED-TMA: axes=83, mechanisms= 8, mech_edges=60, couplings=10, risk_factors=11
+  D-COMPLETE-ATRIOVENTRICULAR-BLOCK: axes=105, mechanisms= 9, mech_edges=60, couplings=16, risk_factors=11
+  D-CONGENITAL-LEFT-PERICARDIAL-AGENESIS: axes=44, mechanisms= 7, mech_edges=26, couplings=16, risk_factors= 6
+  D-CONGENITAL-PREPUBIC-SINUS: axes=60, mechanisms= 5, mech_edges=50, couplings= 8, risk_factors= 5
+  D-COPD-EXACERBATION: axes=68, mechanisms= 9, mech_edges=25, couplings=11, risk_factors= 8
+  D-COVID19-ACUTE: axes=89, mechanisms=13, mech_edges=70, couplings=10, risk_factors=15
+  D-CRE-ENTEROBACTERALES-BACTEREMIA: axes=84, mechanisms= 8, mech_edges=39, couplings= 8, risk_factors= 7
+  D-CROHN-DISEASE-FLARE: axes=91, mechanisms= 8, mech_edges=35, couplings=15, risk_factors= 8
+  D-CROUP     : axes=54, mechanisms= 6, mech_edges=43, couplings=11, risk_factors= 8
+  D-CRUSH-SYNDROME: axes=77, mechanisms= 9, mech_edges=77, couplings=18, risk_factors=13
+  D-CRYOGLOBULINEMIC-VASCULITIS: axes=61, mechanisms= 9, mech_edges=45, couplings=13, risk_factors=10
+  D-CRYPTOCOCCOSIS-DISSEMINATED: axes=93, mechanisms=11, mech_edges=145, couplings=10, risk_factors=10
+  D-CUTANEOUS-LEISHMANIASIS: axes=55, mechanisms= 8, mech_edges=33, couplings= 8, risk_factors=10
+  D-CYANIDE-POISONING: axes=88, mechanisms= 9, mech_edges=66, couplings=13, risk_factors=11
+  D-DEEP-VEIN-THROMBOSIS: axes=85, mechanisms= 8, mech_edges=53, couplings=13, risk_factors=10
+  D-DEGENERATIVE-CERVICAL-MYELOPATHY: axes=34, mechanisms= 5, mech_edges=23, couplings= 4, risk_factors= 5
+  D-DENGUE    : axes=92, mechanisms=10, mech_edges=46, couplings=13, risk_factors= 9
+  D-DERMATOMYOSITIS: axes=38, mechanisms= 4, mech_edges=34, couplings= 2, risk_factors= 1
+  D-DIABETIC-FOOT-INFECTION: axes=85, mechanisms=12, mech_edges=71, couplings=15, risk_factors=11
+  D-DIABETIC-KETOACIDOSIS: axes=65, mechanisms= 9, mech_edges=55, couplings=12, risk_factors= 7
+  D-DIC       : axes=69, mechanisms=10, mech_edges=52, couplings=17, risk_factors=11
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE: axes=89, mechanisms= 8, mech_edges=48, couplings=11, risk_factors= 9
+  D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME: axes=65, mechanisms= 6, mech_edges=55, couplings= 9, risk_factors= 5
+  D-DIGOXIN-TOXICITY: axes=102, mechanisms= 8, mech_edges=77, couplings=15, risk_factors=12
+  D-DISSEMINATED-GONOCOCCAL-INFECTION: axes=62, mechanisms= 9, mech_edges=33, couplings=13, risk_factors= 8
+  D-DIVERTICULITIS: axes=70, mechanisms= 8, mech_edges=41, couplings=14, risk_factors= 7
+  D-DLBCL     : axes=98, mechanisms=17, mech_edges=86, couplings= 9, risk_factors=11
+  D-DRUG-FEVER: axes=48, mechanisms= 6, mech_edges=42, couplings= 6, risk_factors= 7
+  D-DRUG-FEVER-DRESS: axes=62, mechanisms=10, mech_edges=39, couplings= 9, risk_factors=18
+  D-ECTOPIC-PREGNANCY: axes=45, mechanisms= 6, mech_edges=20, couplings= 4, risk_factors= 4
+  D-EGPA      : axes=89, mechanisms=17, mech_edges=71, couplings=10, risk_factors= 8
+  D-EMPYEMA   : axes=73, mechanisms= 9, mech_edges=33, couplings=16, risk_factors=12
+  D-ENTEROCOCCAL-BACTEREMIA: axes=82, mechanisms=10, mech_edges=135, couplings=17, risk_factors=11
+  D-EPIDIDYMO-ORCHITIS: axes=69, mechanisms= 9, mech_edges=66, couplings=15, risk_factors= 9
+  D-ERYSIPELAS: axes=111, mechanisms= 9, mech_edges=51, couplings=13, risk_factors= 8
+  D-ESBL-ENTEROBACTERALES-BACTEREMIA: axes=86, mechanisms=10, mech_edges=52, couplings=15, risk_factors=12
+  D-ESOPHAGEAL-VARICEAL-BLEEDING: axes=64, mechanisms= 8, mech_edges=48, couplings= 7, risk_factors= 6
+  D-ETHYLENE-GLYCOL-POISONING: axes=94, mechanisms= 8, mech_edges=80, couplings=16, risk_factors= 7
+  D-EVANS-SYNDROME: axes=30, mechanisms= 3, mech_edges=27, couplings= 0, risk_factors= 2
+  D-FAMILIAL-MEDITERRANEAN-FEVER: axes=55, mechanisms= 8, mech_edges=46, couplings= 9, risk_factors= 8
+  D-FAT-EMBOLISM-SYNDROME: axes=114, mechanisms= 8, mech_edges=66, couplings=12, risk_factors=10
+  D-FEBRILE-NEUTROPENIA: axes=76, mechanisms=12, mech_edges=52, couplings=22, risk_factors=12
+  D-FIBROMYALGIA: axes=230, mechanisms= 9, mech_edges=37, couplings=13, risk_factors=10
+  D-FITZ-HUGH-CURTIS-SYNDROME: axes=90, mechanisms= 8, mech_edges=66, couplings=13, risk_factors= 8
+  D-GCA       : axes=91, mechanisms=12, mech_edges=76, couplings=19, risk_factors=11
+  D-GENERALIZED-ANXIETY-DISORDER: axes=35, mechanisms= 7, mech_edges=30, couplings= 8, risk_factors=11
+  D-GOUT-FLARE: axes=50, mechanisms= 6, mech_edges=25, couplings= 6, risk_factors= 7
+  D-GPA       : axes=96, mechanisms=17, mech_edges=81, couplings= 7, risk_factors= 8
+  D-GRAVES-DISEASE: axes=106, mechanisms= 9, mech_edges=73, couplings=12, risk_factors=11
+  D-GUILLAIN-BARRE-SYNDROME: axes=67, mechanisms= 8, mech_edges=42, couplings= 5, risk_factors= 6
+  D-HEAT-STROKE: axes=64, mechanisms=10, mech_edges=38, couplings=20, risk_factors=10
+  D-HELLP-SYNDROME: axes=104, mechanisms= 9, mech_edges=64, couplings=21, risk_factors=12
+  D-HEMORRHAGIC-SHOCK: axes=111, mechanisms= 8, mech_edges=216, couplings=18, risk_factors= 9
+  D-HEMOTHORAX: axes=124, mechanisms= 8, mech_edges=61, couplings=16, risk_factors=10
+  D-HEPARIN-INDUCED-THROMBOCYTOPENIA: axes=26, mechanisms= 4, mech_edges=17, couplings= 0, risk_factors= 2
+  D-HEPATIC-ENCEPHALOPATHY: axes=107, mechanisms= 9, mech_edges=79, couplings=18, risk_factors=12
+  D-HISTOPLASMOSIS-DISSEMINATED: axes=87, mechanisms=12, mech_edges=83, couplings=18, risk_factors= 9
+  D-HLH-MAS   : axes=83, mechanisms=11, mech_edges=63, couplings= 9, risk_factors= 8
+  D-HODGKIN-LYMPHOMA: axes=77, mechanisms=13, mech_edges=70, couplings= 8, risk_factors= 8
+  D-HSV-ENCEPHALITIS: axes=78, mechanisms=10, mech_edges=58, couplings=12, risk_factors= 6
+  D-HYPERKALEMIA: axes=46, mechanisms= 7, mech_edges=28, couplings=10, risk_factors= 6
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE: axes=65, mechanisms= 9, mech_edges=46, couplings=20, risk_factors= 9
+  D-HYPERTENSIVE-EMERGENCY: axes=121, mechanisms= 9, mech_edges=148, couplings=16, risk_factors=10
+  D-HYPERTROPHIC-PYLORIC-STENOSIS: axes=71, mechanisms= 8, mech_edges=60, couplings=14, risk_factors= 8
+  D-HYPOTHERMIA: axes=113, mechanisms=10, mech_edges=92, couplings=15, risk_factors=11
+  D-IGA-NEPHROPATHY: axes=87, mechanisms=10, mech_edges=68, couplings=14, risk_factors=11
+  D-IGA-VASCULITIS: axes=81, mechanisms=11, mech_edges=59, couplings=17, risk_factors= 8
+  D-IGG4-RELATED-DISEASE: axes=108, mechanisms=23, mech_edges=76, couplings=18, risk_factors= 7
+  D-INCARCERATED-GROIN-HERNIA: axes=62, mechanisms= 8, mech_edges=38, couplings=12, risk_factors= 5
+  D-INFECTIOUS-MONONUCLEOSIS: axes=57, mechanisms=13, mech_edges=49, couplings= 8, risk_factors= 5
+  D-INFECTIVE-ENDOCARDITIS: axes=101, mechanisms=13, mech_edges=50, couplings=11, risk_factors=13
+  D-INFLUENZA : axes=66, mechanisms=12, mech_edges=58, couplings= 5, risk_factors=14
+  D-INTRACEREBRAL-HEMORRHAGE: axes=47, mechanisms= 7, mech_edges=24, couplings= 4, risk_factors= 4
+  D-INTUSSUSCEPTION: axes=106, mechanisms= 9, mech_edges=66, couplings=16, risk_factors= 9
+  D-INVASIVE-ASPERGILLOSIS: axes=88, mechanisms= 9, mech_edges=115, couplings=13, risk_factors= 9
+  D-IRON-POISONING: axes=107, mechanisms= 9, mech_edges=102, couplings=15, risk_factors= 8
+  D-ISCHEMIC-COLITIS: axes=84, mechanisms= 8, mech_edges=43, couplings=10, risk_factors= 7
+  D-ITP       : axes=49, mechanisms= 6, mech_edges=32, couplings= 7, risk_factors= 7
+  D-IVLBCL    : axes=90, mechanisms=17, mech_edges=84, couplings= 7, risk_factors= 4
+  D-KAWASAKI-DISEASE: axes=33, mechanisms= 4, mech_edges=33, couplings= 3, risk_factors= 1
+  D-LEGIONELLA-PNEUMONIA: axes=97, mechanisms=16, mech_edges=223, couplings= 9, risk_factors=11
+  D-LEISHMANIASIS-VISCERAL: axes=58, mechanisms=10, mech_edges=46, couplings=12, risk_factors= 9
+  D-LEPTOSPIROSIS: axes=78, mechanisms=11, mech_edges=59, couplings=13, risk_factors=10
+  D-LITHIUM-TOXICITY: axes=113, mechanisms= 9, mech_edges=90, couplings=15, risk_factors= 8
+  D-LUNG-ABSCESS: axes=62, mechanisms= 8, mech_edges=44, couplings=12, risk_factors= 8
+  D-LYME-DISEASE: axes=93, mechanisms=11, mech_edges=59, couplings=17, risk_factors= 8
+  D-MALARIA-FALCIPARUM: axes=75, mechanisms=10, mech_edges=58, couplings=15, risk_factors=10
+  D-MALIGNANT-HYPERTHERMIA: axes=55, mechanisms= 7, mech_edges=48, couplings=12, risk_factors=10
+  D-MEASLES   : axes=69, mechanisms= 9, mech_edges=45, couplings=13, risk_factors= 8
+  D-MEMBRANOUS-NEPHROPATHY: axes=104, mechanisms= 9, mech_edges=66, couplings=16, risk_factors=12
+  D-MENINGOCOCCEMIA: axes=128, mechanisms=21, mech_edges=366, couplings= 8, risk_factors= 9
+  D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS: axes=75, mechanisms= 8, mech_edges=57, couplings=11, risk_factors= 6
+  D-METHANOL-POISONING: axes=94, mechanisms= 8, mech_edges=75, couplings=14, risk_factors=13
+  D-MINIMAL-CHANGE-DISEASE: axes=117, mechanisms= 9, mech_edges=72, couplings=14, risk_factors=12
+  D-MIS-A     : axes=102, mechanisms=15, mech_edges=146, couplings= 7, risk_factors= 8
+  D-MIXED-CONNECTIVE-TISSUE-DISEASE: axes=86, mechanisms=10, mech_edges=79, couplings=15, risk_factors=11
+  D-MPA       : axes=62, mechanisms=12, mech_edges=48, couplings=10, risk_factors= 7
+  D-MULTIPLE-SCLEROSIS: axes=42, mechanisms= 5, mech_edges=33, couplings= 7, risk_factors= 5
+  D-MYASTHENIC-CRISIS: axes=74, mechanisms= 7, mech_edges=59, couplings=14, risk_factors=10
+  D-MYCOPLASMA-PNEUMONIA: axes=94, mechanisms=17, mech_edges=78, couplings= 7, risk_factors= 8
+  D-MYXEDEMA-COMA: axes=104, mechanisms=10, mech_edges=84, couplings=10, risk_factors=11
+  D-NECROTIZING-FASCIITIS: axes=60, mechanisms=11, mech_edges=53, couplings=11, risk_factors=11
+  D-NEUROLEPTIC-MALIGNANT-SYNDROME: axes=64, mechanisms= 7, mech_edges=50, couplings=15, risk_factors= 9
+  D-NEUROMYELITIS-OPTICA-SPECTRUM-DISORDER: axes=41, mechanisms= 5, mech_edges=32, couplings= 7, risk_factors= 5
+  D-NOCARDIOSIS: axes=81, mechanisms=10, mech_edges=133, couplings=11, risk_factors= 8
+  D-NONTYPHOID-SALMONELLA-BACTEREMIA: axes=72, mechanisms=10, mech_edges=53, couplings=15, risk_factors= 8
+  D-NONTYPHOID-SALMONELLA-ENTERITIS: axes=75, mechanisms= 7, mech_edges=70, couplings=10, risk_factors= 6
+  D-NOROVIRUS-GASTROENTERITIS: axes=63, mechanisms= 7, mech_edges=45, couplings=14, risk_factors= 6
+  D-OBSTRUCTIVE-PYELONEPHRITIS: axes=98, mechanisms=10, mech_edges=220, couplings=15, risk_factors=10
+  D-OPIOID-INTOXICATION: axes=85, mechanisms= 9, mech_edges=88, couplings=15, risk_factors=11
+  D-ORBITAL-CELLULITIS: axes=62, mechanisms= 8, mech_edges=57, couplings=15, risk_factors=10
+  D-ORGANOPHOSPHATE-POISONING: axes=105, mechanisms=11, mech_edges=58, couplings=17, risk_factors= 7
+  D-OVARIAN-TORSION: axes=76, mechanisms= 9, mech_edges=44, couplings=12, risk_factors= 8
+  D-PAINLESS-THYROIDITIS: axes=68, mechanisms= 8, mech_edges=71, couplings=11, risk_factors= 7
+  D-PAN       : axes=85, mechanisms=12, mech_edges=63, couplings=12, risk_factors= 9
+  D-PANIC-DISORDER: axes=55, mechanisms= 6, mech_edges=49, couplings= 9, risk_factors= 7
+  D-PEDIATRIC-DEHYDRATION: axes=114, mechanisms=10, mech_edges=63, couplings=13, risk_factors=11
+  D-PELVIC-FRACTURE: axes=124, mechanisms=10, mech_edges=90, couplings=20, risk_factors=10
+  D-PELVIC-INFLAMMATORY-DISEASE: axes=86, mechanisms=11, mech_edges=50, couplings=10, risk_factors=10
+  D-PEPTIC-ULCER-BLEEDING: axes=49, mechanisms= 6, mech_edges=17, couplings= 5, risk_factors= 4
+  D-PERFORATED-VISCUS: axes=110, mechanisms=11, mech_edges=253, couplings=14, risk_factors= 9
+  D-PERICARDITIS: axes=64, mechanisms= 7, mech_edges=50, couplings=17, risk_factors= 8
+  D-PERINEPHRIC-ABSCESS: axes=86, mechanisms=11, mech_edges=49, couplings=16, risk_factors= 9
+  D-PERIPARTUM-CARDIOMYOPATHY: axes=113, mechanisms=10, mech_edges=61, couplings=14, risk_factors=11
+  D-PERITONSILLAR-ABSCESS: axes=70, mechanisms= 8, mech_edges=46, couplings= 7, risk_factors= 6
+  D-PHEOCHROMOCYTOMA-CRISIS: axes=126, mechanisms= 9, mech_edges=209, couplings=12, risk_factors= 9
+  D-PJP-PNEUMONIA: axes=89, mechanisms= 9, mech_edges=49, couplings=11, risk_factors= 9
+  D-PLACENTA-PREVIA: axes=79, mechanisms= 8, mech_edges=52, couplings=13, risk_factors=10
+  D-PLACENTAL-ABRUPTION: axes=97, mechanisms= 8, mech_edges=79, couplings=14, risk_factors=10
+  D-PNEUMOCEPHALUS: axes=81, mechanisms= 9, mech_edges=74, couplings=11, risk_factors= 7
+  D-PNEUMOCOCCAL-PNEUMONIA: axes=101, mechanisms=17, mech_edges=84, couplings= 7, risk_factors=18
+  D-PNEUMOTHORAX: axes=53, mechanisms= 5, mech_edges=26, couplings= 3, risk_factors= 4
+  D-POLYMYALGIA-RHEUMATICA: axes=45, mechanisms= 6, mech_edges=31, couplings= 9, risk_factors= 7
+  D-POLYMYOSITIS: axes=53, mechanisms= 6, mech_edges=55, couplings=11, risk_factors=11
+  D-POSTPARTUM-ENDOMETRITIS: axes=76, mechanisms=10, mech_edges=42, couplings=14, risk_factors=12
+  D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY: axes=65, mechanisms= 8, mech_edges=48, couplings=15, risk_factors=21
+  D-PREECLAMPSIA-ECLAMPSIA: axes=63, mechanisms=10, mech_edges=48, couplings=14, risk_factors=10
+  D-PROSTHETIC-JOINT-INFECTION: axes=97, mechanisms=10, mech_edges=55, couplings=10, risk_factors=10
+  D-PSEUDOMONAS-BACTEREMIA: axes=74, mechanisms= 9, mech_edges=52, couplings=15, risk_factors= 9
+  D-PSEUDOMYOGENIC-HEMANGIOENDOTHELIOMA: axes=61, mechanisms=10, mech_edges=47, couplings=18, risk_factors= 8
+  D-PSORIATIC-ARTHRITIS-FLARE: axes=64, mechanisms= 7, mech_edges=27, couplings=11, risk_factors= 8
+  D-PULMONARY-EMBOLISM: axes=54, mechanisms= 8, mech_edges=42, couplings=18, risk_factors= 8
+  D-PULMONARY-TUBERCULOSIS: axes=122, mechanisms=10, mech_edges=62, couplings=13, risk_factors= 9
+  D-PYELONEPHRITIS: axes=124, mechanisms=17, mech_edges=91, couplings=12, risk_factors=12
+  D-PYOGENIC-LIVER-ABSCESS: axes=102, mechanisms=12, mech_edges=124, couplings=12, risk_factors=12
+  D-Q-FEVER   : axes=56, mechanisms= 9, mech_edges=44, couplings=10, risk_factors= 8
+  D-RA-FLARE  : axes=43, mechanisms= 6, mech_edges=39, couplings=12, risk_factors= 8
+  D-REACTIVE-ARTHRITIS: axes=60, mechanisms= 7, mech_edges=22, couplings= 8, risk_factors= 6
+  D-REFEEDING-SYNDROME: axes=83, mechanisms= 9, mech_edges=76, couplings=13, risk_factors= 7
+  D-RELAPSING-POLYCHONDRITIS: axes=57, mechanisms=10, mech_edges=48, couplings=16, risk_factors= 8
+  D-RENAL-ABSCESS: axes=73, mechanisms=11, mech_edges=50, couplings=11, risk_factors= 9
+  D-RETINAL-DETACHMENT: axes=90, mechanisms= 8, mech_edges=77, couplings=10, risk_factors=12
+  D-RHABDOMYOLYSIS: axes=63, mechanisms= 8, mech_edges=61, couplings=16, risk_factors=10
+  D-RHEUMATIC-FEVER: axes=53, mechanisms= 9, mech_edges=46, couplings= 8, risk_factors= 6
+  D-RICKETTSIOSIS-SCRUB-TYPHUS: axes=74, mechanisms=11, mech_edges=59, couplings=14, risk_factors= 8
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM: axes=66, mechanisms= 7, mech_edges=58, couplings=12, risk_factors= 9
+  D-SALICYLATE-TOXICITY: axes=91, mechanisms=10, mech_edges=59, couplings=14, risk_factors=11
+  D-SARCOIDOSIS: axes=165, mechanisms=22, mech_edges=140, couplings= 7, risk_factors=11
+  D-SCHIZOPHRENIA: axes=31, mechanisms= 6, mech_edges=22, couplings= 4, risk_factors= 3
+  D-SECONDARY-SYPHILIS: axes=140, mechanisms= 7, mech_edges=95, couplings=17, risk_factors= 6
+  D-SEPTIC-ABORTION: axes=76, mechanisms= 9, mech_edges=53, couplings=15, risk_factors=12
+  D-SEPTIC-ARTHRITIS: axes=93, mechanisms=11, mech_edges=62, couplings=12, risk_factors=11
+  D-SEROTONIN-SYNDROME: axes=51, mechanisms= 6, mech_edges=43, couplings=15, risk_factors= 7
+  D-SEVERE-HYPERCALCEMIA: axes=86, mechanisms=10, mech_edges=81, couplings=13, risk_factors= 7
+  D-SEVERE-HYPOGLYCEMIA: axes=74, mechanisms= 9, mech_edges=39, couplings=12, risk_factors= 5
+  D-SEVERE-HYPOKALEMIA: axes=122, mechanisms=11, mech_edges=70, couplings=12, risk_factors= 9
+  D-SHIGELLOSIS: axes=80, mechanisms=12, mech_edges=247, couplings=16, risk_factors= 9
+  D-SIADH     : axes=86, mechanisms= 8, mech_edges=47, couplings=15, risk_factors= 9
+  D-SICK-SINUS-SYNDROME: axes=74, mechanisms= 9, mech_edges=52, couplings=15, risk_factors=13
+  D-SICKLE-CELL-ACUTE-CHEST: axes=54, mechanisms= 9, mech_edges=44, couplings=12, risk_factors= 7
+  D-SJOGREN-SYSTEMIC: axes=117, mechanisms=28, mech_edges=77, couplings=15, risk_factors=16
+  D-SJS-TEN   : axes=58, mechanisms= 9, mech_edges=29, couplings=14, risk_factors=12
+  D-SLE-FLARE : axes=88, mechanisms=11, mech_edges=84, couplings=13, risk_factors=13
+  D-SOMATIC-SYMPTOM-DISORDER: axes=51, mechanisms= 7, mech_edges=39, couplings=12, risk_factors= 7
+  D-SPINAL-EPIDURAL-ABSCESS: axes=66, mechanisms= 8, mech_edges=59, couplings=15, risk_factors= 6
+  D-SPONTANEOUS-BACTERIAL-PERITONITIS: axes=62, mechanisms= 8, mech_edges=48, couplings=15, risk_factors= 8
+  D-STAPH-AUREUS-BACTEREMIA: axes=69, mechanisms=10, mech_edges=53, couplings=11, risk_factors= 9
+  D-STATUS-EPILEPTICUS: axes=60, mechanisms= 9, mech_edges=46, couplings=12, risk_factors= 5
+  D-STEC-ENTERITIS: axes=41, mechanisms= 7, mech_edges=43, couplings=14, risk_factors= 6
+  D-STEC-HUS  : axes=66, mechanisms= 9, mech_edges=54, couplings=19, risk_factors=11
+  D-STRANGULATED-BOWEL-OBSTRUCTION: axes=91, mechanisms= 9, mech_edges=89, couplings=15, risk_factors= 7
+  D-STREP-PYOGENES-BACTEREMIA: axes=63, mechanisms= 9, mech_edges=58, couplings=15, risk_factors= 9
+  D-STRONGYLOIDES-HYPERINFECTION: axes=72, mechanisms= 8, mech_edges=82, couplings=14, risk_factors= 9
+  D-SUBACUTE-COMBINED-DEGENERATION: axes=38, mechanisms= 5, mech_edges=28, couplings= 3, risk_factors= 4
+  D-SUBACUTE-THYROIDITIS: axes=63, mechanisms= 7, mech_edges=60, couplings=11, risk_factors= 6
+  D-SUBARACHNOID-HEMORRHAGE: axes=62, mechanisms= 8, mech_edges=37, couplings=10, risk_factors= 7
+  D-SUPERIOR-VENA-CAVA-SYNDROME: axes=84, mechanisms= 9, mech_edges=81, couplings=17, risk_factors= 8
+  D-SYMPTOMATIC-HYPOCALCEMIA: axes=75, mechanisms=10, mech_edges=78, couplings=13, risk_factors= 9
+  D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS: axes=63, mechanisms= 8, mech_edges=57, couplings=13, risk_factors= 8
+  D-TAKAYASU-ARTERITIS: axes=64, mechanisms=12, mech_edges=41, couplings=15, risk_factors= 9
+  D-TAKOTSUBO-CARDIOMYOPATHY: axes=98, mechanisms=10, mech_edges=71, couplings=17, risk_factors=10
+  D-TB-DISSEMINATED: axes=102, mechanisms=15, mech_edges=107, couplings= 9, risk_factors=11
+  D-TENSION-PNEUMOTHORAX: axes=85, mechanisms= 8, mech_edges=66, couplings=16, risk_factors= 7
+  D-TESTICULAR-TORSION: axes=52, mechanisms= 7, mech_edges=41, couplings= 9, risk_factors= 8
+  D-TETANUS   : axes=115, mechanisms=11, mech_edges=72, couplings=12, risk_factors= 8
+  D-THEOPHYLLINE-TOXICITY: axes=125, mechanisms= 8, mech_edges=119, couplings=15, risk_factors= 9
+  D-THREATENED-PRETERM-LABOR: axes=27, mechanisms= 5, mech_edges=16, couplings= 3, risk_factors= 3
+  D-THYROID-STORM: axes=61, mechanisms= 9, mech_edges=64, couplings=12, risk_factors=10
+  D-TOXIC-SHOCK-SYNDROME: axes=98, mechanisms=18, mech_edges=404, couplings= 8, risk_factors= 9
+  D-TOXOPLASMOSIS: axes=95, mechanisms=10, mech_edges=71, couplings=10, risk_factors= 8
+  D-TRANSFUSION-REACTION-FNHTR: axes=43, mechanisms= 6, mech_edges=38, couplings= 6, risk_factors= 6
+  D-TRANSFUSION-REACTION-HEMOLYTIC: axes=87, mechanisms= 8, mech_edges=84, couplings=13, risk_factors= 9
+  D-TRANSIENT-ISCHEMIC-ATTACK: axes=82, mechanisms=10, mech_edges=62, couplings=17, risk_factors=10
+  D-TRANSPLANT-REJECTION-ACUTE: axes=78, mechanisms=10, mech_edges=55, couplings=16, risk_factors=10
+  D-TRAPS     : axes=60, mechanisms= 9, mech_edges=42, couplings=13, risk_factors= 8
+  D-TRICHINELLOSIS: axes=65, mechanisms= 9, mech_edges=53, couplings=17, risk_factors= 7
+  D-TRICYCLIC-ANTIDEPRESSANT-TOXICITY: axes=102, mechanisms= 8, mech_edges=83, couplings=15, risk_factors= 8
+  D-TUBO-OVARIAN-ABSCESS: axes=82, mechanisms=10, mech_edges=51, couplings=12, risk_factors=12
+  D-TUMOR-LYSIS-SYNDROME: axes=59, mechanisms=10, mech_edges=41, couplings=15, risk_factors= 9
+  D-TYPHOID-FEVER: axes=84, mechanisms=12, mech_edges=52, couplings=12, risk_factors= 8
+  D-ULCERATIVE-COLITIS-SEVERE-FLARE: axes=85, mechanisms= 8, mech_edges=53, couplings=11, risk_factors=10
+  D-UNSTABLE-ANGINA: axes=93, mechanisms=10, mech_edges=52, couplings=20, risk_factors=12
+  D-URETEROLITHIASIS: axes=58, mechanisms= 8, mech_edges=36, couplings=12, risk_factors=10
+  D-URTICARIAL-VASCULITIS: axes=67, mechanisms=10, mech_edges=39, couplings=17, risk_factors= 8
+  D-UTERINE-RUPTURE: axes=96, mechanisms= 8, mech_edges=53, couplings=12, risk_factors=13
+  D-VENTRICULAR-FIBRILLATION: axes=70, mechanisms= 8, mech_edges=79, couplings=17, risk_factors=10
+  D-VENTRICULAR-TACHYCARDIA: axes=74, mechanisms= 8, mech_edges=56, couplings=15, risk_factors= 9
+  D-VERTEBRAL-OSTEOMYELITIS: axes=78, mechanisms= 8, mech_edges=54, couplings=14, risk_factors= 9
+  D-VIRAL-MENINGITIS: axes=75, mechanisms= 8, mech_edges=39, couplings=13, risk_factors=10
+  D-VITAMIN-B12-DEFICIENCY: axes=45, mechanisms= 6, mech_edges=40, couplings= 3, risk_factors= 5
+  D-VON-WILLEBRAND-DISEASE: axes=68, mechanisms= 8, mech_edges=34, couplings=12, risk_factors=13
+  D-VZV-ENCEPHALITIS: axes=81, mechanisms= 9, mech_edges=66, couplings=12, risk_factors= 7
+  D-WERNICKE-ENCEPHALOPATHY: axes=89, mechanisms= 8, mech_edges=59, couplings=11, risk_factors= 7
+  D-WEST-NILE-NEUROINVASIVE-DISEASE: axes=76, mechanisms= 9, mech_edges=72, couplings=13, risk_factors= 7
+Base-measure/background axes: 10979
+Parallel workers: 4 (case-level; set VESMED_N_WORKERS=1 for sequential or 0/auto for capped auto)
+Candidate workers: 1 (per-case candidate chunks; set VESMED_N_CANDIDATE_WORKERS=auto or an integer)
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACETAMINOPHEN_TOXICITY_MASSIVE_OVERDOSE_PMC8289598  expected=D-ACETAMINOPHEN-TOXICITY
+source: PMID 34336301 / PMC8289598 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8289598/
+paper diagnosis: massive acetaminophen overdose treated with N-acetylcysteine, fomepizole, and hemodialysis
+observed axes: 29
+risk context: acetaminophen_overdose_context=toxic_exposure_context
+
+[joint SDE ranking: all candidates]
+* D-ACETAMINOPHEN-TOXICITY logP=    -81.94 mean=  -4.313 n=19 prior= +0.00 dHealth=+1987.26
+  D-ACUTE-LIVER-FAILURE   logP=   -501.70 mean= -26.405 n=19 prior= +0.00 dHealth=+1567.51
+  D-ACUTE-PANCREATITIS    logP=   -597.04 mean= -31.423 n=19 prior= +0.00 dHealth=+1472.17
+  D-ETHYLENE-GLYCOL-POISONING logP=   -606.78 mean= -31.936 n=19 prior= +0.00 dHealth=+1462.43
+  D-IRON-POISONING        logP=   -626.07 mean= -29.813 n=21 prior= +0.00 dHealth=+1443.14
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -629.57 mean= -33.135 n=19 prior= +0.00 dHealth=+1439.63
+  D-CALCIUM-CHANNEL-BLOCKER-TOXICITY logP=   -631.80 mean= -28.718 n=22 prior= +0.00 dHealth=+1437.41
+  D-BOWEL-OBSTRUCTION     logP=   -636.96 mean= -33.524 n=19 prior= +0.00 dHealth=+1432.25
+  D-STRANGULATED-BOWEL-OBSTRUCTION logP=   -637.10 mean= -33.532 n=19 prior= +0.00 dHealth=+1432.10
+  D-BACTERIAL-MENINGITIS  logP=   -663.66 mean= -34.930 n=19 prior= +0.00 dHealth=+1405.54
+
+[best single-manifold diagnostic]
+* D-ACETAMINOPHEN-TOXICITY logP=    -81.94 mean=  -4.313 prior= +0.00 dHealth=+1987.26
+  D-ACUTE-LIVER-FAILURE logP=   -501.70 mean= -26.405 prior= +0.00 dHealth=+1567.51
+  D-ACUTE-PANCREATITIS logP=   -597.04 mean= -31.423 prior= +0.00 dHealth=+1472.17
+  D-ETHYLENE-GLYCOL-POISONING logP=   -606.78 mean= -31.936 prior= +0.00 dHealth=+1462.43
+  D-IRON-POISONING logP=   -626.07 mean= -29.813 prior= +0.00 dHealth=+1443.14
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -629.57 mean= -33.135 prior= +0.00 dHealth=+1439.63
+  D-CALCIUM-CHANNEL-BLOCKER-TOXICITY logP=   -631.80 mean= -28.718 prior= +0.00 dHealth=+1437.41
+  D-BOWEL-OBSTRUCTION logP=   -636.96 mean= -33.524 prior= +0.00 dHealth=+1432.25
+  D-STRANGULATED-BOWEL-OBSTRUCTION logP=   -637.10 mean= -33.532 prior= +0.00 dHealth=+1432.10
+  D-BACTERIAL-MENINGITIS logP=   -663.66 mean= -34.930 prior= +0.00 dHealth=+1405.54
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -769.75 dHealth=+1299.46 members= 5 best_leaf=D-CAMPYLOBACTER-ENTERITIS(-769.75)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -81.94 candidate=D-ACETAMINOPHEN-TOXICITY
+  logP_best_single=    -81.94 candidate=D-ACETAMINOPHEN-TOXICITY
+  logP_health_reference=  -2069.21 mean=-108.906 n=19
+  delta_to_health_best_known=  +1987.26
+  delta_to_health_best_single=  +1987.26
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ACETAMINOPHEN-TOXICITY  PASS
+best latent times: D-ACETAMINOPHEN-TOXICITY=day2.1
+largest standardized residuals: heart_rate obs=130 beats_per_min mu=75 via=health_reference_manifold:v1_core_axes z=9.2; abdominal_tenderness_presence obs=1 present_absent_0_1 mu=0.5 via=D-ACETAMINOPHEN-TOXICITY z=3.0; mean_arterial_pressure obs=54 mmHg mu=79.0126 via=D-ACETAMINOPHEN-TOXICITY z=2.1; serum_bicarbonate obs=5 mmol/L mu=13.5 via=D-ACETAMINOPHEN-TOXICITY z=2.1; serum_alt obs=16 U/L mu=244.728 via=D-ACETAMINOPHEN-TOXICITY z=2.0
+response-model accounting: serum_creatinine obs=0.24 mg/dL expected_mu=0.4 via=response_model:renal_perfusion_response:renal_injury_not_yet_expressed_activity:stimulus=0.48:gap=0.78; white_blood_cell_count obs=15.6 10^9/L expected_mu=10.1537 via=response_model:myeloid_response_to_inflammation:expected_response:stimulus=0.37:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACUTE_CHOLANGITIS_MICROCOCCUS_LYLAE_PMC11362765  expected=D-ACUTE-CHOLANGITIS
+source: PMID 39220420 / PMC11362765 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11362765/
+paper diagnosis: acute cholangitis due to Micrococcus lylae
+observed axes: 29
+risk context: biliary_obstruction_context=source_context
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-CHOLANGITIS     logP=   -366.07 mean= -19.267 n=19 prior= +0.00 dHealth= +805.41
+  D-PYOGENIC-LIVER-ABSCESS logP=   -394.41 mean= -20.758 n=19 prior= +0.00 dHealth= +777.07
+  D-ALCOHOLIC-HEPATITIS   logP=   -547.97 mean= -27.399 n=20 prior= +0.00 dHealth= +623.51
+  D-ACUTE-CHOLECYSTITIS   logP=   -575.94 mean= -30.313 n=19 prior= +0.00 dHealth= +595.54
+  D-ACUTE-HEPATITIS-E     logP=   -580.06 mean= -30.530 n=19 prior= +0.00 dHealth= +591.42
+  D-ACUTE-HEPATITIS-A     logP=   -588.66 mean= -30.982 n=19 prior=-20.00 dHealth= +582.82
+  D-ACUTE-HEPATITIS-B     logP=   -590.95 mean= -29.547 n=20 prior= +0.00 dHealth= +580.53
+  D-ACUTE-LIVER-FAILURE   logP=   -625.92 mean= -32.943 n=19 prior= +0.00 dHealth= +545.56
+  D-AMOEBIC-LIVER-ABSCESS logP=   -635.00 mean= -33.421 n=19 prior= -3.50 dHealth= +536.48
+  D-RICKETTSIOSIS-SCRUB-TYPHUS logP=   -649.29 mean= -34.173 n=19 prior= -6.00 dHealth= +522.19
+
+[best single-manifold diagnostic]
+* D-ACUTE-CHOLANGITIS logP=   -366.07 mean= -19.267 prior= +0.00 dHealth= +805.41
+  D-PYOGENIC-LIVER-ABSCESS logP=   -394.41 mean= -20.758 prior= +0.00 dHealth= +777.07
+  D-ALCOHOLIC-HEPATITIS logP=   -547.97 mean= -27.399 prior= +0.00 dHealth= +623.51
+  D-ACUTE-CHOLECYSTITIS logP=   -575.94 mean= -30.313 prior= +0.00 dHealth= +595.54
+  D-ACUTE-HEPATITIS-E logP=   -580.06 mean= -30.530 prior= +0.00 dHealth= +591.42
+  D-ACUTE-HEPATITIS-A logP=   -588.66 mean= -30.982 prior=-20.00 dHealth= +582.82
+  D-ACUTE-HEPATITIS-B logP=   -590.95 mean= -29.547 prior= +0.00 dHealth= +580.53
+  D-ACUTE-LIVER-FAILURE logP=   -625.92 mean= -32.943 prior= +0.00 dHealth= +545.56
+  D-AMOEBIC-LIVER-ABSCESS logP=   -635.00 mean= -33.421 prior= -3.50 dHealth= +536.48
+  D-RICKETTSIOSIS-SCRUB-TYPHUS logP=   -649.29 mean= -34.173 prior= -6.00 dHealth= +522.19
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -682.49 dHealth= +488.99 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-682.49)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -366.07 candidate=D-ACUTE-CHOLANGITIS
+  logP_best_single=   -366.07 candidate=D-ACUTE-CHOLANGITIS
+  logP_health_reference=  -1171.48 mean= -61.657 n=19
+  delta_to_health_best_known=   +805.41
+  delta_to_health_best_single=   +805.41
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ACUTE-CHOLANGITIS  PASS
+best latent times: D-ACUTE-CHOLANGITIS=day0.5
+largest standardized residuals: vomiting_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.2; pruritus_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; pain_radiation_to_right_shoulder_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; anorexia_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; jaundice_activity obs=1 severity_score_0_1 mu=0.1125 via=D-ACUTE-CHOLANGITIS z=5.9
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACUTE_CHOLECYSTITIS_HEMORRHAGIC_ACALCULOUS_PMC7994005  expected=D-ACUTE-CHOLECYSTITIS
+source: PMID 33796260 / PMC7994005 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7994005/
+paper diagnosis: acalculous hemorrhagic cholecystitis / gangrenous cholecystitis
+observed axes: 49
+risk context: anticoagulant_exposure=medication_context
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-CHOLECYSTITIS   logP=   -279.65 mean= -12.159 n=23 prior= +0.00 dHealth= +428.33
+  D-ACUTE-HEPATITIS-A     logP=   -413.51 mean= -17.979 n=23 prior=-20.00 dHealth= +294.48
+  D-TESTICULAR-TORSION    logP=   -535.25 mean= -23.272 n=23 prior= +0.00 dHealth= +172.74
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -558.59 mean= -24.286 n=23 prior= +0.00 dHealth= +149.40
+  D-ACUTE-HEPATITIS-E     logP=   -565.25 mean= -24.576 n=23 prior= +0.00 dHealth= +142.73
+  D-ACUTE-LIVER-FAILURE   logP=   -574.26 mean= -24.968 n=23 prior= +0.00 dHealth= +133.73
+  D-ACUTE-HEPATITIS-B     logP=   -580.69 mean= -24.196 n=24 prior= +0.00 dHealth= +127.30
+  D-SEVERE-HYPERCALCEMIA  logP=   -596.45 mean= -24.852 n=24 prior= +0.00 dHealth= +111.54
+  D-ETHYLENE-GLYCOL-POISONING logP=   -602.64 mean= -26.202 n=23 prior= +0.00 dHealth= +105.35
+  D-ACUTE-ANGLE-CLOSURE-GLAUCOMA logP=   -604.55 mean= -26.285 n=23 prior= +0.00 dHealth= +103.44
+
+[best single-manifold diagnostic]
+* D-ACUTE-CHOLECYSTITIS logP=   -279.65 mean= -12.159 prior= +0.00 dHealth= +428.33
+  D-ACUTE-HEPATITIS-A logP=   -413.51 mean= -17.979 prior=-20.00 dHealth= +294.48
+  D-TESTICULAR-TORSION logP=   -535.25 mean= -23.272 prior= +0.00 dHealth= +172.74
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -558.59 mean= -24.286 prior= +0.00 dHealth= +149.40
+  D-ACUTE-HEPATITIS-E logP=   -565.25 mean= -24.576 prior= +0.00 dHealth= +142.73
+  D-ACUTE-LIVER-FAILURE logP=   -574.26 mean= -24.968 prior= +0.00 dHealth= +133.73
+  D-ACUTE-HEPATITIS-B logP=   -580.69 mean= -24.196 prior= +0.00 dHealth= +127.30
+  D-SEVERE-HYPERCALCEMIA logP=   -596.45 mean= -24.852 prior= +0.00 dHealth= +111.54
+  D-ETHYLENE-GLYCOL-POISONING logP=   -602.64 mean= -26.202 prior= +0.00 dHealth= +105.35
+  D-ACUTE-ANGLE-CLOSURE-GLAUCOMA logP=   -604.55 mean= -26.285 prior= +0.00 dHealth= +103.44
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -608.07 dHealth=  +99.92 members= 5 best_leaf=D-NOROVIRUS-GASTROENTERITIS(-608.07)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -279.65 candidate=D-ACUTE-CHOLECYSTITIS
+  logP_best_single=   -279.65 candidate=D-ACUTE-CHOLECYSTITIS
+  logP_health_reference=   -707.99 mean= -30.782 n=23
+  delta_to_health_best_known=   +428.33
+  delta_to_health_best_single=   +428.33
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ACUTE-CHOLECYSTITIS  PASS
+best latent times: D-ACUTE-CHOLECYSTITIS=day2.0
+largest standardized residuals: sudden_onset_pain_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; gallbladder_intraluminal_hyperdensity_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; biliary_dilatation_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; estimated_glomerular_filtration_rate obs=35 mL/min/1.73m2 mu=100 via=base_measure_background z=4.9; gallbladder_distension_activity obs=1 relative_activity_0_1 mu=0.31 via=D-ACUTE-CHOLECYSTITIS z=4.1
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACUTE_MYOCARDITIS_VIRAL_DILATED_CARDIOMYOPATHY_PMC11379340  expected=D-ACUTE-MYOCARDITIS
+source: PMID 39246964 / PMC11379340 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11379340/
+paper diagnosis: acute viral myocarditis complicated by gastroenteritis and congestive hepatopathy
+observed axes: 27
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-MYOCARDITIS     logP=   -395.59 mean= -18.838 n=21 prior= +0.00 dHealth=+17618.82
+  D-REFEEDING-SYNDROME    logP=   -706.25 mean= -33.631 n=21 prior= +0.00 dHealth=+17308.17
+  D-DIC                   logP=   -710.49 mean= -33.833 n=21 prior= -2.00 dHealth=+17303.92
+  D-TRANSPLANT-REJECTION-ACUTE logP=   -756.74 mean= -36.035 n=21 prior= +0.00 dHealth=+17257.67
+  D-AMOEBIC-LIVER-ABSCESS logP=   -762.59 mean= -36.314 n=21 prior= -3.50 dHealth=+17251.82
+  D-PULMONARY-TUBERCULOSIS logP=   -765.79 mean= -36.466 n=21 prior= +0.00 dHealth=+17248.62
+  D-THYROID-STORM         logP=   -766.83 mean= -34.856 n=22 prior= +0.00 dHealth=+17247.58
+  D-MALARIA-FALCIPARUM    logP=   -772.69 mean= -36.795 n=21 prior= +0.00 dHealth=+17241.72
+  D-PAN                   logP=   -786.24 mean= -37.440 n=21 prior= +0.00 dHealth=+17228.17
+  D-CAR-T-CRS             logP=   -787.81 mean= -35.810 n=22 prior= +0.00 dHealth=+17226.60
+
+[best single-manifold diagnostic]
+* D-ACUTE-MYOCARDITIS logP=   -395.59 mean= -18.838 prior= +0.00 dHealth=+17618.82
+  D-REFEEDING-SYNDROME logP=   -706.25 mean= -33.631 prior= +0.00 dHealth=+17308.17
+  D-DIC        logP=   -710.49 mean= -33.833 prior= -2.00 dHealth=+17303.92
+  D-TRANSPLANT-REJECTION-ACUTE logP=   -756.74 mean= -36.035 prior= +0.00 dHealth=+17257.67
+  D-AMOEBIC-LIVER-ABSCESS logP=   -762.59 mean= -36.314 prior= -3.50 dHealth=+17251.82
+  D-PULMONARY-TUBERCULOSIS logP=   -765.79 mean= -36.466 prior= +0.00 dHealth=+17248.62
+  D-THYROID-STORM logP=   -766.83 mean= -34.856 prior= +0.00 dHealth=+17247.58
+  D-MALARIA-FALCIPARUM logP=   -772.69 mean= -36.795 prior= +0.00 dHealth=+17241.72
+  D-PAN        logP=   -786.24 mean= -37.440 prior= +0.00 dHealth=+17228.17
+  D-CAR-T-CRS  logP=   -787.81 mean= -35.810 prior= +0.00 dHealth=+17226.60
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -794.82 dHealth=+17219.59 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-794.82)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -395.59 candidate=D-ACUTE-MYOCARDITIS
+  logP_best_single=   -395.59 candidate=D-ACUTE-MYOCARDITIS
+  logP_health_reference= -18014.41 mean=-857.829 n=21
+  delta_to_health_best_known= +17618.82
+  delta_to_health_best_single= +17618.82
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ACUTE-MYOCARDITIS  PASS
+best latent times: D-ACUTE-MYOCARDITIS=day11.7
+largest standardized residuals: watery_stool_presence obs=1 present_absent_0_1 mu=0.015 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.3; right_axis_deviation_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; heart_murmur_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; abdominal_bloating_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; intraventricular_conduction_delay_presence obs=1 present_absent_0_1 mu=0.23625 via=D-ACUTE-MYOCARDITIS z=6.5
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ACUTE_PANCREATITIS_SEVERE_NECROTIZING_PMC8971073  expected=D-ACUTE-PANCREATITIS
+source: PMID 35371853 / PMC8971073 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8971073/
+paper diagnosis: acute pancreatitis of unknown etiology; severe necrotizing pancreatitis with ARDS
+observed axes: 37
+
+[joint SDE ranking: all candidates]
+* D-ACUTE-PANCREATITIS    logP=    -50.80 mean=  -2.988 n=17 prior= +0.00 dHealth= +615.09
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -218.40 mean= -12.847 n=17 prior= +0.00 dHealth= +447.48
+  D-CML-BLAST-CRISIS      logP=   -219.96 mean= -12.939 n=17 prior= +0.00 dHealth= +445.93
+  D-CLOSTRIDIOIDES-DIFFICILE-SEVERE logP=   -220.64 mean= -12.979 n=17 prior= +0.00 dHealth= +445.24
+  D-ACUTE-PROSTATITIS     logP=   -222.79 mean= -13.106 n=17 prior= +0.00 dHealth= +443.09
+  D-AML                   logP=   -226.27 mean= -13.310 n=17 prior= +0.00 dHealth= +439.62
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -228.29 mean= -13.429 n=17 prior= +0.00 dHealth= +437.59
+  D-SPONTANEOUS-BACTERIAL-PERITONITIS logP=   -229.55 mean= -12.753 n=18 prior= +0.00 dHealth= +436.33
+  D-ACUTE-CHOLANGITIS     logP=   -229.95 mean= -13.526 n=17 prior= +0.00 dHealth= +435.93
+  D-RICKETTSIOSIS-SCRUB-TYPHUS logP=   -231.70 mean= -13.630 n=17 prior= -6.00 dHealth= +434.18
+
+[best single-manifold diagnostic]
+* D-ACUTE-PANCREATITIS logP=    -50.80 mean=  -2.988 prior= +0.00 dHealth= +615.09
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -218.40 mean= -12.847 prior= +0.00 dHealth= +447.48
+  D-CML-BLAST-CRISIS logP=   -219.96 mean= -12.939 prior= +0.00 dHealth= +445.93
+  D-CLOSTRIDIOIDES-DIFFICILE-SEVERE logP=   -220.64 mean= -12.979 prior= +0.00 dHealth= +445.24
+  D-ACUTE-PROSTATITIS logP=   -222.79 mean= -13.106 prior= +0.00 dHealth= +443.09
+  D-AML        logP=   -226.27 mean= -13.310 prior= +0.00 dHealth= +439.62
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -228.29 mean= -13.429 prior= +0.00 dHealth= +437.59
+  D-SPONTANEOUS-BACTERIAL-PERITONITIS logP=   -229.55 mean= -12.753 prior= +0.00 dHealth= +436.33
+  D-ACUTE-CHOLANGITIS logP=   -229.95 mean= -13.526 prior= +0.00 dHealth= +435.93
+  D-RICKETTSIOSIS-SCRUB-TYPHUS logP=   -231.70 mean= -13.630 prior= -6.00 dHealth= +434.18
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -394.79 dHealth= +271.09 members= 5 best_leaf=D-CAMPYLOBACTER-ENTERITIS(-395.18)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -50.80 candidate=D-ACUTE-PANCREATITIS
+  logP_best_single=    -50.80 candidate=D-ACUTE-PANCREATITIS
+  logP_health_reference=   -665.88 mean= -39.170 n=17
+  delta_to_health_best_known=   +615.09
+  delta_to_health_best_single=   +615.09
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ACUTE-PANCREATITIS  PASS
+best latent times: D-ACUTE-PANCREATITIS=day2.0
+largest standardized residuals: pancreatic_edema_or_enlargement_activity obs=1 relative_activity_0_1 mu=0.118633 via=D-ACUTE-PANCREATITIS z=5.3; peripancreatic_fat_stranding_activity obs=1 relative_activity_0_1 mu=0.334167 via=D-ACUTE-PANCREATITIS z=4.0; white_blood_cell_count obs=26.3 10^9/L mu=11.1143 via=D-ACUTE-PANCREATITIS z=3.5; absolute_neutrophil_count obs=21.3 10^9/L mu=8.1 via=D-ACUTE-PANCREATITIS z=3.4; vomiting_presence obs=0 present_absent_0_1 mu=0.55 via=D-ACUTE-PANCREATITIS z=3.3
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ANAPHYLAXIS_DICLOFENAC_HYPERTENSION_PMC9413925  expected=D-ANAPHYLAXIS
+source: PMID 36008817 / PMC9413925 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9413925/
+paper diagnosis: anaphylaxis to diclofenac sodium SR
+observed axes: 23
+risk context: recent_nsaid_exposure=drug_exposure
+
+[joint SDE ranking: all candidates]
+* D-ANAPHYLAXIS           logP=   -637.63 mean= -39.852 n=16 prior= +0.00 dHealth= +158.89
+  D-DRUG-FEVER-DRESS      logP=   -665.70 mean= -41.606 n=16 prior= +0.00 dHealth= +130.82
+  D-URTICARIAL-VASCULITIS logP=   -676.05 mean= -42.253 n=16 prior= +0.00 dHealth= +120.47
+  D-ACUTE-HEART-FAILURE   logP=   -678.16 mean= -42.385 n=16 prior= +0.00 dHealth= +118.36
+  D-HYPERTENSIVE-EMERGENCY logP=   -678.38 mean= -42.398 n=16 prior= +0.00 dHealth= +118.14
+  D-COPD-EXACERBATION     logP=   -681.22 mean= -42.576 n=16 prior= +0.00 dHealth= +115.30
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=   -687.65 mean= -42.978 n=16 prior= +0.00 dHealth= +108.87
+  D-MPA                   logP=   -688.26 mean= -43.016 n=16 prior= +0.00 dHealth= +108.26
+  D-EMPYEMA               logP=   -691.39 mean= -43.212 n=16 prior= +0.00 dHealth= +105.13
+  D-CYANIDE-POISONING     logP=   -691.60 mean= -43.225 n=16 prior= +0.00 dHealth= +104.92
+
+[best single-manifold diagnostic]
+* D-ANAPHYLAXIS logP=   -637.63 mean= -39.852 prior= +0.00 dHealth= +158.89
+  D-DRUG-FEVER-DRESS logP=   -665.70 mean= -41.606 prior= +0.00 dHealth= +130.82
+  D-URTICARIAL-VASCULITIS logP=   -676.05 mean= -42.253 prior= +0.00 dHealth= +120.47
+  D-ACUTE-HEART-FAILURE logP=   -678.16 mean= -42.385 prior= +0.00 dHealth= +118.36
+  D-HYPERTENSIVE-EMERGENCY logP=   -678.38 mean= -42.398 prior= +0.00 dHealth= +118.14
+  D-COPD-EXACERBATION logP=   -681.22 mean= -42.576 prior= +0.00 dHealth= +115.30
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=   -687.65 mean= -42.978 prior= +0.00 dHealth= +108.87
+  D-MPA        logP=   -688.26 mean= -43.016 prior= +0.00 dHealth= +108.26
+  D-EMPYEMA    logP=   -691.39 mean= -43.212 prior= +0.00 dHealth= +105.13
+  D-CYANIDE-POISONING logP=   -691.60 mean= -43.225 prior= +0.00 dHealth= +104.92
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -771.98 dHealth=  +24.54 members= 5 best_leaf=D-NOROVIRUS-GASTROENTERITIS(-772.16)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -637.63 candidate=D-ANAPHYLAXIS
+  logP_best_single=   -637.63 candidate=D-ANAPHYLAXIS
+  logP_health_reference=   -796.52 mean= -49.782 n=16
+  delta_to_health_best_known=   +158.89
+  delta_to_health_best_single=   +158.89
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ANAPHYLAXIS  PASS
+best latent times: D-ANAPHYLAXIS=day0.0
+largest standardized residuals: wheeze_or_rhonchi_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; skin_erythema_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; postural_dizziness_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; orthostatic_hypotension_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; normal_mental_status_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2
+response-model accounting: heart_rate obs=110 beats_per_min expected_mu=95.3365 via=response_model:cardiovascular_response_to_shock:expected_response:stimulus=0.52:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+SKILL20_AORTIC_DISSECTION_TYPE_B_MALPERFUSION_PMC4107428  expected=D-AORTIC-DISSECTION
+source: PMID 25135397 / PMC4107428 / https://pmc.ncbi.nlm.nih.gov/articles/PMC4107428/
+paper diagnosis: acute type B descending aortic dissection with malperfusion syndrome
+observed axes: 25
+risk context: stimulant_use_context=risk_context
+
+[joint SDE ranking: all candidates]
+* D-AORTIC-DISSECTION     logP=   -346.90 mean= -23.127 n=15 prior= +0.00 dHealth= +421.27
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -443.78 mean= -29.585 n=15 prior= +0.00 dHealth= +324.39
+  D-HYPERTENSIVE-EMERGENCY logP=   -483.13 mean= -32.209 n=15 prior= +0.00 dHealth= +285.04
+  D-PAN                   logP=   -490.66 mean= -32.711 n=15 prior= +0.00 dHealth= +277.52
+  D-PELVIC-FRACTURE       logP=   -507.51 mean= -33.834 n=15 prior= +0.00 dHealth= +260.66
+  D-SPINAL-EPIDURAL-ABSCESS logP=   -507.58 mean= -33.839 n=15 prior= +0.00 dHealth= +260.59
+  D-BRAIN-ABSCESS         logP=   -509.09 mean= -33.939 n=15 prior= +0.00 dHealth= +259.09
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -517.17 mean= -34.478 n=15 prior= +0.00 dHealth= +251.01
+  D-CARDIOGENIC-SHOCK     logP=   -518.79 mean= -34.586 n=15 prior= -1.00 dHealth= +249.39
+  D-COMPLEMENT-MEDIATED-TMA logP=   -521.08 mean= -34.738 n=15 prior=-25.00 dHealth= +247.10
+
+[best single-manifold diagnostic]
+* D-AORTIC-DISSECTION logP=   -346.90 mean= -23.127 prior= +0.00 dHealth= +421.27
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -443.78 mean= -29.585 prior= +0.00 dHealth= +324.39
+  D-HYPERTENSIVE-EMERGENCY logP=   -483.13 mean= -32.209 prior= +0.00 dHealth= +285.04
+  D-PAN        logP=   -490.66 mean= -32.711 prior= +0.00 dHealth= +277.52
+  D-PELVIC-FRACTURE logP=   -507.51 mean= -33.834 prior= +0.00 dHealth= +260.66
+  D-SPINAL-EPIDURAL-ABSCESS logP=   -507.58 mean= -33.839 prior= +0.00 dHealth= +260.59
+  D-BRAIN-ABSCESS logP=   -509.09 mean= -33.939 prior= +0.00 dHealth= +259.09
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -517.17 mean= -34.478 prior= +0.00 dHealth= +251.01
+  D-CARDIOGENIC-SHOCK logP=   -518.79 mean= -34.586 prior= -1.00 dHealth= +249.39
+  D-COMPLEMENT-MEDIATED-TMA logP=   -521.08 mean= -34.738 prior=-25.00 dHealth= +247.10
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -624.50 dHealth= +143.68 members= 5 best_leaf=D-NOROVIRUS-GASTROENTERITIS(-624.50)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -346.90 candidate=D-AORTIC-DISSECTION
+  logP_best_single=   -346.90 candidate=D-AORTIC-DISSECTION
+  logP_health_reference=   -768.17 mean= -51.212 n=15
+  delta_to_health_best_known=   +421.27
+  delta_to_health_best_single=   +421.27
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-AORTIC-DISSECTION  PASS
+best latent times: D-AORTIC-DISSECTION=day4.8
+largest standardized residuals: tearing_pain_quality_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; flank_pain_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; altered_mental_status_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; acute_onset_pain_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; renal_artery_malperfusion_presence obs=1 present_absent_0_1 mu=0.2625 via=D-AORTIC-DISSECTION z=4.4
+
+----------------------------------------------------------------------------------------------------
+SKILL20_APPENDICITIS_PERFORATED_ELDERLY_PMC11350477  expected=D-APPENDICITIS
+source: PMID 39205785 / PMC11350477 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11350477/
+paper diagnosis: perforated appendix / perforated appendicitis
+observed axes: 28
+
+[joint SDE ranking: all candidates]
+* D-APPENDICITIS          logP=   -191.50 mean= -11.969 n=16 prior= +0.00 dHealth= +562.37
+  D-PERFORATED-VISCUS     logP=   -436.97 mean= -27.311 n=16 prior= +0.00 dHealth= +316.90
+  D-ACUTE-CHOLECYSTITIS   logP=   -440.33 mean= -27.521 n=16 prior= +0.00 dHealth= +313.54
+  D-NONTYPHOID-SALMONELLA-ENTERITIS logP=   -509.38 mean= -31.837 n=16 prior= +0.00 dHealth= +244.49
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -522.81 mean= -32.676 n=16 prior= +0.00 dHealth= +231.06
+  D-VIRAL-MENINGITIS      logP=   -534.18 mean= -33.386 n=16 prior= +0.00 dHealth= +219.70
+  D-BRAIN-ABSCESS         logP=   -557.42 mean= -34.839 n=16 prior= +0.00 dHealth= +196.46
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -568.42 mean= -35.526 n=16 prior= +0.00 dHealth= +185.45
+  D-ULCERATIVE-COLITIS-SEVERE-FLARE logP=   -571.34 mean= -35.709 n=16 prior= -2.00 dHealth= +182.53
+  D-ACUTE-PANCREATITIS    logP=   -572.11 mean= -35.757 n=16 prior= +0.00 dHealth= +181.76
+
+[best single-manifold diagnostic]
+* D-APPENDICITIS logP=   -191.50 mean= -11.969 prior= +0.00 dHealth= +562.37
+  D-PERFORATED-VISCUS logP=   -436.97 mean= -27.311 prior= +0.00 dHealth= +316.90
+  D-ACUTE-CHOLECYSTITIS logP=   -440.33 mean= -27.521 prior= +0.00 dHealth= +313.54
+  D-NONTYPHOID-SALMONELLA-ENTERITIS logP=   -509.38 mean= -31.837 prior= +0.00 dHealth= +244.49
+  D-ENTEROCOCCAL-BACTEREMIA logP=   -522.81 mean= -32.676 prior= +0.00 dHealth= +231.06
+  D-VIRAL-MENINGITIS logP=   -534.18 mean= -33.386 prior= +0.00 dHealth= +219.70
+  D-BRAIN-ABSCESS logP=   -557.42 mean= -34.839 prior= +0.00 dHealth= +196.46
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -568.42 mean= -35.526 prior= +0.00 dHealth= +185.45
+  D-ULCERATIVE-COLITIS-SEVERE-FLARE logP=   -571.34 mean= -35.709 prior= -2.00 dHealth= +182.53
+  D-ACUTE-PANCREATITIS logP=   -572.11 mean= -35.757 prior= +0.00 dHealth= +181.76
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -509.38 dHealth= +244.49 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-509.38)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -191.50 candidate=D-APPENDICITIS
+  logP_best_single=   -191.50 candidate=D-APPENDICITIS
+  logP_health_reference=   -753.87 mean= -47.117 n=16
+  delta_to_health_best_known=   +562.37
+  delta_to_health_best_single=   +562.37
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-APPENDICITIS  PASS
+best latent times: D-APPENDICITIS=day4.5
+largest standardized residuals: diffuse_abdominal_pain_presence obs=1 present_absent_0_1 mu=0.015 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.3; neutrophil_fraction obs=0.8 fraction_0_1 mu=57.5 via=D-APPENDICITIS z=9.7; cecal_wall_thickening_activity obs=1 relative_activity_0_1 mu=0.2125 via=D-APPENDICITIS z=5.9; intra_abdominal_abscess_activity obs=1 relative_activity_0_1 mu=0.161172 via=D-APPENDICITIS z=5.0; periappendiceal_fat_stranding_activity obs=1 relative_activity_0_1 mu=0.2625 via=D-APPENDICITIS z=4.4
+response-model accounting: white_blood_cell_count obs=12 10^9/L expected_mu=11.7327 via=response_model:myeloid_response_to_inflammation:expected_response:stimulus=0.49:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ASTHMA_EXACERBATION_NEAR_FATAL_HYPERCAPNIC_PMC12671082  expected=D-ASTHMA-EXACERBATION
+source: PMID 41341505 / PMC12671082 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12671082/
+paper diagnosis: near-fatal asthma / life-threatening acute asthma exacerbation with severe hypercapnic respiratory failure
+observed axes: 38
+risk context: known_asthma_context=airway_context
+
+[joint SDE ranking: all candidates]
+* D-ASTHMA-EXACERBATION   logP=   -513.35 mean= -21.389 n=24 prior= +0.00 dHealth= +605.64
+  D-COPD-EXACERBATION     logP=   -663.98 mean= -27.666 n=24 prior= +0.00 dHealth= +455.00
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -672.80 mean= -28.033 n=24 prior= +0.00 dHealth= +446.19
+  D-CROUP                 logP=   -678.07 mean= -28.253 n=24 prior= +0.00 dHealth= +440.91
+  D-RELAPSING-POLYCHONDRITIS logP=   -715.96 mean= -29.832 n=24 prior= +0.41 dHealth= +403.02
+  D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME logP=   -735.95 mean= -28.306 n=26 prior= +0.00 dHealth= +383.04
+  D-ASPIRATION-PNEUMONIA  logP=   -766.11 mean= -30.644 n=25 prior=-72.00 dHealth= +352.87
+  D-MYASTHENIC-CRISIS     logP=   -768.79 mean= -32.033 n=24 prior= +0.00 dHealth= +350.20
+  D-HYPERTENSIVE-EMERGENCY logP=   -783.01 mean= -32.625 n=24 prior= +0.00 dHealth= +335.98
+  D-MYCOPLASMA-PNEUMONIA  logP=   -786.84 mean= -32.785 n=24 prior= -2.50 dHealth= +332.15
+
+[best single-manifold diagnostic]
+* D-ASTHMA-EXACERBATION logP=   -513.35 mean= -21.389 prior= +0.00 dHealth= +605.64
+  D-COPD-EXACERBATION logP=   -663.98 mean= -27.666 prior= +0.00 dHealth= +455.00
+  D-SICKLE-CELL-ACUTE-CHEST logP=   -672.80 mean= -28.033 prior= +0.00 dHealth= +446.19
+  D-CROUP      logP=   -678.07 mean= -28.253 prior= +0.00 dHealth= +440.91
+  D-RELAPSING-POLYCHONDRITIS logP=   -715.96 mean= -29.832 prior= +0.41 dHealth= +403.02
+  D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME logP=   -735.95 mean= -28.306 prior= +0.00 dHealth= +383.04
+  D-ASPIRATION-PNEUMONIA logP=   -766.11 mean= -30.644 prior=-72.00 dHealth= +352.87
+  D-MYASTHENIC-CRISIS logP=   -768.79 mean= -32.033 prior= +0.00 dHealth= +350.20
+  D-HYPERTENSIVE-EMERGENCY logP=   -783.01 mean= -32.625 prior= +0.00 dHealth= +335.98
+  D-MYCOPLASMA-PNEUMONIA logP=   -786.84 mean= -32.785 prior= -2.50 dHealth= +332.15
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -964.92 dHealth= +154.07 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-964.92)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -513.35 candidate=D-ASTHMA-EXACERBATION
+  logP_best_single=   -513.35 candidate=D-ASTHMA-EXACERBATION
+  logP_health_reference=  -1118.99 mean= -46.624 n=24
+  delta_to_health_best_known=   +605.64
+  delta_to_health_best_single=   +605.64
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ASTHMA-EXACERBATION  PASS
+best latent times: D-ASTHMA-EXACERBATION=day2.1
+largest standardized residuals: sore_throat_activity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.2; rhinorrhea_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.2; inability_to_speak_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; gasping_respiration_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; fever_history_activity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.2
+
+----------------------------------------------------------------------------------------------------
+SKILL20_BACTERIAL_MENINGITIS_KLEBSIELLA_SEPTIC_SHOCK_PMC6024475  expected=D-BACTERIAL-MENINGITIS
+source: PMID 29923989 / PMC6024475 / https://pmc.ncbi.nlm.nih.gov/articles/PMC6024475/
+paper diagnosis: Klebsiella pneumoniae purulent meningitis and septic shock
+observed axes: 41
+
+[joint SDE ranking: all candidates]
+* D-BACTERIAL-MENINGITIS  logP=   -718.57 mean= -34.218 n=21 prior= +0.00 dHealth= +471.00
+  D-MENINGOCOCCEMIA       logP=   -767.93 mean= -36.568 n=21 prior= -6.00 dHealth= +421.63
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=   -842.02 mean= -40.096 n=21 prior= +0.00 dHealth= +347.55
+  D-VZV-ENCEPHALITIS      logP=   -842.17 mean= -40.104 n=21 prior= +0.00 dHealth= +347.39
+  D-VIRAL-MENINGITIS      logP=   -846.06 mean= -40.289 n=21 prior= +0.00 dHealth= +343.51
+  D-CEREBRAL-VENOUS-SINUS-THROMBOSIS logP=   -848.03 mean= -40.383 n=21 prior= +0.00 dHealth= +341.54
+  D-HSV-ENCEPHALITIS      logP=   -855.15 mean= -40.721 n=21 prior= +0.00 dHealth= +334.42
+  D-PELVIC-FRACTURE       logP=   -858.71 mean= -40.891 n=21 prior= +0.00 dHealth= +330.86
+  D-ACUTE-HIV             logP=   -900.11 mean= -42.862 n=21 prior= +0.00 dHealth= +289.46
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=   -907.70 mean= -43.224 n=21 prior= +0.00 dHealth= +281.87
+
+[best single-manifold diagnostic]
+* D-BACTERIAL-MENINGITIS logP=   -718.57 mean= -34.218 prior= +0.00 dHealth= +471.00
+  D-MENINGOCOCCEMIA logP=   -767.93 mean= -36.568 prior= -6.00 dHealth= +421.63
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=   -842.02 mean= -40.096 prior= +0.00 dHealth= +347.55
+  D-VZV-ENCEPHALITIS logP=   -842.17 mean= -40.104 prior= +0.00 dHealth= +347.39
+  D-VIRAL-MENINGITIS logP=   -846.06 mean= -40.289 prior= +0.00 dHealth= +343.51
+  D-CEREBRAL-VENOUS-SINUS-THROMBOSIS logP=   -848.03 mean= -40.383 prior= +0.00 dHealth= +341.54
+  D-HSV-ENCEPHALITIS logP=   -855.15 mean= -40.721 prior= +0.00 dHealth= +334.42
+  D-PELVIC-FRACTURE logP=   -858.71 mean= -40.891 prior= +0.00 dHealth= +330.86
+  D-ACUTE-HIV  logP=   -900.11 mean= -42.862 prior= +0.00 dHealth= +289.46
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=   -907.70 mean= -43.224 prior= +0.00 dHealth= +281.87
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -1139.92 dHealth=  +49.65 members= 5 best_leaf=D-NOROVIRUS-GASTROENTERITIS(-1139.92)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -718.57 candidate=D-BACTERIAL-MENINGITIS
+  logP_best_single=   -718.57 candidate=D-BACTERIAL-MENINGITIS
+  logP_health_reference=  -1189.57 mean= -56.646 n=21
+  delta_to_health_best_known=   +471.00
+  delta_to_health_best_single=   +471.00
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-BACTERIAL-MENINGITIS  PASS
+best latent times: D-BACTERIAL-MENINGITIS=day1.5
+largest standardized residuals: vision_loss_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; shock_severity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; sellar_mass_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; purulent_csf_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; neck_stiffness_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2
+response-model accounting: heart_rate obs=85 beats_per_min expected_mu=85 via=response_model:cardiovascular_response_to_shock:cardiovascular_compensation_failure_activity:stimulus=0.59:gap=0.31; white_blood_cell_count obs=10.12 10^9/L expected_mu=11.7327 via=response_model:myeloid_response_to_inflammation:expected_response:stimulus=0.49:gap=0.14
+
+----------------------------------------------------------------------------------------------------
+SKILL20_CARBON_MONOXIDE_POISONING_CARDIOPULMONARY_COMPROMISE_PMC2637259  expected=D-CARBON-MONOXIDE-POISONING
+source: PMID 19144167 / PMC2637259 / https://pmc.ncbi.nlm.nih.gov/articles/PMC2637259/
+paper diagnosis: acute carbon monoxide poisoning with severe cardiopulmonary compromise
+observed axes: 21
+risk context: carbon_monoxide_exposure=exposure_context
+
+[joint SDE ranking: all candidates]
+* D-CARBON-MONOXIDE-POISONING logP=   -379.83 mean= -19.991 n=19 prior= +0.00 dHealth=+2090.21
+  D-CYANIDE-POISONING     logP=   -575.50 mean= -31.972 n=18 prior= +0.00 dHealth=+1894.54
+  D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME logP=  -2259.89 mean=-112.994 n=20 prior= +0.00 dHealth= +210.16
+  D-DIABETIC-KETOACIDOSIS logP=  -2326.07 mean=-129.226 n=18 prior=-12.00 dHealth= +143.98
+  D-OPIOID-INTOXICATION   logP=  -2330.24 mean=-129.458 n=18 prior= +0.00 dHealth= +139.81
+  D-SEVERE-HYPOGLYCEMIA   logP=  -2330.94 mean=-129.497 n=18 prior= +0.00 dHealth= +139.10
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=  -2336.07 mean=-129.782 n=18 prior= -4.00 dHealth= +133.97
+  D-CARDIOGENIC-SHOCK     logP=  -2347.76 mean=-130.431 n=18 prior= -1.00 dHealth= +122.29
+  D-BRONCHIOLITIS         logP=  -2353.41 mean=-130.745 n=18 prior= +0.00 dHealth= +116.63
+  D-CEREBRAL-VENOUS-SINUS-THROMBOSIS logP=  -2355.42 mean=-130.857 n=18 prior= +0.00 dHealth= +114.62
+
+[best single-manifold diagnostic]
+* D-CARBON-MONOXIDE-POISONING logP=   -379.83 mean= -19.991 prior= +0.00 dHealth=+2090.21
+  D-CYANIDE-POISONING logP=   -575.50 mean= -31.972 prior= +0.00 dHealth=+1894.54
+  D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME logP=  -2259.89 mean=-112.994 prior= +0.00 dHealth= +210.16
+  D-DIABETIC-KETOACIDOSIS logP=  -2326.07 mean=-129.226 prior=-12.00 dHealth= +143.98
+  D-OPIOID-INTOXICATION logP=  -2330.24 mean=-129.458 prior= +0.00 dHealth= +139.81
+  D-SEVERE-HYPOGLYCEMIA logP=  -2330.94 mean=-129.497 prior= +0.00 dHealth= +139.10
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=  -2336.07 mean=-129.782 prior= -4.00 dHealth= +133.97
+  D-CARDIOGENIC-SHOCK logP=  -2347.76 mean=-130.431 prior= -1.00 dHealth= +122.29
+  D-BRONCHIOLITIS logP=  -2353.41 mean=-130.745 prior= +0.00 dHealth= +116.63
+  D-CEREBRAL-VENOUS-SINUS-THROMBOSIS logP=  -2355.42 mean=-130.857 prior= +0.00 dHealth= +114.62
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -2407.17 dHealth=  +62.87 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-2407.17)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -379.83 candidate=D-CARBON-MONOXIDE-POISONING
+  logP_best_single=   -379.83 candidate=D-CARBON-MONOXIDE-POISONING
+  logP_health_reference=  -2470.04 mean=-137.225 n=18
+  delta_to_health_best_known=  +2090.21
+  delta_to_health_best_single=  +2090.21
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-CARBON-MONOXIDE-POISONING  PASS
+best latent times: D-CARBON-MONOXIDE-POISONING=day1.9
+largest standardized residuals: urinary_incontinence_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; reduced_consciousness_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; cyanosis_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; cerebral_edema_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; coma_activity obs=1 severity_score_0_1 mu=0.212336 via=D-CARBON-MONOXIDE-POISONING z=4.7
+
+----------------------------------------------------------------------------------------------------
+SKILL20_DIABETIC_KETOACIDOSIS_EXTREME_HYPERGLYCEMIA_PMC5385221  expected=D-DIABETIC-KETOACIDOSIS
+source: PMID 28458933 / PMC5385221 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5385221/
+paper diagnosis: severe diabetic ketoacidosis with extreme hyperglycaemia and hyperkalaemia
+observed axes: 36
+risk context: type_1_diabetes_context=metabolic_context
+
+[joint SDE ranking: all candidates]
+* D-DIABETIC-KETOACIDOSIS logP=   -225.63 mean=  -9.810 n=23 prior=-12.00 dHealth=+7548.82
+  D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS logP=   -561.90 mean= -23.412 n=24 prior= +0.00 dHealth=+7212.55
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -579.71 mean= -25.205 n=23 prior= -4.00 dHealth=+7194.74
+  D-ACUTE-PANCREATITIS    logP=   -681.18 mean= -29.617 n=23 prior= +1.12 dHealth=+7093.27
+  D-DIABETIC-FOOT-INFECTION logP=   -844.19 mean= -36.704 n=23 prior= +0.00 dHealth=+6930.26
+  D-SALICYLATE-TOXICITY   logP=   -870.47 mean= -36.270 n=24 prior= +0.00 dHealth=+6903.97
+  D-ACUTE-SYMPTOMATIC-HYPERNATREMIA logP=   -881.72 mean= -36.738 n=24 prior=-156.00 dHealth=+6892.73
+  D-SEVERE-HYPOGLYCEMIA   logP=   -898.24 mean= -39.054 n=23 prior= +0.00 dHealth=+6876.21
+  D-SJS-TEN               logP=  -1029.86 mean= -44.776 n=23 prior= +0.00 dHealth=+6744.59
+  D-ACUTE-HEPATITIS-A     logP=  -1033.29 mean= -44.926 n=23 prior=-20.00 dHealth=+6741.15
+
+[best single-manifold diagnostic]
+* D-DIABETIC-KETOACIDOSIS logP=   -225.63 mean=  -9.810 prior=-12.00 dHealth=+7548.82
+  D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS logP=   -561.90 mean= -23.412 prior= +0.00 dHealth=+7212.55
+  D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE logP=   -579.71 mean= -25.205 prior= -4.00 dHealth=+7194.74
+  D-ACUTE-PANCREATITIS logP=   -681.18 mean= -29.617 prior= +1.12 dHealth=+7093.27
+  D-DIABETIC-FOOT-INFECTION logP=   -844.19 mean= -36.704 prior= +0.00 dHealth=+6930.26
+  D-SALICYLATE-TOXICITY logP=   -870.47 mean= -36.270 prior= +0.00 dHealth=+6903.97
+  D-ACUTE-SYMPTOMATIC-HYPERNATREMIA logP=   -881.72 mean= -36.738 prior=-156.00 dHealth=+6892.73
+  D-SEVERE-HYPOGLYCEMIA logP=   -898.24 mean= -39.054 prior= +0.00 dHealth=+6876.21
+  D-SJS-TEN    logP=  -1029.86 mean= -44.776 prior= +0.00 dHealth=+6744.59
+  D-ACUTE-HEPATITIS-A logP=  -1033.29 mean= -44.926 prior=-20.00 dHealth=+6741.15
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -5714.13 dHealth=+2060.32 members= 5 best_leaf=D-STEC-ENTERITIS(-5714.13)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -225.63 candidate=D-DIABETIC-KETOACIDOSIS
+  logP_best_single=   -225.63 candidate=D-DIABETIC-KETOACIDOSIS
+  logP_health_reference=  -7774.45 mean=-338.019 n=23
+  delta_to_health_best_known=  +7548.82
+  delta_to_health_best_single=  +7548.82
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-DIABETIC-KETOACIDOSIS  PASS
+best latent times: D-DIABETIC-KETOACIDOSIS=day3.0
+largest standardized residuals: ventricular_tachycardia_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; glasgow_coma_scale_score obs=3 points mu=14.5 via=base_measure_background z=9.9; serum_phosphate obs=10.943 mg/dL mu=3.75 via=D-DIABETIC-KETOACIDOSIS z=6.6; arterial_pao2 obs=50.2 mmHg mu=90 via=D-DIABETIC-KETOACIDOSIS z=3.7; serum_glucose obs=1924.32 mg/dL mu=380.375 via=D-DIABETIC-KETOACIDOSIS z=3.4
+response-model accounting: respiratory_rate obs=40 breaths_per_min expected_mu=22.7412 via=response_model:ventilatory_response_to_acidosis_hypoxemia:expected_response:stimulus=0.52:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+SKILL20_ECTOPIC_PREGNANCY_RUPTURED_ISTHMIC_PMC9629873  expected=D-ECTOPIC-PREGNANCY
+source: PMID 36348920 / PMC9629873 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9629873/
+paper diagnosis: ruptured ectopic pregnancy at the isthmus of the right fallopian tube
+observed axes: 35
+risk context: pregnancy_context=reproductive_context
+
+[joint SDE ranking: all candidates]
+* D-ECTOPIC-PREGNANCY     logP=   -317.75 mean= -16.724 n=19 prior= +0.00 dHealth= +331.67
+  D-OVARIAN-TORSION       logP=   -323.68 mean= -17.036 n=19 prior= +0.00 dHealth= +325.74
+  D-TUBO-OVARIAN-ABSCESS  logP=   -348.40 mean= -18.337 n=19 prior= +0.00 dHealth= +301.02
+  D-FITZ-HUGH-CURTIS-SYNDROME logP=   -351.27 mean= -18.488 n=19 prior= +0.00 dHealth= +298.15
+  D-PELVIC-INFLAMMATORY-DISEASE logP=   -354.96 mean= -17.748 n=20 prior= +0.00 dHealth= +294.46
+  D-HEMORRHAGIC-SHOCK     logP=   -490.43 mean= -25.812 n=19 prior= +0.00 dHealth= +158.99
+  D-PERINEPHRIC-ABSCESS   logP=   -505.62 mean= -26.612 n=19 prior= +0.00 dHealth= +143.80
+  D-PELVIC-FRACTURE       logP=   -542.57 mean= -28.556 n=19 prior= +0.00 dHealth= +106.85
+  D-SEPTIC-ABORTION       logP=   -567.48 mean= -28.374 n=20 prior=-144.00 dHealth=  +81.94
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -569.43 mean= -29.970 n=19 prior= +0.00 dHealth=  +79.99
+
+[best single-manifold diagnostic]
+* D-ECTOPIC-PREGNANCY logP=   -317.75 mean= -16.724 prior= +0.00 dHealth= +331.67
+  D-OVARIAN-TORSION logP=   -323.68 mean= -17.036 prior= +0.00 dHealth= +325.74
+  D-TUBO-OVARIAN-ABSCESS logP=   -348.40 mean= -18.337 prior= +0.00 dHealth= +301.02
+  D-FITZ-HUGH-CURTIS-SYNDROME logP=   -351.27 mean= -18.488 prior= +0.00 dHealth= +298.15
+  D-PELVIC-INFLAMMATORY-DISEASE logP=   -354.96 mean= -17.748 prior= +0.00 dHealth= +294.46
+  D-HEMORRHAGIC-SHOCK logP=   -490.43 mean= -25.812 prior= +0.00 dHealth= +158.99
+  D-PERINEPHRIC-ABSCESS logP=   -505.62 mean= -26.612 prior= +0.00 dHealth= +143.80
+  D-PELVIC-FRACTURE logP=   -542.57 mean= -28.556 prior= +0.00 dHealth= +106.85
+  D-SEPTIC-ABORTION logP=   -567.48 mean= -28.374 prior=-144.00 dHealth=  +81.94
+  D-ACUTE-MESENTERIC-ISCHEMIA logP=   -569.43 mean= -29.970 prior= +0.00 dHealth=  +79.99
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -592.54 dHealth=  +56.88 members= 5 best_leaf=D-SHIGELLOSIS(-592.55)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -317.75 candidate=D-ECTOPIC-PREGNANCY
+  logP_best_single=   -317.75 candidate=D-ECTOPIC-PREGNANCY
+  logP_health_reference=   -649.42 mean= -34.180 n=19
+  delta_to_health_best_known=   +331.67
+  delta_to_health_best_single=   +331.67
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-ECTOPIC-PREGNANCY  PASS
+best latent times: D-ECTOPIC-PREGNANCY=day3.0
+largest standardized residuals: lower_abdominal_pain_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; dysuria_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; cervical_motion_tenderness_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; adnexal_mass_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; pelvic_free_fluid_presence obs=1 present_absent_0_1 mu=0.31 via=D-ECTOPIC-PREGNANCY z=4.1
+
+----------------------------------------------------------------------------------------------------
+SKILL20_LITHIUM_TOXICITY_NSAID_INTERACTION_PMC3914168  expected=D-LITHIUM-TOXICITY
+source: PMID 24558630 / PMC3914168 / https://pmc.ncbi.nlm.nih.gov/articles/PMC3914168/
+paper diagnosis: lithium toxicity in the setting of NSAID use
+observed axes: 19
+risk context: nsaid_lithium_interaction=drug_interaction
+
+[joint SDE ranking: all candidates]
+* D-LITHIUM-TOXICITY      logP=   -287.58 mean= -19.172 n=15 prior= +0.00 dHealth= +994.89
+  D-WERNICKE-ENCEPHALOPATHY logP=  -1085.21 mean= -98.656 n=11 prior= +0.00 dHealth= +197.27
+  D-SHIGELLOSIS           logP=  -1121.71 mean=-101.974 n=11 prior= +0.00 dHealth= +160.77
+  D-NONTYPHOID-SALMONELLA-ENTERITIS logP=  -1122.95 mean=-112.295 n=10 prior= +0.00 dHealth= +159.53
+  D-STEC-ENTERITIS        logP=  -1122.98 mean=-112.298 n=10 prior= -3.50 dHealth= +159.50
+  D-HEPATIC-ENCEPHALOPATHY logP=  -1126.62 mean=-112.662 n=10 prior= +0.00 dHealth= +155.86
+  D-SEVERE-HYPERCALCEMIA  logP=  -1129.74 mean=-102.703 n=11 prior= +0.00 dHealth= +152.74
+  D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS logP=  -1133.01 mean=-103.001 n=11 prior= +0.00 dHealth= +149.47
+  D-NOROVIRUS-GASTROENTERITIS logP=  -1133.11 mean=-103.010 n=11 prior= +0.00 dHealth= +149.37
+  D-BOWEL-OBSTRUCTION     logP=  -1136.57 mean=-113.657 n=10 prior= +0.00 dHealth= +145.91
+
+[best single-manifold diagnostic]
+* D-LITHIUM-TOXICITY logP=   -287.58 mean= -19.172 prior= +0.00 dHealth= +994.89
+  D-WERNICKE-ENCEPHALOPATHY logP=  -1085.21 mean= -98.656 prior= +0.00 dHealth= +197.27
+  D-SHIGELLOSIS logP=  -1121.71 mean=-101.974 prior= +0.00 dHealth= +160.77
+  D-NONTYPHOID-SALMONELLA-ENTERITIS logP=  -1122.95 mean=-112.295 prior= +0.00 dHealth= +159.53
+  D-STEC-ENTERITIS logP=  -1122.98 mean=-112.298 prior= -3.50 dHealth= +159.50
+  D-HEPATIC-ENCEPHALOPATHY logP=  -1126.62 mean=-112.662 prior= +0.00 dHealth= +155.86
+  D-SEVERE-HYPERCALCEMIA logP=  -1129.74 mean=-102.703 prior= +0.00 dHealth= +152.74
+  D-METFORMIN-ASSOCIATED-LACTIC-ACIDOSIS logP=  -1133.01 mean=-103.001 prior= +0.00 dHealth= +149.47
+  D-NOROVIRUS-GASTROENTERITIS logP=  -1133.11 mean=-103.010 prior= +0.00 dHealth= +149.37
+  D-BOWEL-OBSTRUCTION logP=  -1136.57 mean=-113.657 prior= +0.00 dHealth= +145.91
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -1121.26 dHealth= +161.22 members= 5 best_leaf=D-SHIGELLOSIS(-1121.71)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -287.58 candidate=D-LITHIUM-TOXICITY
+  logP_best_single=   -287.58 candidate=D-LITHIUM-TOXICITY
+  logP_health_reference=  -1282.48 mean=-128.248 n=10
+  delta_to_health_best_known=   +994.89
+  delta_to_health_best_single=   +994.89
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-LITHIUM-TOXICITY  PASS
+best latent times: D-LITHIUM-TOXICITY=day8.0
+largest standardized residuals: metabolic_encephalopathy_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; gait_abnormality_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; confusion_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; diarrhea_presence obs=1 present_absent_0_1 mu=0.128447 via=D-LITHIUM-TOXICITY z=5.2; drug_or_toxin_exposure_probability obs=0 probability_0_1 mu=0.85 via=D-LITHIUM-TOXICITY z=5.1
+
+----------------------------------------------------------------------------------------------------
+SKILL20_OBSTRUCTIVE_PYELONEPHRITIS_PELVIC_ORGAN_PROLAPSE_PMC8147865  expected=D-OBSTRUCTIVE-PYELONEPHRITIS
+source: PMID 34046200 / PMC8147865 / https://pmc.ncbi.nlm.nih.gov/articles/PMC8147865/
+paper diagnosis: acute obstructive bilateral pyelonephritis due to pelvic organ prolapse
+observed axes: 27
+risk context: urinary_obstruction_context=source_context
+
+[joint SDE ranking: all candidates]
+* D-OBSTRUCTIVE-PYELONEPHRITIS logP=   -332.44 mean= -20.778 n=16 prior= +0.00 dHealth=+1787.11
+  D-URETEROLITHIASIS      logP=   -718.90 mean= -44.931 n=16 prior= +0.00 dHealth=+1400.65
+  D-PYELONEPHRITIS        logP=   -756.60 mean= -47.287 n=16 prior= +0.00 dHealth=+1362.96
+  D-CATHETER-ASSOCIATED-UTI logP=   -789.43 mean= -49.339 n=16 prior= +0.00 dHealth=+1330.13
+  D-PERINEPHRIC-ABSCESS   logP=   -791.25 mean= -49.453 n=16 prior= +0.00 dHealth=+1328.31
+  D-IGG4-RELATED-DISEASE  logP=   -894.78 mean= -55.924 n=16 prior= +0.00 dHealth=+1224.77
+  D-ACUTE-KIDNEY-INJURY   logP=  -1021.69 mean= -60.100 n=17 prior=-50.00 dHealth=+1097.86
+  D-BPH-URINARY-RETENTION logP=  -1652.10 mean=-103.256 n=16 prior=-600.00 dHealth= +467.45 feasibility=D-BPH-URINARY-RETENTION:male_reproductive_anatomy_absent_for_reported_female
+  D-PAN                   logP=  -1919.72 mean=-119.983 n=16 prior= +0.00 dHealth= +199.83
+  D-CATASTROPHIC-APS      logP=  -1976.80 mean=-123.550 n=16 prior= +0.00 dHealth= +142.76
+
+[best single-manifold diagnostic]
+* D-OBSTRUCTIVE-PYELONEPHRITIS logP=   -332.44 mean= -20.778 prior= +0.00 dHealth=+1787.11
+  D-URETEROLITHIASIS logP=   -718.90 mean= -44.931 prior= +0.00 dHealth=+1400.65
+  D-PYELONEPHRITIS logP=   -756.60 mean= -47.287 prior= +0.00 dHealth=+1362.96
+  D-CATHETER-ASSOCIATED-UTI logP=   -789.43 mean= -49.339 prior= +0.00 dHealth=+1330.13
+  D-PERINEPHRIC-ABSCESS logP=   -791.25 mean= -49.453 prior= +0.00 dHealth=+1328.31
+  D-IGG4-RELATED-DISEASE logP=   -894.78 mean= -55.924 prior= +0.00 dHealth=+1224.77
+  D-ACUTE-KIDNEY-INJURY logP=  -1021.69 mean= -60.100 prior=-50.00 dHealth=+1097.86
+  D-BPH-URINARY-RETENTION logP=  -1652.10 mean=-103.256 prior=-600.00 dHealth= +467.45 feasibility=D-BPH-URINARY-RETENTION:male_reproductive_anatomy_absent_for_reported_female
+  D-PAN        logP=  -1919.72 mean=-119.983 prior= +0.00 dHealth= +199.83
+  D-CATASTROPHIC-APS logP=  -1976.80 mean=-123.550 prior= +0.00 dHealth= +142.76
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -2042.93 dHealth=  +76.63 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-2042.93)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -332.44 candidate=D-OBSTRUCTIVE-PYELONEPHRITIS
+  logP_best_single=   -332.44 candidate=D-OBSTRUCTIVE-PYELONEPHRITIS
+  logP_health_reference=  -2119.55 mean=-132.472 n=16
+  delta_to_health_best_known=  +1787.11
+  delta_to_health_best_single=  +1787.11
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-OBSTRUCTIVE-PYELONEPHRITIS  PASS
+best latent times: D-OBSTRUCTIVE-PYELONEPHRITIS=day3.7
+largest standardized residuals: urine_culture_positivity obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; pelvic_organ_prolapse_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; fever_history_activity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:v1_common_symptom_exam_context_axes z=12.2; bladder_wall_thickening_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; serum_creatinine obs=0.81 mg/dL mu=4.6 via=D-OBSTRUCTIVE-PYELONEPHRITIS z=4.0
+
+----------------------------------------------------------------------------------------------------
+SKILL20_PNEUMOCOCCAL_PNEUMONIA_CENTRILOBULAR_NODULES_PMC9871572  expected=D-PNEUMOCOCCAL-PNEUMONIA
+source: PMID 36703900 / PMC9871572 / https://pmc.ncbi.nlm.nih.gov/articles/PMC9871572/
+paper diagnosis: Streptococcus pneumoniae pneumonia
+observed axes: 26
+risk context: immunocompromised_status=host_context
+
+[joint SDE ranking: all candidates]
+* D-PNEUMOCOCCAL-PNEUMONIA logP=    -68.19 mean=  -4.546 n=15 prior= +0.00 dHealth= +529.22
+  D-NOCARDIOSIS           logP=   -131.26 mean=  -8.750 n=15 prior= -1.50 dHealth= +466.16
+  D-EMPYEMA               logP=   -134.49 mean=  -8.966 n=15 prior= +0.00 dHealth= +462.93
+  D-MYCOPLASMA-PNEUMONIA  logP=   -147.38 mean=  -9.826 n=15 prior= -2.50 dHealth= +450.03
+  D-PJP-PNEUMONIA         logP=   -149.28 mean=  -9.952 n=15 prior= +0.00 dHealth= +448.14
+  D-Q-FEVER               logP=   -152.34 mean= -10.156 n=15 prior= +0.00 dHealth= +445.07
+  D-ANTISYNTHETASE-SYNDROME logP=   -162.44 mean= -10.829 n=15 prior= +0.00 dHealth= +434.97
+  D-GPA                   logP=   -172.63 mean= -11.509 n=15 prior= +0.00 dHealth= +424.78
+  D-MPA                   logP=   -173.71 mean= -11.581 n=15 prior= +0.00 dHealth= +423.71
+  D-RELAPSING-POLYCHONDRITIS logP=   -175.26 mean= -11.684 n=15 prior= +0.00 dHealth= +422.16
+
+[best single-manifold diagnostic]
+* D-PNEUMOCOCCAL-PNEUMONIA logP=    -68.19 mean=  -4.546 prior= +0.00 dHealth= +529.22
+  D-NOCARDIOSIS logP=   -131.26 mean=  -8.750 prior= -1.50 dHealth= +466.16
+  D-EMPYEMA    logP=   -134.49 mean=  -8.966 prior= +0.00 dHealth= +462.93
+  D-MYCOPLASMA-PNEUMONIA logP=   -147.38 mean=  -9.826 prior= -2.50 dHealth= +450.03
+  D-PJP-PNEUMONIA logP=   -149.28 mean=  -9.952 prior= +0.00 dHealth= +448.14
+  D-Q-FEVER    logP=   -152.34 mean= -10.156 prior= +0.00 dHealth= +445.07
+  D-ANTISYNTHETASE-SYNDROME logP=   -162.44 mean= -10.829 prior= +0.00 dHealth= +434.97
+  D-GPA        logP=   -172.63 mean= -11.509 prior= +0.00 dHealth= +424.78
+  D-MPA        logP=   -173.71 mean= -11.581 prior= +0.00 dHealth= +423.71
+  D-RELAPSING-POLYCHONDRITIS logP=   -175.26 mean= -11.684 prior= +0.00 dHealth= +422.16
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -455.40 dHealth= +142.02 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-455.40)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -68.19 candidate=D-PNEUMOCOCCAL-PNEUMONIA
+  logP_best_single=    -68.19 candidate=D-PNEUMOCOCCAL-PNEUMONIA
+  logP_health_reference=   -597.42 mean= -39.828 n=15
+  delta_to_health_best_known=   +529.22
+  delta_to_health_best_single=   +529.22
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-PNEUMOCOCCAL-PNEUMONIA  PASS
+best latent times: D-PNEUMOCOCCAL-PNEUMONIA=day3.5
+largest standardized residuals: crackles_activity obs=1 severity_score_0_1 mu=0.025 via=D-PNEUMOCOCCAL-PNEUMONIA z=6.5; arterial_pco2 obs=22.8 mmHg mu=40 via=base_measure_background z=5.4; immunocompromised_status obs=1 relative_activity_0_1 mu=0.5 via=D-PNEUMOCOCCAL-PNEUMONIA z=3.0; arterial_pao2 obs=65.6 mmHg mu=90 via=base_measure_background z=2.4; fever_history_activity obs=1 severity_score_0_1 mu=0.59875 via=D-PNEUMOCOCCAL-PNEUMONIA z=2.4
+
+----------------------------------------------------------------------------------------------------
+SKILL20_PULMONARY_EMBOLISM_HIGH_RISK_PMC12883270  expected=D-PULMONARY-EMBOLISM
+source: PMID 41664665 / PMC12883270 / https://pmc.ncbi.nlm.nih.gov/articles/PMC12883270/
+paper diagnosis: high-risk pulmonary embolism
+observed axes: 36
+risk context: prior_venous_thromboembolism=risk_context
+
+[joint SDE ranking: all candidates]
+* D-PULMONARY-EMBOLISM    logP=   -494.11 mean= -27.450 n=18 prior= +0.00 dHealth= +390.04
+  D-CYANIDE-POISONING     logP=   -617.38 mean= -34.299 n=18 prior= +0.00 dHealth= +266.76
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -653.07 mean= -36.281 n=18 prior= +0.00 dHealth= +231.08
+  D-COMPLETE-ATRIOVENTRICULAR-BLOCK logP=   -653.34 mean= -36.297 n=18 prior= -8.00 dHealth= +230.81
+  D-VENTRICULAR-FIBRILLATION logP=   -686.85 mean= -36.150 n=19 prior= +0.00 dHealth= +197.30
+  D-PELVIC-FRACTURE       logP=   -714.56 mean= -39.698 n=18 prior= +0.00 dHealth= +169.59
+  D-HEMOTHORAX            logP=   -716.34 mean= -39.797 n=18 prior= +0.00 dHealth= +167.80
+  D-PEPTIC-ULCER-BLEEDING logP=   -723.65 mean= -40.203 n=18 prior= +0.00 dHealth= +160.50
+  D-TRICYCLIC-ANTIDEPRESSANT-TOXICITY logP=   -728.67 mean= -36.433 n=20 prior= +0.00 dHealth= +155.48
+  D-TENSION-PNEUMOTHORAX  logP=   -729.38 mean= -40.521 n=18 prior= +0.00 dHealth= +154.77
+
+[best single-manifold diagnostic]
+* D-PULMONARY-EMBOLISM logP=   -494.11 mean= -27.450 prior= +0.00 dHealth= +390.04
+  D-CYANIDE-POISONING logP=   -617.38 mean= -34.299 prior= +0.00 dHealth= +266.76
+  D-RUPTURED-ABDOMINAL-AORTIC-ANEURYSM logP=   -653.07 mean= -36.281 prior= +0.00 dHealth= +231.08
+  D-COMPLETE-ATRIOVENTRICULAR-BLOCK logP=   -653.34 mean= -36.297 prior= -8.00 dHealth= +230.81
+  D-VENTRICULAR-FIBRILLATION logP=   -686.85 mean= -36.150 prior= +0.00 dHealth= +197.30
+  D-PELVIC-FRACTURE logP=   -714.56 mean= -39.698 prior= +0.00 dHealth= +169.59
+  D-HEMOTHORAX logP=   -716.34 mean= -39.797 prior= +0.00 dHealth= +167.80
+  D-PEPTIC-ULCER-BLEEDING logP=   -723.65 mean= -40.203 prior= +0.00 dHealth= +160.50
+  D-TRICYCLIC-ANTIDEPRESSANT-TOXICITY logP=   -728.67 mean= -36.433 prior= +0.00 dHealth= +155.48
+  D-TENSION-PNEUMOTHORAX logP=   -729.38 mean= -40.521 prior= +0.00 dHealth= +154.77
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -808.26 dHealth=  +75.89 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-808.26)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -494.11 candidate=D-PULMONARY-EMBOLISM
+  logP_best_single=   -494.11 candidate=D-PULMONARY-EMBOLISM
+  logP_health_reference=   -884.15 mean= -49.119 n=18
+  delta_to_health_best_known=   +390.04
+  delta_to_health_best_single=   +390.04
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-PULMONARY-EMBOLISM  PASS
+best latent times: D-PULMONARY-EMBOLISM=day5.2
+largest standardized residuals: shock_severity obs=1 severity_score_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; rest_dyspnea_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; prior_venous_thromboembolism_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; hypoxemia_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; head_trauma_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2
+response-model accounting: heart_rate obs=115 beats_per_min expected_mu=110.654 via=response_model:cardiovascular_response_to_shock:expected_response:stimulus=0.82:gap=0.00
+
+----------------------------------------------------------------------------------------------------
+SKILL20_SEROTONIN_SYNDROME_DULOXETINE_PMC10368303  expected=D-SEROTONIN-SYNDROME
+source: PMID 37496538 / PMC10368303 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10368303/
+paper diagnosis: serotonin syndrome attributed to duloxetine monotherapy
+observed axes: 28
+risk context: serotonergic_drug_exposure=drug_exposure
+
+[joint SDE ranking: all candidates]
+* D-SEROTONIN-SYNDROME    logP=   -253.85 mean= -14.103 n=18 prior= +0.00 dHealth= +388.08
+  D-SEVERE-HYPOGLYCEMIA   logP=   -415.91 mean= -23.106 n=18 prior= +0.00 dHealth= +226.03
+  D-LITHIUM-TOXICITY      logP=   -452.10 mean= -22.605 n=20 prior= +0.00 dHealth= +189.83
+  D-GRAVES-DISEASE        logP=   -487.60 mean= -27.089 n=18 prior= -4.00 dHealth= +154.33
+  D-THYROID-STORM         logP=   -487.90 mean= -25.679 n=19 prior= +0.00 dHealth= +154.03
+  D-ALCOHOL-WITHDRAWAL-DELIRIUM logP=   -489.48 mean= -24.474 n=20 prior= +0.00 dHealth= +152.45
+  D-ACUTE-HEART-FAILURE   logP=   -540.31 mean= -30.017 n=18 prior= +0.00 dHealth= +101.62
+  D-HEMOTHORAX            logP=   -541.98 mean= -30.110 n=18 prior= +0.00 dHealth=  +99.95
+  D-TENSION-PNEUMOTHORAX  logP=   -542.46 mean= -30.137 n=18 prior= +0.00 dHealth=  +99.47
+  D-SALICYLATE-TOXICITY   logP=   -546.53 mean= -28.765 n=19 prior= +0.00 dHealth=  +95.40
+
+[best single-manifold diagnostic]
+* D-SEROTONIN-SYNDROME logP=   -253.85 mean= -14.103 prior= +0.00 dHealth= +388.08
+  D-SEVERE-HYPOGLYCEMIA logP=   -415.91 mean= -23.106 prior= +0.00 dHealth= +226.03
+  D-LITHIUM-TOXICITY logP=   -452.10 mean= -22.605 prior= +0.00 dHealth= +189.83
+  D-GRAVES-DISEASE logP=   -487.60 mean= -27.089 prior= -4.00 dHealth= +154.33
+  D-THYROID-STORM logP=   -487.90 mean= -25.679 prior= +0.00 dHealth= +154.03
+  D-ALCOHOL-WITHDRAWAL-DELIRIUM logP=   -489.48 mean= -24.474 prior= +0.00 dHealth= +152.45
+  D-ACUTE-HEART-FAILURE logP=   -540.31 mean= -30.017 prior= +0.00 dHealth= +101.62
+  D-HEMOTHORAX logP=   -541.98 mean= -30.110 prior= +0.00 dHealth=  +99.95
+  D-TENSION-PNEUMOTHORAX logP=   -542.46 mean= -30.137 prior= +0.00 dHealth=  +99.47
+  D-SALICYLATE-TOXICITY logP=   -546.53 mean= -28.765 prior= +0.00 dHealth=  +95.40
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -621.73 dHealth=  +20.20 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-621.84)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=   -253.85 candidate=D-SEROTONIN-SYNDROME
+  logP_best_single=   -253.85 candidate=D-SEROTONIN-SYNDROME
+  logP_health_reference=   -641.93 mean= -35.663 n=18
+  delta_to_health_best_known=   +388.08
+  delta_to_health_best_single=   +388.08
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-SEROTONIN-SYNDROME  PASS
+best latent times: D-SEROTONIN-SYNDROME=day1.0
+largest standardized residuals: mydriasis_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; gait_abnormality_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; confusion_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; diaphoresis_presence obs=1 severity_score_0_1 mu=0.381575 via=D-SEROTONIN-SYNDROME z=3.7; myoclonus_activity obs=1 severity_score_0_1 mu=0.55 via=D-SEROTONIN-SYNDROME z=2.7
+
+----------------------------------------------------------------------------------------------------
+SKILL20_SEVERE_HYPOGLYCEMIA_SULFONYLUREA_AZOLE_PMC5963053  expected=D-SEVERE-HYPOGLYCEMIA
+source: PMID 29784014 / PMC5963053 / https://pmc.ncbi.nlm.nih.gov/articles/PMC5963053/
+paper diagnosis: unintentional sulfonylurea toxicity from gliclazide and azole antifungal interaction
+observed axes: 10
+risk context: sulfonylurea_exposure_context=drug_exposure
+
+[joint SDE ranking: all candidates]
+* D-SEVERE-HYPOGLYCEMIA   logP=    -30.49 mean=  -6.097 n= 5 prior= +0.00 dHealth= +131.77
+  D-ALCOHOL-WITHDRAWAL-DELIRIUM logP=    -40.36 mean=  -5.766 n= 7 prior= +0.00 dHealth= +121.89
+  D-THYROID-STORM         logP=    -46.40 mean=  -7.734 n= 6 prior= +0.00 dHealth= +115.85
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=    -48.83 mean=  -9.766 n= 5 prior= +0.00 dHealth= +113.42
+  D-LITHIUM-TOXICITY      logP=    -50.34 mean=  -7.192 n= 7 prior= +0.00 dHealth= +111.91
+  D-STATUS-EPILEPTICUS    logP=    -77.31 mean= -15.463 n= 5 prior= +0.00 dHealth=  +84.94
+  D-BACTERIAL-MENINGITIS  logP=    -81.70 mean= -16.339 n= 5 prior= +0.00 dHealth=  +80.56
+  D-OPIOID-INTOXICATION   logP=    -87.56 mean= -17.511 n= 5 prior= +0.00 dHealth=  +74.70
+  D-HEPATIC-ENCEPHALOPATHY logP=    -88.85 mean= -17.769 n= 5 prior= +0.00 dHealth=  +73.41
+  D-SIADH                 logP=    -88.91 mean= -17.782 n= 5 prior= +0.00 dHealth=  +73.35
+
+[best single-manifold diagnostic]
+* D-SEVERE-HYPOGLYCEMIA logP=    -30.49 mean=  -6.097 prior= +0.00 dHealth= +131.77
+  D-ALCOHOL-WITHDRAWAL-DELIRIUM logP=    -40.36 mean=  -5.766 prior= +0.00 dHealth= +121.89
+  D-THYROID-STORM logP=    -46.40 mean=  -7.734 prior= +0.00 dHealth= +115.85
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=    -48.83 mean=  -9.766 prior= +0.00 dHealth= +113.42
+  D-LITHIUM-TOXICITY logP=    -50.34 mean=  -7.192 prior= +0.00 dHealth= +111.91
+  D-STATUS-EPILEPTICUS logP=    -77.31 mean= -15.463 prior= +0.00 dHealth=  +84.94
+  D-BACTERIAL-MENINGITIS logP=    -81.70 mean= -16.339 prior= +0.00 dHealth=  +80.56
+  D-OPIOID-INTOXICATION logP=    -87.56 mean= -17.511 prior= +0.00 dHealth=  +74.70
+  D-HEPATIC-ENCEPHALOPATHY logP=    -88.85 mean= -17.769 prior= +0.00 dHealth=  +73.41
+  D-SIADH      logP=    -88.91 mean= -17.782 prior= +0.00 dHealth=  +73.35
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=   -162.20 dHealth=   +0.06 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-162.26)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -30.49 candidate=D-SEVERE-HYPOGLYCEMIA
+  logP_best_single=    -30.49 candidate=D-SEVERE-HYPOGLYCEMIA
+  logP_health_reference=   -162.26 mean= -32.451 n= 5
+  delta_to_health_best_known=   +131.77
+  delta_to_health_best_single=   +131.77
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-SEVERE-HYPOGLYCEMIA  PASS
+best latent times: D-SEVERE-HYPOGLYCEMIA=day0.5
+largest standardized residuals: mental_status_abnormality_presence obs=1 present_absent_0_1 mu=0.215 via=D-SEVERE-HYPOGLYCEMIA z=4.7; tremor_presence obs=1 present_absent_0_1 mu=0.2625 via=D-SEVERE-HYPOGLYCEMIA z=4.4; serum_glucose obs=25 mg/dL mu=83.0581 via=D-SEVERE-HYPOGLYCEMIA z=3.0; known_diabetes_context_probability obs=1 probability_0_1 mu=0.5 via=D-SEVERE-HYPOGLYCEMIA z=3.0; sulfonylurea_exposure_context_degree obs=1 severity_score_0_1 mu=0.6 via=D-SEVERE-HYPOGLYCEMIA z=2.4
+
+----------------------------------------------------------------------------------------------------
+SKILL20_SUBARACHNOID_HEMORRHAGE_BASILAR_ANEURYSMS_PMC11026529  expected=D-SUBARACHNOID-HEMORRHAGE
+source: PMID 38645949 / PMC11026529 / https://pmc.ncbi.nlm.nih.gov/articles/PMC11026529/
+paper diagnosis: ruptured aneurysmal subarachnoid hemorrhage with basilar trunk aneurysms
+observed axes: 24
+
+[joint SDE ranking: all candidates]
+* D-SUBARACHNOID-HEMORRHAGE logP=    -99.28 mean=  -8.273 n=12 prior= +0.00 dHealth=+2722.10
+  D-VIRAL-MENINGITIS      logP=  -2690.39 mean=-224.199 n=12 prior= +0.00 dHealth= +130.99
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=  -2697.52 mean=-224.793 n=12 prior= +0.00 dHealth= +123.86
+  D-PNEUMOCEPHALUS        logP=  -2700.37 mean=-225.030 n=12 prior= +0.00 dHealth= +121.01
+  D-VZV-ENCEPHALITIS      logP=  -2703.11 mean=-225.259 n=12 prior= +0.00 dHealth= +118.27
+  D-HSV-ENCEPHALITIS      logP=  -2719.16 mean=-226.597 n=12 prior= +0.00 dHealth= +102.21
+  D-ACUTE-HIV             logP=  -2719.59 mean=-226.633 n=12 prior= +0.00 dHealth= +101.78
+  D-SECONDARY-SYPHILIS    logP=  -2732.88 mean=-210.221 n=13 prior= +0.00 dHealth=  +88.50
+  D-AUTOIMMUNE-ENCEPHALITIS logP=  -2749.12 mean=-229.093 n=12 prior= +0.00 dHealth=  +72.26
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=  -2755.55 mean=-229.630 n=12 prior= +0.00 dHealth=  +65.82
+
+[best single-manifold diagnostic]
+* D-SUBARACHNOID-HEMORRHAGE logP=    -99.28 mean=  -8.273 prior= +0.00 dHealth=+2722.10
+  D-VIRAL-MENINGITIS logP=  -2690.39 mean=-224.199 prior= +0.00 dHealth= +130.99
+  D-WEST-NILE-NEUROINVASIVE-DISEASE logP=  -2697.52 mean=-224.793 prior= +0.00 dHealth= +123.86
+  D-PNEUMOCEPHALUS logP=  -2700.37 mean=-225.030 prior= +0.00 dHealth= +121.01
+  D-VZV-ENCEPHALITIS logP=  -2703.11 mean=-225.259 prior= +0.00 dHealth= +118.27
+  D-HSV-ENCEPHALITIS logP=  -2719.16 mean=-226.597 prior= +0.00 dHealth= +102.21
+  D-ACUTE-HIV  logP=  -2719.59 mean=-226.633 prior= +0.00 dHealth= +101.78
+  D-SECONDARY-SYPHILIS logP=  -2732.88 mean=-210.221 prior= +0.00 dHealth=  +88.50
+  D-AUTOIMMUNE-ENCEPHALITIS logP=  -2749.12 mean=-229.093 prior= +0.00 dHealth=  +72.26
+  D-DIFFUSE-ALVEOLAR-HEMORRHAGE logP=  -2755.55 mean=-229.630 prior= +0.00 dHealth=  +65.82
+
+[diagnostic family aggregation: disease leaves grouped after disease scoring]
+  F-ACUTE-INFECTIOUS-GASTROENTERITIS   logP=  -2823.52 dHealth=   -2.14 members= 5 best_leaf=D-NONTYPHOID-SALMONELLA-ENTERITIS(-2823.87)
+
+[illness detection: best disease manifold vs health reference]
+  logP_best_known=    -99.28 candidate=D-SUBARACHNOID-HEMORRHAGE
+  logP_best_single=    -99.28 candidate=D-SUBARACHNOID-HEMORRHAGE
+  logP_health_reference=  -2821.38 mean=-235.115 n=12
+  delta_to_health_best_known=  +2722.10
+  delta_to_health_best_single=  +2722.10
+  interpretation: this is illness/reference evidence only; disease identity is decided by disease-vs-disease ranking above.
+single validation: best_single=D-SUBARACHNOID-HEMORRHAGE  PASS
+best latent times: D-SUBARACHNOID-HEMORRHAGE=day1.5
+largest standardized residuals: kernig_sign_presence obs=1 present_absent_0_1 mu=0.025 via=health_reference_manifold:generic_no_active_disease_qualitative_axes z=12.2; perimesencephalic_sah_presence obs=1 present_absent_0_1 mu=0.5 via=D-SUBARACHNOID-HEMORRHAGE z=3.0; neck_stiffness_presence obs=1 present_absent_0_1 mu=0.5 via=D-SUBARACHNOID-HEMORRHAGE z=3.0; multiple_intracranial_aneurysm_presence obs=1 present_absent_0_1 mu=0.5 via=D-SUBARACHNOID-HEMORRHAGE z=3.0; intracranial_aneurysm_diameter_mm obs=5.6 mm mu=15.5 via=D-SUBARACHNOID-HEMORRHAGE z=2.0
+
+====================================================================================================
+Single-manifold validation: 20/20 PASS
+Combo-manifold validation:  0/0 PASS
+Skipped validation:        0 case(s)
+
+Notes:
+  - This runtime consumes latent_mechanisms, scoring mechanism_edges, axis_couplings, and risk-factor modulation fields.
+  - geometry_first mode makes diagnosis ranking emerge from axis residuals, trajectories, couplings, mechanism gates, risk/background modifiers, and case observations.
+  - legacy anchor/bonus/missing-anchor/duration penalties are retained only behind VESMED_RANKING_PHILOSOPHY=legacy_scaffold for regression comparison.
+  - mechanism_audit_origin edges are registry/audit evidence only and are not used as scoring gates.
+  - Pair candidates are two-disease vector-field superpositions, not labels emitted by the LLM.
+  - Opposing disease forces are combined in standardized axis space so a strong TTP platelet-consumption field is not canceled by weak AOSD reactive thrombocytosis.
+  - Illness detection reports logP_best_known - logP_health_reference; disease identity is ranked only among disease manifolds.
+  - Formal health_reference_manifold axes and reusable response_models are loaded when present; response axes can be scored through expected-response / response-failure factorization instead of direct disease-axis double counting.
+  - Evidence mode controls post-workup evidence: presentation mode excludes microbiology/pathology/confirmatory/course sections unless a case or item explicitly declares stage availability.
