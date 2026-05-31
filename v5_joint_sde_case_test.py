@@ -4236,11 +4236,23 @@ def prepare_case_data(data):
             )
 
     sodium = observation_float("serum_sodium")
+    corrected_sodium = observation_float("glucose_corrected_serum_sodium")
     serum_osmolality = observation_float("serum_osmolality")
     urine_osmolality = observation_float("urine_osmolality")
     urine_sodium = observation_float("urine_sodium")
     if sodium is not None and sodium <= 134.0:
         add_derived_presence("hyponatremia_presence", ("serum_sodium",), category="metabolic_finding")
+    hypernatremia_sources = []
+    if sodium is not None and sodium >= 146.0:
+        hypernatremia_sources.append("serum_sodium")
+    if corrected_sodium is not None and corrected_sodium >= 146.0:
+        hypernatremia_sources.append("glucose_corrected_serum_sodium")
+    if hypernatremia_sources:
+        add_derived_presence(
+            "hypernatremia_presence",
+            tuple(hypernatremia_sources),
+            category="metabolic_finding",
+        )
     if serum_osmolality is not None and serum_osmolality <= 275.0:
         add_derived_presence("low_serum_osmolality_presence", ("serum_osmolality",), category="lab_finding")
     if sodium is not None and sodium <= 134.0 and serum_osmolality is not None and serum_osmolality <= 275.0:
