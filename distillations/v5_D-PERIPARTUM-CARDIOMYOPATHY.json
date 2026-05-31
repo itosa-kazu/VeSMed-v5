@@ -1,0 +1,5673 @@
+{
+  "disease": "D-PERIPARTUM-CARDIOMYOPATHY",
+  "disease_id": "D-PERIPARTUM-CARDIOMYOPATHY",
+  "disease_name": "Peripartum cardiomyopathy / 周産期心筋症",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Peripartum cardiomyopathy",
+    "leaf_granularity": "First-layer clinical disease leaf for the full spectrum of peripartum cardiomyopathy: new left-ventricular systolic dysfunction arising in late pregnancy or the postpartum period without another sufficient cause. Antepartum, early postpartum, delayed postpartum, severe shock, thromboembolic, recovery, persistent dilated-cardiomyopathy, and future-pregnancy-risk presentations are represented as mechanisms, axes, risk modifiers, treatment contexts, or future subtype layers rather than disease-name qualifiers.",
+    "ranking_note": "Ranking may consume pregnancy or postpartum context, dyspnea, orthopnea, edema, tachycardia, hypoxemia, natriuretic peptides, troponin, echocardiographic LVEF, LV dilation, global hypokinesis, mitral regurgitation, RV strain, LV thrombus, pulmonary edema, cardiogenic shock, arrhythmia, thromboembolism, and response to heart-failure/prolactin-suppression vectors when observed.",
+    "case_use_policy": "No specific real case was used to shape this distillation; the disease manifold is disease-name scoped."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+      "display_name": "Peripartum hemodynamic load stress",
+      "clinical_meaning": "Pregnancy plasma-volume expansion, increased cardiac output, delivery autotransfusion, postpartum fluid shifts, anemia, hypertension, and sleep/adrenergic stress expose limited myocardial reserve and can precipitate decompensation in a susceptible ventricle.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -60,
+        14
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        120
+      ],
+      "decline_half_life_days": [
+        14,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY",
+      "display_name": "Prolactin-cleavage vasoinhibin cardiotoxicity",
+      "clinical_meaning": "Oxidative stress can promote cathepsin-D mediated cleavage of prolactin into a 16-kDa vasoinhibin fragment that injures endothelium and cardiomyocytes, especially when lactation maintains prolactin drive.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -14,
+        42
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "display_name": "Anti-angiogenic endothelial injury",
+      "clinical_meaning": "Placental and maternal anti-angiogenic pressure, including sFlt-1 / VEGF-PlGF imbalance, impairs myocardial microvascular adaptation and overlaps biologically with preeclampsia and multiple gestation risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -60,
+        21
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7,
+        90
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_GENETIC_DCM_SUSCEPTIBILITY",
+      "display_name": "Genetic dilated-cardiomyopathy susceptibility",
+      "clinical_meaning": "Truncating variants and other inherited cardiomyopathy substrates, especially TTN-related susceptibility, lower the threshold for peripartum decompensation and increase persistent systolic dysfunction risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -3650,
+        0
+      ],
+      "peak_value_range": [
+        0.15,
+        0.8
+      ],
+      "plateau_duration_days": [
+        365,
+        36500
+      ],
+      "decline_half_life_days": [
+        3650,
+        36500
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_MYOCARDIAL_INFLAMMATION_AUTOIMMUNITY",
+      "display_name": "Myocardial inflammation and autoimmunity",
+      "clinical_meaning": "Pregnancy immune rebound, viral or inflammatory triggers, autoantibodies, and fetal-cell microchimerism may create myocarditis-like myocardial injury and worsen contractile reserve.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.1,
+        0.75
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "display_name": "Left-ventricular systolic failure and remodeling",
+      "clinical_meaning": "The core clinical manifold: reduced LVEF with global hypokinesis, variable LV dilation, functional mitral regurgitation, elevated wall stress, and adverse remodeling that may recover or persist.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "display_name": "Congestive hemodynamic decompensation",
+      "clinical_meaning": "Elevated LV filling pressures and neurohormonal sodium-water retention produce pulmonary edema, orthopnea, crackles, JVD, peripheral edema, hypoxemia, and natriuretic peptide elevation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "display_name": "Low-output cardiogenic shock physiology",
+      "clinical_meaning": "Severe systolic failure can fall below perfusion reserve, causing hypotension, rising lactate, renal injury, altered mentation, need for inotropes or mechanical circulatory support, and early mortality.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        0.95
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "display_name": "LV stasis and peripartum hypercoagulability",
+      "clinical_meaning": "Very low LVEF, LV dilation, endothelial injury, postpartum hypercoagulability, and immobilization increase LV thrombus, venous thromboembolism, systemic embolism, and stroke risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        0.85
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+      "display_name": "Recovery versus persistent DCM remodeling balance",
+      "clinical_meaning": "Reverse remodeling after delivery and therapy competes with persistent myocardial injury, genetic substrate, and severe baseline dilation; determines relapse risk, future-pregnancy hazard, and need for durable HF therapy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        30,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        90,
+        3650
+      ],
+      "decline_half_life_days": [
+        180,
+        3650
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "pregnancy_or_postpartum_presence",
+      "target_id": "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -60,
+        14
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "PPCM is gated by late-pregnancy or postpartum physiology; the context increases hemodynamic load and prior probability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "lactation_context_presence",
+      "target_id": "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "postpartum",
+      "clinical_rationale": "Ongoing lactation maintains prolactin secretion, which can feed the prolactin-cleavage vasoinhibin pathway.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "hypertensive_disorder_of_pregnancy_presence",
+      "target_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -60,
+        14
+      ],
+      "phase": "antepartum_to_early_postpartum",
+      "clinical_rationale": "Preeclampsia and hypertensive pregnancy disorders share anti-angiogenic/endothelial stress with PPCM and amplify myocardial vulnerability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "multiple_gestation_presence",
+      "target_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -120,
+        0
+      ],
+      "phase": "pregnancy",
+      "clinical_rationale": "Higher placental mass raises anti-angiogenic and hemodynamic load pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+      "target_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "onset",
+      "clinical_rationale": "A susceptible myocardium may decompensate when peripartum preload, afterload, and cardiac-output demand peak.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY",
+      "target_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "postpartum",
+      "clinical_rationale": "Vasoinhibin is anti-angiogenic and endothelial-toxic, converging with sFlt-1 / VEGF pathway stress.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY",
+      "target_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        3,
+        60
+      ],
+      "phase": "onset_to_peak",
+      "clinical_rationale": "Prolactin-derived vasoinhibin can injure cardiomyocytes and myocardial microvasculature, worsening systolic dysfunction.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "target_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        3,
+        60
+      ],
+      "phase": "onset_to_peak",
+      "clinical_rationale": "Endothelial and microvascular dysfunction reduces myocardial adaptation and contributes to dilated systolic failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_GENETIC_DCM_SUSCEPTIBILITY",
+      "target_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        90
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Inherited DCM substrate lowers reserve and makes pregnancy stress sufficient to reveal overt systolic dysfunction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_MYOCARDIAL_INFLAMMATION_AUTOIMMUNITY",
+      "target_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        1,
+        60
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Inflammatory myocardial injury can reduce contractility and promote adverse remodeling.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_MYOCARDIAL_INFLAMMATION_AUTOIMMUNITY",
+      "target_id": "serum_troponin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "inflammatory_or_injury_phase",
+      "clinical_rationale": "Troponin can rise from active cardiomyocyte injury, but marked elevations should trigger fair comparison with myocarditis or ischemia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "left_ventricular_systolic_dysfunction_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "New LV systolic dysfunction is the core diagnostic imaging finding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "left_ventricular_ejection_fraction",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "PPCM is defined by reduced LVEF, often below 45%, with severe cases below 30%.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "left_ventricular_dilation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Many patients develop LV dilation, though absence of marked dilation does not exclude PPCM.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "left_ventricular_end_diastolic_diameter_mm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "LV end-diastolic diameter quantifies remodeling and adverse prognosis when markedly enlarged.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "global_left_ventricular_hypokinesis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Global rather than coronary-territory wall-motion abnormality supports a cardiomyopathic process.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "mitral_regurgitation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "congestive_or_remodeling_phase",
+      "clinical_rationale": "LV dilation and annular distortion can cause functional mitral regurgitation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "brain_natriuretic_peptide",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Ventricular wall stress raises BNP above normal pregnancy values when PPCM causes heart failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "nt_pro_bnp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "NT-proBNP rises with myocardial wall stress and helps separate PPCM from ordinary late-pregnancy dyspnea/edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Reduced contractile reserve elevates LV filling pressure and activates sodium-water retention.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "dyspnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Pulmonary venous congestion and low reserve produce exertional or resting dyspnea.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "orthopnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Recumbency increases venous return and worsens pulmonary congestion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "paroxysmal_nocturnal_dyspnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Nocturnal redistribution of fluid triggers episodic dyspnea in congestive heart failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "pulmonary_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Elevated LV filling pressure produces cardiogenic pulmonary edema on imaging or ultrasound.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "pulmonary_crackles_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Alveolar/interstitial edema produces crackles, though exam may be insensitive.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "oxygen_saturation",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "pulmonary_edema",
+      "clinical_rationale": "Pulmonary edema impairs oxygenation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "jugular_venous_distension_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Right-sided filling pressures rise with biventricular congestion or secondary pulmonary hypertension.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "peripheral_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        14
+      ],
+      "phase": "decompensation",
+      "clinical_rationale": "Systemic venous congestion and renal sodium retention worsen dependent edema beyond expected pregnancy edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "body_weight_change_kg",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        14
+      ],
+      "phase": "fluid_retention",
+      "clinical_rationale": "Rapid weight gain reflects sodium-water retention and can accompany decompensated PPCM.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "phase": "severe_decompensation",
+      "conditionality": "most active when LVEF is very low, afterload high, or congestion limits forward flow",
+      "clinical_rationale": "Severe systolic dysfunction can fail to maintain perfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Low cardiac output reduces arterial pressure in unstable PPCM.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Tissue hypoperfusion raises lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1,
+        5
+      ],
+      "phase": "shock_or_cardiorenal",
+      "clinical_rationale": "Renal hypoperfusion and venous congestion can raise creatinine.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "cardiogenic_shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Clinical shock emerges when low output produces hypotension or hypoperfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "cardiogenic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Low-output mechanism directly raises short-term shock hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "cardiac_arrhythmia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Dilated failing myocardium and adrenergic stress predispose to atrial or ventricular arrhythmias.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "malignant_arrhythmia_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        90
+      ],
+      "phase": "severe_lv_dysfunction",
+      "conditionality": "stronger when LVEF is very low or ventricular arrhythmia is observed",
+      "clinical_rationale": "Low LVEF increases sudden arrhythmic death risk, especially early before recovery is known.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "severe_lv_dysfunction",
+      "conditionality": "stronger when LVEF is below about 30-35% or LV thrombus is seen",
+      "clinical_rationale": "Low EF and LV dilation create intracardiac stasis on top of postpartum hypercoagulability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "target_id": "left_ventricular_thrombus_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "severe_lv_dysfunction",
+      "clinical_rationale": "LV thrombus can form in severely reduced EF PPCM.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "target_id": "venous_thromboembolism_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        60
+      ],
+      "phase": "postpartum_or_immobile",
+      "clinical_rationale": "Peripartum hypercoagulability plus HF hospitalization raises venous thromboembolism risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "target_id": "acute_ischemic_stroke_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "thromboembolic",
+      "clinical_rationale": "LV thrombus or atrial arrhythmia can embolize systemically and cause ischemic stroke.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        30,
+        180
+      ],
+      "phase": "recovery_or_persistence",
+      "clinical_rationale": "Baseline severity and remodeling dynamics determine whether systolic function normalizes or persistent DCM remains.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_GENETIC_DCM_SUSCEPTIBILITY",
+      "target_id": "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        30,
+        365
+      ],
+      "phase": "recovery_or_persistence",
+      "clinical_rationale": "Inherited cardiomyopathy variants increase risk of incomplete recovery and recurrence in later pregnancy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+      "target_id": "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        90,
+        365
+      ],
+      "phase": "late",
+      "clinical_rationale": "Persistent adverse remodeling defines chronic LV dysfunction risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "pulmonary_edema_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "acute",
+      "clinical_rationale": "Filling pressure rise raises the hazard of overt pulmonary edema.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+      "target_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "critical",
+      "clinical_rationale": "Cardiogenic shock is a major acute mortality driver in PPCM.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY",
+      "target_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "thromboembolic",
+      "clinical_rationale": "Stroke, massive PE, or systemic embolism can be fatal.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+      "target_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        30,
+        3650
+      ],
+      "phase": "late",
+      "clinical_rationale": "Persistent severe LV dysfunction increases late HF, arrhythmia, transplant, and death risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "pregnancy_context_probability",
+      "target_id": "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "pregnancy_context_probability drives M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "postpartum_context_probability",
+      "target_id": "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "postpartum_context_probability drives M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "preeclampsia_context_presence",
+      "target_id": "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "preeclampsia_context_presence drives M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "nyha_functional_class",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION drives nyha_functional_class.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION drives tachycardia_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "hypoxemia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION drives hypoxemia_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "pleural_effusion_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION drives pleural_effusion_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION",
+      "target_id": "rapid_weight_gain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION drives rapid_weight_gain_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "diffuse_left_ventricular_hypokinesia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING drives diffuse_left_ventricular_hypokinesia_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "right_ventricular_dysfunction_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING drives right_ventricular_dysfunction_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "right_ventricular_systolic_pressure",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING drives right_ventricular_systolic_pressure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+      "target_id": "pulmonary_hypertension_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING drives pulmonary_hypertension_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPCM_MYOCARDIAL_INFLAMMATION_AUTOIMMUNITY",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "M_PPCM_MYOCARDIAL_INFLAMMATION_AUTOIMMUNITY drives serum_crp.",
+      "knowledge_confidence": "low"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_or_postpartum_presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Current pregnancy or postpartum state; the gating clinical context for peripartum cardiomyopathy.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -280,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "pregnancy_context_presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_or_postpartum_presence",
+      "shape_free_text": "Current pregnancy rather than postpartum status.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -280,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        280
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "risk_context",
+      "unit": "weeks",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_presence",
+      "shape_free_text": "Gestational age when symptoms occur during pregnancy.",
+      "baseline_range": [
+        0,
+        0.5
+      ],
+      "peak_day_range": [
+        -84,
+        0
+      ],
+      "peak_value_range": [
+        20,
+        42
+      ],
+      "plateau_duration_days": [
+        1,
+        280
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "postpartum_day_since_delivery",
+      "category": "risk_context",
+      "unit": "days",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_or_postpartum_presence",
+      "shape_free_text": "Days after delivery when symptoms, labs, or imaging are assessed.",
+      "baseline_range": [
+        0,
+        0.1
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0,
+        180
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lactation_context_presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_or_postpartum_presence",
+      "shape_free_text": "Active breastfeeding or lactation context that maintains prolactin secretion and changes treatment tradeoffs.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "multiple_gestation_presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_context_presence",
+      "shape_free_text": "Twin or higher-order gestation, reflecting increased placental mass and hemodynamic load.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -280,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        280
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypertensive_disorder_of_pregnancy_presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_or_postpartum_presence",
+      "shape_free_text": "Gestational hypertension, preeclampsia, eclampsia, or HELLP context coexisting with or preceding PPCM.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -90,
+        28
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Subjective shortness of breath from pulmonary congestion, low output, or exertional intolerance.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -30,
+        30
+      ],
+      "peak_value_range": [
+        0.5,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        180
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dyspnea_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "shape_free_text": "Severity of dyspnea when dyspnea is present.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        30
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        180
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "exertional_dyspnea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "shape_free_text": "Dyspnea first or mainly provoked by exertion, stair climbing, or routine postpartum activity.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        30
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "orthopnea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "shape_free_text": "Dyspnea worsened by lying flat, reflecting elevated filling pressures.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "paroxysmal_nocturnal_dyspnea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "dyspnea_presence",
+      "shape_free_text": "Nocturnal episodic dyspnea due to recumbent fluid redistribution and pulmonary congestion.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cough_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Cough that can accompany pulmonary congestion; nonspecific and must be compared fairly against infection and embolism.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        60
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fatigue_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Fatigue, poor exercise tolerance, or disproportionate postpartum exhaustion from low cardiac reserve.",
+      "baseline_range": [
+        0.0,
+        0.12
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fatigue_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "fatigue_presence",
+      "shape_free_text": "Severity of fatigue or exertional limitation when present.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "palpitations_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Subjective palpitations from sinus tachycardia, atrial arrhythmia, ventricular ectopy, or adrenergic stress.",
+      "baseline_range": [
+        0.0,
+        0.06
+      ],
+      "peak_day_range": [
+        -14,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "chest_tightness_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Chest tightness or pressure from pulmonary edema, tachycardia, hypertension, or myocardial strain.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        21
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "syncope_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Syncope, usually indicating arrhythmia, severe hypotension, or another dangerous mimic.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "syncope_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "syncope_presence",
+      "shape_free_text": "Severity, recurrence, or injury-risk burden of syncope when present.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Heart rate; tachycardia can reflect HF compensation, arrhythmia, anemia, infection, PE, or normal pregnancy physiology.",
+      "baseline_range": [
+        60,
+        100
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        90,
+        170
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "respiratory_rate",
+      "category": "vital_sign",
+      "unit": "breaths_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Respiratory rate; elevated with pulmonary edema, hypoxemia, anxiety, PE, or infection.",
+      "baseline_range": [
+        12,
+        20
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        18,
+        45
+      ],
+      "plateau_duration_days": [
+        0.05,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Pulse oximetry saturation; can fall with pulmonary edema or pulmonary embolism.",
+      "baseline_range": [
+        95,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        70,
+        99
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "supplemental_oxygen_requirement_presence",
+      "category": "support_need",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Need for supplemental oxygen due to hypoxemia or respiratory distress.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "oxygen_requirement_level",
+      "category": "support_need",
+      "unit": "ordinal_0_5",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "supplemental_oxygen_requirement_presence",
+      "shape_free_text": "Escalation level of oxygen or ventilatory support when oxygen is required.",
+      "baseline_range": [
+        0,
+        0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        1,
+        5
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Systolic blood pressure; may be elevated with hypertensive pregnancy disease or low in advanced shock.",
+      "baseline_range": [
+        90,
+        135
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        70,
+        180
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Diastolic blood pressure in peripartum HF context.",
+      "baseline_range": [
+        55,
+        90
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        40,
+        115
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Mean arterial pressure, used to judge perfusion and medication tolerance.",
+      "baseline_range": [
+        70,
+        105
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        45,
+        120
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_crackles_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Rales or crackles on auscultation from pulmonary congestion or edema.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pulmonary_crackles_extent",
+      "category": "physical_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_crackles_presence",
+      "shape_free_text": "Extent of crackles when pulmonary crackles are present.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "jugular_venous_distension_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Elevated jugular venous pressure from right-sided or biventricular congestion.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "jugular_venous_distension_severity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "jugular_venous_distension_presence",
+      "shape_free_text": "Degree of JVD when present.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "peripheral_edema_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Dependent edema beyond expected pregnancy edema, reflecting venous congestion and sodium-water retention.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "peripheral_edema_severity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "peripheral_edema_presence",
+      "shape_free_text": "Severity or extent of peripheral edema when present.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "third_heart_sound_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "S3 gallop or third heart sound from elevated filling pressure and dilated systolic failure.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "body_weight_change_kg",
+      "category": "measurement",
+      "unit": "kg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Short-interval body weight increase from fluid retention, interpreted relative to pregnancy/postpartum baseline.",
+      "baseline_range": [
+        -2,
+        2
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0,
+        20
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "brain_natriuretic_peptide",
+      "category": "lab_value",
+      "unit": "pg/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "shape_free_text": "BNP from ventricular wall stress; values above expected pregnancy range support cardiac dyspnea.",
+      "baseline_range": [
+        5,
+        100
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        100,
+        5000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "nt_pro_bnp",
+      "category": "lab_value",
+      "unit": "pg/mL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "shape_free_text": "NT-proBNP from ventricular wall stress; renal dysfunction and age modify absolute level.",
+      "baseline_range": [
+        20,
+        300
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        300,
+        30000
+      ],
+      "plateau_duration_days": [
+        0.5,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_troponin",
+      "category": "lab_value",
+      "unit": "ng/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Troponin from myocardial injury; mild elevation can occur, marked elevation should preserve mimic fairness with myocarditis or ischemia.",
+      "baseline_range": [
+        1,
+        14
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        10,
+        1000
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Creatinine; may rise from renal hypoperfusion, venous congestion, preeclampsia, or baseline kidney disease.",
+      "baseline_range": [
+        0.4,
+        1.1
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.6,
+        5.0
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum lactate, rising with cardiogenic shock, hypoperfusion, or competing sepsis/hemorrhage.",
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        1.5,
+        12.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        14
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_sodium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Sodium, which may fall in advanced neurohormonal heart failure or with diuretic therapy.",
+      "baseline_range": [
+        135,
+        145
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        120,
+        145
+      ],
+      "plateau_duration_days": [
+        1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Echocardiographic or CMR evidence of reduced LV systolic function.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.7,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_ejection_fraction",
+      "category": "measurement",
+      "unit": "percent",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "shape_free_text": "LVEF on echocardiography or CMR; PPCM usually has LVEF below 45%.",
+      "baseline_range": [
+        55,
+        70
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        5,
+        45
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "global_left_ventricular_hypokinesis_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "shape_free_text": "Global or diffuse LV hypokinesis rather than a single coronary-territory pattern.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30,
+        60
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_dilation_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "LV dilation on echocardiography or CMR.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_dilation_severity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "left_ventricular_dilation_presence",
+      "shape_free_text": "Severity of LV dilation when present.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_end_diastolic_diameter_mm",
+      "category": "imaging_measurement",
+      "unit": "mm",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_dilation_presence",
+      "shape_free_text": "LV end-diastolic diameter measured by echo or CMR.",
+      "baseline_range": [
+        38,
+        53
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        50,
+        85
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mitral_regurgitation_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Functional mitral regurgitation from LV dilation and annular distortion.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mitral_regurgitation_severity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "mitral_regurgitation_presence",
+      "shape_free_text": "Severity of mitral regurgitation when present.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "right_ventricular_strain_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Right-ventricular strain or dysfunction from pulmonary hypertension, biventricular cardiomyopathy, or PE mimic.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "right_ventricular_strain_severity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "right_ventricular_strain_presence",
+      "shape_free_text": "Severity of RV dysfunction or strain when present.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -14,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "left_ventricular_thrombus_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "LV apical or mural thrombus on echocardiography, contrast echo, or CMR.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Chest radiograph, CT, or lung-ultrasound evidence of cardiogenic pulmonary edema or vascular congestion.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        60
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_extent",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_edema_presence",
+      "shape_free_text": "Radiographic or ultrasound extent of pulmonary edema when present.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        60
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "b_lines_lung_ultrasound_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_edema_presence",
+      "shape_free_text": "Diffuse B-lines on lung ultrasound indicating interstitial pulmonary edema.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -7,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        60
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cardiomegaly_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Cardiomegaly on chest radiograph or CT.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cardiomegaly_severity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cardiomegaly_presence",
+      "shape_free_text": "Severity of cardiomegaly when present.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14,
+        3650
+      ],
+      "decline_half_life_days": [
+        30,
+        365
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cardiac_arrhythmia_presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Any clinically relevant atrial or ventricular arrhythmia.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        365
+      ],
+      "decline_half_life_days": [
+        1,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "atrial_fibrillation_presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cardiac_arrhythmia_presence",
+      "shape_free_text": "Atrial fibrillation or flutter in the PPCM setting.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        365
+      ],
+      "decline_half_life_days": [
+        1,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ventricular_arrhythmia_presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "cardiac_arrhythmia_presence",
+      "shape_free_text": "Sustained or clinically important ventricular arrhythmia.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.0,
+        365
+      ],
+      "decline_half_life_days": [
+        1,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "shock_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Clinical circulatory shock from any cause; cardiogenic subtype is represented by child axes.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cardiogenic_shock_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_presence",
+      "shape_free_text": "Shock judged to be driven by cardiac pump failure.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cardiogenic_shock_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "cardiogenic_shock_presence",
+      "shape_free_text": "Hazard of cardiogenic shock from severe PPCM.",
+      "baseline_range": [
+        5e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "pulmonary_edema_presence",
+      "shape_free_text": "Hazard of clinically significant pulmonary edema or respiratory failure from congestion.",
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.005,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "need_for_mechanical_ventilation_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "supplemental_oxygen_requirement_presence",
+      "shape_free_text": "Hazard of requiring invasive or noninvasive ventilatory support.",
+      "baseline_range": [
+        5e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.002,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.02,
+        30
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "malignant_arrhythmia_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "cardiac_arrhythmia_presence",
+      "shape_free_text": "Hazard of malignant ventricular arrhythmia or sudden cardiac death during severe LV dysfunction.",
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        180
+      ],
+      "peak_value_range": [
+        0.001,
+        0.4
+      ],
+      "plateau_duration_days": [
+        1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "venous_thromboembolism_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Hazard of DVT or pulmonary embolism in peripartum hypercoagulability and severe HF.",
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.001,
+        0.2
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        14,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_ischemic_stroke_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Hazard of ischemic stroke from LV thrombus, atrial fibrillation, or systemic embolism.",
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.2
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        180
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "shape_free_text": "Hazard of persistent LV dysfunction or chronic dilated-cardiomyopathy phenotype after the recovery window.",
+      "baseline_range": [
+        5e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        90,
+        365
+      ],
+      "peak_value_range": [
+        0.001,
+        0.2
+      ],
+      "plateau_duration_days": [
+        90,
+        3650
+      ],
+      "decline_half_life_days": [
+        180,
+        3650
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Hazard of major bleeding, relevant to anticoagulation, delivery, surgery, and postpartum hemorrhage context.",
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        60
+      ],
+      "peak_value_range": [
+        0.001,
+        0.2
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "therapeutic_anticoagulation_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Feasibility of therapeutic anticoagulation after considering active bleeding, neuraxial anesthesia, delivery timing, surgery, renal function, and patient-specific contraindications.",
+      "baseline_range": [
+        0.5,
+        1.0
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        180
+      ],
+      "decline_half_life_days": [
+        1,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pregnancy_safe_hf_medication_constraint",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_presence",
+      "shape_free_text": "Degree to which current pregnancy constrains standard HFrEF medications such as ACE inhibitors, ARBs, ARNI, MRA, or SGLT2 inhibitors.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -280,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        280
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "bromocriptine_use_feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "lactation_context_presence",
+      "shape_free_text": "Feasibility of prolactin suppression with bromocriptine after considering breastfeeding goals, thrombotic risk, anticoagulation feasibility, and local availability.",
+      "baseline_range": [
+        0.0,
+        0.8
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        1,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mechanical_circulatory_support_context_presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "parent_axis_id": "cardiogenic_shock_presence",
+      "shape_free_text": "Context in which ECMO, temporary LV assist, Impella/IABP, durable LVAD, or transplant evaluation is being considered.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        30
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        180
+      ],
+      "decline_half_life_days": [
+        1,
+        180
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "future_pregnancy_recurrence_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "parent_axis_id": "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "shape_free_text": "Hazard of PPCM relapse or worsening cardiac function in a subsequent pregnancy; mainly a counseling/outcome axis.",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        365,
+        3650
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.05
+      ],
+      "plateau_duration_days": [
+        180,
+        3650
+      ],
+      "decline_half_life_days": [
+        365,
+        3650
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Disease-specific maternal mortality hazard from severe PPCM, cardiogenic shock, malignant arrhythmia, thromboembolism, progressive HF, or treatment-limiting complications.",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0,
+        90
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.2
+      ],
+      "plateau_duration_days": [
+        0.1,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        365
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pregnancy_context_probability",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Pregnancy context probability.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_or_postpartum_presence"
+    },
+    {
+      "axis_id": "postpartum_context_probability",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Postpartum context probability.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_or_postpartum_presence"
+    },
+    {
+      "axis_id": "preeclampsia_context_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Preeclampsia as PPCM risk and mimic context.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "hypertensive_disorder_of_pregnancy_presence"
+    },
+    {
+      "axis_id": "dyspnea_duration_days",
+      "category": "trajectory_pattern",
+      "axis_role": "measurement",
+      "unit": "days",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        30
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        60
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Duration of dyspnea before presentation.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "dyspnea_presence"
+    },
+    {
+      "axis_id": "nyha_functional_class",
+      "category": "symptom",
+      "axis_role": "measurement",
+      "unit": "ordinal_1_4",
+      "log_scale": false,
+      "baseline_range": [
+        1,
+        1
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        2,
+        4
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Functional class severity.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "dyspnea_presence"
+    },
+    {
+      "axis_id": "chest_pain_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Chest pain/tightness can occur and is also an important mimic axis.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "tachycardia_presence",
+      "category": "vital_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Tachycardia during heart failure, shock, or pregnancy physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hypoxemia_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Hypoxemia from pulmonary edema or respiratory compromise.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "peripheral_edema_history_presence",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Reported edema history before presentation.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "peripheral_edema_presence"
+    },
+    {
+      "axis_id": "rapid_weight_gain_presence",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Rapid weight gain from fluid retention.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "peripheral_edema_presence"
+    },
+    {
+      "axis_id": "pleural_effusion_presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Pleural effusion from congestive heart failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bilateral_pleural_effusion_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Bilateral pleural effusions.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pleural_effusion_presence"
+    },
+    {
+      "axis_id": "pericardial_effusion_presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Small pericardial effusion may accompany peripartum cardiac disease or volume overload.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "right_ventricular_dysfunction_presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Right ventricular dysfunction can accompany severe PPCM or pulmonary hypertension.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "right_ventricular_dysfunction_severity",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Severity of RV dysfunction.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "right_ventricular_dysfunction_presence"
+    },
+    {
+      "axis_id": "right_ventricular_systolic_pressure",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        15,
+        35
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        30,
+        90
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "RV systolic pressure / pulmonary pressure estimate.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "right_ventricular_dysfunction_presence"
+    },
+    {
+      "axis_id": "pulmonary_hypertension_presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Pulmonary hypertension secondary to left-sided failure or mimic context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "transtricuspid_pressure_gradient",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        5,
+        30
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        30,
+        80
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Transtricuspid pressure gradient.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pulmonary_hypertension_presence"
+    },
+    {
+      "axis_id": "diffuse_left_ventricular_hypokinesia_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Diffuse LV hypokinesia phenotype.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence"
+    },
+    {
+      "axis_id": "left_bundle_branch_block_presence",
+      "category": "ecg_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Left bundle branch block / conduction abnormality.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "cardiac_arrhythmia_presence"
+    },
+    {
+      "axis_id": "t_wave_inversion_presence",
+      "category": "ecg_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "T-wave inversion as nonspecific ECG abnormality.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "cardiac_arrhythmia_presence"
+    },
+    {
+      "axis_id": "poor_r_wave_progression_presence",
+      "category": "ecg_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Poor R-wave progression as nonspecific ECG abnormality.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "cardiac_arrhythmia_presence"
+    },
+    {
+      "axis_id": "qt_prolongation_presence",
+      "category": "ecg_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "QT prolongation as ECG abnormality.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "cardiac_arrhythmia_presence"
+    },
+    {
+      "axis_id": "d_dimer",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/L",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.5
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.2,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "D-dimer is often checked for pulmonary embolism mimic and may be elevated postpartum.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/L",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0,
+        80
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Inflammatory marker context; not PPCM-defining.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "leukocytosis_presence",
+      "category": "lab_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Leukocytosis context for infection or postpartum stress.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "fever_history_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Fever history is a mimic/separation axis rather than PPCM-defining.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "ground_glass_opacity_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.25,
+        30
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14
+      ],
+      "clinical_interpretation": "Ground-glass opacity from pulmonary edema or mimic workup.",
+      "knowledge_confidence": "low",
+      "parent_axis_id": "pulmonary_edema_presence"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "left_ventricular_ejection_fraction",
+      "target_axis_id": "cardiogenic_shock_hazard",
+      "relationship": "low_lvef_to_cardiogenic_shock",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "severe_lv_dysfunction",
+      "effect_direction": "source_down_increases_target",
+      "clinical_rationale": "Very low LVEF strongly increases low-output shock hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_ventricular_ejection_fraction",
+      "target_axis_id": "left_ventricular_thrombus_presence",
+      "relationship": "low_lvef_to_lv_thrombus",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.8,
+        -0.4
+      ],
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "severe_lv_dysfunction",
+      "effect_direction": "source_down_increases_target",
+      "clinical_rationale": "Low EF produces LV stasis and thrombus risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_ventricular_ejection_fraction",
+      "target_axis_id": "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "baseline_lvef_to_recovery_failure",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.8,
+        -0.4
+      ],
+      "lag_days_range": [
+        30,
+        180
+      ],
+      "phase": "recovery_or_persistence",
+      "effect_direction": "source_down_increases_target",
+      "clinical_rationale": "Lower initial or follow-up LVEF predicts incomplete recovery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_ventricular_end_diastolic_diameter_mm",
+      "target_axis_id": "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "lv_dilation_to_persistent_dcm",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "lag_days_range": [
+        30,
+        180
+      ],
+      "phase": "recovery_or_persistence",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Marked LV dilation predicts persistent cardiomyopathy and slower recovery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "brain_natriuretic_peptide",
+      "target_axis_id": "pulmonary_edema_presence",
+      "relationship": "natriuretic_peptide_to_congestion",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        0.3,
+        0.7
+      ],
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "phase": "congestion",
+      "effect_direction": "positive_correlation",
+      "clinical_rationale": "BNP tends to rise with filling pressure and pulmonary congestion, though renal function and obesity modify levels.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "pulmonary_edema_extent",
+      "target_axis_id": "oxygen_saturation",
+      "relationship": "pulmonary_edema_to_hypoxemia",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.4
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "pulmonary_edema",
+      "effect_direction": "source_up_target_down",
+      "clinical_rationale": "More pulmonary edema lowers oxygen saturation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "oxygen_saturation",
+      "target_axis_id": "need_for_mechanical_ventilation_hazard",
+      "relationship": "hypoxemia_to_ventilation_need",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "respiratory_failure",
+      "effect_direction": "source_down_increases_target",
+      "clinical_rationale": "Hypoxemia raises ventilatory-support hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "cardiogenic_shock_hazard",
+      "relationship": "low_map_to_shock",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "effect_direction": "source_down_increases_target",
+      "clinical_rationale": "Low MAP is a direct marker of inadequate perfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_lactate",
+      "target_axis_id": "cardiogenic_shock_hazard",
+      "relationship": "lactate_to_shock",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "shock",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Lactate elevation marks hypoperfusion and shock severity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_ventricular_thrombus_presence",
+      "target_axis_id": "acute_ischemic_stroke_hazard",
+      "relationship": "lv_thrombus_to_systemic_embolism",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "phase": "thromboembolic",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "LV thrombus can embolize and cause ischemic stroke.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cardiogenic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "shock_to_mortality",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.95
+      ],
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "critical",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Shock is the dominant short-term maternal mortality driver in severe PPCM.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "malignant_arrhythmia_hazard",
+      "target_axis_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "arrhythmia_to_mortality",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "phase": "critical",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Malignant arrhythmia can cause sudden death, especially before LV recovery.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "acute_ischemic_stroke_hazard",
+      "target_axis_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "stroke_to_mortality",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.2,
+        0.7
+      ],
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "phase": "thromboembolic",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Large embolic stroke contributes to acute mortality.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "future_pregnancy_recurrence_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "target_axis_id": "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+      "relationship": "future_pregnancy_recurrence_to_late_mortality",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.2,
+        0.6
+      ],
+      "lag_days_range": [
+        30,
+        365
+      ],
+      "phase": "late_or_future_pregnancy",
+      "effect_direction": "source_up_increases_target",
+      "clinical_rationale": "Future pregnancy in persistent LV dysfunction can precipitate recurrent severe HF and late mortality.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "oxygen_and_noninvasive_ventilation_support",
+      "display_name": "Oxygen and positive-pressure ventilation support",
+      "mode": "push_state",
+      "treatment_lane": "respiratory_support",
+      "required_context_axes": [
+        "oxygen_saturation",
+        "supplemental_oxygen_requirement_presence",
+        "pulmonary_edema_presence",
+        "dyspnea_presence"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION"
+      ],
+      "trajectory_modifications": {
+        "oxygen_saturation": {
+          "target_shift_range": [
+            2,
+            15
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "dyspnea_severity": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3
+          ]
+        },
+        "need_for_mechanical_ventilation_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3
+          ]
+        }
+      },
+      "failure_modes": [
+        "delayed_escalation",
+        "aspiration_or_airway_protection_failure",
+        "persistent_cardiogenic_shock_without_perfusion_support"
+      ],
+      "clinical_rationale": "Supports oxygenation and reduces work of breathing during cardiogenic pulmonary edema while disease-modifying HF treatment proceeds.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "loop_diuretic_decongestion",
+      "display_name": "Loop diuretic decongestion",
+      "mode": "reshape_landscape",
+      "treatment_lane": "decongestion",
+      "required_context_axes": [
+        "pulmonary_edema_presence",
+        "peripheral_edema_presence",
+        "jugular_venous_distension_presence",
+        "serum_creatinine",
+        "mean_arterial_pressure"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "toxicity_limited",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Hypotension or low-output physiology limits aggressive diuresis."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "dose_limited_or_monitoring_required",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "Renal dysfunction changes diuretic response and electrolyte risk."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_CONGESTIVE_HEMODYNAMIC_DECOMPENSATION": {
+          "peak_value_factor": [
+            0.35,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            10
+          ]
+        },
+        "pulmonary_edema_extent": {
+          "peak_value_factor": [
+            0.35,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7
+          ]
+        },
+        "peripheral_edema_severity": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            21
+          ]
+        }
+      },
+      "failure_modes": [
+        "diuretic_resistance",
+        "hypotension",
+        "worsening_renal_function",
+        "hypokalemia_or_hyponatremia"
+      ],
+      "clinical_rationale": "Volume removal reduces filling pressure and pulmonary/systemic congestion; dosing must respect maternal perfusion, renal function, and pregnancy status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "vasodilator_afterload_reduction_when_pressure_allows",
+      "display_name": "Vasodilator afterload reduction when blood pressure allows",
+      "mode": "push_state",
+      "treatment_lane": "afterload_reduction",
+      "required_context_axes": [
+        "systolic_blood_pressure",
+        "mean_arterial_pressure",
+        "pregnancy_context_presence",
+        "cardiogenic_shock_hazard"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+        "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "contraindicates_or_limits",
+          "factor_range": [
+            0.0,
+            0.4
+          ],
+          "clinical_rationale": "Low MAP or shock makes vasodilators dangerous."
+        },
+        {
+          "axis_id": "pregnancy_safe_hf_medication_constraint",
+          "condition": "high",
+          "effect": "changes_agent_selection",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "During pregnancy, hydralazine/nitrates are used instead of fetotoxic RAAS blockade."
+        }
+      ],
+      "trajectory_modifications": {
+        "systolic_blood_pressure": {
+          "target_shift_range": [
+            -50,
+            -10
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2
+          ]
+        },
+        "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            7
+          ]
+        },
+        "pulmonary_edema_extent": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            7
+          ]
+        }
+      },
+      "failure_modes": [
+        "hypotension",
+        "unrecognized_obstructive_or_septic_shock",
+        "fetal_or_maternal_agent_constraint_if_antepartum"
+      ],
+      "clinical_rationale": "Afterload and preload reduction can rapidly improve pulmonary edema and cardiac output when blood pressure reserve is adequate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "beta_blocker_rate_and_remodeling_control",
+      "display_name": "Beta-blocker rate and remodeling control",
+      "mode": "reshape_landscape",
+      "treatment_lane": "neurohormonal_control",
+      "required_context_axes": [
+        "heart_rate",
+        "mean_arterial_pressure",
+        "cardiogenic_shock_hazard",
+        "pregnancy_context_presence"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cardiogenic_shock_hazard",
+          "condition": "high",
+          "effect": "delays_or_weakens",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Initiation or up-titration is poorly tolerated during active shock or inotrope dependence."
+        },
+        {
+          "axis_id": "heart_rate",
+          "condition": "high",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Tachycardia raises adrenergic stress and rate-control value once perfusion is stable."
+        }
+      ],
+      "trajectory_modifications": {
+        "heart_rate": {
+          "target_shift_range": [
+            -40,
+            -5
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        },
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            30,
+            365
+          ]
+        },
+        "malignant_arrhythmia_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            7,
+            90
+          ]
+        }
+      },
+      "failure_modes": [
+        "worsening_low_output_when_started_too_early",
+        "bradycardia",
+        "hypotension",
+        "fetal_growth_or_neonatal_bradycardia_context_if_antepartum"
+      ],
+      "clinical_rationale": "Adrenergic blockade supports remodeling and arrhythmia control after stabilization; agent selection changes in pregnancy and lactation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "postpartum_hf_neurohormonal_blockade",
+      "display_name": "Postpartum HFrEF neurohormonal blockade",
+      "mode": "reshape_landscape",
+      "treatment_lane": "neurohormonal_control",
+      "required_context_axes": [
+        "pregnancy_context_presence",
+        "pregnancy_safe_hf_medication_constraint",
+        "serum_creatinine",
+        "mean_arterial_pressure",
+        "lactation_context_presence"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING",
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "pregnancy_safe_hf_medication_constraint",
+          "condition": "high",
+          "effect": "contraindicates_or_limits",
+          "factor_range": [
+            0.0,
+            0.2
+          ],
+          "clinical_rationale": "ACE inhibitors, ARBs, ARNIs, MRAs, and SGLT2 inhibitors are generally avoided during pregnancy; postpartum/lactation choice is agent-specific."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "dose_limited_or_monitoring_required",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Renal dysfunction and hyperkalemia risk constrain RAAS/MRA therapy."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_LV_SYSTOLIC_FAILURE_REMODELING": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            30,
+            365
+          ]
+        },
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE": {
+          "peak_value_factor": [
+            0.35,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.85
+          ],
+          "decline_half_life_days": [
+            60,
+            730
+          ]
+        },
+        "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            30,
+            365
+          ]
+        }
+      },
+      "failure_modes": [
+        "fetal_toxicity_if_used_during_pregnancy",
+        "renal_dysfunction_or_hyperkalemia",
+        "hypotension",
+        "lactation_agent_constraint"
+      ],
+      "clinical_rationale": "After delivery, HFrEF disease-modifying therapy reshapes remodeling and late hazard; compatibility depends on pregnancy/lactation and organ function context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "therapeutic_anticoagulation_for_low_ef_or_thrombus",
+      "display_name": "Therapeutic anticoagulation for severe LV dysfunction or thrombus",
+      "mode": "reshape_landscape",
+      "treatment_lane": "anticoagulation",
+      "required_context_axes": [
+        "left_ventricular_ejection_fraction",
+        "left_ventricular_thrombus_presence",
+        "therapeutic_anticoagulation_feasibility",
+        "major_bleeding_hazard",
+        "bromocriptine_use_feasibility"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "left_ventricular_thrombus_presence",
+          "condition": "high",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.5,
+            4.0
+          ],
+          "clinical_rationale": "Documented LV thrombus markedly raises embolic risk."
+        },
+        {
+          "axis_id": "therapeutic_anticoagulation_feasibility",
+          "condition": "low",
+          "effect": "weakens_or_precludes",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Active bleeding, neuraxial anesthesia timing, or surgery may limit anticoagulation."
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Postpartum hemorrhage or procedural bleeding risk narrows safe intensity."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_THROMBOEMBOLIC_STASIS_HYPERCOAGULABILITY": {
+          "peak_value_factor": [
+            0.25,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1,
+            60
+          ]
+        },
+        "acute_ischemic_stroke_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            60
+          ]
+        },
+        "venous_thromboembolism_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            60
+          ]
+        }
+      },
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.001,
+            0.08
+          ],
+          "interpretation": "Anticoagulation-related bleeding in delivery or postpartum context"
+        }
+      ],
+      "failure_modes": [
+        "postpartum_or_surgical_bleeding",
+        "neuraxial_anesthesia_timing_conflict",
+        "subtherapeutic_anticoagulation",
+        "renal_dosing_constraint"
+      ],
+      "clinical_rationale": "Anticoagulation counters severe-LV-dysfunction stasis, documented thrombus, bromocriptine-associated thrombosis concern, and postpartum hypercoagulability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "bromocriptine_prolactin_suppression",
+      "display_name": "Bromocriptine prolactin suppression",
+      "mode": "reshape_landscape",
+      "treatment_lane": "prolactin_suppression",
+      "required_context_axes": [
+        "bromocriptine_use_feasibility",
+        "lactation_context_presence",
+        "therapeutic_anticoagulation_feasibility",
+        "venous_thromboembolism_hazard"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY",
+        "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "bromocriptine_use_feasibility",
+          "condition": "low",
+          "effect": "weakens_or_precludes",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Breastfeeding goals, local availability, thrombotic risk, or inability to anticoagulate may limit use."
+        },
+        {
+          "axis_id": "therapeutic_anticoagulation_feasibility",
+          "condition": "low",
+          "effect": "toxicity_increases_or_limits",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Bromocriptine is commonly paired with anticoagulation because of thrombotic concern."
+        },
+        {
+          "axis_id": "left_ventricular_ejection_fraction",
+          "condition": "very_low",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.0,
+            2.5
+          ],
+          "clinical_rationale": "Severe systolic dysfunction is the context in which prolactin suppression is often considered."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.5
+          ],
+          "decline_half_life_days": [
+            1,
+            14
+          ]
+        },
+        "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            7,
+            60
+          ]
+        },
+        "lactation_context_presence": {
+          "peak_value_factor": [
+            0.0,
+            0.2
+          ],
+          "decline_half_life_days": [
+            1,
+            7
+          ]
+        }
+      },
+      "side_effects": [
+        {
+          "axis_id": "venous_thromboembolism_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            1.1,
+            2.5
+          ],
+          "interpretation": "Thrombotic concern; anticoagulation context modifies net risk"
+        }
+      ],
+      "failure_modes": [
+        "loss_of_breastfeeding",
+        "thromboembolic_event",
+        "inadequate_anticoagulation",
+        "hypotension_or_nausea"
+      ],
+      "clinical_rationale": "Prolactin suppression targets a PPCM-specific pathogenic pathway but changes lactation and thrombosis tradeoffs rather than acting as generic HF therapy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "inotrope_or_vasopressor_perfusion_support",
+      "display_name": "Inotrope or vasopressor perfusion support",
+      "mode": "push_state",
+      "treatment_lane": "perfusion_support",
+      "required_context_axes": [
+        "mean_arterial_pressure",
+        "serum_lactate",
+        "cardiogenic_shock_hazard",
+        "malignant_arrhythmia_hazard"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cardiogenic_shock_hazard",
+          "condition": "high",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.5,
+            5.0
+          ],
+          "clinical_rationale": "Hypoperfusion identifies a perfusion-support problem."
+        },
+        {
+          "axis_id": "malignant_arrhythmia_hazard",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [
+            0.5,
+            1.2
+          ],
+          "clinical_rationale": "Catecholamines may worsen arrhythmia while improving perfusion."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY": {
+          "peak_value_factor": [
+            0.45,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            5
+          ]
+        },
+        "mean_arterial_pressure": {
+          "target_shift_range": [
+            5,
+            30
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2
+          ]
+        },
+        "serum_lactate": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7
+          ]
+        }
+      },
+      "failure_modes": [
+        "tachyarrhythmia",
+        "worsening_afterload_without_inotropy",
+        "delayed_mechanical_support",
+        "uteroplacental_perfusion_tradeoff_if_antepartum"
+      ],
+      "clinical_rationale": "Restores perfusion in low-output PPCM while bridging to decongestion, delivery decisions, or mechanical support when needed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "mechanical_circulatory_support_or_ecmo_bridge",
+      "display_name": "Temporary mechanical circulatory support or ECMO bridge",
+      "mode": "push_state",
+      "treatment_lane": "advanced_support",
+      "required_context_axes": [
+        "mechanical_circulatory_support_context_presence",
+        "cardiogenic_shock_hazard",
+        "serum_lactate",
+        "mean_arterial_pressure",
+        "major_bleeding_hazard"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_LOW_OUTPUT_SHOCK_ACTIVITY",
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "cardiogenic_shock_hazard",
+          "condition": "high",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            2.0,
+            8.0
+          ],
+          "clinical_rationale": "Refractory cardiogenic shock increases need for temporary support."
+        },
+        {
+          "axis_id": "major_bleeding_hazard",
+          "condition": "high",
+          "effect": "toxicity_increases",
+          "factor_range": [
+            0.3,
+            1.0
+          ],
+          "clinical_rationale": "Cannulation and anticoagulation increase bleeding risk in peripartum patients."
+        }
+      ],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {
+          "target_shift_range": [
+            10,
+            40
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1
+          ]
+        },
+        "serum_lactate": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3
+          ]
+        },
+        "cardiogenic_shock_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.1,
+            7
+          ]
+        },
+        "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.35,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.2,
+            30
+          ]
+        }
+      },
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.01,
+            0.2
+          ],
+          "interpretation": "Cannulation and anticoagulation-related bleeding"
+        }
+      ],
+      "failure_modes": [
+        "vascular_complication",
+        "major_bleeding",
+        "limb_ischemia",
+        "no_myocardial_recovery_requiring_lvad_or_transplant"
+      ],
+      "clinical_rationale": "Provides perfusion support as bridge-to-recovery, bridge-to-decision, delivery stabilization, durable LVAD, or transplant evaluation in refractory shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "wearable_cardioverter_defibrillator_or_temporary_arrhythmia_protection",
+      "display_name": "Wearable defibrillator or temporary arrhythmia protection",
+      "mode": "modulate_sigma",
+      "treatment_lane": "arrhythmia_protection",
+      "required_context_axes": [
+        "left_ventricular_ejection_fraction",
+        "malignant_arrhythmia_hazard",
+        "ventricular_arrhythmia_presence"
+      ],
+      "mechanistic_targets": [
+        "malignant_arrhythmia_hazard"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "left_ventricular_ejection_fraction",
+          "condition": "very_low",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Very low LVEF raises temporary arrhythmic death risk while recovery remains possible."
+        }
+      ],
+      "trajectory_modifications": {
+        "malignant_arrhythmia_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "decline_half_life_days": [
+            1,
+            180
+          ]
+        },
+        "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.6,
+            0.95
+          ],
+          "decline_half_life_days": [
+            1,
+            180
+          ]
+        }
+      },
+      "failure_modes": [
+        "nonadherence",
+        "inappropriate_shock",
+        "device_unavailability",
+        "arrhythmia_not_shockable"
+      ],
+      "clinical_rationale": "Temporary protection can reduce sudden arrhythmic hazard during the recovery window without prematurely committing to permanent ICD when LV function may recover.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "delivery_planning_when_antepartum_ppcm_unstable",
+      "display_name": "Delivery planning when antepartum PPCM is unstable",
+      "mode": "reshape_landscape",
+      "treatment_lane": "obstetric_hemodynamic_management",
+      "required_context_axes": [
+        "pregnancy_context_presence",
+        "gestational_age_weeks",
+        "cardiogenic_shock_hazard",
+        "oxygen_requirement_level",
+        "mean_arterial_pressure"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS",
+        "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "pregnancy_context_presence",
+          "condition": "absent",
+          "effect": "not_applicable",
+          "factor_range": [
+            0.0,
+            0.0
+          ],
+          "clinical_rationale": "Delivery planning only applies before delivery."
+        },
+        {
+          "axis_id": "cardiogenic_shock_hazard",
+          "condition": "high",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.5,
+            5.0
+          ],
+          "clinical_rationale": "Maternal instability changes the risk balance toward delivery or transfer after stabilization."
+        }
+      ],
+      "trajectory_modifications": {
+        "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1,
+            30
+          ]
+        },
+        "M_PPCM_PROLACTIN_VASOINHIBIN_TOXICITY": {
+          "peak_value_factor": [
+            0.8,
+            1.2
+          ],
+          "decline_half_life_days": [
+            7,
+            60
+          ]
+        }
+      },
+      "failure_modes": [
+        "delivery_autotransfusion_worsening_congestion",
+        "prematurity_tradeoff",
+        "operative_bleeding",
+        "hemodynamic_collapse_without_multidisciplinary_support"
+      ],
+      "clinical_rationale": "Delivery removes pregnancy load and permits postpartum HF medications, but the act of delivery can transiently worsen hemodynamics; timing and mode are contextual interventions, not a universal cure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "future_pregnancy_avoidance_or_high_risk_counseling",
+      "display_name": "Future-pregnancy avoidance or high-risk counseling",
+      "mode": "modulate_theta",
+      "treatment_lane": "longitudinal_risk_modulation",
+      "required_context_axes": [
+        "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+        "future_pregnancy_recurrence_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY",
+        "left_ventricular_ejection_fraction"
+      ],
+      "mechanistic_targets": [
+        "M_PPCM_PERSISTENT_DCM_RECOVERY_BALANCE",
+        "M_PPCM_PERIPARTUM_HEMODYNAMIC_STRESS"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "left_ventricular_ejection_fraction",
+          "condition": "not_recovered",
+          "effect": "strengthens_context_need",
+          "factor_range": [
+            1.5,
+            5.0
+          ],
+          "clinical_rationale": "Persistent LV dysfunction makes recurrence and maternal hazard in later pregnancy much higher."
+        }
+      ],
+      "trajectory_modifications": {
+        "future_pregnancy_recurrence_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.05,
+            0.5
+          ],
+          "decline_half_life_days": [
+            365,
+            3650
+          ]
+        },
+        "mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+          "peak_value_factor": [
+            0.6,
+            0.95
+          ],
+          "decline_half_life_days": [
+            365,
+            3650
+          ]
+        }
+      },
+      "failure_modes": [
+        "unplanned_pregnancy",
+        "incomplete_recovery_misclassified_as_recovered",
+        "loss_to_followup"
+      ],
+      "clinical_rationale": "Longitudinal counseling and contraception planning change future exposure to the peripartum hemodynamic trigger; they do not treat the acute episode.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "pregnancy_or_postpartum_context",
+      "type": "trigger_context",
+      "modulation": {
+        "late_pregnancy_or_postpartum": {
+          "P_disease_ratio": [
+            20,
+            200
+          ],
+          "trajectory_modulation": "Required clinical context for PPCM; outside this window the same phenotype should rank under non-peripartum dilated cardiomyopathy, myocarditis, ischemia, or other HF leaves."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hypertensive_disorder_of_pregnancy_or_preeclampsia",
+      "type": "comorbidity",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2,
+            6
+          ],
+          "trajectory_modulation": "Increases anti-angiogenic/endothelial injury pressure and can add hypertension, renal, pulmonary-edema, and HELLP/TMA mimic axes.",
+          "axis_response_modulation": {
+            "M_PPCM_ANGIOGENIC_IMBALANCE_ENDOTHELIAL_INJURY": {
+              "effect": "increase",
+              "factor_range": [
+                1.2,
+                2.5
+              ]
+            },
+            "systolic_blood_pressure": {
+              "effect": "increase",
+              "factor_range": [
+                1.05,
+                1.35
+              ]
+            }
+          }
+        },
+        "absent": {
+          "P_disease_ratio": [
+            0.7,
+            1.0
+          ]
+        }
+      },
+      "scope_note": "If D-PREECLAMPSIA-ECLAMPSIA is active as a disease manifold, avoid double-counting hypertension/proteinuria axes as background-only risk modifiers.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "multiple_gestation",
+      "type": "pregnancy_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2,
+            6
+          ],
+          "trajectory_modulation": "Higher placental mass and cardiac-output demand amplify hemodynamic and anti-angiogenic stress."
+        },
+        "singleton": {
+          "P_disease_ratio": [
+            0.8,
+            1.0
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "advanced_maternal_age",
+      "type": "continuous",
+      "modulation": {
+        "age_30_to_39": {
+          "P_disease_ratio": [
+            1.2,
+            2.5
+          ]
+        },
+        "age_40_or_more": {
+          "P_disease_ratio": [
+            2,
+            5
+          ],
+          "trajectory_modulation": "Higher vascular and cardiometabolic vulnerability; mimics such as ischemia also become more plausible."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "multiparity",
+      "type": "pregnancy_history",
+      "modulation": {
+        "multiparous": {
+          "P_disease_ratio": [
+            1.3,
+            3.0
+          ],
+          "trajectory_modulation": "Repeated pregnancy hemodynamic stress is associated with higher PPCM incidence."
+        },
+        "nulliparous": {
+          "P_disease_ratio": [
+            0.7,
+            1.0
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "african_ancestry",
+      "type": "categorical",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3,
+            10
+          ],
+          "trajectory_modulation": "Higher PPCM incidence and, in several cohorts, more severe presentation or lower recovery probability."
+        },
+        "absent": {
+          "P_disease_ratio": [
+            0.7,
+            1.0
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "obesity_or_high_bmi",
+      "type": "continuous",
+      "modulation": {
+        "bmi_30_or_more": {
+          "P_disease_ratio": [
+            1.3,
+            3.0
+          ],
+          "trajectory_modulation": "Increases hypertension, sleep-disordered breathing, cardiometabolic load, and natriuretic-peptide interpretation complexity.",
+          "axis_response_modulation": {
+            "brain_natriuretic_peptide": {
+              "effect": "decrease",
+              "factor_range": [
+                0.5,
+                0.9
+              ]
+            },
+            "dyspnea_severity": {
+              "effect": "increase",
+              "factor_range": [
+                1.0,
+                1.5
+              ]
+            }
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "family_history_or_pathogenic_cardiomyopathy_variant",
+      "type": "categorical_genetic",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2,
+            20
+          ],
+          "trajectory_modulation": "Raises genetic DCM susceptibility and persistent LV dysfunction risk.",
+          "axis_response_modulation": {
+            "persistent_lv_dysfunction_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+              "effect": "increase",
+              "factor_range": [
+                1.5,
+                4.0
+              ]
+            },
+            "left_ventricular_ejection_fraction": {
+              "effect": "lower_peak",
+              "factor_range": [
+                0.7,
+                0.95
+              ]
+            }
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_peripartum_cardiomyopathy",
+      "type": "past_history",
+      "modulation": {
+        "prior_ppcm_with_recovered_lvef": {
+          "P_disease_ratio": [
+            5,
+            25
+          ],
+          "trajectory_modulation": "Recurrence remains possible even after recovery; future-pregnancy hazard is lower than if LV dysfunction persists."
+        },
+        "prior_ppcm_with_persistent_lv_dysfunction": {
+          "P_disease_ratio": [
+            20,
+            200
+          ],
+          "trajectory_modulation": "Very high recurrence and severe decompensation risk in subsequent pregnancy.",
+          "axis_response_modulation": {
+            "future_pregnancy_recurrence_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY": {
+              "effect": "increase",
+              "factor_range": [
+                3,
+                10
+              ]
+            }
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "tocolytic_beta_agonist_or_high_adrenergic_exposure",
+      "type": "medication_or_trigger_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            3.0
+          ],
+          "trajectory_modulation": "Can unmask tachycardia, high-output stress, and arrhythmia vulnerability rather than defining PPCM by itself.",
+          "axis_response_modulation": {
+            "heart_rate": {
+              "effect": "increase",
+              "factor_range": [
+                1.05,
+                1.4
+              ]
+            },
+            "malignant_arrhythmia_hazard": {
+              "effect": "increase",
+              "factor_range": [
+                1.1,
+                2.0
+              ]
+            }
+          }
+        }
+      },
+      "knowledge_confidence": "low"
+    },
+    {
+      "factor": "anemia_or_peripartum_blood_loss",
+      "type": "comorbidity_or_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.1,
+            2.5
+          ],
+          "trajectory_modulation": "Reduced oxygen delivery and compensatory tachycardia can worsen symptoms and low-output reserve without being the cardiomyopathy itself.",
+          "axis_response_modulation": {
+            "heart_rate": {
+              "effect": "increase",
+              "factor_range": [
+                1.05,
+                1.4
+              ]
+            },
+            "dyspnea_severity": {
+              "effect": "increase",
+              "factor_range": [
+                1.0,
+                1.5
+              ]
+            }
+          }
+        }
+      },
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "supportive_care": [
+    "Early multidisciplinary management with cardiology, maternal-fetal medicine/obstetrics, anesthesia, critical care, neonatology when antepartum, and advanced-heart-failure team if shock or severe LV dysfunction is present.",
+    "Immediate fair-mimic evaluation for pulmonary embolism, acute coronary syndrome, myocarditis, valvular disease, preeclampsia/HELLP pulmonary edema, sepsis, thyroid disease, anemia, and renal disease rather than assuming all postpartum dyspnea is PPCM.",
+    "Baseline and serial echocardiography including LVEF, LV size, RV function, valvular regurgitation, pulmonary pressures, and LV thrombus assessment; use contrast echo or CMR when thrombus or myocarditis/ischemia distinction is uncertain and safe.",
+    "Trend vital signs, urine output, daily weight, oxygen requirement, BNP/NT-proBNP, troponin if injury suspected, creatinine, electrolytes, lactate in unstable patients, and anticoagulation labs where relevant.",
+    "Fluid and sodium restriction proportional to congestion; avoid both under-decongestion and excessive postpartum fluids or transfusion without hemodynamic indication.",
+    "Electrolyte repletion to reduce arrhythmia risk, especially potassium and magnesium during diuretic or inotrope therapy.",
+    "Telemetry for hospitalized patients with severe LV dysfunction, palpitations, syncope, ventricular ectopy, electrolyte disturbance, or inotrope exposure.",
+    "Anticoagulation reassessment when LVEF is severely reduced, LV thrombus is present, atrial fibrillation occurs, bromocriptine is used, or additional postpartum VTE risk factors exist; balance against delivery, neuraxial, and hemorrhage context.",
+    "Medication review for pregnancy and lactation compatibility; avoid fetotoxic RAAS blockade during pregnancy and individualize postpartum/lactation choices.",
+    "Breastfeeding counseling that separates maternal cardiac risk, bromocriptine/prolactin-suppression choice, medication transfer into breast milk, and patient preference.",
+    "Delivery planning in antepartum PPCM should prioritize maternal stabilization, avoid unnecessary emergent delivery solely for the diagnosis, and anticipate autotransfusion/congestion around labor, cesarean, anesthesia, and postpartum fluid shifts.",
+    "Escalate early to advanced HF center for persistent hypoperfusion, rising lactate, escalating inotrope need, refractory pulmonary edema, malignant arrhythmia, severe RV failure, or failure to improve.",
+    "Avoid permanent ICD decisions during the early recovery window unless secondary-prevention indications dominate; reassess LVEF after optimized therapy and recovery interval.",
+    "Contraception and future-pregnancy counseling before discharge and at follow-up, especially if LVEF has not normalized or genetic/family-history risk is present.",
+    "Family screening and genetic counseling/testing when there is family history, persistent DCM phenotype, very severe presentation, or suspicion for inherited cardiomyopathy."
+  ],
+  "ontology_notes": [
+    "Exactly one derived_hazard axis is included: mortality_hazard_in_D-PERIPARTUM-CARDIOMYOPATHY.",
+    "Pregnancy, lactation, preeclampsia/hypertensive-disorder context, anticoagulation feasibility, and medication safety are represented as context/modifier axes rather than first-line labels.",
+    "Preeclampsia and other obstetric conditions should be superposed as disease manifolds when available; their background modifiers should not double-count the same blood-pressure, renal, proteinuria, or HELLP axes."
+  ]
+}

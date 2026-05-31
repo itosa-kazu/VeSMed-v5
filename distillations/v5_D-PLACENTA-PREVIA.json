@@ -1,0 +1,4428 @@
+{
+  "disease": "D-PLACENTA-PREVIA",
+  "disease_id": "D-PLACENTA-PREVIA",
+  "disease_name": "Placenta previa",
+  "disease_name_ja": "前置胎盤",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Placenta previa",
+    "leaf_granularity": "First-layer disease leaf for placenta previa itself: placental tissue implanted over the internal cervical os. Bleeding severity, placenta accreta spectrum, prior cesarean delivery, gestational age, fetal status, labor, hemodynamic compromise, and delivery-resource context are represented as axes, risk/context modifiers, event hazards, treatment modifiers, or future subtype layers rather than disease-name qualifiers.",
+    "case_source_policy": "Distilled without reading real case reports or disease-specific case JSONs for this leaf. Independent case sourcing and audit must remain separate before activation.",
+    "boundary_policy": "This leaf is distinct from placental abruption, vasa previa, ectopic pregnancy, miscarriage, cervical/vaginal lesions, uterine rupture, postpartum hemorrhage as a standalone event, and placenta accreta spectrum as an invasive placentation context. When an independent condition is present, use vector-field superposition or context axes without double-counting the same bleeding, shock, fetal, or operative axes."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "display_name": "Low placental implantation persistence",
+      "clinical_meaning": "Placental implantation in the lower uterine segment persists into later gestation instead of clearing away from the internal cervical os as the uterus enlarges.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -180.0,
+        -28.0
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        28.0,
+        240.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        120.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "display_name": "Internal cervical os coverage geometry",
+      "clinical_meaning": "Placental tissue directly overlies the internal cervical os, creating an anatomic barrier to vaginal delivery and a fragile placental edge at the cervix.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.45,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "display_name": "Lower uterine segment shear bleeding",
+      "clinical_meaning": "Cervical remodeling, lower-segment stretching, uterine activity, or contact shear partially disrupts placental sinuses at the internal os, producing maternal vaginal bleeding that is often painless and bright red.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.15,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "display_name": "Recurrent antepartum hemorrhage tendency",
+      "clinical_meaning": "After a sentinel bleed, repeated bleeding episodes can occur as the lower segment continues to stretch or the cervix changes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -30.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.05,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        60.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "display_name": "Maternal hemorrhagic hypoperfusion",
+      "clinical_meaning": "Large or repeated maternal blood loss lowers circulating volume and oxygen delivery, causing tachycardia, falling blood pressure, lactate elevation, shock, and maternal death hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_PRETERM_DELIVERY_PRESSURE",
+      "display_name": "Preterm delivery pressure",
+      "clinical_meaning": "Bleeding recurrence, uterine activity, fetal concern, or maternal instability can force delivery before term, shifting risk toward prematurity-related neonatal complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -60.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        70.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        28.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "display_name": "Fetal presentation and growth context",
+      "clinical_meaning": "A low placental location can coexist with malpresentation, reduced placental reserve, fetal growth restriction, and nonreassuring fetal status, especially with recurrent bleeding or prematurity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -90.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        7.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "display_name": "Accreta spectrum context activity",
+      "clinical_meaning": "Low placentation over a uterine scar or abnormal decidualization increases the probability of abnormally adherent or invasive placental tissue, which raises delivery hemorrhage and hysterectomy need.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -180.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        240.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        60.0
+      ],
+      "clinical_rationale": "Persistent low implantation is the upstream geometry that leaves placental tissue over the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        60.0
+      ],
+      "clinical_rationale": "A placental edge at the cervix is vulnerable to disruption as the lower segment stretches or the cervix changes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        14.0
+      ],
+      "clinical_rationale": "A sentinel bleed identifies an unstable placental-cervical interface that may bleed again.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Large or repeated maternal blood loss can overwhelm compensation and produce hypoperfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "M_PP_PRETERM_DELIVERY_PRESSURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Recurrent or heavy bleeding often drives earlier delivery planning or emergency delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        7.0,
+        90.0
+      ],
+      "clinical_rationale": "Low placental location is associated with malpresentation and can coexist with placental reserve issues.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        120.0
+      ],
+      "clinical_rationale": "Low implantation over scarred or deficient decidua increases accreta spectrum probability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "placental_location_abnormality_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Low implantation is observed as an abnormal placental location on ultrasound.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "lower_uterine_segment_placenta_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "The placenta is located in the lower uterine segment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "placental_tissue_over_internal_cervical_os_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Placenta previa is defined by placental tissue over the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "complete_internal_os_coverage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "A more extensive previa may completely cover the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "marginal_internal_os_coverage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "A placental edge at or near the internal os can be represented as marginal coverage or a low-lying boundary context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "placental_os_overlap_length_mm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Greater os overlap reflects stronger coverage geometry.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "placental_edge_distance_to_internal_os_mm",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "As previa geometry strengthens, the placental edge distance to the os approaches zero or overlap.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "transvaginal_ultrasound_placental_location_confirmed_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Transvaginal ultrasound can confirm placental relationship to the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+      "target_id": "vaginal_delivery_feasibility",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Placental tissue over the internal os makes vaginal delivery unsafe or impossible for true previa.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Lower-segment placental edge disruption produces vaginal bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "painless_vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Placenta previa bleeding is classically painless because it arises from the placental-cervical interface rather than painful placental separation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "bright_red_vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Active maternal bleeding from the lower uterine segment is often bright red.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "vaginal_bleeding_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "More shear and sinus disruption increase visible bleeding severity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "estimated_vaginal_blood_loss_ml",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Visible blood loss rises with active bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "recurrent_antepartum_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        14.0
+      ],
+      "clinical_rationale": "Repeated bleeding episodes are a common clinical pattern after the first bleed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Maternal blood loss lowers hemoglobin after equilibration or with repeated episodes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "acute_hemoglobin_drop_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Acute bleeding can produce a clinically visible hemoglobin drop.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "blood_transfusion_requirement",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Large or recurrent hemorrhage increases red-cell and component support need.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Unstable placental-edge bleeding can become a major maternal hemorrhage event.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "clinical_rationale": "Hemorrhage produces compensatory tachycardia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "systolic_blood_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "clinical_rationale": "Severe hemorrhage lowers systolic pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "clinical_rationale": "Falling circulating volume lowers perfusion pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "shock_index",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "clinical_rationale": "Tachycardia and falling blood pressure raise the shock index.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "hemorrhagic_shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Massive obstetric hemorrhage can produce hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "hemorrhagic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Ongoing bleeding increases the instantaneous risk of shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Hypoperfusion increases anaerobic metabolism and lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "mortality_hazard_in_D-PLACENTA-PREVIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Uncontrolled maternal hemorrhage and shock are the dominant maternal death pathway in placenta previa.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_PRETERM_DELIVERY_PRESSURE",
+      "target_id": "preterm_delivery_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Bleeding or instability raises the probability of preterm delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_PRETERM_DELIVERY_PRESSURE",
+      "target_id": "neonatal_respiratory_distress_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Earlier delivery increases neonatal respiratory morbidity hazard through prematurity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_PRETERM_DELIVERY_PRESSURE",
+      "target_id": "neonatal_neurologic_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Early preterm delivery increases neurologic vulnerability.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "target_id": "fetal_malpresentation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "A low placenta is associated with malpresentation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "target_id": "breech_presentation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Breech presentation is one form of malpresentation seen with low placental location.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "target_id": "transverse_lie_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Transverse lie can accompany low placental implantation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_FETAL_PRESENTATION_AND_GROWTH_CONTEXT",
+      "target_id": "fetal_growth_restriction_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        7.0,
+        90.0
+      ],
+      "clinical_rationale": "Placenta previa can coexist with placental reserve limitations and growth restriction.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE",
+      "target_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Heavy maternal bleeding or uterine activity can compromise fetal status.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "fetal_hypoxic_injury_hazard_in_D-PLACENTA-PREVIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Maternal shock reduces uteroplacental perfusion and increases fetal hypoxic injury hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+      "target_id": "fetal_demise_hazard_in_D-PLACENTA-PREVIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Severe sustained maternal hemorrhagic shock can progress to fetal demise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "placenta_accreta_spectrum_suspicion_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Scar-related low placentation raises accreta spectrum suspicion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "placental_lacunae_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Placental lacunae are imaging signs that can support accreta spectrum concern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "myometrial_thinning_over_placenta_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Myometrial thinning over the placenta supports invasive placentation concern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "uterovesical_hypervascularity_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Uterovesical hypervascularity is a possible imaging sign of invasive placentation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "postpartum_hemorrhage_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Invasive placentation and lower-segment bleeding increase delivery and postpartum hemorrhage hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+      "target_id": "cesarean_hysterectomy_need_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "High accreta spectrum concern increases probability that hysterectomy or complex surgical planning is needed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+      "target_id": "digital_cervical_exam_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Digital cervical manipulation can disrupt the placental edge when previa is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PP_LOW_IMPLANTATION_PERSISTENCE",
+      "target_id": "multiple_gestation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Multiple gestation is an epidemiologic risk/context for low placentation and antepartum bleeding surveillance.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_context_probability",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        1.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Pregnancy context gates obstetric axes and treatments.",
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "weeks",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        42.0
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        16.0,
+        41.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Gestational age modifies bleeding surveillance, fetal viability, corticosteroid use, and delivery timing.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_viability_context_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Fetal viability context changes monitoring and delivery consequences.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_heart_activity_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Fetal cardiac activity is a staging observation for fetal status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "placental_location_abnormality_presence",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Low or previa placental location on ultrasound.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "lower_uterine_segment_placenta_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.06
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Placental tissue located in the lower uterine segment.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "placental_tissue_over_internal_cervical_os_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.65,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Placental tissue directly overlies the internal cervical os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "complete_internal_os_coverage_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_tissue_over_internal_cervical_os_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Complete coverage of the internal cervical os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "marginal_internal_os_coverage_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Placental edge reaches or nearly reaches the internal os; useful boundary context for low-lying placenta.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "low_lying_placenta_context_probability",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Low-lying placenta near but not covering the internal os; a boundary context rather than the disease-name qualifier.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "placental_os_overlap_length_mm",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "placental_tissue_over_internal_cervical_os_presence",
+      "unit": "mm",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        80.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Measured placental overlap over the internal cervical os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "placental_edge_distance_to_internal_os_mm",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "mm",
+      "log_scale": false,
+      "baseline_range": [
+        20.0,
+        80.0
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        20.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Distance from placental edge to internal os when not overlapping; lower values indicate higher concern.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "transvaginal_ultrasound_placental_location_confirmed_presence",
+      "category": "diagnostic_test",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Transvaginal ultrasound confirmation of placental relationship to the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "transabdominal_ultrasound_low_placenta_presence",
+      "category": "diagnostic_test",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.06
+      ],
+      "peak_day_range": [
+        -160.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Transabdominal ultrasound suggests low placental location.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "anterior_low_lying_placenta_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Anterior low placenta; important when a prior uterine scar is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "posterior_low_lying_placenta_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Posterior low placenta context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "placental_migration_resolution_probability",
+      "category": "clinical_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -180.0,
+        -28.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.9
+      ],
+      "plateau_duration_days": [
+        1.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Probability that an earlier low placenta clears from the os with gestational progression.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "placental_location_abnormality_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Probability of coexisting placenta accreta spectrum; modifies operative planning and hemorrhage risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "placental_lacunae_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Placental lacunae as an accreta spectrum imaging feature.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "myometrial_thinning_over_placenta_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Marked myometrial thinning over the placenta.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uterovesical_hypervascularity_presence",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -140.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        14.0,
+        200.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Uterovesical interface hypervascularity as an invasive placentation context sign.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "prior_uterine_scar_context_presence",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Prior cesarean, myomectomy, curettage, or uterine surgery context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cesarean_delivery_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "prior_uterine_scar_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Prior cesarean delivery context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "number_of_prior_cesarean_deliveries",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "cesarean_delivery_presence",
+      "unit": "count",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        1
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0,
+        6
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Number of prior cesarean deliveries, a strong modifier of accreta spectrum context when previa is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_labor_or_contraction_context_presence",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Labor or contraction context that can trigger bleeding and change delivery urgency.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_contractions_presence",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Uterine contractions may accompany bleeding and increase shear.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uterine_tenderness_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.2
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Uterine tenderness is usually absent or mild in placenta previa and helps separate abruption when present strongly.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Pain is often absent in uncomplicated previa but can appear with contractions, labor, or another superposed condition.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_severity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Abdominal pain severity; high values suggest labor, abruption, uterine rupture, or another process.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Antepartum vaginal bleeding in pregnancy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "painless_vaginal_bleeding_presence",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Painless bleeding pattern typical of previa.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "bright_red_vaginal_bleeding_presence",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Bright red maternal bleeding pattern.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "recurrent_antepartum_bleeding_presence",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        60.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Repeated bleeding episodes before delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_bleeding_severity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -60.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.05,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Visible bleeding severity from spotting to massive hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "estimated_vaginal_blood_loss_ml",
+      "category": "clinical_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "mL",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        20.0
+      ],
+      "peak_day_range": [
+        -60.0,
+        1.0
+      ],
+      "peak_value_range": [
+        20.0,
+        3000.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Estimated visible vaginal blood loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "g/dL",
+      "log_scale": false,
+      "baseline_range": [
+        10.5,
+        13.5
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        4.0,
+        12.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30.0
+      ],
+      "clinical_interpretation": "Maternal hemoglobin; falls with bleeding and rises with transfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_hemoglobin_drop_presence",
+      "category": "lab_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemoglobin",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        30.0
+      ],
+      "clinical_interpretation": "Acute maternal hemoglobin drop after bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_transfusion_requirement",
+      "category": "treatment_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "hemoglobin",
+      "unit": "units_or_relative_need",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Relative need for red-cell or component transfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        70,
+        110
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        85,
+        170
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Maternal heart rate, elevated with hemorrhage and pregnancy physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        95,
+        140
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        55,
+        125
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Maternal systolic blood pressure; may fall in major hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        65,
+        100
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        35,
+        90
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Maternal perfusion pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_index",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "ratio",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        0.9
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.8,
+        2.5
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Heart rate divided by systolic blood pressure; rises with obstetric hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Clinical hemorrhagic shock from major bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.005,
+        2.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Instantaneous hazard of hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        1.0,
+        10.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Lactate elevation from maternal hypoperfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.01,
+        2.5
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of major maternal bleeding before or during delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "postpartum_hemorrhage_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0005,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.01,
+        3.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of delivery or postpartum hemorrhage, especially with accreta context or lower-segment bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "preterm_delivery_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        -60.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.005,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        70.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Hazard of delivery before term driven by bleeding, labor, maternal status, or fetal status.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "neonatal_respiratory_distress_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "preterm_delivery_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.002,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Neonatal respiratory morbidity hazard through prematurity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "neonatal_neurologic_injury_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "preterm_delivery_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        5e-05,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Neonatal neurologic injury hazard related to early prematurity and fetal compromise.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_malpresentation_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.12
+      ],
+      "peak_day_range": [
+        -90.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "clinical_interpretation": "Any non-cephalic or unstable presentation context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "breech_presentation_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_malpresentation_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -90.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "clinical_interpretation": "Breech presentation context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "transverse_lie_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_malpresentation_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -90.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "clinical_interpretation": "Transverse or oblique fetal lie context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_growth_restriction_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -90.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        7.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "clinical_interpretation": "Fetal growth restriction context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "reduced_fetal_movement_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Reduced fetal movement as fetal-status evidence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_heart_activity_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Nonreassuring fetal heart tracing during bleeding or labor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_heart_rate",
+      "category": "obstetric_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "fetal_heart_activity_presence",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        110,
+        160
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        80,
+        200
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Fetal heart rate measurement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_hypoxic_injury_hazard_in_D-PLACENTA-PREVIA",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        5e-05,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.001,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Fetal hypoxic injury hazard from maternal shock, severe bleeding, or nonreassuring tracing.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_demise_hazard_in_D-PLACENTA-PREVIA",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        2e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Fetal demise hazard during severe maternal hemorrhage or fetal compromise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "preterm_fetal_lung_maturity_context",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -120.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        120.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "clinical_interpretation": "Fetal lung maturity context for antenatal steroid effect.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cesarean_delivery_feasibility",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -60.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        120.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        60.0
+      ],
+      "clinical_interpretation": "Feasibility of cesarean delivery given resources, maternal stability, and surgical/anesthesia context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_delivery_feasibility",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.6,
+        1.0
+      ],
+      "peak_day_range": [
+        -60.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        120.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        60.0
+      ],
+      "clinical_interpretation": "Feasibility of vaginal delivery; very low when placental tissue covers the internal os.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_product_availability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -7.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Availability of blood products and massive transfusion resources.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "multidisciplinary_obstetric_surgery_resource_availability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -30.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        120.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        60.0
+      ],
+      "clinical_interpretation": "Availability of experienced obstetric surgery, anesthesia, blood bank, neonatal, and interventional resources.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cesarean_hysterectomy_need_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -30.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        120.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        60.0
+      ],
+      "clinical_interpretation": "Probability that cesarean hysterectomy or complex surgical placental management is needed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tocolysis_safety_context_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -7.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Safety context for short-term tocolysis when contractions occur without major bleeding or fetal compromise.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "digital_cervical_examination_context_presence",
+      "category": "clinical_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        1.0
+      ],
+      "clinical_interpretation": "Digital cervical examination context when placenta location has not been excluded.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "digital_cervical_exam_bleeding_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "digital_cervical_examination_context_presence",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.005,
+        1.5
+      ],
+      "plateau_duration_days": [
+        0.001,
+        1.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        1.0
+      ],
+      "clinical_interpretation": "Bleeding hazard if digital cervical manipulation disrupts a previa placental edge.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rh_negative_unsensitized_context_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Rh-negative unsensitized maternal context for anti-D prophylaxis after bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "maternal_rh_alloimmunization_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "rh_negative_unsensitized_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0001,
+        0.1
+      ],
+      "plateau_duration_days": [
+        1.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Alloimmunization hazard after fetomaternal bleeding in an Rh-negative unsensitized patient.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-PLACENTA-PREVIA",
+      "category": "derived_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0001,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        30.0
+      ],
+      "clinical_interpretation": "Maternal lifespan hazard from placenta previa, mainly through uncontrolled hemorrhage, shock, operative hemorrhage, and resource delay.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "multiple_gestation_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Multiple gestation is a placenta previa/bleeding risk context and fetal context modifier.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pregnancy_context_probability"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "placental_os_overlap_length_mm",
+      "target_axis_id": "vaginal_delivery_feasibility",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.9,
+        -0.5
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Greater os overlap makes vaginal delivery less feasible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "placental_os_overlap_length_mm",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "phase": "late_pregnancy_or_labor",
+      "clinical_rationale": "More coverage creates a larger placental-cervical interface vulnerable to bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "active_labor_or_contraction_context_presence",
+      "target_axis_id": "vaginal_bleeding_severity",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "bleeding_episode",
+      "clinical_rationale": "Contractions or cervical change can shear placental sinuses and increase bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "vaginal_bleeding_severity",
+      "target_axis_id": "hemoglobin",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "bleeding_episode",
+      "conditionality": "Weaker before hemodilution or if bleeding is brief and rapidly treated.",
+      "clinical_rationale": "More visible bleeding generally lowers maternal hemoglobin.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "vaginal_bleeding_severity",
+      "target_axis_id": "hemorrhagic_shock_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "bleeding_episode",
+      "clinical_rationale": "Severe bleeding sharply increases shock hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "hemorrhagic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-PLACENTA-PREVIA",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.95
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "critical_bleeding",
+      "clinical_rationale": "Maternal death hazard rises when hemorrhagic shock develops or persists.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "target_axis_id": "postpartum_hemorrhage_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.95
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "delivery",
+      "clinical_rationale": "Accreta spectrum context increases risk of severe delivery and postpartum hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "number_of_prior_cesarean_deliveries",
+      "target_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "phase": "whole_course",
+      "conditionality": "Strongest when the previa is anterior or overlies the uterine scar.",
+      "clinical_rationale": "Repeated cesarean scars greatly increase accreta spectrum probability when previa is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "placenta_accreta_spectrum_suspicion_probability",
+      "target_axis_id": "cesarean_hysterectomy_need_probability",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.6,
+        0.95
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "delivery_planning",
+      "clinical_rationale": "Higher accreta spectrum suspicion increases complex surgical management need.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "gestational_age_weeks",
+      "target_axis_id": "neonatal_respiratory_distress_hazard",
+      "relationship": "negative_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.4
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "phase": "delivery",
+      "clinical_rationale": "Greater gestational age reduces prematurity-related respiratory morbidity hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "target_axis_id": "fetal_hypoxic_injury_hazard_in_D-PLACENTA-PREVIA",
+      "relationship": "source_leads_target",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "bleeding_or_delivery",
+      "clinical_rationale": "Nonreassuring fetal status can progress to hypoxic injury if not relieved by delivery or maternal stabilization.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "fetal_hypoxic_injury_hazard_in_D-PLACENTA-PREVIA",
+      "target_axis_id": "fetal_demise_hazard_in_D-PLACENTA-PREVIA",
+      "relationship": "source_leads_target",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "critical_fetal_compromise",
+      "clinical_rationale": "Severe ongoing fetal hypoxia can progress to fetal death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "digital_cervical_examination_context_presence",
+      "target_axis_id": "digital_cervical_exam_bleeding_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "evaluation",
+      "clinical_rationale": "Digital cervical examination can precipitate severe bleeding when previa is present.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "planned_cesarean_delivery_for_stable_placenta_previa",
+      "treatment_name": "Planned cesarean delivery for stable placenta previa",
+      "mode": "reshape_landscape",
+      "treatment_lane": "delivery_source_control",
+      "mechanistic_targets": [
+        "M_PP_INTERNAL_OS_COVERAGE_GEOMETRY",
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+        "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE"
+      ],
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "fetal_viability_context_probability",
+        "vaginal_bleeding_severity",
+        "cesarean_delivery_feasibility",
+        "placenta_accreta_spectrum_suspicion_probability"
+      ],
+      "trajectory_modifications": {
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING": {
+          "peak_value_factor": [
+            0.02,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.02,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.01,
+            2.0
+          ]
+        },
+        "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE": {
+          "peak_value_factor": [
+            0.02,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.02,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.01,
+            3.0
+          ]
+        },
+        "preterm_delivery_hazard": {
+          "peak_value_factor": [
+            0.8,
+            1.5
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.5
+          ]
+        },
+        "postpartum_hemorrhage_hazard": {
+          "peak_value_factor": [
+            0.7,
+            1.5
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.5
+          ]
+        },
+        "mortality_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+          "condition": "high",
+          "effect": "requires_complex_surgical_planning",
+          "factor_range": [
+            0.5,
+            1.5
+          ],
+          "clinical_rationale": "Accreta context increases operative bleeding and resource requirements."
+        },
+        {
+          "axis_id": "multidisciplinary_obstetric_surgery_resource_availability",
+          "condition": "low",
+          "effect": "weakens_safety_margin",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Planned surgery is safer when experienced teams and blood products are available."
+        }
+      ],
+      "failure_modes": [
+        "unexpected_active_bleeding_before_scheduled_delivery",
+        "unrecognized_accreta_spectrum",
+        "limited_blood_product_or_anesthesia_resources",
+        "severe_prematurity_tradeoff"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "urgent_cesarean_delivery_for_uncontrolled_bleeding_or_fetal_compromise",
+      "treatment_name": "Urgent cesarean delivery for uncontrolled bleeding or fetal compromise",
+      "mode": "reshape_landscape",
+      "treatment_lane": "delivery_source_control",
+      "mechanistic_targets": [
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+        "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION",
+        "M_PP_PRETERM_DELIVERY_PRESSURE"
+      ],
+      "required_context_axes": [
+        "vaginal_bleeding_severity",
+        "hemorrhagic_shock_hazard",
+        "nonreassuring_fetal_heart_rate_tracing_presence",
+        "cesarean_delivery_feasibility",
+        "blood_product_availability"
+      ],
+      "trajectory_modifications": {
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING": {
+          "peak_value_factor": [
+            0.02,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.02,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.01,
+            2.0
+          ]
+        },
+        "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            3.0
+          ]
+        },
+        "hemorrhagic_shock_hazard": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            3.0
+          ]
+        },
+        "fetal_hypoxic_injury_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "vaginal_bleeding_severity",
+          "condition": "high",
+          "effect": "strengthens_maternal_benefit",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Active severe bleeding makes source control more urgent."
+        },
+        {
+          "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+          "condition": "present",
+          "effect": "strengthens_fetal_benefit",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Delivery can relieve fetal compromise from maternal bleeding or placental dysfunction."
+        },
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens_safety_margin",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Operative source control is more dangerous without hemorrhage support."
+        }
+      ],
+      "failure_modes": [
+        "extreme_prematurity",
+        "maternal_collapse_before_operating_room",
+        "unrecognized_accreta_spectrum",
+        "unavailable_surgical_or_neonatal_resources"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "expectant_monitoring_modified_activity_and_pelvic_rest",
+      "treatment_name": "Expectant monitoring with modified activity and pelvic rest",
+      "mode": "modulate_sigma",
+      "treatment_lane": "bleeding_recursion_reduction",
+      "mechanistic_targets": [
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+        "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE"
+      ],
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "vaginal_bleeding_severity",
+        "hemorrhagic_shock_presence",
+        "nonreassuring_fetal_heart_rate_tracing_presence"
+      ],
+      "trajectory_modifications": {
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "M_PP_RECURRENT_ANTEPARTUM_HEMORRHAGE": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1.0,
+            30.0
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "hemorrhagic_shock_presence",
+          "condition": "present",
+          "effect": "blocks_as_standalone_strategy",
+          "factor_range": [
+            0.0,
+            0.2
+          ],
+          "clinical_rationale": "Shock requires resuscitation and delivery/source control rather than observation alone."
+        },
+        {
+          "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+          "condition": "present",
+          "effect": "blocks_as_standalone_strategy",
+          "factor_range": [
+            0.0,
+            0.3
+          ],
+          "clinical_rationale": "Fetal compromise changes the treatment vector toward delivery."
+        }
+      ],
+      "failure_modes": [
+        "recurrent_unpredictable_bleeding",
+        "patient_far_from_surgical_or_blood_bank_resources",
+        "missed_labor_or_fetal_compromise"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "antenatal_corticosteroids_for_preterm_delivery_risk",
+      "treatment_name": "Antenatal corticosteroids for preterm delivery risk",
+      "mode": "reshape_landscape",
+      "treatment_lane": "fetal_maturation",
+      "mechanistic_targets": [
+        "M_PP_PRETERM_DELIVERY_PRESSURE"
+      ],
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "preterm_delivery_hazard",
+        "preterm_fetal_lung_maturity_context"
+      ],
+      "trajectory_modifications": {
+        "preterm_fetal_lung_maturity_context": {
+          "target_shift_range": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            1.0,
+            21.0
+          ]
+        },
+        "neonatal_respiratory_distress_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            3.0,
+            28.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "gestational_age_weeks",
+          "condition": "very_early_or_late",
+          "effect": "benefit_depends_on_maturity_window",
+          "factor_range": [
+            0.2,
+            1.2
+          ],
+          "clinical_rationale": "Steroid benefit depends on gestational age and delivery probability."
+        },
+        {
+          "axis_id": "preterm_delivery_hazard",
+          "condition": "low",
+          "effect": "weakens_immediate_value",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Benefit is smaller if delivery is unlikely soon."
+        }
+      ],
+      "failure_modes": [
+        "delivery_too_immediate_for_full_effect",
+        "wrong_estimate_of_delivery_timing",
+        "infection_or_glycemic_complication_context"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "magnesium_sulfate_for_early_preterm_neuroprotection_context",
+      "treatment_name": "Magnesium sulfate for early preterm neuroprotection context",
+      "mode": "push_state",
+      "treatment_lane": "fetal_neuroprotection",
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "preterm_delivery_hazard",
+        "fetal_viability_context_probability"
+      ],
+      "trajectory_modifications": {
+        "neonatal_neurologic_injury_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "preterm_delivery_hazard",
+          "condition": "high",
+          "effect": "strengthens_contextual_value",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Neuroprotection matters when early preterm delivery is likely."
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "very_low",
+          "effect": "requires_close_maternal_monitoring",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Maternal instability narrows safety margin."
+        }
+      ],
+      "failure_modes": [
+        "maternal_respiratory_or_renal_toxicity",
+        "delivery_outside_effective_window",
+        "used_without_early_preterm_delivery_risk"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "maternal_hemodynamic_resuscitation_and_massive_transfusion_activation",
+      "treatment_name": "Maternal hemodynamic resuscitation and massive transfusion activation",
+      "mode": "push_state",
+      "treatment_lane": "hemorrhage_resuscitation",
+      "mechanistic_targets": [
+        "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION"
+      ],
+      "required_context_axes": [
+        "vaginal_bleeding_severity",
+        "hemoglobin",
+        "mean_arterial_pressure",
+        "shock_index",
+        "serum_lactate",
+        "blood_product_availability"
+      ],
+      "trajectory_modifications": {
+        "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            3.0
+          ]
+        },
+        "mean_arterial_pressure": {
+          "target_shift_range": [
+            5.0,
+            35.0
+          ],
+          "decline_half_life_days": [
+            0.01,
+            1.0
+          ]
+        },
+        "hemoglobin": {
+          "target_shift_range": [
+            0.5,
+            5.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            14.0
+          ]
+        },
+        "serum_lactate": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens_or_delays_effect",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Severe obstetric hemorrhage requires blood products, not crystalloid alone."
+        },
+        {
+          "axis_id": "postpartum_hemorrhage_hazard",
+          "condition": "high",
+          "effect": "requires_parallel_source_control",
+          "factor_range": [
+            0.3,
+            1.0
+          ],
+          "clinical_rationale": "Resuscitation alone cannot stop lower-segment or accreta-related bleeding."
+        }
+      ],
+      "failure_modes": [
+        "ongoing_uncontrolled_bleeding",
+        "delayed_blood_products",
+        "unrecognized_coagulopathy",
+        "operative_source_control_delay"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "postpartum_hemorrhage_prevention_and_uterotonic_support",
+      "treatment_name": "Postpartum hemorrhage prevention and uterotonic support",
+      "mode": "push_state",
+      "treatment_lane": "post_delivery_bleeding_control",
+      "required_context_axes": [
+        "postpartum_hemorrhage_hazard",
+        "major_bleeding_hazard",
+        "blood_product_availability"
+      ],
+      "trajectory_modifications": {
+        "postpartum_hemorrhage_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "mortality_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+          "condition": "high",
+          "effect": "may_be_insufficient_without_surgical_control",
+          "factor_range": [
+            0.1,
+            0.8
+          ],
+          "clinical_rationale": "Uterotonics do not correct invasive placental adherence."
+        }
+      ],
+      "failure_modes": [
+        "accreta_spectrum_source",
+        "surgical_bleeding",
+        "coagulopathy",
+        "delayed_escalation"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "multidisciplinary_accreta_context_cesarean_hysterectomy_or_complex_surgery",
+      "treatment_name": "Multidisciplinary accreta-context cesarean hysterectomy or complex surgery",
+      "mode": "reshape_landscape",
+      "treatment_lane": "accreta_context_source_control",
+      "mechanistic_targets": [
+        "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY",
+        "M_PP_MATERNAL_HEMORRHAGIC_HYPOPERFUSION"
+      ],
+      "required_context_axes": [
+        "placenta_accreta_spectrum_suspicion_probability",
+        "cesarean_hysterectomy_need_probability",
+        "multidisciplinary_obstetric_surgery_resource_availability",
+        "blood_product_availability"
+      ],
+      "trajectory_modifications": {
+        "M_PP_ACCRETA_SPECTRUM_CONTEXT_ACTIVITY": {
+          "peak_value_factor": [
+            0.05,
+            0.6
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "postpartum_hemorrhage_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            14.0
+          ]
+        },
+        "mortality_hazard_in_D-PLACENTA-PREVIA": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+          "condition": "high",
+          "effect": "strengthens_source_control_value",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "High accreta context makes planned complex surgery more important."
+        },
+        {
+          "axis_id": "multidisciplinary_obstetric_surgery_resource_availability",
+          "condition": "low",
+          "effect": "weakens_safety_margin",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Complex placenta surgery needs experienced obstetric, anesthesia, blood bank, neonatal, and sometimes urologic/interventional support."
+        }
+      ],
+      "failure_modes": [
+        "unrecognized_accreta_until_delivery",
+        "limited_expertise_or_blood_products",
+        "massive_pelvic_bleeding",
+        "adjacent_organ_injury"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "short_term_tocolysis_for_stable_preterm_contractions",
+      "treatment_name": "Short-term tocolysis for stable preterm contractions",
+      "mode": "modulate_sigma",
+      "treatment_lane": "contraction_shear_reduction",
+      "mechanistic_targets": [
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING",
+        "M_PP_PRETERM_DELIVERY_PRESSURE"
+      ],
+      "required_context_axes": [
+        "active_labor_or_contraction_context_presence",
+        "vaginal_bleeding_severity",
+        "hemorrhagic_shock_presence",
+        "nonreassuring_fetal_heart_rate_tracing_presence",
+        "tocolysis_safety_context_probability"
+      ],
+      "trajectory_modifications": {
+        "active_labor_or_contraction_context_presence": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        },
+        "M_PP_LOWER_SEGMENT_SHEAR_BLEEDING": {
+          "peak_value_factor": [
+            0.5,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        },
+        "preterm_delivery_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "vaginal_bleeding_severity",
+          "condition": "high",
+          "effect": "blocks_or_weakens",
+          "factor_range": [
+            0.0,
+            0.4
+          ],
+          "clinical_rationale": "Major bleeding should not be masked by delaying delivery."
+        },
+        {
+          "axis_id": "hemorrhagic_shock_presence",
+          "condition": "present",
+          "effect": "blocks",
+          "factor_range": [
+            0.0,
+            0.1
+          ],
+          "clinical_rationale": "Maternal instability requires resuscitation and source control."
+        },
+        {
+          "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+          "condition": "present",
+          "effect": "blocks_or_weakens",
+          "factor_range": [
+            0.0,
+            0.4
+          ],
+          "clinical_rationale": "Fetal compromise changes the goal toward delivery."
+        }
+      ],
+      "failure_modes": [
+        "masks_progression_to_major_bleeding",
+        "maternal_side_effects",
+        "inappropriate_delay_of_needed_delivery"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "rho_d_immune_globulin_for_rh_negative_bleeding_context",
+      "treatment_name": "Rho(D) immune globulin for Rh-negative bleeding context",
+      "mode": "modulate_theta",
+      "treatment_lane": "alloimmunization_prevention",
+      "required_context_axes": [
+        "rh_negative_unsensitized_context_probability",
+        "vaginal_bleeding_presence",
+        "pregnancy_context_probability"
+      ],
+      "trajectory_modifications": {
+        "maternal_rh_alloimmunization_hazard": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            1.0,
+            60.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "rh_negative_unsensitized_context_probability",
+          "condition": "low",
+          "effect": "little_or_no_effect",
+          "factor_range": [
+            0.0,
+            0.2
+          ],
+          "clinical_rationale": "Anti-D prophylaxis is relevant to unsensitized Rh-negative patients."
+        }
+      ],
+      "failure_modes": [
+        "wrong_rh_context",
+        "delayed_or_inadequate_dose_after_large_fetomaternal_bleed"
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "prior_cesarean_delivery_or_uterine_scar",
+      "display_name": "Prior cesarean delivery or uterine scar",
+      "risk_type": "prior_and_accreta_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            6.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "prior_uterine_scar_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                10.0
+              ],
+              "clinical_rationale": "Prior uterine scar increases previa and accreta context probability."
+            },
+            {
+              "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Previa over a scar markedly raises accreta spectrum concern."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "multidisciplinary_accreta_context_cesarean_hysterectomy_or_complex_surgery": "relative value increases when scar-related accreta context is high",
+            "planned_cesarean_delivery_for_stable_placenta_previa": "requires earlier resource planning and blood-bank preparation"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "multiple_prior_cesarean_deliveries",
+      "display_name": "Multiple prior cesarean deliveries",
+      "risk_type": "dose_response_accreta_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            4.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "number_of_prior_cesarean_deliveries",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                6.0
+              ],
+              "clinical_rationale": "The number of prior cesareans modifies scar burden."
+            },
+            {
+              "axis_id": "cesarean_hysterectomy_need_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Multiple scars increase the chance that complex surgery is needed when previa is present."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "previous_placenta_previa",
+      "display_name": "Previous placenta previa",
+      "risk_type": "recurrence_prior_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            8.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "placental_location_abnormality_presence",
+              "effect": "higher_prior",
+              "factor_range": [
+                1.5,
+                6.0
+              ],
+              "clinical_rationale": "Prior previa increases recurrence probability."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "multiparity_or_advanced_maternal_age",
+      "display_name": "Multiparity or advanced maternal age",
+      "risk_type": "prior_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            4.0
+          ],
+          "trajectory_modulation": "Raises prior probability of low placental implantation and previa without defining disease subtype."
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prior_uterine_curettage_myomectomy_or_endometrial_injury",
+      "display_name": "Prior uterine curettage, myomectomy, or endometrial injury",
+      "risk_type": "implantation_site_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "prior_uterine_scar_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Uterine procedures can alter decidualization and implantation patterns."
+            },
+            {
+              "axis_id": "placenta_accreta_spectrum_suspicion_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Endometrial or myometrial injury increases abnormal adherence context."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "assisted_reproductive_technology_or_multiple_gestation",
+      "display_name": "Assisted reproductive technology or multiple gestation",
+      "risk_type": "prior_and_pregnancy_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            4.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "preterm_delivery_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.1,
+                3.0
+              ],
+              "clinical_rationale": "ART and multiple gestation increase obstetric complexity and preterm delivery pressure."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "maternal_smoking_context",
+      "display_name": "Maternal smoking context",
+      "risk_type": "prior_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            3.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "fetal_growth_restriction_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Smoking can increase placental dysfunction and fetal growth restriction context."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "complete_os_coverage_or_large_overlap",
+      "display_name": "Complete os coverage or large overlap",
+      "risk_type": "severity_geometry_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "vaginal_delivery_feasibility",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.4
+              ],
+              "clinical_rationale": "Complete coverage sharply lowers vaginal delivery feasibility."
+            },
+            {
+              "axis_id": "major_bleeding_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Large overlap increases bleeding surface and labor risk."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "planned_cesarean_delivery_for_stable_placenta_previa": "delivery source-control value increases as vaginal route feasibility falls"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "active_bleeding_or_hemodynamic_compromise_context",
+      "display_name": "Active bleeding or hemodynamic compromise context",
+      "risk_type": "hazard_and_treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "hemorrhagic_shock_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Observed active bleeding or compromise raises immediate shock risk."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-PLACENTA-PREVIA",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Maternal compromise increases death hazard until resuscitated and source-controlled."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "urgent_cesarean_delivery_for_uncontrolled_bleeding_or_fetal_compromise": "relative value increases with active severe bleeding or fetal compromise",
+            "expectant_monitoring_modified_activity_and_pelvic_rest": "standalone role decreases when bleeding or compromise is severe"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "limited_blood_bank_surgical_anesthesia_or_neonatal_resources",
+      "display_name": "Limited blood bank, surgical, anesthesia, or neonatal resources",
+      "risk_type": "care_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            1.5
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "blood_product_availability",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "Blood product limitation reduces hemorrhage rescue capacity."
+            },
+            {
+              "axis_id": "multidisciplinary_obstetric_surgery_resource_availability",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "Complex previa or accreta context outcomes depend on resource availability."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-PLACENTA-PREVIA",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Resource delay or limitation increases hemorrhage mortality risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "confirm_placental_location_with_ultrasound_before_digital_exam",
+      "description": "Use ultrasound to define placental relationship to the internal os before digital cervical examination when antepartum bleeding is present."
+    },
+    {
+      "care_id": "maternal_hemodynamic_and_bleeding_surveillance",
+      "description": "Track bleeding volume, heart rate, blood pressure, shock index, mental status, urine output, hemoglobin, type and screen, and transfusion needs."
+    },
+    {
+      "care_id": "fetal_monitoring_when_viable_or_clinically_relevant",
+      "description": "Monitor fetal heart rate, fetal movement, growth, presentation, and nonreassuring tracing according to gestational age and care goals."
+    },
+    {
+      "care_id": "blood_bank_anesthesia_obstetric_and_neonatal_readiness",
+      "description": "Prepare blood products, anesthesia, obstetric surgery, neonatal support, and escalation pathways before bleeding or delivery when feasible."
+    },
+    {
+      "care_id": "accreta_spectrum_imaging_and_resource_planning",
+      "description": "When prior uterine scar or imaging signs raise accreta context, plan multidisciplinary delivery resources and surgical contingencies."
+    },
+    {
+      "care_id": "serial_ultrasound_follow_up_for_low_placenta",
+      "description": "Follow placental edge-to-os relationship over gestation because low-lying placenta can resolve while true previa may persist."
+    },
+    {
+      "care_id": "rh_status_and_fetomaternal_bleeding_prophylaxis_workflow",
+      "description": "Check maternal Rh status and provide anti-D prophylaxis when the Rh-negative unsensitized context is present after bleeding."
+    },
+    {
+      "care_id": "post_delivery_hemorrhage_and_anemia_follow_up",
+      "description": "After delivery, monitor uterine tone, surgical bleeding, hemoglobin, coagulation status, transfusion complications, and recovery from anemia or shock."
+    }
+  ],
+  "quality_notes": [
+    "Created in staging only; this file should not be moved into active atlas until independent case sourcing, audit, fairness review, and regression pass.",
+    "Pure disease-name scope was preserved: bleeding severity, accreta spectrum, prior cesarean delivery, gestational age, fetal status, hemodynamic compromise, and resource state are modeled as axes or modifiers.",
+    "The only derived hazard axis is maternal mortality_hazard_in_D-PLACENTA-PREVIA; fetal, bleeding, shock, preterm, neonatal, and alloimmunization risks are event_hazard axes.",
+    "Parent/satellite structure is used for pregnancy context, placental location, PAS context, bleeding phenotype, pain, fetal status, malpresentation, hemoglobin change, and Rh context.",
+    "Treatment entries are vector-field interventions with context modifiers and failure modes; treatment ordering is intentionally left to forward simulation."
+  ]
+}

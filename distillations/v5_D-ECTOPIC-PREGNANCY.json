@@ -1,0 +1,1809 @@
+{
+  "disease": "D-ECTOPIC-PREGNANCY",
+  "disease_id": "D-ECTOPIC-PREGNANCY",
+  "disease_name": "Ectopic pregnancy",
+  "schema_version": "v5_mechanism_first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Ectopic pregnancy",
+    "leaf_granularity": "First-layer clinical disease leaf for pregnancy implanted outside the normal endometrial cavity. Tubal, interstitial, abdominal, ovarian, cervical, and cesarean-scar locations; rupture; hemodynamic instability; fetal cardiac activity; and fertility-preserving versus definitive management are represented as axes, risk factors, treatment contexts, event hazards, or future subtype context rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking may consume reproductive-age pregnancy context, amenorrhea, positive beta-hCG, abdominal or pelvic pain, vaginal bleeding, empty uterus on ultrasound, extrauterine gestational sac or adnexal mass, pelvic/free intraperitoneal fluid, hemoperitoneum, anemia, hypotension, and treatment response when available."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_EP_EXTRAUTERINE_IMPLANTATION_ACTIVITY",
+      "display_name": "Extrauterine implantation",
+      "clinical_meaning": "Conceptus implants outside the endometrial cavity, most often in the fallopian tube but also interstitial, abdominal, ovarian, cervical, or cesarean-scar sites.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -42,
+        0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        180
+      ],
+      "decline_half_life_days": [
+        7,
+        90
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY",
+      "display_name": "Trophoblastic growth and local invasion",
+      "clinical_meaning": "Trophoblast grows in a non-endometrial site, invading local tissue and vasculature, producing beta-hCG and local pain or bleeding.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        -21,
+        21
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        3,
+        120
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EP_TUBAL_OR_IMPLANT_SITE_DISTENSION_ACTIVITY",
+      "display_name": "Implant-site distension and irritation",
+      "clinical_meaning": "Expansion at the implantation site distends tube, myometrium, scar, peritoneum, or adjacent tissues, causing pelvic or abdominal pain and tenderness.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY",
+      "display_name": "Rupture and hemoperitoneum",
+      "clinical_meaning": "Implantation site ruptures or bleeds into the pelvis or peritoneal cavity, causing free fluid, hemoperitoneum, anemia, peritoneal signs, syncope, and hemorrhagic shock.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_EP_DECIDUAL_OR_CERVICOVAGINAL_BLEEDING_ACTIVITY",
+      "display_name": "Decidual or cervicovaginal bleeding",
+      "clinical_meaning": "Abnormal early pregnancy signaling and decidual shedding cause vaginal spotting or bleeding.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        14
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        30
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_EP_DEFINITIVE_TREATMENT_RESPONSE_ACTIVITY",
+      "display_name": "Definitive treatment response",
+      "clinical_meaning": "Methotrexate, salpingostomy, salpingectomy, cornual resection, uterine artery embolization, hysterectomy, or removal of ectopic tissue lowers trophoblastic activity and bleeding risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_context_probability",
+      "category": "risk_context",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Probability that the patient is currently pregnant.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        280
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "pregnancy_first_trimester_context",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Pregnancy is in the first trimester or early pregnancy window.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -60,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        98
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "amenorrhea_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Amenorrhea or missed menstrual period.",
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -60,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        280
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "clinical_context",
+      "unit": "weeks",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Estimated gestational age in weeks.",
+      "baseline_range": [
+        0,
+        0.5
+      ],
+      "peak_day_range": [
+        -60,
+        0
+      ],
+      "peak_value_range": [
+        4,
+        40
+      ],
+      "plateau_duration_days": [
+        1,
+        280
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_beta_hcg",
+      "category": "lab",
+      "unit": "IU/L",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Serum beta-human chorionic gonadotropin concentration.",
+      "baseline_range": [
+        0,
+        5
+      ],
+      "peak_day_range": [
+        -30,
+        30
+      ],
+      "peak_value_range": [
+        100,
+        200000
+      ],
+      "plateau_duration_days": [
+        1,
+        120
+      ],
+      "decline_half_life_days": [
+        2,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_pregnancy_test_positive_presence",
+      "category": "diagnostic_test",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Urine pregnancy test is positive.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -60,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7,
+        280
+      ],
+      "decline_half_life_days": [
+        7,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pelvic_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Pelvic or lower abdominal pain.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pelvic_pain_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pelvic_pain_presence",
+      "shape_free_text": "Severity of pelvic pain when present.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Abdominal pain, including lower abdominal, diffuse, or epigastric pain in atypical ectopic pregnancy.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "shape_free_text": "Severity of abdominal pain when present.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Vaginal spotting or bleeding.",
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "vaginal_bleeding_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "shape_free_text": "Severity of vaginal bleeding when present.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "syncope_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Syncope or near-syncope from hemorrhage or pain.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_tenderness_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Abdominal tenderness on examination.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_tenderness_severity",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_tenderness_presence",
+      "shape_free_text": "Severity of abdominal tenderness when present.",
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "peritoneal_signs_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Guarding, rebound, rigidity, or peritonitis from hemoperitoneum or rupture.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "category": "vital",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Systolic blood pressure.",
+      "baseline_range": [
+        95,
+        140
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        50,
+        140
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Heart rate; tachycardia may reflect hemorrhage or pain.",
+      "baseline_range": [
+        55,
+        100
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        70,
+        160
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "category": "lab",
+      "unit": "g/dL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Hemoglobin concentration; falls with hemoperitoneum or vaginal hemorrhage.",
+      "baseline_range": [
+        12,
+        15.5
+      ],
+      "peak_day_range": [
+        0,
+        2
+      ],
+      "peak_value_range": [
+        5,
+        14
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "empty_uterus_ultrasound_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Ultrasound shows no intrauterine pregnancy despite pregnancy evidence.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        60
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "extrauterine_gestational_sac_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Extrauterine gestational sac or pregnancy tissue seen on ultrasound, CT, MRI, or surgery.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        120
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tubal_ectopic_location_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "extrauterine_gestational_sac_presence",
+      "shape_free_text": "Ectopic pregnancy is tubal.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        120
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "interstitial_ectopic_location_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "extrauterine_gestational_sac_presence",
+      "shape_free_text": "Ectopic pregnancy is interstitial or cornual.",
+      "baseline_range": [
+        0.0,
+        0.003
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        120
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_ectopic_location_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "extrauterine_gestational_sac_presence",
+      "shape_free_text": "Ectopic pregnancy is abdominal or peritoneal.",
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        180
+      ],
+      "decline_half_life_days": [
+        3,
+        90
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cesarean_scar_ectopic_location_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "extrauterine_gestational_sac_presence",
+      "shape_free_text": "Ectopic pregnancy is implanted in a cesarean scar.",
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        120
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pelvic_free_fluid_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Free pelvic fluid on ultrasound or CT.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pelvic_free_fluid_severity",
+      "category": "imaging_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "pelvic_free_fluid_presence",
+      "shape_free_text": "Extent of free pelvic fluid when present.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemoperitoneum_presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Blood in the peritoneal cavity from ruptured ectopic pregnancy.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemoperitoneum_volume_ml",
+      "category": "imaging_measurement",
+      "unit": "mL",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "hemoperitoneum_presence",
+      "shape_free_text": "Estimated hemoperitoneum volume.",
+      "baseline_range": [
+        0,
+        10
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        50,
+        4000
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ruptured_ectopic_pregnancy_presence",
+      "category": "event_hazard",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Ectopic pregnancy has ruptured or is actively bleeding.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rupture_or_major_bleeding_hazard",
+      "category": "event_hazard",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Risk or active state of rupture or major bleeding.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.05,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_hazard",
+      "category": "event_hazard",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Risk or active state of hemorrhagic shock from ectopic pregnancy bleeding.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "methotrexate_suitability_context",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Clinical context suitable for methotrexate treatment: stable, unruptured, appropriate beta-hCG/size and follow-up.",
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1,
+        30
+      ],
+      "decline_half_life_days": [
+        3,
+        60
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "emergency_surgery_context",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "shape_free_text": "Hemodynamic instability, rupture, hemoperitoneum, or advanced ectopic pregnancy requiring emergency surgery.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ECTOPIC-PREGNANCY",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "axis_role": "measurement",
+      "shape_free_text": "Disease-specific mortality hazard from ruptured ectopic pregnancy, hemorrhagic shock, delayed diagnosis, or operative complications.",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0,
+        1
+      ],
+      "peak_value_range": [
+        0.0001,
+        0.06
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7
+      ],
+      "decline_half_life_days": [
+        1,
+        30
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "localized_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "parent_axis_id": null,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Presence of localized pain; satellite axes describe laterality, radiation, movement dependence, and functional impact.",
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "left_sided_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "localized_pain_presence",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Left-sided laterality when localized pain is present.",
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "right_sided_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "localized_pain_presence",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Right-sided laterality when localized pain is present.",
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "movement_worsened_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "localized_pain_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Localized pain worsened by body movement.",
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    },
+    {
+      "axis_id": "position_change_limited_by_pain_presence",
+      "category": "functional_impact",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "localized_pain_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_interpretation": "Difficulty changing position because of pain; records functional impact rather than pain presence.",
+      "peak_day_range": [
+        0,
+        7
+      ],
+      "plateau_duration_days": [
+        0,
+        3
+      ],
+      "decline_half_life_days": [
+        1,
+        7
+      ]
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "pregnancy_context_probability",
+      "target_id": "M_EP_EXTRAUTERINE_IMPLANTATION_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Current pregnancy is required for ectopic pregnancy.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY",
+      "target_id": "serum_beta_hcg",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "clinical_rationale": "Trophoblastic tissue produces beta-hCG.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_EXTRAUTERINE_IMPLANTATION_ACTIVITY",
+      "target_id": "empty_uterus_ultrasound_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "Pregnancy outside the uterine cavity leaves the uterus empty on imaging when above the discriminatory window.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_EXTRAUTERINE_IMPLANTATION_ACTIVITY",
+      "target_id": "extrauterine_gestational_sac_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "The ectopic implantation site may be visualized as an extrauterine gestational sac or mass.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_TUBAL_OR_IMPLANT_SITE_DISTENSION_ACTIVITY",
+      "target_id": "pelvic_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "Local distension and irritation cause pelvic pain.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_TUBAL_OR_IMPLANT_SITE_DISTENSION_ACTIVITY",
+      "target_id": "abdominal_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        3
+      ],
+      "clinical_rationale": "Ectopic pregnancy can present with abdominal pain.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_DECIDUAL_OR_CERVICOVAGINAL_BLEEDING_ACTIVITY",
+      "target_id": "vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "clinical_rationale": "Decidual shedding and abnormal pregnancy cause vaginal bleeding.",
+      "confidence": "medium"
+    },
+    {
+      "source_id": "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY",
+      "target_id": "hemoperitoneum_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Rupture or active bleeding causes hemoperitoneum.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY",
+      "target_id": "pelvic_free_fluid_presence",
+      "effect_on_target": "increase",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Bleeding appears as pelvic or intraperitoneal free fluid.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "clinical_rationale": "Intraperitoneal bleeding lowers hemoglobin.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY",
+      "target_id": "ruptured_ectopic_pregnancy_presence",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Implant-site rupture is the event state.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "rupture_or_major_bleeding_hazard",
+      "target_id": "hemorrhagic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Major bleeding can produce hemorrhagic shock.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "hemorrhagic_shock_hazard",
+      "target_id": "mortality_hazard_in_D-ECTOPIC-PREGNANCY",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Hemorrhagic shock is the principal immediate fatal pathway.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_DEFINITIVE_TREATMENT_RESPONSE_ACTIVITY",
+      "target_id": "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0,
+        14
+      ],
+      "clinical_rationale": "Definitive treatment reduces trophoblastic activity.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_DEFINITIVE_TREATMENT_RESPONSE_ACTIVITY",
+      "target_id": "rupture_or_major_bleeding_hazard",
+      "effect_on_target": "decrease",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [
+        0,
+        7
+      ],
+      "clinical_rationale": "Removing or resolving the ectopic pregnancy lowers rupture and bleeding risk.",
+      "confidence": "high"
+    },
+    {
+      "source_id": "M_EP_DECIDUAL_OR_CERVICOVAGINAL_BLEEDING_ACTIVITY",
+      "target_id": "localized_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Localized pain is the parent finding for OPQRST satellites such as laterality, radiation, provocation, and functional limitation.",
+      "knowledge_confidence": "moderate"
+    },
+    {
+      "source_id": "M_EP_DECIDUAL_OR_CERVICOVAGINAL_BLEEDING_ACTIVITY",
+      "target_id": "left_sided_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Laterality is a satellite of localized pain and can vary by affected side in paired organs or focal lesions.",
+      "knowledge_confidence": "moderate"
+    },
+    {
+      "source_id": "M_EP_DECIDUAL_OR_CERVICOVAGINAL_BLEEDING_ACTIVITY",
+      "target_id": "right_sided_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Laterality is a satellite of localized pain and can vary by affected side in paired organs or focal lesions.",
+      "knowledge_confidence": "moderate"
+    },
+    {
+      "source_id": "M_EP_TUBAL_OR_IMPLANT_SITE_DISTENSION_ACTIVITY",
+      "target_id": "movement_worsened_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Movement worsening is a provocation satellite of localized pain, especially peritoneal, pleural, musculoskeletal, and retroperitoneal pain.",
+      "knowledge_confidence": "moderate"
+    },
+    {
+      "source_id": "M_EP_TUBAL_OR_IMPLANT_SITE_DISTENSION_ACTIVITY",
+      "target_id": "position_change_limited_by_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "phase": "presentation_or_active_disease",
+      "clinical_rationale": "Position-change limitation records functional impact from severe localized pain without double-counting pain presence.",
+      "knowledge_confidence": "moderate"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "hemoperitoneum_volume_ml",
+      "target_axis_id": "hemoglobin",
+      "coupling_type": "drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        2
+      ],
+      "clinical_rationale": "Larger hemoperitoneum corresponds to lower hemoglobin.",
+      "confidence": "high"
+    },
+    {
+      "source_axis_id": "systolic_blood_pressure",
+      "target_axis_id": "hemorrhagic_shock_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "inverse",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Hypotension marks shock physiology.",
+      "confidence": "high"
+    },
+    {
+      "source_axis_id": "heart_rate",
+      "target_axis_id": "hemorrhagic_shock_hazard",
+      "coupling_type": "mixed",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Tachycardia can accompany hemorrhagic shock.",
+      "confidence": "medium"
+    },
+    {
+      "source_axis_id": "empty_uterus_ultrasound_presence",
+      "target_axis_id": "extrauterine_gestational_sac_presence",
+      "coupling_type": "noise_correlation",
+      "direction": "positive",
+      "lag_days_range": [
+        0,
+        1
+      ],
+      "clinical_rationale": "Both are imaging expressions of ectopic pregnancy.",
+      "confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "emergency_surgical_management_for_ectopic_pregnancy",
+      "display_name": "Emergency surgical management",
+      "treatment_mode": "reshape_landscape",
+      "target_axes": [
+        "rupture_or_major_bleeding_hazard",
+        "hemorrhagic_shock_hazard",
+        "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY"
+      ],
+      "trajectory_modifications": {
+        "M_EP_RUPTURE_AND_HEMOPERITONEUM_ACTIVITY": {
+          "peak_value_multiplier": 0.25
+        },
+        "rupture_or_major_bleeding_hazard": {
+          "peak_value_multiplier": 0.25
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "emergency_surgery_context",
+          "direction": "increases_applicability",
+          "clinical_rationale": "Rupture, shock, or large hemoperitoneum pushes toward urgent surgery."
+        }
+      ],
+      "clinical_rationale": "Laparoscopy/laparotomy with salpingectomy, salpingostomy, cornual resection, hysterectomy, or tissue removal can stop bleeding and remove ectopic tissue."
+    },
+    {
+      "treatment_id": "methotrexate_for_ectopic_pregnancy",
+      "display_name": "Methotrexate therapy",
+      "treatment_mode": "reshape_landscape",
+      "target_axes": [
+        "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY",
+        "serum_beta_hcg",
+        "rupture_or_major_bleeding_hazard"
+      ],
+      "trajectory_modifications": {
+        "M_EP_TROPHOBLASTIC_GROWTH_AND_LOCAL_INVASION_ACTIVITY": {
+          "peak_value_multiplier": 0.45,
+          "decline_half_life_multiplier": 0.7
+        },
+        "serum_beta_hcg": {
+          "decline_half_life_multiplier": 0.6
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "methotrexate_suitability_context",
+          "direction": "increases_applicability",
+          "clinical_rationale": "Works best when stable, unruptured, and follow-up is feasible."
+        },
+        {
+          "axis_id": "ruptured_ectopic_pregnancy_presence",
+          "direction": "reduces_applicability",
+          "clinical_rationale": "Rupture and shock require hemostatic intervention."
+        }
+      ],
+      "clinical_rationale": "Antimetabolite treatment reduces viable trophoblastic tissue in selected stable ectopic pregnancy."
+    },
+    {
+      "treatment_id": "blood_product_resuscitation_for_ectopic_hemorrhage",
+      "display_name": "Blood product resuscitation",
+      "treatment_mode": "push_state",
+      "target_axes": [
+        "hemoglobin",
+        "systolic_blood_pressure",
+        "hemorrhagic_shock_hazard"
+      ],
+      "push_effects": {
+        "hemoglobin": {
+          "delta": 1.0,
+          "per_unit": true
+        },
+        "systolic_blood_pressure": {
+          "delta": 10.0
+        }
+      },
+      "clinical_rationale": "Transfusion and resuscitation stabilize hemorrhagic shock while definitive control is arranged."
+    },
+    {
+      "treatment_id": "uterine_artery_embolization_contextual",
+      "display_name": "Uterine artery embolization context",
+      "treatment_mode": "reshape_landscape",
+      "target_axes": [
+        "rupture_or_major_bleeding_hazard",
+        "emergency_surgery_context"
+      ],
+      "trajectory_modifications": {
+        "rupture_or_major_bleeding_hazard": {
+          "peak_value_multiplier": 0.65
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "cesarean_scar_ectopic_location_presence",
+          "direction": "increases_applicability",
+          "clinical_rationale": "May be used as part of treatment for cesarean scar ectopic pregnancy or hemorrhage control."
+        }
+      ],
+      "clinical_rationale": "Endovascular control can reduce bleeding in selected ectopic pregnancy contexts but does not replace tissue-resolution assessment."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "prior_pelvic_inflammatory_disease_context",
+      "display_name": "Prior pelvic inflammatory disease",
+      "modulation": [
+        {
+          "axis_response_modulation": {
+            "axis_id": "pregnancy_context_probability",
+            "direction": "none"
+          },
+          "clinical_rationale": "PID increases ectopic pregnancy risk through tubal damage but does not itself prove current pregnancy."
+        }
+      ]
+    },
+    {
+      "factor": "prior_ectopic_pregnancy_context",
+      "display_name": "Prior ectopic pregnancy",
+      "modulation": [
+        {
+          "axis_response_modulation": {
+            "axis_id": "extrauterine_gestational_sac_presence",
+            "direction": "increase"
+          },
+          "clinical_rationale": "Prior ectopic pregnancy raises recurrence risk."
+        }
+      ]
+    },
+    {
+      "factor": "prior_tubal_or_pelvic_surgery_context",
+      "display_name": "Prior tubal or pelvic surgery",
+      "modulation": [
+        {
+          "axis_response_modulation": {
+            "axis_id": "tubal_ectopic_location_presence",
+            "direction": "increase"
+          },
+          "clinical_rationale": "Tubal or pelvic surgery can increase implantation outside the uterine cavity."
+        }
+      ]
+    },
+    {
+      "factor": "prior_cesarean_delivery_context",
+      "display_name": "Prior cesarean delivery",
+      "modulation": [
+        {
+          "axis_response_modulation": {
+            "axis_id": "cesarean_scar_ectopic_location_presence",
+            "direction": "increase"
+          },
+          "clinical_rationale": "Cesarean scar ectopic pregnancy requires scar context."
+        }
+      ]
+    }
+  ],
+  "supportive_care": [
+    "Time-stamp pregnancy test, beta-hCG, ultrasound, pain, bleeding, hemodynamics, hemoglobin, free fluid, hemoperitoneum, and operative findings.",
+    "In unstable patients, resuscitation and obstetric/surgical control of bleeding are time-critical and should be represented as treatment events, not diagnostic labels.",
+    "Follow serial beta-hCG after methotrexate or conservative/fertility-preserving management to capture persistent trophoblastic activity."
+  ]
+}

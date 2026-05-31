@@ -1,0 +1,4926 @@
+{
+  "disease": "D-UTERINE-RUPTURE",
+  "disease_id": "D-UTERINE-RUPTURE",
+  "disease_name": "Uterine rupture",
+  "disease_name_ja": "子宮破裂",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Uterine rupture",
+    "leaf_granularity": "First-layer disease leaf for uterine rupture itself: full-thickness disruption of the uterine wall that can create communication from the uterine cavity into the peritoneal or broad-ligament space, with maternal hemorrhage and fetal compromise as major downstream hazards. Scar status, trial of labor, induction, labor dystocia, trauma, placenta accreta spectrum, gestational age, fetal status, and resource availability are represented as axes, risk/context modifiers, event hazards, treatment modifiers, or future subtype layers rather than disease-name qualifiers.",
+    "case_source_policy": "Distilled without reading real case reports or disease-specific case JSONs for this leaf. Independent case sourcing and audit must remain separate before activation.",
+    "boundary_policy": "This leaf is distinct from placental abruption, placenta previa, ectopic pregnancy rupture, postpartum hemorrhage from uterine atony, retained placenta, genital tract laceration, uterine inversion, uterine perforation outside pregnancy, and incomplete uterine dehiscence without full-thickness rupture. When those conditions coexist, use vector-field superposition or context axes without double-counting the same bleeding, shock, fetal, or operative-source-control axes."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_UR_MYOMETRIAL_SCAR_OR_WALL_WEAKNESS",
+      "display_name": "Myometrial scar or wall weakness",
+      "display_name_ja": "子宮筋層瘢痕・壁脆弱性",
+      "clinical_meaning": "Prior cesarean incision, myomectomy, uterine surgery, congenital uterine abnormality, connective-tissue fragility, overdistension, or invasive placentation lowers the rupture threshold.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "display_name": "Labor stress and obstructed pressure load",
+      "display_name_ja": "陣痛負荷・分娩停止圧負荷",
+      "clinical_meaning": "Strong uterine contractions, induction or augmentation, obstructed labor, malpresentation, or excessive uterotonic exposure raises wall tension and shear across a vulnerable uterine segment.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "display_name": "Full-thickness myometrial disruption",
+      "display_name_ja": "子宮全層破綻",
+      "clinical_meaning": "The uterine wall tears through endometrium, myometrium, and serosa, allowing bleeding and possible fetal, placental, amniotic, or cord displacement outside the normal uterine cavity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "display_name": "Intraperitoneal or broad-ligament hemorrhage",
+      "display_name_ja": "腹腔内・広間膜内出血",
+      "clinical_meaning": "The rupture opens maternal uterine and placental-bed vessels, producing concealed intraabdominal bleeding, hemoperitoneum, falling hemoglobin, hypovolemia, shock, and coagulopathy.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "display_name": "Fetoplacental displacement and acute hypoxia",
+      "display_name_ja": "胎児胎盤偏位・急性低酸素",
+      "clinical_meaning": "Placental separation, cord compromise, fetal extrusion, or maternal hypoperfusion abruptly reduces fetal oxygen delivery, producing bradycardia, nonreassuring fetal heart tracing, fetal acidemia, neurologic injury, or fetal demise.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_CONTRACTION_PATTERN_COLLAPSE_AND_STATION_LOSS",
+      "display_name": "Contraction collapse and station loss",
+      "display_name_ja": "陣痛パターン破綻・児頭下降消失",
+      "clinical_meaning": "After rupture, uterine force may weaken or stop and the presenting part may recede if fetal parts move out of the uterine cavity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_UR_ADJACENT_ORGAN_INJURY",
+      "display_name": "Adjacent organ injury",
+      "display_name_ja": "隣接臓器損傷",
+      "clinical_meaning": "Lateral, lower-segment, cervical, broad-ligament, or scar-extension tears can involve bladder, ureter, uterine vessels, cervix, vagina, or broad ligament.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL",
+      "display_name": "Delayed surgical source control",
+      "display_name_ja": "外科的止血遅延",
+      "clinical_meaning": "Delay to laparotomy, delivery, uterine repair, hysterectomy, transfusion, anesthesia, or neonatal support prolongs maternal bleeding and fetal hypoxic exposure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_UR_MYOMETRIAL_SCAR_OR_WALL_WEAKNESS",
+      "target_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        280.0
+      ],
+      "clinical_rationale": "A scarred or structurally weak uterine wall has a lower threshold for full-thickness rupture under pregnancy or labor stress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Contractions, obstructed labor, or uterotonics increase wall tension and can convert vulnerability into rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "The tear opens maternal vascular beds and can bleed into the peritoneum or broad ligament.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Rupture can separate placenta, compromise cord flow, or displace fetal parts, causing abrupt fetal hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "M_UR_CONTRACTION_PATTERN_COLLAPSE_AND_STATION_LOSS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "The uterine wall no longer transmits contraction force normally after rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "M_UR_ADJACENT_ORGAN_INJURY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "The rupture line may extend into bladder, ureter, broad ligament, cervix, vagina, or uterine vessels.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL",
+      "target_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Delay allows continued bleeding before definitive repair or hysterectomy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL",
+      "target_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Fetal oxygen debt accumulates rapidly when delivery and source control are delayed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_MYOMETRIAL_SCAR_OR_WALL_WEAKNESS",
+      "target_id": "prior_uterine_scar_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -280.0,
+        0.0
+      ],
+      "clinical_rationale": "Prior uterine scar is the most common observable vulnerability context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "active_labor_or_contraction_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Most rupture presentations occur in an active labor or strong contraction context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "obstructed_labor_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Obstruction or dystocia creates sustained pressure against a closed outlet.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "uterine_rupture_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Full-thickness uterine disruption is the defining observable/operative context for this leaf.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "full_thickness_uterine_wall_disruption_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "The rupture crosses all uterine wall layers rather than remaining an occult dehiscence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "uterine_scar_defect_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Many ruptures are identified at a prior cesarean or uterine surgery scar.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "fetal_parts_outside_uterus_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Severe rupture can allow fetal parts to enter the peritoneal cavity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "abdominal_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Rupture can produce sudden severe abdominal pain, although analgesia may blunt it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Bleeding may be visible vaginally, especially when the tear communicates with the cervix or vagina.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "hemoperitoneum_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Concealed bleeding can accumulate as intraperitoneal blood.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Major maternal blood loss lowers hemoglobin after equilibration or serial measurement.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Hypovolemia produces compensatory tachycardia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "systolic_blood_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Severe hemorrhage lowers arterial pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "hemorrhagic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "clinical_rationale": "Large concealed or visible hemorrhage raises immediate shock risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "dic_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Massive hemorrhage, tissue factor exposure, shock, and delayed balanced transfusion can amplify coagulopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "target_id": "fetal_distress_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Acute reduction in fetal oxygen delivery is commonly observed as fetal distress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "target_id": "fetal_bradycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Fetal bradycardia is a typical manifestation of acute hypoxia in rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "target_id": "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Longer fetal hypoxia increases neurologic injury hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "target_id": "fetal_demise_hazard_in_D-UTERINE-RUPTURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Severe or prolonged oxygen delivery failure can lead to fetal death.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_CONTRACTION_PATTERN_COLLAPSE_AND_STATION_LOSS",
+      "target_id": "uterine_contraction_pattern_change_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Rupture can abruptly alter contraction amplitude, frequency, or resting tone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_CONTRACTION_PATTERN_COLLAPSE_AND_STATION_LOSS",
+      "target_id": "loss_of_fetal_station_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "The presenting part can recede when fetal parts move through the rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_ADJACENT_ORGAN_INJURY",
+      "target_id": "hematuria_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Bladder or urinary tract injury can produce hematuria.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_ADJACENT_ORGAN_INJURY",
+      "target_id": "bladder_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Lower-segment or lateral rupture can injure the bladder.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL",
+      "target_id": "time_to_laparotomy_hours",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Delay is observed as a longer interval to laparotomy/source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Uncontrolled maternal hemorrhage and shock raise maternal death hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL",
+      "target_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Delayed delivery, repair, transfusion, or hysterectomy worsens maternal survival.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "ultrasound_uterine_wall_defect_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? ultrasound_uterine_wall_defect_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "extrauterine_amniotic_sac_prolapse_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? extrauterine_amniotic_sac_prolapse_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "empty_uterus_after_intrapartum_event_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? empty_uterus_after_intrapartum_event_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "uterine_contour_loss_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? uterine_contour_loss_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "uterine_tear_length_cm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? uterine_tear_length_cm ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "broad_ligament_extension_of_uterine_tear_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? broad_ligament_extension_of_uterine_tear_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "broad_ligament_hematoma_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? broad_ligament_hematoma_presence ??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "labor_induction_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???? context ? labor_induction_context_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "oxytocin_augmentation_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???? context ? oxytocin_augmentation_context_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+      "target_id": "prostaglandin_cervical_ripening_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???? context ? prostaglandin_cervical_ripening_context_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "postpartum_hemorrhage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? postpartum_hemorrhage_presence ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "estimated_blood_loss_ml",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? estimated_blood_loss_ml ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "syncope_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? syncope_presence ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? tachycardia_presence ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "diastolic_blood_pressure",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? diastolic_blood_pressure ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "peritoneal_signs_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "???/??????? peritoneal_signs_presence ???????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+      "target_id": "fetal_tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA drives fetal_tachycardia_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+      "target_id": "ultrasound_contained_lower_uterine_segment_fluid_or_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION drives ultrasound_contained_lower_uterine_segment_fluid_or_edema_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+      "target_id": "right_upper_quadrant_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE drives right_upper_quadrant_pain_presence.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_context_probability",
+      "display_name_ja": "妊娠コンテキスト",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Pregnancy context gates obstetric rupture, fetal, delivery, and postpartum axes.",
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "display_name_ja": "妊娠週数",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "weeks",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        42.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        12.0,
+        42.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Gestational age modifies fetal viability, delivery consequences, and neonatal hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_viability_context_probability",
+      "display_name_ja": "胎児生存可能性コンテキスト",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -180.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Fetal viability context changes monitoring, delivery, and neonatal outcome interpretation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prior_uterine_scar_context_presence",
+      "display_name_ja": "子宮瘢痕既往",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.4
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        365.0
+      ],
+      "clinical_interpretation": "Prior cesarean, myomectomy, perforation, or uterine surgery context that lowers rupture threshold.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cesarean_delivery_presence",
+      "display_name_ja": "帝王切開既往",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "prior_uterine_scar_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.35
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        365.0
+      ],
+      "clinical_interpretation": "Prior cesarean scar context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "number_of_prior_cesarean_deliveries",
+      "display_name_ja": "帝王切開回数",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "cesarean_delivery_presence",
+      "unit": "count",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        5.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        6.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        365.0
+      ],
+      "clinical_interpretation": "Scar burden increases with prior cesarean count.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "trial_of_labor_after_cesarean_context_presence",
+      "display_name_ja": "帝王切開後経腟分娩試行",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "prior_uterine_scar_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Labor trial in a scarred uterus raises rupture prior and changes monitoring urgency.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_labor_or_contraction_context_presence",
+      "display_name_ja": "陣痛・分娩進行コンテキスト",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "clinical_interpretation": "Active labor, contractions, induction, or augmentation context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_contractions_presence",
+      "display_name_ja": "子宮収縮",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        0.45
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "clinical_interpretation": "Contractions can be present in labor with or without rupture; isolated contractions should not be strong rupture geometry without pain, fetal distress, bleeding, scar, or shock axes.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_contraction_pattern_change_presence",
+      "display_name_ja": "陣痛パターン変化",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_contractions_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Sudden decrease, cessation, or abnormality in contraction pattern after rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_contractions_ceased_presence",
+      "display_name_ja": "陣痛消失",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_contraction_pattern_change_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Contractions stop or lose effective amplitude after rupture.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "obstructed_labor_context_presence",
+      "display_name_ja": "分娩停止・閉塞性分娩",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Failure of labor progress, obstruction, or disproportion that increases uterine stress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterotonic_induction_augmentation_context_presence",
+      "display_name_ja": "子宮収縮薬誘発・促進",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        -2.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "clinical_interpretation": "Oxytocin, prostaglandin, or other uterotonic exposure that increases wall stress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_rupture_context_presence",
+      "display_name_ja": "子宮破裂所見",
+      "category": "source_control",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Clinical, imaging, or operative evidence of uterine rupture; reused for cross-leaf source-control compatibility.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "full_thickness_uterine_wall_disruption_presence",
+      "display_name_ja": "子宮全層破綻",
+      "category": "source_control",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Full-thickness tear through the uterine wall, separating rupture from occult dehiscence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_dehiscence_presence",
+      "display_name_ja": "子宮瘢痕離開",
+      "category": "source_control",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -7.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Incomplete uterine wall separation or window; context/near-mimic rather than full rupture when isolated.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_scar_defect_presence",
+      "display_name_ja": "子宮瘢痕部欠損",
+      "category": "source_control",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Defect at a prior cesarean or uterine surgery scar.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_parts_outside_uterus_presence",
+      "display_name_ja": "胎児部分の子宮外脱出",
+      "category": "imaging_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Fetal parts, placenta, membranes, or cord outside the expected uterine cavity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "loss_of_fetal_station_presence",
+      "display_name_ja": "児頭下降消失",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Recession of the presenting fetal part after previous descent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "display_name_ja": "腹痛",
+      "category": "symptom",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.25
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Abdominal pain can be sudden and severe but may be masked by neuraxial analgesia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "abdominal_pain_severity",
+      "display_name_ja": "腹痛強度",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Pain intensity if abdominal pain is present.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sudden_onset_abdominal_pain_presence",
+      "display_name_ja": "突然発症腹痛",
+      "category": "clinical_course_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "abdominal_pain_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Abrupt pain onset, often described as tearing or ripping.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_tenderness_presence",
+      "display_name_ja": "子宮圧痛",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Tender abdomen or uterus after rupture; not required for diagnosis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "display_name_ja": "性器出血",
+      "category": "symptom",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Visible vaginal bleeding may be absent or modest despite major concealed bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_bleeding_severity",
+      "display_name_ja": "性器出血量",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Visible vaginal bleeding severity when present; concealed bleeding can make this low despite danger.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoperitoneum_presence",
+      "display_name_ja": "腹腔内出血",
+      "category": "imaging_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Free intraperitoneal blood from rupture or associated bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemoperitoneum_volume_ml",
+      "display_name_ja": "腹腔内出血量",
+      "category": "imaging_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "hemoperitoneum_presence",
+      "unit": "mL",
+      "log_scale": true,
+      "baseline_range": [
+        1.0,
+        20.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        50.0,
+        4000.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Estimated intraabdominal blood volume when hemoperitoneum is present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hematuria_presence",
+      "display_name_ja": "血尿",
+      "category": "lab_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Hematuria can signal bladder or urinary tract injury in lower-segment rupture.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "display_name_ja": "ヘモグロビン",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "g/dL",
+      "log_scale": false,
+      "baseline_range": [
+        10.5,
+        14.5
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        3.0,
+        12.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        21.0
+      ],
+      "clinical_interpretation": "Maternal hemoglobin falls with hemorrhage; may lag early blood loss.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_hemoglobin_drop_presence",
+      "display_name_ja": "急性Hb低下",
+      "category": "lab_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemoglobin",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        21.0
+      ],
+      "clinical_interpretation": "Serial hemoglobin drop indicating acute blood loss.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "platelet_count",
+      "display_name_ja": "血小板数",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "baseline_range": [
+        150.0,
+        400.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        30.0,
+        250.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "Platelets may fall with massive hemorrhage, DIC, dilution, or transfusion physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "display_name_ja": "フィブリノゲン",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "baseline_range": [
+        300.0,
+        650.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        50.0,
+        500.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "Low fibrinogen marks severe obstetric hemorrhage or DIC physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "display_name_ja": "PT-INR",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "INR",
+      "log_scale": false,
+      "baseline_range": [
+        0.9,
+        1.2
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.9,
+        3.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "Coagulation derangement with massive hemorrhage or DIC.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "heart_rate",
+      "display_name_ja": "心拍数",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        60.0,
+        110.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        90.0,
+        180.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Tachycardia reflects hemorrhage, pain, anxiety, or shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "display_name_ja": "収縮期血圧",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        90.0,
+        140.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        40.0,
+        120.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Hypotension indicates major blood loss or decompensated shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "display_name_ja": "平均動脈圧",
+      "category": "vital",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        65.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        35.0,
+        85.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Low MAP reflects hypovolemia and poor perfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_index",
+      "display_name_ja": "ショック指数",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "ratio",
+      "log_scale": false,
+      "baseline_range": [
+        0.4,
+        0.9
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.8,
+        2.5
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Heart rate divided by systolic blood pressure; rises with hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "display_name_ja": "乳酸",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        1.0,
+        12.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Lactate rises with hypoperfusion and oxygen-delivery failure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_output",
+      "display_name_ja": "尿量",
+      "category": "lab_value",
+      "axis_role": "measurement",
+      "unit": "mL/kg/hr",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Oliguria reflects shock or urinary tract injury context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_presence",
+      "display_name_ja": "出血性ショック",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Observed maternal hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "maternal_shock_presence",
+      "display_name_ja": "母体ショック",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemorrhagic_shock_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Maternal shock due to hemorrhage, pain, or collapse physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_hazard",
+      "display_name_ja": "出血性ショックリスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.05,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "Instantaneous hazard of maternal hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "display_name_ja": "大量出血リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.05,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of major obstetric bleeding from the rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dic_hazard",
+      "display_name_ja": "DICリスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        3.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of consumptive or dilutional coagulopathy during massive hemorrhage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "display_name_ja": "急性腎障害リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        2.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "clinical_interpretation": "Shock-associated renal injury hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bladder_injury_hazard",
+      "display_name_ja": "膀胱損傷リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        2.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Hazard of bladder injury due to rupture extension or operative repair context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_heart_activity_presence",
+      "display_name_ja": "胎児心拍あり",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -180.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Presence of fetal cardiac activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_distress_presence",
+      "display_name_ja": "胎児機能不全",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Fetal compromise due to hypoxia, bradycardia, late decelerations, or reduced variability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "display_name_ja": "胎児心拍数波形異常",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_heart_activity_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Nonreassuring tracing caused by acute fetal hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_bradycardia_presence",
+      "display_name_ja": "胎児徐脈",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Fetal bradycardia is a common signal of uterine rupture.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "late_deceleration_presence",
+      "display_name_ja": "遅発一過性徐脈",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Late decelerations can reflect uteroplacental hypoperfusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_heart_rate_variability_decreased_presence",
+      "display_name_ja": "胎児心拍基線細変動低下",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Reduced variability can occur with fetal hypoxia or acidemia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_heart_rate_bpm",
+      "display_name_ja": "胎児心拍数",
+      "category": "obstetric_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "fetal_heart_activity_presence",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        110.0,
+        160.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        40.0,
+        200.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Measured fetal heart rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_demise_presence",
+      "display_name_ja": "胎児死亡",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "clinical_interpretation": "Fetal death after severe hypoxia or extrusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE",
+      "display_name_ja": "胎児低酸素性障害リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.1,
+        8.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of fetal neurologic injury or severe acidemia from rupture-associated hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_demise_hazard_in_D-UTERINE-RUPTURE",
+      "display_name_ja": "胎児死亡リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.05,
+        8.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        14.0
+      ],
+      "clinical_interpretation": "Hazard of fetal death from acute hypoxia, extrusion, or persistent maternal shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_product_availability",
+      "display_name_ja": "輸血製剤利用可能性",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Availability of red cells, plasma, platelets, fibrinogen/cryoprecipitate, and rapid transfusion workflow.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "emergency_laparotomy_feasibility",
+      "display_name_ja": "緊急開腹可能性",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Ability to perform immediate laparotomy, delivery, and hemorrhage source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_repair_feasibility",
+      "display_name_ja": "子宮修復可能性",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Surgical feasibility of uterine repair after delivery and hemostasis assessment.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hysterectomy_need_probability",
+      "display_name_ja": "子宮摘出必要性",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        60.0
+      ],
+      "clinical_interpretation": "Need for hysterectomy when repair is unsafe, bleeding uncontrolled, or tissue destruction is extensive.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "time_to_laparotomy_hours",
+      "display_name_ja": "開腹までの時間",
+      "category": "clinical_course_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "uterine_rupture_context_presence",
+      "unit": "hours",
+      "log_scale": true,
+      "baseline_range": [
+        0.01,
+        24.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.01,
+        24.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Delay from suspicion or deterioration to laparotomy/source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "source_control_adequacy",
+      "display_name_ja": "止血・修復の十分性",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Adequacy of surgical hemostasis, delivery, repair or hysterectomy, and bleeding control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "emergency_hysterectomy_hazard",
+      "display_name_ja": "緊急子宮摘出リスク",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        4.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Hazard of requiring hysterectomy for uncontrolled rupture bleeding or irreparable uterine injury.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "display_name_ja": "子宮破裂の母体死亡ハザード",
+      "category": "derived_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0005
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        3.0
+      ],
+      "plateau_duration_days": [
+        0.01,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Lifespan outcome hazard for maternal death due to uterine rupture, driven by hemorrhage, shock, coagulopathy, organ injury, and source-control delay.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "ultrasound_uterine_wall_defect_presence",
+      "category": "imaging",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "extrauterine_amniotic_sac_prolapse_presence",
+      "category": "imaging",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "extrauterine_cystic_amniotic_cavity_diameter_cm",
+      "category": "imaging",
+      "axis_role": "measurement",
+      "unit": "cm",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        1.0,
+        20.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "extrauterine_amniotic_sac_prolapse_presence"
+    },
+    {
+      "axis_id": "empty_uterus_after_intrapartum_event_presence",
+      "category": "imaging",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "uterine_contour_loss_presence",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "uterine_tear_length_cm",
+      "category": "operative_finding",
+      "axis_role": "measurement",
+      "unit": "cm",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        1.0,
+        20.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "broad_ligament_extension_of_uterine_tear_presence",
+      "category": "operative_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "broad_ligament_hematoma_presence",
+      "category": "imaging",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "broad_ligament_extension_of_uterine_tear_presence"
+    },
+    {
+      "axis_id": "labor_induction_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "active_labor_or_contraction_context_presence"
+    },
+    {
+      "axis_id": "oxytocin_augmentation_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "labor_induction_context_presence"
+    },
+    {
+      "axis_id": "prostaglandin_cervical_ripening_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "labor_induction_context_presence"
+    },
+    {
+      "axis_id": "recent_obstetric_delivery_or_procedure_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "postpartum_day_since_delivery",
+      "category": "obstetric_context",
+      "axis_role": "measurement",
+      "unit": "days",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        14.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "recent_obstetric_delivery_or_procedure_presence"
+    },
+    {
+      "axis_id": "postpartum_hemorrhage_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "recent_obstetric_delivery_or_procedure_presence"
+    },
+    {
+      "axis_id": "estimated_blood_loss_ml",
+      "category": "measurement",
+      "axis_role": "measurement",
+      "unit": "mL",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        500.0,
+        5000.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "major_bleeding_hazard"
+    },
+    {
+      "axis_id": "peritoneal_signs_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "hemoperitoneum_presence"
+    },
+    {
+      "axis_id": "syncope_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "hemorrhagic_shock_presence"
+    },
+    {
+      "axis_id": "tachycardia_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        60.0,
+        85.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        20.0,
+        95.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "palpable_abdominal_mass_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????????/?????????????",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "fetal_tachycardia_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "fetal_heart_activity_presence"
+    },
+    {
+      "axis_id": "right_upper_quadrant_pain_presence",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "abdominal_pain_presence"
+    },
+    {
+      "axis_id": "ultrasound_contained_lower_uterine_segment_fluid_or_edema_presence",
+      "category": "imaging",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????/?????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "full_thickness_uterine_wall_disruption_presence"
+    },
+    {
+      "axis_id": "operative_vaginal_delivery_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??/??????????? context?",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "recent_obstetric_delivery_or_procedure_presence"
+    },
+    {
+      "axis_id": "placenta_delivered_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????? context?",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "recent_obstetric_delivery_or_procedure_presence"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "active_labor_or_contraction_context_presence",
+      "target_axis_id": "uterine_rupture_context_presence",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "labor_or_induction",
+      "clinical_rationale": "Labor stress makes rupture more likely in a vulnerable uterus.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "uterotonic_induction_augmentation_context_presence",
+      "target_axis_id": "uterine_contraction_pattern_change_presence",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.2,
+        0.7
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "labor_or_induction",
+      "clinical_rationale": "Excessive uterine stimulation can precede rupture and abnormal contraction patterns.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "uterine_rupture_context_presence",
+      "target_axis_id": "hemoperitoneum_presence",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "acute_rupture",
+      "clinical_rationale": "Full-thickness rupture can bleed into the peritoneal cavity or broad ligament.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "hemoperitoneum_volume_ml",
+      "target_axis_id": "hemoglobin",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "acute_hemorrhage",
+      "clinical_rationale": "Greater intraperitoneal blood loss generally lowers maternal hemoglobin.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "hemoperitoneum_volume_ml",
+      "target_axis_id": "hemorrhagic_shock_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "acute_hemorrhage",
+      "clinical_rationale": "Larger concealed blood loss raises shock hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "hemorrhagic_shock_hazard",
+      "target_axis_id": "acute_kidney_injury_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.1,
+        2.0
+      ],
+      "phase": "shock_course",
+      "clinical_rationale": "Persistent hypoperfusion increases AKI hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "hemorrhagic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.95
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "acute_hemorrhage",
+      "clinical_rationale": "Maternal shock is a direct driver of death hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "dic_hazard",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "massive_hemorrhage",
+      "clinical_rationale": "Coagulopathy amplifies ongoing bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "fetal_bradycardia_presence",
+      "target_axis_id": "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "acute_fetal_hypoxia",
+      "clinical_rationale": "Persistent fetal bradycardia reflects severe hypoxic exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "time_to_laparotomy_hours",
+      "target_axis_id": "fetal_demise_hazard_in_D-UTERINE-RUPTURE",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "source_control_delay",
+      "clinical_rationale": "Longer delay to delivery/source control prolongs fetal hypoxia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "time_to_laparotomy_hours",
+      "target_axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "source_control_delay",
+      "clinical_rationale": "Delayed operative control prolongs maternal bleeding and shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_adequacy",
+      "target_axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+      "relationship": "negative_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.9,
+        -0.4
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "postoperative_source_control",
+      "clinical_rationale": "Adequate delivery, repair or hysterectomy, and hemostasis reduce maternal death hazard.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "immediate_laparotomy_with_delivery_for_uterine_rupture",
+      "treatment_name": "緊急開腹・児娩出（Immediate laparotomy with delivery）",
+      "mode": "reshape_landscape",
+      "treatment_lane": "definitive_source_control",
+      "mechanistic_targets": [
+        "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE",
+        "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA",
+        "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL"
+      ],
+      "required_context_axes": [
+        "uterine_rupture_context_presence",
+        "fetal_viability_context_probability",
+        "emergency_laparotomy_feasibility",
+        "blood_product_availability",
+        "hemorrhagic_shock_hazard"
+      ],
+      "trajectory_modifications": {
+        "M_UR_DELAYED_SURGICAL_SOURCE_CONTROL": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.02,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.01,
+            1.0
+          ]
+        },
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.01,
+            2.0
+          ]
+        },
+        "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.01,
+            2.0
+          ]
+        },
+        "mortality_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            7.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.5,
+            1.0
+          ],
+          "unit": "probability_0_1"
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "emergency_laparotomy_feasibility",
+          "condition": "low",
+          "effect": "weakens_or_delays",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Definitive rupture control requires immediate operating-room, anesthesia, obstetric, and surgical capacity."
+        },
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens_safety_margin",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Surgery during active hemorrhage is more dangerous without transfusion support."
+        }
+      ],
+      "failure_modes": [
+        "delayed_operating_room_access",
+        "uncontrolled_pelvic_bleeding",
+        "unrecognized_adjacent_organ_injury",
+        "severe_fetal_hypoxia_before_delivery"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "balanced_massive_transfusion_and_hemostatic_resuscitation",
+      "treatment_name": "大量輸血・止血蘇生（Balanced transfusion and hemostatic resuscitation）",
+      "mode": "push_state",
+      "treatment_lane": "maternal_resuscitation",
+      "mechanistic_targets": [
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE"
+      ],
+      "required_context_axes": [
+        "hemorrhagic_shock_hazard",
+        "hemoglobin",
+        "serum_fibrinogen",
+        "platelet_count",
+        "blood_product_availability"
+      ],
+      "trajectory_modifications": {
+        "hemorrhagic_shock_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.01,
+            2.0
+          ]
+        },
+        "dic_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            10.0,
+            40.0
+          ],
+          "unit": "mmHg"
+        },
+        {
+          "axis_id": "hemoglobin",
+          "direction": "up",
+          "magnitude_range": [
+            1.0,
+            5.0
+          ],
+          "unit": "g/dL"
+        },
+        {
+          "axis_id": "serum_fibrinogen",
+          "direction": "up",
+          "magnitude_range": [
+            50.0,
+            300.0
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Balanced resuscitation depends on timely blood products and hemostatic components."
+        },
+        {
+          "axis_id": "source_control_adequacy",
+          "condition": "low",
+          "effect": "temporizing_only",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Transfusion cannot stop ongoing uterine bleeding without source control."
+        }
+      ],
+      "failure_modes": [
+        "ongoing_uncontrolled_bleeding",
+        "delayed_fibrinogen_or_plasma",
+        "hypocalcemia_hypothermia_acidosis",
+        "transfusion_reaction_or_volume_overload"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "stop_uterotonics_and_reduce_labor_stress_when_rupture_suspected",
+      "treatment_name": "子宮収縮薬中止・陣痛負荷低減（Stop uterotonics and reduce labor stress）",
+      "mode": "modulate_sigma",
+      "treatment_lane": "rupture_progression_control",
+      "mechanistic_targets": [
+        "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+        "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION"
+      ],
+      "required_context_axes": [
+        "uterotonic_induction_augmentation_context_presence",
+        "active_labor_or_contraction_context_presence",
+        "uterine_rupture_context_presence",
+        "fetal_distress_presence"
+      ],
+      "trajectory_modifications": {
+        "M_UR_LABOR_STRESS_AND_OBSTRUCTION": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.01,
+            0.5
+          ]
+        },
+        "uterine_contraction_pattern_change_presence": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.01,
+            1.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "uterine_rupture_context_presence",
+          "condition": "present",
+          "effect": "bridge_only_not_definitive",
+          "factor_range": [
+            0.1,
+            0.5
+          ],
+          "clinical_rationale": "Stopping contractions may reduce further stress but does not repair a rupture or stop active bleeding."
+        }
+      ],
+      "failure_modes": [
+        "mistaken_as_definitive_treatment",
+        "delay_to_laparotomy",
+        "persistent_bleeding_despite_reduced_contractions"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "uterine_repair_after_delivery_and_hemostasis",
+      "treatment_name": "子宮修復術（Uterine repair after delivery and hemostasis）",
+      "mode": "reshape_landscape",
+      "treatment_lane": "uterine_source_control",
+      "mechanistic_targets": [
+        "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE"
+      ],
+      "required_context_axes": [
+        "uterine_repair_feasibility",
+        "source_control_adequacy",
+        "hemorrhagic_shock_hazard",
+        "hysterectomy_need_probability"
+      ],
+      "trajectory_modifications": {
+        "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION": {
+          "peak_value_factor": [
+            0.05,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE": {
+          "peak_value_factor": [
+            0.05,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "emergency_hysterectomy_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            14.0
+          ]
+        },
+        "mortality_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.15,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            14.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.4,
+            1.0
+          ],
+          "unit": "probability_0_1"
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "uterine_repair_feasibility",
+          "condition": "low",
+          "effect": "weakens_or_blocks",
+          "factor_range": [
+            0.0,
+            0.4
+          ],
+          "clinical_rationale": "Extensive tissue destruction, lateral vascular injury, or uncontrolled bleeding can make repair unsafe."
+        },
+        {
+          "axis_id": "hysterectomy_need_probability",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "When hysterectomy is needed for survival, repair alone is inadequate."
+        }
+      ],
+      "failure_modes": [
+        "recurrent_bleeding_from_repair_site",
+        "missed_lateral_vessel_or_broad_ligament_bleed",
+        "future_pregnancy_recurrent_rupture_risk",
+        "unrecognized_bladder_or_ureter_injury"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "hysterectomy_for_uncontrolled_or_irreparable_uterine_rupture",
+      "treatment_name": "救命的子宮摘出（Hysterectomy for uncontrolled or irreparable rupture）",
+      "mode": "reshape_landscape",
+      "treatment_lane": "uterine_source_control",
+      "mechanistic_targets": [
+        "M_UR_FULL_THICKNESS_MYOMETRIAL_DISRUPTION",
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE"
+      ],
+      "required_context_axes": [
+        "hysterectomy_need_probability",
+        "uterine_repair_feasibility",
+        "hemorrhagic_shock_hazard",
+        "blood_product_availability",
+        "source_control_adequacy"
+      ],
+      "trajectory_modifications": {
+        "M_UR_INTRAPERITONEAL_OR_BROAD_LIGAMENT_HEMORRHAGE": {
+          "peak_value_factor": [
+            0.02,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.02,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        },
+        "emergency_hysterectomy_hazard": {
+          "peak_value_factor": [
+            0.0,
+            0.2
+          ],
+          "decline_half_life_days": [
+            0.1,
+            30.0
+          ]
+        },
+        "mortality_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            14.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.5,
+            1.0
+          ],
+          "unit": "probability_0_1"
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "future_fertility_loss_presence",
+          "direction": "up",
+          "magnitude_range": [
+            1.0,
+            1.0
+          ],
+          "interpretation": "Hysterectomy permanently removes future uterine fertility."
+        },
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.5
+          ],
+          "interpretation": "Major surgery during hemorrhage can transiently increase operative bleeding risk."
+        }
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "hysterectomy_need_probability",
+          "condition": "high",
+          "effect": "strengthens_source_control_value",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Extensive rupture or uncontrolled bleeding increases the survival value of definitive uterine removal."
+        },
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens_safety_margin",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Hysterectomy during active obstetric bleeding requires transfusion support."
+        }
+      ],
+      "failure_modes": [
+        "delayed_decision_after_failed_repair",
+        "massive_pelvic_bleeding",
+        "adjacent_organ_injury",
+        "limited_surgical_or_blood_bank_resources"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "bladder_or_urinary_tract_injury_repair_when_present",
+      "treatment_name": "膀胱・尿路損傷修復（Urinary tract repair when present）",
+      "mode": "reshape_landscape",
+      "treatment_lane": "adjacent_organ_source_control",
+      "mechanistic_targets": [
+        "M_UR_ADJACENT_ORGAN_INJURY"
+      ],
+      "required_context_axes": [
+        "hematuria_presence",
+        "bladder_injury_hazard",
+        "source_control_adequacy",
+        "emergency_laparotomy_feasibility"
+      ],
+      "trajectory_modifications": {
+        "M_UR_ADJACENT_ORGAN_INJURY": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "bladder_injury_hazard": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            30.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "hematuria_presence",
+          "condition": "present",
+          "effect": "strengthens_diagnostic_attention",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Hematuria suggests urinary tract injury requiring evaluation and repair."
+        }
+      ],
+      "failure_modes": [
+        "missed_ureteral_injury",
+        "fistula_or_leak",
+        "infection",
+        "delayed_recognition_postoperatively"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "neonatal_resuscitation_after_rupture_delivery",
+      "treatment_name": "新生児蘇生（Neonatal resuscitation after rupture delivery）",
+      "mode": "push_state",
+      "treatment_lane": "fetal_neonatal_rescue",
+      "mechanistic_targets": [
+        "M_UR_FETOPLACENTAL_DISPLACEMENT_AND_HYPOXIA"
+      ],
+      "required_context_axes": [
+        "fetal_distress_presence",
+        "fetal_heart_activity_presence",
+        "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE",
+        "fetal_demise_hazard_in_D-UTERINE-RUPTURE"
+      ],
+      "trajectory_modifications": {
+        "fetal_hypoxic_injury_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.01,
+            7.0
+          ]
+        },
+        "fetal_demise_hazard_in_D-UTERINE-RUPTURE": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.01,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "time_to_laparotomy_hours",
+          "condition": "high",
+          "effect": "weakens_fetal_rescue_value",
+          "factor_range": [
+            0.1,
+            0.8
+          ],
+          "clinical_rationale": "Long fetal hypoxic exposure before delivery reduces reversibility."
+        },
+        {
+          "axis_id": "fetal_heart_activity_presence",
+          "condition": "absent",
+          "effect": "little_or_no_effect_on_fetal_survival",
+          "factor_range": [
+            0.0,
+            0.1
+          ],
+          "clinical_rationale": "Absent fetal cardiac activity before delivery indicates extreme fetal hazard."
+        }
+      ],
+      "failure_modes": [
+        "prolonged_pre_delivery_hypoxia",
+        "extreme_prematurity",
+        "limited_neonatal_team_or_equipment",
+        "severe_acidemia_or_encephalopathy"
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "prior_cesarean_delivery_or_uterine_scar",
+      "display_name": "Prior cesarean delivery or uterine scar",
+      "display_name_ja": "帝王切開・子宮瘢痕既往",
+      "risk_type": "prior_and_wall_vulnerability_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            40.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "prior_uterine_scar_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                3.0,
+                20.0
+              ],
+              "clinical_rationale": "Most obstetric ruptures occur in scarred uteri."
+            },
+            {
+              "axis_id": "uterine_scar_defect_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Scar rupture presents as a defect at the uterine scar."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "immediate_laparotomy_with_delivery_for_uterine_rupture": "operative suspicion and source-control value increase when rupture occurs in a scarred uterus"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "classical_vertical_incision_multiple_cesareans_or_myomectomy_context",
+      "display_name": "Classical vertical incision, multiple cesareans, or myomectomy context",
+      "display_name_ja": "古典的帝王切開・複数回帝王切開・筋腫核出後",
+      "risk_type": "high_risk_scar_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            20.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "number_of_prior_cesarean_deliveries",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                6.0
+              ],
+              "clinical_rationale": "Scar burden and incision type modify rupture risk."
+            },
+            {
+              "axis_id": "hysterectomy_need_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Complex scars or upper-segment ruptures may be harder to repair."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "trial_of_labor_after_cesarean_context",
+      "display_name": "Trial of labor after cesarean context",
+      "display_name_ja": "帝王切開後経腟分娩試行",
+      "risk_type": "labor_on_scar_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            3.0,
+            25.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "trial_of_labor_after_cesarean_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "This axis records the trial-of-labor context."
+            },
+            {
+              "axis_id": "fetal_bradycardia_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.1,
+                3.0
+              ],
+              "clinical_rationale": "Intrapartum rupture is often detected through fetal heart rate deterioration."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "labor_induction_or_augmentation_uterotonic_exposure",
+      "display_name": "Labor induction or augmentation with uterotonic exposure",
+      "display_name_ja": "陣痛誘発・促進薬曝露",
+      "risk_type": "contraction_stress_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            8.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterotonic_induction_augmentation_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Uterotonic exposure is the observed contraction-stress context."
+            },
+            {
+              "axis_id": "M_UR_LABOR_STRESS_AND_OBSTRUCTION",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Induction or augmentation can increase uterine stress."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "stop_uterotonics_and_reduce_labor_stress_when_rupture_suspected": "relative value increases as uterotonic stress contributes to ongoing rupture progression"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "obstructed_labor_malpresentation_or_cephalopelvic_disproportion",
+      "display_name": "Obstructed labor, malpresentation, or cephalopelvic disproportion",
+      "display_name_ja": "分娩停止・胎位異常・児頭骨盤不均衡",
+      "risk_type": "pressure_load_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            15.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "obstructed_labor_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Obstruction produces sustained pressure and uterine stress."
+            },
+            {
+              "axis_id": "major_bleeding_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.1,
+                4.0
+              ],
+              "clinical_rationale": "Prolonged stress can produce larger tears and delayed recognition."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "uterine_overdistension_context",
+      "display_name": "Uterine overdistension context",
+      "display_name_ja": "子宮過伸展コンテキスト",
+      "risk_type": "wall_tension_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            6.0
+          ],
+          "trajectory_modulation": "Multiple gestation, polyhydramnios, macrosomia, or uterine anomaly increases wall tension and rupture susceptibility.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_UR_MYOMETRIAL_SCAR_OR_WALL_WEAKNESS",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.1,
+                4.0
+              ],
+              "clinical_rationale": "Overdistension reduces the mechanical reserve of the uterine wall."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "grand_multiparity_or_prior_uterine_trauma",
+      "display_name": "Grand multiparity or prior uterine trauma",
+      "display_name_ja": "多産・子宮外傷既往",
+      "risk_type": "wall_reserve_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            6.0
+          ],
+          "trajectory_modulation": "Repeated stretching or prior trauma can lower rupture threshold, especially with labor stress."
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "blunt_abdominal_trauma_external_version_or_instrumental_manipulation",
+      "display_name": "Blunt trauma, version, or instrumental manipulation",
+      "display_name_ja": "腹部外傷・胎位回転・器械的操作",
+      "risk_type": "trauma_trigger_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            12.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "hemoperitoneum_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Traumatic rupture can present with concealed intraabdominal bleeding."
+            },
+            {
+              "axis_id": "fetal_distress_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Trauma-related rupture can abruptly compromise fetal oxygenation."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "placenta_accreta_spectrum_or_percreta_context",
+      "display_name": "Placenta accreta spectrum or percreta context",
+      "display_name_ja": "癒着胎盤スペクトラム・穿通胎盤",
+      "risk_type": "invasive_placentation_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            8.0
+          ],
+          "trajectory_modulation": "Invasive placentation may weaken or penetrate uterine wall and increase operative hemorrhage; PAS should remain a context or separate manifold when built.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "hysterectomy_need_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Percreta or extensive invasion makes uterine preservation less feasible."
+            },
+            {
+              "axis_id": "major_bleeding_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Invasive placentation increases surgical bleeding risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "neuraxial_analgesia_or_masked_pain_context",
+      "display_name": "Neuraxial analgesia or masked pain context",
+      "display_name_ja": "硬膜外麻酔などによる疼痛マスク",
+      "risk_type": "presentation_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            1.5
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "abdominal_pain_severity",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.2,
+                0.8
+              ],
+              "clinical_rationale": "Analgesia can blunt pain despite active rupture."
+            },
+            {
+              "axis_id": "time_to_laparotomy_hours",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.0,
+                3.0
+              ],
+              "clinical_rationale": "Masked pain can delay recognition unless fetal tracing or hemodynamics trigger action."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "unscarred_uterine_rupture_context",
+      "display_name": "Unscarred uterine rupture context",
+      "display_name_ja": "未瘢痕子宮破裂コンテキスト",
+      "risk_type": "severity_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.2,
+            2.0
+          ],
+          "trajectory_modulation": "Less common, but when present may involve severe trauma, obstruction, overdistension, or tissue fragility and can produce high maternal/fetal hazard.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "major_bleeding_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Unscarred rupture can be extensive and highly vascular."
+            },
+            {
+              "axis_id": "hysterectomy_need_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Large unscarred rupture may be harder to repair."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "baseline_anemia_low_body_mass_or_low_cardiovascular_reserve",
+      "display_name": "Baseline anemia, low body mass, or low cardiovascular reserve",
+      "display_name_ja": "貧血・低循環予備能",
+      "risk_type": "host_reserve_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            1.2
+          ],
+          "trajectory_modulation": "Does not cause rupture but lowers tolerance for the same hemorrhage.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "hemoglobin",
+              "effect": "lower_background",
+              "factor_range": [
+                0.5,
+                0.9
+              ],
+              "clinical_rationale": "Lower baseline hemoglobin reduces oxygen-delivery reserve."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Low reserve increases fatality risk for a given blood loss."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "delayed_recognition_transport_or_limited_operating_room_blood_bank_access",
+      "display_name": "Delayed recognition, transport, operating-room, or blood-bank access",
+      "display_name_ja": "認識遅延・搬送遅延・手術輸血体制不足",
+      "risk_type": "care_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.9,
+            1.2
+          ],
+          "trajectory_modulation": "Does not make rupture biologically more likely, but prolongs bleeding and fetal hypoxia once rupture occurs.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "time_to_laparotomy_hours",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Delay is represented as longer time to source control."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-UTERINE-RUPTURE",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Delayed surgery and transfusion increase maternal death hazard."
+            },
+            {
+              "axis_id": "fetal_demise_hazard_in_D-UTERINE-RUPTURE",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Delay increases fetal hypoxic exposure."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "immediate_laparotomy_with_delivery_for_uterine_rupture": "effectiveness depends on surgical access and time to action",
+            "balanced_massive_transfusion_and_hemostatic_resuscitation": "weakens when blood products are unavailable"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "time_stamp_suspicion_fetal_tracing_bleeding_and_operating_room_events",
+      "description": "Record timing of pain, fetal tracing abnormality, loss of station, bleeding, hemodynamic change, rupture suspicion, operating-room arrival, delivery, repair or hysterectomy, transfusion, and neonatal resuscitation."
+    },
+    {
+      "care_id": "continuous_maternal_hemodynamic_and_fetal_monitoring",
+      "description": "Trend heart rate, blood pressure, shock index, mental status, urine output, bleeding estimate, hemoglobin, fibrinogen, platelets, PT/INR, lactate, and fetal heart tracing when fetal monitoring is relevant."
+    },
+    {
+      "care_id": "activate_obstetric_hemorrhage_and_surgical_team",
+      "description": "Mobilize obstetrics, anesthesia, operating room, blood bank, neonatal team, and surgical/urologic help when rupture is suspected."
+    },
+    {
+      "care_id": "maintain_distinction_from_abruption_previa_atony_laceration_and_ectopic_rupture",
+      "description": "Do not delete shared bleeding or shock evidence; structure placental abruption, placenta previa, uterine atony, genital tract trauma, ectopic rupture, DIC, or placenta accreta spectrum as competing or superposed geometry where medically true."
+    },
+    {
+      "care_id": "inspect_for_bladder_ureter_broad_ligament_and_cervicovaginal_extension",
+      "description": "After delivery and hemorrhage control, evaluate rupture extension, urinary tract injury, broad-ligament hematoma, and adjacent organ damage."
+    },
+    {
+      "care_id": "postoperative_icu_and_coagulopathy_surveillance",
+      "description": "Escalate postoperative care when shock, rising lactate, vasopressor requirement, coagulopathy, AKI, ongoing bleeding, or major transfusion is present."
+    },
+    {
+      "care_id": "future_pregnancy_counseling_after_uterine_repair",
+      "description": "After uterine-preserving repair, document rupture site and repair details because future pregnancy and delivery planning must account for recurrence risk."
+    }
+  ],
+  "quality_notes": [
+    "Created in staging only; this file should not be moved into active atlas until independent case sourcing, third-party audit/fairness review, and focused plus full regression pass.",
+    "Pure disease-name scope was preserved: scar status, TOLAC, uterotonic exposure, obstructed labor, trauma, PAS, gestational age, fetal status, and resource state are modeled as axes or modifiers.",
+    "Exactly one lifespan outcome hazard axis is present: mortality_hazard_in_D-UTERINE-RUPTURE. Fetal, bleeding, shock, DIC, AKI, bladder injury, and hysterectomy risks are event_hazard axes.",
+    "Parent/satellite structure is used for pregnancy context, prior scar, labor/contraction context, rupture/source-control findings, pain, vaginal bleeding, hemoperitoneum, shock, fetal status, and operative feasibility.",
+    "Treatment entries are vector-field interventions with context modifiers and failure modes; treatment ordering is intentionally left to forward simulation."
+  ]
+}

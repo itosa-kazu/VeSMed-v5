@@ -1,0 +1,5221 @@
+{
+  "disease": "D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+  "disease_id": "D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+  "disease_name": "Postpartum hemorrhage due to uterine atony / 弛緩出血",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Postpartum hemorrhage due to uterine atony",
+    "leaf_granularity": "First-layer postpartum hemorrhage leaf for failure of postpartum myometrial contraction and placental-bed compression. Retained placenta, genital tract trauma, uterine rupture, placenta accreta spectrum, uterine inversion, amniotic fluid embolism, placental abruption, and primary coagulopathy are represented as context, mimic, source-control, or vector-superposition axes rather than disease-name qualifiers.",
+    "boundary_policy": "This manifold explains postpartum bleeding through inadequate uterine tone after delivery. If bleeding is mainly from retained tissue, laceration, rupture, inversion, DIC, AFE, or abruption, those facts should enter as separate axes or competing/superposed manifolds and should not be double-counted as atony on the same axes.",
+    "ranking_note": "Presentation ranking may consume postpartum timing, completed delivery, boggy enlarged uterus, reduced fundal tone, heavy vaginal/postpartum bleeding, quantified blood loss, response to massage/uterotonics, tachycardia, hypotension, hemoglobin fall, lactate, urine output, transfusion need, and absence or presence of retained placenta, laceration, rupture, inversion, or severe coagulopathy as structured context."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "display_name": "Postplacental myometrial contraction failure",
+      "clinical_meaning": "Uterine atony is the defining pathophysiology of this leaf, so the core myometrial contraction-failure activity should be high when the atony manifold is active.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.75,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "display_name": "Uncompressed placental-bed sinus bleeding",
+      "clinical_meaning": "Persistent placental-bed bleeding is the direct bleeding geometry of atonic postpartum hemorrhage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.75,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_UTERINE_OVERDISTENSION_OR_EXHAUSTION_CONTEXT",
+      "display_name": "Uterine overdistension or myometrial exhaustion context",
+      "clinical_meaning": "Multiple gestation, polyhydramnios, macrosomia, prolonged labor, high-dose oxytocin exposure, chorioamnionitis, grand multiparity, or operative delivery can reduce effective postpartum tone and increase atony risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -2.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        21.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_OXYTOCIN_SIGNALING_DESENSITIZATION",
+      "display_name": "Oxytocin signaling desensitization or uterine relaxation",
+      "clinical_meaning": "Prolonged exposure to oxytocin, magnesium sulfate, volatile anesthetics, tocolytics, infection, or metabolic stress can blunt calcium-mediated myometrial contraction.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.25
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "display_name": "Hemorrhagic volume loss and oxygen-delivery failure",
+      "clinical_meaning": "Blood-loss physiology ranges from compensated hemorrhage to profound shock in uterine-atony postpartum hemorrhage.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "display_name": "Dilutional or consumptive coagulopathy amplifier",
+      "clinical_meaning": "Large-volume hemorrhage, crystalloid, delayed blood products, hypothermia, acidosis, obstetric tissue-factor disease, or baseline anticoagulation can impair clot stability and amplify bleeding. This is an amplifier or superposition context, not the initiating atony identity.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_UTEROTONIC_COMPRESSION_RESPONSE",
+      "display_name": "Uterotonic and compression response",
+      "clinical_meaning": "Bimanual compression, uterine massage, oxytocin, prostaglandins, ergot alkaloids, tamponade, or surgical compression can restore placental-bed compression and lower bleeding if atony remains the main source.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.4
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "display_name": "Refractory uterine bleeding source-control failure",
+      "clinical_meaning": "Bleeding persists despite tone-directed therapy when atony is severe, treatment is delayed, uterine tissue is nonresponsive, blood products are unavailable, or another source such as retained tissue, trauma, rupture, accreta, or DIC is active.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "pregnancy_postpartum_context_activity",
+      "target_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        0.0
+      ],
+      "phase": "whole_course",
+      "conditionality": "Requires recent delivery or immediate postpartum context.",
+      "clinical_rationale": "Uterine atony as a postpartum hemorrhage source exists in the postpartum uterine state.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "placenta_delivered_context_presence",
+      "target_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "early",
+      "clinical_rationale": "The placental bed becomes an exposed postpartum bleeding surface after placental separation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_UTERINE_OVERDISTENSION_OR_EXHAUSTION_CONTEXT",
+      "target_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Overdistended or exhausted myometrium contracts poorly after delivery.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_OXYTOCIN_SIGNALING_DESENSITIZATION",
+      "target_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "early",
+      "clinical_rationale": "Receptor desensitization or uterine relaxation lowers postpartum tone.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "target_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "early",
+      "clinical_rationale": "Weak myometrial contraction fails to clamp uteroplacental vessels.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Ongoing uterine bleeding rapidly depletes intravascular volume.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "conditionality": "Stronger with delayed balanced transfusion, hypothermia, acidosis, massive bleeding, or obstetric DIC superposition.",
+      "clinical_rationale": "Hemorrhage and resuscitation can produce or reveal coagulopathy that further destabilizes hemostasis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Poor clot stability converts uterine venous bleeding into sustained major bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_UTEROTONIC_COMPRESSION_RESPONSE",
+      "target_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "effect_on_target": "decrease",
+      "edge_type": "treatment_effect",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Tone-directed therapy restores myometrial contraction when atony is active.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_UTEROTONIC_COMPRESSION_RESPONSE",
+      "target_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "effect_on_target": "decrease",
+      "edge_type": "treatment_effect",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Improved uterine tone compresses placental-bed vessels and lowers bleeding rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "retained_products_of_conception_presence",
+      "target_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Context axis only; retained tissue should not be counted as atony itself.",
+      "clinical_rationale": "Retained placenta or products can prevent uterine contraction and require evacuation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "genital_tract_laceration_presence",
+      "target_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Mimic/source axis; bleeding from trauma persists despite good uterine tone.",
+      "clinical_rationale": "Unrepaired laceration can masquerade as refractory uterine bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "uterine_rupture_context_presence",
+      "target_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Mimic/source axis; uterine rupture belongs to its own geometry if modeled.",
+      "clinical_rationale": "Rupture can cause ongoing hemorrhage that tone therapy cannot solve.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "coagulation_activation_or_dic_context_presence",
+      "target_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "context_dependent",
+      "conditionality": "DIC should be superposed with D-DIC when overt; here it modulates bleeding stability.",
+      "clinical_rationale": "Primary or secondary coagulopathy worsens bleeding at a given uterine tone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "target_id": "uterine_atony_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Clinical atony is the observable expression of poor uterine tone.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "target_id": "uterine_tone_score",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Atony lowers palpated uterine tone or contraction score.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "target_id": "boggy_uterus_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "A poorly contracted postpartum uterus is palpably soft or boggy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE",
+      "target_id": "uterine_fundal_height_above_umbilicus_cm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "whole_course",
+      "conditionality": "Most useful immediately postpartum before normal involution dominates.",
+      "clinical_rationale": "A distended atonic uterus may remain enlarged or high.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Active uterine bleeding is the clinical event.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "postpartum_hemorrhage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "The bleeding occurs in the postpartum interval.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "estimated_blood_loss_ml",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Quantified or estimated blood loss rises with the uterine bleeding rate and duration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Most atony bleeding is visible vaginal or operative-field bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "vaginal_bleeding_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.05
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Heavy flow and clots track ongoing uterine bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING",
+      "target_id": "blood_clot_passage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Pooling blood from a boggy uterus may pass as clots.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Sympathetic compensation causes tachycardia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "systolic_blood_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Volume loss can lower systolic blood pressure after compensation fails.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Low intravascular volume reduces perfusion pressure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Severe volume loss produces clinical shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "hemorrhagic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Continued bleeding increases risk of hemorrhagic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "hemoglobin",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.05,
+        1.0
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Blood loss lowers hemoglobin once equilibration and measurement occur.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Hypoperfusion increases lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "urine_output_ml_per_kg_hour",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.1,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Renal hypoperfusion lowers urine output.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        3.0
+      ],
+      "phase": "recovery",
+      "conditionality": "Mainly after prolonged shock or low renal reserve.",
+      "clinical_rationale": "Renal hypoperfusion can cause AKI.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "serum_fibrinogen",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "conditionality": "Stronger with massive hemorrhage, abruption, AFE, DIC, or delayed fibrinogen replacement.",
+      "clinical_rationale": "Fibrinogen is consumed or diluted during major obstetric bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "platelet_count",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Platelets can fall with consumption, dilution, or transfusion imbalance.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "prothrombin_time_inr",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Coagulation-factor depletion or dilution prolongs PT/INR.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "major_bleeding_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Coagulopathy increases ongoing major bleeding hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "target_id": "emergency_hysterectomy_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Persistent uncontrolled uterine bleeding can require definitive surgical source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Depth and duration of hemorrhagic shock are the dominant maternal lifespan hazard pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Uncorrected coagulopathy raises fatal hemorrhage risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+      "target_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Failure to control the uterine or alternative bleeding source sustains fatal bleeding risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "pregnancy_postpartum_context_activity",
+      "target_id": "recent_obstetric_delivery_or_procedure_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Recent delivery/procedure gates postpartum hemorrhage physiology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "pregnancy_postpartum_context_activity",
+      "target_id": "vaginal_delivery_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Delivery route context for postpartum hemorrhage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "shock_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Severity satellite for hemorrhagic shock.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "hypotension_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Hypotension from postpartum hemorrhagic volume loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+      "target_id": "anemia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Anemia from acute postpartum blood loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "disseminated_intravascular_coagulation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "DIC/consumptive coagulopathy can amplify severe postpartum hemorrhage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER",
+      "target_id": "coagulopathy_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Severity of coagulopathy amplification.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_postpartum_context_activity",
+      "axis_role": "finding",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Recent delivery or postpartum uterine context.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0,
+        0
+      ],
+      "peak_value_range": [
+        1.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        42.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "postpartum_day_since_delivery",
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "unit": "days",
+      "log_scale": false,
+      "shape_free_text": "Elapsed days since fetal delivery.",
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0,
+        42
+      ],
+      "peak_value_range": [
+        0.0,
+        42.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        42.0
+      ],
+      "decline_half_life_days": [
+        42.0,
+        60.0
+      ],
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "placenta_delivered_context_presence",
+      "axis_role": "finding",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Placenta has delivered or separated, exposing the placental bed.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.05
+      ],
+      "peak_value_range": [
+        0.8,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_atony_presence",
+      "axis_role": "finding",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Uterine atony on postpartum examination.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.85,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Uterine atony is the defining observed finding for this disease leaf."
+    },
+    {
+      "axis_id": "boggy_uterus_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_atony_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Soft or boggy uterus on fundal palpation.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.25
+      ],
+      "peak_value_range": [
+        0.5,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_tone_score",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_atony_presence",
+      "category": "physical_finding",
+      "unit": "score_0_10",
+      "log_scale": false,
+      "shape_free_text": "Palpated uterine tone, where 10 is firm sustained contraction and 0 is flaccid.",
+      "baseline_range": [
+        8.0,
+        10.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.25
+      ],
+      "peak_value_range": [
+        0.0,
+        4.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uterine_fundal_height_above_umbilicus_cm",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_atony_presence",
+      "category": "physical_finding",
+      "unit": "cm",
+      "log_scale": false,
+      "shape_free_text": "Fundal height above the umbilicus in the immediate postpartum period.",
+      "baseline_range": [
+        -4.0,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        10.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        5.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "bleeding_presence",
+      "axis_role": "finding",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Any clinically active bleeding.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.25
+      ],
+      "peak_value_range": [
+        0.8,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Clinically meaningful atonic PPH requires active bleeding."
+    },
+    {
+      "axis_id": "postpartum_hemorrhage_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "bleeding_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Active postpartum hemorrhage by clinical or quantified assessment.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.9,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Postpartum hemorrhage is direct observed bleeding geometry for atonic PPH."
+    },
+    {
+      "axis_id": "estimated_blood_loss_ml",
+      "axis_role": "measurement",
+      "parent_axis_id": "bleeding_presence",
+      "category": "obstetric_measurement",
+      "unit": "mL",
+      "log_scale": true,
+      "shape_free_text": "Quantified or estimated cumulative postpartum blood loss in milliliters.",
+      "baseline_range": [
+        0.0,
+        500.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        500.0,
+        5000.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "bleeding_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Visible vaginal or perineal postpartum bleeding.",
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.65,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Atonic PPH commonly presents as visible postpartum vaginal bleeding, though concealed surgical bleeding can coexist."
+    },
+    {
+      "axis_id": "vaginal_bleeding_severity",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "category": "physical_finding",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "shape_free_text": "Clinical severity of visible vaginal bleeding, including flow, pooling, and saturation rate.",
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Bleeding severity spans moderate to massive postpartum hemorrhage."
+    },
+    {
+      "axis_id": "blood_clot_passage_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_bleeding_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Passage of large postpartum clots with active bleeding.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        5.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "active_major_bleeding_activity",
+      "axis_role": "finding",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Active major bleeding state requiring immediate hemostatic action.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.3,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "axis_role": "measurement",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Daily hazard of ongoing major bleeding or rebleeding requiring escalation.",
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.05,
+        1.5
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemorrhagic_shock_hazard",
+      "axis_role": "measurement",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "shape_free_text": "Daily hazard of progression to hemorrhagic shock.",
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.03,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "emergency_hysterectomy_hazard",
+      "axis_role": "measurement",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Daily hazard of emergency hysterectomy for uncontrolled obstetric bleeding.",
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "shock_presence",
+      "axis_role": "finding",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Clinical shock state.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "maternal_shock_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Maternal shock in an obstetric/postpartum patient.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "axis_role": "measurement",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "shape_free_text": "Heart rate.",
+      "baseline_range": [
+        60.0,
+        110.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        100.0,
+        170.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "axis_role": "measurement",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "shape_free_text": "Systolic arterial pressure.",
+      "baseline_range": [
+        90.0,
+        150.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        50.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "axis_role": "measurement",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "shape_free_text": "Mean arterial pressure.",
+      "baseline_range": [
+        65.0,
+        110.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        35.0,
+        70.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hemoglobin",
+      "axis_role": "measurement",
+      "category": "lab_value",
+      "unit": "g/dL",
+      "log_scale": false,
+      "shape_free_text": "Hemoglobin concentration.",
+      "baseline_range": [
+        9.0,
+        14.0
+      ],
+      "peak_day_range": [
+        0.1,
+        2.0
+      ],
+      "peak_value_range": [
+        4.0,
+        10.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "acute_hemoglobin_drop_presence",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemoglobin",
+      "category": "lab_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Acute hemoglobin fall compared with baseline or earlier measurement.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.65,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Acute hemoglobin fall is expected with clinically significant postpartum hemorrhage."
+    },
+    {
+      "axis_id": "serum_lactate",
+      "axis_role": "measurement",
+      "parent_axis_id": "shock_presence",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "log_scale": true,
+      "shape_free_text": "Serum or blood lactate.",
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        2.0,
+        12.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "urine_output_ml_per_kg_hour",
+      "axis_role": "measurement",
+      "category": "renal_function",
+      "unit": "mL/kg/hr",
+      "log_scale": false,
+      "shape_free_text": "Hourly urine output normalized to body weight.",
+      "baseline_range": [
+        0.5,
+        3.0
+      ],
+      "peak_day_range": [
+        0.1,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "axis_role": "measurement",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "Serum creatinine.",
+      "baseline_range": [
+        0.4,
+        1.0
+      ],
+      "peak_day_range": [
+        0.5,
+        4.0
+      ],
+      "peak_value_range": [
+        0.8,
+        4.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        21.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "coagulation_activation_or_dic_context_presence",
+      "axis_role": "finding",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Clinical or laboratory context of significant coagulation activation or DIC.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_fibrinogen",
+      "axis_role": "measurement",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "shape_free_text": "Plasma fibrinogen concentration.",
+      "baseline_range": [
+        350.0,
+        650.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        1.0,
+        350.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Fibrinogen may be preserved in compensated PPH or critically depleted in massive hemorrhage with obstetric coagulopathy."
+    },
+    {
+      "axis_id": "platelet_count",
+      "axis_role": "measurement",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence",
+      "category": "lab_value",
+      "unit": "10^9/L",
+      "log_scale": true,
+      "shape_free_text": "Platelet count.",
+      "baseline_range": [
+        150.0,
+        400.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        10.0,
+        250.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Platelets can be normal, diluted, or severely consumed when massive PPH develops DIC-like coagulopathy."
+    },
+    {
+      "axis_id": "prothrombin_time_inr",
+      "axis_role": "measurement",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence",
+      "category": "lab_value",
+      "unit": "INR",
+      "log_scale": false,
+      "shape_free_text": "Prothrombin time expressed as INR.",
+      "baseline_range": [
+        0.8,
+        1.2
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        1.1,
+        4.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "activated_partial_thromboplastin_time",
+      "axis_role": "measurement",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence",
+      "category": "lab_value",
+      "unit": "seconds",
+      "log_scale": false,
+      "shape_free_text": "Activated partial thromboplastin time.",
+      "baseline_range": [
+        25.0,
+        38.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        30.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "d_dimer",
+      "axis_role": "measurement",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence",
+      "category": "lab_value",
+      "unit": "ug/mL_FEU",
+      "log_scale": true,
+      "shape_free_text": "D-dimer level.",
+      "baseline_range": [
+        0.2,
+        3.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        1.0,
+        50.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_product_availability",
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Availability of emergency red cells, plasma, platelets, cryoprecipitate, fibrinogen concentrate, calcium, and transfusion support.",
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "blood_transfusion_requirement",
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "unit": "units_or_relative_need",
+      "log_scale": false,
+      "shape_free_text": "Need for red cell or balanced blood component transfusion.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterotonic_response_probability",
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Probability that uterine tone and bleeding improve promptly after uterotonic or massage therapy.",
+      "baseline_range": [
+        0.6,
+        0.95
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "balloon_tamponade_bridge_need",
+      "axis_role": "measurement",
+      "category": "treatment_modifier",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Need for intrauterine balloon or packing as a bridge for persistent uterine bleeding.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "source_control_need",
+      "axis_role": "measurement",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Need for additional procedural hemostasis or removal/repair of a non-atony bleeding source.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "source_control_adequacy",
+      "axis_role": "measurement",
+      "category": "source_control",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Adequacy of hemorrhage source control after uterotonic, tamponade, repair, evacuation, embolization, or surgery.",
+      "baseline_range": [
+        0.8,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "retained_products_of_conception_presence",
+      "axis_role": "finding",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Retained placenta or products of conception suspected or observed.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "retained_products_of_conception_burden",
+      "axis_role": "satellite",
+      "parent_axis_id": "retained_products_of_conception_presence",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Extent of retained tissue or clot burden when retained products are present.",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "genital_tract_laceration_presence",
+      "axis_role": "finding",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Cervical, vaginal, perineal, uterine incision, or operative-field laceration that can explain bleeding despite firm uterus.",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_rupture_context_presence",
+      "axis_role": "finding",
+      "category": "source_control",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Clinical, operative, or imaging context of uterine rupture or dehiscence causing hemorrhage.",
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_inversion_presence",
+      "axis_role": "finding",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Uterine inversion as a postpartum hemorrhage mimic/source context.",
+      "baseline_range": [
+        0.0,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        0.3
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "placenta_accreta_spectrum_context_probability",
+      "axis_role": "measurement",
+      "category": "source_control",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "shape_free_text": "Probability that accreta spectrum or abnormal placental adherence is contributing to postpartum bleeding.",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "recent_cesarean_delivery_context_activity",
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_postpartum_context_activity",
+      "category": "risk_context",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "shape_free_text": "Recent cesarean or operative delivery context.",
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        42.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        60.0
+      ],
+      "knowledge_confidence": "high",
+      "clinical_interpretation": "Cesarean delivery is a compatible delivery context but not required for atony."
+    },
+    {
+      "axis_id": "uterine_ischemic_complication_hazard",
+      "axis_role": "measurement",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Daily hazard of clinically important uterine ischemic injury after devascularizing hemorrhage control procedures.",
+      "baseline_range": [
+        1e-05,
+        0.0005
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0005,
+        0.05
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        60.0
+      ],
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "future_fertility_loss_presence",
+      "axis_role": "finding",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "shape_free_text": "Permanent loss of future uterine fertility after definitive hysterectomy.",
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        36500.0
+      ],
+      "decline_half_life_days": [
+        36500.0,
+        36500.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "axis_role": "measurement",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "log_scale": true,
+      "shape_free_text": "Maternal mortality hazard from uterine-atony postpartum hemorrhage through hemorrhagic shock, coagulopathy, refractory source-control failure, and organ injury.",
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.02,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        21.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "recent_obstetric_delivery_or_procedure_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.8,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "The disease is constrained to the immediate delivery or obstetric-procedure context.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_postpartum_context_activity"
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "unit": "weeks",
+      "log_scale": false,
+      "baseline_range": [
+        20,
+        42
+      ],
+      "peak_day_range": [
+        -280.0,
+        1.0
+      ],
+      "peak_value_range": [
+        24,
+        42
+      ],
+      "plateau_duration_days": [
+        1.0,
+        300.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        120.0
+      ],
+      "clinical_interpretation": "Gestational age is obstetric context for delivery-associated hemorrhage, not an effect generated by atony.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_postpartum_context_activity"
+    },
+    {
+      "axis_id": "vaginal_delivery_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Vaginal delivery is a compatible delivery context but not required for atony.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_postpartum_context_activity"
+    },
+    {
+      "axis_id": "shock_severity",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Atonic PPH ranges from compensated bleeding to severe hemorrhagic shock.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "shock_presence"
+    },
+    {
+      "axis_id": "hypotension_presence",
+      "category": "vital_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Hypotension is compatible with severe atonic PPH but absent in compensated cases.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "shock_presence"
+    },
+    {
+      "axis_id": "anemia_presence",
+      "category": "lab_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Anemia from acute postpartum blood loss.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "disseminated_intravascular_coagulation_presence",
+      "category": "coagulation_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.45
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "DIC may complicate massive obstetric hemorrhage but should not be required in ordinary uterine-atony PPH.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence"
+    },
+    {
+      "axis_id": "coagulopathy_activity",
+      "category": "coagulation_finding",
+      "axis_role": "satellite",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Coagulopathy is a variable amplifier of severe postpartum hemorrhage rather than a required initiating feature.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "coagulation_activation_or_dic_context_presence"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        60.0,
+        90.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        25.0,
+        85.0
+      ],
+      "plateau_duration_days": [
+        0.02,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "Diastolic pressure falls variably with severe postpartum hemorrhagic volume loss.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "shock_presence"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "uterine_tone_score",
+      "target_axis_id": "estimated_blood_loss_ml",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.85,
+        -0.45
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Improving uterine tone lowers uterine bleeding rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "uterine_atony_presence",
+      "target_axis_id": "postpartum_hemorrhage_presence",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.45,
+        0.85
+      ],
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Atony is the dominant Tone pathway for PPH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "estimated_blood_loss_ml",
+      "target_axis_id": "hemoglobin",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.85,
+        -0.35
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [
+        0.2,
+        0.9
+      ],
+      "lag_days_range": [
+        0.05,
+        1.0
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Measured hemoglobin falls after blood loss and equilibration.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "estimated_blood_loss_ml",
+      "target_axis_id": "heart_rate",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.35,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "whole_course",
+      "clinical_rationale": "Tachycardia is an early compensation for hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "estimated_blood_loss_ml",
+      "target_axis_id": "mean_arterial_pressure",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.75,
+        -0.25
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "effect_size_range": [
+        0.2,
+        0.9
+      ],
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Perfusion pressure falls when hemorrhage exceeds compensation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "estimated_blood_loss_ml",
+      "target_axis_id": "hemorrhagic_shock_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "activation_threshold_range": [
+        1000.0,
+        2000.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Higher blood loss increases hemorrhagic shock risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_fibrinogen",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "opposite_direction",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [
+        0.3,
+        1.0
+      ],
+      "activation_threshold_range": [
+        150.0,
+        300.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.3
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Low fibrinogen predicts poor clot stability in obstetric hemorrhage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "platelet_count",
+      "target_axis_id": "major_bleeding_hazard",
+      "relationship": "opposite_direction",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [
+        0.1,
+        0.7
+      ],
+      "activation_threshold_range": [
+        50.0,
+        100.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Low platelets impair hemostasis during major bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "serum_lactate",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.75,
+        -0.3
+      ],
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [
+        0.3,
+        0.9
+      ],
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Hypoperfusion raises lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "urine_output_ml_per_kg_hour",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.25,
+        0.7
+      ],
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.2,
+        0.8
+      ],
+      "lag_days_range": [
+        0.1,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Renal urine output follows renal perfusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "postpartum_hemorrhage_presence",
+      "target_axis_id": "emergency_hysterectomy_hazard",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.1,
+        0.8
+      ],
+      "activation_threshold_range": [
+        0.6,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "context_dependent",
+      "conditionality": "Strongest when source_control_adequacy remains low despite medical and conservative procedural therapy.",
+      "clinical_rationale": "Uncontrolled PPH can lead to hysterectomy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "retained_products_of_conception_presence",
+      "target_axis_id": "source_control_need",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Retained placenta/products require removal rather than tone-only therapy.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "genital_tract_laceration_presence",
+      "target_axis_id": "source_control_need",
+      "relationship": "source_leads_target",
+      "coupling_type": "drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "context_dependent",
+      "clinical_rationale": "Traumatic bleeding requires inspection and repair.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_adequacy",
+      "target_axis_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "relationship": "opposite_direction",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_down_increases_target",
+      "effect_size_range": [
+        0.3,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Failure to control bleeding drives maternal mortality hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "hemorrhagic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+      "relationship": "source_leads_target",
+      "coupling_type": "hazard_drift",
+      "effect_direction": "source_up_increases_target",
+      "effect_size_range": [
+        0.4,
+        1.0
+      ],
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "peak",
+      "clinical_rationale": "Hemorrhagic shock is the main pathway from atony bleeding to maternal death.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "drug": "uterine_massage_and_bimanual_compression",
+      "drug_class": "mechanical_uterine_compression",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "empiric",
+      "required_context_axes": [
+        "uterine_atony_presence",
+        "postpartum_hemorrhage_presence",
+        "source_control_adequacy"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "uterine_atony_presence",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Compression treats poor uterine tone."
+        },
+        {
+          "axis_id": "genital_tract_laceration_presence",
+          "condition": "present",
+          "effect": "weakens",
+          "factor_range": [
+            0.1,
+            0.6
+          ],
+          "clinical_rationale": "Traumatic bleeding persists despite compression unless repaired."
+        }
+      ],
+      "failure_modes": [
+        "retained_placenta_or_products",
+        "unrepaired_laceration",
+        "uterine_rupture",
+        "severe_coagulopathy",
+        "delay_to_additional_uterotonic_or_procedure"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "uterine_tone_score",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            8.0
+          ],
+          "unit": "score_0_10"
+        },
+        {
+          "axis_id": "estimated_blood_loss_ml",
+          "direction": "down",
+          "magnitude_range": [
+            50.0,
+            1500.0
+          ],
+          "unit": "mL"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.0,
+        0.1
+      ],
+      "side_effects": [
+        {
+          "axis_id": "abdominal_pain_severity",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.3
+          ],
+          "interpretation": "Manual compression is painful without analgesia."
+        }
+      ],
+      "context_specific_role": "Immediate bedside vector to raise uterine tone while drugs, blood products, and source evaluation proceed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "oxytocin_iv_or_im",
+      "drug_class": "uterotonic_oxytocin_receptor_agonist",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "empiric",
+      "required_context_axes": [
+        "uterine_atony_presence",
+        "pregnancy_postpartum_context_activity",
+        "mean_arterial_pressure"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "uterotonic_response_probability",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.5
+          ],
+          "clinical_rationale": "High responsiveness predicts rapid tone improvement."
+        },
+        {
+          "axis_id": "M_PPH_ATONY_OXYTOCIN_SIGNALING_DESENSITIZATION",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Oxytocin receptor desensitization can reduce incremental effect."
+        }
+      ],
+      "failure_modes": [
+        "receptor_desensitization_after_prolonged_high_dose_exposure",
+        "retained_tissue",
+        "laceration_or_rupture",
+        "severe_coagulopathy",
+        "hypotension_from_rapid_bolus"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "uterine_tone_score",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            8.0
+          ],
+          "unit": "score_0_10"
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            15.0
+          ],
+          "unit": "mmHg"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.05
+      ],
+      "carryover_after_stop_days": [
+        0.02,
+        0.5
+      ],
+      "side_effects": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            15.0
+          ],
+          "interpretation": "Rapid bolus may cause hypotension."
+        },
+        {
+          "axis_id": "serum_sodium",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            8.0
+          ],
+          "interpretation": "Large prolonged exposure can contribute to water intoxication."
+        }
+      ],
+      "context_specific_role": "Tone-restoration vector for atony physiology.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "methylergometrine_or_methylergonovine",
+      "drug_class": "ergot_uterotonic",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "uterine_atony_presence",
+        "systolic_blood_pressure",
+        "preeclampsia_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "systolic_blood_pressure",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Ergot uterotonics can worsen hypertension or vasospasm."
+        },
+        {
+          "axis_id": "preeclampsia_context_presence",
+          "condition": "high",
+          "effect": "contraindicates",
+          "factor_range": [
+            0.0,
+            0.3
+          ],
+          "clinical_rationale": "Hypertensive obstetric disease raises toxicity risk."
+        }
+      ],
+      "failure_modes": [
+        "hypertension_or_preeclampsia_context",
+        "vasospasm_or_coronary_risk",
+        "retained_tissue_or_trauma_bleeding",
+        "severe_coagulopathy"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "uterine_tone_score",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            8.0
+          ],
+          "unit": "score_0_10"
+        },
+        {
+          "axis_id": "systolic_blood_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            30.0
+          ],
+          "unit": "mmHg"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        1.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "systolic_blood_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            30.0
+          ],
+          "interpretation": "Can raise blood pressure."
+        },
+        {
+          "axis_id": "nausea_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.4
+          ],
+          "interpretation": "Nausea or vomiting may occur."
+        }
+      ],
+      "context_specific_role": "Additional uterotonic vector when blood pressure and vascular risk context allow.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "carboprost_tromethamine",
+      "drug_class": "prostaglandin_f2alpha_uterotonic",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "uterine_atony_presence",
+        "asthma_airway_disease_presence",
+        "oxygen_saturation"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "asthma_airway_disease_presence",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Prostaglandin F2 alpha can provoke bronchospasm."
+        }
+      ],
+      "failure_modes": [
+        "asthma_or_active_bronchospasm",
+        "pulmonary_hypertension_or_hypoxemia_context",
+        "retained_tissue_or_trauma_bleeding",
+        "severe_coagulopathy"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "uterine_tone_score",
+          "direction": "up",
+          "magnitude_range": [
+            2.0,
+            8.0
+          ],
+          "unit": "score_0_10"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.15
+      ],
+      "carryover_after_stop_days": [
+        0.05,
+        1.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            10.0
+          ],
+          "interpretation": "Bronchospasm can reduce oxygenation."
+        },
+        {
+          "axis_id": "diarrhea_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.6
+          ],
+          "interpretation": "GI adverse effects are common."
+        }
+      ],
+      "context_specific_role": "Strong uterotonic vector for persistent atony when bronchospasm risk is acceptable.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "misoprostol",
+      "drug_class": "prostaglandin_e1_uterotonic",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": [
+        "uterine_atony_presence",
+        "postpartum_hemorrhage_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.3
+          ],
+          "clinical_rationale": "Ease of administration can matter when IV access or full obstetric resources are delayed."
+        }
+      ],
+      "failure_modes": [
+        "insufficient_as_sole_therapy_for_massive_bleeding",
+        "fever_shivering_confounds_infection_assessment",
+        "retained_tissue_or_trauma_bleeding"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_POSTPLACENTAL_MYOMETRIAL_CONTRACTION_FAILURE": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "uterine_tone_score",
+          "direction": "up",
+          "magnitude_range": [
+            1.0,
+            6.0
+          ],
+          "unit": "score_0_10"
+        }
+      ],
+      "onset_delay_days": [
+        0.02,
+        0.3
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        1.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "body_temperature",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            2.0
+          ],
+          "interpretation": "Can cause fever or shivering."
+        },
+        {
+          "axis_id": "diarrhea_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.5
+          ],
+          "interpretation": "Can cause diarrhea."
+        }
+      ],
+      "context_specific_role": "Portable uterotonic adjunct, especially where injectable uterotonics or rapid escalation are constrained.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "tranexamic_acid",
+      "drug_class": "antifibrinolytic",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "adjunctive",
+      "required_context_axes": [
+        "postpartum_hemorrhage_presence",
+        "active_major_bleeding_activity",
+        "coagulation_activation_or_dic_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "active_major_bleeding_activity",
+          "condition": "present",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.8
+          ],
+          "clinical_rationale": "Antifibrinolysis matters when active bleeding is ongoing."
+        },
+        {
+          "axis_id": "thrombotic_event_hazard",
+          "condition": "high",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.6,
+            1.0
+          ],
+          "clinical_rationale": "High thrombosis risk changes risk-benefit."
+        }
+      ],
+      "failure_modes": [
+        "late_administration_after_bleeding_control_window",
+        "untreated_atony_source",
+        "retained_tissue_or_laceration_not_controlled",
+        "unrecognized_thrombotic_condition"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER": {
+          "peak_value_factor": [
+            0.5,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        }
+      },
+      "onset_delay_days": [
+        0.0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        1.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "thrombotic_event_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.05
+          ],
+          "interpretation": "Thrombotic risk should be monitored in high-risk contexts."
+        }
+      ],
+      "context_specific_role": "Adjunct that stabilizes clot while uterine tone and source control are addressed.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "balanced_massive_transfusion_protocol",
+      "drug_class": "hemostatic_resuscitation_bundle",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "active_major_bleeding_activity",
+        "hemoglobin",
+        "mean_arterial_pressure",
+        "blood_product_availability"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Balanced resuscitation depends on available blood products."
+        },
+        {
+          "axis_id": "source_control_adequacy",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Transfusion cannot stop an uncontrolled bleeding source."
+        }
+      ],
+      "failure_modes": [
+        "delayed_blood_products",
+        "uncontrolled_uterine_source",
+        "hypocalcemia",
+        "hypothermia",
+        "transfusion_reaction",
+        "volume_overload"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS": {
+          "peak_value_factor": [
+            0.4,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "hemorrhagic_shock_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "hemoglobin",
+          "direction": "up",
+          "magnitude_range": [
+            1.0,
+            6.0
+          ],
+          "unit": "g/dL"
+        },
+        {
+          "axis_id": "mean_arterial_pressure",
+          "direction": "up",
+          "magnitude_range": [
+            10.0,
+            50.0
+          ],
+          "unit": "mmHg"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.1
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "serum_calcium",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            2.0
+          ],
+          "interpretation": "Citrate load can cause hypocalcemia."
+        },
+        {
+          "axis_id": "oxygen_saturation",
+          "direction": "down",
+          "magnitude_range": [
+            0.0,
+            8.0
+          ],
+          "interpretation": "Volume overload or transfusion lung injury can worsen oxygenation."
+        }
+      ],
+      "context_specific_role": "Resuscitation vector that restores oxygen delivery and coagulation substrate while hemostasis is achieved.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "fibrinogen_replacement_cryoprecipitate_or_concentrate",
+      "drug_class": "fibrinogen_hemostatic_support",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "supportive",
+      "required_context_axes": [
+        "serum_fibrinogen",
+        "active_major_bleeding_activity",
+        "blood_product_availability"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "serum_fibrinogen",
+          "condition": "low",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Low fibrinogen is a major modifiable bleeding amplifier in obstetric hemorrhage."
+        },
+        {
+          "axis_id": "blood_product_availability",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.0,
+            0.6
+          ],
+          "clinical_rationale": "Effect depends on available cryoprecipitate or concentrate."
+        }
+      ],
+      "failure_modes": [
+        "ongoing_uncontrolled_bleeding_source",
+        "delayed_lab_or_viscoelastic_assessment",
+        "volume_or_thrombosis_context",
+        "insufficient_dose"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_DILUTIONAL_CONSUMPTIVE_COAGULOPATHY_AMPLIFIER": {
+          "peak_value_factor": [
+            0.3,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.35,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.35,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "serum_fibrinogen",
+          "direction": "up",
+          "magnitude_range": [
+            50.0,
+            300.0
+          ],
+          "unit": "mg/dL"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.2
+      ],
+      "carryover_after_stop_days": [
+        0.2,
+        3.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "volume_overload_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.1
+          ],
+          "interpretation": "Plasma-heavy strategies can increase volume burden."
+        }
+      ],
+      "context_specific_role": "Corrects a hemostatic substrate deficit that can amplify atony bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "manual_removal_or_evacuating_retained_products_when_present",
+      "drug_class": "uterine_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "retained_products_of_conception_presence",
+        "source_control_need",
+        "postpartum_hemorrhage_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "retained_products_of_conception_presence",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Evacuation helps only when retained tissue is present or strongly suspected."
+        },
+        {
+          "axis_id": "coagulation_activation_or_dic_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Procedural evacuation in coagulopathy has higher bleeding risk."
+        }
+      ],
+      "failure_modes": [
+        "retained_tissue_not_present",
+        "placenta_accreta_spectrum",
+        "uterine_perforation",
+        "severe_coagulopathy_without_support"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.2,
+            1.0
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.5
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        30.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "genital_tract_laceration_presence",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.2
+          ],
+          "interpretation": "Instrumentation can cause trauma."
+        }
+      ],
+      "context_specific_role": "Context vector for retained placenta/products; not a tone treatment when the placenta is complete.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "genital_tract_inspection_and_laceration_repair",
+      "drug_class": "traumatic_bleeding_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "context_dependent",
+      "required_context_axes": [
+        "genital_tract_laceration_presence",
+        "postpartum_hemorrhage_presence",
+        "uterine_tone_score"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "genital_tract_laceration_presence",
+          "condition": "present",
+          "effect": "required_for_effect",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Repair is effective when trauma is present."
+        },
+        {
+          "axis_id": "uterine_tone_score",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.5
+          ],
+          "clinical_rationale": "A firm uterus with ongoing bleeding increases suspicion for trauma source."
+        }
+      ],
+      "failure_modes": [
+        "bleeding_source_not_laceration",
+        "deep_unrecognized_hematoma",
+        "coagulopathy",
+        "inadequate_visualization"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.2,
+            1.0
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.5
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        30.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.05
+          ],
+          "interpretation": "Repair can bleed in coagulopathic or difficult exposure contexts."
+        }
+      ],
+      "context_specific_role": "Fairness vector for trauma-source PPH so ongoing bleeding with firm uterus is not forced into atony.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "intrauterine_balloon_tamponade_or_packing",
+      "drug_class": "uterine_tamponade",
+      "mode": "push_state",
+      "empiric_or_definitive_role": "bridge",
+      "required_context_axes": [
+        "postpartum_hemorrhage_presence",
+        "uterine_atony_presence",
+        "balloon_tamponade_bridge_need",
+        "uterine_rupture_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "uterine_rupture_context_presence",
+          "condition": "present",
+          "effect": "contraindicates",
+          "factor_range": [
+            0.0,
+            0.3
+          ],
+          "clinical_rationale": "Tamponade can fail or worsen injury if rupture is active."
+        },
+        {
+          "axis_id": "placenta_accreta_spectrum_context_probability",
+          "condition": "high",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Deep placental-bed invasion may require operative or interventional source control."
+        }
+      ],
+      "failure_modes": [
+        "uterine_rupture",
+        "ongoing_trauma_bleeding",
+        "severe_coagulopathy",
+        "device_misplacement_or_expulsion",
+        "delayed_escalation"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING": {
+          "peak_value_factor": [
+            0.2,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        },
+        "emergency_hysterectomy_hazard": {
+          "peak_value_factor": [
+            0.4,
+            0.95
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.2,
+            0.8
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.3
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        2.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "secondary_infection_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.05
+          ],
+          "interpretation": "Foreign body and packing can raise infection risk if retained."
+        }
+      ],
+      "context_specific_role": "Mechanical bridge to reduce uterine bleeding while resuscitation and escalation planning continue.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "uterine_compression_suture_or_uterine_artery_ligation",
+      "drug_class": "conservative_surgical_hemostasis",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "postpartum_hemorrhage_presence",
+        "source_control_need",
+        "recent_cesarean_delivery_context_activity",
+        "coagulation_activation_or_dic_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "source_control_need",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            1.5
+          ],
+          "clinical_rationale": "Conservative surgery is most relevant when bedside/drug measures fail."
+        },
+        {
+          "axis_id": "coagulation_activation_or_dic_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Severe coagulopathy increases operative bleeding."
+        }
+      ],
+      "failure_modes": [
+        "severe_dic",
+        "diffuse_placenta_accreta_spectrum",
+        "uterine_rupture_or_unrepairable_damage",
+        "delayed_access_to_operating_room"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE": {
+          "peak_value_factor": [
+            0.2,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        },
+        "major_bleeding_hazard": {
+          "peak_value_factor": [
+            0.25,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.25,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.3,
+            1.0
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.05,
+        1.0
+      ],
+      "carryover_after_stop_days": [
+        7.0,
+        180.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.15
+          ],
+          "interpretation": "Operative hemostasis itself carries bleeding and anesthesia risk."
+        }
+      ],
+      "context_specific_role": "Uterus-preserving surgical source-control vector for persistent atony bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "drug": "uterine_artery_embolization",
+      "drug_class": "interventional_radiology_hemostasis",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "postpartum_hemorrhage_presence",
+        "source_control_need",
+        "mean_arterial_pressure",
+        "coagulation_activation_or_dic_context_presence"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "mean_arterial_pressure",
+          "condition": "low",
+          "effect": "weakens",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Unstable shock may not permit transfer or procedure time."
+        },
+        {
+          "axis_id": "coagulation_activation_or_dic_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "Coagulopathy can increase puncture and ongoing bleeding risk."
+        }
+      ],
+      "failure_modes": [
+        "no_interventional_radiology_access",
+        "unstable_for_transfer",
+        "diffuse_uncontrolled_dic",
+        "uterine_rupture_or_surgical_source"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING": {
+          "peak_value_factor": [
+            0.15,
+            0.75
+          ],
+          "plateau_duration_factor": [
+            0.15,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            3.0
+          ]
+        },
+        "emergency_hysterectomy_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.3,
+            1.0
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        1.5
+      ],
+      "carryover_after_stop_days": [
+        7.0,
+        180.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "uterine_ischemic_complication_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.0,
+            0.05
+          ],
+          "interpretation": "Rare uterine ischemic complications can occur."
+        }
+      ],
+      "context_specific_role": "Procedure vector for persistent bleeding when the patient is stable enough and interventional capability exists.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "drug": "emergency_hysterectomy_for_refractory_uterine_bleeding",
+      "drug_class": "definitive_surgical_source_control",
+      "mode": "reshape_landscape",
+      "empiric_or_definitive_role": "rescue",
+      "required_context_axes": [
+        "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE",
+        "postpartum_hemorrhage_presence",
+        "source_control_need",
+        "blood_product_availability"
+      ],
+      "effect_modifiers": [
+        {
+          "axis_id": "source_control_need",
+          "condition": "high",
+          "effect": "strengthens",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Definitive surgery is contextually relevant when source-control need is high."
+        },
+        {
+          "axis_id": "coagulation_activation_or_dic_context_presence",
+          "condition": "present",
+          "effect": "changes_toxicity",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "DIC increases operative bleeding hazard but may still require definitive control."
+        }
+      ],
+      "failure_modes": [
+        "delayed_decision",
+        "inadequate_blood_product_support",
+        "surgical_complication",
+        "irreversible_shock_before_source_control"
+      ],
+      "trajectory_modifications": {
+        "M_PPH_ATONY_PLACENTAL_BED_SINUS_BLEEDING": {
+          "peak_value_factor": [
+            0.0,
+            0.3
+          ],
+          "plateau_duration_factor": [
+            0.0,
+            0.3
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "M_PPH_ATONY_REFRACTORY_SOURCE_CONTROL_FAILURE": {
+          "peak_value_factor": [
+            0.0,
+            0.4
+          ],
+          "plateau_duration_factor": [
+            0.0,
+            0.4
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5.0
+          ]
+        },
+        "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY": {
+          "peak_value_factor": [
+            0.25,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.25,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "push_targets": [
+        {
+          "axis_id": "source_control_adequacy",
+          "direction": "up",
+          "magnitude_range": [
+            0.5,
+            1.0
+          ],
+          "unit": "relative_activity_0_1"
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        1.0
+      ],
+      "carryover_after_stop_days": [
+        30.0,
+        365.0
+      ],
+      "side_effects": [
+        {
+          "axis_id": "procedure_related_bleeding_hazard",
+          "direction": "up",
+          "magnitude_range": [
+            0.05,
+            0.4
+          ],
+          "interpretation": "Major surgery during hemorrhage can worsen bleeding before definitive control."
+        },
+        {
+          "axis_id": "future_fertility_loss_presence",
+          "direction": "up",
+          "magnitude_range": [
+            1.0,
+            1.0
+          ],
+          "interpretation": "Hysterectomy permanently removes future uterine fertility."
+        }
+      ],
+      "context_specific_role": "Definitive source-control vector for life-threatening refractory uterine bleeding.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "uterine_overdistension_context_multiple_gestation_polyhydramnios_macrosomia",
+      "type": "obstetric_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            8.0
+          ],
+          "trajectory_modulation": "Raises atony prior by stretching myometrium and reducing effective postpartum contraction.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_PPH_ATONY_UTERINE_OVERDISTENSION_OR_EXHAUSTION_CONTEXT",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                6.0
+              ],
+              "clinical_rationale": "Overdistension directly contributes to contraction failure."
+            },
+            {
+              "axis_id": "uterotonic_response_probability",
+              "direction": "down_or_variable",
+              "factor_range": [
+                0.6,
+                1.0
+              ],
+              "clinical_rationale": "Overdistended uterus may need multiple tone vectors."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prolonged_labor_rapid_labor_or_high_dose_oxytocin_exposure",
+      "type": "labor_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            6.0
+          ],
+          "trajectory_modulation": "Shifts toward myometrial exhaustion or oxytocin receptor desensitization.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_PPH_ATONY_OXYTOCIN_SIGNALING_DESENSITIZATION",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Prolonged stimulation can reduce incremental oxytocin response."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "oxytocin_iv_or_im",
+              "direction": "weaken_if_desensitized",
+              "factor_range": [
+                0.5,
+                1.0
+              ],
+              "clinical_rationale": "Alternative uterotonics or mechanical control may be needed."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "chorioamnionitis_or_intrapartum_fever_context",
+      "type": "infection_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            5.0
+          ],
+          "trajectory_modulation": "Inflammation and myometrial dysfunction increase atony risk; infection should also remain available to postpartum endometritis/sepsis leaves.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_tone_score",
+              "direction": "lower",
+              "factor_range": [
+                0.5,
+                0.9
+              ],
+              "clinical_rationale": "Inflamed myometrium can contract poorly."
+            },
+            {
+              "axis_id": "body_temperature",
+              "direction": "higher_background_or_trigger",
+              "factor_range": [
+                1.0,
+                1.5
+              ],
+              "clinical_rationale": "Fever is infection context, not atony itself."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "grand_multiparity_or_prior_postpartum_hemorrhage_atony",
+      "type": "obstetric_history",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            6.0
+          ],
+          "trajectory_modulation": "Raises prior and recurrence context for atony.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Prior atony or high parity marks reduced uterine contractile reserve."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "cesarean_or_operatively_managed_delivery_context",
+      "type": "delivery_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            4.0
+          ],
+          "trajectory_modulation": "Raises bleeding-source complexity and may combine atony with surgical bleeding.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "recent_cesarean_delivery_context_activity",
+              "direction": "up",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Operative context changes source-control and bleeding-surface interpretation."
+            },
+            {
+              "axis_id": "genital_tract_laceration_presence",
+              "direction": "context_up",
+              "factor_range": [
+                1.0,
+                3.0
+              ],
+              "clinical_rationale": "Trauma source must be assessed alongside atony."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "uterine_relaxing_medications_or_anesthesia_context",
+      "type": "medication_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "trajectory_modulation": "Magnesium sulfate, volatile anesthetics, tocolytics, or profound anesthesia may reduce myometrial tone.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_PPH_ATONY_OXYTOCIN_SIGNALING_DESENSITIZATION",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Uterine relaxation can make atony more severe."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "retained_placenta_or_placenta_accreta_spectrum_context",
+      "type": "source_control_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            3.0
+          ],
+          "trajectory_modulation": "Can coexist with atony but is a separate Tissue/source-control problem; it should raise source-control need and weaken tone-only response.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "retained_products_of_conception_presence",
+              "direction": "up",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Retained tissue is directly observed or suspected."
+            },
+            {
+              "axis_id": "source_control_need",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                6.0
+              ],
+              "clinical_rationale": "Removal or operative planning may be needed."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "uterine_massage_and_bimanual_compression",
+              "direction": "weaken_if_retained_tissue_main_source",
+              "factor_range": [
+                0.2,
+                0.8
+              ],
+              "clinical_rationale": "Tone therapy alone is insufficient if retained tissue prevents contraction."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "genital_tract_trauma_or_uterine_rupture_context",
+      "type": "mimic_or_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.3,
+            1.5
+          ],
+          "trajectory_modulation": "Bleeding can persist despite firm uterus; atony may coexist but should not monopolize bleeding evidence.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "genital_tract_laceration_presence",
+              "direction": "up",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Trauma source must be represented explicitly."
+            },
+            {
+              "axis_id": "uterine_rupture_context_presence",
+              "direction": "up",
+              "factor_range": [
+                1.0,
+                1.0
+              ],
+              "clinical_rationale": "Rupture belongs to source-control or separate disease geometry."
+            },
+            {
+              "axis_id": "source_control_need",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Repair or surgery may be required."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "baseline_anemia_low_body_mass_or_low_cardiovascular_reserve",
+      "type": "host_reserve_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            1.2
+          ],
+          "trajectory_modulation": "Does not cause atony but lowers tolerance for the same blood loss.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "hemoglobin",
+              "direction": "lower_background",
+              "factor_range": [
+                0.5,
+                0.9
+              ],
+              "clinical_rationale": "Lower baseline hemoglobin reduces oxygen-delivery reserve."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+              "direction": "up",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Reserve modifies outcome hazard for the same hemorrhage."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "anticoagulation_thrombocytopenia_or_inherited_acquired_coagulopathy_context",
+      "type": "coagulation_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.8,
+            1.5
+          ],
+          "trajectory_modulation": "Amplifies bleeding and may indicate superposition with D-DIC or a hematologic disorder; it is not the Tone mechanism itself.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "major_bleeding_hazard",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                6.0
+              ],
+              "clinical_rationale": "Coagulopathy worsens bleeding for a given uterine tone."
+            },
+            {
+              "axis_id": "serum_fibrinogen",
+              "direction": "down_or_context_dependent",
+              "factor_range": [
+                0.2,
+                1.0
+              ],
+              "clinical_rationale": "Low fibrinogen is an important PPH amplifier."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "fibrinogen_replacement_cryoprecipitate_or_concentrate",
+              "direction": "strengthens_when_low_fibrinogen",
+              "factor_range": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Hemostatic support becomes more important when coagulation substrate is low."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_recognition_transport_or_limited_blood_product_access",
+      "type": "care_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.9,
+            1.2
+          ],
+          "trajectory_modulation": "Does not make the disease more biologically likely, but prolongs untreated bleeding and shock.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_PPH_ATONY_HEMORRHAGIC_VOLUME_LOSS",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Delay increases accumulated blood loss."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY",
+              "direction": "up",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Delay and limited transfusion access raise fatality risk."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "balanced_massive_transfusion_protocol",
+              "direction": "weakens_if_unavailable",
+              "factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "Resuscitation vector requires supplies and process readiness."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "hypertensive_disorder_preeclampsia_context",
+      "type": "treatment_safety_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "trajectory_modulation": "May coexist with atony and abruption/HELLP/DIC, and changes uterotonic safety.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "systolic_blood_pressure",
+              "direction": "higher_background",
+              "factor_range": [
+                1.1,
+                1.5
+              ],
+              "clinical_rationale": "Hypertensive context changes interpretation of blood pressure."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "methylergometrine_or_methylergonovine",
+              "direction": "toxicity_up",
+              "factor_range": [
+                1.5,
+                5.0
+              ],
+              "clinical_rationale": "Ergot uterotonic can worsen hypertension."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "asthma_or_pulmonary_hypertension_context",
+      "type": "treatment_safety_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            1.0
+          ],
+          "trajectory_modulation": "Treatment safety modifier rather than atony-causation.",
+          "axis_response_modulation": [
+            {
+              "axis_id": "oxygen_saturation",
+              "direction": "more_vulnerable_to_drop",
+              "factor_range": [
+                0.8,
+                1.0
+              ],
+              "clinical_rationale": "Bronchospasm or pulmonary vascular disease reduces respiratory reserve."
+            }
+          ],
+          "treatment_effect_modulation": [
+            {
+              "treatment": "carboprost_tromethamine",
+              "direction": "toxicity_up",
+              "factor_range": [
+                1.5,
+                5.0
+              ],
+              "clinical_rationale": "Carboprost can provoke bronchospasm."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "postpartum_state_after_cesarean_delivery",
+      "type": "obstetric_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            8.0,
+            80.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "recent_obstetric_delivery_or_procedure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.5
+              ],
+              "clinical_rationale": "Immediate delivery context directly supports postpartum bleeding geometry."
+            },
+            {
+              "axis_id": "recent_cesarean_delivery_context_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Cesarean delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "vaginal_delivery_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Vaginal delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Postpartum state makes bleeding after delivery more interpretable as PPH."
+            },
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Observed atony in the postpartum interval is the disease-defining finding."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Cesarean delivery followed by immediate postpartum bleeding is a standard delivery context for atonic PPH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "postpartum_state_after_term_delivery",
+      "type": "obstetric_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "recent_obstetric_delivery_or_procedure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.5
+              ],
+              "clinical_rationale": "Immediate delivery context directly supports postpartum bleeding geometry."
+            },
+            {
+              "axis_id": "recent_cesarean_delivery_context_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Cesarean delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "vaginal_delivery_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Vaginal delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Postpartum state makes bleeding after delivery more interpretable as PPH."
+            },
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Observed atony in the postpartum interval is the disease-defining finding."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Term delivery followed by immediate postpartum bleeding is a standard delivery context for atonic PPH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "postpartum_state_after_vaginal_delivery",
+      "type": "obstetric_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            5.0,
+            50.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "recent_obstetric_delivery_or_procedure_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.5
+              ],
+              "clinical_rationale": "Immediate delivery context directly supports postpartum bleeding geometry."
+            },
+            {
+              "axis_id": "recent_cesarean_delivery_context_activity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Cesarean delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "vaginal_delivery_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Vaginal delivery context should be consumed when it is explicitly observed."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Postpartum state makes bleeding after delivery more interpretable as PPH."
+            },
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.3
+              ],
+              "clinical_rationale": "Observed atony in the postpartum interval is the disease-defining finding."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Vaginal delivery followed by immediate postpartum bleeding is a standard delivery context for atonic PPH.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "bicornuate_uterus",
+      "type": "uterine_anatomy_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "Uterine overdistension, myometrial anatomy, or relaxation contexts raise atony expression."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts raise PPH expression when postpartum bleeding is observed."
+            },
+            {
+              "axis_id": "vaginal_bleeding_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts can increase bleeding severity."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Congenital uterine cavity distortion can impair coordinated postpartum tone and support uterine atony.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "magnesium_sulfate_exposure",
+      "type": "uterine_relaxation_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "Uterine overdistension, myometrial anatomy, or relaxation contexts raise atony expression."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts raise PPH expression when postpartum bleeding is observed."
+            },
+            {
+              "axis_id": "vaginal_bleeding_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts can increase bleeding severity."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Magnesium exposure can relax myometrium and raise uterine-atony risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "uterine_myoma_context",
+      "type": "uterine_anatomy_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "Uterine overdistension, myometrial anatomy, or relaxation contexts raise atony expression."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts raise PPH expression when postpartum bleeding is observed."
+            },
+            {
+              "axis_id": "vaginal_bleeding_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts can increase bleeding severity."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Myomas can impair postpartum contraction and support atony.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "large_infant_context",
+      "type": "uterine_overdistension_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "Uterine overdistension, myometrial anatomy, or relaxation contexts raise atony expression."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts raise PPH expression when postpartum bleeding is observed."
+            },
+            {
+              "axis_id": "vaginal_bleeding_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts can increase bleeding severity."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Macrosomia or large infant context can overdistend the uterus and raise atony risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "preeclampsia_with_severe_features",
+      "type": "pregnancy_hypertensive_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            6.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "uterine_atony_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "Uterine overdistension, myometrial anatomy, or relaxation contexts raise atony expression."
+            },
+            {
+              "axis_id": "postpartum_hemorrhage_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts raise PPH expression when postpartum bleeding is observed."
+            },
+            {
+              "axis_id": "vaginal_bleeding_severity",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.05,
+                1.4
+              ],
+              "clinical_rationale": "Atony risk contexts can increase bleeding severity."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Preeclampsia and its treatment context increase postpartum hemorrhage vulnerability through uterine tone, coagulation, and delivery-management pathways.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    "Timestamp delivery, placental delivery, onset of bleeding, uterine tone findings, quantified blood loss, vital signs, uterotonic dosing, transfusion, procedures, and response.",
+    "Keep Tone, Tissue, Trauma, and Thrombin causes distinct: atony explains soft/boggy uterus and tone-responsive bleeding; retained placenta, laceration, rupture, inversion, accreta, and coagulopathy remain structured context or competing/superposed manifolds.",
+    "Do not delete bleeding evidence when the uterus is firm; instead raise genital_tract_laceration_presence, uterine_rupture_context_presence, source_control_need, or coagulopathy axes as medically true.",
+    "Assess uterine tone and fundal height repeatedly after massage and uterotonics because recurrent atony can follow transient response.",
+    "Quantify cumulative blood loss rather than relying only on subjective visual severity; trend hemoglobin, lactate, urine output, MAP, fibrinogen, platelets, PT/INR, aPTT, temperature, calcium, and acid-base status during active hemorrhage.",
+    "Activate obstetric hemorrhage, anesthesia, blood bank, operating-room, interventional radiology, and ICU pathways early when bleeding, shock, coagulopathy, or source-control need is high.",
+    "Model overt DIC, AFE, abruption, uterine rupture, or transfusion reaction as additional disease/event geometry when present; do not let this atony leaf double-count their disease-specific axes.",
+    "Treatment choice should emerge from uterine tone, bleeding rate, retained tissue, trauma/rupture context, coagulopathy, shock, contraindication axes, blood-product availability, and local procedural access."
+  ],
+  "quality_notes": [
+    "Disease-only distillation; no target-disease real case report or case JSON was used.",
+    "Exactly one lifespan outcome hazard axis is present: mortality_hazard_in_D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY.",
+    "Parent/satellite structure is used for bleeding, vaginal bleeding, uterine atony, shock, coagulation, postpartum context, and retained products.",
+    "Retained placenta/products, genital tract laceration, uterine rupture, inversion, placenta accreta spectrum, and coagulopathy are modeled as context or source-control axes, not as this disease identity.",
+    "No forbidden treatment-ranking label fields are used."
+  ]
+}

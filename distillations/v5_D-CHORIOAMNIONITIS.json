@@ -1,0 +1,5925 @@
+{
+  "disease": "D-CHORIOAMNIONITIS",
+  "disease_id": "D-CHORIOAMNIONITIS",
+  "disease_name": "Chorioamnionitis / 絨毛膜羊膜炎",
+  "disease_name_ja": "絨毛膜羊膜炎",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Chorioamnionitis",
+    "case_source_policy": "Disease-only distillation from the disease name and project schema/axis registry. No real case reports or disease-specific case JSONs for this leaf were read or used.",
+    "leaf_granularity": "First-layer disease manifold for infection and inflammation involving chorion, amnion, amniotic fluid, placenta, decidua, fetus, or a clinically linked combination. Organism class, rupture-of-membranes timing, gestational age, preterm labor, fetal status, neonatal exposure, maternal sepsis, postpartum extension, delivery route, and antibiotic susceptibility are represented as axes, risk modifiers, treatment modifiers, event hazards, or future subtype layers rather than extra disease-name qualifiers.",
+    "boundary_policy": "This leaf is distinct from postpartum endometritis, septic abortion, preterm labor without infection, isolated epidural-related fever, pyelonephritis, appendicitis, placental abruption, amniotic fluid embolism, and neonatal sepsis as standalone leaves. Shared fever, tachycardia, uterine tenderness, sepsis, fetal distress, and postpartum infection axes should be consumed without double-counting when vector-field superposition is used.",
+    "ontology_note": "The core manifold is ascending or less commonly hematogenous intra-amniotic microbial/inflammatory activity, maternal systemic inflammation, fetal inflammatory response, labor/membrane activation, and source-control dependence on effective antimicrobial exposure plus delivery. Diagnostic summary labels are avoided; microbiology, amniotic fluid, maternal, fetal, labor, postpartum, and treatment-context axes carry the evidence."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_CHORIO_ASCENDING_POLYMICROBIAL_INOCULATION",
+      "display_name": "上行性多菌種侵入 / Ascending polymicrobial inoculation",
+      "clinical_meaning": "Vaginal or cervical organisms ascend across ruptured or intact membranes into decidua, membranes, or amniotic fluid; less commonly hematogenous organisms seed the compartment.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -3.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.3,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "display_name": "脱落膜・絨毛膜羊膜炎症 / Decidual and chorioamniotic inflammation",
+      "clinical_meaning": "Neutrophilic and cytokine-rich inflammation of decidua, chorion, amnion, and placental membranes, producing uterine tenderness, purulent or malodorous fluid, and placental histologic inflammation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -1.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.35,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        10.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "display_name": "羊水内感染活動性 / Amniotic fluid infection activity",
+      "clinical_meaning": "Microbial burden and inflammatory cells enter amniotic fluid, causing abnormal amniotic fluid Gram stain, culture, leukocyte esterase, WBC count, low glucose, odor, and fetal exposure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -1.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.3,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "display_name": "母体全身炎症反応 / Maternal systemic inflammatory response",
+      "clinical_meaning": "Maternal cytokine release and bacteremia risk drive fever, tachycardia, leukocytosis or leukopenia, CRP/procalcitonin elevation, hypotension, lactate elevation, and sepsis complications.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.25,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.3,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "display_name": "胎児炎症反応 / Fetal inflammatory response",
+      "clinical_meaning": "Fetal inflammatory response ranges from absent to fetal distress or demise in severe second-trimester infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "display_name": "卵膜脆弱化・陣痛活性化 / Membrane weakening and labor activation",
+      "clinical_meaning": "Chorioamnionitis often coexists with or drives PPROM, oligohydramnios, cervical change, and preterm labor over days to weeks.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -2.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.55,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        45.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "display_name": "分娩後子宮・骨盤感染進展 / Postdelivery uterine and pelvic infectious extension",
+      "clinical_meaning": "Residual infected decidua, operative wounds, devitalized tissue, bacteremia, or inadequate anaerobic coverage can persist after birth as endometritis, pelvic abscess, wound infection, atony, postpartum hemorrhage, or maternal sepsis.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        5.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "display_name": "抗菌薬・分娩ソースコントロール不足 / Inadequate antimicrobial or delivery source control",
+      "clinical_meaning": "Inactive antibiotics, delayed treatment, undelivered infected intrauterine compartment, cesarean without anaerobic coverage, or persistent postpartum focus sustains maternal and fetal inflammatory hazards.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        5.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_CHORIO_ASCENDING_POLYMICROBIAL_INOCULATION",
+      "target_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Ascending organisms activate decidual and membrane inflammation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Inflamed membranes and decidua can seed infected or inflamed amniotic fluid.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Intrauterine infection drives maternal fever and systemic inflammatory response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "The fetus is directly exposed to infected or inflamed amniotic fluid.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Cytokines and prostaglandins weaken membranes and activate labor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        5.0
+      ],
+      "clinical_rationale": "Heavy intrapartum infectious burden increases postpartum uterine and pelvic infection risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "target_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Inactive or delayed antibiotics allow ongoing amniotic infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "target_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Poor source control sustains maternal inflammation and sepsis risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_ASCENDING_POLYMICROBIAL_INOCULATION",
+      "target_id": "genital_tract_pathogen_colonization_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -14.0,
+        0.0
+      ],
+      "clinical_rationale": "Ascending infection is more plausible when genital tract pathogens are present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "chorion_amnion_inflammation_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Membrane inflammation is the core tissue process.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "uterine_tenderness_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Inflamed decidua and uterus can become tender.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "uterine_tenderness_severity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Tenderness severity reflects local inflammatory intensity when present.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "malodorous_amniotic_fluid_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Anaerobic or polymicrobial infection may produce malodorous fluid.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "purulent_amniotic_fluid_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Neutrophilic intra-amniotic inflammation can make fluid visibly purulent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_DECIDUAL_CHORIOAMNIOTIC_INFLAMMATION",
+      "target_id": "mucopurulent_cervical_discharge_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Cervical drainage can become purulent in ascending genital tract infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_inflammation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Amniotic fluid inflammation is directly caused by intra-amniotic infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_wbc_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Neutrophils enter amniotic fluid during infection.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_glucose",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Microbial and leukocyte metabolism can lower amniotic fluid glucose.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_leukocyte_esterase_positivity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Leukocyte esterase reflects neutrophilic amniotic inflammation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_gram_stain_bacteria_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Gram stain may show bacteria when amniotic microbial burden is high.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_culture_positivity_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Culture positivity reflects viable organisms in sampled amniotic fluid.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_bacterial_load",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Bacterial load scales with amniotic infection burden when culture or molecular testing is available.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "body_temperature",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Maternal inflammatory cytokines raise temperature.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Fever, pain, and systemic inflammation increase maternal heart rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Measured heart rate rises with maternal systemic inflammation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "white_blood_cell_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Bacterial intrauterine infection commonly produces leukocytosis, though labor and steroid exposure can confound it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "absolute_neutrophil_count",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Neutrophilia is typical in bacterial inflammation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "serum_crp",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.2,
+        2.0
+      ],
+      "clinical_rationale": "Maternal acute phase response raises CRP.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "serum_procalcitonin",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.1,
+        1.5
+      ],
+      "clinical_rationale": "Bacterial systemic inflammation can raise procalcitonin, especially with bacteremia or sepsis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "blood_culture_positivity_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Intra-amniotic infection can seed maternal bloodstream pathogens.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Sepsis physiology can lower maternal vascular tone and MAP.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "serum_lactate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Hypoperfusion or severe inflammatory stress raises lactate.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "serum_creatinine",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        3.0
+      ],
+      "clinical_rationale": "Sepsis-associated hypoperfusion, AKI, and nephrotoxic treatment constraints can raise creatinine.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "progression_to_septic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Uncontrolled intrauterine infection can progress to maternal septic shock.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "dic_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Severe sepsis and obstetric inflammation can trigger coagulopathy.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "ards_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Severe maternal sepsis can produce inflammatory lung injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "acute_kidney_injury_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Sepsis, hypoperfusion, and nephrotoxic exposures can cause AKI.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_distress_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Fetal inflammation and maternal fever can produce fetal compromise.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_heart_rate_bpm",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Fetal tachycardia is a common fetal response to maternal fever or fetal inflammation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Fetal heart rate above expected range supports fetal inflammatory or hyperthermic stress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_heart_rate_variability_decreased_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "More severe fetal compromise can reduce tracing variability.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Fetal inflammatory stress can make the tracing nonreassuring.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_distress_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Fetal inflammatory and thermal stress increases hazard of fetal distress.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_hypoxic_injury_hazard_in_D-CHORIOAMNIONITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Severe fetal compromise or maternal sepsis can progress to hypoxic injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "neonatal_sepsis_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Intra-amniotic infection exposes the neonate to early-onset infection risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "neonatal_pneumonia_meningitis_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        5.0
+      ],
+      "clinical_rationale": "Ascending organisms can produce neonatal pneumonia, meningitis, or invasive infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "ruptured_membranes_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -2.0,
+        2.0
+      ],
+      "clinical_rationale": "Inflammation can weaken membranes, while ruptured membranes also facilitate infection.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "active_labor_or_contraction_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -1.0,
+        2.0
+      ],
+      "clinical_rationale": "Inflammatory prostaglandins activate uterine contractions.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "preterm_labor_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Intra-amniotic inflammation is a major driver of preterm labor.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "preterm_delivery_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "clinical_rationale": "Preterm labor and the need for delivery increase preterm birth hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "neonatal_respiratory_distress_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Prematurity increases neonatal respiratory morbidity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "target_id": "postpartum_endometritis_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        5.0
+      ],
+      "clinical_rationale": "Intrapartum intrauterine infection can persist as postpartum endometritis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "target_id": "pelvic_abscess_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        2.0,
+        14.0
+      ],
+      "clinical_rationale": "Untreated or complicated postpartum extension can form pelvic abscess.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "target_id": "uterine_atony_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Inflamed or fatigued uterus contracts less effectively after delivery.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+      "target_id": "postpartum_hemorrhage_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Atony and infection raise postpartum hemorrhage risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "target_id": "active_antibiotic_coverage_probability",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Inadequate therapy implies low active antimicrobial coverage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "target_id": "source_control_adequacy",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Persistent infected intrauterine or postpartum focus means inadequate source control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+      "target_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Persistent infection and delayed control increase maternal lifespan hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Maternal death hazard rises through septic shock, DIC, ARDS, AKI, and delayed control.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "fever_history_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? fever_history_presence ?????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "shock_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? shock_presence ?????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_gram_stain_wbc_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "?????? amniotic_fluid_gram_stain_wbc_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "amniotic_fluid_organisms_on_gram_stain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "?????? amniotic_fluid_organisms_on_gram_stain_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+      "target_id": "histologic_chorioamnionitis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "?????? histologic_chorioamnionitis_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_inflammatory_response_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? fetal_inflammatory_response_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "acute_funisitis_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? acute_funisitis_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+      "target_id": "fetal_demise_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "??????? fetal_demise_presence ??????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "vaginal_fluid_leakage_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Membrane rupture produces vaginal fluid leakage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "uterine_contractions_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION drives uterine_contractions_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "oligohydramnios_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION drives oligohydramnios_presence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "preterm_premature_rupture_of_membranes_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        -7.0,
+        7.0
+      ],
+      "clinical_rationale": "Membrane weakening and rupture are central PPROM geometry in chorioamnionitis.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "amniotic_fluid_index_cm",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        14.0
+      ],
+      "clinical_rationale": "PPROM-associated membrane failure lowers amniotic fluid volume.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+      "target_id": "cervical_dilation_complete_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Infection-associated membrane and labor activation can progress to cervical dilation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+      "target_id": "fever_recrudescence_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Persistent infection can produce recurrent fever.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_context_probability",
+      "category": "risk_context",
+      "axis_role": "finding",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        0.0
+      ],
+      "peak_value_range": [
+        1.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        280.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "妊娠中であることを示す親 context。絨毛膜羊膜炎の産科軸を gate する。",
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "risk_context",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "weeks",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        42.0
+      ],
+      "peak_day_range": [
+        -280.0,
+        14.0
+      ],
+      "peak_value_range": [
+        14.0,
+        42.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        300.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        120.0
+      ],
+      "clinical_interpretation": "Chorioamnionitis can present from the second trimester through term; gestational age is context, not a disease-produced effect.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_labor_or_contraction_context_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        -1.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        7.0
+      ],
+      "clinical_interpretation": "陣痛・子宮収縮 context。感染に先行することも感染で増強することもある。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "ruptured_membranes_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -3.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "clinical_interpretation": "破水の有無。上行感染リスクと感染による卵膜脆弱化の双方を反映する。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "duration_of_membrane_rupture_hours",
+      "category": "obstetric_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "ruptured_membranes_presence",
+      "unit": "hours",
+      "log_scale": true,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        -3.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        240.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "clinical_interpretation": "破水から評価時点までの時間。長いほど上行感染リスクが上がる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prelabor_rupture_of_membranes_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "ruptured_membranes_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -14.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "陣痛開始前の破水 context。感染に先行しうる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "preterm_premature_rupture_of_membranes_presence",
+      "category": "obstetric_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "ruptured_membranes_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.55,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        60.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        120.0
+      ],
+      "clinical_interpretation": "PPROM is a common source and consequence geometry for chorioamnionitis and should persist across the admission course.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "prolonged_labor_context_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "active_labor_or_contraction_context_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -2.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "遷延分娩 context。破水後時間、内診回数、感染リスクを増幅する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "repeated_digital_cervical_examinations_context_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -2.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "破水後の反復内診 context。上行感染リスクを修飾する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "internal_fetal_or_uterine_monitoring_context_presence",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "胎児頭皮電極や子宮内圧カテーテルなどの内部モニタリング context。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "meconium_stained_amniotic_fluid_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -1.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "羊水混濁 context。感染リスクと胎児ストレス context を修飾する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "genital_tract_pathogen_colonization_probability",
+      "category": "microbiology",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.25
+      ],
+      "peak_day_range": [
+        -30.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "膣・頸管内の病原菌/異常菌叢 context。上行感染の prior と治療効果を修飾する。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "group_b_streptococcus_colonization_probability",
+      "category": "microbiology",
+      "axis_role": "satellite",
+      "parent_axis_id": "genital_tract_pathogen_colonization_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.25
+      ],
+      "peak_day_range": [
+        -35.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "GBS 保菌/感染 context。母体・新生児抗菌薬 coverage を修飾する。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "bacterial_vaginosis_or_ascending_vaginal_dysbiosis_activity",
+      "category": "microbiology",
+      "axis_role": "satellite",
+      "parent_axis_id": "genital_tract_pathogen_colonization_probability",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.12
+      ],
+      "peak_day_range": [
+        -30.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "細菌性膣症/上行しやすい膣内 dysbiosis context。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "epidural_related_fever_context_probability",
+      "category": "risk_context",
+      "axis_role": "satellite",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "硬膜外関連発熱など非感染性発熱 context。発熱単独の特異性を弱める。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "chorion_amnion_inflammation_activity",
+      "category": "histopathology",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        14.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        30.0
+      ],
+      "clinical_interpretation": "胎盤・卵膜の組織学的炎症活動性。確認的証拠としても使える。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "amniotic_fluid_inflammation_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -1.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "羊水内炎症の親 finding。羊水検査の子軸を gate する。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "amniotic_fluid_wbc_count",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "cells_per_uL",
+      "log_scale": true,
+      "baseline_range": [
+        0.0,
+        10.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        30.0,
+        5000.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "羊水中白血球数。感染性/炎症性羊水を支持する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "amniotic_fluid_glucose",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "mg/dL",
+      "log_scale": false,
+      "baseline_range": [
+        14.0,
+        80.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        20.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "羊水 glucose。低値は羊水内感染を支持するが、検体 context 依存。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "amniotic_fluid_leukocyte_esterase_positivity",
+      "category": "laboratory",
+      "axis_role": "satellite",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "羊水 leukocyte esterase 陽性。好中球性炎症を示す。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "amniotic_fluid_gram_stain_bacteria_presence",
+      "category": "microbiology",
+      "axis_role": "satellite",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "羊水 Gram stain で菌体を認める所見。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "amniotic_fluid_culture_positivity_probability",
+      "category": "microbiology",
+      "axis_role": "measurement",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "羊水培養陽性確率。臨床段階で得られた場合のみ rankable。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "amniotic_fluid_bacterial_load",
+      "category": "microbiology",
+      "axis_role": "measurement",
+      "parent_axis_id": "amniotic_fluid_culture_positivity_probability",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "羊水内菌量の相対値。培養・分子検査 context の子 measurement。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "malodorous_amniotic_fluid_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "悪臭を伴う羊水。多菌種/嫌気性 context を示唆するが感度は高くない。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "purulent_amniotic_fluid_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        5.0
+      ],
+      "clinical_interpretation": "膿性羊水。強い炎症負荷を示す。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "vaginal_discharge_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.15
+      ],
+      "peak_day_range": [
+        -7.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "膣・頸管分泌物の親 finding。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mucopurulent_cervical_discharge_presence",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "vaginal_discharge_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -7.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "粘膿性頸管分泌物。上行感染 evidence の一部。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mucopurulent_cervical_discharge_severity",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "mucopurulent_cervical_discharge_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -7.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "粘膿性分泌物の程度。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uterine_tenderness_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -1.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "子宮圧痛。局所炎症を支持するが陣痛や他疾患で confound される。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_tenderness_severity",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "uterine_tenderness_presence",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -1.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "子宮圧痛の程度。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "body_temperature",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "degC",
+      "log_scale": false,
+      "baseline_range": [
+        36.0,
+        37.5
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        38.0,
+        40.5
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.3,
+        3.0
+      ],
+      "clinical_interpretation": "母体体温。発熱は重要だが、無熱例や硬膜外関連発熱などの confound がある。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tachycardia_presence",
+      "category": "vital_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.12
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "母体頻脈の有無。発熱、疼痛、脱水、敗血症で増える。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "parent_axis_id": "tachycardia_presence",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        60.0,
+        105.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        100.0,
+        160.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "母体心拍数。妊娠・疼痛・発熱 context で背景が上がる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "white_blood_cell_count",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "baseline_range": [
+        4.0,
+        14.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        12.0,
+        30.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        5.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        5.0
+      ],
+      "clinical_interpretation": "白血球数。妊娠・分娩による上昇を背景として感染時にさらに上がるが、重症/免疫抑制では低値もありうる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "absolute_neutrophil_count",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "10^9/L",
+      "log_scale": false,
+      "baseline_range": [
+        2.0,
+        11.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        8.0,
+        25.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        5.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        5.0
+      ],
+      "clinical_interpretation": "好中球数。細菌性炎症の強さを補助的に表す。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_crp",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "mg/L",
+      "log_scale": true,
+      "baseline_range": [
+        0.0,
+        10.0
+      ],
+      "peak_day_range": [
+        0.5,
+        3.0
+      ],
+      "peak_value_range": [
+        20.0,
+        300.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        5.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        5.0
+      ],
+      "clinical_interpretation": "CRP。母体炎症負荷を反映するが、分娩・手術・他感染でも上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_procalcitonin",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "ng/mL",
+      "log_scale": true,
+      "baseline_range": [
+        0.0,
+        0.25
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.25,
+        20.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        3.0
+      ],
+      "clinical_interpretation": "プロカルシトニン。全身性細菌感染・敗血症 context で上がりやすい。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_culture_positivity_probability",
+      "category": "microbiology",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        3.0
+      ],
+      "clinical_interpretation": "母体血液培養陽性確率。重症・菌血症 context で上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "blood_culture_bacterial_load",
+      "category": "microbiology",
+      "axis_role": "measurement",
+      "parent_axis_id": "blood_culture_positivity_probability",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        3.0
+      ],
+      "clinical_interpretation": "母体血流内菌量の相対値。血液培養陽性時の子 measurement。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "category": "vital_sign",
+      "axis_role": "measurement",
+      "unit": "mmHg",
+      "log_scale": false,
+      "baseline_range": [
+        70.0,
+        105.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        45.0,
+        95.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3.0
+      ],
+      "clinical_interpretation": "平均動脈圧。敗血症性血管拡張や産科出血で低下しうる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_lactate",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "mmol/L",
+      "log_scale": false,
+      "baseline_range": [
+        0.5,
+        2.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        1.0,
+        10.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        2.0
+      ],
+      "clinical_interpretation": "乳酸。母体敗血症・低灌流・重症ストレスを反映する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_creatinine",
+      "category": "laboratory",
+      "axis_role": "measurement",
+      "unit": "mg/dL",
+      "log_scale": true,
+      "baseline_range": [
+        0.4,
+        1.0
+      ],
+      "peak_day_range": [
+        0.5,
+        3.0
+      ],
+      "peak_value_range": [
+        0.6,
+        4.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        7.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        14.0
+      ],
+      "clinical_interpretation": "血清 creatinine。母体敗血症 AKI と aminoglycoside dosing safety context を表す。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_kidney_injury_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        7.0
+      ],
+      "clinical_interpretation": "母体 AKI hazard。敗血症、低灌流、腎毒性薬剤で増える。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "progression_to_septic_shock_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.003
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.05,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        5.0
+      ],
+      "clinical_interpretation": "母体敗血症性ショックへの進展 hazard。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "dic_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.002,
+        0.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        5.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "DIC hazard。重症感染や産科合併症で上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ards_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.002,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        10.0
+      ],
+      "clinical_interpretation": "ARDS hazard。重症母体敗血症で上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_distress_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "胎児機能不全/胎児 distress の親 finding。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_heart_rate_bpm",
+      "category": "obstetric_measurement",
+      "axis_role": "measurement",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "baseline_range": [
+        110.0,
+        160.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        150.0,
+        210.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "胎児心拍数。母体発熱・胎児炎症で頻脈になりやすい。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_tachycardia_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "胎児頻脈の有無。絨毛膜羊膜炎で重要な fetal response。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_heart_rate_variability_decreased_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "胎児心拍 variability 低下。より重い胎児 stress を示す。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nonreassuring_fetal_heart_rate_tracing_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "nonreassuring fetal tracing。胎児炎症・母体高熱・低灌流で出現しうる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_distress_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.05,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        3.0
+      ],
+      "clinical_interpretation": "胎児 distress 進展 hazard。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fetal_hypoxic_injury_hazard_in_D-CHORIOAMNIONITIS",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "fetal_distress_presence",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.3
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "clinical_interpretation": "絨毛膜羊膜炎 context での胎児低酸素性障害 hazard。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "preterm_labor_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        -2.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "早産陣痛 hazard。羊水内炎症で増える。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "preterm_delivery_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        -1.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.95
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "早産分娩 hazard。感染制御と胎児・母体安全性の tradeoff を受ける。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "neonatal_respiratory_distress_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "preterm_delivery_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "早産・感染 exposure に伴う新生児呼吸障害 hazard。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "neonatal_sepsis_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.004
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.2,
+        7.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "早発型新生児敗血症 hazard。胎児 exposure と GBS/菌種/抗菌薬 coverage で変わる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "neonatal_pneumonia_meningitis_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "neonatal_sepsis_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        5.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.4
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        21.0
+      ],
+      "clinical_interpretation": "新生児肺炎・髄膜炎など侵襲感染 hazard。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "postpartum_endometritis_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.005
+      ],
+      "peak_day_range": [
+        0.0,
+        5.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.7
+      ],
+      "plateau_duration_days": [
+        0.5,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        14.0
+      ],
+      "clinical_interpretation": "分娩後子宮内膜炎 hazard。帝王切開・不十分な抗菌薬/嫌気性 coverage で上がる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pelvic_abscess_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "postpartum_endometritis_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-05,
+        0.001
+      ],
+      "peak_day_range": [
+        2.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.001,
+        0.25
+      ],
+      "plateau_duration_days": [
+        2.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        30.0
+      ],
+      "clinical_interpretation": "骨盤膿瘍 hazard。遷延感染の event chain。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "uterine_atony_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        3.0
+      ],
+      "clinical_interpretation": "子宮弛緩 hazard。感染・分娩疲労・発熱で上がりうる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "postpartum_hemorrhage_hazard",
+      "category": "event_hazard",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        0.0001,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.02,
+        2.0
+      ],
+      "decline_half_life_days": [
+        0.05,
+        7.0
+      ],
+      "clinical_interpretation": "分娩後出血 hazard。子宮弛緩、DIC、手術 context で上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cesarean_delivery_need_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.35
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        3.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "帝王切開が必要になる確率 context。感染そのものではなく産科適応・胎児/母体状態で決まる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "delivery_feasibility",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "分娩を進められる feasibility。頸管熟化、胎位、母体安定性、施設能力を含む。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "source_control_adequacy",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "感染源制御の充足度。抗菌薬、分娩、胎盤娩出、術後/産後感染制御を含む。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "active_antibiotic_coverage_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "原因菌に実際に有効な抗菌薬 coverage の確率。薬敏・GBS・嫌気性菌・耐性 context で変わる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pathogen_identification_confidence",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "原因菌同定の確信度。培養・Gram stain・GBS 結果などで上がる。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "anaerobic_coverage_probability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "active_antibiotic_coverage_probability",
+      "unit": "probability_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "嫌気性菌 coverage。帝王切開後・悪臭羊水・産後 extension risk で重要。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "neonatal_resuscitation_availability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "parent_axis_id": "pregnancy_context_probability",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "新生児蘇生/NICU/感染評価体制の availability。新生児 hazard と分娩 timing の tradeoff を修飾する。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "maternal_critical_care_resource_availability",
+      "category": "treatment_modifier",
+      "axis_role": "measurement",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.05,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "母体敗血症・出血・手術対応 resource availability。",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "category": "derived_hazard",
+      "axis_role": "measurement",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        5e-05,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.05,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "clinical_interpretation": "絨毛膜羊膜炎に伴う母体 lifespan hazard。主に敗血症性ショック、DIC、ARDS、AKI、産後感染進展、制御遅延を通じる。",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fever_history_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????????????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "abdominal_pain_severity",
+      "category": "symptom",
+      "axis_role": "satellite",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "abdominal_pain_presence"
+    },
+    {
+      "axis_id": "back_pain_presence",
+      "category": "symptom",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "???????????????",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "amniotic_fluid_gram_stain_wbc_presence",
+      "category": "microbiology",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?? Gram stain ???????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence"
+    },
+    {
+      "axis_id": "amniotic_fluid_organisms_on_gram_stain_presence",
+      "category": "microbiology",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?? Gram stain ??????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "amniotic_fluid_inflammation_presence"
+    },
+    {
+      "axis_id": "histologic_chorioamnionitis_presence",
+      "category": "pathology",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_funisitis_presence",
+      "category": "pathology",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "fetal_inflammatory_response_presence"
+    },
+    {
+      "axis_id": "fetal_inflammatory_response_presence",
+      "category": "pathology",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "fetal_demise_presence",
+      "category": "obstetric_outcome",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.5,
+        60.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        120.0
+      ],
+      "clinical_interpretation": "Fetal demise is a severe but optional fetal consequence of intra-amniotic infection, especially in early gestation.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "fetal_distress_presence"
+    },
+    {
+      "axis_id": "shock_presence",
+      "category": "physical_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????????????????",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "vaginal_fluid_leakage_presence",
+      "category": "obstetric_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.65,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        60.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        120.0
+      ],
+      "clinical_interpretation": "Vaginal fluid leakage is the observed clinical expression of ruptured membranes or PPROM.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "ruptured_membranes_presence"
+    },
+    {
+      "axis_id": "ivf_conception_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pregnancy_context_probability"
+    },
+    {
+      "axis_id": "twin_pregnancy_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "????????",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pregnancy_context_probability"
+    },
+    {
+      "axis_id": "uterine_contractions_presence",
+      "category": "obstetric_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "??????????????/???? context?",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "active_labor_or_contraction_context_presence"
+    },
+    {
+      "axis_id": "fetal_heart_activity_presence",
+      "category": "obstetric_context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.0
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        1.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "?????????????? context?",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "pregnancy_context_probability"
+    },
+    {
+      "axis_id": "amniotic_fluid_index_cm",
+      "category": "obstetric_ultrasound",
+      "axis_role": "measurement",
+      "unit": "cm",
+      "log_scale": false,
+      "baseline_range": [
+        5.0,
+        25.0
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        12.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        60.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "When chorioamnionitis is tied to PPROM, amniotic fluid can be markedly reduced; intact-membrane cases may remain normal.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "pregnancy_context_probability"
+    },
+    {
+      "axis_id": "oligohydramnios_presence",
+      "category": "obstetric_ultrasound",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        60.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "clinical_interpretation": "Oligohydramnios is compatible when chorioamnionitis occurs with membrane rupture or fluid leakage.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "ruptured_membranes_presence"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "clinical_interpretation": "Vaginal bleeding or spotting can accompany cervicitis, PPROM, or preterm cervical change in chorioamnionitis but is not required.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cervical_dilation_complete_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        14.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "clinical_interpretation": "Complete cervical dilation can occur when infection and PPROM trigger preterm delivery or miscarriage.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "cervical_change_presence"
+    },
+    {
+      "axis_id": "fever_recrudescence_presence",
+      "category": "systemic_inflammation",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        60.0
+      ],
+      "clinical_interpretation": "Fever can recur while intra-amniotic or genital-tract infection remains uncontrolled.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "fever_history_presence"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "duration_of_membrane_rupture_hours",
+      "target_axis_id": "amniotic_fluid_culture_positivity_probability",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "pre_delivery",
+      "clinical_rationale": "Longer rupture duration increases ascending microbial access.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "duration_of_membrane_rupture_hours",
+      "target_axis_id": "preterm_labor_hazard",
+      "relationship": "positive_correlation",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.2,
+        0.6
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "phase": "pre_delivery",
+      "clinical_rationale": "Prolonged membrane rupture and inflammation increase labor activation risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "body_temperature",
+      "target_axis_id": "heart_rate",
+      "relationship": "positive_correlation",
+      "coupling_type": "mixed",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.2
+      ],
+      "phase": "febrile_phase",
+      "clinical_rationale": "Fever raises maternal heart rate in addition to shared inflammatory drive.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "body_temperature",
+      "target_axis_id": "fetal_tachycardia_presence",
+      "relationship": "positive_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "intrapartum",
+      "clinical_rationale": "Maternal fever can directly increase fetal heart rate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "epidural_related_fever_context_probability",
+      "target_axis_id": "body_temperature",
+      "relationship": "fever_specificity_modifier",
+      "coupling_type": "noise_correlation",
+      "correlation_range": [
+        0.2,
+        0.6
+      ],
+      "effect_direction": "source_up_increases_temperature_without_parallel_infectious_axes",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "intrapartum",
+      "clinical_rationale": "Epidural-related fever can raise temperature without matching microbiology or uterine infection axes.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "amniotic_fluid_bacterial_load",
+      "target_axis_id": "neonatal_sepsis_hazard",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "fetal_exposure",
+      "clinical_rationale": "Higher intra-amniotic microbial burden increases neonatal infectious exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "fetal_distress_hazard",
+      "target_axis_id": "fetal_hypoxic_injury_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "intrapartum",
+      "clinical_rationale": "Persistent fetal distress can progress to hypoxic injury.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "preterm_labor_hazard",
+      "target_axis_id": "preterm_delivery_hazard",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "phase": "pre_delivery",
+      "clinical_rationale": "Preterm labor increases preterm birth hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "preterm_delivery_hazard",
+      "target_axis_id": "neonatal_respiratory_distress_hazard",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.4,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "phase": "neonatal",
+      "clinical_rationale": "Earlier delivery increases neonatal respiratory morbidity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "gestational_age_weeks",
+      "target_axis_id": "neonatal_respiratory_distress_hazard",
+      "relationship": "negative_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "phase": "neonatal",
+      "clinical_rationale": "More advanced gestation lowers respiratory distress risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "active_antibiotic_coverage_probability",
+      "target_axis_id": "body_temperature",
+      "relationship": "negative_drift",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.2,
+        2.0
+      ],
+      "phase": "treated_phase",
+      "clinical_rationale": "Effective antibiotics should reduce fever over time.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "active_antibiotic_coverage_probability",
+      "target_axis_id": "amniotic_fluid_bacterial_load",
+      "relationship": "negative_drift",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.1,
+        2.0
+      ],
+      "phase": "treated_phase",
+      "clinical_rationale": "Active antimicrobial exposure lowers microbial burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "active_antibiotic_coverage_probability",
+      "target_axis_id": "neonatal_sepsis_hazard",
+      "relationship": "negative_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.7,
+        -0.2
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "phase": "peripartum",
+      "clinical_rationale": "Maternal intrapartum antibiotics lower neonatal early-onset infection risk when active.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_adequacy",
+      "target_axis_id": "progression_to_septic_shock_hazard",
+      "relationship": "negative_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "treated_or_delivered_phase",
+      "clinical_rationale": "Adequate antimicrobial and delivery/postpartum source control lowers maternal shock risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "source_control_adequacy",
+      "target_axis_id": "postpartum_endometritis_hazard",
+      "relationship": "negative_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        -0.7,
+        -0.2
+      ],
+      "effect_direction": "source_up_decreases_target",
+      "lag_days_range": [
+        0.0,
+        5.0
+      ],
+      "phase": "postdelivery",
+      "clinical_rationale": "Placental delivery, antibiotic coverage, and adequate postpartum control reduce endometritis hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "progression_to_septic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.5,
+        0.9
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "maternal_critical_illness",
+      "clinical_rationale": "Septic shock is a major maternal mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "dic_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "phase": "maternal_critical_illness",
+      "clinical_rationale": "DIC increases bleeding, organ failure, and death hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "ards_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "phase": "maternal_critical_illness",
+      "clinical_rationale": "ARDS worsens maternal survival.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "acute_kidney_injury_hazard",
+      "target_axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.2,
+        0.7
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "phase": "maternal_critical_illness",
+      "clinical_rationale": "Sepsis-associated AKI marks organ failure and worsens prognosis.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "mean_arterial_pressure",
+      "target_axis_id": "serum_lactate",
+      "relationship": "negative_correlation",
+      "coupling_type": "drift",
+      "correlation_range": [
+        -0.8,
+        -0.3
+      ],
+      "effect_direction": "source_down_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Lower MAP increases tissue hypoperfusion and lactate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "serum_lactate",
+      "target_axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+      "relationship": "positive_hazard_drift",
+      "coupling_type": "hazard_drift",
+      "correlation_range": [
+        0.3,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "phase": "shock",
+      "clinical_rationale": "Higher lactate marks worse maternal hypoperfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "uterine_atony_hazard",
+      "target_axis_id": "postpartum_hemorrhage_hazard",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.4,
+        0.8
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "phase": "postdelivery",
+      "clinical_rationale": "Uterine atony is a direct pathway to postpartum hemorrhage.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "postpartum_endometritis_hazard",
+      "target_axis_id": "pelvic_abscess_hazard",
+      "relationship": "event_transition",
+      "coupling_type": "event_transition",
+      "correlation_range": [
+        0.3,
+        0.7
+      ],
+      "effect_direction": "source_up_increases_target",
+      "lag_days_range": [
+        2.0,
+        14.0
+      ],
+      "phase": "postdelivery",
+      "clinical_rationale": "Persistent endometritis can extend to abscess.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "broad_spectrum_intrapartum_antibiotics_ampicillin_gentamicin",
+      "treatment_name": "広域分娩時抗菌薬 ampicillin + gentamicin",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antimicrobial_control",
+      "mechanistic_targets": [
+        "M_CHORIO_ASCENDING_POLYMICROBIAL_INOCULATION",
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+        "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE"
+      ],
+      "required_context_axes": [
+        "active_antibiotic_coverage_probability",
+        "group_b_streptococcus_colonization_probability",
+        "amniotic_fluid_culture_positivity_probability",
+        "blood_culture_positivity_probability",
+        "serum_creatinine"
+      ],
+      "trajectory_modifications": {
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY": {
+          "peak_value_factor": [
+            0.1,
+            0.6
+          ],
+          "decline_half_life_days": [
+            0.2,
+            2.0
+          ]
+        },
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.3,
+            3.0
+          ]
+        },
+        "active_antibiotic_coverage_probability": {
+          "target_shift_range": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "neonatal_sepsis_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            5.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "benefit_weakens_until_coverage_corrected",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Coverage must match the causal organisms."
+        },
+        {
+          "axis_id": "serum_creatinine",
+          "condition": "high",
+          "effect": "aminoglycoside_safety_margin_narrows",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Renal dysfunction constrains gentamicin exposure."
+        }
+      ],
+      "failure_modes": [
+        "resistant_or_uncovered_pathogen",
+        "delayed_administration",
+        "renal_toxicity_or_dosing_constraint",
+        "undelivered_or_persistent_source"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "penicillin_allergy_contextual_antibiotic_coverage",
+      "treatment_name": "ペニシリンアレルギー時の文脈依存抗菌薬 coverage",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antimicrobial_control",
+      "mechanistic_targets": [
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION"
+      ],
+      "required_context_axes": [
+        "active_antibiotic_coverage_probability",
+        "group_b_streptococcus_colonization_probability",
+        "pathogen_identification_confidence",
+        "anaerobic_coverage_probability"
+      ],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {
+          "target_shift_range": [
+            0.2,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.3,
+            3.0
+          ]
+        },
+        "neonatal_sepsis_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            5.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "group_b_streptococcus_colonization_probability",
+          "condition": "high",
+          "effect": "requires_reliable_gbs_coverage",
+          "factor_range": [
+            0.5,
+            1.5
+          ],
+          "clinical_rationale": "GBS status changes the safety of allergy alternatives."
+        },
+        {
+          "axis_id": "pathogen_identification_confidence",
+          "condition": "low",
+          "effect": "empiric_uncertainty_remains",
+          "factor_range": [
+            0.4,
+            0.9
+          ],
+          "clinical_rationale": "Unidentified organisms make narrow allergy substitutions less reliable."
+        }
+      ],
+      "failure_modes": [
+        "uncovered_gbs",
+        "clindamycin_resistance",
+        "insufficient_anaerobic_coverage",
+        "toxicity_or_allergy_cross_reactivity"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "anaerobic_coverage_after_cesarean_delivery",
+      "treatment_name": "帝王切開後の嫌気性菌 coverage 追加",
+      "mode": "reshape_landscape",
+      "treatment_lane": "postdelivery_infection_control",
+      "mechanistic_targets": [
+        "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION",
+        "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL"
+      ],
+      "required_context_axes": [
+        "cesarean_delivery_need_probability",
+        "anaerobic_coverage_probability",
+        "postpartum_endometritis_hazard",
+        "pelvic_abscess_hazard"
+      ],
+      "trajectory_modifications": {
+        "anaerobic_coverage_probability": {
+          "target_shift_range": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "postpartum_endometritis_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1.0,
+            7.0
+          ]
+        },
+        "pelvic_abscess_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            2.0,
+            14.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "cesarean_delivery_need_probability",
+          "condition": "high_or_performed",
+          "effect": "relative_value_increases",
+          "factor_range": [
+            1.0,
+            2.5
+          ],
+          "clinical_rationale": "Cesarean route increases postpartum endometritis and pelvic infection risk."
+        },
+        {
+          "axis_id": "malodorous_amniotic_fluid_presence",
+          "condition": "present",
+          "effect": "anaerobic_value_increases",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Malodor suggests anaerobic contribution."
+        }
+      ],
+      "failure_modes": [
+        "omitted_after_cesarean",
+        "persistent_abscess_or_retained_infected_tissue",
+        "drug_intolerance"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "alternative_single_agent_broad_beta_lactam_regimen",
+      "treatment_name": "広域 beta-lactam 単剤代替レジメン",
+      "mode": "reshape_landscape",
+      "treatment_lane": "antimicrobial_control",
+      "mechanistic_targets": [
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+        "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION"
+      ],
+      "required_context_axes": [
+        "active_antibiotic_coverage_probability",
+        "anaerobic_coverage_probability",
+        "pathogen_identification_confidence",
+        "serum_creatinine"
+      ],
+      "trajectory_modifications": {
+        "active_antibiotic_coverage_probability": {
+          "target_shift_range": [
+            0.3,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "anaerobic_coverage_probability": {
+          "target_shift_range": [
+            0.2,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.3,
+            3.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "pathogen_identification_confidence",
+          "condition": "low",
+          "effect": "broad_regimen_value_increases",
+          "factor_range": [
+            1.0,
+            2.0
+          ],
+          "clinical_rationale": "Polymicrobial uncertainty favors broader empiric activity."
+        },
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "high_with_narrow_regimen",
+          "effect": "incremental_value_may_decrease",
+          "factor_range": [
+            0.5,
+            1.0
+          ],
+          "clinical_rationale": "If active coverage is already assured, broader therapy may add less."
+        }
+      ],
+      "failure_modes": [
+        "local_resistance",
+        "unnecessary_overly_broad_exposure",
+        "allergy_or_renal_dosing_constraint"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "acetaminophen_antipyresis_and_temperature_control",
+      "treatment_name": "解熱・体温管理",
+      "mode": "push_state",
+      "treatment_lane": "maternal_fetal_physiology_support",
+      "mechanistic_targets": [
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+        "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE"
+      ],
+      "required_context_axes": [
+        "body_temperature",
+        "fetal_heart_rate",
+        "fetal_tachycardia_presence",
+        "active_antibiotic_coverage_probability"
+      ],
+      "trajectory_modifications": {
+        "body_temperature": {
+          "target_shift_range": [
+            -2.0,
+            -0.3
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.5
+          ]
+        },
+        "heart_rate": {
+          "target_shift_range": [
+            -20.0,
+            -3.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.5
+          ]
+        },
+        "fetal_heart_rate": {
+          "target_shift_range": [
+            -20.0,
+            -3.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            0.8
+          ]
+        },
+        "fetal_distress_hazard": {
+          "peak_value_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "does_not_control_source",
+          "factor_range": [
+            0.1,
+            0.5
+          ],
+          "clinical_rationale": "Antipyresis lowers temperature but does not eradicate infection."
+        }
+      ],
+      "failure_modes": [
+        "source_control_not_addressed",
+        "maternal_liver_toxicity_context",
+        "persistent_fetal_compromise_despite_defervescence"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "delivery_and_placental_source_control_when_obstetrically_feasible",
+      "treatment_name": "産科的に可能な分娩・胎盤娩出による source control",
+      "mode": "reshape_landscape",
+      "treatment_lane": "delivery_source_control",
+      "mechanistic_targets": [
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY",
+        "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+        "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION"
+      ],
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "delivery_feasibility",
+        "active_labor_or_contraction_context_presence",
+        "fetal_distress_presence",
+        "source_control_adequacy",
+        "neonatal_resuscitation_availability"
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {
+          "target_shift_range": [
+            0.3,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "M_CHORIO_AMNIOTIC_FLUID_INFECTION_ACTIVITY": {
+          "peak_value_factor": [
+            0.05,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        },
+        "progression_to_septic_shock_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            5.0
+          ]
+        },
+        "preterm_delivery_hazard": {
+          "peak_value_factor": [
+            0.8,
+            2.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "gestational_age_weeks",
+          "condition": "very_preterm",
+          "effect": "neonatal_tradeoff_increases",
+          "factor_range": [
+            0.5,
+            1.5
+          ],
+          "clinical_rationale": "Early gestation increases neonatal morbidity from delivery."
+        },
+        {
+          "axis_id": "neonatal_resuscitation_availability",
+          "condition": "low",
+          "effect": "neonatal_safety_margin_narrows",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Preterm or infected neonates need prepared support."
+        }
+      ],
+      "failure_modes": [
+        "delivery_delayed_despite_worsening_infection",
+        "prematurity_tradeoff",
+        "retained_or_postpartum_infected_focus"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "expedited_delivery_for_maternal_instability_or_fetal_compromise",
+      "treatment_name": "母体不安定・胎児機能不全時の分娩迅速化",
+      "mode": "reshape_landscape",
+      "treatment_lane": "delivery_source_control",
+      "mechanistic_targets": [
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION",
+        "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE",
+        "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL"
+      ],
+      "required_context_axes": [
+        "progression_to_septic_shock_hazard",
+        "mean_arterial_pressure",
+        "serum_lactate",
+        "fetal_distress_presence",
+        "nonreassuring_fetal_heart_rate_tracing_presence",
+        "delivery_feasibility"
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {
+          "target_shift_range": [
+            0.3,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.8
+          ]
+        },
+        "fetal_distress_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.02,
+            1.0
+          ]
+        },
+        "progression_to_septic_shock_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "fetal_distress_presence",
+          "condition": "present",
+          "effect": "fetal_benefit_increases",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Persistent fetal compromise makes delivery more urgent."
+        },
+        {
+          "axis_id": "progression_to_septic_shock_hazard",
+          "condition": "high",
+          "effect": "maternal_benefit_increases",
+          "factor_range": [
+            1.0,
+            3.0
+          ],
+          "clinical_rationale": "Maternal instability raises source-control urgency."
+        }
+      ],
+      "failure_modes": [
+        "operative_or_anesthesia_delay",
+        "unprepared_neonatal_resources",
+        "cesarean_morbidity_when_not_indicated"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "cesarean_delivery_for_standard_obstetric_indications_in_chorio_context",
+      "treatment_name": "絨毛膜羊膜炎 context での通常産科適応による帝王切開",
+      "mode": "reshape_landscape",
+      "treatment_lane": "delivery_route",
+      "mechanistic_targets": [
+        "M_CHORIO_INADEQUATE_ANTIMICROBIAL_OR_DELIVERY_SOURCE_CONTROL",
+        "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION"
+      ],
+      "required_context_axes": [
+        "cesarean_delivery_need_probability",
+        "fetal_distress_presence",
+        "delivery_feasibility",
+        "anaerobic_coverage_probability",
+        "postpartum_endometritis_hazard"
+      ],
+      "trajectory_modifications": {
+        "source_control_adequacy": {
+          "target_shift_range": [
+            0.2,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.05,
+            1.0
+          ]
+        },
+        "postpartum_endometritis_hazard": {
+          "peak_value_factor": [
+            0.8,
+            1.8
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        },
+        "postpartum_hemorrhage_hazard": {
+          "peak_value_factor": [
+            0.8,
+            1.5
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "cesarean_delivery_need_probability",
+          "condition": "low",
+          "effect": "relative_value_decreases",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Intra-amniotic infection alone does not make cesarean the source-control route."
+        },
+        {
+          "axis_id": "anaerobic_coverage_probability",
+          "condition": "low",
+          "effect": "postpartum_infection_risk_increases",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Cesarean after intrauterine infection needs anaerobic postpartum coverage."
+        }
+      ],
+      "failure_modes": [
+        "used_without_obstetric_indication",
+        "omitted_anaerobic_postcesarean_coverage",
+        "operative_wound_or_endometritis_complication"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "maternal_sepsis_resuscitation_bundle",
+      "treatment_name": "母体敗血症 resuscitation bundle",
+      "mode": "push_state",
+      "treatment_lane": "critical_care_support",
+      "mechanistic_targets": [
+        "M_CHORIO_MATERNAL_SYSTEMIC_INFLAMMATION"
+      ],
+      "required_context_axes": [
+        "mean_arterial_pressure",
+        "serum_lactate",
+        "progression_to_septic_shock_hazard",
+        "ards_hazard",
+        "acute_kidney_injury_hazard",
+        "maternal_critical_care_resource_availability"
+      ],
+      "trajectory_modifications": {
+        "mean_arterial_pressure": {
+          "target_shift_range": [
+            5.0,
+            35.0
+          ],
+          "decline_half_life_days": [
+            0.02,
+            0.5
+          ]
+        },
+        "serum_lactate": {
+          "peak_value_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            2.0
+          ]
+        },
+        "progression_to_septic_shock_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.1,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "active_antibiotic_coverage_probability",
+          "condition": "low",
+          "effect": "supportive_only_without_source_control",
+          "factor_range": [
+            0.2,
+            0.7
+          ],
+          "clinical_rationale": "Hemodynamic support cannot replace antimicrobial/source control."
+        },
+        {
+          "axis_id": "maternal_critical_care_resource_availability",
+          "condition": "low",
+          "effect": "benefit_limited_by_resource",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Severe maternal sepsis requires rapid escalation resources."
+        }
+      ],
+      "failure_modes": [
+        "fluids_without_antibiotics_or_source_control",
+        "delayed_vasopressors_in_refractory_shock",
+        "unrecognized_ards_or_dic"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "neonatal_team_notification_and_early_onset_sepsis_evaluation",
+      "treatment_name": "新生児チーム連絡・早発敗血症評価",
+      "mode": "reshape_landscape",
+      "treatment_lane": "neonatal_risk_control",
+      "mechanistic_targets": [
+        "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE"
+      ],
+      "required_context_axes": [
+        "neonatal_sepsis_hazard",
+        "group_b_streptococcus_colonization_probability",
+        "active_antibiotic_coverage_probability",
+        "gestational_age_weeks",
+        "neonatal_resuscitation_availability"
+      ],
+      "trajectory_modifications": {
+        "neonatal_sepsis_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            7.0
+          ]
+        },
+        "neonatal_pneumonia_meningitis_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "neonatal_respiratory_distress_hazard": {
+          "peak_value_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "gestational_age_weeks",
+          "condition": "preterm",
+          "effect": "relative_value_increases",
+          "factor_range": [
+            1.0,
+            2.5
+          ],
+          "clinical_rationale": "Preterm neonates have higher infectious and respiratory vulnerability."
+        },
+        {
+          "axis_id": "neonatal_resuscitation_availability",
+          "condition": "low",
+          "effect": "benefit_limited_by_resource",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Prepared neonatal evaluation and treatment reduce downstream risk."
+        }
+      ],
+      "failure_modes": [
+        "neonatal_team_not_informed",
+        "GBS_or_exposure_context_not_transmitted",
+        "late_recognition_of_early_onset_sepsis"
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "antenatal_corticosteroids_when_preterm_delivery_risk_allows",
+      "treatment_name": "早産リスク時の antenatal corticosteroids",
+      "mode": "modulate_theta",
+      "treatment_lane": "neonatal_maturation_support",
+      "mechanistic_targets": [
+        "M_CHORIO_MEMBRANE_WEAKENING_AND_LABOR_ACTIVATION",
+        "M_CHORIO_FETAL_INFLAMMATORY_RESPONSE"
+      ],
+      "required_context_axes": [
+        "gestational_age_weeks",
+        "preterm_delivery_hazard",
+        "neonatal_respiratory_distress_hazard",
+        "progression_to_septic_shock_hazard"
+      ],
+      "trajectory_modifications": {
+        "neonatal_respiratory_distress_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.8
+          ],
+          "decline_half_life_days": [
+            1.0,
+            14.0
+          ]
+        },
+        "neonatal_sepsis_hazard": {
+          "peak_value_factor": [
+            0.8,
+            1.3
+          ],
+          "decline_half_life_days": [
+            1.0,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "progression_to_septic_shock_hazard",
+          "condition": "high",
+          "effect": "delivery_delay_for_completion_becomes_unsafe",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Steroid benefit must not delay maternal source control in severe infection."
+        },
+        {
+          "axis_id": "gestational_age_weeks",
+          "condition": "outside_useful_window",
+          "effect": "relative_value_decreases",
+          "factor_range": [
+            0.0,
+            0.5
+          ],
+          "clinical_rationale": "Fetal maturity benefit is gestational-age dependent."
+        }
+      ],
+      "failure_modes": [
+        "used_to_delay_urgent_source_control",
+        "outside_gestational_window",
+        "unrecognized_maternal_deterioration"
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "uterotonic_and_postpartum_hemorrhage_preparedness",
+      "treatment_name": "子宮収縮薬・分娩後出血 preparedness",
+      "mode": "push_state",
+      "treatment_lane": "postdelivery_hemorrhage_control",
+      "mechanistic_targets": [
+        "M_CHORIO_POSTDELIVERY_UTERINE_PELVIC_INFECTION_EXTENSION"
+      ],
+      "required_context_axes": [
+        "uterine_atony_hazard",
+        "postpartum_hemorrhage_hazard",
+        "dic_hazard",
+        "source_control_adequacy"
+      ],
+      "trajectory_modifications": {
+        "uterine_atony_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            2.0
+          ]
+        },
+        "postpartum_hemorrhage_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        },
+        "mortality_hazard_in_D-CHORIOAMNIONITIS": {
+          "peak_value_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "dic_hazard",
+          "condition": "high",
+          "effect": "uterotonic_alone_insufficient",
+          "factor_range": [
+            0.2,
+            0.8
+          ],
+          "clinical_rationale": "Coagulopathy requires blood product and hemostatic support."
+        }
+      ],
+      "failure_modes": [
+        "coagulopathy_or_surgical_bleeding_not_addressed",
+        "delayed_blood_product_access",
+        "persistent_atony"
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "prolonged_rupture_of_membranes_or_pprom",
+      "display_name": "長時間破水または PPROM",
+      "risk_type": "prior_and_trajectory_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "duration_of_membrane_rupture_hours",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                20.0
+              ],
+              "clinical_rationale": "Longer rupture duration increases ascending infection risk."
+            },
+            {
+              "axis_id": "amniotic_fluid_culture_positivity_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Prolonged exposure increases microbial access to amniotic fluid."
+            },
+            {
+              "axis_id": "preterm_delivery_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "PPROM couples infection and preterm delivery."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "prolonged_labor_repeated_digital_exams_or_internal_monitoring",
+      "display_name": "遷延分娩・反復内診・内部モニタリング",
+      "risk_type": "ascending_infection_context_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            6.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "repeated_digital_cervical_examinations_context_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                10.0
+              ],
+              "clinical_rationale": "Repeated exams after rupture increase ascending inoculation risk."
+            },
+            {
+              "axis_id": "M_CHORIO_ASCENDING_POLYMICROBIAL_INOCULATION",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                4.0
+              ],
+              "clinical_rationale": "Mechanical access and prolonged labor facilitate ascent."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "genital_tract_pathogen_gbs_bv_sti_or_polymicrobial_colonization",
+      "display_name": "GBS・BV・STI などの genital tract pathogen context",
+      "risk_type": "pathogen_prior_and_treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            8.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "genital_tract_pathogen_colonization_probability",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                10.0
+              ],
+              "clinical_rationale": "Pathogen colonization is a substrate for ascending infection."
+            },
+            {
+              "axis_id": "neonatal_sepsis_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "GBS and other pathogens increase neonatal infection risk."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "broad_spectrum_intrapartum_antibiotics_ampicillin_gentamicin": "relative value depends on pathogen coverage and susceptibility",
+            "penicillin_allergy_contextual_antibiotic_coverage": "coverage uncertainty increases when GBS or resistant organisms are likely"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "meconium_stained_amniotic_fluid",
+      "display_name": "羊水混濁",
+      "risk_type": "infection_and_fetal_stress_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.1,
+            3.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "meconium_stained_amniotic_fluid_presence",
+              "effect": "higher_peak",
+              "factor_range": [
+                2.0,
+                10.0
+              ],
+              "clinical_rationale": "Meconium is associated with intra-amniotic inflammatory and fetal stress contexts."
+            },
+            {
+              "axis_id": "fetal_distress_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.1,
+                3.0
+              ],
+              "clinical_rationale": "Meconium can coexist with fetal stress."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "preterm_gestation_or_cervical_insufficiency_context",
+      "display_name": "早産期・頸管短縮/頸管無力 context",
+      "risk_type": "preterm_and_neonatal_hazard_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "preterm_labor_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Intra-amniotic inflammation and preterm cervical change reinforce each other."
+            },
+            {
+              "axis_id": "neonatal_respiratory_distress_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                10.0
+              ],
+              "clinical_rationale": "Earlier gestation increases respiratory morbidity."
+            },
+            {
+              "axis_id": "neonatal_sepsis_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Preterm neonates are more vulnerable to infection."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "antenatal_corticosteroids_when_preterm_delivery_risk_allows": "relative neonatal respiratory value increases when time and maternal stability allow"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "epidural_or_other_noninfectious_intrapartum_fever_context",
+      "display_name": "硬膜外など非感染性分娩時発熱 context",
+      "risk_type": "presentation_specificity_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            0.3,
+            1.2
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "body_temperature",
+              "effect": "higher_peak_without_parallel_infectious_axes",
+              "factor_range": [
+                1.0,
+                2.0
+              ],
+              "clinical_rationale": "Noninfectious fever reduces specificity of fever alone."
+            },
+            {
+              "axis_id": "white_blood_cell_count",
+              "effect": "less_specific",
+              "factor_range": [
+                0.7,
+                1.3
+              ],
+              "clinical_rationale": "Labor leukocytosis can confound infection likelihood."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "immunosuppression_neutropenia_or_advanced_maternal_comorbidity",
+      "display_name": "免疫抑制・好中球減少・重い母体併存症",
+      "risk_type": "presentation_and_hazard_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            4.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "body_temperature",
+              "effect": "lower_or_more_variable_peak",
+              "factor_range": [
+                0.5,
+                1.2
+              ],
+              "clinical_rationale": "Fever response can be blunted."
+            },
+            {
+              "axis_id": "white_blood_cell_count",
+              "effect": "more_variable_or_lower_peak",
+              "factor_range": [
+                0.2,
+                1.5
+              ],
+              "clinical_rationale": "Leukocytosis may be absent in neutropenia or immunosuppression."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Reduced host reserve increases sepsis mortality risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "cesarean_delivery_in_infected_labor_context",
+      "display_name": "感染性分娩 context での帝王切開",
+      "risk_type": "postpartum_extension_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "postpartum_endometritis_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                6.0
+              ],
+              "clinical_rationale": "Cesarean after intrauterine infection increases postpartum endometritis risk."
+            },
+            {
+              "axis_id": "anaerobic_coverage_probability",
+              "effect": "importance_increases",
+              "factor_range": [
+                1.0,
+                3.0
+              ],
+              "clinical_rationale": "Anaerobic coverage becomes more important after cesarean."
+            }
+          ],
+          "treatment_effect_modulation": {
+            "anaerobic_coverage_after_cesarean_delivery": "relative value increases after cesarean delivery in infected labor"
+          }
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "delayed_antibiotics_or_inactive_antibiotic_exposure",
+      "display_name": "抗菌薬遅延または非活性 coverage",
+      "risk_type": "treatment_effect_and_hazard_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            3.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "active_antibiotic_coverage_probability",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.6
+              ],
+              "clinical_rationale": "Inactive therapy fails to reshape infection burden."
+            },
+            {
+              "axis_id": "progression_to_septic_shock_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.5,
+                8.0
+              ],
+              "clinical_rationale": "Delay or inactivity permits systemic progression."
+            },
+            {
+              "axis_id": "neonatal_sepsis_hazard",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                6.0
+              ],
+              "clinical_rationale": "Inadequate intrapartum antibiotics increase neonatal exposure risk."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "limited_maternal_or_neonatal_resources",
+      "display_name": "母体・新生児 resource 制限",
+      "risk_type": "outcome_and_treatment_modifier",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "maternal_critical_care_resource_availability",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "Limited resources constrain maternal sepsis rescue."
+            },
+            {
+              "axis_id": "neonatal_resuscitation_availability",
+              "effect": "lower_peak",
+              "factor_range": [
+                0.0,
+                0.7
+              ],
+              "clinical_rationale": "Limited neonatal resources worsen preterm/infected neonatal risk."
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-CHORIOAMNIONITIS",
+              "effect": "higher_peak",
+              "factor_range": [
+                1.2,
+                5.0
+              ],
+              "clinical_rationale": "Delayed escalation increases maternal hazard."
+            }
+          ]
+        }
+      },
+      "knowledge_confidence": "medium"
+    },
+    {
+      "factor": "pprom_context",
+      "type": "obstetric_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            4.0,
+            40.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "preterm_premature_rupture_of_membranes_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "PPROM context directly supports ruptured-membrane geometry."
+            },
+            {
+              "axis_id": "oligohydramnios_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ],
+              "clinical_rationale": "PPROM context supports oligohydramnios."
+            },
+            {
+              "axis_id": "fetal_demise_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ],
+              "clinical_rationale": "Severe early chorioamnionitis with PPROM can progress to fetal demise."
+            },
+            {
+              "axis_id": "amniotic_fluid_index_cm",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.5
+              ],
+              "clinical_rationale": "For this decreasing measurement axis, stronger PPROM disease response lowers expected amniotic fluid volume."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "PPROM is a high-specificity source geometry for chorioamnionitis when fever, CRP elevation, or fetal compromise coexist.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "second_trimester_pregnancy",
+      "type": "obstetric_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "preterm_premature_rupture_of_membranes_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.6
+              ],
+              "clinical_rationale": "PPROM context directly supports ruptured-membrane geometry."
+            },
+            {
+              "axis_id": "oligohydramnios_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ],
+              "clinical_rationale": "PPROM context supports oligohydramnios."
+            },
+            {
+              "axis_id": "fetal_demise_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                1.8
+              ],
+              "clinical_rationale": "Severe early chorioamnionitis with PPROM can progress to fetal demise."
+            },
+            {
+              "axis_id": "amniotic_fluid_index_cm",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.5
+              ],
+              "clinical_rationale": "For this decreasing measurement axis, stronger PPROM disease response lowers expected amniotic fluid volume."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Second-trimester infection can present as PPROM, threatened abortion, or fetal demise before term-labor features dominate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "ivf_fresh_embryo_transfer",
+      "type": "obstetric_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            2.0,
+            12.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "ivf_conception_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "IVF context should be consumed when IVF conception is explicitly observed."
+            },
+            {
+              "axis_id": "twin_pregnancy_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Twin context should be consumed when twin pregnancy is explicitly observed."
+            },
+            {
+              "axis_id": "preterm_premature_rupture_of_membranes_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Early IVF/twin presentations with fluid leakage should support PPROM geometry."
+            },
+            {
+              "axis_id": "gestational_age_weeks",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.05,
+                0.4
+              ],
+              "clinical_rationale": "IVF/twin PPROM cases often present in the previable or early preterm window."
+            },
+            {
+              "axis_id": "amniotic_fluid_index_cm",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.5
+              ],
+              "clinical_rationale": "For this decreasing measurement axis, stronger IVF/twin PPROM geometry lowers expected amniotic fluid volume."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "IVF and uterine instrumentation contexts can increase ascending infection vulnerability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "factor": "dichorionic_diamniotic_twin_pregnancy",
+      "type": "obstetric_source_context",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            10.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "ivf_conception_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "IVF context should be consumed when IVF conception is explicitly observed."
+            },
+            {
+              "axis_id": "twin_pregnancy_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Twin context should be consumed when twin pregnancy is explicitly observed."
+            },
+            {
+              "axis_id": "preterm_premature_rupture_of_membranes_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                1.8
+              ],
+              "clinical_rationale": "Early IVF/twin presentations with fluid leakage should support PPROM geometry."
+            },
+            {
+              "axis_id": "gestational_age_weeks",
+              "effect": "lower_peak",
+              "magnitude_factor_range": [
+                0.05,
+                0.4
+              ],
+              "clinical_rationale": "IVF/twin PPROM cases often present in the previable or early preterm window."
+            },
+            {
+              "axis_id": "amniotic_fluid_index_cm",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                2.5
+              ],
+              "clinical_rationale": "For this decreasing measurement axis, stronger IVF/twin PPROM geometry lowers expected amniotic fluid volume."
+            }
+          ]
+        }
+      },
+      "clinical_rationale": "Twin pregnancy raises preterm membrane and cervical-stress vulnerability relevant to chorioamnionitis.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "maternal_vital_and_sepsis_monitoring",
+      "description": "Track maternal temperature, heart rate, blood pressure/MAP, respiratory status, urine output, lactate, CBC, renal function, coagulation, and escalation needs."
+    },
+    {
+      "care_id": "fetal_monitoring_and_reassessment",
+      "description": "Monitor fetal heart rate pattern, fetal tachycardia, variability, decelerations, and response to maternal fever control and resuscitation."
+    },
+    {
+      "care_id": "cultures_when_feasible_without_delaying_antibiotics",
+      "description": "Obtain blood, genital tract, placental, or amniotic cultures when clinically available, but do not delay antimicrobial therapy in suspected infection or sepsis."
+    },
+    {
+      "care_id": "antibiotic_susceptibility_and_allergy_review",
+      "description": "Use GBS status, local resistance, culture data, allergy severity, renal function, and postpartum route to maintain active maternal and neonatal coverage."
+    },
+    {
+      "care_id": "delivery_route_reassessment",
+      "description": "Reassess delivery route using obstetric indications, maternal stability, fetal status, cervical progress, gestational age, and resource availability rather than infection label alone."
+    },
+    {
+      "care_id": "postpartum_infection_surveillance",
+      "description": "After delivery, reassess fever, uterine tenderness, lochia, wound status, bacteremia, endometritis, pelvic abscess, and need for continued antibiotics."
+    },
+    {
+      "care_id": "postpartum_hemorrhage_preparedness",
+      "description": "Because infection increases atony risk, prepare uterotonics, quantified blood loss, blood products, and coagulopathy management as clinically indicated."
+    },
+    {
+      "care_id": "neonatal_handoff",
+      "description": "Communicate maternal fever, timing of antibiotics, rupture duration, GBS/pathogen context, fetal tracing, gestational age, and cultures to the neonatal team."
+    }
+  ],
+  "quality_notes": [
+    "Semantic clinical ranking labels are intentionally absent; treatment selection is left to forward simulation and outcome/RMST under context axes.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-CHORIOAMNIONITIS.",
+    "Fetal, neonatal, preterm, postpartum, DIC, ARDS, AKI, atony, hemorrhage, abscess, and septic shock risks are event_hazard axes, not additional mortality outcomes.",
+    "Rupture duration, GBS/pathogen context, epidural fever, delivery route, gestational age, antibiotic coverage, and neonatal resources are modifiers or observed axes rather than disease-name qualifiers.",
+    "No real case reports or disease-specific case JSONs were searched, read, or used for this disease-only distillation."
+  ]
+}

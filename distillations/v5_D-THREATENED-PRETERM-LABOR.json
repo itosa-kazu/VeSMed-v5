@@ -1,0 +1,1131 @@
+{
+  "disease": "D-THREATENED-PRETERM-LABOR",
+  "disease_id": "D-THREATENED-PRETERM-LABOR",
+  "disease_name": "Threatened preterm labor",
+  "disease_name_ja": "切迫早産",
+  "schema_version": "v5_mechanism_first_distillation_v1",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Threatened preterm labor",
+    "case_source_policy": "Disease-only distillation from disease name and project schema. Real cases were searched and structured separately after the manifold draft.",
+    "leaf_granularity": "First-layer obstetric manifold for symptomatic preterm uterine activation with contractions before 37 weeks with absent, minimal, or evolving cervical change. Chorioamnionitis, placental abruption, placenta previa, PPROM, and cervical insufficiency remain separate or superposed manifolds/context axes when they are the primary driver.",
+    "forbidden_shortcuts_absent": true
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "display_name": "Preterm uterine contractile activation",
+      "clinical_meaning": "Regular uterine activation is the defining observed physiology of threatened preterm labor.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -1.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.9,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.2,
+        21.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "display_name": "Cervical ripening and shortening",
+      "clinical_meaning": "Cervical remodeling, shortening, effacement, or early dilation converts threatened contractions into higher-risk preterm labor physiology.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -14.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        1.0,
+        60.0
+      ],
+      "decline_half_life_days": [
+        2.0,
+        60.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION",
+      "display_name": "Decidual and membrane activation",
+      "clinical_meaning": "Inflammatory, bleeding, stretch, or membrane signals increase prostaglandins and local tissue activation even without overt infection.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -7.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.15,
+        0.85
+      ],
+      "plateau_duration_days": [
+        1.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TPTL_PRETERM_DELIVERY_RISK",
+      "display_name": "Imminent preterm delivery pressure",
+      "clinical_meaning": "The combined contraction burden, cervical status, gestational age, and membrane context determine short-term preterm birth hazard.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.1,
+        0.9
+      ],
+      "plateau_duration_days": [
+        0.2,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_TPTL_FETAL_NEONATAL_PREMATURITY_RISK",
+      "display_name": "Fetal-neonatal prematurity vulnerability",
+      "clinical_meaning": "Earlier gestational age and imminent delivery drive fetal lung immaturity and neonatal morbidity risk.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.1,
+        0.8
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        180.0
+      ],
+      "knowledge_confidence": "high"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "target_id": "uterine_contractions_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_UTERINE_ACTIVATION drives uterine_contractions_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "target_id": "uterine_contraction_frequency_per_10min",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_UTERINE_ACTIVATION drives uterine_contraction_frequency_per_10min.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "target_id": "uterine_contraction_pain_severity",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_UTERINE_ACTIVATION drives uterine_contraction_pain_severity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "target_id": "lower_abdominal_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_UTERINE_ACTIVATION drives lower_abdominal_pain_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+      "target_id": "low_back_pain_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_UTERINE_ACTIVATION drives low_back_pain_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "target_id": "short_cervical_length_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_CERVICAL_RIPENING_SHORTENING drives short_cervical_length_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "target_id": "cervical_length_mm",
+      "effect_on_target": "decrease",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_CERVICAL_RIPENING_SHORTENING drives cervical_length_mm.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "target_id": "cervical_change_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_CERVICAL_RIPENING_SHORTENING drives cervical_change_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "target_id": "cervical_dilation_cm",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_CERVICAL_RIPENING_SHORTENING drives cervical_dilation_cm.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+      "target_id": "cervical_effacement_percent",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_CERVICAL_RIPENING_SHORTENING drives cervical_effacement_percent.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION",
+      "target_id": "fetal_fibronectin_positive_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION drives fetal_fibronectin_positive_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION",
+      "target_id": "vaginal_bleeding_presence",
+      "effect_on_target": "increase",
+      "edge_type": "pathophysiology",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION drives vaginal_bleeding_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_DELIVERY_RISK",
+      "target_id": "preterm_delivery_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_DELIVERY_RISK drives preterm_delivery_hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_PRETERM_DELIVERY_RISK",
+      "target_id": "nonreassuring_fetal_status_presence",
+      "effect_on_target": "increase",
+      "edge_type": "event_transition",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_PRETERM_DELIVERY_RISK drives nonreassuring_fetal_status_presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_TPTL_FETAL_NEONATAL_PREMATURITY_RISK",
+      "target_id": "neonatal_prematurity_morbidity_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "M_TPTL_FETAL_NEONATAL_PREMATURITY_RISK drives neonatal_prematurity_morbidity_hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "preterm_delivery_hazard",
+      "target_id": "mortality_hazard_in_D-THREATENED-PRETERM-LABOR",
+      "effect_on_target": "increase",
+      "edge_type": "hazard_drift",
+      "lag_days_range": [
+        0.0,
+        3.0
+      ],
+      "rationale": "preterm_delivery_hazard drives mortality_hazard_in_D-THREATENED-PRETERM-LABOR.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "pregnancy_presence",
+      "category": "context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.95,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ]
+    },
+    {
+      "axis_id": "gestational_age_weeks",
+      "category": "risk_context",
+      "unit": "weeks",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        37.0,
+        41.5
+      ],
+      "peak_day_range": [
+        -180.0,
+        0.0
+      ],
+      "peak_value_range": [
+        20.0,
+        36.9
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "required_context_rationale": "This disease manifold requires active pregnancy or postpartum/peripartum context; without that context, nonspecific abdominal pain, hypertension, hemolysis, liver injury, fever, or shock should not make it rank high."
+    },
+    {
+      "axis_id": "preterm_gestation_presence",
+      "category": "obstetric_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.85,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "uterine_contractions_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.98,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence",
+      "clinical_interpretation": "Threatened preterm labor is defined by preterm uterine contractions, usually with high observed contraction presence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uterine_contraction_frequency_per_10min",
+      "category": "physical_finding",
+      "unit": "contractions_per_10min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.4,
+        3.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "uterine_contractions_presence"
+    },
+    {
+      "axis_id": "uterine_contraction_pain_severity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.2,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "uterine_contractions_presence"
+    },
+    {
+      "axis_id": "lower_abdominal_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.2,
+        0.75
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "abdominal_pain_presence"
+    },
+    {
+      "axis_id": "low_back_pain_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.2,
+        0.75
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "back_pain_presence"
+    },
+    {
+      "axis_id": "pelvic_pressure_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.15,
+        0.7
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "uterine_contractions_presence"
+    },
+    {
+      "axis_id": "cervical_length_mm",
+      "category": "obstetric_measurement",
+      "unit": "mm",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        30.0,
+        50.0
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        5.0,
+        25.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "short_cervical_length_presence"
+    },
+    {
+      "axis_id": "short_cervical_length_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.3,
+        0.9
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "cervical_dilation_cm",
+      "category": "obstetric_measurement",
+      "unit": "cm",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0,
+        0.5
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.5,
+        3.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "cervical_change_presence"
+    },
+    {
+      "axis_id": "cervical_effacement_percent",
+      "category": "obstetric_measurement",
+      "unit": "%",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0,
+        20.0
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        30.0,
+        80.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "cervical_change_presence"
+    },
+    {
+      "axis_id": "cervical_change_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.2,
+        0.8
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "fetal_fibronectin_positive_presence",
+      "category": "lab_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.1,
+        0.6
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "preterm_delivery_hazard"
+    },
+    {
+      "axis_id": "ruptured_membranes_presence",
+      "category": "obstetric_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "finding",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "preterm_premature_rupture_of_membranes_presence",
+      "category": "obstetric_context",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.3
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "ruptured_membranes_presence"
+    },
+    {
+      "axis_id": "vaginal_bleeding_presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.35
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "bleeding_presence"
+    },
+    {
+      "axis_id": "fetal_heart_rate",
+      "category": "obstetric_measurement",
+      "unit": "beats_per_min",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        110.0,
+        160.0
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        110.0,
+        170.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "nonreassuring_fetal_status_presence",
+      "category": "obstetric_finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "axis_role": "satellite",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.25
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "preterm_delivery_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.02,
+        0.45
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "neonatal_prematurity_morbidity_hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        0.0001,
+        0.002
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.005,
+        0.2
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ],
+      "parent_axis_id": "pregnancy_presence"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-THREATENED-PRETERM-LABOR",
+      "category": "derived_hazard",
+      "unit": "deaths_per_day",
+      "log_scale": false,
+      "axis_role": "measurement",
+      "baseline_range": [
+        1e-05,
+        0.0002
+      ],
+      "peak_day_range": [
+        0.0,
+        14.0
+      ],
+      "peak_value_range": [
+        0.0002,
+        0.02
+      ],
+      "plateau_duration_days": [
+        7.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        90.0
+      ]
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "uterine_contraction_frequency_per_10min",
+      "target_axis_id": "cervical_dilation_cm",
+      "coupling_type": "drift",
+      "direction": "positive",
+      "strength_range": [
+        0.25,
+        0.55
+      ],
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Persistent frequent contractions increase cervical-change likelihood.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "cervical_length_mm",
+      "target_axis_id": "preterm_delivery_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "strength_range": [
+        0.25,
+        0.55
+      ],
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Shorter cervical length increases short-term preterm delivery hazard.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "gestational_age_weeks",
+      "target_axis_id": "neonatal_prematurity_morbidity_hazard",
+      "coupling_type": "hazard_drift",
+      "direction": "negative",
+      "strength_range": [
+        0.25,
+        0.55
+      ],
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Earlier gestation increases neonatal prematurity morbidity hazard.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "short_course_tocolysis",
+      "display_name": "Short-course tocolysis when appropriate",
+      "treatment_modes": [
+        "reshape_landscape"
+      ],
+      "primary_target_ids": [
+        "M_TPTL_PRETERM_UTERINE_ACTIVATION"
+      ],
+      "clinical_effect_summary": "Temporarily reduces contraction activity to allow corticosteroids or transfer when no contraindication exists."
+    },
+    {
+      "treatment_id": "antenatal_corticosteroids",
+      "display_name": "Antenatal corticosteroids",
+      "treatment_modes": [
+        "reshape_landscape"
+      ],
+      "primary_target_ids": [
+        "M_TPTL_FETAL_NEONATAL_PREMATURITY_RISK"
+      ],
+      "clinical_effect_summary": "Reduces neonatal respiratory and morbidity hazard when delivery risk is significant at eligible gestational ages."
+    },
+    {
+      "treatment_id": "magnesium_sulfate_fetal_neuroprotection",
+      "display_name": "Magnesium sulfate for fetal neuroprotection",
+      "treatment_modes": [
+        "reshape_landscape",
+        "modulate_sigma"
+      ],
+      "primary_target_ids": [
+        "M_TPTL_FETAL_NEONATAL_PREMATURITY_RISK"
+      ],
+      "clinical_effect_summary": "Modulates fetal-neonatal neurologic injury risk in very preterm imminent delivery contexts."
+    },
+    {
+      "treatment_id": "gb_s_prophylaxis_when_indicated",
+      "display_name": "GBS prophylaxis when indicated",
+      "treatment_modes": [
+        "reshape_landscape"
+      ],
+      "primary_target_ids": [
+        "M_TPTL_DECIDUAL_MEMBRANE_ACTIVATION"
+      ],
+      "clinical_effect_summary": "Prevents neonatal infection risk when maternal GBS status or risk context requires it."
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor_id": "prior_spontaneous_preterm_birth",
+      "display_name": "Prior spontaneous preterm birth",
+      "modulation": [
+        {
+          "target_id": "preterm_delivery_hazard",
+          "effect": "increase"
+        }
+      ]
+    },
+    {
+      "factor_id": "short_cervix_or_cervical_surgery_history",
+      "display_name": "Short cervix or cervical surgery history",
+      "modulation": [
+        {
+          "target_id": "M_TPTL_CERVICAL_RIPENING_SHORTENING",
+          "effect": "increase_prior"
+        }
+      ]
+    },
+    {
+      "factor_id": "multiple_gestation_or_polyhydramnios",
+      "display_name": "Uterine overdistension context",
+      "modulation": [
+        {
+          "target_id": "M_TPTL_PRETERM_UTERINE_ACTIVATION",
+          "effect": "increase"
+        }
+      ]
+    }
+  ],
+  "supportive_care": [
+    "Assess for chorioamnionitis, abruption, placenta previa, PPROM, and fetal status rather than treating all contractions as isolated threatened preterm labor.",
+    "Hydration, observation, fetal monitoring, and transfer planning are context-dependent supportive actions."
+  ]
+}
