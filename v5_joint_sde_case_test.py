@@ -3640,6 +3640,20 @@ NEGATIVE_ACETAMINOPHEN_LEVEL_CONTEXT_TOKENS = (
     "acetaminophen_concentration_not_elevated",
 )
 
+ARBOVIRAL_AEDES_EXPOSURE_CONTEXT_TOKENS = (
+    "travel_to_chikungunya_outbreak_area",
+    "chikungunya_outbreak_context",
+    "local_chikungunya_outbreak",
+    "local outbreak of chikungunya",
+    "dengue_endemic_setting",
+    "local_dengue_outbreak_context",
+    "local outbreak of dengue",
+    "aedes_mosquito_exposure_context",
+    "aedes mosquito",
+    "mosquito exposure",
+    "arboviral outbreak",
+)
+
 
 def risk_context_axis_observation_items(item):
     factor = str(item.get("factor") or item.get("axis_id") or "").strip().lower()
@@ -3657,6 +3671,13 @@ def risk_context_axis_observation_items(item):
             ("hepatotoxic_drug_or_toxin_exposure_probability", 0.0, "probability_0_1"),
             ("acetaminophen_exposure_probability", 0.0, "probability_0_1"),
         ])
+    if any(token in haystack for token in ARBOVIRAL_AEDES_EXPOSURE_CONTEXT_TOKENS):
+        out.append((
+            "arboviral_outbreak_or_aedes_contact_presence",
+            1.0,
+            "present_absent_0_1",
+            {"category": "epidemiologic_finding", "axis_role": "finding", "_risk_context_observation": False},
+        ))
     return out
 
 
@@ -3756,8 +3777,17 @@ def prepare_case_data(data):
             continue
         risk_meta = dict(obs)
         risk_meta["_risk_context_observation"] = True
-        for axis_id, value, unit in risk_context_axis_observation_items(obs):
-            add_observation(axis_id, value, unit, item_day(obs), risk_meta)
+        for derived in risk_context_axis_observation_items(obs):
+            if len(derived) == 3:
+                axis_id, value, unit = derived
+                derived_meta = risk_meta
+            else:
+                axis_id, value, unit, extra_meta = derived
+                derived_meta = dict(risk_meta)
+                derived_meta.update(extra_meta)
+                if extra_meta.get("_risk_context_observation") is False:
+                    derived_meta.pop("_risk_context_observation", None)
+            add_observation(axis_id, value, unit, item_day(obs), derived_meta)
         inferred = infer_direct_observation(obs.get("axis_id"), obs.get("value"), obs.get("unit"), obs.get("qualitative_value"))
         if inferred is not None:
             value, unit = inferred
