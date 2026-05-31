@@ -1287,6 +1287,48 @@
       "confidence": "medium",
       "clinical_rationale": "Giant cell arteritis is an acute visual-loss mimic; generic visual axes are shared, while uveitis/fibrosis axes are not added.",
       "fairness_repair_note": "2026-05-25 DSFUS ophthalmic horizontal axis alignment; diagnosis-neutral shared axis, not a disease-specific ranking shortcut."
+    },
+    {
+      "source_id": "M_GCA_AORTITIS_LARGE_VESSEL_BRANCH_INFLAMMATION",
+      "target_id": "chronic_cough_presence",
+      "source_axis_id": "M_GCA_AORTITIS_LARGE_VESSEL_BRANCH_INFLAMMATION",
+      "target_axis_id": "chronic_cough_presence",
+      "effect_on_target": "up",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "clinical_rationale": "Large-vessel GCA/aortitis can present as persistent cough despite normal lung fields; this is uncommon and should be interpreted with vascular inflammation evidence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_GCA_AORTITIS_LARGE_VESSEL_BRANCH_INFLAMMATION",
+      "target_id": "nonproductive_cough_presence",
+      "source_axis_id": "M_GCA_AORTITIS_LARGE_VESSEL_BRANCH_INFLAMMATION",
+      "target_axis_id": "nonproductive_cough_presence",
+      "effect_on_target": "up",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "clinical_rationale": "Reported GCA cough phenotypes are often dry/nonproductive and improve with immunosuppression when vascular inflammation is the driver.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_GCA_RELAPSE_CHRONIC_VASCULAR_REMODELING",
+      "target_id": "cough_duration_days",
+      "source_axis_id": "M_GCA_RELAPSE_CHRONIC_VASCULAR_REMODELING",
+      "target_axis_id": "cough_duration_days",
+      "effect_on_target": "up",
+      "edge_type": "drift",
+      "lag_days_range": [
+        0,
+        30
+      ],
+      "clinical_rationale": "Smoldering or relapsing vascular inflammation can sustain cough over weeks to months before diagnosis.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axes": [
@@ -3406,6 +3448,101 @@
       "ranking_context": "Staging-only generic ophthalmic axis normalization; not a disease identity shortcut.",
       "knowledge_confidence": "low_to_moderate",
       "fairness_repair_source": "D-DIFFUSE-SUBRETINAL-FIBROSIS-UVEITIS-SYNDROME active ophthalmic mimic alignment 2026-05-25"
+    },
+    {
+      "axis_id": "chronic_cough_presence",
+      "display_name": "Chronic cough",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        14,
+        180
+      ],
+      "peak_value_range": [
+        0.05,
+        0.65
+      ],
+      "plateau_duration_days": [
+        30,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "log_scale": false,
+      "axis_role": "finding",
+      "shape_free_text": "Persistent cough lasting weeks to months; an uncommon but documented GCA manifestation, especially large-vessel/aortitis presentations with normal lung fields.",
+      "clinical_interpretation": "Chronic cough can be a GCA manifestation after pulmonary, reflux, upper-airway, infection, and malignancy causes are not supported; it remains a shared symptom and must not override vascular/inflammatory evidence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "nonproductive_cough_presence",
+      "display_name": "Nonproductive cough",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "baseline_range": [
+        0,
+        0.05
+      ],
+      "peak_day_range": [
+        7,
+        120
+      ],
+      "peak_value_range": [
+        0.05,
+        0.6
+      ],
+      "plateau_duration_days": [
+        14,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "log_scale": false,
+      "axis_role": "satellite",
+      "parent_axis_id": "chronic_cough_presence",
+      "shape_free_text": "Dry cough without sputum production in a chronic cough phenotype.",
+      "clinical_interpretation": "Dry cough is compatible with GCA-related chronic cough when lung imaging is normal and vascular inflammation is present, but is nonspecific across pulmonary and upper-airway diseases.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cough_duration_days",
+      "display_name": "Cough duration",
+      "category": "temporal_context",
+      "unit": "days",
+      "baseline_range": [
+        0,
+        14
+      ],
+      "peak_day_range": [
+        14,
+        180
+      ],
+      "peak_value_range": [
+        21,
+        180
+      ],
+      "plateau_duration_days": [
+        30,
+        365
+      ],
+      "decline_half_life_days": [
+        7,
+        30
+      ],
+      "log_scale": false,
+      "axis_role": "measurement",
+      "parent_axis_id": "chronic_cough_presence",
+      "shape_free_text": "Duration of cough in days when chronic cough is present.",
+      "clinical_interpretation": "Weeks-to-months cough duration supports a chronic cough phenotype rather than an acute infectious cough alone.",
+      "knowledge_confidence": "medium"
     }
   ],
   "axis_couplings": [
@@ -4765,6 +4902,7 @@
     "Coordinate vascular surgery or interventional radiology for critical limb ischemia, severe fixed stenosis, or aneurysm/dissection risk after inflammatory activity and anatomy are assessed."
   ],
   "quality_notes": [
-    "2026-05-25 DSFUS ophthalmic mimic fairness repair: added diagnosis-neutral shared visual/uveitis/retinal-imaging axes where medically true so this active mimic can explain ordinary DSFUS-overlapping observations without disease-specific shortcuts."
+    "2026-05-25 DSFUS ophthalmic mimic fairness repair: added diagnosis-neutral shared visual/uveitis/retinal-imaging axes where medically true so this active mimic can explain ordinary DSFUS-overlapping observations without disease-specific shortcuts.",
+    "2026-05-31 real-case repair: added diagnosis-neutral chronic dry cough phenotype to D-GCA after PMC8525902 and related reports showed GCA can present with chronic cough and normal lung fields; kept it nonspecific and dependent on vascular/inflammatory geometry."
   ]
 }

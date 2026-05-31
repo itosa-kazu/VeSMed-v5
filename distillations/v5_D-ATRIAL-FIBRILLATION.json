@@ -1,0 +1,5213 @@
+{
+  "disease": "D-ATRIAL-FIBRILLATION",
+  "disease_id": "D-ATRIAL-FIBRILLATION",
+  "disease_name": "Atrial fibrillation",
+  "disease_name_ja": "心房細動",
+  "schema_version": "v5.0-mechanism-first",
+  "distillation_scope": {
+    "disease_name_only_prompt": "Atrial fibrillation",
+    "leaf_granularity": "First-layer clinical disease leaf for atrial fibrillation, without splitting by paroxysmal, persistent, valvular, postoperative, thyroid-related, heart-failure-related, or trigger-associated context.",
+    "subtype_policy": "Temporal pattern, reversible triggers, structural substrate, thromboembolic risk, bleeding context, rate-control tolerance, rhythm-control feasibility, and left atrial appendage intervention context are represented as axes, risk factors, treatment modifiers, and mechanisms rather than disease-name qualifiers.",
+    "ranking_note": "Presentation ranking should use ECG evidence of atrial fibrillation, absent discrete P waves, irregularly irregular R-R intervals, ventricular rate, symptom and hemodynamic response, structural substrate, reversible triggers, and thromboembolic or bleeding context. Treatment response and follow-up rhythm status should remain treatment-simulation or post-workup evidence unless explicitly consumed by that mode."
+  },
+  "latent_mechanisms": [
+    {
+      "mechanism_id": "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION",
+      "display_name": "Atrial electrical disorganization",
+      "clinical_meaning": "Disorganized atrial activation replaces coordinated sinus atrial depolarization, producing no discrete P waves and an atrial fibrillatory baseline.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.7,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_PULMONARY_VEIN_TRIGGER_REENTRY",
+      "display_name": "Pulmonary vein trigger and atrial reentry activity",
+      "clinical_meaning": "Focal atrial triggers and reentry-supporting atrial conduction heterogeneity initiate and sustain atrial fibrillation episodes.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -7.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        180.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "display_name": "Atrial structural remodeling",
+      "clinical_meaning": "Left atrial dilation, fibrosis, pressure or volume load, valvular disease, hypertension, cardiomyopathy, or aging create a durable substrate for recurrent or sustained atrial fibrillation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.1,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_AUTONOMIC_TRIGGER_MODULATION",
+      "display_name": "Autonomic trigger modulation",
+      "clinical_meaning": "Adrenergic or vagal tone shifts alter atrial refractoriness and AV nodal conduction, changing episode onset, symptoms, and ventricular response.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -1.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "knowledge_confidence": "medium"
+    },
+    {
+      "mechanism_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "display_name": "Rapid irregular AV conduction",
+      "clinical_meaning": "Variable conduction through the AV node transmits an irregular ventricular rhythm; when conduction is rapid, filling time shortens and symptoms or instability can emerge.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "display_name": "Atrial contraction loss and low-output pressure",
+      "clinical_meaning": "Loss of coordinated atrial contraction and irregular ventricular filling reduce cardiac reserve, especially in stiff ventricles, valve disease, or heart failure.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        90.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_TACHYCARDIA_MEDIATED_CARDIOMYOPATHY",
+      "display_name": "Tachycardia-mediated cardiomyopathy pressure",
+      "clinical_meaning": "Sustained high ventricular rate and irregular activation can impair ventricular systolic function and provoke pulmonary edema or heart failure decompensation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        3.0,
+        90.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        180.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "display_name": "Left atrial appendage stasis and thromboembolism",
+      "clinical_meaning": "Atrial mechanical dysfunction and stasis, amplified by patient thromboembolic substrate, promote left atrial appendage thrombus and embolic events.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.5,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "display_name": "Reversible trigger load",
+      "clinical_meaning": "Thyroid dysfunction, electrolyte disturbance, alcohol exposure, acute systemic illness, postoperative stress, ischemia, hypoxemia, or stimulant tone can lower the threshold for atrial fibrillation.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -14.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        30.0
+      ],
+      "knowledge_confidence": "high"
+    },
+    {
+      "mechanism_id": "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY",
+      "display_name": "Sinus rhythm recovery capacity",
+      "clinical_meaning": "A hidden recovery capacity determined by atrial remodeling burden, episode duration, trigger reversibility, atrial size, and rhythm-control substrate.",
+      "unit": "relative_activity_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.5
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        365.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "mechanism_edges": [
+    {
+      "source_id": "left_atrial_enlargement_presence",
+      "target_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -3650.0,
+        0.0
+      ],
+      "clinical_rationale": "Left atrial enlargement is a structural substrate marker for atrial fibrillation persistence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "left_atrial_volume_index",
+      "target_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -3650.0,
+        0.0
+      ],
+      "clinical_rationale": "Higher left atrial volume index reflects atrial remodeling burden. Conditionality from original effect: increase_with_high_source.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "hypertension_presence",
+      "target_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -3650.0,
+        0.0
+      ],
+      "clinical_rationale": "Hypertension raises atrial pressure load and remodeling tendency.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "valvular_heart_disease_context_presence",
+      "target_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -3650.0,
+        0.0
+      ],
+      "clinical_rationale": "Valvular disease can enlarge and scar the atrium.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "structural_heart_disease_context_presence",
+      "target_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -3650.0,
+        0.0
+      ],
+      "clinical_rationale": "Structural cardiac disease supports atrial remodeling and arrhythmia maintenance.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "thyroid_dysfunction_presence",
+      "target_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -90.0,
+        1.0
+      ],
+      "clinical_rationale": "Thyroid dysfunction can lower the threshold for atrial fibrillation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "uncontrolled_hyperthyroidism_presence",
+      "target_id": "M_AF_AUTONOMIC_TRIGGER_MODULATION",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -90.0,
+        1.0
+      ],
+      "clinical_rationale": "Hyperthyroid physiology increases adrenergic sensitivity and atrial excitability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "alcohol_binge_trigger_context_presence",
+      "target_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -2.0,
+        1.0
+      ],
+      "clinical_rationale": "Acute alcohol exposure can act as a transient trigger load.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "postoperative_or_acute_illness_trigger_context_presence",
+      "target_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -14.0,
+        3.0
+      ],
+      "clinical_rationale": "Surgery or acute systemic illness increases adrenergic, inflammatory, hypoxemic, and volume-shift triggers.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "electrolyte_arrhythmia_trigger_context_presence",
+      "target_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "effect_on_target": "increase",
+      "edge_type": "axis_to_mechanism",
+      "lag_days_range": [
+        -7.0,
+        1.0
+      ],
+      "clinical_rationale": "Potassium and magnesium disturbance can trigger atrial arrhythmia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION",
+      "target_id": "cardiac_arrhythmia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Atrial fibrillation is an ECG-defined arrhythmia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION",
+      "target_id": "atrial_fibrillation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Disorganized atrial activation is the defining signal of atrial fibrillation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION",
+      "target_id": "absent_discrete_p_waves_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Organized sinus P waves are replaced by fibrillatory atrial activity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION",
+      "target_id": "fibrillatory_atrial_baseline_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "A fibrillatory baseline reflects disorganized atrial activation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "irregularly_irregular_rr_interval_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Variable AV nodal conduction produces irregularly irregular ventricular intervals.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "ventricular_rate_on_ecg",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Rapid AV conduction raises the ventricular rate measured on ECG. Conditionality from original effect: increase_when_rapid_response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "rapid_ventricular_response_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Rapid ventricular response is the clinical expression of high AV conduction during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "heart_rate",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "Peripheral heart rate follows ventricular response. Conditionality from original effect: increase_when_rapid_response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "clinical_rationale": "A high ventricular response appears as tachycardia. Conditionality from original effect: increase_when_rate_high.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "palpitations_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Irregular or rapid ventricular activation is often perceived as palpitations.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "palpitations_activity",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Symptom intensity rises with irregularity and rate for many patients.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "dyspnea_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        2.0
+      ],
+      "clinical_rationale": "Loss of atrial contribution to filling can raise filling pressure and dyspnea.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "fatigue_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Reduced cardiac reserve can manifest as fatigue.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "dizziness_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Reduced or irregular output can cause lightheadedness.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "hemodynamic_instability_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Low filling reserve can translate AF into unstable perfusion. Conditionality from original effect: increase_when_reserve_low.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "mean_arterial_pressure",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Low output from rapid irregular rhythm or atrial kick loss can reduce MAP. Conditionality from original effect: decrease_when_low_output.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_TACHYCARDIA_MEDIATED_CARDIOMYOPATHY",
+      "target_id": "left_ventricular_systolic_dysfunction_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        3.0,
+        90.0
+      ],
+      "clinical_rationale": "Sustained tachycardia can impair LV systolic function.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_TACHYCARDIA_MEDIATED_CARDIOMYOPATHY",
+      "target_id": "left_ventricular_ejection_fraction",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        3.0,
+        90.0
+      ],
+      "clinical_rationale": "Tachycardia-mediated cardiomyopathy lowers LVEF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_TACHYCARDIA_MEDIATED_CARDIOMYOPATHY",
+      "target_id": "pulmonary_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.2,
+        30.0
+      ],
+      "clinical_rationale": "Ventricular dysfunction and elevated filling pressure can cause pulmonary edema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_TACHYCARDIA_MEDIATED_CARDIOMYOPATHY",
+      "target_id": "heart_failure_decompensation_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [
+        0.2,
+        30.0
+      ],
+      "clinical_rationale": "Sustained rapid AF raises acute heart failure decompensation hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "target_id": "left_atrial_appendage_thrombus_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1.0,
+        365.0
+      ],
+      "clinical_rationale": "Appendage stasis can form thrombus.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "target_id": "spontaneous_echo_contrast_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        365.0
+      ],
+      "clinical_rationale": "Stasis can appear as spontaneous echo contrast.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "target_id": "systemic_embolic_risk_context_probability",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.5,
+        365.0
+      ],
+      "clinical_rationale": "AF-related stasis raises systemic embolic risk context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "target_id": "ischemic_stroke_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [
+        0.5,
+        365.0
+      ],
+      "clinical_rationale": "Left atrial thromboembolism can produce ischemic stroke.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM",
+      "target_id": "systemic_embolism_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [
+        0.5,
+        365.0
+      ],
+      "clinical_rationale": "Emboli can reach systemic arterial beds beyond the brain.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_PULMONARY_VEIN_TRIGGER_REENTRY",
+      "target_id": "paroxysmal_atrial_fibrillation_pattern_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Trigger-dominant AF often appears episodically. Conditionality from original effect: increase_context_dependent.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "target_id": "persistent_atrial_fibrillation_pattern_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        1.0,
+        3650.0
+      ],
+      "clinical_rationale": "Structural remodeling supports sustained AF patterns.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "target_id": "long_standing_atrial_fibrillation_context_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        30.0,
+        3650.0
+      ],
+      "clinical_rationale": "Longstanding AF is more likely when atrial remodeling is durable.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "target_id": "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY",
+      "effect_on_target": "decrease",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        365.0
+      ],
+      "clinical_rationale": "Greater structural remodeling reduces durable sinus rhythm recovery capacity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "target_id": "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_mechanism",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "A reversible trigger-dominant episode has greater recovery potential after correction. Conditionality from original effect: increase_if_trigger_correctable.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY",
+      "target_id": "rhythm_control_feasibility",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Recovery capacity informs whether rhythm-control vectors can reshape the AF state effectively.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "cardiogenic_shock_hazard",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_event_hazard",
+      "lag_days_range": [
+        0.0,
+        0.5
+      ],
+      "clinical_rationale": "Very rapid AF with poor reserve can precipitate cardiogenic shock physiology. Conditionality from original effect: increase_when_fast_and_reserve_low.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Low-output AF contributes to mortality mainly through instability, shock, and decompensation. Conditionality from original effect: increase_when_instability_or_shock.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "ischemic_stroke_hazard",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "event_hazard_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Ischemic stroke is a major AF-related mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "systemic_embolism_hazard",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "event_hazard_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Systemic embolism can produce catastrophic organ ischemia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "heart_failure_decompensation_hazard",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "event_hazard_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "AF can worsen heart failure and raise short-term mortality risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "cardiogenic_shock_hazard",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "event_hazard_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "clinical_rationale": "Shock from rapid AF or low reserve is an immediate mortality pathway.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "intracranial_hemorrhage_hazard",
+      "target_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "effect_on_target": "increase",
+      "edge_type": "event_hazard_to_derived_hazard",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "clinical_rationale": "Intracranial bleeding is a treatment-linked mortality pathway when anticoagulation is used.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "irregular_pulse_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Irregular AV conduction produces an irregularly irregular pulse.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "narrow_complex_tachycardia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Rapid AV conduction during AF commonly produces narrow-complex tachycardia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "serum_lactate_elevation_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Loss of atrial contribution and rapid rate can impair output enough to raise lactate in unstable cases.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "total_thyroxine",
+      "target_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Thyroid hormone excess is a reversible trigger load for atrial fibrillation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_RAPID_IRREGULAR_AV_CONDUCTION",
+      "target_id": "supraventricular_tachyarrhythmia_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "AF with rapid AV conduction is a supraventricular tachyarrhythmia.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+      "target_id": "pregnancy_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Pregnancy is a reversible context that can increase AF trigger load through volume and adrenergic stress.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "target_id": "volume_overload_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Volume overload and atrial stretch support AF initiation or persistence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+      "target_id": "lower_extremity_edema_presence",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "Systemic congestion can coexist with atrial stretch and AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_id": "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT",
+      "target_id": "brain_natriuretic_peptide",
+      "effect_on_target": "increase",
+      "edge_type": "mechanism_to_axis",
+      "lag_days_range": [
+        0.0,
+        1.0
+      ],
+      "clinical_rationale": "AF-related atrial stretch and heart-failure physiology can elevate BNP.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axes": [
+    {
+      "axis_id": "cardiac_arrhythmia_presence",
+      "display_name": "Cardiac arrhythmia presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.8,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        90.0
+      ],
+      "clinical_interpretation": "Parent finding for rhythm abnormality; AF-specific ECG axes carry disease specificity.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "atrial_fibrillation_presence",
+      "display_name": "Atrial fibrillation presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "cardiac_arrhythmia_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.85,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        90.0
+      ],
+      "clinical_interpretation": "Atrial fibrillation requires positive rhythm evidence for fibrillatory atrial activity or documented AF burden/pattern. Generic tachycardia, palpitations, or acute illness alone must not satisfy this source geometry.",
+      "knowledge_confidence": "high",
+      "required_context_support": true,
+      "required_context_prior_penalty": 2.0,
+      "context_support_aliases": [
+        "fibrillatory_atrial_baseline_presence",
+        "atrial_fibrillation_burden",
+        "paroxysmal_atrial_fibrillation_pattern_presence",
+        "persistent_atrial_fibrillation_pattern_presence",
+        "long_standing_atrial_fibrillation_context_presence"
+      ]
+    },
+    {
+      "axis_id": "absent_discrete_p_waves_presence",
+      "display_name": "Absent discrete P waves presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.7,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        90.0
+      ],
+      "clinical_interpretation": "Loss of organized sinus P waves during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "irregularly_irregular_rr_interval_presence",
+      "display_name": "Irregularly irregular R-R intervals presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.75,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        90.0
+      ],
+      "clinical_interpretation": "Variable ventricular intervals characteristic of AF with conducted beats.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fibrillatory_atrial_baseline_presence",
+      "display_name": "Fibrillatory atrial baseline presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.001,
+        90.0
+      ],
+      "clinical_interpretation": "Fine or coarse fibrillatory baseline activity supporting AF morphology.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "atrial_fibrillation_burden",
+      "display_name": "Atrial fibrillation burden",
+      "category": "ecg_measurement",
+      "unit": "fraction_time_0_1",
+      "axis_role": "measurement",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.05,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        180.0
+      ],
+      "clinical_interpretation": "Proportion of monitored time or trajectory occupied by AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "paroxysmal_atrial_fibrillation_pattern_presence",
+      "display_name": "Paroxysmal atrial fibrillation pattern presence",
+      "category": "trajectory_pattern",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        180.0
+      ],
+      "clinical_interpretation": "Episodic AF pattern with intervening sinus rhythm.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "persistent_atrial_fibrillation_pattern_presence",
+      "display_name": "Persistent atrial fibrillation pattern presence",
+      "category": "trajectory_pattern",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        7.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Sustained AF pattern requiring active rhythm transition or long observation to leave AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "long_standing_atrial_fibrillation_context_presence",
+      "display_name": "Long-standing atrial fibrillation context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        30.0,
+        3650.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Long duration AF context that lowers sinus rhythm recovery capacity.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "rapid_ventricular_response_presence",
+      "display_name": "Rapid ventricular response presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "AF with ventricular response high enough to affect symptoms, filling, or perfusion.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "slow_ventricular_response_presence",
+      "display_name": "Slow ventricular response presence",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        365.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        90.0
+      ],
+      "clinical_interpretation": "AF with unexpectedly slow ventricular rate due to conduction disease or nodal suppression.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ventricular_rate_on_ecg",
+      "display_name": "Ventricular rate on ECG",
+      "category": "ecg_measurement",
+      "unit": "beats/min",
+      "axis_role": "measurement",
+      "parent_axis_id": "atrial_fibrillation_presence",
+      "log_scale": false,
+      "baseline_range": [
+        55.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        60.0,
+        180.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "ECG ventricular rate during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_rate",
+      "display_name": "Heart rate",
+      "category": "vital_sign",
+      "unit": "beats_per_min",
+      "axis_role": "measurement",
+      "parent_axis_id": "tachycardia_presence",
+      "log_scale": false,
+      "baseline_range": [
+        55.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        60.0,
+        180.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "Peripheral or monitored heart rate reflecting ventricular response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "tachycardia_presence",
+      "display_name": "Tachycardia presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "High heart-rate finding, commonly from rapid ventricular response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "bradycardia_presence",
+      "display_name": "Bradycardia presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.1
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        365.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        90.0
+      ],
+      "clinical_interpretation": "Slow ventricular response context in AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "palpitations_presence",
+      "display_name": "Palpitations presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "Subjective awareness of irregular or rapid heartbeat.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "palpitations_activity",
+      "display_name": "Palpitations activity",
+      "category": "symptom",
+      "unit": "severity_score_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "palpitations_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "Severity or burden of palpitations during AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dyspnea_presence",
+      "display_name": "Dyspnea presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        90.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "clinical_interpretation": "Breathlessness from rapid rate, filling pressure, or heart failure interaction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "fatigue_presence",
+      "display_name": "Fatigue presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.12
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        365.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        90.0
+      ],
+      "clinical_interpretation": "Reduced exercise tolerance or fatigue associated with AF burden.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "dizziness_presence",
+      "display_name": "Dizziness presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        14.0
+      ],
+      "clinical_interpretation": "Lightheadedness from rate, irregularity, or reduced perfusion.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "chest_pain_presence",
+      "display_name": "Chest pain presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Chest discomfort can accompany rapid AF or coexisting ischemic context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "syncope_presence",
+      "display_name": "Syncope presence",
+      "category": "symptom",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        0.6
+      ],
+      "plateau_duration_days": [
+        0.001,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Transient loss of consciousness is uncommon in isolated AF and suggests marked rate, pauses, or poor reserve.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hemodynamic_instability_presence",
+      "display_name": "Hemodynamic instability presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Perfusion compromise during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypotension_presence",
+      "display_name": "Hypotension presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemodynamic_instability_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Low blood pressure during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "shock_presence",
+      "display_name": "Shock presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "hemodynamic_instability_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.001,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Severe perfusion failure from rapid AF or poor cardiac reserve.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "systolic_blood_pressure",
+      "display_name": "Systolic blood pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "log_scale": false,
+      "baseline_range": [
+        90.0,
+        160.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        70.0,
+        170.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Blood pressure response during AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "diastolic_blood_pressure",
+      "display_name": "Diastolic blood pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "parent_axis_id": "hypotension_presence",
+      "log_scale": false,
+      "baseline_range": [
+        55.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        40.0,
+        105.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Diastolic pressure during AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "mean_arterial_pressure",
+      "display_name": "Mean arterial pressure",
+      "category": "vital_sign",
+      "unit": "mmHg",
+      "axis_role": "measurement",
+      "parent_axis_id": "hemodynamic_instability_presence",
+      "log_scale": false,
+      "baseline_range": [
+        65.0,
+        110.0
+      ],
+      "peak_day_range": [
+        0.0,
+        0.5
+      ],
+      "peak_value_range": [
+        50.0,
+        115.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        14.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Perfusion pressure during AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "hypoxemia_presence",
+      "display_name": "Hypoxemia presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Low oxygenation context that can trigger or worsen AF and decompensation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "oxygen_saturation",
+      "display_name": "Oxygen saturation",
+      "category": "vital_sign",
+      "unit": "%",
+      "axis_role": "measurement",
+      "parent_axis_id": "hypoxemia_presence",
+      "log_scale": false,
+      "baseline_range": [
+        94.0,
+        100.0
+      ],
+      "peak_day_range": [
+        0.0,
+        2.0
+      ],
+      "peak_value_range": [
+        85.0,
+        100.0
+      ],
+      "plateau_duration_days": [
+        0.001,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Oxygenation context relevant to trigger load and decompensation.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "left_atrial_enlargement_presence",
+      "display_name": "Left atrial enlargement presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Atrial structural substrate and chronic pressure or volume load marker.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_atrial_volume_index",
+      "display_name": "Left atrial volume index",
+      "category": "imaging_measurement",
+      "unit": "mL/m2",
+      "axis_role": "measurement",
+      "parent_axis_id": "left_atrial_enlargement_presence",
+      "log_scale": false,
+      "baseline_range": [
+        16.0,
+        34.0
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        25.0,
+        80.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Quantitative left atrial size burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_atrial_appendage_thrombus_presence",
+      "display_name": "Left atrial appendage thrombus presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        1.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "clinical_interpretation": "Direct thrombus evidence in the left atrial appendage.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "spontaneous_echo_contrast_presence",
+      "display_name": "Spontaneous echo contrast presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "left_atrial_appendage_thrombus_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.5,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "clinical_interpretation": "Echo marker of left atrial stasis that can accompany thrombus risk.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "structural_heart_disease_context_presence",
+      "display_name": "Structural heart disease context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.15
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Cardiac substrate that increases AF persistence and hemodynamic consequence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "display_name": "Left ventricular systolic dysfunction presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "structural_heart_disease_context_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -3650.0,
+        90.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        365.0
+      ],
+      "clinical_interpretation": "LV systolic dysfunction as substrate or consequence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "left_ventricular_ejection_fraction",
+      "display_name": "Left ventricular ejection fraction",
+      "category": "measurement",
+      "unit": "percent",
+      "axis_role": "measurement",
+      "parent_axis_id": "left_ventricular_systolic_dysfunction_presence",
+      "log_scale": false,
+      "baseline_range": [
+        50.0,
+        70.0
+      ],
+      "peak_day_range": [
+        -3650.0,
+        90.0
+      ],
+      "peak_value_range": [
+        15.0,
+        65.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        14.0,
+        365.0
+      ],
+      "clinical_interpretation": "Ventricular reserve and tachycardia-mediated dysfunction marker.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_failure_presence",
+      "display_name": "Heart failure presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.1
+      ],
+      "peak_day_range": [
+        -3650.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        180.0
+      ],
+      "clinical_interpretation": "Heart failure as AF substrate or decompensation consequence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "pulmonary_edema_presence",
+      "display_name": "Pulmonary edema presence",
+      "category": "imaging_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "heart_failure_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "Pulmonary congestion from AF-related decompensation or underlying heart failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "pulmonary_edema_extent",
+      "display_name": "Pulmonary edema extent",
+      "category": "imaging_finding",
+      "unit": "relative_extent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "pulmonary_edema_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        14.0
+      ],
+      "clinical_interpretation": "Severity or extent of pulmonary edema.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "valvular_heart_disease_context_presence",
+      "display_name": "Valvular heart disease context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Valve disease context that can enlarge the atrium and alter anticoagulation strategy in simulation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mitral_stenosis_context_presence",
+      "display_name": "Mitral stenosis context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "valvular_heart_disease_context_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.02
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Mitral stenosis context with high atrial stasis burden.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "hypertension_presence",
+      "display_name": "Hypertension presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.3
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Pressure-load risk context for atrial remodeling and stroke risk.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "sleep_apnea_context_presence",
+      "display_name": "Sleep apnea context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.15
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Sleep-disordered breathing risk context for atrial triggers and recurrence.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "obesity_context_presence",
+      "display_name": "Obesity context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.25
+      ],
+      "peak_day_range": [
+        -3650.0,
+        0.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        90.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Metabolic and atrial remodeling risk context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "thyroid_dysfunction_presence",
+      "display_name": "Thyroid dysfunction presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -90.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        180.0
+      ],
+      "clinical_interpretation": "Endocrine trigger or substrate context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "uncontrolled_hyperthyroidism_presence",
+      "display_name": "Uncontrolled hyperthyroidism presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "thyroid_dysfunction_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        -90.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        180.0
+      ],
+      "clinical_interpretation": "Hyperthyroid trigger context for AF and rapid response.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "electrolyte_arrhythmia_trigger_context_presence",
+      "display_name": "Electrolyte arrhythmia trigger context presence",
+      "category": "treatment_modifier",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Potassium or magnesium disturbance context that can lower atrial arrhythmia threshold.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "thyroid_stimulating_hormone",
+      "display_name": "Thyroid stimulating hormone",
+      "category": "lab_value",
+      "unit": "mIU/L",
+      "axis_role": "measurement",
+      "parent_axis_id": "thyroid_dysfunction_presence",
+      "log_scale": true,
+      "baseline_range": [
+        0.4,
+        4.0
+      ],
+      "peak_day_range": [
+        -90.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.005,
+        10.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        365.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        180.0
+      ],
+      "clinical_interpretation": "Thyroid axis measurement that can reveal trigger context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "serum_potassium",
+      "display_name": "Serum potassium",
+      "category": "lab_value",
+      "unit": "mmol/L",
+      "axis_role": "measurement",
+      "parent_axis_id": "electrolyte_arrhythmia_trigger_context_presence",
+      "log_scale": false,
+      "baseline_range": [
+        3.5,
+        5.0
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        2.5,
+        6.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Potassium abnormality as arrhythmia trigger context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_magnesium",
+      "display_name": "Serum magnesium",
+      "category": "lab_value",
+      "unit": "mg/dL",
+      "axis_role": "measurement",
+      "parent_axis_id": "electrolyte_arrhythmia_trigger_context_presence",
+      "log_scale": false,
+      "baseline_range": [
+        1.7,
+        2.4
+      ],
+      "peak_day_range": [
+        -7.0,
+        1.0
+      ],
+      "peak_value_range": [
+        1.0,
+        3.5
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        14.0
+      ],
+      "clinical_interpretation": "Magnesium abnormality as arrhythmia trigger or treatment context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "acute_myocardial_ischemia_context_presence",
+      "display_name": "Acute myocardial ischemia context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        -3.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Ischemic trigger or coexisting substrate context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "serum_troponin",
+      "display_name": "Serum troponin",
+      "category": "lab_value",
+      "unit": "ng/mL",
+      "axis_role": "measurement",
+      "parent_axis_id": "acute_myocardial_ischemia_context_presence",
+      "log_scale": true,
+      "baseline_range": [
+        0.001,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.001,
+        5.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Myocardial injury or ischemic context marker, not AF-specific by itself.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "alcohol_binge_trigger_context_presence",
+      "display_name": "Alcohol binge trigger context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -2.0,
+        0.5
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.5,
+        7.0
+      ],
+      "clinical_interpretation": "Transient alcohol-related trigger context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "postoperative_or_acute_illness_trigger_context_presence",
+      "display_name": "Postoperative or acute illness trigger context presence",
+      "category": "risk_context",
+      "unit": "present_absent_0_1",
+      "axis_role": "finding",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        -14.0,
+        3.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        30.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Surgery, acute inflammation, volume shift, or acute stress trigger context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systemic_embolic_risk_context_probability",
+      "display_name": "Systemic embolic risk context probability",
+      "category": "risk_context",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.08
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "clinical_interpretation": "Patient-level thromboembolic context modifying AF embolic hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anticoagulation_contraindication_probability",
+      "display_name": "Anticoagulation contraindication probability",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.05
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Bleeding, procedure, intracranial, or other context limiting anticoagulation vector feasibility.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "therapeutic_anticoagulation_feasibility",
+      "display_name": "Therapeutic anticoagulation feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.4,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Overall feasibility of sustained therapeutic anticoagulation.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "anticoagulation_bleeding_risk_context",
+      "display_name": "Anticoagulation bleeding risk context",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.2
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Bleeding-prone context that raises anticoagulation harm vectors.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "rhythm_control_feasibility",
+      "display_name": "Rhythm control feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Context for rhythm-control vector effectiveness based on duration, atrial size, trigger reversibility, and substrate.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "rate_control_tolerability_context",
+      "display_name": "Rate control tolerability context",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.2,
+        1.0
+      ],
+      "peak_day_range": [
+        0.0,
+        7.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        90.0
+      ],
+      "clinical_interpretation": "Context for tolerating AV nodal slowing without hypotension, shock, or bradycardia.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "left_atrial_appendage_occlusion_feasibility",
+      "display_name": "Left atrial appendage occlusion feasibility",
+      "category": "treatment_modifier",
+      "unit": "probability_0_1",
+      "axis_role": "measurement",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.8
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        30.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        30.0,
+        3650.0
+      ],
+      "clinical_interpretation": "Context for appendage-occlusion vector when embolic risk persists and anticoagulation is limited.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "ischemic_stroke_hazard",
+      "display_name": "Ischemic stroke hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.5,
+        365.0
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.005
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "clinical_interpretation": "AF-related embolic stroke event hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "systemic_embolism_hazard",
+      "display_name": "Systemic embolism hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        1e-06,
+        3e-05
+      ],
+      "peak_day_range": [
+        0.5,
+        365.0
+      ],
+      "peak_value_range": [
+        5e-06,
+        0.003
+      ],
+      "plateau_duration_days": [
+        1.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        7.0,
+        365.0
+      ],
+      "clinical_interpretation": "Non-cerebral systemic embolic event hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "heart_failure_decompensation_hazard",
+      "display_name": "Heart failure decompensation hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        1e-06,
+        0.0001
+      ],
+      "peak_day_range": [
+        0.0,
+        30.0
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.01
+      ],
+      "plateau_duration_days": [
+        0.1,
+        90.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        30.0
+      ],
+      "clinical_interpretation": "Acute or subacute heart failure worsening hazard from rate, filling, and substrate interaction.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "cardiogenic_shock_presence",
+      "display_name": "Cardiogenic shock presence",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        0.01
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.001,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Shock physiology attributable to poor cardiac output during AF or substrate failure.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "cardiogenic_shock_hazard",
+      "display_name": "Cardiogenic shock hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "parent_axis_id": "cardiogenic_shock_presence",
+      "log_scale": false,
+      "baseline_range": [
+        0.0,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.02
+      ],
+      "plateau_duration_days": [
+        0.001,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.01,
+        7.0
+      ],
+      "clinical_interpretation": "Shock event hazard from rapid AF with very poor reserve.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "major_bleeding_hazard",
+      "display_name": "Major bleeding hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        5e-06,
+        0.005
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Bleeding event hazard mainly relevant when anticoagulation vectors are active.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "intracranial_hemorrhage_hazard",
+      "display_name": "Intracranial hemorrhage hazard",
+      "category": "event_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        5e-07,
+        2e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        1e-06,
+        0.002
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Intracranial bleeding hazard linked to bleeding context and anticoagulation exposure.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "display_name": "Mortality hazard in atrial fibrillation",
+      "category": "derived_hazard",
+      "unit": "events_per_day",
+      "axis_role": "measurement",
+      "log_scale": true,
+      "baseline_range": [
+        1e-06,
+        5e-05
+      ],
+      "peak_day_range": [
+        0.0,
+        365.0
+      ],
+      "peak_value_range": [
+        1e-05,
+        0.02
+      ],
+      "plateau_duration_days": [
+        0.1,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        1.0,
+        365.0
+      ],
+      "clinical_interpretation": "Lifespan outcome hazard emerging through stroke, systemic embolism, heart failure decompensation, shock, and treatment-linked intracranial bleeding.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "axis_id": "irregular_pulse_presence",
+      "display_name": "Irregular pulse presence",
+      "display_name_ja": "??????????",
+      "category": "physical_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "cardiac_arrhythmia_presence",
+      "baseline_range": [
+        0.0,
+        0.04
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.4,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        3650.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        3650.0
+      ],
+      "log_scale": false,
+      "clinical_interpretation": "Irregularly irregular pulse is a bedside manifestation of atrial fibrillation."
+    },
+    {
+      "axis_id": "narrow_complex_tachycardia_presence",
+      "display_name": "Narrow complex tachycardia presence",
+      "display_name_ja": "?QRS?????",
+      "category": "ecg_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "tachycardia_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.2,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0.0,
+        30.0
+      ],
+      "decline_half_life_days": [
+        0.1,
+        30.0
+      ],
+      "log_scale": false,
+      "clinical_interpretation": "Atrial fibrillation with rapid ventricular response usually presents as an irregular narrow-complex tachycardia unless bundle branch block or pre-excitation is present."
+    },
+    {
+      "axis_id": "serum_lactate_elevation_presence",
+      "display_name": "Serum lactate elevation presence",
+      "display_name_ja": "???????",
+      "category": "lab_finding",
+      "unit": "present_absent_0_1",
+      "axis_role": "satellite",
+      "parent_axis_id": "shock_presence",
+      "baseline_range": [
+        0.0,
+        0.03
+      ],
+      "peak_day_range": [
+        0.0,
+        1.0
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0.0,
+        7.0
+      ],
+      "decline_half_life_days": [
+        0.2,
+        7.0
+      ],
+      "log_scale": false,
+      "clinical_interpretation": "Qualitative lactate elevation can accompany hemodynamically unstable rapid atrial fibrillation."
+    },
+    {
+      "axis_id": "total_thyroxine",
+      "display_name": "Total thyroxine",
+      "display_name_ja": "?T4",
+      "category": "lab_value",
+      "unit": "mcg/dL",
+      "axis_role": "measurement",
+      "parent_axis_id": "thyroid_dysfunction_presence",
+      "baseline_range": [
+        5.0,
+        12.0
+      ],
+      "peak_day_range": [
+        -30.0,
+        1.0
+      ],
+      "peak_value_range": [
+        5.0,
+        25.0
+      ],
+      "plateau_duration_days": [
+        1.0,
+        90.0
+      ],
+      "decline_half_life_days": [
+        3.0,
+        60.0
+      ],
+      "log_scale": false,
+      "clinical_interpretation": "Total T4 captures thyroid hormone excess or deficiency as a reversible trigger context for atrial fibrillation."
+    },
+    {
+      "axis_id": "supraventricular_tachyarrhythmia_presence",
+      "display_name": "supraventricular tachyarrhythmia presence",
+      "display_name_ja": "?????????",
+      "category": "ecg_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        0,
+        0.2
+      ],
+      "peak_value_range": [
+        0.6,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        3650
+      ],
+      "decline_half_life_days": [
+        0.01,
+        90
+      ],
+      "shape_free_text": "AF is a supraventricular tachyarrhythmia when ventricular response is rapid.",
+      "knowledge_confidence": "high",
+      "parent_axis_id": "cardiac_arrhythmia_presence"
+    },
+    {
+      "axis_id": "pregnancy_presence",
+      "display_name": "pregnancy presence",
+      "display_name_ja": "??",
+      "category": "context",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.03
+      ],
+      "peak_day_range": [
+        -280,
+        0
+      ],
+      "peak_value_range": [
+        0.0,
+        1.0
+      ],
+      "plateau_duration_days": [
+        0,
+        280
+      ],
+      "decline_half_life_days": [
+        1,
+        280
+      ],
+      "shape_free_text": "Pregnancy is a patient context that can increase volume and adrenergic load predisposing to AF.",
+      "knowledge_confidence": "low"
+    },
+    {
+      "axis_id": "volume_overload_presence",
+      "display_name": "volume overload presence",
+      "display_name_ja": "????",
+      "category": "physiology_finding",
+      "axis_role": "finding",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.06
+      ],
+      "peak_day_range": [
+        -30,
+        3
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        90
+      ],
+      "decline_half_life_days": [
+        0.5,
+        90
+      ],
+      "shape_free_text": "Volume overload and atrial stretch can trigger or sustain AF.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "axis_id": "lower_extremity_edema_presence",
+      "display_name": "lower extremity edema presence",
+      "display_name_ja": "????",
+      "category": "physical_finding",
+      "axis_role": "satellite",
+      "unit": "present_absent_0_1",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        0.06
+      ],
+      "peak_day_range": [
+        -30,
+        7
+      ],
+      "peak_value_range": [
+        0.0,
+        0.8
+      ],
+      "plateau_duration_days": [
+        0,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        90
+      ],
+      "shape_free_text": "Edema is a volume-overload context that can accompany AF triggers or consequences.",
+      "knowledge_confidence": "medium",
+      "parent_axis_id": "volume_overload_presence"
+    },
+    {
+      "axis_id": "brain_natriuretic_peptide",
+      "display_name": "brain natriuretic peptide",
+      "display_name_ja": "BNP",
+      "category": "lab_measurement",
+      "axis_role": "measurement",
+      "unit": "pg/mL",
+      "log_scale": false,
+      "baseline_range": [
+        0,
+        100
+      ],
+      "peak_day_range": [
+        -30,
+        7
+      ],
+      "peak_value_range": [
+        50,
+        2000
+      ],
+      "plateau_duration_days": [
+        0,
+        90
+      ],
+      "decline_half_life_days": [
+        1,
+        90
+      ],
+      "shape_free_text": "BNP may rise with atrial stretch, volume overload, or tachycardia-mediated heart failure in AF.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "axis_couplings": [
+    {
+      "source_axis_id": "ventricular_rate_on_ecg",
+      "target_axis_id": "hemodynamic_instability_presence",
+      "coupling_type": "drift",
+      "effect": "increase_target_with_high_source",
+      "lag_days_range": [
+        0.0,
+        0.1
+      ],
+      "strength_range": [
+        0.2,
+        0.85
+      ],
+      "clinical_rationale": "Very rapid ventricular response reduces filling time and can cause instability.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "ventricular_rate_on_ecg",
+      "target_axis_id": "heart_failure_decompensation_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target_with_persistent_high_source",
+      "lag_days_range": [
+        0.1,
+        30.0
+      ],
+      "strength_range": [
+        0.2,
+        0.9
+      ],
+      "clinical_rationale": "Persistent high rate can raise heart failure decompensation hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "atrial_fibrillation_burden",
+      "target_axis_id": "left_ventricular_ejection_fraction",
+      "coupling_type": "drift",
+      "effect": "high_source_decreases_target_when_rate_high",
+      "lag_days_range": [
+        7.0,
+        90.0
+      ],
+      "strength_range": [
+        0.2,
+        0.7
+      ],
+      "clinical_rationale": "High AF burden with poor rate control can lower LVEF over time.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "left_atrial_volume_index",
+      "target_axis_id": "atrial_fibrillation_burden",
+      "coupling_type": "drift",
+      "effect": "increase_target_with_high_source",
+      "lag_days_range": [
+        0.0,
+        365.0
+      ],
+      "strength_range": [
+        0.2,
+        0.7
+      ],
+      "clinical_rationale": "Larger atria support higher AF burden and persistence.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_atrial_volume_index",
+      "target_axis_id": "ischemic_stroke_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target_with_high_source",
+      "lag_days_range": [
+        1.0,
+        365.0
+      ],
+      "strength_range": [
+        0.1,
+        0.5
+      ],
+      "clinical_rationale": "Larger atria correlate with stasis and embolic risk context.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "mitral_stenosis_context_presence",
+      "target_axis_id": "left_atrial_appendage_thrombus_presence",
+      "coupling_type": "drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        1.0,
+        365.0
+      ],
+      "strength_range": [
+        0.3,
+        0.9
+      ],
+      "clinical_rationale": "Mitral stenosis increases atrial stasis and thrombus tendency.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "left_atrial_appendage_thrombus_presence",
+      "target_axis_id": "ischemic_stroke_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "strength_range": [
+        0.5,
+        0.98
+      ],
+      "clinical_rationale": "Visible appendage thrombus is direct embolic substrate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "systemic_embolic_risk_context_probability",
+      "target_axis_id": "ischemic_stroke_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target_with_high_source",
+      "lag_days_range": [
+        0.0,
+        365.0
+      ],
+      "strength_range": [
+        0.3,
+        0.95
+      ],
+      "clinical_rationale": "Patient thromboembolic context modulates AF stroke hazard.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "therapeutic_anticoagulation_feasibility",
+      "target_axis_id": "ischemic_stroke_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "decrease_target_when_treatment_vector_active",
+      "lag_days_range": [
+        0.1,
+        30.0
+      ],
+      "strength_range": [
+        0.2,
+        0.9
+      ],
+      "clinical_rationale": "Effective anticoagulation vectors reduce embolic stroke hazard when feasible.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "anticoagulation_bleeding_risk_context",
+      "target_axis_id": "major_bleeding_hazard",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target_when_anticoagulation_vector_active",
+      "lag_days_range": [
+        0.0,
+        365.0
+      ],
+      "strength_range": [
+        0.2,
+        0.9
+      ],
+      "clinical_rationale": "Bleeding-prone context raises harm from anticoagulation vectors.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "major_bleeding_hazard",
+      "target_axis_id": "intracranial_hemorrhage_hazard",
+      "coupling_type": "event_transition",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "strength_range": [
+        0.1,
+        0.5
+      ],
+      "clinical_rationale": "Major bleeding hazard includes the possibility of intracranial bleeding.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "source_axis_id": "ischemic_stroke_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "strength_range": [
+        0.3,
+        0.95
+      ],
+      "clinical_rationale": "Embolic stroke can drive AF-associated mortality.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "heart_failure_decompensation_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "strength_range": [
+        0.2,
+        0.9
+      ],
+      "clinical_rationale": "Heart failure decompensation is a mortality pathway in AF.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "cardiogenic_shock_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        7.0
+      ],
+      "strength_range": [
+        0.4,
+        0.98
+      ],
+      "clinical_rationale": "Shock has immediate mortality impact.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "source_axis_id": "intracranial_hemorrhage_hazard",
+      "target_axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+      "coupling_type": "hazard_drift",
+      "effect": "increase_target",
+      "lag_days_range": [
+        0.0,
+        30.0
+      ],
+      "strength_range": [
+        0.3,
+        0.95
+      ],
+      "clinical_rationale": "Intracranial bleeding contributes to mortality when anticoagulation harm occurs.",
+      "knowledge_confidence": "high"
+    }
+  ],
+  "treatments": [
+    {
+      "treatment_id": "synchronized_electrical_cardioversion",
+      "treatment": "synchronized_electrical_cardioversion",
+      "display_name": "Synchronized electrical cardioversion",
+      "drug_class": "electrical_rhythm_control",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "atrial_fibrillation_presence",
+        "hemodynamic_instability_presence",
+        "rhythm_control_feasibility",
+        "left_atrial_appendage_thrombus_presence",
+        "therapeutic_anticoagulation_feasibility"
+      ],
+      "trajectory_modifications": {
+        "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION": {
+          "peak_value_factor": [
+            0.05,
+            0.5
+          ],
+          "plateau_duration_factor": [
+            0.05,
+            0.7
+          ],
+          "decline_half_life_days": [
+            0.001,
+            1.0
+          ]
+        },
+        "atrial_fibrillation_presence": {
+          "peak_value_factor": [
+            0.0,
+            0.5
+          ],
+          "decline_half_life_days": [
+            0.001,
+            1.0
+          ]
+        },
+        "hemodynamic_instability_presence": {
+          "peak_value_factor": [
+            0.2,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.001,
+            1.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "rhythm_control_feasibility",
+          "condition": "high",
+          "effect": "sinus_rhythm_conversion_more_durable",
+          "factor_range": [
+            1.1,
+            3.0
+          ],
+          "clinical_rationale": "Shorter duration, smaller atrium, and reversible trigger dominance improve durable rhythm response."
+        },
+        {
+          "axis_id": "left_atrial_appendage_thrombus_presence",
+          "condition": "present",
+          "effect": "embolization_hazard_context_increases",
+          "factor_range": [
+            0.2,
+            1.0
+          ],
+          "clinical_rationale": "Appendage thrombus changes the risk balance of immediate rhythm transition."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "systemic_embolism_hazard",
+          "effect": "may_increase_if_thrombus_present_and_anticoagulation_not_established",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        },
+        {
+          "axis_id": "bradycardia_presence",
+          "effect": "may_increase_transiently_after_conversion",
+          "magnitude_range": [
+            1.0,
+            2.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.0,
+        0.02
+      ],
+      "carryover_after_stop_days": [
+        0.0,
+        30.0
+      ],
+      "context_specific_role": "Rapid rhythm reshape vector that can immediately reduce AF activity and rate-related instability when rhythm transition succeeds.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "beta_blocker_rate_control",
+      "treatment": "beta_blocker_rate_control",
+      "display_name": "Beta-blocker rate control",
+      "drug_class": "av_nodal_rate_control",
+      "mode": "push_state",
+      "required_context_axes": [
+        "rapid_ventricular_response_presence",
+        "ventricular_rate_on_ecg",
+        "rate_control_tolerability_context",
+        "hypotension_presence",
+        "left_ventricular_systolic_dysfunction_presence"
+      ],
+      "trajectory_modifications": {
+        "M_AF_RAPID_IRREGULAR_AV_CONDUCTION": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2.0
+          ]
+        },
+        "ventricular_rate_on_ecg": {
+          "peak_value_factor": [
+            0.55,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2.0
+          ]
+        },
+        "heart_failure_decompensation_hazard": {
+          "peak_value_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.1,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "rate_control_tolerability_context",
+          "condition": "low",
+          "effect": "hypotension_or_bradycardia_harm_increases",
+          "factor_range": [
+            0.2,
+            0.9
+          ],
+          "clinical_rationale": "Poor perfusion reserve limits nodal-slowing benefit."
+        },
+        {
+          "axis_id": "uncontrolled_hyperthyroidism_presence",
+          "condition": "present",
+          "effect": "adrenergic_rate_component_reduced",
+          "factor_range": [
+            1.1,
+            2.0
+          ],
+          "clinical_rationale": "Adrenergic excess makes sympathetic rate control more relevant."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "hypotension_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            2.5
+          ]
+        },
+        {
+          "axis_id": "bradycardia_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.01,
+        0.5
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        3.0
+      ],
+      "context_specific_role": "Rate-control push vector that lowers ventricular response and downstream hemodynamic stress without directly eliminating the AF substrate.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "nondihydropyridine_calcium_channel_blocker_rate_control",
+      "treatment": "nondihydropyridine_calcium_channel_blocker_rate_control",
+      "display_name": "Non-dihydropyridine calcium-channel blocker rate control",
+      "drug_class": "av_nodal_rate_control",
+      "mode": "push_state",
+      "required_context_axes": [
+        "rapid_ventricular_response_presence",
+        "ventricular_rate_on_ecg",
+        "rate_control_tolerability_context",
+        "hypotension_presence",
+        "left_ventricular_systolic_dysfunction_presence"
+      ],
+      "trajectory_modifications": {
+        "M_AF_RAPID_IRREGULAR_AV_CONDUCTION": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2.0
+          ]
+        },
+        "ventricular_rate_on_ecg": {
+          "peak_value_factor": [
+            0.55,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2.0
+          ]
+        },
+        "hemodynamic_instability_presence": {
+          "peak_value_factor": [
+            0.4,
+            1.2
+          ],
+          "decline_half_life_days": [
+            0.02,
+            2.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "left_ventricular_systolic_dysfunction_presence",
+          "condition": "present",
+          "effect": "negative_inotropy_harm_increases",
+          "factor_range": [
+            0.2,
+            0.9
+          ],
+          "clinical_rationale": "Systolic dysfunction can make negative inotropy less tolerated."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "hypotension_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        },
+        {
+          "axis_id": "bradycardia_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.01,
+        0.5
+      ],
+      "carryover_after_stop_days": [
+        0.1,
+        3.0
+      ],
+      "context_specific_role": "AV nodal slowing vector for rapid AF where blood pressure and ventricular systolic reserve can tolerate it.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "digoxin_rate_control",
+      "treatment": "digoxin_rate_control",
+      "display_name": "Digoxin rate control",
+      "drug_class": "av_nodal_rate_control",
+      "mode": "push_state",
+      "required_context_axes": [
+        "rapid_ventricular_response_presence",
+        "ventricular_rate_on_ecg",
+        "heart_failure_presence",
+        "rate_control_tolerability_context",
+        "serum_potassium"
+      ],
+      "trajectory_modifications": {
+        "M_AF_RAPID_IRREGULAR_AV_CONDUCTION": {
+          "peak_value_factor": [
+            0.45,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.2,
+            3.0
+          ]
+        },
+        "ventricular_rate_on_ecg": {
+          "peak_value_factor": [
+            0.6,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.2,
+            3.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "M_AF_AUTONOMIC_TRIGGER_MODULATION",
+          "condition": "high_adrenergic_tone",
+          "effect": "rate_control_effect_less_complete",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "High adrenergic tone can blunt digoxin rate control."
+        },
+        {
+          "axis_id": "serum_potassium",
+          "condition": "low_or_high",
+          "effect": "toxicity_or_conduction_harm_context_increases",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "Electrolyte disturbance changes digoxin safety."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "bradycardia_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        2.0
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        7.0
+      ],
+      "context_specific_role": "Rate-control vector with slower onset and context-dependent utility when hypotension limits stronger nodal-slowing push.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "amiodarone_rhythm_or_rate_support",
+      "treatment": "amiodarone_rhythm_or_rate_support",
+      "display_name": "Amiodarone rhythm or rate support",
+      "drug_class": "antiarrhythmic",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "atrial_fibrillation_presence",
+        "rapid_ventricular_response_presence",
+        "rhythm_control_feasibility",
+        "left_ventricular_systolic_dysfunction_presence",
+        "thyroid_dysfunction_presence"
+      ],
+      "trajectory_modifications": {
+        "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION": {
+          "peak_value_factor": [
+            0.2,
+            0.85
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "M_AF_RAPID_IRREGULAR_AV_CONDUCTION": {
+          "peak_value_factor": [
+            0.4,
+            0.95
+          ],
+          "decline_half_life_days": [
+            0.2,
+            7.0
+          ]
+        },
+        "atrial_fibrillation_burden": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1.0,
+            30.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "thyroid_dysfunction_presence",
+          "condition": "present_or_high_risk",
+          "effect": "thyroid_toxicity_context_increases",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "Thyroid context changes long-term amiodarone risk."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "bradycardia_presence",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        },
+        {
+          "axis_id": "thyroid_dysfunction_presence",
+          "effect": "may_increase_with_long_exposure",
+          "magnitude_range": [
+            1.0,
+            2.5
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        7.0
+      ],
+      "carryover_after_stop_days": [
+        7.0,
+        90.0
+      ],
+      "context_specific_role": "Rhythm and partial rate-control reshape vector whose benefit and toxicity depend on substrate, urgency, and endocrine context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "flecainide_or_propafenone_rhythm_control",
+      "treatment": "flecainide_or_propafenone_rhythm_control",
+      "display_name": "Flecainide or propafenone rhythm control",
+      "drug_class": "class_ic_antiarrhythmic",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "atrial_fibrillation_presence",
+        "rhythm_control_feasibility",
+        "structural_heart_disease_context_presence",
+        "acute_myocardial_ischemia_context_presence",
+        "left_ventricular_systolic_dysfunction_presence"
+      ],
+      "trajectory_modifications": {
+        "M_AF_PULMONARY_VEIN_TRIGGER_REENTRY": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        },
+        "M_AF_ATRIAL_ELECTRICAL_DISORGANIZATION": {
+          "peak_value_factor": [
+            0.2,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.05,
+            3.0
+          ]
+        },
+        "atrial_fibrillation_burden": {
+          "peak_value_factor": [
+            0.1,
+            0.85
+          ],
+          "decline_half_life_days": [
+            0.05,
+            7.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "structural_heart_disease_context_presence",
+          "condition": "present",
+          "effect": "proarrhythmic_harm_context_increases",
+          "factor_range": [
+            0.1,
+            0.8
+          ],
+          "clinical_rationale": "Structural substrate changes class IC safety."
+        },
+        {
+          "axis_id": "acute_myocardial_ischemia_context_presence",
+          "condition": "present",
+          "effect": "proarrhythmic_harm_context_increases",
+          "factor_range": [
+            0.1,
+            0.7
+          ],
+          "clinical_rationale": "Active ischemia changes sodium-channel blocker safety."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "rapid_ventricular_response_presence",
+          "effect": "may_persist_or_worsen_if_organized_atrial_flutter_occurs_without_nodal_control",
+          "magnitude_range": [
+            1.0,
+            2.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.02,
+        2.0
+      ],
+      "carryover_after_stop_days": [
+        0.5,
+        7.0
+      ],
+      "context_specific_role": "Rhythm-control reshape vector for trigger-dominant AF when structural and ischemic risk context is low.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "catheter_ablation_pulmonary_vein_isolation",
+      "treatment": "catheter_ablation_pulmonary_vein_isolation",
+      "display_name": "Catheter ablation with pulmonary vein isolation",
+      "drug_class": "procedural_rhythm_control",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "atrial_fibrillation_presence",
+        "atrial_fibrillation_burden",
+        "rhythm_control_feasibility",
+        "left_atrial_volume_index",
+        "therapeutic_anticoagulation_feasibility"
+      ],
+      "trajectory_modifications": {
+        "M_AF_PULMONARY_VEIN_TRIGGER_REENTRY": {
+          "peak_value_factor": [
+            0.1,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            1.0,
+            90.0
+          ]
+        },
+        "atrial_fibrillation_burden": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            7.0,
+            180.0
+          ]
+        },
+        "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY": {
+          "peak_value_factor": [
+            1.0,
+            2.0
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            2.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "left_atrial_volume_index",
+          "condition": "high",
+          "effect": "durable_rhythm_effect_less_complete",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Large atrial substrate can reduce durable ablation effect."
+        },
+        {
+          "axis_id": "long_standing_atrial_fibrillation_context_presence",
+          "condition": "present",
+          "effect": "recurrence_context_increases",
+          "factor_range": [
+            0.3,
+            0.9
+          ],
+          "clinical_rationale": "Long duration AF indicates advanced remodeling."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "may_increase_periprocedurally",
+          "magnitude_range": [
+            1.0,
+            2.5
+          ]
+        },
+        {
+          "axis_id": "systemic_embolism_hazard",
+          "effect": "may_increase_periprocedurally_if_anticoagulation_not_effective",
+          "magnitude_range": [
+            1.0,
+            2.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        1.0,
+        90.0
+      ],
+      "carryover_after_stop_days": [
+        30.0,
+        3650.0
+      ],
+      "context_specific_role": "Procedural substrate reshape vector that reduces trigger-driven AF burden over longer horizons.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "direct_oral_anticoagulation",
+      "treatment": "direct_oral_anticoagulation",
+      "display_name": "Direct oral anticoagulation",
+      "drug_class": "anticoagulant",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "systemic_embolic_risk_context_probability",
+        "ischemic_stroke_hazard",
+        "therapeutic_anticoagulation_feasibility",
+        "anticoagulation_contraindication_probability",
+        "anticoagulation_bleeding_risk_context"
+      ],
+      "trajectory_modifications": {
+        "ischemic_stroke_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "systemic_embolism_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.7
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.8,
+            1.2
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "therapeutic_anticoagulation_feasibility",
+          "condition": "low",
+          "effect": "embolism_reduction_less_reliable",
+          "factor_range": [
+            0.1,
+            0.8
+          ],
+          "clinical_rationale": "Feasibility governs sustained anticoagulation exposure."
+        },
+        {
+          "axis_id": "anticoagulation_bleeding_risk_context",
+          "condition": "high",
+          "effect": "major_bleeding_hazard_increases",
+          "factor_range": [
+            1.2,
+            4.0
+          ],
+          "clinical_rationale": "Bleeding-prone context raises anticoagulant harm."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "increase",
+          "magnitude_range": [
+            1.1,
+            4.0
+          ]
+        },
+        {
+          "axis_id": "intracranial_hemorrhage_hazard",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            2.5
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        2.0
+      ],
+      "carryover_after_stop_days": [
+        0.5,
+        5.0
+      ],
+      "context_specific_role": "Thromboembolic hazard reshape vector that lowers embolic event hazards while adding bleeding event hazards.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "warfarin_anticoagulation",
+      "treatment": "warfarin_anticoagulation",
+      "display_name": "Warfarin anticoagulation",
+      "drug_class": "vitamin_k_antagonist",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "systemic_embolic_risk_context_probability",
+        "mitral_stenosis_context_presence",
+        "therapeutic_anticoagulation_feasibility",
+        "anticoagulation_contraindication_probability",
+        "anticoagulation_bleeding_risk_context"
+      ],
+      "trajectory_modifications": {
+        "ischemic_stroke_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            2.0,
+            21.0
+          ]
+        },
+        "systemic_embolism_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            1.0
+          ],
+          "decline_half_life_days": [
+            2.0,
+            21.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "mitral_stenosis_context_presence",
+          "condition": "present",
+          "effect": "valvular_stasis_context_strengthens_need_for_effective_anticoagulation",
+          "factor_range": [
+            1.1,
+            3.0
+          ],
+          "clinical_rationale": "Mitral stenosis increases left atrial stasis and embolic risk."
+        },
+        {
+          "axis_id": "anticoagulation_bleeding_risk_context",
+          "condition": "high",
+          "effect": "major_bleeding_hazard_increases",
+          "factor_range": [
+            1.2,
+            5.0
+          ],
+          "clinical_rationale": "Bleeding-prone context raises warfarin harm."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "increase",
+          "magnitude_range": [
+            1.2,
+            5.0
+          ]
+        },
+        {
+          "axis_id": "intracranial_hemorrhage_hazard",
+          "effect": "may_increase",
+          "magnitude_range": [
+            1.0,
+            3.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        2.0,
+        7.0
+      ],
+      "carryover_after_stop_days": [
+        2.0,
+        10.0
+      ],
+      "context_specific_role": "Thromboembolic hazard reshape vector with slower onset and strong dependence on monitoring feasibility and bleeding context.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "left_atrial_appendage_occlusion",
+      "treatment": "left_atrial_appendage_occlusion",
+      "display_name": "Left atrial appendage occlusion",
+      "drug_class": "procedural_thromboembolism_prevention",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "systemic_embolic_risk_context_probability",
+        "left_atrial_appendage_occlusion_feasibility",
+        "anticoagulation_contraindication_probability",
+        "left_atrial_appendage_thrombus_presence",
+        "therapeutic_anticoagulation_feasibility"
+      ],
+      "trajectory_modifications": {
+        "M_AF_LEFT_ATRIAL_APPENDAGE_STASIS_THROMBOEMBOLISM": {
+          "peak_value_factor": [
+            0.2,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.3,
+            0.9
+          ],
+          "decline_half_life_days": [
+            7.0,
+            180.0
+          ]
+        },
+        "ischemic_stroke_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            7.0,
+            180.0
+          ]
+        },
+        "systemic_embolism_hazard": {
+          "peak_value_factor": [
+            0.3,
+            0.9
+          ],
+          "plateau_duration_factor": [
+            0.4,
+            1.0
+          ],
+          "decline_half_life_days": [
+            7.0,
+            180.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "anticoagulation_contraindication_probability",
+          "condition": "high",
+          "effect": "nonpharmacologic_embolic_hazard_reduction_context_strengthens",
+          "factor_range": [
+            1.1,
+            3.0
+          ],
+          "clinical_rationale": "Appendage occlusion becomes more relevant when long-term anticoagulation feasibility is low."
+        },
+        {
+          "axis_id": "left_atrial_appendage_thrombus_presence",
+          "condition": "present",
+          "effect": "periprocedural_embolic_context_increases",
+          "factor_range": [
+            0.2,
+            0.9
+          ],
+          "clinical_rationale": "Existing appendage thrombus changes procedural risk."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "major_bleeding_hazard",
+          "effect": "may_increase_periprocedurally",
+          "magnitude_range": [
+            1.0,
+            2.5
+          ]
+        },
+        {
+          "axis_id": "systemic_embolism_hazard",
+          "effect": "may_increase_periprocedurally",
+          "magnitude_range": [
+            1.0,
+            2.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        7.0,
+        180.0
+      ],
+      "carryover_after_stop_days": [
+        180.0,
+        3650.0
+      ],
+      "context_specific_role": "Procedural embolic-hazard reshape vector for persistent embolic risk when sustained anticoagulation is limited.",
+      "knowledge_confidence": "medium"
+    },
+    {
+      "treatment_id": "reversible_trigger_correction",
+      "treatment": "reversible_trigger_correction",
+      "display_name": "Reversible trigger correction",
+      "drug_class": "cause_directed_trigger_management",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "thyroid_dysfunction_presence",
+        "serum_potassium",
+        "serum_magnesium",
+        "alcohol_binge_trigger_context_presence",
+        "postoperative_or_acute_illness_trigger_context_presence"
+      ],
+      "trajectory_modifications": {
+        "M_AF_REVERSIBLE_TRIGGER_LOAD": {
+          "peak_value_factor": [
+            0.1,
+            0.8
+          ],
+          "plateau_duration_factor": [
+            0.2,
+            0.8
+          ],
+          "decline_half_life_days": [
+            0.5,
+            30.0
+          ]
+        },
+        "M_AF_AUTONOMIC_TRIGGER_MODULATION": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "M_AF_SINUS_RHYTHM_RECOVERY_CAPACITY": {
+          "peak_value_factor": [
+            1.0,
+            2.5
+          ],
+          "plateau_duration_factor": [
+            0.5,
+            2.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+          "condition": "high",
+          "effect": "trigger_correction_less_sufficient_alone",
+          "factor_range": [
+            0.2,
+            0.9
+          ],
+          "clinical_rationale": "Advanced atrial substrate can sustain AF despite trigger correction."
+        }
+      ],
+      "side_effects": [],
+      "onset_delay_days": [
+        0.1,
+        30.0
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        365.0
+      ],
+      "context_specific_role": "Cause-directed reshape of thyroid, electrolyte, alcohol, hypoxemia, postoperative, acute illness, or ischemic trigger load.",
+      "knowledge_confidence": "high"
+    },
+    {
+      "treatment_id": "heart_failure_congestion_and_substrate_management",
+      "treatment": "heart_failure_congestion_and_substrate_management",
+      "display_name": "Heart failure congestion and substrate management",
+      "drug_class": "cardiac_substrate_support",
+      "mode": "reshape_landscape",
+      "required_context_axes": [
+        "heart_failure_presence",
+        "pulmonary_edema_presence",
+        "left_ventricular_systolic_dysfunction_presence",
+        "hemodynamic_instability_presence",
+        "ventricular_rate_on_ecg"
+      ],
+      "trajectory_modifications": {
+        "heart_failure_decompensation_hazard": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            30.0
+          ]
+        },
+        "pulmonary_edema_presence": {
+          "peak_value_factor": [
+            0.2,
+            0.9
+          ],
+          "decline_half_life_days": [
+            0.5,
+            14.0
+          ]
+        },
+        "M_AF_ATRIAL_KICK_LOSS_LOW_OUTPUT": {
+          "peak_value_factor": [
+            0.6,
+            1.0
+          ],
+          "plateau_duration_factor": [
+            0.7,
+            1.0
+          ]
+        }
+      },
+      "effect_modifiers": [
+        {
+          "axis_id": "rapid_ventricular_response_presence",
+          "condition": "present",
+          "effect": "requires_rate_or_rhythm_vector_for_full_resolution",
+          "factor_range": [
+            0.4,
+            1.0
+          ],
+          "clinical_rationale": "Congestion management alone may not remove the rate-driven AF force."
+        }
+      ],
+      "side_effects": [
+        {
+          "axis_id": "hypotension_presence",
+          "effect": "may_increase_if_overdiuresis_or_vasodilation",
+          "magnitude_range": [
+            1.0,
+            2.0
+          ]
+        }
+      ],
+      "onset_delay_days": [
+        0.1,
+        7.0
+      ],
+      "carryover_after_stop_days": [
+        1.0,
+        90.0
+      ],
+      "context_specific_role": "Substrate and congestion reshape vector that improves reserve and reduces AF-associated decompensation hazard.",
+      "knowledge_confidence": "medium"
+    }
+  ],
+  "risk_factors": [
+    {
+      "factor": "advanced_age",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            8.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "M_AF_ATRIAL_STRUCTURAL_REMODELING",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "systemic_embolic_risk_context_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                3.0
+              ]
+            },
+            {
+              "axis_id": "anticoagulation_bleeding_risk_context",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                2.5
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "direct_oral_anticoagulation": "embolic and bleeding vectors both become more consequential",
+            "rate_control_tolerability_context": "hypotension and bradycardia tolerance may narrow"
+          }
+        }
+      }
+    },
+    {
+      "factor": "hypertension_or_left_atrial_pressure_load",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.3,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "hypertension_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "left_atrial_volume_index",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                2.0
+              ]
+            },
+            {
+              "axis_id": "persistent_atrial_fibrillation_pattern_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                2.5
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "catheter_ablation_pulmonary_vein_isolation": "durable rhythm effect depends on atrial remodeling reversal and pressure-load control"
+          }
+        }
+      }
+    },
+    {
+      "factor": "heart_failure_or_structural_heart_disease",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.5,
+            6.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "structural_heart_disease_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "heart_failure_decompensation_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "hemodynamic_instability_presence",
+              "effect": "higher_peak_when_rate_fast",
+              "magnitude_factor_range": [
+                1.1,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "beta_blocker_rate_control": "benefit and low-output harm both depend on ventricular reserve",
+            "heart_failure_congestion_and_substrate_management": "decompensation hazard reduction context strengthens"
+          }
+        }
+      }
+    },
+    {
+      "factor": "valvular_heart_disease_or_mitral_stenosis",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.4,
+            6.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "valvular_heart_disease_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "mitral_stenosis_context_presence",
+              "effect": "higher_peak_if_present",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "left_atrial_appendage_thrombus_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "warfarin_anticoagulation": "effective anticoagulation context becomes more important when mitral stenosis drives stasis",
+            "rhythm_control_feasibility": "large atrial substrate lowers durable rhythm transition probability"
+          }
+        }
+      }
+    },
+    {
+      "factor": "thyroid_dysfunction_or_hyperthyroid_state",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "thyroid_dysfunction_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "uncontrolled_hyperthyroidism_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "rapid_ventricular_response_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "reversible_trigger_correction": "trigger-load reshape effect strengthens when thyroid context is active",
+            "beta_blocker_rate_control": "adrenergic rate-control context strengthens"
+          }
+        }
+      }
+    },
+    {
+      "factor": "obesity_or_sleep_apnea",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            4.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "obesity_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "sleep_apnea_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "atrial_fibrillation_burden",
+              "effect": "higher_or_more_recurrent",
+              "magnitude_factor_range": [
+                1.1,
+                2.5
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "catheter_ablation_pulmonary_vein_isolation": "recurrence context remains higher if substrate modifiers are unaddressed"
+          }
+        }
+      }
+    },
+    {
+      "factor": "alcohol_binge_or_acute_adrenergic_trigger",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.1,
+            4.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "alcohol_binge_trigger_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "M_AF_REVERSIBLE_TRIGGER_LOAD",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "paroxysmal_atrial_fibrillation_pattern_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.1,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "reversible_trigger_correction": "trigger correction effect strengthens when the episode is trigger-dominant"
+          }
+        }
+      }
+    },
+    {
+      "factor": "postoperative_or_acute_systemic_illness",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.2,
+            5.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "postoperative_or_acute_illness_trigger_context_presence",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.5,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "M_AF_AUTONOMIC_TRIGGER_MODULATION",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "hemodynamic_instability_presence",
+              "effect": "higher_peak_if_reserve_low",
+              "magnitude_factor_range": [
+                1.0,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "reversible_trigger_correction": "acute illness control changes trigger-load trajectory",
+            "rate_control_tolerability_context": "volume status and perfusion reserve must shape nodal-slowing vectors"
+          }
+        }
+      }
+    },
+    {
+      "factor": "diabetes_prior_stroke_or_vascular_disease",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.0
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "systemic_embolic_risk_context_probability",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.3,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "ischemic_stroke_hazard",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "mortality_hazard_in_D-ATRIAL-FIBRILLATION",
+              "effect": "higher_peak_if_event_occurs_or_comorbidity_burden_high",
+              "magnitude_factor_range": [
+                1.0,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "direct_oral_anticoagulation": "absolute embolic hazard reduction context strengthens when bleeding feasibility permits",
+            "warfarin_anticoagulation": "absolute embolic hazard reduction context strengthens when monitoring feasibility permits"
+          }
+        }
+      }
+    },
+    {
+      "factor": "chronic_kidney_disease_frailty_or_prior_bleeding",
+      "modulation": {
+        "present": {
+          "P_disease_ratio": [
+            1.0,
+            2.5
+          ],
+          "axis_response_modulation": [
+            {
+              "axis_id": "anticoagulation_bleeding_risk_context",
+              "effect": "higher_peak",
+              "magnitude_factor_range": [
+                1.2,
+                5.0
+              ]
+            },
+            {
+              "axis_id": "anticoagulation_contraindication_probability",
+              "effect": "higher_peak_if_severe",
+              "magnitude_factor_range": [
+                1.1,
+                4.0
+              ]
+            },
+            {
+              "axis_id": "intracranial_hemorrhage_hazard",
+              "effect": "higher_peak_when_anticoagulated",
+              "magnitude_factor_range": [
+                1.0,
+                3.0
+              ]
+            }
+          ],
+          "treatment_effect_modulation": {
+            "direct_oral_anticoagulation": "dose, exposure, and bleeding hazard context become more important",
+            "left_atrial_appendage_occlusion": "nonpharmacologic embolic hazard reduction context can strengthen when sustained anticoagulation feasibility is low"
+          }
+        }
+      }
+    }
+  ],
+  "supportive_care": [
+    {
+      "care_id": "continuous_telemetry_and_rate_trend_review",
+      "display_name": "Continuous telemetry and rate-trend review",
+      "display_name_ja": "持続心電図監視と心拍数推移の確認",
+      "clinical_role": "Track AF burden, ventricular response, pauses, conversion, recurrent rapid response, and instability while treatment vectors are simulated."
+    },
+    {
+      "care_id": "serial_12_lead_ecg_confirmation",
+      "display_name": "Serial 12-lead ECG confirmation",
+      "display_name_ja": "12誘導心電図の反復確認",
+      "clinical_role": "Confirm absent P waves, irregularly irregular intervals, ventricular rate, coexisting ischemic or conduction findings, and post-treatment rhythm state."
+    },
+    {
+      "care_id": "hemodynamic_and_perfusion_monitoring",
+      "display_name": "Hemodynamic and perfusion monitoring",
+      "display_name_ja": "循環動態と灌流の監視",
+      "clinical_role": "Monitor blood pressure, perfusion, oxygenation, shock signs, pulmonary edema, and rate-control tolerance."
+    },
+    {
+      "care_id": "echocardiography_and_appendage_assessment",
+      "display_name": "Echocardiography and appendage assessment",
+      "display_name_ja": "心エコーと左心耳評価",
+      "clinical_role": "Measure atrial size, ventricular function, valve context, pulmonary congestion, appendage thrombus, and spontaneous echo contrast when relevant to simulation."
+    },
+    {
+      "care_id": "reversible_trigger_laboratory_review",
+      "display_name": "Reversible trigger laboratory review",
+      "display_name_ja": "可逆的誘因の検査確認",
+      "clinical_role": "Check thyroid axis, electrolytes, renal function, ischemic injury markers, hypoxemia, medication exposure, alcohol context, and acute illness drivers."
+    },
+    {
+      "care_id": "thromboembolism_and_bleeding_context_review",
+      "display_name": "Thromboembolism and bleeding context review",
+      "display_name_ja": "塞栓リスクと出血リスクの確認",
+      "clinical_role": "Structure embolic risk, bleeding risk, anticoagulation feasibility, contraindication context, and appendage-occlusion context without adding ranking labels."
+    },
+    {
+      "care_id": "neurologic_and_systemic_embolism_surveillance",
+      "display_name": "Neurologic and systemic embolism surveillance",
+      "display_name_ja": "神経症状と全身塞栓の監視",
+      "clinical_role": "Track focal neurologic deficit, acute limb or visceral ischemia evidence, and embolic complications as event hazards rather than post-hoc diagnosis labels."
+    }
+  ],
+  "quality_checks": [
+    "Pure disease-name-only distillation scope: Atrial fibrillation.",
+    "No real case search, no real case reading, and no staged real-case files were used for this disease file.",
+    "AF is represented as a first-layer disease leaf; temporal pattern, valvular context, triggers, substrate, embolic risk, and treatment feasibility are axes or modifiers.",
+    "Exactly one derived_hazard axis is present: mortality_hazard_in_D-ATRIAL-FIBRILLATION.",
+    "Treatment fields avoid ranking labels; rate, rhythm, embolic, bleeding, heart-failure, and procedural effects should emerge from forward simulation.",
+    "Parent/satellite structure separates ECG parent findings, AF morphology, rate response, symptoms, hemodynamics, structural substrate, trigger context, treatment modifiers, event hazards, and mortality hazard."
+  ],
+  "quality_notes": [
+    "2026-05-31 required-context repair: added AF rhythm-evidence gate so generic tachycardia cases cannot combine with atrial fibrillation without documented AF evidence."
+  ]
+}
