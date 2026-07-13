@@ -1,14 +1,14 @@
-# 架构决策：固定可信控制面，而不是固定一种患者状态
+# 架构决策状态：K0 研究基线已因 bridge 反证重开
 
-> 决策版本：`K0-v0.1`  
-> 日期：2026-07-13  
-> 结论强度：**在本研究明确要求、来源与 T01–T50 / E01–E08 测试范围内，当前最有支持的架构**；不是数学意义上的全局最优，也不是临床有效性证明。
+> 决策版本：`K0-v0.1`（bridge-stability 子假说已重开）
+> 日期：2026-07-13；2026-07-14 bridge holdout 裁决更新
+> 结论强度：在 T01–T50 / E01–E08 既有范围内，K0 曾是当前最有支持的研究假说；冻结双实现 bridge 运行已产生实现层反证，因此**固定核心选择现为重开状态**。这不是数学全局最优或 clinical validation。
 
 ## 1. 决策摘要
 
 在本研究调查的 **13 个候选家族与 3 个原子原型**中，我们**没有找到一个能独自承担全部冻结职责的数学状态对象**。这里不是对所有可能 calculus 的不可能性证明；它只说明本次被调查的向量/图/概率/日志/重写/因果/开放机器方案若作为唯一核心，至少有一项冻结反例无法无损处理。
 
-当前决策是把固定核心限制为一个小的可信控制面：
+2026-07-13 的 pre-bridge 决策曾把固定核心限制为一个小的可信控制面；2026-07-14 后它只保留为待重新比较的研究基线：
 
 ```text
 K0 = (
@@ -31,13 +31,15 @@ K0 固定“**谁，在什么时间切片，基于哪些有资格的证据和模
 3. **typed rewrite/open-machine subkernel**：局部规则、动作生命周期、类型化端口、显式交互和可达性；
 4. 以后可按同一合同接入 Petri/reaction、POMDP、temporal Datalog 等，但不能伪装成现有子内核的“一个字段”。
 
-因此，本决策不是“把几个热门名词拼起来”，而是：**固定不可绕过的语义边界；只在查询确实需要时调用相应原生 calculus；不把它们压成一个万能状态。**
+因此，仍被证据支持的是这些不可绕过的语义要求，而不是当前架构赢家：**区分语义边界；只在查询确实需要时调用相应原生 calculus；不把它们压成一个万能状态。**
 
 这里的“参考核心”首先是一个**架构研究假说**。仓库中的 `ClinicalKernel` 只是 K0 合同、路由和部分子内核协作的可执行子集，`ExperimentalModelSubkernel` 只是公共实验模型的封闭解释器；当前没有一个实现、也没有一个已接线的组合实现通过全部 hard workload。二者不能被拼成一个未经测试的“完整实现”，更不能因为三个原子原型覆盖较窄就自动成为赢家。
 
+2026-07-14 的冻结双实现实验进一步给出两个必须同时保留的裁决：冻结 A/B 的 bridge-stability 主张在**实现层**为 `HYPOTHESIS_FAIL`；sealed 41-case corpus（H01–H30 原预注册集 + H31–H41 post-seal/pre-execution 静态审计 addendum）因 fixture/runner 不完整在**实验层**为 `HARNESS_INCOMPLETE`。这淘汰两个冻结实现作为合规 bridge 的主张，并触发重开 Checkpoint 3/7；它不证明所有 versioned bridge 或整个 K0 family 不可能。
+
 完整参考 profile 要求 TEL/TMS evidence authority、state/dynamics、causal、typed rewrite/open safety 四组能力齐备；物理上可以合并部署，语义上必须分别归因。局部降级是合法但可见的：缺 state/dynamics 则 filter/smooth/forecast 为 `unsupported`；缺 causal 则 `do`/同患者反事实为 `unsupported`；缺 rewrite/open 则动作 effect、reachability、组合和相应 safety query 为 `unsupported`；缺 evidence authority 时只剩离线合同验证，不构成临床事实运行时。其他子内核不得静默代答。
 
-## 2. 为什么这是当前证据支持的条件性最小承诺
+## 2. 为什么 K0 曾是 pre-bridge 证据支持的条件性最小承诺
 
 “最小”在这里指：对本次 13 个家族、3 个原型和冻结反例，删除任一列出的 K0 承诺都有已知失败见证，且未发现更小的已调查候选能无特例覆盖全部边界。我们没有完成形式化不可约性证明，也未穷举全部可能 calculus；新的消融、hidden holdout 或单一新 calculus 可以推翻该用语。
 
@@ -130,9 +132,9 @@ K0 固定“**谁，在什么时间切片，基于哪些有资格的证据和模
 
 rewrite/open 的额外 FAIL 也保留在账本中：`T30` 的语义同构未保持，`T45` 的 raw value/span round-trip 不完整。三种原子候选的 Companion 轨与各自 Native 轨得到相同分类计数；这只说明当前 companion 消融未在分类计数上拉开差异，**不证明 companion 的语义或工程成本为零**。
 
-v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 的候选；原子实现各有原生强项，reference kernel 和 model subkernel 也都只是部分覆盖。** K0 的选择来自角色不可混淆、fail-closed 边界、候选家族分析和 Pareto 结构的合取，而不是“原子失败，所以混合方案自动获胜”，也不是按 PASS 数取最大值。
+v3 当时的正确结论是：**该实现面板中没有通过全部 hard workload 的候选；原子实现各有原生强项，reference kernel 和 model subkernel 也都只是部分覆盖。** 当时保留 K0 待证基线，来自角色不可混淆、fail-closed 边界、候选家族分析和 Pareto 结构的合取，而不是“原子失败，所以混合方案自动获胜”，也不是按 PASS 数取最大值。
 
-### 4.4 当前 Pareto 前沿
+### 4.4 Pre-bridge Pareto 前沿（历史基线）
 
 | 需要的能力 | 非支配原生语义 | 不能用它抵消的缺口 |
 |---|---|---|
@@ -143,7 +145,7 @@ v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 
 | 非线性机制、资源与守恒 | Petri/reaction | 临床观察/证据语义需另层 |
 | 稳定接口下的局部组合 | typed open machines | 组合语法不自动生成正确交互方程 |
 
-本次候选集不存在可用一个加权总分合理消除的唯一赢家；这正是选择条件性最小共同 K0、保留原生子内核作为**下一轮可反驳假说**的原因，而不是对架构空间作全称断言。当前 Pareto 判断只覆盖本研究的 13 个候选家族、3 个原子原型和 58 个 workload；它不是全局最优性、不可约性或临床有效性证明。
+当时的候选集不存在可用一个加权总分合理消除的唯一赢家；这曾是把条件性最小共同 K0、保留原生子内核作为**下一轮可反驳假说**的原因，而不是对架构空间作全称断言。该 pre-bridge Pareto 判断只覆盖本研究的 13 个候选家族、3 个原子原型和 58 个 workload；它不是当前固定选择，也不是全局最优性、不可约性或临床有效性证明。2026-07-14 bridge 反证已重开 Checkpoint 3/7，当前裁决见第 9–10 节。
 
 ## 5. 固定什么，不固定什么
 
@@ -184,7 +186,7 @@ v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 
 
 ### 反对 2：混合架构只是把复杂性堆起来
 
-如果每个子内核复制一份权威事实，或 bridge 隐式补医学语义，这一反对成立。因此最终结构要求：TEL/TMS evidence authority 的 ledger root 是唯一事实权威；K0 只固定 port/identity/cut/witness 合同；模型输出只能是版本化派生产物；每个查询标注原生能力来源；bridge 计入 primitive/adapter/blast-radius 账本。没有这些约束的“混合”不被本决策接受。
+如果每个子内核复制一份权威事实，或 bridge 隐式补医学语义，这一反对成立。因此任何未来被接受的结构都至少必须满足：TEL/TMS evidence authority 的 ledger root 是唯一事实权威；模型输出只能是版本化派生产物；每个查询标注原生能力来源；bridge 计入 primitive/adapter/blast-radius 账本。K0 是承载这些要求的重开基线，不是已验证唯一载体。
 
 ### 反对 3：强类型会妨碍开放世界
 
@@ -196,20 +198,21 @@ v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 
 
 ## 8. 会推翻或改变本决策的证据
 
-出现下列任一项，应重新打开架构选型：
+出现下列任一项，应保持或重新打开架构选型：
 
 1. 一个更小的单 calculus，在没有 foreign callback 和第二权威事实源的条件下，通过全部 T/E hard workload，并保持相等或更低扩展爆炸半径；
 2. 证明 K0 某个原语可由其余原语自然导出，删除后不增加特例或静默失败；
-3. 证明版本化 bridge 无法避免双重真相，且另一结构能更好地保证一致性；
-4. 新反例显示当前 typed time/cut 仍允许未来泄漏或 retrospective smoothing 冒充当时判断；
-5. 新反例显示 root-set provenance 仍会把依赖来源当独立来源，且现有 dependency-family/model assumption 分离不足；
-6. 在大规模真实异步数据上，完整 replay/trace 的成本不可接受，而安全的压缩充分统计量可被形式证明；
-7. closed IR 无法表达重要医学模型，只能普遍退化为 callback；
-8. 临床 context-of-use 证明另一 Pareto 点在明确任务上严格支配本架构。
+3. 证明所有合理版本化 bridge 都无法避免双重真相，且另一结构能更好地保证一致性；本轮尚未满足这一 family-level 条件；
+4. 冻结 bridge 实现在 root/cut/version/uncertainty/recovery 等不可补偿 hard invariant 上出现反例；2026-07-14 的 A/B 已触发此项，所以实现与边界选择重开；
+5. 新反例显示当前 typed time/cut 仍允许未来泄漏或 retrospective smoothing 冒充当时判断；
+6. 新反例显示 root-set provenance 仍会把依赖来源当独立来源，且现有 dependency-family/model assumption 分离不足；
+7. 在大规模真实异步数据上，完整 replay/trace 的成本不可接受，而安全的压缩充分统计量可被形式证明；
+8. closed IR 无法表达重要医学模型，只能普遍退化为 callback；
+9. 临床 context-of-use 证明另一 Pareto 点在明确任务上严格支配本架构。
 
-## 9. 下一项信息增益最高的实验
+## 9. 双实现 bridge round-trip 实验与裁决
 
-下一步不是增加更多架构名字，而是完成一个**双实现 bridge round-trip 实验**：
+本轮预注册的完成门禁是：
 
 1. 同一冻结 evidence cut；
 2. 分别编译为 finite DBN/SSM 与 SCM native IR；
@@ -218,11 +221,20 @@ v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 
 5. 删除或更正一个 root 后，重编译结果是否等于 clean rebuild；
 6. 测量 adapter LOC、人工承诺、错误率、延迟和 blast radius。
 
-该实验能直接判断：K0 + 分家子内核是否真是稳定边界，还是只是把困难转移到 bridge。
+2026-07-14 执行轮已封存。seal→reveal、hash 和静态 import closure 成立；但门禁没有完成：
+
+- A mechanical：`0 PASS / 4 ADAPTER_UNREPRESENTABLE / 37 HARNESS_INCOMPLETE`；
+- B corrected run-03：`0 PASS / 41 HARNESS_INCOMPLETE`；
+- A external runner：`1 pass / 1 fail / 1 partial`；B：`3 pass / 7 fail / 1 adapter-unrepresentable`；
+- 42 个 deterministic post-seal probe：`15 pass / 26 fail / 1 partial`；
+- M01 在 A/B 均 `NOT_KILLED`；M02–M12 未由 candidate runner 执行，synthetic 12/12 只证明 judge predicate；
+- 数值子断言证明 filter/smooth、B 的 condition/do/AAP，以及 B model-level 三通道参数扰动可运行；但不能补偿 raw/root/cut/version、A 的三通道 typed-result 缺失、B 的 evidence/record uncertainty sidecar 不活跃和 recovery hard failure。
+
+因此裁决必须分账：sealed corpus 的 candidate verdict 没有任何 `CANDIDATE_FAIL`，只支持 **`HARNESS_INCOMPLETE`**；单独记账的 deterministic external hard counterexamples（尤其 B 的 M01 split-brain）才支持冻结实现层 **`HYPOTHESIS_FAIL`**。其中 H01–H30 是原预注册集，H31–H41 是 post-seal/pre-execution addendum。完整证据见 [`results/bridge-holdout/REPORT.md`](results/bridge-holdout/REPORT.md)。下一步不是修补冻结候选，而是先物化新的 append-only operational probe pack，再在重开的 Checkpoint 3/7 比较 richer typed bridge、统一 calculus 或更窄 control plane。
 
 ## 10. 决策状态
 
-本决策冻结 `K0-v0.1` 作为**研究参考核心假说**，而不是生产或临床认证架构。三个原子原型、reference kernel、model subkernel 和隔离 harness 保留为可反驳证据。v3 没有任何实现通过全部 hard workload；`ClinicalKernel` 自身仍有 `T18`/`T20` FAIL，且 `ExperimentalModelSubkernel` 的 E01–E08 通过不能外推为临床模型正确。任何面向产品的实现都不得把“当前最有支持”缩写成“已证明正确”或“完整实现已通过”。
+`K0-v0.1` 现在保留为**因冻结 A/B 实现层反证而重开的研究基线**，而不是 K0 family 已被否定，也不是冻结赢家、生产或临床认证架构。single evidence authority、typed root/scope/time/cut/version、closed query 和 typed outcome 继续作为需求；“当前 bridge 已证明这些不变量在跨核转换后稳定”的主张撤回。三个原子原型、reference kernel、model subkernel、A/B frozen sources 和隔离 harness 均保留为可反驳证据。任何面向产品的实现都不得把它缩写成“已证明正确”“完整实现已通过”或“41-case holdout 已完成”。
 
 ## 11. 证据映射与结论边界
 
@@ -237,4 +249,4 @@ v3 的正确结论是：**当前实现面板中没有通过全部 hard workload 
 | 组合、端口与局部变迁 | `PROC-03`, `TYPE-01`, `TYPE-02`, `TYPE-03`, `COMP-01`, `COMP-02`, `COMP-03`, `COMP-04` | typed/refinement/typestate 可约束合法值和操作序列；重写、open systems、wiring diagrams、cospans 与 sheaf/open-machine 结果说明局部变迁和按边界组合可以有明确数学语义，且组合保持性质需要条件。 | 端口或类型匹配不证明医学语义匹配；形式上可组合不自动产生正确共病交互、方程、概率、因果方向或安全策略。 |
 | fail-closed、安全边界与部署证据分层 | `CLIN-03`, `CLIN-04`, `CLIN-05`, `CLIN-08`, `CLIN-10`, `CLIN-11`, `CLIN-12`, `CLIN-13`, `STATE-08`, `TYPE-06`, `TYPE-07`, `NEURAL-02`, `WORLD-01`, `TWIN-01` | 计划/请求与已执行事件、缺值原因、单位、missingness/观察机会、干预改变观察通道、open-set 风险、不一致信息，以及 learned/retrieval/simulator 的模型错设边界都必须显式处理；技术验证、临床关联和临床验证是不同证据层。 | 不给出通用临床拒绝阈值、治疗授权策略或监管结论；不证明这里的拒绝、OOD、冲突与单位规则已覆盖全部风险，更不构成 clinical validation。 |
 
-因此，本决策中的“目前最有支持”仅表示：在本研究声明的需求、**13 个候选家族、3 个原子原型和 T01–T50/E01–E08 共 58 个 workload** 范围内，`K0 + heterogeneous capability subkernels` 是当前最少混淆上述语义角色、值得继续反驳的**架构研究假说**。它并未以一个全 hard PASS 的实现建立优势，也不是由原子候选失败自动推出；它不是全局最优或不可约定理，更不是临床准确性、安全性或效益证明。原型测试只能检验合同和反例行为，不能替代真实数据校准、外部验证、context-of-use VVUQ、前瞻性临床评价、监管审查或人类监督。
+因此，“目前最有支持”只描述 2026-07-13 的 13 家族、3 原子原型和 T01–T50/E01–E08 共 58 个 workload 的有界比较；2026-07-14 的 bridge counterevidence 使**固定核心选择重新开放**。K0 仍是最少混淆若干语义角色、值得继续反驳的基线，但已不能称为完成双实现验证的固定核心。它不是全局最优、不可约定理或临床正确性证明；架构原型与 bridge probe 也不能替代真实数据校准、外部验证、context-of-use VVUQ、前瞻性临床评价、监管审查或人类监督。

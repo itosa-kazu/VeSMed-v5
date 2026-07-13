@@ -6,9 +6,9 @@
 
 ## 结论先行
 
-本研究操作性去重并调查了 **13 个候选家族**，实现了 **3 个原子原型**（TEL、dynamic causal/state、typed rewrite/open），另实现 K0 kernel 与 public-model subkernel 两个判别仪器，并在 58 个机器 workload 上运行。结论是：**没有一个原子候选足以单独成为完整固定核心**。
+本研究操作性去重并调查了 **13 个候选家族**，实现了 **3 个原子原型**（TEL、dynamic causal/state、typed rewrite/open），另实现 K0 kernel 与 public-model subkernel 两个判别仪器，并在 58 个机器 workload 上运行。结论是：**没有一个原子候选足以单独成为完整固定核心；2026-07-14 的 bridge 反证又使固定核心选择重新开放，目前没有通过全部声明门禁的赢家。**
 
-当前最有支持的选择是一个小的可信控制面 `K0`，加上语义分家的能力子内核：
+2026-07-13 的 pre-bridge 最强研究基线是一个小的可信控制面 `K0`，加上语义分家的能力子内核：
 
 ```text
 K0：ledger port / identity / cut / query / result / invariant 合同（不另存事实）
@@ -19,15 +19,24 @@ K0：ledger port / identity / cut / query / result / invariant 合同（不另�
     └── typed rewrite/open safety：动作生命周期、可达性、组件连接
 ```
 
-K0 不规定唯一 `PatientState`，也不与 TEL 各保存一套事实。它固定的是：对象角色、identity/scope、ledger port、多角色时间与 cut、证据 witness 合同、封闭查询、正交失败和不可绕过的不变量；TEL/TMS 是参考 profile 中唯一的权威 evidence store。
+该基线不规定唯一 `PatientState`，也不与 TEL 各保存一套事实。它要求对象角色、identity/scope、ledger port、多角色时间与 cut、证据 witness 合同、封闭查询、正交失败和不可绕过的不变量；TEL/TMS 是该参考 profile 中唯一的权威 evidence store。这些要求仍保留，但 `K0 + 当前 bridge` 不再是已冻结赢家。
 
 完整 profile 要求上述四组子内核能力齐备。受限用途可以降级，但必须显式：缺 state/dynamics 时 filter/smooth/forecast 为 `unsupported`；缺 causal 时 `do`/counterfactual 为 `unsupported`；缺 rewrite/open 时不得声称 action effect、reachability、组合或相应 safety 已执行；缺 evidence authority 时只可离线验证合同，不构成临床事实运行时。
 
-更准确的称呼是：
+bridge 运行前更准确的称呼是：
 
-> **在当前条件和测试范围内，最有支持的是“类型化可信控制面 + 显式异构能力子内核”的受控联邦架构。**
+> **在 2026-07-13 的 T/E 面板范围内，最有支持的研究基线是“类型化可信控制面 + 显式异构能力子内核”的受控联邦；2026-07-14 后该选择已重开。**
 
 这不是数学全局最优证明，也不是临床准确性或产品安全认证。
+
+### 2026-07-14 bridge holdout 更新
+
+后续冻结双实现 bridge 运行没有巩固上述选择，而是产生了两个同时成立的裁决：
+
+- **`HYPOTHESIS_FAIL`（冻结 A/B 实现层）**：A/B 都没有通过非补偿 bridge 门禁；
+- **`HARNESS_INCOMPLETE`（sealed 41-case corpus 层）**：H01–H30 是原预注册集，H31–H41 是源码封存后、执行前加入的静态审计 addendum；冻结 corpus 并非 41 个完整可执行 hidden fixture。
+
+因此 K0 的 root/scope/time/cut/version/query/result 等要求仍保留，但“当前 bridge 已证明稳定”的固定核心选择已撤回，Checkpoint 3/7 重开。不能把 public 数值 panel 的成功、post-seal probe 或 synthetic mutation judge 写成完整 hidden holdout 通过。详见 [`results/bridge-holdout/REPORT.md`](results/bridge-holdout/REPORT.md)。
 
 ## 为什么不能只用一个向量或一张图
 
@@ -70,7 +79,7 @@ python -m prototype.demo
 python -m pytest -q
 ```
 
-仓库通过 `pytest.ini` 只收集 `tests/test_*.py`。当前冻结 QA 结果为 **`119 passed, 7 subtests passed`**。旧 `v5_*_test.py` 是历史研究脚本，依赖可选 SciPy，不属于 K0 自动测试。
+仓库通过 `pytest.ini` 只收集 `tests/test_*.py`。2026-07-14 的当前全量 QA 结果为 **`135 passed, 7 subtests passed`**；bridge 专项为 **`16 passed`**。旧 `v5_*_test.py` 是历史研究脚本，依赖可选 SciPy，不属于 K0 自动测试。
 
 ## 运行统一架构面板
 
@@ -96,7 +105,7 @@ python -m prototype.isolated_benchmark --candidate model --panel all
 
 ### 冻结 v3 结果
 
-当前决策证据位于 [`results/20260713T120910Z-panel-v3/`](results/20260713T120910Z-panel-v3/)：
+pre-bridge 的 decision-grade panel 位于 [`results/20260713T120910Z-panel-v3/`](results/20260713T120910Z-panel-v3/)；当前选择还必须同时读取 [`results/bridge-holdout/REPORT.md`](results/bridge-holdout/REPORT.md) 的反证：
 
 | 面板 | PASS | HONEST_UNSUPPORTED | FAIL |
 |---|---:|---:|---:|
@@ -124,9 +133,9 @@ v3 是针对**已审计 pure-Python 候选**的 Python-level confinement，**不
 |---|---|
 | [`FIRST_PRINCIPLES.md`](FIRST_PRINCIPLES.md) | 不依赖数学背景的问题推导 |
 | [`REQUIREMENTS.md`](REQUIREMENTS.md) | HARD/SOFT 要求、反目标和反例 |
-| [`DECISION.md`](DECISION.md) | 最终选择、Pareto、反对意见和推翻条件 |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | 完整可读架构和两张一页图 |
-| [`FORMAL_SPEC.md`](FORMAL_SPEC.md) | 类型、操作、时间、proof、query、Outcome 与不变量 |
+| [`DECISION.md`](DECISION.md) | 当前重开裁决、历史 Pareto、反对意见和再冻结条件 |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | K0 研究基线的可读目标合同和两张一页图 |
+| [`FORMAL_SPEC.md`](FORMAL_SPEC.md) | 待重证控制面基线的类型、操作、时间、proof、query、Outcome 与不变量 |
 
 ### 研究证据
 
@@ -149,12 +158,15 @@ v3 是针对**已审计 pure-Python 候选**的 Python-level confinement，**不
 | [`prototype/candidates/rewrite_open.py`](prototype/candidates/rewrite_open.py) | typed rewrite/open-machine 原型 |
 | [`prototype/kernel.py`](prototype/kernel.py) | K0 编排、显式路由和 evidence→model bridge |
 | [`prototype/model_subkernel.py`](prototype/model_subkernel.py) | E01–E08 的封闭公共实验模型解释器 |
+| [`prototype/bridge_holdout/`](prototype/bridge_holdout/) | 已冻结、源码互异且无跨 import 的 A/B bridge 与 A/B public-panel 实现；作为反证证据保留，不是独立团队复现或合规赢家 |
 | [`prototype/benchmark.py`](prototype/benchmark.py) | candidate-view/oracle-view runner |
 | [`prototype/isolated_benchmark.py`](prototype/isolated_benchmark.py), [`prototype/isolated_worker.py`](prototype/isolated_worker.py) | fresh `python -I -S` oracle-free candidate 边界 |
 | [`prototype/experiment.py`](prototype/experiment.py) | 默认隔离、不可覆盖、原子发布的全量运行记录 |
 | [`prototype/metrics.py`](prototype/metrics.py), [`results/metrics-final.json`](results/metrics-final.json) | 原语/LOC/分支/test-dispatch 下界与最终指标快照 |
 | [`results/metrics-final-vs-current.json`](results/metrics-final-vs-current.json) | 基线与最终快照的 core/harness/extension 分组比较；基线含前三个扩展，最终新增 test-method 扩展 |
 | [`tests/workloads/`](tests/workloads/) | T01–T50 与 E01–E08 独立 JSON |
+| [`tests/bridge_holdout/`](tests/bridge_holdout/) | preregistration、sealed corpus、executability audit、A/B runner 与 deterministic redteam probes |
+| [`results/bridge-holdout/`](results/bridge-holdout/) | hash 绑定的 A/B 运行、redteam、机器摘要与最终裁决 |
 | [`examples/`](examples/) | 三个演示的输入、输出和解释 |
 | [`examples/extensions/`](examples/extensions/) | 新疾病/干预/任务投影/检查方法的内容扩展包 |
 
@@ -216,6 +228,8 @@ E01–E08 覆盖：
 - 因果结构可从病历相关性自动识别；
 - LLM 抽取永远正确；
 - provenance/replay 已在目标临床规模证明性能；
+- sealed corpus 的 H01–H30 与 H31–H41 addendum 已作为 41 个完整 executable hidden fixtures 运行或通过；
+- post-seal external probe、public numerical panel 或 synthetic mutation self-test 等同于 preregistered hidden PASS；
 - 权限、隐私、监管、部署、人因和临床工作流已经解决。
 
 红队发现与修订是交付的一部分。任何未修复的失败都应保留为 typed limitation，而不是用“LLM 能处理”或“以后加一个规则”掩盖。
@@ -230,8 +244,8 @@ E01–E08 覆盖：
 - 旧 V5 结果不能证明 K0 或新架构正确；
 - 新架构不把疾病专属 bonus、hard gate 或病例补丁带入固定核心。
 
-## 什么会推翻当前选择
+## 什么会解决当前重开的选择
 
-最直接的推翻证据是：存在一个更小的单 calculus，在没有 hidden K0、foreign callback、第二权威事实源或病例特例的条件下，通过全部 hard T/E 测试，且 extension blast radius、trace 和计算成本不差。本研究只调查了 13 个家族并实现 3 个原子原型；“最小”和“没有单一候选足够”都不是不可约性或全局不可能性证明。
+一种能收敛当前选择的直接证据是：存在一个更小的单 calculus，在没有 hidden K0、foreign callback、第二权威事实源或病例特例的条件下，通过全部 hard T/E 测试和新一轮完整 operational bridge holdout，且 extension blast radius、trace 和计算成本不差。本研究只调查了 13 个家族并实现 3 个原子原型；“最小”和“没有单一候选足够”都不是不可约性或全局不可能性证明。
 
 其他推翻条件和下一项判别实验见 [`DECISION.md`](DECISION.md)。

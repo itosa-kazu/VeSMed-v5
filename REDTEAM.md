@@ -59,7 +59,7 @@
 | C-08 | knowledge/model/task/guarantees 可被静默忽略 | P0 | 显式消费并记录；不能满足则 typed unsupported/partial，不能伪 OK | **已修复** |
 | C-09 | 错误 enum/string 或深 payload 触发未捕获异常 | P1 | 运行时类型验证、有限预算和 typed invalid | **已修复** |
 
-H-01–H-06、F-02–F-06、C-01–C-09 的首轮修复后回归记录为 `117 passed, 7 subtests passed`；加入 H-07 absolute-path probe 后曾为 `118 passed, 7 subtests passed`；再加入 test-method extension 回归后，当前全量结果为 **`119 passed, 7 subtests passed`**。这些数字证明回归集合当前通过，不等于已穷尽攻击空间。
+H-01–H-06、F-02–F-06、C-01–C-09 的首轮修复后回归记录为 `117 passed, 7 subtests passed`；加入 H-07 absolute-path probe 后曾为 `118 passed, 7 subtests passed`；加入 test-method extension 后曾为 `119 passed, 7 subtests passed`；再加入 bridge freeze/runner/report 完整性与 B normalized semantic replay 回归后，当前全量结果为 **`135 passed, 7 subtests passed`**。这些数字证明回归集合当前通过，不等于已穷尽攻击空间。
 
 ## 5. 阴性证据与不能推出的结论
 
@@ -79,10 +79,10 @@ Checkpoint 6 按以下**有范围**的条件关闭：
 1. H-01–H-07 的 pure-Python threat-model 内攻击均有自动回归；
 2. C-01–C-09 已通用修复；F-02–F-06 已修复；F-01 的 model subkernel 路径与原子 adapter 缺口分账；F-07 明确保持开放；
 3. 58 个 checked-in workload JSON 与 deterministic builder 一致；
-4. 全量测试为 `119 passed, 7 subtests passed`；
+4. 全量测试为 `135 passed, 7 subtests passed`，其中 bridge 专项为 `16 passed`；
 5. protocol/3 的 StackCheat 与 absolute-read probe 不能取得 oracle；candidate stdin 不含 runner-only key；
 6. `ExperimentalModelSubkernel` 在修订后的 E01–E08 为 8/8 PASS；
 7. 最终不可覆盖证据包为 `results/20260713T120910Z-panel-v3/`，共 464 个隔离 run，**0 harness errors**；v1 baseline 与 v2 中间结果仍保留；
 8. 最终决策只把 v3 解释为本仓库 synthetic architecture-semantics 证据，不把原子候选的拒绝、model subkernel 的 8/8 或 audit hook 升级成临床/部署/任意恶意代码安全证明。
 
-因此“红队退出”准确含义是：**当前 audited pure-Python 原型与 harness 在冻结攻击/工作负载范围内达到可复查的 L2 证据门槛**。盲 holdout、第二 oracle、第二机器/实现、性能曲线、OS 级 sandbox、原生码对抗与临床验证仍未完成。
+因此“红队退出”准确含义是：**panel-v3 的五个 audited pure-Python 原型/仪器及其原 panel harness，在冻结攻击/工作负载范围内达到可复查的 L2 证据门槛**。它不覆盖随后已判 `HYPOTHESIS_FAIL` 的 bridge A/B；bridge 轮虽已 seal/reveal，但完整 41-case operational holdout 仍为 `HARNESS_INCOMPLETE`。第二 oracle、独立团队/第二机器、性能曲线、OS 级 sandbox、原生码对抗与临床验证仍未完成。

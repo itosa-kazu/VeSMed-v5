@@ -1,6 +1,6 @@
 # 动态临床状态架构研究计划
 
-> 状态：Checkpoint 1–8 均已完成；研究参考决策已冻结，下一项为独立 bridge holdout  
+> 状态：Checkpoint 1–8 曾关闭；bridge 执行轮已封存但完成门禁未达成，Checkpoint 3/7 现已重开
 > 研究日期：2026-07-13 起  
 > 核心承诺：不预设 V5/SDE、高维向量、图、概率模型或任何混合方案为答案。
 
@@ -47,7 +47,7 @@
 - 至少覆盖 8 个真正不同的候选家族；候选必须按同一问卷回答。
 - 第一手来源优先；引用逐项记录“来源实际支持什么”，不以二手概述代证据。
 
-### Checkpoint 3（已完成）：候选统一形式化
+### Checkpoint 3（原已完成；2026-07-14 重开）：候选统一形式化
 
 - 结果：否决万能 `PatientState/update`；冻结最小共同控制面 `K0` 与不可互换的 TEL、causal/state、rewrite/open 原生语义。
 
@@ -79,12 +79,12 @@
 - 修复必须区分“内核自然修复”与“新增特例”；特例计入指标。
 - 检查是否陷入对单一候选的小修小补，必要时返回候选搜索。
 
-### Checkpoint 7（已完成）：选择或 Pareto 前沿
+### Checkpoint 7（原已完成；2026-07-14 重开）：选择或 Pareto 前沿
 
 - 结果：没有原子赢家；冻结条件性 `K0 + 显式异构能力子内核` 研究参考架构与分维度 Pareto，未声称全局最优或不可约性定理。
 
 - 交付：`DECISION.md`、`FORMAL_SPEC.md`、`THREATS_TO_VALIDITY.md`。
-- 仅称“在明确条件和测试范围内，当前最有支持的架构”。
+- 当时仅称“在明确条件和测试范围内最有支持的架构”；bridge 反证后该称谓撤回为历史基线。
 - 列最强反对意见、尚未统一的冲突和可推翻选择的新证据。
 
 ### Checkpoint 8（已完成）：完整交付
@@ -105,15 +105,16 @@
 - 原型只证明语义与执行路径，不证明真实临床准确性。
 - 每个主要阶段更新 `STATUS.md` 的五问。
 
-## 6. 研究完成后的最高信息增益下一步
+## 6. Bridge 执行轮及下一步
 
-Checkpoint 1–8 已关闭；下一步不是继续增加架构名称，而是做一个**独立双实现 bridge round-trip holdout**：
+Checkpoint 1–8 关闭后执行了**源码互异、分别冻结且无跨 import 的双实现 bridge round-trip round**；它不是独立团队/第二机器复现。预注册门禁及当前裁决如下：
 
-1. 由未参与原型实现的人冻结一组新的 evidence cut、概念别名、参数、模块顺序和同构医学词汇；
-2. 分别把同一 cut 编译为 finite DBN/SSM 与 SCM native IR，bridge 不得注入未声明医学语义；
-3. 独立执行动态、conditioning、`do` 和同一患者 AAP，验证 `filter != smooth`、`condition != do != AAP`；
-4. 逐项往返 raw-root、scope、clock、version、coverage 与 uncertainty witness；
-5. 删除/更正一个 root 后重新编译，要求增量结果等于 clean rebuild；
-6. 计量 adapter LOC、人工语义承诺、错误率、延迟、trace 和 extension blast radius。
+1. **满足**：候选先 seal，随后以 fresh seed reveal corpus；source/corpus/manifest hash 和静态 import closure 可复查。
+2. **未满足**：A 无法在允许投影中完整编译 portable DBN/SCM；B 的完整 executable-model/query round-trip audit 缺失。
+3. **部分满足**：A/B 的 filter/smooth 数值核心与 B 的 condition/do/AAP 数值成立；A causal base 不可无损投影，Panel B 还接受非法 cross-world policy。
+4. **未满足**：raw-root、scope、clock、version、coverage、uncertainty 没有端到端同时保持；A/B 均有 hard counterexample。
+5. **失败**：B correction/retraction 的数值与 clean rebuild 相等，但 active-root authority 和 executable audit 不等；A 没有 preregistered concrete delta fixture。
+6. **部分满足**：静态 LOC、承诺向量和 blast radius 已计；A 无 latency telemetry，B 的 p95 样本量不足，完整 error/trace vector 不成立。
+7. **未满足**：M01 在 A/B 均未被杀死；M02–M12 未由 candidate runner 执行。synthetic 12/12 只验证 judge，不是 candidate kill matrix。
 
-该 holdout 将直接检验当前选择是否真把复杂性约束在稳定 bridge 中，还是只把困难从单一模型转移到了适配层。失败时回到 Checkpoint 3/7，收缩或推翻 `K0`；通过也只增加当前 context-of-use 下的支持，不升级为临床认证。
+当前双标签裁决为 **`HYPOTHESIS_FAIL`（冻结实现层）+ `HARNESS_INCOMPLETE`（sealed 41-case corpus 层）**。H01–H30 是原预注册集，H31–H41 是 post-seal/pre-execution addendum。这足以淘汰冻结 A/B 的合规 bridge 主张并重开 Checkpoint 3/7，但不足以证明所有 K0-family/所有 versioned bridge 不可能。下一轮先冻结完整物化、append-only 的 operational probe pack，再比较收缩 K0、richer typed bridge 或新 calculus；即便未来通过，也只增加当前 context-of-use 下的支持，不升级为临床认证。

@@ -1,6 +1,6 @@
-# K0 动态临床计算架构
+# K0 动态临床计算研究基线（选择已重开）
 
-> 这是 `K0-v0.1` 的可读架构说明。形式定义以 `FORMAL_SPEC.md` 为准；选择理由和证据边界见 `DECISION.md`。当前 Python 代码只实现 **`K0-executable-subset-v0.1`**，不是完整规范实现；冻结的 isolated panel-v3 也保留了 hard FAIL，不能表述为“架构已经全通过”。
+> 这是 2026-07-13 pre-bridge `K0-v0.1` 目标合同的可读说明，不是当前赢家声明。形式定义以 `FORMAL_SPEC.md` 为准；选择理由和证据边界见 `DECISION.md`。2026-07-14 bridge 反证已重开固定核心选择。当前 Python 代码只实现 **`K0-executable-subset-v0.1`**，不是完整规范实现；冻结的 isolated panel-v3 也保留了 hard FAIL，不能表述为“架构已经全通过”。
 
 ## 1. 先用一句话说明
 
@@ -27,7 +27,7 @@ flowchart TB
       MAP -->|"合约失败"| QN
     end
 
-    subgraph K0["A. 固定可信控制面 K0（合同，不持有事实）"]
+    subgraph K0["A. K0 目标控制面（研究合同，不持有事实）"]
       ING["Typed Artifact\nrole + identity + scope"]
       LED["Ledger Port Contract（不是 ledger）\nidentity、version、root/witness"]
       CUT["Typed Temporal / Version Cut"]
@@ -79,9 +79,9 @@ flowchart TB
     CACHE -."必须保留 cut/version/error".-> OUT
 ```
 
-图中的 A 才是固定核心；它固定 ledger port、身份、cut、query/result 和不变量，**不另存一份事实**。B 中的 TEL/TMS 是完整参考联邦唯一的 evidence authority；其他子内核只消费它给出的冻结 cut/witness，模型输出也只能成为带 provenance 的派生产物。B 中的疾病和模型可持续扩展；C 中可使用 LLM，但 LLM 输出必须变成可审查 artifact；D 中可使用 QKV、向量检索和缓存，但它们不能决定事实是否存在或绕过安全规则。
+在 pre-bridge K0 假说中，图中的 A 被提议为固定核心：它约束 ledger port、身份、cut、query/result 和不变量，**不另存一份事实**。B 中的 TEL/TMS 是完整参考联邦唯一的 evidence authority；其他子内核只消费它给出的冻结 cut/witness，模型输出也只能成为带 provenance 的派生产物。B 中的疾病和模型可持续扩展；C 中可使用 LLM，但 LLM 输出必须变成可审查 artifact；D 中可使用 QKV、向量检索和缓存，但它们不能决定事实是否存在或绕过安全规则。bridge holdout 后，这张图只表示待重证的目标合同。
 
-## 3. 固定核心的七个部分
+## 3. K0 基线提出的七个控制面部分
 
 ### 3.1 TypedArtifactRole
 
@@ -230,7 +230,7 @@ causal parents 不是文档 provenance。因果图正确与否也不能从拟合
 
 ### 4.5 完整 profile 和降级
 
-当前完整参考 profile 要求四组能力齐备：TEL/TMS evidence authority、state/dynamics、causal、typed rewrite/open safety。它们可以部署在同一进程，但每项 query 的能力来源和 native witness 必须分别可见。
+pre-bridge 完整参考 profile 要求四组能力齐备：TEL/TMS evidence authority、state/dynamics、causal、typed rewrite/open safety。它们可以部署在同一进程，但每项 query 的能力来源和 native witness 必须分别可见；该 profile 当前是重开比较中的基线，不是已选赢家。
 
 - 缺 TEL/TMS evidence authority：只可做离线合同验证，不构成临床事实运行时；
 - 缺 state/dynamics：病历投影与重放仍可用，`filter/smooth/forecast` 返回 typed `unsupported`；
@@ -260,6 +260,8 @@ closed transform enum
 6. 把 evidence witness、bridge version、model/solver version 和 capability origin 合并进 Outcome。
 
 模型输出不会自动写回原始事实层；若要保存，只能作为 `model_output/inference` 角色的新派生产物。
+
+**2026-07-14 证据更新：上面是目标合同，不是已由双实现建立的事实。** 冻结 A 无法在允许投影中同时保持 portable raw digest、per-record SCM role 与 smooth effective-time cut；冻结 B 的完整 executable-model round trip 未被审计，并被 M01 证明 native execution 与 recovery tape 可分裂。A/B 还在 target、cut、root/dependence、version、correction 或 uncertainty 上出现 hard counterexample。因此当前 bridge-stability 为 `HYPOTHESIS_FAIL`（冻结实现层），sealed 41-case corpus 为 `HARNESS_INCOMPLETE`（H01–H30 原预注册集；H31–H41 post-seal/pre-execution addendum）；本节不再构成“固定边界已验证”的声明。
 
 ## 6. 端到端执行路径
 
@@ -369,6 +371,9 @@ flowchart TD
 | rewrite/open | `prototype/candidates/rewrite_open.py` |
 | 参考联邦编排与 bridge（不是完整 K0 合规实现） | `prototype/kernel.py` |
 | E01–E08 公共数学模型实验执行器（不是 evidence authority） | `prototype/model_subkernel.py` |
+| 冻结双实现 bridge/public panel 反证资产 | `prototype/bridge_holdout/` |
+| preregistration、sealed corpus、A/B runner、executability audit、redteam | `tests/bridge_holdout/` |
+| A/B/redteam 原始运行与最终双标签裁决 | `results/bridge-holdout/` |
 | 统一 workload/判分 | `prototype/workloads.py`, `prototype/benchmark.py` |
 | protocol 3 隔离执行：candidate 子进程只收 candidate view；oracle 仅在 parent judge | `prototype/isolated_benchmark.py`, `prototype/isolated_worker.py` |
 | 独立参考模型 | `prototype/reference_models.py` |
@@ -414,7 +419,7 @@ flowchart TD
 
 这两项是已冻结的实现缺口，不能用整体 PASS 数掩盖。`ExperimentalModelSubkernel` 在 E01–E08 上是 **8/8 PASS**，说明该受限执行器能运行面板公开的有限 SCM、状态空间、ODE/组合与 fixed-point 任务；它在全部 58 项中仍是 `13 PASS / 44 HONEST_UNSUPPORTED / 1 FAIL`（T20），且不实现 TEL evidence authority、完整 K0 控制面或经验证的临床模型。因此 E 组 8/8 既不是完整系统全通过，也不是临床有效性证据。
 
-panel-v3 没有任何被测实现 58/58 全通过；它支持的是“各原生语义不可静默互代、需要显式 K0 合同与能力分工”的架构选择，同时也公开保留当前参考实现的反例。
+panel-v3 没有任何被测实现 58/58 全通过；它曾支持“各原生语义不可静默互代、需要显式 K0 合同与能力分工”作为 pre-bridge 基线，同时也公开保留当前参考实现的反例。bridge counterevidence 之后，这不足以冻结当前架构赢家。
 
 ## 11. 当前不能解决什么
 
@@ -426,6 +431,9 @@ panel-v3 没有任何被测实现 58/58 全通过；它支持的是“各原生�
 - 没有证明大规模 replay/provenance 的性能；
 - 没有解决数据治理、权限、隐私、监管、部署和人因；
 - 没有承诺 LLM 抽取永远正确；它只把错误限制在可追踪 adapter 产物中；
+- 没有证明当前 evidence→model bridge 能无损往返 raw root、全部时钟、版本、query constructor 与三类 uncertainty；
+- 没有完成 41 个 executable hidden fixtures；post-seal probe 不等于 hidden PASS；
+- 没有杀死 M01，且 B 已出现 native execution 与 recovery audit 分裂；
 - 冻结 panel-v3 中没有任何被测实现通过全部 58 个 workload；参考 `ClinicalKernel` 在 T18/T20 hard FAIL，实验模型执行器虽 E01–E08 为 8/8，仍在 T20 hard FAIL；
 - 当前 Python 代码只是 `K0-executable-subset-v0.1`，不能据此声称已实现完整 `FORMAL_SPEC.md`；
 - 这些结果只来自合成架构语义 workload 和已审查 pure-Python 原型；它们不是对未调查 calculus 的不可能性证明，也不是临床验证。

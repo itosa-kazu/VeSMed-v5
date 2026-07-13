@@ -1,14 +1,14 @@
 # 动态临床状态表示与诊疗计算：候选无关形式化控制面
 
 > **规范名**：`K0 Formal Control Plane`  
-> **规范版本**：`v0.1`（最终研究参考规范；保留 Checkpoint 3 基线）  
-> **状态**：经 `DECISION.md` 选为当前研究参考控制面，仍可被实验推翻；**不是生产架构认证，也不是临床有效性声明**。  
+> **规范版本**：`v0.1`（2026-07-13 pre-bridge 研究基线）
+> **状态**：2026-07-14 bridge 反证已重开 Checkpoint 3/7；本文现在是待重新比较的目标合同，不是当前已选固定核心、生产架构认证或临床有效性声明。
 > **规范性依据**：`FIRST_PRINCIPLES.md`、`REQUIREMENTS.md`。  
 > **验证性依据**：`ARCHITECTURE_TESTS.md`、`EXPERIMENTS.md`。  
 > **研究性依据**：`research_notes/01–14`。  
 > **读法**：`必须/不得` 是 v0.1 的规范性约束；`可以/建议` 是非规范性实现说明。
 
-本文冻结的是不同候选为了被公平比较、被安全拼装而必须共享的**语义控制面**；候选比较结束后，该控制面被保留为当前研究参考架构的固定部分。它只回答：
+本文冻结的是不同候选为了被公平比较、被安全拼装而必须共享的**语义控制面假说**；它曾在 pre-bridge 比较后被保留为研究参考架构的固定部分，但当前只保留为需求/基线。它只回答：
 
 > **谁，在什么作用域和时间截面，基于哪些合格且可追溯的输入，使用哪些版本化知识/模型，执行哪一类封闭查询，并以什么能力、覆盖、识别、数值与安全状态返回结果。**
 
@@ -61,7 +61,7 @@ K0 的结果/审计合同可以引用某子内核保存的 `NativeStateRef`，�
 
 ### 0.2 完整参考 profile 与局部降级
 
-`K0` 本身是最小共同控制面，不是完整临床计算运行时。当前完整参考联邦要求下列四组能力全部可用；物理实现可以合并，但 capability、witness 和事实权威不得合并语义：
+`K0` 本身是最小共同控制面，不是完整临床计算运行时。pre-bridge target profile 曾要求下列四组能力全部可用；它们现在是重开后待比较的需求，不是已胜出的联邦。物理实现可以合并，但 capability、witness 和事实权威不得合并语义：
 
 | 能力端口 | 完整参考实现 | 缺失时的合法降级 |
 |---|---|---|
@@ -124,7 +124,7 @@ MAX_JSON_BYTES = 1_048_576
 
 ## 1. 核心签名与对象
 
-令本研究在 13 个候选家族、3 个原子原型和冻结反例范围内选择的共同内核签名为：
+令 2026-07-13 pre-bridge 面板在 13 个候选家族、3 个原子原型和冻结反例范围内提出、并留待 bridge 实验检验的共同内核签名为：
 
 ```text
 K0 = (MetaTypes, IdentityAndScope, LedgerPortContract,
@@ -1370,9 +1370,9 @@ migrate : Artifact<K0-v_old> × MigrationPlan<v_old,v_new>
 7. 若某个 K0 原语消融后所有硬测试、trace 和 failure 语义均不变，应删除该原语；
 8. 本草案不证明诊断准确、治疗获益、临床校准、公平性或生产安全，这些仍属于 `REQUIREMENTS.md` 的部署边界。
 
-## 15. v0.1 冻结结论（与 `DECISION.md` 对齐）
+## 15. v0.1 pre-bridge 冻结基线（历史；当前已重开）
 
-在本研究覆盖的 13 个候选家族、3 个原子原型与冻结反例范围内，当前最有根据的共同内核形式不是一个万能 `PatientState`，而是：
+在 2026-07-13 pre-bridge 阶段，本研究覆盖的 13 个候选家族、3 个原子原型与冻结反例曾支持以下待证共同内核，而不是一个万能 `PatientState`：
 
 ```text
 typed evidence/action/knowledge ledger contract
@@ -1382,8 +1382,10 @@ typed evidence/action/knowledge ledger contract
 + typed composition contracts and fail-closed invariants
 ```
 
-K0 只固定上述类型、身份、cut、port 和审计合同；唯一权威 evidence 历史由 TEL/TMS `EvidenceAuthority` 参考子内核实现。完整参考联邦还必须装配 state/dynamics、causal 与 typed rewrite/open safety 能力；缺失能力按第 0.2 节局部降级，不得静默代答。
+该 pre-bridge K0 基线只固定上述类型、身份、cut、port 和审计合同；唯一权威 evidence 历史由 TEL/TMS `EvidenceAuthority` 参考子内核实现。完整参考联邦还必须装配 state/dynamics、causal 与 typed rewrite/open safety 能力；缺失能力按第 0.2 节局部降级，不得静默代答。
 
 它故意不规定患者动力学、概率、因果、反事实、重写和组合的唯一语义。这个“不统一”不是缺口，而是防止候选用无类型 payload 或自由 callback 把互不等价的问题伪装成一个核心原语的主要约束。
 
-这里的“最小共同内核”是有删除反例支持的**经验性研究选择**，不是不可约性定理。本文既未穷举全部可能 calculus，也未证明七类 K0 承诺彼此不可导出；第 14 节的消融、新 calculus 和 hidden holdout 都可以收缩或推翻它。当前 Python 参考代码也只是第 0.3 节的可执行子集，不能把“可运行”升级为“已实现完整形式规范”。
+这里的“最小共同内核”只是有删除反例支持的**历史经验性研究基线**，不是不可约性定理。本文既未穷举全部可能 calculus，也未证明七类 K0 承诺彼此不可导出；第 14 节的消融、新 calculus 和 hidden holdout 都可以收缩或推翻它。当前 Python 参考代码也只是第 0.3 节的可执行子集，不能把“可运行”升级为“已实现完整形式规范”。
+
+2026-07-14 bridge 轮已经触发这种重开：冻结 A/B 的 bridge-stability 主张在实现层为 `HYPOTHESIS_FAIL`；sealed 41-case corpus 在实验层为 `HARNESS_INCOMPLETE`（H01–H30 原预注册集，H31–H41 post-seal/pre-execution addendum）。因此本规范当前是 Checkpoint 3/7 的目标合同和待证基线，不是已经胜出的固定核心；该结果淘汰冻结 A/B 的合规 bridge 主张，但不构成 K0 family 或所有 versioned bridge 的不可能性证明。

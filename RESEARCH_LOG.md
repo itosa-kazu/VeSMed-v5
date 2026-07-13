@@ -101,7 +101,7 @@
 - 修订：每 workload fresh `python -I -S`，stdin 只交付 `candidate_view`，oracle/reference 留在父进程；同步 eligibility、外部 fresh replay、PASS gating 与分轴裁决。
 - 剩余缺口：pure-Python 候选仍可探测更广文件系统或启动外部路径；因此 v2 仍只作过渡诊断。
 
-### v3：当前决策证据版
+### v3：panel 谱系的 decision-grade 证据版
 
 - 路径：`results/20260713T120910Z-panel-v3/`。
 - 新增：CPython audit hook + sandbox/runtime 最小读 allowlist；阻断 subprocess、network 与 native loader；记录 candidate/workload/oracle/benchmark hash、环境、dirty digest 与 timeout。
@@ -122,16 +122,26 @@
 2. 冻结 `K0` 七类控制面承诺：artifact role、identity/scope、time/cut、derivation/provenance、closed query、product failure、invariant enforcement。
 3. 最终参考 profile 采用唯一 TEL/TMS evidence authority，并显式分家 state/dynamics、causal 与 rewrite/open safety；模型输出始终是版本化派生产物，不是第二权威事实源。
 4. 最强反对意见仍成立：K0 可能只是接口治理，bridge 可能把被隐藏的医学语义、维护和失败面全部转移到适配层。
-5. 因此文档只使用“在当前 13 家族、3 原型、58 workload 和 v3 威胁模型下当前最有支持”；不使用全局最优、唯一、形式不可约或临床已验证。
+5. 当时文档只使用“在 13 家族、3 原型、58 workload 和 v3 威胁模型下最有支持”；不使用全局最优、唯一、形式不可约或临床已验证。bridge 反证后该措辞只保留为历史基线。
 
 ### 下一判别实验
 
-独立团队对冻结 evidence cut 做 DBN/SSM 与 SCM 双编译 round-trip holdout，检查 root/clock/version/uncertainty、`filter != smooth`、`condition != do != AAP`、删除/更正后 clean rebuild，并量化 bridge LOC、人工承诺、错误和 blast radius。
+原计划由独立团队对冻结 evidence cut 做 DBN/SSM 与 SCM 双编译 round-trip holdout，检查 root/clock/version/uncertainty、`filter != smooth`、`condition != do != AAP`、删除/更正后 clean rebuild，并量化 bridge LOC、人工承诺、错误和 blast radius。实际执行只达到 source-distinct/no-cross-import，不构成独立团队复现。
 
 ## 2026-07-13 — Checkpoint 8 交付与 QA 路线
 
 1. 交付两张一页图、形式规范、决策/威胁/红队文档、可运行 demo、机器 fixture、raw isolated result 与指标快照。
 2. 增加四类真实 checked-in typed extension：AKI architecture toy dynamic module、norepinephrine finite-SCM intervention、renal-safety task projection、cystatin-C method-qualified derivation；它们是架构扩展示例，不是临床校准模型。
 3. `results/metrics-final.json` 冻结 primitive/LOC/复杂度/test-dispatch 下界；`metrics-current.json` 已含前三个扩展，最终差分额外记录 test-method extension 新增 1、fixed-core file blast radius 为 0、harness 修改 5。五个候选/仪器实现的 literal T/E ID 与 oracle/reference dispatch 静态计数均为 0；这只是反迎合证据，不是无特例证明。
-4. 当前全量回归为 `119 passed, 7 subtests passed`；`python -m prototype.demo` 生成 `examples/demo_output.json`；decision-grade 全面板由 `python -m prototype.experiment --run-id <unique-id>` 运行。
+4. 当时全量回归为 `119 passed, 7 subtests passed`；`python -m prototype.demo` 生成 `examples/demo_output.json`；decision-grade 全面板由 `python -m prototype.experiment --run-id <unique-id>` 运行。
 5. 最终验证顺序固定：全量 pytest → demo → v3 isolated panel/metadata/hash 检查 → metrics/extension comparison → JSON parse → `git diff --check`。任一步失败都不得把 Checkpoint 8 标为完成。
+
+## 2026-07-14 — Checkpoint 9 bridge 双实现执行轮
+
+1. 先冻结 A/B 与 public panel 源码，再抽取/reveal seed，并生成、冻结 portable authority/model/cut/query corpus 与 hidden oracle；各 runner 在 reveal 后才生成 per-candidate projection，并非 seal 时已经冻结 candidate-view/oracle-view 文件。H01–H30 是原预注册集，H31–H41 是 post-seal/pre-execution addendum。freeze、fixture、corpus、source、runner 和 report hash 均进入可机读证据包。
+2. A mechanical 为 `0 PASS / 4 ADAPTER_UNREPRESENTABLE / 37 HARNESS_INCOMPLETE`；B corrected run-03 为 `0 PASS / 41 HARNESS_INCOMPLETE`。corpus 审计只找到 4 个 concrete base、35 个 descriptor-only case；H09/H20/H21 含 dangling refs，H09 与 descriptor-only 重叠。
+3. external 数值证明 A 的 filter/smooth、B 的 condition/do/AAP solver 和 B model-level aleatoric/epistemic/measurement 参数扰动路径可运行；但 A 的三通道 typed result 缺失、B 的 evidence/record uncertainty sidecar 不活跃，以及 root/cut/version、scope、correction/retraction 与 B recovery-tape split-brain 产生不可补偿 hard failure。
+4. 42 个 post-seal probe 为 `15 pass / 26 fail / 1 partial`，只能作为 external evidence；candidate runner 只执行 M01 且 A/B 均未杀死，synthetic 12/12 只测试 report judge。
+5. 裁决必须分账：sealed corpus 的 candidate verdict 没有 `CANDIDATE_FAIL`，只支持 `HARNESS_INCOMPLETE`；单独记账的 deterministic external hard counterexamples 才支持冻结实现层 `HYPOTHESIS_FAIL`。冻结 A/B 被淘汰为合规 bridge，K0 family 不被宣告不可能；Checkpoint 3/7 重开。
+6. 专项回归为 `16 passed`，全量为 `135 passed, 7 subtests passed`；最终人读/机读报告位于 `results/bridge-holdout/REPORT.md` 与 `final-report.json`。
+7. Git 逻辑实验工件 checkpoint 为 `abac08786f642c28ba76d8940c60fe1906ab9945`；`d08a8e5b12377890499703b6de6bed1f90c4aa98` 只加入 exact-byte packaging，不改变实验语义。机器报告从后者直接复核 26 个决策依赖 Git blobs。

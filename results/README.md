@@ -8,10 +8,24 @@
 |---|---|---|---|
 | [`20260713T200000Z-panel-v1/`](20260713T200000Z-panel-v1/) | **pre-red-team 失败基线；不得用于排名** | 记录首轮 runner 如何产生结果，并作为红队问题的可追溯复现材料 | 任何候选胜负、Pareto 次序或核心架构选择；其 oracle 隔离、semantic eligibility、轨迹覆盖与若干 fixture 区分力均不足 |
 | [`20260713T115159Z-panel-v2/`](20260713T115159Z-panel-v2/) | **中间诊断证据；不得作为最终决策面板** | 证明大部分首轮 harness 修复已进入隔离运行，并暴露剩余缺口 | 最终候选比较；`T35` 当时只有数值 diagnostics 门，缺少独立的递推值/完整时域 hard oracle；此外，已知宿主绝对路径仍可能绕过临时目录隔离读取 oracle（direct-path confinement 缺口） |
-| [`20260713T120910Z-panel-v3/`](20260713T120910Z-panel-v3/) | **decision-grade，但仅限已声明范围的隔离面板** | 在冻结的 50 个 T workload、8 个 E workload、5 个实现及 native/companion 矩阵内，比较行为完成度、诚实拒绝和失败边界；支持本研究的有范围架构决策 | 未测语义、敌意 native code、OS 级安全、临床准确性、患者获益、监管合规或真实部署安全 |
+| [`20260713T120910Z-panel-v3/`](20260713T120910Z-panel-v3/) | **decision-grade，但仅限已声明范围的隔离面板** | 在冻结的 50 个 T workload、8 个 E workload、5 个实现及 native/companion 矩阵内，比较行为完成度、诚实拒绝和失败边界；支持 2026-07-13 的有范围 pre-bridge 基线 | 当前固定核心赢家、未测语义、敌意 native code、OS 级安全、临床准确性、患者获益、监管合规或真实部署安全 |
 | [`metrics-current.json`](metrics-current.json) | **v3 最终加固前的静态计量基线** | 为差分提供固定 core、harness、前三个扩展包、LOC/AST、manifest 原语和反测试分派扫描快照 | 前三个扩展从零写入时的 authoring diff、运行时正确性、可维护性总分、临床正确性 |
 | [`metrics-final.json`](metrics-final.json) | **最终静态计量快照** | 审计最终源码规模、显式原语、自报边界、文件哈希和静态反特例扫描 | 证明不存在所有硬编码、证明原语最小、证明临床或形式正确 |
 | [`metrics-final-vs-current.json`](metrics-final-vs-current.json) | **最终相对基线的差分证据** | 显示 fixed-core added/modified/removed 均为 `0`、harness 修改 `5` 个文件、第四个 test-method extension 新增 `1` 个文件 | 前三个扩展的 authoring diff、泛化到未纳入指纹的文件，或证明任何候选是全局最优 |
+
+### Bridge holdout 证据地位
+
+| 产物 | 证据地位 | 可以支持 | 不能支持 |
+|---|---|---|---|
+| [`bridge-holdout/implementation-a-audited-run-01.json`](bridge-holdout/implementation-a-audited-run-01.json) | **A 的审计外部运行** | A mechanical 为 `0 PASS / 4 ADAPTER_UNREPRESENTABLE / 37 HARNESS_INCOMPLETE`；数值 core、三通道 typed-result failure 与 M01 partial 分层记录 | A 通过 hidden holdout；非许可 raw/clock projection 是合法 hidden adapter |
+| [`bridge-holdout/implementation-b-corrected-run-03.json`](bridge-holdout/implementation-b-corrected-run-03.json) | **B 的审计修正 run-03** | 41 项均保留 `HARNESS_INCOMPLETE`；M01 recovery-tape 分裂和其他 external failures | B 的 4 个 concrete base cases 内的数值子断言等同完整 round-trip PASS |
+| [`bridge-holdout/redteam-external-probes.json`](bridge-holdout/redteam-external-probes.json) | **确定性 post-seal falsification** | 42 probes 的 `15 pass / 26 fail / 1 partial`，以及 A/B/Panel 的运行时反例 | 把 post-seal probe 重新标成 preregistered H-case 或据此报告 hidden kill rate |
+| [`../tests/bridge_holdout/EXECUTABILITY_AUDIT.md`](../tests/bridge_holdout/EXECUTABILITY_AUDIT.md) | **corpus 可执行性审计** | 4 concrete base、35 descriptor-only；H09/H20/H21 含 dangling query refs，且 H09 与 descriptor-only 重叠 | 将 `COVERAGE.md` 的意图矩阵当作缺失 fixture/oracle |
+| [`bridge-holdout/REPORT.md`](bridge-holdout/REPORT.md) / [`bridge-holdout/final-report.json`](bridge-holdout/final-report.json) | **本轮最终裁决** | `HYPOTHESIS_FAIL`（冻结实现层）+ `HARNESS_INCOMPLETE`（sealed 41-case corpus：H01–H30 preregistered，H31–H41 addendum），Checkpoint 3/7 重开 | K0 family 不可能性、临床验证或任何总分补偿 hard fail |
+
+B 的证据历史并非完整 WORM：run-02 与 run-03 已保留，run-03 绑定 run-02 SHA；最早未提交 dry-run 的 bytes 已丢失，只保留 SHA `d92cd05b2e9c0ef68380c691c1d64dfb439747dc5d8b3bc9e7664ea592e5412a`。不得描述为完整 append-only 历史。
+
+逻辑实验工件固定在 `abac08786f642c28ba76d8940c60fe1906ab9945`；`d08a8e5b12377890499703b6de6bed1f90c4aa98` 只增加跨平台 exact-byte Git packaging，不改变实验语义。机器报告会从后者直接读取 Git blobs，复核其声明的 26 个决策依赖工件。
 
 三个 metrics 报告内置的 `report_sha256` 分别为：
 
@@ -60,6 +74,17 @@ $runId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-panel-v3-
 python -m prototype.experiment --output-root results --run-id $runId
 python -m pytest -q
 ```
+
+Bridge 产物采用只读新输出路径重放；不要覆盖已保存 run：
+
+```powershell
+python tests/bridge_holdout/runner_a_external.py --output "$env:TEMP/implementation-a-replay.json"
+python tests/bridge_holdout/runner_b_external.py --output "$env:TEMP/implementation-b-replay.json"
+python tests/bridge_holdout/redteam_external_probes.py --output "$env:TEMP/redteam-replay.json"
+python -m pytest -q tests/test_bridge_public_panels.py tests/test_bridge_mutation_gate.py tests/test_bridge_holdout_fixture.py tests/test_bridge_holdout_runs.py
+```
+
+A 和 redteam 报告支持 exact-byte replay；B 保存 timing telemetry，自动测试在剔除 `*_ns`/latency 与派生 report-byte 字段后比较完整结构。任何 external probe 都不得晋升为 hidden case。
 
 重新生成静态计量时也使用新文件名；第二条命令以已冻结的加固前快照为 baseline：
 

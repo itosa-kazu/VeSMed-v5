@@ -1,6 +1,6 @@
 # 动态临床状态与诊疗计算：候选架构地图
 
-> **状态：post-experiment 候选地图。** 本文依据 `research_notes/02_state_models.md` 至 `08_graph_world.md` 的已核实研究，统一 13 个候选家族的边界、问卷、硬淘汰、组件保留和 Pareto 位置；其中 3 个原子候选已实现并进入 v3 隔离实验。结论是**没有原子赢家**，条件性研究参考选择为 `K0 + 显式异构能力子内核`；详细裁决见 `DECISION.md`。逐项模板与证据映射见 `research_notes/12_candidate_synthesis.md`，外部来源见 `SOURCES.md`。
+> **状态：bridge 后候选地图；Checkpoint 3/7 已重开。** 本文依据 `research_notes/02_state_models.md` 至 `08_graph_world.md` 的已核实研究，统一 13 个候选家族的边界、问卷、硬淘汰、组件保留和 Pareto 位置；其中 3 个原子候选已实现并进入 v3 隔离实验。pre-bridge 面板曾把 `K0 + 显式异构能力子内核` 作为条件性待证基线，但 2026-07-14 双实现 bridge 轮没有产生合规赢家；当前没有冻结的固定核心选择。详细裁决见 `DECISION.md` 与 `results/bridge-holdout/REPORT.md`。逐项模板与证据映射见 `research_notes/12_candidate_synthesis.md`，外部来源见 `SOURCES.md`。
 
 ## 1. 比较合同
 
@@ -214,7 +214,7 @@ CHR 是约束多集重写，归入 D08/D10 的实现参考；ASP 若参赛必须
 
 这些可能进入最终固定核心，但不得给某个动态候选“免费加分”；动态候选也不能因通用表达力声称已经自然吸收它们。
 
-## 6. 硬淘汰与当前 Pareto
+## 6. 硬淘汰与 pre-bridge Pareto 地图
 
 ### 6.1 已硬淘汰的宣传版本
 
@@ -230,9 +230,9 @@ CHR 是约束多集重写，归入 D08/D10 的实现参考；ASP 若参赛必须
 8. digital twin 名称、逼真 rollout 或高 likelihood 自动保证 causal validity、coverage、VVUQ 和安全；
 9. OWL open-world、无限对象或可生成新字符串等于概念级 OOD 与安全拒答。
 
-### 6.2 分维度 Pareto 前沿
+### 6.2 分维度 pre-bridge Pareto 前沿
 
-| 维度 | 当前候选 | 不能抵消的缺口 |
+| 维度 | pre-bridge 非支配候选 | 不能抵消的缺口 |
 |---|---|---|
 | 概率分解/多解释 | D01 | causal、knowledge time、provenance |
 | latent/observation separation 与 forecast | D02 | event ledger、identification、lineage |
@@ -263,9 +263,9 @@ CHR 是约束多集重写，归入 D08/D10 的实现参考；ASP 若参赛必须
 
 未实现为原子代码的 D03、D05、D06、D08、D09、D13 等，其位置仍来自文献、形式反例和统一问卷，不能把“三个实现没赢”误写成对所有未实现 calculus 的实验性不可能证明。
 
-### 7.2 v3 决策证据面板
+### 7.2 v3 pre-bridge 决策证据面板
 
-当前可用于决策的原始运行位于：
+pre-bridge panel lineage 的原始运行位于：
 
 ```text
 results/20260713T120910Z-panel-v3/
@@ -278,10 +278,10 @@ results/20260713T120910Z-panel-v3/
 | TEL | 36 / 20 / 2 | 36 / 20 / 2 | ledger/time/trace 覆盖最宽之一，但不执行 E dynamics；companion 未补出缺失语义 |
 | causal/state | 3 / 53 / 2 | 3 / 53 / 2 | 在已注册 finite model 上有原生 state/causal 能力，但对 audit/TEL 面板大多诚实拒绝 |
 | rewrite/open | 31 / 23 / 4 | 31 / 23 / 4 | 动作/规则/组合有真实覆盖，但不提供概率/causal dynamics；companion 未改变边界 |
-| K0 kernel instrument | 36 / 20 / 2 | N/A | 证明显式路由/bridge 可运行；不能把 36 个 PASS 记给某一原子家族 |
+| K0 kernel instrument | 36 / 20 / 2 | N/A | 只证明 panel-v3 的部分显式路由路径可运行，不证明 evidence→model round-trip stability；不能把 36 个 PASS 记给某一原子家族 |
 | public-model instrument | 13 / 44 / 1 | N/A | E01–E08 数值/因果/组合 reference 可执行；不是完整临床核心 |
 
-这些数字不是排行榜：`HONEST_UNSUPPORTED` 证明 typed boundary，而不是能力完成；各候选的 `not_applicable` 与原生问题不同；公开 fixture 也不能替代隐藏 holdout。v1 (`results/20260713T200000Z-panel-v1/`) 有同进程/oracle 与判别力缺陷，只是红队前基线；v2 (`results/20260713T115159Z-panel-v2/`) 是无 audit-hook 文件 allowlist 的过渡隔离版。二者均不承担最终决策证据。
+这些数字不是排行榜：`HONEST_UNSUPPORTED` 证明 typed boundary，而不是能力完成；各候选的 `not_applicable` 与原生问题不同；公开 fixture 也不能替代隐藏 holdout。v1 (`results/20260713T200000Z-panel-v1/`) 有同进程/oracle 与判别力缺陷，只是红队前基线；v2 (`results/20260713T115159Z-panel-v2/`) 是无 audit-hook 文件 allowlist 的过渡隔离版。二者均不承担 panel-v3 lineage 的结论证据；当前架构判断还必须同时读取 `results/bridge-holdout/REPORT.md` 的反证与双标签裁决。
 
 ### 7.3 公平合同在实验后的状态
 
@@ -294,16 +294,16 @@ results/20260713T120910Z-panel-v3/
 7. Native/Companion 分开报告；本次三个原子候选两赛道的分类相同，不能宣称 adapter 已带来免费语义，也不能据此证明所有 companion 永远无用。
 8. 实验没有比较真实临床准确性、校准、目标规模性能、权限隐私、人因、监管或独立团队复现。
 
-## 8. Post-experiment 结论与下一步
+## 8. Post-panel 结论与 bridge 更新
 
-当前可复查结论限于：
+2026-07-13 panel 结束时的可复查结论限于：
 
 1. 在调查的 13 个家族、实现的 3 个原子原型、58 个公开 workload 与 v3 pure-Python 威胁模型内，没有证据支持一个原子候选直接成为完整固定核心；
 2. 非支配能力分布在 evidence/time、latent probability、causal query、truth maintenance、动作安全与 composition 等不同维度；
-3. 最有支持的研究参考选择是条件性 `K0 + 唯一 evidence authority + 显式 state/dynamics、causal、rewrite/open 子内核`，不是“把所有东西混在一个对象里”；
+3. 当时最有支持的研究参考基线是条件性 `K0 + 唯一 evidence authority + 显式 state/dynamics、causal、rewrite/open 子内核`，不是“把所有东西混在一个对象里”；
 4. 任一原型若出现静默未来泄漏、同源增信、planned-as-performed、partial-retrieval-as-absence、unsupported-as-known 或 model output 自证为 evidence root，该实现版本立即硬淘汰；
 5. 该选择不是全局最优或数学不可约性证明；未实现候选、其他 calculus、独立 holdout 或新的 context-of-use 均可重画 Pareto。
 
-下一项信息增益最高的实验不是第四个品牌原型，而是**独立双实现 bridge round-trip holdout**：将同一冻结 evidence cut 分别编译为 DBN/SSM 与 SCM native IR，往返 root/clock/version/uncertainty，保持 `filter != smooth` 与 `condition != do != AAP`，并在删除/更正 root 后对照 clean rebuild；同时量化 bridge LOC、人工承诺、错误率、延迟与 blast radius。若失败，当前 K0/联邦边界必须收缩或推翻。
+当时提出的下一项高信息增益实验是**独立双实现 bridge round-trip holdout**。实际 2026-07-14 轮次只达到 source-distinct/no-cross-import，而非独立团队复现；冻结 A/B 的实现层结果为 `HYPOTHESIS_FAIL`，sealed 41-case corpus 层为 `HARNESS_INCOMPLETE`。因此上面的 K0/联邦选择已重开，只保留为待比较基线；精确裁决见 `results/bridge-holdout/REPORT.md`。
 
 本文件保留可证伪的候选地图；正式权衡、反对意见和推翻条件见 `DECISION.md`、`EXPERIMENTS.md`、`REDTEAM.md` 与 `THREATS_TO_VALIDITY.md`。

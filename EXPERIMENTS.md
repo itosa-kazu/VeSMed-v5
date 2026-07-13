@@ -1,8 +1,9 @@
 # 原型与实验记录
 
 > 当前阶段：**预注册协议 + 最终实际执行记录**。第 1–11 节保留实验冻结前的
-> 设计与判据；第 12–18 节记录红队后真正执行的结果。只有
-> `results/20260713T120910Z-panel-v3/` 可进入架构决策；v1、v2 均只保留为
+> 设计与判据；第 12–18 节记录 panel 红队后真正执行的结果，第 19 节记录 bridge
+> counterevidence。在 v1–v3 panel 谱系中，只有 `results/20260713T120910Z-panel-v3/`
+> 是 decision-grade panel；bridge 证据另由 `results/bridge-holdout/` 记账。v1、v2 均只保留为
 > 可审计的失效/中间诊断证据。这里没有用通过数选“万能赢家”。
 
 ## 1. 实验问题
@@ -218,7 +219,7 @@ summary generated from raw results
 
 硬约束先淘汰；其余分别形成 Audit/Epistemic 和 Dynamics/Causality/Composition 两张 Pareto 表，不生成一个可掩盖硬失败的总分。
 
-## 12. 运行谱系：为什么只有 panel-v3 可用于决策
+## 12. panel 运行谱系：为什么 v1–v3 中只有 panel-v3 可用于决策
 
 三个目录都保留，且都不可覆盖；版本号表示证据有效性演进，不表示三个结果可以混在
 一起累计：
@@ -227,7 +228,7 @@ summary generated from raw results
 |---|---|---:|---|
 | [`20260713T200000Z-panel-v1`](results/20260713T200000Z-panel-v1/) | 红队前 baseline | **否** | 候选与 oracle/参考实现同进程，候选可以通过 import/introspection 触达评分材料；语义资格、payload 完整性和 typed refusal 的判据也过弱。红队因此推翻该 baseline；其较高 PASS 数不能再解释为候选能力。 |
 | [`20260713T115159Z-panel-v2`](results/20260713T115159Z-panel-v2/) | 隔离修复后的中间诊断 | **否** | 已做到 fresh `python -I -S`、只经 stdin 提供 `candidate_view`，但随后复核发现 T35 的数值/单位 oracle 仍需修正，而且 worker 仍可用已知绝对路径越过临时复制树读取宿主文件。即使 v2 与 v3 的聚合计数相同，v2 的隔离证明仍不成立。 |
-| [`20260713T120910Z-panel-v3`](results/20260713T120910Z-panel-v3/) | 最终 isolated panel | **是** | 修正 T35，并加入 CPython audit-hook 读路径 allowlist，同时封锁 subprocess、network 与 native loader；每 workload 使用新进程，oracle 只留在 parent judge。它是本报告唯一的决策数据。 |
+| [`20260713T120910Z-panel-v3`](results/20260713T120910Z-panel-v3/) | 最终 isolated panel | **是** | 修正 T35，并加入 CPython audit-hook 读路径 allowlist，同时封锁 subprocess、network 与 native loader；每 workload 使用新进程，oracle 只留在 parent judge。它是 panel 谱系唯一的 decision-grade 数据；第 19 节 bridge counterevidence 是另一条证据链。 |
 
 具体红队攻击、复现和修复状态见 [`REDTEAM.md`](REDTEAM.md)。v3 的隔离边界仍明确
 限定为“受审计的纯 Python 候选”，**不是操作系统安全沙箱**。
@@ -357,8 +358,11 @@ knowledge-extension 新增 1、fixed-core added/modified/removed 均为 0，同�
    大规模记录/模块下的复杂度拐点，也没有比较 companion 的运行成本。
 2. **第二台机器复现**：最终 panel 只在 metadata 所列 Windows/CPython 环境执行；没有
    第二台机器、第二个 OS 或独立团队复跑。
-3. **隐藏 holdout**：第 10 节预注册的别名、参数、注册顺序和第二套同构词汇 holdout
-   没有以真正对开发者隐藏的方式执行；static special=0 不能替代 blinded holdout。
+3. **完整隐藏 holdout**：2026-07-14 已完成 candidate seal→fresh seed→corpus reveal，并执行
+   首轮 A/B runner；但 corpus 只有 4 个 concrete base、35 个 descriptor-only case；H09/H20/H21
+   含 dangling query refs，其中 H09 与 descriptor-only 集合重叠。A 为 `0 PASS / 4 ADAPTER_UNREPRESENTABLE / 37 HARNESS_INCOMPLETE`，B 为
+   `0 PASS / 41 HARNESS_INCOMPLETE`。因此整体仍是 `HARNESS_INCOMPLETE`；post-seal probe 和
+   static special=0 都不能替代完整 blinded executable holdout。
 4. **临床有效性**：58 条都是 synthetic architecture-semantics workload。没有验证
    临床诊断准确率、校准、治疗效益、患者结局、外部效度或 active atlas 的医学质量。
 5. **随机鲁棒性**：metadata 只有 seed `1103`；当前受测实现是确定性的，故足以重放
@@ -437,3 +441,23 @@ JSON 文件的 byte hash 不是同一口径。
 `status_digest=sha256:db584798f4e654534c7dad4abdee5ef47d786dad6916dcbfbcedd459fe71e9ad`。
 所以仅 checkout 该 commit **不能**宣称字节级复现；必须同时核对上表的代码、workload、
 view 与 raw 文件 hashes。这一限制保留在记录中，不用 commit 标签掩盖。
+
+## 19. Bridge round-trip 执行轮（2026-07-14）
+
+本轮按 [`tests/bridge_holdout/PREREGISTRATION.md`](tests/bridge_holdout/PREREGISTRATION.md)
+冻结 A/B bridge 和 A/B public panel，之后 reveal 新 seed/corpus。最终裁决不是一个总分：
+
+- 冻结实现层：**`HYPOTHESIS_FAIL`**；A/B 均存在非补偿 hard failure，M01 均未杀死；
+- sealed 41-case corpus 层：**`HARNESS_INCOMPLETE`**；H01–H30 是原预注册集，H31–H41 是 post-seal/pre-execution 静态审计 addendum，41 个描述不等于 41 个 executable fixtures；
+- public E01–E06 与基础 finite DBN/SCM 数值成功只证明 solver/core liveness，不能补偿
+  raw/root/cut/version/uncertainty/recovery failure；
+- synthetic 12-mutant self-test 只证明外部 judge predicate，不能冒充 candidate kill matrix。
+
+四个冻结源码合计 `244,694 bytes / 5,609 physical lines / 4,768 strict LOC`；两个 runner
+合计 `132,402 / 2,727 / 2,454`。`eca17d3..abac087` 只新增 32 个实验文件，core runtime
+修改 0、schema migration 0。A 无 latency telemetry；B 只有 4/4/7 个 compile/recover/run
+样本，报告明确不支持 stable p95。
+
+原始 A/B/redteam、hash、机器摘要、完整结论和重放命令见
+[`results/bridge-holdout/REPORT.md`](results/bridge-holdout/REPORT.md)。B 的 run-02/run-03 已保留，
+但最早未提交 dry-run 只剩 SHA、bytes 已丢失；本轮不能声称完整 WORM 历史。

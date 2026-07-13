@@ -38,12 +38,12 @@ candidate family
 |---|---|---|---|
 | V01 | 搜索范围、关键词、语言与可获得性造成来源偏差 | 候选空间足够全面；文献支持强度可比较 | 开放 |
 | V02 | 来源到主张的过度外推、候选粒度不一致 | 家族间比较公平；某来源支持本研究实现 | 开放 |
-| V03 | 测试偏置与 oracle 自证 | 通过率反映语义能力而非测试方言 | 部分缓解；已知 mutation 有回归，盲 holdout 仍开放 |
-| V04 | 选择后见偏差、基准污染与 winner-first 修订 | shortlist/赢家不是研究者偏好产物 | 开放 |
+| V03 | 测试偏置与 oracle 自证 | 通过率反映语义能力而非测试方言 | 部分缓解；bridge 已 seal/reveal，但 sealed 41-case corpus 整体为 `HARNESS_INCOMPLETE` |
+| V04 | 选择后见偏差、基准污染与 winner-first 修订 | shortlist/赢家不是研究者偏好产物 | 开放；bridge 源码先冻结，但 B 的最早 dry-run 字节未保留 |
 | V05 | 玩具模型向复杂临床世界外推 | 小例子通过意味着真实病程可处理 | 结构性 |
 | V06 | 单个 prototype 代表整个 family | 家族保留/淘汰结论 | 结构性 |
-| V07 | primitive、LOC、特例数与 blast radius 可被游戏 | “更小、更通用、更易扩展”的比较 | 部分实测；认知/人工成本仍开放 |
-| V08 | 混合架构堆层、能力归因漂移与 companion 洗白 | 固定核心确实最小；混合方案不是功能拼盘 | 结构性 |
+| V07 | primitive、LOC、特例数与 blast radius 可被游戏 | “更小、更通用、更易扩展”的比较 | 部分实测；bridge LOC/提交向量已计，认知/人工成本仍开放 |
+| V08 | 混合架构堆层、能力归因漂移与 companion 洗白 | 固定核心确实最小；混合方案不是功能拼盘 | 已出现冻结实现层反证；family-level 仍结构性 |
 | V09 | 医学知识覆盖、参数真实性和测量模型缺失 | 生理/诊断/治疗输出有医学意义 | 结构性 |
 | V10 | 因果识别、反事实可识别与 transportability 缺失 | `do`/反事实输出可被数据识别 | 结构性 |
 | V11 | 概率校准、外部验证和决策效用缺失 | belief/hazard/ranking 数值可用于临床决策 | 结构性 |
@@ -52,7 +52,7 @@ candidate family
 | V14 | 旧 V5 结果陈旧、执行路径漂移和可变 registry | 既有 V5 的负面/正面证据仍代表当前系统 | 开放 |
 | V15 | 部署、监管、伦理、安全和人因边界未验证 | 架构选择等于可落地医疗产品 | 结构性 |
 | V16 | LLM 输入、蒸馏、代码生成和评审风险 | 语义模块/医学知识正确且可追责 | 开放 |
-| V17 | 随机性、环境、实现质量与工程者效应 | 候选性能差异来自架构而非实现偶然 | 开放；同机复跑，未做第二机/第二实现 |
+| V17 | 随机性、环境、实现质量与工程者效应 | 候选性能差异来自架构而非实现偶然 | 开放；已有双实现源码，仍无独立团队/第二机 |
 | V18 | 开放世界/OOD 与“万能拒绝”互相冒充 | 能拒绝即代表处理未知良好 | 开放 |
 | V19 | 临床数据选择、测量误差与病例代表性 | 压力测试覆盖真实分布和少数群体 | 结构性 |
 | V20 | 在线学习、知识更新与反馈闭环未被长期测试 | 可重放、校准和安全在生命周期内保持 | 结构性 |
@@ -134,9 +134,11 @@ reference simulator 仍是人造模型；metamorphic relation 也可能遗漏共
 - 替代 reference implementation 对同一冻结 workload 给出实质不同裁决；
 - 去掉 ledger-heavy 或 dynamics-heavy 面板后 Pareto 次序发生系统性翻转。
 
-**`panel-v3` 实值与未测项**：最终隔离面板执行 58 个 workload × 8 个候选/赛道组合，共 464 个 fresh-process run，`harness_error=0`；当前全量回归为 `119 passed, 7 subtests passed`。已知恶意实现（stack/oracle 读取、正确 payload 夹在 refusal 中、稀疏/重复/垃圾轨迹、万能拒绝、query echo、空 `OK`、伪 clean rebuild）都有自动回归并被拒绝为 semantic PASS。`ExperimentalModelSubkernel` 对 E01–E08 为 8/8 semantic/numerical PASS。
+**`panel-v3` 实值与未测项**：最终隔离面板执行 58 个 workload × 8 个候选/赛道组合，共 464 个 fresh-process run，`harness_error=0`；加入 bridge 完整性回归后的当前全量结果为 `135 passed, 7 subtests passed`。已知恶意实现（stack/oracle 读取、正确 payload 夹在 refusal 中、稀疏/重复/垃圾轨迹、万能拒绝、query echo、空 `OK`、伪 clean rebuild）都有自动回归并被拒绝为 semantic PASS。`ExperimentalModelSubkernel` 对 E01–E08 为 8/8 semantic/numerical PASS。
 
-没有预先枚举一个封闭 mutation 总体，因此**不报告 kill-rate 百分比**；没有第二位 oracle 作者/第二 reference implementation，所以 **oracle disagreement 未测量**；万能拒绝只在专门攻击与正向 liveness workload 上验证，未定义可泛化的“检出率”；也未运行盲化参数/同构 holdout。分面板结果已分别保存，但没有做足以估计选择偏差的系统敏感性曲线。
+没有预先枚举一个封闭 mutation 总体，因此**不报告 kill-rate 百分比**；没有第二位 oracle 作者/第二 reference implementation，所以 **oracle disagreement 未测量**；万能拒绝只在专门攻击与正向 liveness workload 上验证，未定义可泛化的“检出率”。分面板结果已分别保存，但没有做足以估计选择偏差的系统敏感性曲线。
+
+**2026-07-14 bridge holdout 实值与未测项**：四个 source-distinct、无跨 import 的候选/面板源码先 seal；随后抽取 fresh seed，并生成、冻结 portable authority/model/cut/query corpus 与 hidden oracle。per-candidate projection 由各 runner 在 reveal 之后生成，不是 seal 时已经存在的 candidate-view/oracle-view 文件。这也不是独立团队复现。sealed 41-case corpus 中 H01–H30 是原预注册集，H31–H41 是 post-seal/pre-execution 静态审计 addendum；全体只有 4 个 case 指向具体 base object，35 个是 descriptor-only，H09/H20/H21 含 dangling query refs，且 H09 与 descriptor-only 集合重叠。其 candidate verdict 没有任何 `CANDIDATE_FAIL`，所以 corpus 层只能得出 `HARNESS_INCOMPLETE`，不能单独推出实现层失败。`HYPOTHESIS_FAIL` 另由单独记账的确定性 post-seal external hard counterexamples 支撑，尤其是 B 的 M01 execution/recovery split-brain，以及 A 的 typed uncertainty-result failure 和其他 root/cut/version 反例；这 42 个 external/red-team probes 不能提升为 hidden H-case。synthetic mutation judge 的 12/12 也不能写成候选实现的 12/12 kill matrix。
 
 ### V04. 选择后见偏差与 benchmark 污染
 
@@ -154,6 +156,8 @@ reference simulator 仍是人造模型；metamorphic relation 也可能遗漏共
 **残余风险**
 
 本研究不是双盲；作者同时参与需求、实现和裁决。即使预注册，早期需求本身也可能受既有架构经验影响。
+
+bridge 轮在源码冻结、per-candidate runner 与 hash/sidecar 上降低了 winner-first 修订风险；A/redteam 支持 exact-byte replay，B 因保存 timing telemetry 只支持剔除时序字段后的结构化语义 replay。B 的最早未提交 dry-run 只保留 SHA-256，没有保留原始字节。run02 与 run03 已按 parent hash 保留，因此可审计后续链，但不能声称该分支拥有完整 WORM/append-only 运行历史。
 
 **什么新证据会改变结论**
 
@@ -249,6 +253,8 @@ T/E 面板刻意小而可判定，只能验证语义和执行路径。真实临�
 
 四个 typed extension 包可通过公开 API 运行时注册而不修改 fixed-core 文件；回归中既有 answer 的语义改变量为 0，runtime 中 extension-id 专属分支命中数为 0。`metrics-current.json` 已含前三个包，因此它们从零写入时的历史 repo diff 未测量；第四个 test-method 包有静态 before/after，差分报告 knowledge-extension 新增 1、fixed-core added/modified/removed 均为 0，并将 harness 修改 5 个文件单独列出。这里的 foreign 数是 manifest **边界声明数**，不是动态调用次数；动态 foreign 调用量、人工 authoring/review 时间、认知复杂度和独立维护者成本均未测量。不得把上述列压成唯一总分。
 
+bridge 轮另做了静态边界盘点：四个冻结实现/面板源码共 `244,694 bytes / 5,609 physical lines / 4,768 strict LOC`，两个候选 runner 共 `132,402 / 2,727 / 2,454`，合计 `377,096 / 8,336 / 7,222`；全部 AST import 均来自标准库，冻结 A/B 互相导入为 0，两个 runner 只动态加载各自候选。实验提交区间共有 14 个 commits、32 个 experiment-only 新文件、12,101 insertions、0 deletions，核心 runtime 与 schema migration 改动均为 0。这些是实现边界与 blast-radius 证据，不等于认知复杂度、独立维护成本或 family-level 最小性证明。
+
 ### V08. 混合架构复杂度与能力归因
 
 **威胁机制**
@@ -265,6 +271,8 @@ T/E 面板刻意小而可判定，只能验证语义和执行路径。真实临�
 **残余风险**
 
 小规模组件能组合不代表长期演化时仍兼容；接口稳定性、版本协商和跨 solver 不确定性可能成为主要成本。混合方案可能最终比单一较弱架构更难验证。
+
+bridge holdout 已把这种风险从纯假设推进到冻结实现层反证：A/B 都没有在各自 runner 中证明 root、scope/time/cut/version、filter/smooth 与 condition/do/AAP 经跨内核转换后保持；external reference 还观察到 A 的三通道 typed result 缺失、B 的 evidence/record uncertainty sidecar 不活跃，以及 B 的 recovery-tape split-brain。B 的 model-level aleatoric/epistemic/measurement 参数扰动本身是 live 的，不能与 sidecar 缺口混为一谈。由于 sealed 41-case fixture 未物化完整，这些证据只能淘汰冻结 A/B 的合规 bridge 主张，不能外推为所有 versioned bridge 或 K0 family 不可能。相应地，Checkpoint 3/7 已重开。
 
 **什么新证据会改变结论**
 
@@ -512,7 +520,7 @@ Python/库版本、平台、BLAS、hash/order、随机种子、求解器容差�
 - seed/solver/容差变化导致硬裁决翻转；
 - 成熟库实现与本原型在能力或复杂度上显著不同。
 
-**`panel-v3` 实值与未测项**：最终证据包为 `results/20260713T120910Z-panel-v3/`，环境是 Windows 11、CPython 3.12.13、seed `1103`、`python -I -S` fresh process；`panel-v2` 与 `panel-v3` 在同机上的 classification counts 一致。当前回归为 `119 passed, 7 subtests passed`。**第二台机器、第二语言/独立实现、多 seed/solver/容差矩阵、逐候选开发与调试预算均未测量**，因此这里只能主张同环境可重复，而不是跨环境复现。
+**`panel-v3` 与 bridge 实值/未测项**：最终 panel 证据包为 `results/20260713T120910Z-panel-v3/`，环境是 Windows 11、CPython 3.12.13、seed `1103`、`python -I -S` fresh process；`panel-v2` 与 `panel-v3` 在同机上的 classification counts 一致。bridge 轮有两套冻结候选源码、两个候选 runner 与两个 public panel 实现，并对 panel E01–E06 做了 separate-process 外部数值参考核验；这降低了“只有一个 bridge 实现”的风险，但两套实现仍来自同一研究环境，不构成独立团队或跨语言复现。当前回归为 `135 passed, 7 subtests passed`。**第二台机器、独立团队、第二语言、多 seed/solver/容差矩阵、逐候选开发与调试预算均未测量**，因此这里只能主张同环境可重复，而不是跨环境复现。
 
 ### V19. 临床数据与病例代表性
 
@@ -575,17 +583,18 @@ PMC/PubMed case report 偏罕见、严重和可发表表现，通常有回顾性
 
 ## 7. 最终证据槽：实值与明确未测量项
 
-最终证据是 `results/20260713T120910Z-panel-v3/` 的 **JSON bundle**，不是 JSONL。每个空缺都必须读作“未测量”，不能读作通过。
+最终证据包括 `results/20260713T120910Z-panel-v3/` 的 **JSON bundle**，以及 `results/bridge-holdout/` 的冻结 manifest、逐实现运行包和最终双标签报告。每个空缺都必须读作“未测量”，不能读作通过。
 
-| 证据 | `panel-v3` 实值 | 仍未测量/开放 |
+| 证据 | 当前实值 | 仍未测量/开放 |
 |---|---|---|
-| 基准完整性 | 58 个 checked-in workload；`workload_files=sha256:6cb8ac4557709b6a052b4940563ef82879f832a5bea8cdccd65ac7c2a4e1a878`，candidate-view 集合 `sha256:bb1492c75c01201dd47632d829478187dc7ef9295239b87278acde92e730ea83`，oracle-view 集合 `sha256:5397a1cffdd12fa29c24d7f3b625abeaa5ce9f3731e0f61c491537031cf2ec67`；v1/v2/v3 均保留 | 参数化、同构和盲化 holdout 未运行 |
-| Harness 独立性 | protocol `vesmed-isolated-candidate/3`；464 fresh-process run；0 harness errors；已知 stack/read/refusal/sparse/echo/rebuild mutations 有自动回归 | 未定义封闭 mutation 总体，故无 kill-rate；无第二 oracle/reference 实现 |
+| 基准完整性 | panel 有 58 个 checked-in workload；`workload_files=sha256:6cb8ac4557709b6a052b4940563ef82879f832a5bea8cdccd65ac7c2a4e1a878`，candidate-view 集合 `sha256:bb1492c75c01201dd47632d829478187dc7ef9295239b87278acde92e730ea83`，oracle-view 集合 `sha256:5397a1cffdd12fa29c24d7f3b625abeaa5ce9f3731e0f61c491537031cf2ec67`；bridge H01–H30 原预注册集及 H31–H41 addendum 已冻结/reveal | bridge 只有 4 个 case 指向具体 base object，35 个 descriptor-only；H09/H20/H21 含 dangling refs（H09 与 descriptor-only 重叠），故 41-case suite 未完整执行 |
+| Harness 独立性 | panel protocol `vesmed-isolated-candidate/3`：464 fresh-process run、0 harness errors；bridge A/B 使用分离 runner 与 frozen hash pin；42 个 post-seal probe、public external references 与 synthetic mutation judge 均单独记账 | 未定义封闭 mutation 总体，故无 kill-rate；候选 runner 只执行 M01，M02–M12 未执行；无第二 oracle/reference 实现；external probes 不得提升为 hidden H-case |
 | Native/Companion | TEL `36 PASS / 20 HONEST_UNSUPPORTED / 2 FAIL`（native 与 companion 相同）；causal `3/53/2`（两赛道相同）；rewrite `31/23/4`（两赛道相同）；kernel `36/20/2`；model `13/44/1`，其中 E01–E08 为 8/8 PASS | 三个原子候选的 generic public-model adapter 未实现；相同 companion 数不是 companion 带来增益 |
-| 复杂度 | primitive/foreign/LOC 分别为 TEL `20/3/1996`、causal `8/1/2080`、rewrite `29/0/3013`、kernel `7/2/694`、model `7/0/1202`；全部 test/oracle dispatch 与静态特例扫描为 0 | 动态调用量、知识审核/人工时间、宏展开与认知成本未测量 |
+| 复杂度 | panel primitive/foreign/LOC 分别为 TEL `20/3/1996`、causal `8/1/2080`、rewrite `29/0/3013`、kernel `7/2/694`、model `7/0/1202`；bridge 冻结源码+runner 为 `7,222 strict LOC`、14 commits、32 个 experiment-only 新文件，核心 runtime/schema migration 改动 0 | 动态调用量、知识审核/人工时间、宏展开、认知成本与独立维护成本未测量 |
 | 扩展性 | 4 个 typed extension 包；运行时固定核心文件改动 0、extension-id runtime 分支 0、旧 answer 语义改变量 0；其中第四个包的静态 before/after fixed-core 改动 0 | 前三个包无 authoring 前快照；多轮 schema 迁移、全量重算、独立维护者审核成本未测量 |
 | 数值/性能 | seed `1103`；T35 parent-judge closed recurrence 要求完整 25 坐标并杀死 sparse/garbage；v2/v3 classification counts 同机一致 | T35 无候选通过；多 seed、容差/solver disagreement、逐例 latency、内存、并发与规模曲线未测量 |
-| 可复现性 | commit `13c31d22f14904b2cd50a9e913dedbf60a1138c2`（dirty 状态摘要已记录）；Windows 11 / CPython 3.12.13；当前 `119 passed, 7 subtests passed`；完整 metadata/summary/逐候选 JSON 已保存 | 第二机器、第二语言、独立实现和干净 commit 复跑未完成 |
+| 可复现性 | panel commit `13c31d22f14904b2cd50a9e913dedbf60a1138c2`（dirty 状态摘要已记录）；bridge 逻辑实验工件 checkpoint 为 `abac08786f642c28ba76d8940c60fe1906ab9945`，exact-byte Git packaging checkpoint 为 `d08a8e5b12377890499703b6de6bed1f90c4aa98`（后者只加 `.gitattributes`/字节封装，不改实验语义；二者均不含本次最终报告/文档）；Windows 11 / CPython 3.12.13；当前 `135 passed, 7 subtests passed`，bridge 专项 `16 passed`；26 个决策依赖工件从 packaging checkpoint 直接复核 Git blob bytes/SHA，report/runner/freeze hashes 与 replay 命令已保存 | 第二机器、第二语言和独立团队未完成；B 的最早 dry-run 只剩 SHA，故不能主张完整 WORM 历史 |
+| Bridge 裁决 | 冻结 A/B 为 `HYPOTHESIS_FAIL`；sealed 41-case corpus（H01–H30 preregistered + H31–H41 addendum）整体为 `HARNESS_INCOMPLETE`；两者不可互相补偿 | 不证明所有 versioned bridge 或 K0 family 不可能；需要完整 operational probe pack 后重跑 |
 | 临床边界 | 明确为 synthetic architecture semantics benchmark | 无真实临床 cohort、外部校准、临床效用、人因、安全、监管或 L4 验证 |
 
 ## 8. 结论稳定性判据
@@ -593,10 +602,13 @@ PMC/PubMed case report 偏罕见、严重和可发表表现，通常有回顾性
 若出现以下任一情况，必须重开候选搜索或把最终选择降级为未决，而不是继续为既有赢家打补丁：
 
 - 合理替代 oracle、独立复现或盲化 holdout 使硬裁决翻转；
+- 冻结 bridge 实现在 root/cut/version/uncertainty/recovery 等不可补偿 hard invariant 上出现反例；
 - 赢家的关键能力主要来自 companion、foreign callback 或测试后特例；
 - 扩规模后出现不可接受的非终止、数值不稳定、组合顺序依赖或全局重算；
 - 新候选以更小的**总语义闭包**满足同一硬不变量；
 - 真实数据揭示当前核心无法表达的新身份、时间、可见性、观察过程或行动角色；
 - 临床识别、校准、效用、安全或监管证据与 PoC 的架构假设冲突。
+
+2026-07-14 的冻结 bridge 轮已经触发新增的 bridge hard-invariant 判据：实现层出现不可补偿 hard failure，且 sealed 41-case harness 未物化完整。因此原 Checkpoint 3/7 选择被明确重开；这不等于上面其余 family-level 条件已被满足。后续不得继续把当前 bridge 描述为“已证明稳定”，也不得用 post-seal probes 或 public panel 代替完整 hidden suite。
 
 反之，即使三个原型全部通过，也只能提高 L2 级信心。要把结论推进到 L3/L4，仍需独立实现、规模与故障研究、真实多中心外部验证、因果识别审查、临床效用、人因、安全和监管证据。
