@@ -8,6 +8,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from tests.bridge_holdout.audit_corpus_executability import audit
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "bridge_holdout" / "hidden_corpus.json"
@@ -113,3 +115,14 @@ def test_generator_exact_byte_replay(tmp_path: Path) -> None:
         FIXTURE.suffix + ".sha256"
     ).read_bytes()
     assert output.with_name("COVERAGE.md").read_bytes() == FIXTURE.with_name("COVERAGE.md").read_bytes()
+
+
+def test_corpus_executability_gaps_are_explicit() -> None:
+    result = audit(_load(FIXTURE))
+    assert result["concrete_base_cases"] == ["H01", "H02", "H08", "H16"]
+    assert result["dangling_queries"] == {
+        "H09": ["smooth_t1"],
+        "H20": ["condition_t0", "do_t1"],
+        "H21": ["aap_do_t0_given_factual_t1_y1"],
+    }
+    assert len(result["descriptor_only_cases"]) == 35
