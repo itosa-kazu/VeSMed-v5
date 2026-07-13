@@ -1,0 +1,133 @@
+{
+  "gate_version": "bridge-mutation-gate-v1",
+  "status": "pre-freeze executable draft",
+  "scope": "External red-team gate for the evidence-to-model dual-implementation round-trip holdout.",
+  "authority": {
+    "public_panel_protocol": "research_notes/bridge_panel_protocol_v1.json",
+    "normative_spec": "FORMAL_SPEC.md",
+    "candidate_implementation_imports_forbidden": true
+  },
+  "comparison": {
+    "finite_probability_absolute_tolerance": 1e-12,
+    "dynamic_probability_absolute_tolerance": 1e-12,
+    "root_clock_version_identity": "exact",
+    "native_internal_ids": "alpha-renaming allowed only after graph-isomorphism proof"
+  },
+  "report_producer": {
+    "required": "external_holdout_runner",
+    "candidate_self_attestation_is_sufficient": false,
+    "notes": [
+      "Static imports and dependency hashes are measured by the runner.",
+      "Source-removed execution and native-IR mutations are performed by the runner.",
+      "The candidate may not populate its own pass/fail fields."
+    ]
+  },
+  "hard_mutants": [
+    {
+      "mutant_id": "M01_CANONICAL_ECHO",
+      "attack": "The native IR embeds the portable/canonical envelope and decode simply echoes it.",
+      "kill_evidence": [
+        "portable source removed before native execution",
+        "no opaque canonical payload in native semantic IR",
+        "mutating a native transition/equation changes the native result"
+      ],
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M02_SHARED_EXECUTABLE_HELPER",
+      "attack": "A and B share compiler, parser, canonicalizer, solver, reference implementation, or one imports the other.",
+      "kill_evidence": [
+        "external static import DAG",
+        "disjoint repository executable dependency hashes",
+        "separate process roots",
+        "only frozen data schema/protocol may be shared"
+      ],
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M03_FUTURE_IN_FILTER",
+      "attack": "A later-effective observation leaks into an earlier filter merely because it is now known.",
+      "oracle": "P(X0=1|Y0=0)=0.2 both before and after Y1 becomes visible",
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M04_NO_FUTURE_IN_SMOOTH",
+      "attack": "Smooth is a relabelled filter and never consumes explicitly allowed later evidence.",
+      "oracle": {
+        "Y1_equals_1": 0.4157303370786517,
+        "Y1_equals_0": 0.08074534161490683
+      },
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M05_DO_AS_CONDITION",
+      "attack": "Population intervention is implemented as observational conditioning.",
+      "oracle": {
+        "P_bad_given_T1": 0.545,
+        "P_bad_given_do_T1": 0.325
+      },
+      "source": "public E02 commitment",
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M06_AAP_AS_POPULATION_DO",
+      "attack": "Same-patient counterfactual resamples the exogenous unit, or MAP-collapses an ambiguous abduction.",
+      "oracle": {
+        "public_E03_exact_AAP": 1.0,
+        "public_E03_population_do": 0.5,
+        "ambiguous_abduction_AAP_probability": 0.8
+      },
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M07_UNCERTAINTY_FLATTEN",
+      "attack": "A PMF/interval/censoring/conflict/taint product is replaced by a mean, point estimate, or confidence scalar.",
+      "kill_evidence": [
+        "same-mean different-support PMFs remain distinct",
+        "measurement value kinds remain typed",
+        "coverage/identification/numerics/replay/safety remain orthogonal"
+      ],
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M08_RAW_ROOT_REWRITTEN",
+      "attack": "A bridge-generated synthetic artifact is reported as the raw evidence root.",
+      "oracle": "decoded and consumed root occurrence/version equal the authoritative raw root; synthetic bridge IDs are not roots",
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M09_PATH_COUNT_AS_ROOT_COUNT",
+      "attack": "Alias/fan-out paths are counted as independent evidence roots.",
+      "oracle": "one occurrence through two paths has one root; two true repeats have two roots",
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M10_LATEST_VERSION_REWRITE",
+      "attack": "The witness copies a pinned old version string while native execution silently uses latest.",
+      "kill_evidence": [
+        "requested, compiled, executed, and decoded versions are exactly equal",
+        "version-specific behavioral fingerprint matches the pinned version",
+        "old and new versions coexist"
+      ],
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M11_CACHE_AS_CLEAN_REBUILD",
+      "attack": "Clean rebuild copies a hot result/cache instead of reconstructing from authoritative events and frozen registries.",
+      "kill_evidence": [
+        "fresh process",
+        "poisoned cache sentinel is absent",
+        "incremental equals clean rebuild after correction/retraction",
+        "old cut remains unchanged"
+      ],
+      "hard_gate": true
+    },
+    {
+      "mutant_id": "M12_UNSUPPORTED_RELABEL",
+      "attack": "A forecast/conditioning result is relabelled as smooth, do, or AAP despite lacking the native capability.",
+      "oracle": "unsupported is typed, or the actual causal companion/native provider is named in capability_origin with a native witness",
+      "hard_gate": true
+    }
+  ],
+  "completion_rule": "All 12 essential mutants must be killed. A positive round-trip pass without this kill set is non-conclusive."
+}
