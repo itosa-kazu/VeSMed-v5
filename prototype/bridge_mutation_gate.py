@@ -100,13 +100,15 @@ def _baseline_report() -> dict[str, Any]:
         "report_producer": "external_holdout_runner",
         "independence": {
             "impl_a": {
+                "implementation_module": "isolated.impl_a",
                 "repo_imports": [],
-                "repo_executable_dependency_hashes": ["sha256:impl-a-only"],
+                "repo_executable_closure_hashes": ["sha256:impl-a-only"],
                 "process_root": "isolated-a",
             },
             "impl_b": {
+                "implementation_module": "isolated.impl_b",
                 "repo_imports": [],
-                "repo_executable_dependency_hashes": ["sha256:impl-b-only"],
+                "repo_executable_closure_hashes": ["sha256:impl-b-only"],
                 "process_root": "isolated-b",
             },
             "shared_data_hashes": ["sha256:frozen-protocol-only"],
@@ -247,11 +249,13 @@ def _gate_m02(report: Mapping[str, Any]) -> bool:
         "other bridge implementation",
     }
     imports_a, imports_b = set(a["repo_imports"]), set(b["repo_imports"])
-    hashes_a = set(a["repo_executable_dependency_hashes"])
-    hashes_b = set(b["repo_executable_dependency_hashes"])
+    hashes_a = set(a["repo_executable_closure_hashes"])
+    hashes_b = set(b["repo_executable_closure_hashes"])
     return (
         report["report_producer"] == "external_holdout_runner"
         and not (imports_a | imports_b) & forbidden
+        and b["implementation_module"] not in imports_a
+        and a["implementation_module"] not in imports_b
         and not hashes_a & hashes_b
         and a["process_root"] != b["process_root"]
     )
@@ -424,8 +428,8 @@ def apply_known_bad_mutant(report: Mapping[str, Any], mutant_id: str) -> dict[st
         out["native_ir"]["opaque_portable_payload_paths"] = ["/native_ir/canonical_envelope"]
         out["native_ir"]["decode_used_native_addresses"] = False
     elif mutant_id == "M02_SHARED_EXECUTABLE_HELPER":
-        out["independence"]["impl_a"]["repo_executable_dependency_hashes"] = ["sha256:shared-helper"]
-        out["independence"]["impl_b"]["repo_executable_dependency_hashes"] = ["sha256:shared-helper"]
+        out["independence"]["impl_a"]["repo_executable_closure_hashes"] = ["sha256:shared-helper"]
+        out["independence"]["impl_b"]["repo_executable_closure_hashes"] = ["sha256:shared-helper"]
     elif mutant_id == "M03_FUTURE_IN_FILTER":
         out["dynamic"]["filter_after_future_visible"] = _hmm_oracle(1)
         out["dynamic"]["filter_roots_after_future_visible"] = [

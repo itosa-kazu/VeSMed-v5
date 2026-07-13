@@ -22,6 +22,28 @@
       "The candidate may not populate its own pass/fail fields."
     ]
   },
+  "separating_probes": {
+    "binary_hmm": {
+      "prior_P_X0_1": 0.5,
+      "transition_persistence": 0.9,
+      "emission_accuracy": 0.8,
+      "evidence": [
+        {"effective_index": 0, "observed_Y": 0, "root": ["root-y0", "v1"]},
+        {"effective_index": 1, "observed_Y": 1, "root": ["root-y1", "v1"], "available_later": true}
+      ],
+      "counter_mutation": "flip the later observation from Y1=1 to Y1=0"
+    },
+    "ambiguous_aap": {
+      "P_U1": 0.5,
+      "P_signal1_given_U1": 0.8,
+      "P_signal1_given_U0": 0.2,
+      "factual_signal": 1,
+      "counterfactual_outcome_under_do0": "Y_cf=U",
+      "expected_posterior_P_U1": 0.8,
+      "expected_AAP_P_Ycf1": 0.8,
+      "expected_population_do_P_Y1": 0.5
+    }
+  },
   "hard_mutants": [
     {
       "mutant_id": "M01_CANONICAL_ECHO",
