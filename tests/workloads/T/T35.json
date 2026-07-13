@@ -1,0 +1,122 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "module_id": "numeric-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "state_space",
+          "module_id": "numeric-model",
+          "public_model": {
+            "closed_ir": {
+              "coefficient": 0.8,
+              "horizon_hours": 24.0,
+              "initial": 0.2,
+              "input": 0.1,
+              "op": "linear_recurrence",
+              "state": "latent_state",
+              "step_hours": 1.0
+            }
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": 24,
+          "intervention": null,
+          "kind": "forecast",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "solver_diagnostics"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "latent_state",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allowed_computation": [
+            "exact",
+            "approx",
+            "approximate",
+            "nonconverged",
+            "not_converged",
+            "numerical_failure"
+          ],
+          "required_diagnostics": {
+            "error_any_of": [
+              "error",
+              "error_bound",
+              "tolerance",
+              "residual"
+            ],
+            "seed": true
+          },
+          "result": "main:result"
+        },
+        "assertion_id": "numeric-diagnostics",
+        "dimension": "dynamic",
+        "hard_gate": true,
+        "oracle_id": "result.numeric_contract@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-12,
+          "closed_recurrence": {
+            "coefficient": 0.8,
+            "horizon_hours": 24.0,
+            "initial": 0.2,
+            "input": 0.1,
+            "op": "linear_recurrence",
+            "state": "latent_state",
+            "step_hours": 1.0
+          },
+          "horizon_hours": 24.0,
+          "relative_tolerance": 1e-12,
+          "result": "main:result",
+          "target": "latent_state"
+        },
+        "assertion_id": "recurrence-value-and-horizon",
+        "dimension": "dynamic",
+        "hard_gate": true,
+        "oracle_id": "reference.closed_recurrence@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T35"
+  ],
+  "severity": "HARD",
+  "title": "approximation exposes solver seed and error status",
+  "workload_id": "T35"
+}

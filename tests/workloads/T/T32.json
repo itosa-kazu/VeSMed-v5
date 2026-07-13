@@ -1,0 +1,207 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "version-1",
+              "version-1"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "old",
+            "op": "query",
+            "query_id": "q-old"
+          },
+          {
+            "artifact_ids": [
+              "version-2"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "incremental",
+            "op": "query",
+            "query_id": "q-new"
+          },
+          {
+            "op": "clean_rebuild"
+          },
+          {
+            "capture": "rebuilt",
+            "op": "query",
+            "query_id": "q-new"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "version-1",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "serum_sodium",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "serum_sodium=1",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "stable-source",
+          "supersedes": null,
+          "unit": null,
+          "value": 1
+        },
+        {
+          "artifact_id": "version-2",
+          "clocks": {
+            "available_at": "2026-01-01T12:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T12:00:00Z"
+          },
+          "concept": "serum_sodium",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "serum_sodium=2",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "stable-source-v2",
+          "supersedes": "stable-source",
+          "unit": null,
+          "value": 2
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-old",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "serum_sodium",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T13:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-new",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "serum_sodium",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "result": "main:old",
+          "root": "stable-source"
+        },
+        "assertion_id": "old-root-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      },
+      {
+        "args": {
+          "left": "main:incremental",
+          "right": "main:rebuilt",
+          "semantic_only": true
+        },
+        "assertion_id": "incremental-clean-equivalence",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "result.equivalent@1"
+      },
+      {
+        "args": {
+          "result": "main:incremental",
+          "root": "stable-source",
+          "visible": false
+        },
+        "assertion_id": "superseded-root-gone",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "result": "main:incremental",
+          "root": "stable-source-v2"
+        },
+        "assertion_id": "correction-root-live",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T32"
+  ],
+  "severity": "HARD",
+  "title": "late correction preserves old transaction-time view",
+  "workload_id": "T32"
+}

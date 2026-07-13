@@ -1,0 +1,204 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "register-a",
+            "module_id": "probabilistic-model-a",
+            "op": "register_module"
+          },
+          {
+            "capture": "register-b",
+            "module_id": "probabilistic-model-b",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "phenotype-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "phenotype-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "phenotype",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "phenotype=present",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "phenotype-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "present"
+        }
+      ],
+      "modules": [
+        {
+          "family": "finite_probabilistic_model",
+          "model_version": "model-a-v1",
+          "module_id": "probabilistic-model-a",
+          "public_model": {
+            "arbitration_policy": null,
+            "assumptions": [
+              "population-A"
+            ],
+            "conditioning": {
+              "phenotype": "present"
+            },
+            "distribution": [
+              {
+                "probability": 0.9,
+                "value": true
+              },
+              {
+                "probability": 0.1,
+                "value": false
+              }
+            ],
+            "target": "posterior_hypothesis"
+          }
+        },
+        {
+          "family": "finite_probabilistic_model",
+          "model_version": "model-b-v1",
+          "module_id": "probabilistic-model-b",
+          "public_model": {
+            "arbitration_policy": null,
+            "assumptions": [
+              "population-B"
+            ],
+            "conditioning": {
+              "phenotype": "present"
+            },
+            "distribution": [
+              {
+                "probability": 0.1,
+                "value": true
+              },
+              {
+                "probability": 0.9,
+                "value": false
+              }
+            ],
+            "target": "posterior_hypothesis"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "condition",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "model_disagreement",
+            "no_implicit_averaging"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "posterior_hypothesis",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "expected": [
+            "ok"
+          ],
+          "result": "main:register-a"
+        },
+        "assertion_id": "model-a-registered",
+        "dimension": "composition",
+        "hard_gate": true,
+        "oracle_id": "result.status@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "ok"
+          ],
+          "result": "main:register-b"
+        },
+        "assertion_id": "model-b-registered",
+        "dimension": "composition",
+        "hard_gate": true,
+        "oracle_id": "result.status@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "conflicting"
+          ],
+          "result": "main:result"
+        },
+        "assertion_id": "unresolved-disagreement-retained",
+        "dimension": "epistemic",
+        "hard_gate": true,
+        "oracle_id": "result.information_state@1"
+      },
+      {
+        "args": {
+          "result": "main:result",
+          "root": "phenotype-root"
+        },
+        "assertion_id": "conditioning-root-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T39"
+  ],
+  "severity": "HARD",
+  "title": "incompatible probabilistic modules remain disagreement",
+  "workload_id": "T39"
+}

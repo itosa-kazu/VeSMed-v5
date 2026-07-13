@@ -1,0 +1,178 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "a",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "phrase-a"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      },
+      {
+        "branch_id": "b",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "phrase-b"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "phrase-a",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "shortness_of_breath",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "shortness of breath",
+            "span": [
+              0,
+              19
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "phrase-a",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        },
+        {
+          "artifact_id": "phrase-b",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "shortness_of_breath",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "dyspnoea",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "phrase-b",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "shortness_of_breath",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "ignore_roots": true,
+          "left": "a:result",
+          "right": "b:result",
+          "semantic_only": true
+        },
+        "assertion_id": "semantic-isomorphism",
+        "dimension": "extension",
+        "hard_gate": true,
+        "oracle_id": "result.equivalent@1"
+      },
+      {
+        "args": {
+          "result": "a:result",
+          "root": "phrase-a"
+        },
+        "assertion_id": "first-wording-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      },
+      {
+        "args": {
+          "result": "b:result",
+          "root": "phrase-b"
+        },
+        "assertion_id": "second-wording-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T30"
+  ],
+  "severity": "HARD",
+  "title": "equivalent language normalizes isomorphically",
+  "workload_id": "T30"
+}

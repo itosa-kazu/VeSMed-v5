@@ -1,0 +1,229 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "obs1",
+            "op": "query",
+            "query_id": "q-obs1"
+          },
+          {
+            "capture": "obs0",
+            "op": "query",
+            "query_id": "q-obs0"
+          },
+          {
+            "capture": "do1",
+            "op": "query",
+            "query_id": "q-do1"
+          },
+          {
+            "capture": "do0",
+            "op": "query",
+            "query_id": "q-do0"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "finite_scm",
+          "module_id": "public-model",
+          "public_model": {
+            "P_bad": {
+              "mild_T0": 0.2,
+              "mild_T1": 0.05,
+              "severe_T0": 0.9,
+              "severe_T1": 0.6
+            },
+            "P_severe": 0.5,
+            "P_treated_given_mild": 0.1,
+            "P_treated_given_severe": 0.9,
+            "model_kind": "finite_scm"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "condition",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-obs1",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y_bad",
+          "task": "T=1",
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "condition",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-obs0",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y_bad",
+          "task": "T=0",
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": {
+            "value": 1,
+            "variable": "T"
+          },
+          "kind": "intervene",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-do1",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y_bad",
+          "task": "T=1",
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": {
+            "value": 0,
+            "variable": "T"
+          },
+          "kind": "intervene",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-do0",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y_bad",
+          "task": "T=0",
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "P_bad": {
+        "mild_T0": 0.2,
+        "mild_T1": 0.05,
+        "severe_T0": 0.9,
+        "severe_T1": 0.6
+      },
+      "P_severe": 0.5,
+      "P_treated_given_mild": 0.1,
+      "P_treated_given_severe": 0.9,
+      "model_kind": "finite_scm"
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value"
+          ],
+          "reference_id": "E02",
+          "reference_path": "/P_bad_given_T1",
+          "result": "main:obs1"
+        },
+        "assertion_id": "obs1-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value"
+          ],
+          "reference_id": "E02",
+          "reference_path": "/P_bad_given_T0",
+          "result": "main:obs0"
+        },
+        "assertion_id": "obs0-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value"
+          ],
+          "reference_id": "E02",
+          "reference_path": "/P_bad_given_do_T1",
+          "result": "main:do1"
+        },
+        "assertion_id": "do1-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value"
+          ],
+          "reference_id": "E02",
+          "reference_path": "/P_bad_given_do_T0",
+          "result": "main:do0"
+        },
+        "assertion_id": "do0-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "left": "main:obs1",
+          "right": "main:do1",
+          "semantic_only": true
+        },
+        "assertion_id": "see-do-distinct",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E02"
+  ],
+  "severity": "HARD",
+  "title": "confounding reverses observational and interventional signs",
+  "workload_id": "E02"
+}

@@ -1,0 +1,304 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "phenotype"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "pre",
+            "op": "query",
+            "query_id": "q-pre"
+          },
+          {
+            "artifact_ids": [
+              "antipyretic"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "antipyretic",
+            "op": "query",
+            "query_id": "q-antipyretic"
+          },
+          {
+            "artifact_ids": [
+              "antibiotic"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "antibiotic",
+            "op": "query",
+            "query_id": "q-antibiotic"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "phenotype",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "fever_crp_phenotype",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "fever_crp_phenotype=True",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "phenotype",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        },
+        {
+          "artifact_id": "antipyretic",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "antipyretic_response",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "antipyretic_response=True",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "performed_intervention",
+          "source_family": null,
+          "source_id": "antipyretic",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        },
+        {
+          "artifact_id": "antibiotic",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "antibiotic_mechanism_response",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "antibiotic_mechanism_response=True",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "performed_intervention",
+          "source_family": null,
+          "source_id": "antibiotic",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        }
+      ],
+      "modules": [
+        {
+          "family": "finite_hypothesis_model",
+          "module_id": "public-model",
+          "public_model": {
+            "P_mechanism_response_after_antibiotic": {
+              "infection": 0.9,
+              "sterile": 0.2
+            },
+            "P_response_after_antipyretic": {
+              "infection": 0.8,
+              "sterile": 0.8
+            },
+            "model_kind": "finite_hypothesis_model",
+            "pre_treatment_phenotype_likelihood": {
+              "infection": 0.8,
+              "sterile": 0.8
+            },
+            "prior": {
+              "infection": 0.5,
+              "sterile": 0.5
+            }
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T08:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "filter",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-pre",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "diagnostic_hypothesis",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "filter",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-antipyretic",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "diagnostic_hypothesis",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T10:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "filter",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-antibiotic",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "diagnostic_hypothesis",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "P_mechanism_response_after_antibiotic": {
+        "infection": 0.9,
+        "sterile": 0.2
+      },
+      "P_response_after_antipyretic": {
+        "infection": 0.8,
+        "sterile": 0.8
+      },
+      "model_kind": "finite_hypothesis_model",
+      "pre_treatment_phenotype_likelihood": {
+        "infection": 0.8,
+        "sterile": 0.8
+      },
+      "prior": {
+        "infection": 0.5,
+        "sterile": 0.5
+      }
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "left": "main:pre",
+          "right": "main:antipyretic",
+          "semantic_only": true
+        },
+        "assertion_id": "antipyretic-nonselective",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.equivalent@1"
+      },
+      {
+        "args": {
+          "left": "main:antipyretic",
+          "right": "main:antibiotic",
+          "semantic_only": true
+        },
+        "assertion_id": "antibiotic-selective",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value/infection_probability",
+            "/value"
+          ],
+          "reference_id": "E05",
+          "reference_path": "/after_antibiotic_response/infection",
+          "result": "main:antibiotic"
+        },
+        "assertion_id": "selective-reference",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E05"
+  ],
+  "severity": "HARD",
+  "title": "same phenotype two mechanisms and selective interventions",
+  "workload_id": "E05"
+}

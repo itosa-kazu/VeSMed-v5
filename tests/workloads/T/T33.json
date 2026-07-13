@@ -1,0 +1,266 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "legal",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "glucose-unit-adapter-v1",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "convertible"
+            ],
+            "capture": "ingest",
+            "op": "ingest"
+          },
+          {
+            "capture": "raw",
+            "op": "query",
+            "query_id": "q-raw"
+          },
+          {
+            "capture": "canonical",
+            "op": "query",
+            "query_id": "q-canonical"
+          }
+        ]
+      },
+      {
+        "branch_id": "illegal",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "glucose-unit-adapter-v1",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "incompatible"
+            ],
+            "capture": "ingest",
+            "op": "ingest"
+          },
+          {
+            "capture": "raw",
+            "op": "query",
+            "query_id": "q-raw"
+          },
+          {
+            "capture": "canonical",
+            "op": "query",
+            "query_id": "q-canonical"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "convertible",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "serum_glucose_raw",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "glucose 100 mg/dL",
+            "span": [
+              8,
+              17
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "convertible",
+          "supersedes": null,
+          "unit": "mg/dL",
+          "value": 100
+        },
+        {
+          "artifact_id": "incompatible",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "serum_glucose_raw",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "glucose 5 meters",
+            "span": [
+              8,
+              16
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "incompatible",
+          "supersedes": null,
+          "unit": "meters",
+          "value": 5
+        }
+      ],
+      "modules": [
+        {
+          "family": "typed_unit_adapter",
+          "model_version": "ucum-glucose-v1",
+          "module_id": "glucose-unit-adapter-v1",
+          "public_model": {
+            "closed_ir": {
+              "factor": 0.0555,
+              "op": "multiply"
+            },
+            "from_unit": "mg/dL",
+            "input_concept": "serum_glucose_raw",
+            "output_concept": "serum_glucose",
+            "to_unit": "mmol/L"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-raw",
+          "requested_guarantees": [
+            "raw_roundtrip"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "serum_glucose_raw",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-canonical",
+          "requested_guarantees": [
+            "typed_unit_conversion",
+            "conversion_trace"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "serum_glucose",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "expected": [
+            "ok"
+          ],
+          "result": "legal:canonical"
+        },
+        "assertion_id": "legal-conversion-live",
+        "dimension": "extension",
+        "hard_gate": true,
+        "oracle_id": "result.status@1"
+      },
+      {
+        "args": {
+          "mapping_version": "fixture-map-v1",
+          "raw_unit": "mg/dL",
+          "raw_value": 100,
+          "result": "legal:raw",
+          "root": "convertible",
+          "span": [
+            8,
+            17
+          ]
+        },
+        "assertion_id": "legal-raw-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.raw_roundtrip@1"
+      },
+      {
+        "args": {
+          "mapping_version": "fixture-map-v1",
+          "raw_unit": "meters",
+          "raw_value": 5,
+          "result": "illegal:raw",
+          "root": "incompatible",
+          "span": [
+            8,
+            16
+          ]
+        },
+        "assertion_id": "incompatible-raw-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.raw_roundtrip@1"
+      },
+      {
+        "args": {
+          "allowed": [
+            "invalid",
+            "unsupported",
+            "insufficient",
+            "out_of_model"
+          ],
+          "result": "illegal:canonical"
+        },
+        "assertion_id": "incompatible-canonical-typed",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "result.typed_boundary@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T33"
+  ],
+  "severity": "HARD",
+  "title": "units convert only through a traceable legal conversion",
+  "workload_id": "T33"
+}

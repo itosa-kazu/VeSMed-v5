@@ -1,0 +1,148 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "treatment-root",
+              "outcome-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "treatment-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "treatment_delivery",
+          "context": {
+            "stage": "performed"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "treatment_delivery=drug-X",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "performed_intervention",
+          "source_family": null,
+          "source_id": "treatment-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "drug-X"
+        },
+        {
+          "artifact_id": "outcome-root",
+          "clocks": {
+            "available_at": "2026-01-01T10:00:00Z",
+            "collected_at": "2026-01-01T10:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T10:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T10:00:00Z"
+          },
+          "concept": "symptom_severity",
+          "context": {
+            "previous_value": 7.0
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "symptom_severity=2.0",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "outcome-root",
+          "supersedes": null,
+          "unit": null,
+          "value": 2.0
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": {
+            "value": 1,
+            "variable": "treatment"
+          },
+          "kind": "intervene",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "identification_status"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "causal_effect",
+          "task": null,
+          "valid_at": "2026-01-01T10:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "result": "main:result"
+        },
+        "assertion_id": "identification-not-invented",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.identification_boundary@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T18"
+  ],
+  "severity": "HARD",
+  "title": "temporal succession alone does not establish causation",
+  "workload_id": "T18"
+}

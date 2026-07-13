@@ -1,0 +1,119 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "obs-main"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "obs-main",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "blood_culture_result",
+          "context": {
+            "antibiotic_before_collection": true
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "blood_culture_result=negative",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "obs-main",
+          "supersedes": null,
+          "unit": null,
+          "value": "negative"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "blood_culture_result",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "forbidden": "no_infection",
+          "result": "main:result"
+        },
+        "assertion_id": "no-illegal-inference",
+        "dimension": "epistemic",
+        "hard_gate": true,
+        "oracle_id": "result.not_contains@1"
+      },
+      {
+        "args": {
+          "result": "main:result",
+          "root": "obs-main"
+        },
+        "assertion_id": "observation-remains-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T05"
+  ],
+  "severity": "HARD",
+  "title": "pre-culture antibiotics modify the observation process",
+  "workload_id": "T05"
+}

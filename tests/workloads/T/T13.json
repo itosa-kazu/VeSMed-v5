@@ -1,0 +1,140 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "late-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "early",
+            "op": "query",
+            "query_id": "q-early"
+          },
+          {
+            "capture": "late",
+            "op": "query",
+            "query_id": "q-late"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "late-root",
+          "clocks": {
+            "available_at": "2026-01-01T12:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T12:00:00Z"
+          },
+          "concept": "final_diagnosis",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "final_diagnosis=visible-value",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "late-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "visible-value"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-early",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "final_diagnosis",
+          "task": null,
+          "valid_at": "2026-01-01T09:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T13:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-late",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "final_diagnosis",
+          "task": null,
+          "valid_at": "2026-01-01T13:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "result": "main:early",
+          "root": "late-root",
+          "visible": false
+        },
+        "assertion_id": "future-hidden",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "result": "main:late",
+          "root": "late-root",
+          "visible": true
+        },
+        "assertion_id": "later-visible",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T13"
+  ],
+  "severity": "HARD",
+  "title": "final diagnosis is absent from presentation replay",
+  "workload_id": "T13"
+}

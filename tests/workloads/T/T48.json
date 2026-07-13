@@ -1,0 +1,246 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "action-performed",
+              "action-performed"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "during",
+            "op": "query",
+            "query_id": "q-during"
+          },
+          {
+            "artifact_ids": [
+              "action-stopped"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "after",
+            "op": "query",
+            "query_id": "q-after"
+          },
+          {
+            "op": "clean_rebuild"
+          },
+          {
+            "capture": "rebuilt",
+            "op": "query",
+            "query_id": "q-after"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "action-performed",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "drug_effect",
+          "context": {
+            "action_id": "A1",
+            "idempotency_key": "A1/dose/1",
+            "stage": "performed"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "drug_effect={'dose': 1.0, 'drug': 'drug-X'}",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "performed_intervention",
+          "source_family": null,
+          "source_id": "action-A1-performed",
+          "supersedes": null,
+          "unit": null,
+          "value": {
+            "dose": 1.0,
+            "drug": "drug-X"
+          }
+        },
+        {
+          "artifact_id": "action-stopped",
+          "clocks": {
+            "available_at": "2026-01-01T12:00:00Z",
+            "collected_at": "2026-01-01T12:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T12:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T12:00:00Z"
+          },
+          "concept": "drug_effect",
+          "context": {
+            "action_id": "A1",
+            "idempotency_key": "A1/stop/1",
+            "stage": "cancelled"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "drug_effect={'action_id': 'A1'}",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "stopped_intervention",
+          "source_family": null,
+          "source_id": "action-A1-stop",
+          "supersedes": "action-A1-performed",
+          "unit": null,
+          "value": {
+            "action_id": "A1"
+          }
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-during",
+          "requested_guarantees": [
+            "action_interval",
+            "idempotent_delivery"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "drug_effect",
+          "task": null,
+          "valid_at": "2026-01-01T09:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T13:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-after",
+          "requested_guarantees": [
+            "action_interval",
+            "idempotent_delivery"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "drug_effect",
+          "task": null,
+          "valid_at": "2026-01-01T13:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "expected": 1,
+          "result": "main:during"
+        },
+        "assertion_id": "delivery-idempotent-one-root",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_count@1"
+      },
+      {
+        "args": {
+          "result": "main:during",
+          "root": "action-A1-performed",
+          "visible": true
+        },
+        "assertion_id": "performed-live-during",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "result": "main:after",
+          "root": "action-A1-performed",
+          "visible": false
+        },
+        "assertion_id": "performed-stopped-after-cancel",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "expected": 0,
+          "result": "main:after"
+        },
+        "assertion_id": "no-effect-roots-after-cancel",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_count@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "left": "main:after",
+          "right": "main:rebuilt",
+          "semantic_only": true
+        },
+        "assertion_id": "cancel-clean-equivalence",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "result.equivalent@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T48"
+  ],
+  "severity": "HARD",
+  "title": "action delivery is idempotent and cancellation stops effect",
+  "workload_id": "T48"
+}

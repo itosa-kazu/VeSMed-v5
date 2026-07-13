@@ -1,0 +1,2624 @@
+{
+  "demo_1_raw_to_distinct_coordinates": {
+    "causal_state_coordinate": {
+      "capability": "native",
+      "coverage": {
+        "gap_count": 0,
+        "gaps": [],
+        "modeled_observation_concepts": [
+          "fever_signal"
+        ],
+        "used_artifact_ids": [
+          "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf"
+        ],
+        "used_count": 1
+      },
+      "diagnostics": {
+        "kernel_operation": "query_through_bridge",
+        "kernel_result_id": "demo-causal-coordinate",
+        "numerical_normalization_checked": true,
+        "query_controls_consumed": {
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "requested_guarantees": [],
+          "task": null
+        },
+        "query_id": "demo-causal-coordinate",
+        "result_id": "causal-state-000003",
+        "route_is_explicit": true,
+        "unmodeled_evidence_count": 0
+      },
+      "evidence_witness": {
+        "bridge_materialization": {
+          "artifact_id": "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf",
+          "fresh_model_run": true,
+          "root_sources": [
+            "thermometer"
+          ],
+          "source_claim_id": "claim:196d79489c5b60d0db2b9138",
+          "transform": "boolean_to_binary"
+        },
+        "downstream_direct": {
+          "direct_artifact_ids": [
+            "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf"
+          ],
+          "direct_artifacts": [
+            {
+              "artifact_id": "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf",
+              "available_at": "2026-01-01T08:05:00Z",
+              "effective_start": "2026-01-01T08:00:00Z",
+              "recorded_at": "2026-01-01T08:05:00Z",
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "source_family": "bridge:fever-to-state@1",
+              "source_id": "bridge:fever-to-state:6c0520378f3b15f6ddbf"
+            }
+          ],
+          "lineage_graph": "not_native"
+        },
+        "upstream_evidence": {
+          "proofs": [
+            [
+              {
+                "derivation": {
+                  "kind": "positive_rule",
+                  "knowledge_version": "knowledge-v1",
+                  "module_id": "fever-evidence",
+                  "module_version": "1",
+                  "registered_at": "2025-12-01T00:00:00Z",
+                  "rule_id": "temperature-to-fever"
+                },
+                "fact_id": "derived:6598eea419fa65d5a50f570c",
+                "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": [
+                  "source:thermometer"
+                ]
+              }
+            ]
+          ],
+          "root_artifacts": {
+            "thermometer": {
+              "artifact_id": "artifact-thermometer",
+              "clocks": {
+                "available_at": "2026-01-01T08:05:00Z",
+                "collected_at": "2026-01-01T08:00:00Z",
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:00:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:05:00Z"
+              },
+              "concept": "temperature",
+              "context": {},
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "temperature 39.0 Cel"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "source_family": null,
+              "source_id": "thermometer",
+              "supersedes": null,
+              "unit": "Cel",
+              "value": 39.0
+            }
+          },
+          "root_sources": [
+            "thermometer"
+          ],
+          "source_families": [],
+          "statistical_independence_assumed": false
+        }
+      },
+      "origin": {
+        "bridge": "fever-to-state@1",
+        "candidate_id": "candidate-b-dynamic-causal-state",
+        "candidate_version": "0.2.0",
+        "control_plane": "K0",
+        "native_state_kind": "model_posterior_or_causal_world",
+        "subkernel": "causal_state",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {
+        "adapter": "none",
+        "artifact_count": 1,
+        "as_known_at": "2026-01-01T09:00:00Z",
+        "valid_at": "2026-01-01T08:30:00Z",
+        "valid_at_defaulted_to_as_known_at": false,
+        "validity_interval": "[effective_start,effective_end) intersect [effective_start,expires_at)"
+      },
+      "value": {
+        "claims": [
+          {
+            "conditioned_on_artifact_ids": [
+              "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf"
+            ],
+            "horizon_hours": 0.0,
+            "intervention": {},
+            "kind": "posterior_or_predictive_distribution",
+            "target": "I"
+          }
+        ],
+        "diagnostics": {
+          "exact": true,
+          "finite_state_count": 2
+        },
+        "hypotheses": [
+          {
+            "assignment": {
+              "I": 0.0
+            },
+            "probability": 0.1
+          },
+          {
+            "assignment": {
+              "I": 1.0
+            },
+            "probability": 0.9
+          }
+        ],
+        "module_id": "inflammation",
+        "probability": [
+          {
+            "probability": 0.1,
+            "value": 0.0
+          },
+          {
+            "probability": 0.9,
+            "value": 1.0
+          }
+        ],
+        "query": "filter",
+        "query_semantics": "filter",
+        "target": "I",
+        "trajectory": [
+          {
+            "action": {},
+            "artifact_ids": [
+              "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf"
+            ],
+            "effective_at": "2026-01-01T08:00:00Z",
+            "phase": "filter",
+            "posterior": [
+              {
+                "probability": 0.1,
+                "state": {
+                  "I": 0.0
+                }
+              },
+              {
+                "probability": 0.9,
+                "state": {
+                  "I": 1.0
+                }
+              }
+            ],
+            "transition_steps": 0
+          }
+        ]
+      },
+      "value_kind": "dynamic_posterior",
+      "versions": {
+        "bridge": "1",
+        "candidate": "0.2.0",
+        "evidence_candidate": "0.3.0",
+        "evidence_knowledge": "knowledge-v1",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "module": "1",
+        "origin_candidate": "0.2.0",
+        "requested_model": null
+      }
+    },
+    "evidence_coordinate": {
+      "capability": "native",
+      "coverage": {
+        "closure_facts": 4,
+        "eligible_sources": 3,
+        "projected_claims": 1,
+        "target": "fever",
+        "task": "all"
+      },
+      "diagnostics": {
+        "conflict_count": 0,
+        "kernel_operation": "query",
+        "kernel_result_id": "demo-evidence",
+        "result_id": "demo-evidence",
+        "route_is_explicit": true
+      },
+      "evidence_witness": {
+        "proofs": [
+          [
+            {
+              "derivation": {
+                "kind": "positive_rule",
+                "knowledge_version": "knowledge-v1",
+                "module_id": "fever-evidence",
+                "module_version": "1",
+                "registered_at": "2025-12-01T00:00:00Z",
+                "rule_id": "temperature-to-fever"
+              },
+              "fact_id": "derived:6598eea419fa65d5a50f570c",
+              "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+              "root_sources": [
+                "thermometer"
+              ],
+              "support_ids": [
+                "source:thermometer"
+              ]
+            }
+          ]
+        ],
+        "root_artifacts": {
+          "thermometer": {
+            "artifact_id": "artifact-thermometer",
+            "clocks": {
+              "available_at": "2026-01-01T08:05:00Z",
+              "collected_at": "2026-01-01T08:00:00Z",
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "recorded_at": "2026-01-01T08:05:00Z"
+            },
+            "concept": "temperature",
+            "context": {},
+            "information_state": "present",
+            "mapping_version": "canonical-v1",
+            "method": null,
+            "raw_payload": {
+              "source_text": "temperature 39.0 Cel"
+            },
+            "reliability": null,
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "raw_observation",
+            "source_family": null,
+            "source_id": "thermometer",
+            "supersedes": null,
+            "unit": "Cel",
+            "value": 39.0
+          }
+        },
+        "root_sources": [
+          "thermometer"
+        ],
+        "source_families": [],
+        "statistical_independence_assumed": false
+      },
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {
+        "as_known_at": "2026-01-01T09:00:00Z",
+        "mode": "project",
+        "valid_at": "2026-01-01T08:30:00Z"
+      },
+      "value": {
+        "claims": [
+          {
+            "available_at": "2026-01-01T08:05:00Z",
+            "claim_id": "claim:196d79489c5b60d0db2b9138",
+            "claim_ids": [
+              "claim:196d79489c5b60d0db2b9138"
+            ],
+            "collected_at": "2026-01-01T08:00:00Z",
+            "concept": "fever",
+            "context": {},
+            "derivation": {
+              "kind": "positive_rule",
+              "knowledge_version": "knowledge-v1",
+              "module_id": "fever-evidence",
+              "module_version": "1",
+              "registered_at": "2025-12-01T00:00:00Z",
+              "rule_id": "temperature-to-fever"
+            },
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "fact_ids": [
+              "derived:6598eea419fa65d5a50f570c"
+            ],
+            "information_state": "present",
+            "method": "rule:fever-evidence/temperature-to-fever",
+            "proof_alternatives": [
+              {
+                "derivation": {
+                  "kind": "positive_rule",
+                  "knowledge_version": "knowledge-v1",
+                  "module_id": "fever-evidence",
+                  "module_version": "1",
+                  "registered_at": "2025-12-01T00:00:00Z",
+                  "rule_id": "temperature-to-fever"
+                },
+                "fact_id": "derived:6598eea419fa65d5a50f570c",
+                "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": [
+                  "source:thermometer"
+                ]
+              }
+            ],
+            "recorded_at": "2026-01-01T08:05:00Z",
+            "root_sources": [
+              "thermometer"
+            ],
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "deterministic_derivation",
+            "source_families": [],
+            "support_ids": [
+              "source:thermometer"
+            ],
+            "unit": null,
+            "value": true
+          }
+        ],
+        "diagnostics": {
+          "conflicts": [],
+          "information_states": [
+            "present"
+          ],
+          "partition_count": 1
+        },
+        "hypotheses": [],
+        "probability": null,
+        "trajectory": null
+      },
+      "value_kind": "temporal_projection",
+      "versions": {
+        "candidate": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "modules": {
+          "fever-evidence": "1"
+        },
+        "origin_candidate": "0.3.0"
+      }
+    },
+    "ingest": {
+      "capability": "native",
+      "coverage": {},
+      "diagnostics": {
+        "kernel_operation": "ingest",
+        "kernel_result_id": "ingest:thermometer",
+        "route_is_explicit": true
+      },
+      "evidence_witness": {
+        "root_sources": [
+          "thermometer"
+        ]
+      },
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {},
+      "value": {
+        "causal_state_ingested": false,
+        "evidence": {
+          "assumptions": [],
+          "capability": "native",
+          "computation": "exact",
+          "coverage": {},
+          "coverage_status": "complete",
+          "diagnostics": {
+            "result_id": "ingest:thermometer"
+          },
+          "epistemic": "asserted",
+          "evidence_witness": {
+            "root_sources": [
+              "thermometer"
+            ]
+          },
+          "identification": "not_applicable",
+          "native_witness": {
+            "fingerprint": "18e00ceae5d78e3961ce8adddaa2772ff9c6ca17ab4b829bdf1363106950a908",
+            "fingerprint_redacted": false,
+            "operation": "append-source"
+          },
+          "status": "ok",
+          "time_cut": {},
+          "validation": "valid",
+          "value": {
+            "accepted": true,
+            "artifact_id": "artifact-thermometer",
+            "idempotent": false,
+            "source_id": "thermometer"
+          },
+          "value_kind": "ingest_receipt",
+          "versions": {
+            "candidate": "0.3.0",
+            "mapping": "canonical-v1"
+          }
+        },
+        "rewrite_replica": {
+          "assumptions": [],
+          "capability": "native",
+          "computation": "not_applicable",
+          "coverage": {},
+          "coverage_status": "unknown",
+          "diagnostics": {
+            "raw_payload_used_for_semantics": false
+          },
+          "epistemic": "not_applicable",
+          "evidence_witness": {
+            "root_sources": [
+              "thermometer"
+            ],
+            "source_families": []
+          },
+          "identification": "not_applicable",
+          "native_witness": {
+            "kind": "closed_term_constructor",
+            "term": {
+              "comparator": "exact",
+              "concept": "temperature",
+              "kind": "quantity",
+              "magnitude": 39.0,
+              "polarity": "positive",
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "unit": "Cel"
+            }
+          },
+          "status": "ok",
+          "time_cut": {},
+          "validation": "valid",
+          "value": {
+            "artifact_id": "artifact-thermometer",
+            "idempotent": false,
+            "source_id": "thermometer",
+            "term_digest": "a52310c554bee8b543bff9a52e00f7728e69001b40a11ded39ee7a8437fab287"
+          },
+          "value_kind": "ingest_receipt",
+          "versions": {
+            "candidate": "0.2.0",
+            "mapping": "canonical-v1"
+          }
+        },
+        "source_id": "thermometer"
+      },
+      "value_kind": "kernel_ingest_receipt",
+      "versions": {
+        "evidence": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "mapping": "canonical-v1",
+        "origin_candidate": "0.3.0",
+        "rewrite_open": "0.2.0"
+      }
+    },
+    "note": "These are linked coordinates with different native semantics, not one PatientState.",
+    "rewrite_coordinate": {
+      "capability": "native",
+      "coverage": {
+        "causal_identification": false,
+        "native_family": "typed_rewrite_open",
+        "probabilistic_dynamics": false
+      },
+      "diagnostics": {
+        "action_lifecycle": {
+          "actions": [
+            {
+              "action_id": "performed-exposure-record",
+              "concept": "recorded_exposure",
+              "current_phase": "performed",
+              "effect_token_phases": [
+                "performed"
+              ],
+              "phases": [
+                "performed"
+              ]
+            }
+          ],
+          "invalid_transitions": []
+        },
+        "kernel_operation": "query",
+        "kernel_result_id": "demo-rewrite",
+        "rebuild_origin": null,
+        "result_id": "demo-rewrite",
+        "route_is_explicit": true
+      },
+      "evidence_witness": {
+        "claims": {
+          "105ed9002ca6154acf8b508c60da43feb4adbaac1bf093b3f6bf1b4ace93d497": {
+            "proof_alternatives": [
+              "p-5873aa417e40d3329778ec1f"
+            ],
+            "roots": [
+              "thermometer"
+            ],
+            "source_families": []
+          }
+        },
+        "lineage_is_not_independence": true,
+        "proof_alternatives": {
+          "p-03fe5ec6d0d4449521b13bc5": {
+            "conclusion_digest": "a52310c554bee8b543bff9a52e00f7728e69001b40a11ded39ee7a8437fab287",
+            "kind": "root",
+            "premise_proof_ids": [],
+            "root_source_ids": [
+              "thermometer"
+            ],
+            "rule_ref": null,
+            "source_families": []
+          },
+          "p-5873aa417e40d3329778ec1f": {
+            "conclusion_digest": "105ed9002ca6154acf8b508c60da43feb4adbaac1bf093b3f6bf1b4ace93d497",
+            "kind": "rewrite",
+            "premise_proof_ids": [
+              "p-03fe5ec6d0d4449521b13bc5"
+            ],
+            "root_source_ids": [
+              "thermometer"
+            ],
+            "rule_ref": "fever-rewrite@1:temperature-to-rewrite-fever",
+            "source_families": []
+          }
+        },
+        "raw_roots": [
+          {
+            "artifact_id": "artifact-thermometer",
+            "clocks": {
+              "available_at": "2026-01-01T08:05:00Z",
+              "collected_at": "2026-01-01T08:00:00Z",
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "recorded_at": "2026-01-01T08:05:00Z"
+            },
+            "mapping_version": "canonical-v1",
+            "raw_payload_disclosed": false,
+            "source_family": null,
+            "source_id": "thermometer",
+            "withheld": false
+          }
+        ],
+        "root_sources": [
+          "thermometer"
+        ],
+        "source_families": [],
+        "statistical_independence_assumed": false
+      },
+      "origin": {
+        "candidate_id": "typed-rewrite-open",
+        "candidate_version": "0.2.0",
+        "control_plane": "K0",
+        "native_state_kind": "typed_rewrite_configuration",
+        "subkernel": "rewrite_open",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {
+        "as_known_at": "2026-01-01T09:00:00+00:00",
+        "excluded_artifacts": {
+          "artifact-late-measurement": [
+            "not_yet_available",
+            "not_yet_recorded"
+          ]
+        },
+        "replay_mode": "project",
+        "root_artifacts": [
+          "artifact-thermometer",
+          "artifact-exposure",
+          "artifact-hypothesis"
+        ],
+        "valid_at": "2026-01-01T09:00:00+00:00"
+      },
+      "value": {
+        "actions": [
+          {
+            "action_id": "performed-exposure-record",
+            "concept": "recorded_exposure",
+            "current_phase": "performed",
+            "effect_token_phases": [
+              "performed"
+            ],
+            "phases": [
+              "performed"
+            ]
+          }
+        ],
+        "claims": [
+          {
+            "claim_id": "105ed9002ca6154acf8b508c60da43feb4adbaac1bf093b3f6bf1b4ace93d497",
+            "proof_alternatives": [
+              "p-5873aa417e40d3329778ec1f"
+            ],
+            "root_sources": [
+              "thermometer"
+            ],
+            "source_families": [],
+            "term": {
+              "concept": "rewrite_fever",
+              "kind": "presence",
+              "polarity": "positive",
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "deterministic_derivation"
+            }
+          }
+        ],
+        "conflicts": [],
+        "invariants": {
+          "action_lifecycle_valid": true,
+          "all_derived_claims_grounded": true,
+          "foreign_callback_absent": true,
+          "no_implicit_action_effect": true,
+          "raw_payload_not_executed": true
+        },
+        "subject_id": "patient-demo",
+        "target": "rewrite_fever",
+        "task": null
+      },
+      "value_kind": "evidence_projection",
+      "versions": {
+        "candidate": "0.2.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge_requested": "knowledge-v1",
+        "modules": {
+          "fever-rewrite": "1"
+        },
+        "origin_candidate": "0.2.0"
+      }
+    }
+  },
+  "demo_2_read_only_task_projections": {
+    "diagnosis": {
+      "claim_partition": {
+        "concepts": [
+          "fever",
+          "recorded_exposure",
+          "review_hypothesis",
+          "temperature"
+        ],
+        "semantic_roles": [
+          "deterministic_derivation",
+          "hypothesis",
+          "performed_intervention",
+          "raw_observation"
+        ]
+      },
+      "result": {
+        "capability": "native",
+        "coverage": {
+          "closure_facts": 4,
+          "eligible_sources": 3,
+          "projected_claims": 4,
+          "target": "*",
+          "task": "diagnosis"
+        },
+        "diagnostics": {
+          "conflict_count": 0,
+          "kernel_operation": "query",
+          "kernel_result_id": "demo-diagnosis-projection",
+          "result_id": "demo-diagnosis-projection",
+          "route_is_explicit": true
+        },
+        "evidence_witness": {
+          "proofs": [
+            [
+              {
+                "derivation": {
+                  "kind": "positive_rule",
+                  "knowledge_version": "knowledge-v1",
+                  "module_id": "fever-evidence",
+                  "module_version": "1",
+                  "registered_at": "2025-12-01T00:00:00Z",
+                  "rule_id": "temperature-to-fever"
+                },
+                "fact_id": "derived:6598eea419fa65d5a50f570c",
+                "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": [
+                  "source:thermometer"
+                ]
+              }
+            ],
+            [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-exposure",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:performed-exposure-record",
+                "proof_id": "proof:b72fcf2b4d6d33c51a5905c6",
+                "root_sources": [
+                  "performed-exposure-record"
+                ],
+                "support_ids": []
+              }
+            ],
+            [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-hypothesis",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:hypothesis-record",
+                "proof_id": "proof:41cc78331281e510291fa723",
+                "root_sources": [
+                  "hypothesis-record"
+                ],
+                "support_ids": []
+              }
+            ],
+            [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-thermometer",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:thermometer",
+                "proof_id": "proof:fddd27cc339da7ccac17b203",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": []
+              }
+            ]
+          ],
+          "root_artifacts": {
+            "hypothesis-record": {
+              "artifact_id": "artifact-hypothesis",
+              "clocks": {
+                "available_at": "2026-01-01T08:20:00Z",
+                "collected_at": null,
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:10:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:20:00Z"
+              },
+              "concept": "review_hypothesis",
+              "context": {
+                "asserted_clinical_truth": false,
+                "demonstration_only": true
+              },
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "opaque hypothesis token candidate-H"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "hypothesis",
+              "source_family": null,
+              "source_id": "hypothesis-record",
+              "supersedes": null,
+              "unit": null,
+              "value": "candidate-H"
+            },
+            "performed-exposure-record": {
+              "artifact_id": "artifact-exposure",
+              "clocks": {
+                "available_at": "2026-01-01T08:13:00Z",
+                "collected_at": null,
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:12:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:13:00Z"
+              },
+              "concept": "recorded_exposure",
+              "context": {
+                "demonstration_only": true,
+                "effect_claimed": false
+              },
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "opaque performed exposure token exposure-X"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "performed_intervention",
+              "source_family": null,
+              "source_id": "performed-exposure-record",
+              "supersedes": null,
+              "unit": null,
+              "value": "exposure-X"
+            },
+            "thermometer": {
+              "artifact_id": "artifact-thermometer",
+              "clocks": {
+                "available_at": "2026-01-01T08:05:00Z",
+                "collected_at": "2026-01-01T08:00:00Z",
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:00:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:05:00Z"
+              },
+              "concept": "temperature",
+              "context": {},
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "temperature 39.0 Cel"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "source_family": null,
+              "source_id": "thermometer",
+              "supersedes": null,
+              "unit": "Cel",
+              "value": 39.0
+            }
+          },
+          "root_sources": [
+            "hypothesis-record",
+            "performed-exposure-record",
+            "thermometer"
+          ],
+          "source_families": [],
+          "statistical_independence_assumed": false
+        },
+        "origin": {
+          "candidate_id": "temporal-evidence-ledger-positive-tms",
+          "candidate_version": "0.3.0",
+          "control_plane": "K0",
+          "native_state_kind": "temporal_evidence_cut",
+          "subkernel": "evidence",
+          "universal_patient_state": false
+        },
+        "status": "ok",
+        "time_cut": {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "mode": "project",
+          "valid_at": "2026-01-01T08:30:00Z"
+        },
+        "value": {
+          "claims": [
+            {
+              "available_at": "2026-01-01T08:05:00Z",
+              "claim_id": "claim:196d79489c5b60d0db2b9138",
+              "claim_ids": [
+                "claim:196d79489c5b60d0db2b9138"
+              ],
+              "collected_at": "2026-01-01T08:00:00Z",
+              "concept": "fever",
+              "context": {},
+              "derivation": {
+                "kind": "positive_rule",
+                "knowledge_version": "knowledge-v1",
+                "module_id": "fever-evidence",
+                "module_version": "1",
+                "registered_at": "2025-12-01T00:00:00Z",
+                "rule_id": "temperature-to-fever"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "derived:6598eea419fa65d5a50f570c"
+              ],
+              "information_state": "present",
+              "method": "rule:fever-evidence/temperature-to-fever",
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "kind": "positive_rule",
+                    "knowledge_version": "knowledge-v1",
+                    "module_id": "fever-evidence",
+                    "module_version": "1",
+                    "registered_at": "2025-12-01T00:00:00Z",
+                    "rule_id": "temperature-to-fever"
+                  },
+                  "fact_id": "derived:6598eea419fa65d5a50f570c",
+                  "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                  "root_sources": [
+                    "thermometer"
+                  ],
+                  "support_ids": [
+                    "source:thermometer"
+                  ]
+                }
+              ],
+              "recorded_at": "2026-01-01T08:05:00Z",
+              "root_sources": [
+                "thermometer"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "deterministic_derivation",
+              "source_families": [],
+              "support_ids": [
+                "source:thermometer"
+              ],
+              "unit": null,
+              "value": true
+            },
+            {
+              "available_at": "2026-01-01T08:13:00Z",
+              "claim_id": "claim:cfedbacb75fab8d1336c5a86",
+              "claim_ids": [
+                "claim:cfedbacb75fab8d1336c5a86"
+              ],
+              "collected_at": null,
+              "concept": "recorded_exposure",
+              "context": {
+                "demonstration_only": true,
+                "effect_claimed": false
+              },
+              "derivation": {
+                "artifact_id": "artifact-exposure",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:12:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:performed-exposure-record"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-exposure",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:performed-exposure-record",
+                  "proof_id": "proof:b72fcf2b4d6d33c51a5905c6",
+                  "root_sources": [
+                    "performed-exposure-record"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:13:00Z",
+              "root_sources": [
+                "performed-exposure-record"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "performed_intervention",
+              "source_families": [],
+              "support_ids": [],
+              "unit": null,
+              "value": "exposure-X"
+            },
+            {
+              "available_at": "2026-01-01T08:20:00Z",
+              "claim_id": "claim:b179a89ea4858c09ec73a66f",
+              "claim_ids": [
+                "claim:b179a89ea4858c09ec73a66f"
+              ],
+              "collected_at": null,
+              "concept": "review_hypothesis",
+              "context": {
+                "asserted_clinical_truth": false,
+                "demonstration_only": true
+              },
+              "derivation": {
+                "artifact_id": "artifact-hypothesis",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:10:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:hypothesis-record"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-hypothesis",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:hypothesis-record",
+                  "proof_id": "proof:41cc78331281e510291fa723",
+                  "root_sources": [
+                    "hypothesis-record"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:20:00Z",
+              "root_sources": [
+                "hypothesis-record"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "hypothesis",
+              "source_families": [],
+              "support_ids": [],
+              "unit": null,
+              "value": "candidate-H"
+            },
+            {
+              "available_at": "2026-01-01T08:05:00Z",
+              "claim_id": "claim:79791ff0d9d3176204300e5e",
+              "claim_ids": [
+                "claim:79791ff0d9d3176204300e5e"
+              ],
+              "collected_at": "2026-01-01T08:00:00Z",
+              "concept": "temperature",
+              "context": {},
+              "derivation": {
+                "artifact_id": "artifact-thermometer",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:thermometer"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-thermometer",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:thermometer",
+                  "proof_id": "proof:fddd27cc339da7ccac17b203",
+                  "root_sources": [
+                    "thermometer"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:05:00Z",
+              "root_sources": [
+                "thermometer"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "source_families": [],
+              "support_ids": [],
+              "unit": "Cel",
+              "value": 39.0
+            }
+          ],
+          "diagnostics": {
+            "conflicts": [],
+            "information_states": [
+              "present"
+            ],
+            "partition_count": 4
+          },
+          "hypotheses": [
+            {
+              "available_at": "2026-01-01T08:20:00Z",
+              "claim_id": "claim:b179a89ea4858c09ec73a66f",
+              "claim_ids": [
+                "claim:b179a89ea4858c09ec73a66f"
+              ],
+              "collected_at": null,
+              "concept": "review_hypothesis",
+              "context": {
+                "asserted_clinical_truth": false,
+                "demonstration_only": true
+              },
+              "derivation": {
+                "artifact_id": "artifact-hypothesis",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:10:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:hypothesis-record"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-hypothesis",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:hypothesis-record",
+                  "proof_id": "proof:41cc78331281e510291fa723",
+                  "root_sources": [
+                    "hypothesis-record"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:20:00Z",
+              "root_sources": [
+                "hypothesis-record"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "hypothesis",
+              "source_families": [],
+              "support_ids": [],
+              "unit": null,
+              "value": "candidate-H"
+            }
+          ],
+          "probability": null,
+          "trajectory": null
+        },
+        "value_kind": "temporal_projection",
+        "versions": {
+          "candidate": "0.3.0",
+          "kernel": "k0-reference-0.1.0",
+          "knowledge": "knowledge-v1",
+          "modules": {
+            "fever-evidence": "1"
+          },
+          "origin_candidate": "0.3.0"
+        }
+      },
+      "task": "diagnosis"
+    },
+    "medication_safety": {
+      "claim_partition": {
+        "concepts": [
+          "fever",
+          "recorded_exposure",
+          "temperature"
+        ],
+        "semantic_roles": [
+          "deterministic_derivation",
+          "performed_intervention",
+          "raw_observation"
+        ]
+      },
+      "result": {
+        "capability": "native",
+        "coverage": {
+          "closure_facts": 4,
+          "eligible_sources": 3,
+          "projected_claims": 3,
+          "target": "*",
+          "task": "medication_safety"
+        },
+        "diagnostics": {
+          "conflict_count": 0,
+          "kernel_operation": "query",
+          "kernel_result_id": "demo-medication-safety-projection",
+          "result_id": "demo-medication-safety-projection",
+          "route_is_explicit": true
+        },
+        "evidence_witness": {
+          "proofs": [
+            [
+              {
+                "derivation": {
+                  "kind": "positive_rule",
+                  "knowledge_version": "knowledge-v1",
+                  "module_id": "fever-evidence",
+                  "module_version": "1",
+                  "registered_at": "2025-12-01T00:00:00Z",
+                  "rule_id": "temperature-to-fever"
+                },
+                "fact_id": "derived:6598eea419fa65d5a50f570c",
+                "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": [
+                  "source:thermometer"
+                ]
+              }
+            ],
+            [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-exposure",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:performed-exposure-record",
+                "proof_id": "proof:b72fcf2b4d6d33c51a5905c6",
+                "root_sources": [
+                  "performed-exposure-record"
+                ],
+                "support_ids": []
+              }
+            ],
+            [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-thermometer",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:thermometer",
+                "proof_id": "proof:fddd27cc339da7ccac17b203",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": []
+              }
+            ]
+          ],
+          "root_artifacts": {
+            "performed-exposure-record": {
+              "artifact_id": "artifact-exposure",
+              "clocks": {
+                "available_at": "2026-01-01T08:13:00Z",
+                "collected_at": null,
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:12:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:13:00Z"
+              },
+              "concept": "recorded_exposure",
+              "context": {
+                "demonstration_only": true,
+                "effect_claimed": false
+              },
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "opaque performed exposure token exposure-X"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "performed_intervention",
+              "source_family": null,
+              "source_id": "performed-exposure-record",
+              "supersedes": null,
+              "unit": null,
+              "value": "exposure-X"
+            },
+            "thermometer": {
+              "artifact_id": "artifact-thermometer",
+              "clocks": {
+                "available_at": "2026-01-01T08:05:00Z",
+                "collected_at": "2026-01-01T08:00:00Z",
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:00:00Z",
+                "expires_at": null,
+                "recorded_at": "2026-01-01T08:05:00Z"
+              },
+              "concept": "temperature",
+              "context": {},
+              "information_state": "present",
+              "mapping_version": "canonical-v1",
+              "method": null,
+              "raw_payload": {
+                "source_text": "temperature 39.0 Cel"
+              },
+              "reliability": null,
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "source_family": null,
+              "source_id": "thermometer",
+              "supersedes": null,
+              "unit": "Cel",
+              "value": 39.0
+            }
+          },
+          "root_sources": [
+            "performed-exposure-record",
+            "thermometer"
+          ],
+          "source_families": [],
+          "statistical_independence_assumed": false
+        },
+        "origin": {
+          "candidate_id": "temporal-evidence-ledger-positive-tms",
+          "candidate_version": "0.3.0",
+          "control_plane": "K0",
+          "native_state_kind": "temporal_evidence_cut",
+          "subkernel": "evidence",
+          "universal_patient_state": false
+        },
+        "status": "ok",
+        "time_cut": {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "mode": "project",
+          "valid_at": "2026-01-01T08:30:00Z"
+        },
+        "value": {
+          "claims": [
+            {
+              "available_at": "2026-01-01T08:05:00Z",
+              "claim_id": "claim:196d79489c5b60d0db2b9138",
+              "claim_ids": [
+                "claim:196d79489c5b60d0db2b9138"
+              ],
+              "collected_at": "2026-01-01T08:00:00Z",
+              "concept": "fever",
+              "context": {},
+              "derivation": {
+                "kind": "positive_rule",
+                "knowledge_version": "knowledge-v1",
+                "module_id": "fever-evidence",
+                "module_version": "1",
+                "registered_at": "2025-12-01T00:00:00Z",
+                "rule_id": "temperature-to-fever"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "derived:6598eea419fa65d5a50f570c"
+              ],
+              "information_state": "present",
+              "method": "rule:fever-evidence/temperature-to-fever",
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "kind": "positive_rule",
+                    "knowledge_version": "knowledge-v1",
+                    "module_id": "fever-evidence",
+                    "module_version": "1",
+                    "registered_at": "2025-12-01T00:00:00Z",
+                    "rule_id": "temperature-to-fever"
+                  },
+                  "fact_id": "derived:6598eea419fa65d5a50f570c",
+                  "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+                  "root_sources": [
+                    "thermometer"
+                  ],
+                  "support_ids": [
+                    "source:thermometer"
+                  ]
+                }
+              ],
+              "recorded_at": "2026-01-01T08:05:00Z",
+              "root_sources": [
+                "thermometer"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "deterministic_derivation",
+              "source_families": [],
+              "support_ids": [
+                "source:thermometer"
+              ],
+              "unit": null,
+              "value": true
+            },
+            {
+              "available_at": "2026-01-01T08:13:00Z",
+              "claim_id": "claim:cfedbacb75fab8d1336c5a86",
+              "claim_ids": [
+                "claim:cfedbacb75fab8d1336c5a86"
+              ],
+              "collected_at": null,
+              "concept": "recorded_exposure",
+              "context": {
+                "demonstration_only": true,
+                "effect_claimed": false
+              },
+              "derivation": {
+                "artifact_id": "artifact-exposure",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:12:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:performed-exposure-record"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-exposure",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:performed-exposure-record",
+                  "proof_id": "proof:b72fcf2b4d6d33c51a5905c6",
+                  "root_sources": [
+                    "performed-exposure-record"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:13:00Z",
+              "root_sources": [
+                "performed-exposure-record"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "performed_intervention",
+              "source_families": [],
+              "support_ids": [],
+              "unit": null,
+              "value": "exposure-X"
+            },
+            {
+              "available_at": "2026-01-01T08:05:00Z",
+              "claim_id": "claim:79791ff0d9d3176204300e5e",
+              "claim_ids": [
+                "claim:79791ff0d9d3176204300e5e"
+              ],
+              "collected_at": "2026-01-01T08:00:00Z",
+              "concept": "temperature",
+              "context": {},
+              "derivation": {
+                "artifact_id": "artifact-thermometer",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "fact_ids": [
+                "source:thermometer"
+              ],
+              "information_state": "present",
+              "method": null,
+              "proof_alternatives": [
+                {
+                  "derivation": {
+                    "artifact_id": "artifact-thermometer",
+                    "kind": "source",
+                    "mapping_version": "canonical-v1"
+                  },
+                  "fact_id": "source:thermometer",
+                  "proof_id": "proof:fddd27cc339da7ccac17b203",
+                  "root_sources": [
+                    "thermometer"
+                  ],
+                  "support_ids": []
+                }
+              ],
+              "recorded_at": "2026-01-01T08:05:00Z",
+              "root_sources": [
+                "thermometer"
+              ],
+              "scope": {
+                "body_site": null,
+                "device_id": null,
+                "encounter_id": "encounter-demo",
+                "site_id": null,
+                "specimen_id": null,
+                "subject_id": "patient-demo"
+              },
+              "semantic_role": "raw_observation",
+              "source_families": [],
+              "support_ids": [],
+              "unit": "Cel",
+              "value": 39.0
+            }
+          ],
+          "diagnostics": {
+            "conflicts": [],
+            "information_states": [
+              "present"
+            ],
+            "partition_count": 3
+          },
+          "hypotheses": [],
+          "probability": null,
+          "trajectory": null
+        },
+        "value_kind": "temporal_projection",
+        "versions": {
+          "candidate": "0.3.0",
+          "kernel": "k0-reference-0.1.0",
+          "knowledge": "knowledge-v1",
+          "modules": {
+            "fever-evidence": "1"
+          },
+          "origin_candidate": "0.3.0"
+        }
+      },
+      "task": "medication_safety"
+    },
+    "note": "The opaque hypothesis/exposure tokens assert no medical effect. The task views differ only by a registered semantic-role projection; this is role eligibility, not a clinical relevance classifier.",
+    "shared_artifact_ingests": {
+      "hypothesis": {
+        "capability": "native",
+        "coverage": {},
+        "diagnostics": {
+          "kernel_operation": "ingest",
+          "kernel_result_id": "ingest:hypothesis-record",
+          "route_is_explicit": true
+        },
+        "evidence_witness": {
+          "root_sources": [
+            "hypothesis-record"
+          ]
+        },
+        "origin": {
+          "candidate_id": "temporal-evidence-ledger-positive-tms",
+          "candidate_version": "0.3.0",
+          "control_plane": "K0",
+          "native_state_kind": "temporal_evidence_cut",
+          "subkernel": "evidence",
+          "universal_patient_state": false
+        },
+        "status": "ok",
+        "time_cut": {},
+        "value": {
+          "causal_state_ingested": false,
+          "evidence": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "exact",
+            "coverage": {},
+            "coverage_status": "complete",
+            "diagnostics": {
+              "result_id": "ingest:hypothesis-record"
+            },
+            "epistemic": "asserted",
+            "evidence_witness": {
+              "root_sources": [
+                "hypothesis-record"
+              ]
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "fingerprint": "3a0547857fccbe69339e2e0ce9473e23b88248fa6d4fd380e4d86b83309a78b0",
+              "fingerprint_redacted": false,
+              "operation": "append-source"
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "accepted": true,
+              "artifact_id": "artifact-hypothesis",
+              "idempotent": false,
+              "source_id": "hypothesis-record"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.3.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "rewrite_replica": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "not_applicable",
+            "coverage": {},
+            "coverage_status": "unknown",
+            "diagnostics": {
+              "raw_payload_used_for_semantics": false
+            },
+            "epistemic": "not_applicable",
+            "evidence_witness": {
+              "root_sources": [
+                "hypothesis-record"
+              ],
+              "source_families": []
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "kind": "closed_term_constructor",
+              "term": {
+                "code": "candidate-H",
+                "concept": "review_hypothesis",
+                "kind": "code",
+                "polarity": "positive",
+                "scope": {
+                  "body_site": null,
+                  "device_id": null,
+                  "encounter_id": "encounter-demo",
+                  "site_id": null,
+                  "specimen_id": null,
+                  "subject_id": "patient-demo"
+                },
+                "semantic_role": "hypothesis"
+              }
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "artifact_id": "artifact-hypothesis",
+              "idempotent": false,
+              "source_id": "hypothesis-record",
+              "term_digest": "ad951334a3f0d467f210643819c856957ba4205b777c4895d848b606d568dd78"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.2.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "source_id": "hypothesis-record"
+        },
+        "value_kind": "kernel_ingest_receipt",
+        "versions": {
+          "evidence": "0.3.0",
+          "kernel": "k0-reference-0.1.0",
+          "mapping": "canonical-v1",
+          "origin_candidate": "0.3.0",
+          "rewrite_open": "0.2.0"
+        }
+      },
+      "late_measurement": {
+        "capability": "native",
+        "coverage": {},
+        "diagnostics": {
+          "kernel_operation": "ingest",
+          "kernel_result_id": "ingest:late-measurement-record",
+          "route_is_explicit": true
+        },
+        "evidence_witness": {
+          "root_sources": [
+            "late-measurement-record"
+          ]
+        },
+        "origin": {
+          "candidate_id": "temporal-evidence-ledger-positive-tms",
+          "candidate_version": "0.3.0",
+          "control_plane": "K0",
+          "native_state_kind": "temporal_evidence_cut",
+          "subkernel": "evidence",
+          "universal_patient_state": false
+        },
+        "status": "ok",
+        "time_cut": {},
+        "value": {
+          "causal_state_ingested": false,
+          "evidence": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "exact",
+            "coverage": {},
+            "coverage_status": "complete",
+            "diagnostics": {
+              "result_id": "ingest:late-measurement-record"
+            },
+            "epistemic": "asserted",
+            "evidence_witness": {
+              "root_sources": [
+                "late-measurement-record"
+              ]
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "fingerprint": "b2816e78e0f8942547d121ee30159f1e68b82841c840c505a94fa0c973652f60",
+              "fingerprint_redacted": false,
+              "operation": "append-source"
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "accepted": true,
+              "artifact_id": "artifact-late-measurement",
+              "idempotent": false,
+              "source_id": "late-measurement-record"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.3.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "rewrite_replica": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "not_applicable",
+            "coverage": {},
+            "coverage_status": "unknown",
+            "diagnostics": {
+              "raw_payload_used_for_semantics": false
+            },
+            "epistemic": "not_applicable",
+            "evidence_witness": {
+              "root_sources": [
+                "late-measurement-record"
+              ],
+              "source_families": []
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "kind": "closed_term_constructor",
+              "term": {
+                "comparator": "exact",
+                "concept": "late_arriving_measurement",
+                "kind": "quantity",
+                "magnitude": 1.0,
+                "polarity": "positive",
+                "scope": {
+                  "body_site": null,
+                  "device_id": null,
+                  "encounter_id": "encounter-demo",
+                  "site_id": null,
+                  "specimen_id": null,
+                  "subject_id": "patient-demo"
+                },
+                "semantic_role": "raw_observation",
+                "unit": "arb"
+              }
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "artifact_id": "artifact-late-measurement",
+              "idempotent": false,
+              "source_id": "late-measurement-record",
+              "term_digest": "5152ff9cdd73c33936537f34bd6740a776ef9a0913884d246d858614f05e6436"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.2.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "source_id": "late-measurement-record"
+        },
+        "value_kind": "kernel_ingest_receipt",
+        "versions": {
+          "evidence": "0.3.0",
+          "kernel": "k0-reference-0.1.0",
+          "mapping": "canonical-v1",
+          "origin_candidate": "0.3.0",
+          "rewrite_open": "0.2.0"
+        }
+      },
+      "performed_exposure": {
+        "capability": "native",
+        "coverage": {},
+        "diagnostics": {
+          "kernel_operation": "ingest",
+          "kernel_result_id": "ingest:performed-exposure-record",
+          "route_is_explicit": true
+        },
+        "evidence_witness": {
+          "root_sources": [
+            "performed-exposure-record"
+          ]
+        },
+        "origin": {
+          "candidate_id": "temporal-evidence-ledger-positive-tms",
+          "candidate_version": "0.3.0",
+          "control_plane": "K0",
+          "native_state_kind": "temporal_evidence_cut",
+          "subkernel": "evidence",
+          "universal_patient_state": false
+        },
+        "status": "ok",
+        "time_cut": {},
+        "value": {
+          "causal_state_ingested": false,
+          "evidence": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "exact",
+            "coverage": {},
+            "coverage_status": "complete",
+            "diagnostics": {
+              "result_id": "ingest:performed-exposure-record"
+            },
+            "epistemic": "asserted",
+            "evidence_witness": {
+              "root_sources": [
+                "performed-exposure-record"
+              ]
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "fingerprint": "5cc1ed4f5e0d962f6941700b4f67d74135c7abb546cc7860995ff2a262fd685d",
+              "fingerprint_redacted": false,
+              "operation": "append-source"
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "accepted": true,
+              "artifact_id": "artifact-exposure",
+              "idempotent": false,
+              "source_id": "performed-exposure-record"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.3.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "rewrite_replica": {
+            "assumptions": [],
+            "capability": "native",
+            "computation": "not_applicable",
+            "coverage": {},
+            "coverage_status": "unknown",
+            "diagnostics": {
+              "raw_payload_used_for_semantics": false
+            },
+            "epistemic": "not_applicable",
+            "evidence_witness": {
+              "root_sources": [
+                "performed-exposure-record"
+              ],
+              "source_families": []
+            },
+            "identification": "not_applicable",
+            "native_witness": {
+              "kind": "closed_term_constructor",
+              "term": {
+                "action_id": "performed-exposure-record",
+                "available_at": "2026-01-01T08:13:00Z",
+                "concept": "recorded_exposure",
+                "dose": {
+                  "code": "exposure-X",
+                  "concept": "recorded_exposure",
+                  "kind": "code",
+                  "polarity": "positive",
+                  "scope": {
+                    "body_site": null,
+                    "device_id": null,
+                    "encounter_id": "encounter-demo",
+                    "site_id": null,
+                    "specimen_id": null,
+                    "subject_id": "patient-demo"
+                  },
+                  "semantic_role": "performed_intervention"
+                },
+                "effective_end": null,
+                "effective_start": "2026-01-01T08:12:00Z",
+                "kind": "action",
+                "phase": "performed",
+                "polarity": "positive",
+                "scope": {
+                  "body_site": null,
+                  "device_id": null,
+                  "encounter_id": "encounter-demo",
+                  "site_id": null,
+                  "specimen_id": null,
+                  "subject_id": "patient-demo"
+                },
+                "semantic_role": "performed_intervention"
+              }
+            },
+            "status": "ok",
+            "time_cut": {},
+            "validation": "valid",
+            "value": {
+              "artifact_id": "artifact-exposure",
+              "idempotent": false,
+              "source_id": "performed-exposure-record",
+              "term_digest": "c24c62ed8c5b43e50158d605e5eae07f64dfccd81da7860cd3eecd70ca23aab7"
+            },
+            "value_kind": "ingest_receipt",
+            "versions": {
+              "candidate": "0.2.0",
+              "mapping": "canonical-v1"
+            }
+          },
+          "source_id": "performed-exposure-record"
+        },
+        "value_kind": "kernel_ingest_receipt",
+        "versions": {
+          "evidence": "0.3.0",
+          "kernel": "k0-reference-0.1.0",
+          "mapping": "canonical-v1",
+          "origin_candidate": "0.3.0",
+          "rewrite_open": "0.2.0"
+        }
+      }
+    },
+    "shared_query_contract_except_task_and_query_id": {
+      "as_known_at": "2026-01-01T09:00:00Z",
+      "kind": "project",
+      "knowledge_version": "knowledge-v1",
+      "subject_id": "patient-demo",
+      "target": "*",
+      "valid_at": "2026-01-01T08:30:00Z"
+    },
+    "source_of_record_unchanged": true
+  },
+  "demo_3_late_evidence_and_time_cut": {
+    "as_known_at_09_00": {
+      "capability": "native",
+      "coverage": {
+        "closure_facts": 4,
+        "eligible_sources": 3,
+        "projected_claims": 0
+      },
+      "diagnostics": {
+        "kernel_operation": "query",
+        "kernel_result_id": "demo-late-before",
+        "result_id": "demo-late-before",
+        "route_is_explicit": true,
+        "target": "late_arriving_measurement",
+        "task": "observation"
+      },
+      "evidence_witness": {
+        "root_sources": []
+      },
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "insufficient",
+      "time_cut": {
+        "as_known_at": "2026-01-01T09:00:00Z",
+        "mode": "project",
+        "valid_at": "2026-01-01T08:30:00Z"
+      },
+      "value": {
+        "claims": [],
+        "diagnostics": {
+          "reason": "no eligible claim; unknown was not coerced to false/zero"
+        },
+        "hypotheses": [],
+        "probability": null,
+        "trajectory": null
+      },
+      "value_kind": "temporal_projection",
+      "versions": {
+        "candidate": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "modules": {
+          "fever-evidence": "1"
+        },
+        "origin_candidate": "0.3.0"
+      }
+    },
+    "as_known_at_11_00": {
+      "capability": "native",
+      "coverage": {
+        "closure_facts": 5,
+        "eligible_sources": 4,
+        "projected_claims": 1,
+        "target": "late_arriving_measurement",
+        "task": "observation"
+      },
+      "diagnostics": {
+        "conflict_count": 0,
+        "kernel_operation": "query",
+        "kernel_result_id": "demo-late-after",
+        "result_id": "demo-late-after",
+        "route_is_explicit": true
+      },
+      "evidence_witness": {
+        "proofs": [
+          [
+            {
+              "derivation": {
+                "artifact_id": "artifact-late-measurement",
+                "kind": "source",
+                "mapping_version": "canonical-v1"
+              },
+              "fact_id": "source:late-measurement-record",
+              "proof_id": "proof:4af53d2d53cd020a6a744bfb",
+              "root_sources": [
+                "late-measurement-record"
+              ],
+              "support_ids": []
+            }
+          ]
+        ],
+        "root_artifacts": {
+          "late-measurement-record": {
+            "artifact_id": "artifact-late-measurement",
+            "clocks": {
+              "available_at": "2026-01-01T10:00:00Z",
+              "collected_at": "2026-01-01T08:15:00Z",
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:15:00Z",
+              "expires_at": null,
+              "recorded_at": "2026-01-01T10:00:00Z"
+            },
+            "concept": "late_arriving_measurement",
+            "context": {
+              "demonstration_only": true
+            },
+            "information_state": "present",
+            "mapping_version": "canonical-v1",
+            "method": null,
+            "raw_payload": {
+              "source_text": "late_arriving_measurement=1.0 arb"
+            },
+            "reliability": null,
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "raw_observation",
+            "source_family": null,
+            "source_id": "late-measurement-record",
+            "supersedes": null,
+            "unit": "arb",
+            "value": 1.0
+          }
+        },
+        "root_sources": [
+          "late-measurement-record"
+        ],
+        "source_families": [],
+        "statistical_independence_assumed": false
+      },
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {
+        "as_known_at": "2026-01-01T11:00:00Z",
+        "mode": "project",
+        "valid_at": "2026-01-01T08:30:00Z"
+      },
+      "value": {
+        "claims": [
+          {
+            "available_at": "2026-01-01T10:00:00Z",
+            "claim_id": "claim:4bb8c4207035ac8450f56b1f",
+            "claim_ids": [
+              "claim:4bb8c4207035ac8450f56b1f"
+            ],
+            "collected_at": "2026-01-01T08:15:00Z",
+            "concept": "late_arriving_measurement",
+            "context": {
+              "demonstration_only": true
+            },
+            "derivation": {
+              "artifact_id": "artifact-late-measurement",
+              "kind": "source",
+              "mapping_version": "canonical-v1"
+            },
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:15:00Z",
+            "expires_at": null,
+            "fact_ids": [
+              "source:late-measurement-record"
+            ],
+            "information_state": "present",
+            "method": null,
+            "proof_alternatives": [
+              {
+                "derivation": {
+                  "artifact_id": "artifact-late-measurement",
+                  "kind": "source",
+                  "mapping_version": "canonical-v1"
+                },
+                "fact_id": "source:late-measurement-record",
+                "proof_id": "proof:4af53d2d53cd020a6a744bfb",
+                "root_sources": [
+                  "late-measurement-record"
+                ],
+                "support_ids": []
+              }
+            ],
+            "recorded_at": "2026-01-01T10:00:00Z",
+            "root_sources": [
+              "late-measurement-record"
+            ],
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "raw_observation",
+            "source_families": [],
+            "support_ids": [],
+            "unit": "arb",
+            "value": 1.0
+          }
+        ],
+        "diagnostics": {
+          "conflicts": [],
+          "information_states": [
+            "present"
+          ],
+          "partition_count": 1
+        },
+        "hypotheses": [],
+        "probability": null,
+        "trajectory": null
+      },
+      "value_kind": "temporal_projection",
+      "versions": {
+        "candidate": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "modules": {
+          "fever-evidence": "1"
+        },
+        "origin_candidate": "0.3.0"
+      }
+    },
+    "available_and_recorded_at": "2026-01-01T10:00:00Z",
+    "event_time": "2026-01-01T08:15:00Z",
+    "note": "The later cut sees the same stored artifact; the earlier cut remains historically blind."
+  },
+  "demo_4_extension_without_core_change": {
+    "registration": {
+      "capability": "native",
+      "coverage": {},
+      "diagnostics": {
+        "kernel_operation": "register_module",
+        "kernel_result_id": "module:evidence:review-extension@1",
+        "result_id": "module:knowledge-v1:review-extension:1",
+        "route_is_explicit": true
+      },
+      "evidence_witness": {},
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {},
+      "value": {
+        "idempotent": false,
+        "knowledge_version": "knowledge-v1",
+        "module_id": "review-extension",
+        "projections": 0,
+        "rules": 1,
+        "version": "1"
+      },
+      "value_kind": "module_receipt",
+      "versions": {
+        "candidate": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "module": "1",
+        "origin_candidate": "0.3.0"
+      }
+    },
+    "result": {
+      "capability": "native",
+      "coverage": {
+        "closure_facts": 5,
+        "eligible_sources": 3,
+        "projected_claims": 1,
+        "target": "needs_clinician_review",
+        "task": "all"
+      },
+      "diagnostics": {
+        "conflict_count": 0,
+        "kernel_operation": "query",
+        "kernel_result_id": "demo-extension",
+        "result_id": "demo-extension",
+        "route_is_explicit": false
+      },
+      "evidence_witness": {
+        "proofs": [
+          [
+            {
+              "derivation": {
+                "kind": "positive_rule",
+                "knowledge_version": "knowledge-v1",
+                "module_id": "review-extension",
+                "module_version": "1",
+                "registered_at": "2025-12-02T00:00:00Z",
+                "rule_id": "fever-to-review"
+              },
+              "fact_id": "derived:8f495acb8d3bba0c0f5bed71",
+              "proof_id": "proof:a0b4b3cc2a3c3c6a6e785e13",
+              "root_sources": [
+                "thermometer"
+              ],
+              "support_ids": [
+                "derived:6598eea419fa65d5a50f570c"
+              ]
+            }
+          ]
+        ],
+        "root_artifacts": {
+          "thermometer": {
+            "artifact_id": "artifact-thermometer",
+            "clocks": {
+              "available_at": "2026-01-01T08:05:00Z",
+              "collected_at": "2026-01-01T08:00:00Z",
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "recorded_at": "2026-01-01T08:05:00Z"
+            },
+            "concept": "temperature",
+            "context": {},
+            "information_state": "present",
+            "mapping_version": "canonical-v1",
+            "method": null,
+            "raw_payload": {
+              "source_text": "temperature 39.0 Cel"
+            },
+            "reliability": null,
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "raw_observation",
+            "source_family": null,
+            "source_id": "thermometer",
+            "supersedes": null,
+            "unit": "Cel",
+            "value": 39.0
+          }
+        },
+        "root_sources": [
+          "thermometer"
+        ],
+        "source_families": [],
+        "statistical_independence_assumed": false
+      },
+      "origin": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "candidate_version": "0.3.0",
+        "control_plane": "K0",
+        "native_state_kind": "temporal_evidence_cut",
+        "subkernel": "evidence",
+        "universal_patient_state": false
+      },
+      "status": "ok",
+      "time_cut": {
+        "as_known_at": "2026-01-01T09:00:00Z",
+        "mode": "project",
+        "valid_at": "2026-01-01T09:00:00Z"
+      },
+      "value": {
+        "claims": [
+          {
+            "available_at": "2026-01-01T08:05:00Z",
+            "claim_id": "claim:b8e31ed96b61e9143f2bcf8a",
+            "claim_ids": [
+              "claim:b8e31ed96b61e9143f2bcf8a"
+            ],
+            "collected_at": "2026-01-01T08:00:00Z",
+            "concept": "needs_clinician_review",
+            "context": {},
+            "derivation": {
+              "kind": "positive_rule",
+              "knowledge_version": "knowledge-v1",
+              "module_id": "review-extension",
+              "module_version": "1",
+              "registered_at": "2025-12-02T00:00:00Z",
+              "rule_id": "fever-to-review"
+            },
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "fact_ids": [
+              "derived:8f495acb8d3bba0c0f5bed71"
+            ],
+            "information_state": "present",
+            "method": "rule:review-extension/fever-to-review",
+            "proof_alternatives": [
+              {
+                "derivation": {
+                  "kind": "positive_rule",
+                  "knowledge_version": "knowledge-v1",
+                  "module_id": "review-extension",
+                  "module_version": "1",
+                  "registered_at": "2025-12-02T00:00:00Z",
+                  "rule_id": "fever-to-review"
+                },
+                "fact_id": "derived:8f495acb8d3bba0c0f5bed71",
+                "proof_id": "proof:a0b4b3cc2a3c3c6a6e785e13",
+                "root_sources": [
+                  "thermometer"
+                ],
+                "support_ids": [
+                  "derived:6598eea419fa65d5a50f570c"
+                ]
+              }
+            ],
+            "recorded_at": "2026-01-01T08:05:00Z",
+            "root_sources": [
+              "thermometer"
+            ],
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "deterministic_derivation",
+            "source_families": [],
+            "support_ids": [
+              "derived:6598eea419fa65d5a50f570c"
+            ],
+            "unit": null,
+            "value": true
+          }
+        ],
+        "diagnostics": {
+          "conflicts": [],
+          "information_states": [
+            "present"
+          ],
+          "partition_count": 1
+        },
+        "hypotheses": [],
+        "probability": null,
+        "trajectory": null
+      },
+      "value_kind": "temporal_projection",
+      "versions": {
+        "candidate": "0.3.0",
+        "kernel": "k0-reference-0.1.0",
+        "knowledge": "knowledge-v1",
+        "modules": {
+          "fever-evidence": "1",
+          "review-extension": "1"
+        },
+        "origin_candidate": "0.3.0"
+      }
+    }
+  },
+  "demo_5_honest_refusal": {
+    "capability": "unsupported",
+    "coverage": {},
+    "diagnostics": {
+      "error": "DBN forecast 不等于同一患者 AAP counterfactual；请查询 FiniteSCMModule",
+      "kernel_operation": "query_through_bridge",
+      "kernel_result_id": "demo-refusal",
+      "query_id": "demo-refusal",
+      "query_kind": "counterfactual",
+      "result_id": "causal-state-000003",
+      "route_is_explicit": true
+    },
+    "evidence_witness": {
+      "bridge_materialization": {
+        "artifact_id": "artifact:bridge:fever-to-state:6c0520378f3b15f6ddbf",
+        "fresh_model_run": true,
+        "root_sources": [
+          "thermometer"
+        ],
+        "source_claim_id": "claim:196d79489c5b60d0db2b9138",
+        "transform": "boolean_to_binary"
+      },
+      "downstream_direct": {},
+      "upstream_evidence": {
+        "proofs": [
+          [
+            {
+              "derivation": {
+                "kind": "positive_rule",
+                "knowledge_version": "knowledge-v1",
+                "module_id": "fever-evidence",
+                "module_version": "1",
+                "registered_at": "2025-12-01T00:00:00Z",
+                "rule_id": "temperature-to-fever"
+              },
+              "fact_id": "derived:6598eea419fa65d5a50f570c",
+              "proof_id": "proof:91e7bcaa79eeee14a21f2a55",
+              "root_sources": [
+                "thermometer"
+              ],
+              "support_ids": [
+                "source:thermometer"
+              ]
+            }
+          ]
+        ],
+        "root_artifacts": {
+          "thermometer": {
+            "artifact_id": "artifact-thermometer",
+            "clocks": {
+              "available_at": "2026-01-01T08:05:00Z",
+              "collected_at": "2026-01-01T08:00:00Z",
+              "effective_end": null,
+              "effective_start": "2026-01-01T08:00:00Z",
+              "expires_at": null,
+              "recorded_at": "2026-01-01T08:05:00Z"
+            },
+            "concept": "temperature",
+            "context": {},
+            "information_state": "present",
+            "mapping_version": "canonical-v1",
+            "method": null,
+            "raw_payload": {
+              "source_text": "temperature 39.0 Cel"
+            },
+            "reliability": null,
+            "scope": {
+              "body_site": null,
+              "device_id": null,
+              "encounter_id": "encounter-demo",
+              "site_id": null,
+              "specimen_id": null,
+              "subject_id": "patient-demo"
+            },
+            "semantic_role": "raw_observation",
+            "source_family": null,
+            "source_id": "thermometer",
+            "supersedes": null,
+            "unit": "Cel",
+            "value": 39.0
+          }
+        },
+        "root_sources": [
+          "thermometer"
+        ],
+        "source_families": [],
+        "statistical_independence_assumed": false
+      }
+    },
+    "origin": {
+      "bridge": "fever-to-state@1",
+      "candidate_id": "candidate-b-dynamic-causal-state",
+      "candidate_version": "0.2.0",
+      "control_plane": "K0",
+      "native_state_kind": "model_posterior_or_causal_world",
+      "subkernel": "causal_state",
+      "universal_patient_state": false
+    },
+    "status": "unsupported",
+    "time_cut": {},
+    "value": null,
+    "value_kind": "none",
+    "versions": {
+      "bridge": "1",
+      "candidate": "0.2.0",
+      "evidence_candidate": "0.3.0",
+      "evidence_knowledge": "knowledge-v1",
+      "kernel": "k0-reference-0.1.0",
+      "origin_candidate": "0.2.0"
+    }
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "composition",
+            "op": "query",
+            "query_id": "q-compose"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "composition_law_probe",
+          "module_id": "public-model",
+          "public_model": {
+            "claimed_law": "associative_parallel_sum",
+            "input": 1.0,
+            "model_kind": "composition_law_probe",
+            "modules": {
+              "A": {
+                "delta": 1.0
+              },
+              "B": {
+                "delta": -0.25
+              },
+              "C": {
+                "delta": 0.5
+              }
+            }
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "check_invariant",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-compose",
+          "requested_guarantees": [
+            "associativity",
+            "all_modules_used"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "composition_result",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "claimed_law": "associative_parallel_sum",
+      "input": 1.0,
+      "model_kind": "composition_law_probe",
+      "modules": {
+        "A": {
+          "delta": 1.0
+        },
+        "B": {
+          "delta": -0.25
+        },
+        "C": {
+          "delta": 0.5
+        }
+      }
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 1e-12,
+          "candidate_paths": [
+            "/value/result",
+            "/value"
+          ],
+          "reference_id": "E07",
+          "reference_path": "/left_bracket",
+          "result": "main:composition"
+        },
+        "assertion_id": "composition-reference",
+        "dimension": "composition",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "A",
+            "B",
+            "C"
+          ],
+          "result": "main:composition"
+        },
+        "assertion_id": "all-modules-used",
+        "dimension": "composition",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E07"
+  ],
+  "severity": "HARD",
+  "title": "composition bracketing registration and update-order robustness",
+  "workload_id": "E07"
+}

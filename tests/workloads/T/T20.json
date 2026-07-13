@@ -1,0 +1,120 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "phenotype-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "phenotype-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "unmapped_phenotype",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "unmapped_phenotype={'feature': 'novel-pattern'}",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "phenotype-root",
+          "supersedes": null,
+          "unit": null,
+          "value": {
+            "feature": "novel-pattern"
+          }
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "coverage_status"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "unseen_disease",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "coverage_registry": {
+        "open_world": true,
+        "registered_hypotheses": [
+          "known-disease-A",
+          "known-disease-B"
+        ],
+        "unknown_target": "unseen_disease"
+      }
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "axis": "coverage_status",
+          "expected": [
+            "out_of_model"
+          ],
+          "result": "main:result"
+        },
+        "assertion_id": "coverage-explicit",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "result.axis@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T20"
+  ],
+  "severity": "HARD",
+  "title": "unseen disease can be reported out of model",
+  "workload_id": "T20"
+}

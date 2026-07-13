@@ -1,0 +1,197 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "fixed",
+            "op": "query",
+            "query_id": "q-fixed"
+          },
+          {
+            "capture": "cycle",
+            "op": "query",
+            "query_id": "q-cycle"
+          },
+          {
+            "capture": "no_solution",
+            "op": "query",
+            "query_id": "q-no"
+          },
+          {
+            "capture": "non_unique",
+            "op": "query",
+            "query_id": "q-many"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "feedback_and_support",
+          "module_id": "public-model",
+          "public_model": {
+            "contraction": "x_next=0.4*x+0.6",
+            "model_kind": "feedback_and_support",
+            "no_solution": "x=x+1",
+            "non_unique": "x=x",
+            "rootless_support_cycle": [
+              "A<-B",
+              "B<-A"
+            ]
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "check_invariant",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-fixed",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "contraction",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "reachability",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-cycle",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "rootless_support",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "check_invariant",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-no",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "no_solution",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "check_invariant",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-many",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "non_unique",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "contraction": "x_next=0.4*x+0.6",
+      "model_kind": "feedback_and_support",
+      "no_solution": "x=x+1",
+      "non_unique": "x=x",
+      "rootless_support_cycle": [
+        "A<-B",
+        "B<-A"
+      ]
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 1e-08,
+          "candidate_paths": [
+            "/value/value",
+            "/value"
+          ],
+          "reference_id": "E08",
+          "reference_path": "/contraction/value",
+          "result": "main:fixed"
+        },
+        "assertion_id": "fixed-point",
+        "dimension": "dynamic",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "expected": 0,
+          "result": "main:cycle"
+        },
+        "assertion_id": "rootless-empty",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_count@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "no_solution"
+          ],
+          "result": "main:no_solution"
+        },
+        "assertion_id": "no-solution-explicit",
+        "dimension": "numerical",
+        "hard_gate": true,
+        "oracle_id": "result.computation@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "multiple_solutions"
+          ],
+          "result": "main:non_unique"
+        },
+        "assertion_id": "non-unique-explicit",
+        "dimension": "numerical",
+        "hard_gate": true,
+        "oracle_id": "result.computation@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E08"
+  ],
+  "severity": "HARD",
+  "title": "valid feedback versus rootless epistemic self-support",
+  "workload_id": "E08"
+}

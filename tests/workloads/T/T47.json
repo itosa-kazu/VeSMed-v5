@@ -1,0 +1,207 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "register-old",
+            "module_id": "risk-model-v1",
+            "op": "register_module"
+          },
+          {
+            "capture": "register-now",
+            "module_id": "risk-model-v2",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "raw-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "old",
+            "op": "query",
+            "query_id": "q-old"
+          },
+          {
+            "capture": "now",
+            "op": "query",
+            "query_id": "q-now"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "raw-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "policy_induced_outcome",
+          "context": {
+            "exposure": "recommended-treatment",
+            "policy_id": "policy-A"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "policy_induced_outcome=4.0",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "raw-root",
+          "supersedes": null,
+          "unit": null,
+          "value": 4.0
+        }
+      ],
+      "modules": [
+        {
+          "family": "versioned_probabilistic_model",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "risk-v1",
+          "module_id": "risk-model-v1",
+          "public_model": {
+            "channel": "pre_policy",
+            "closed_ir": {
+              "intercept": 0.1,
+              "op": "affine",
+              "slope": 0.1
+            },
+            "input": "policy_induced_outcome",
+            "output": "risk_prediction"
+          }
+        },
+        {
+          "family": "versioned_probabilistic_model",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "risk-v2",
+          "module_id": "risk-model-v2",
+          "public_model": {
+            "channel": "policy_induced",
+            "closed_ir": {
+              "intercept": 0.2,
+              "op": "affine",
+              "slope": 0.05
+            },
+            "input": "policy_induced_outcome",
+            "output": "risk_prediction",
+            "policy_id": "policy-A"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "replay_as_then",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "risk-v1",
+          "query_id": "q-old",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "risk_prediction",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "reinterpret_now",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "risk-v2",
+          "query_id": "q-now",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "risk_prediction",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "left": "main:old",
+          "right": "main:now",
+          "semantic_only": true
+        },
+        "assertion_id": "versioned-interpretation",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      },
+      {
+        "args": {
+          "left": "main:old",
+          "right": "main:now"
+        },
+        "assertion_id": "raw-root-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.same_roots@1"
+      },
+      {
+        "args": {
+          "expected": [
+            0.5
+          ],
+          "result": "main:old"
+        },
+        "assertion_id": "pre-policy-model-output",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      },
+      {
+        "args": {
+          "expected": [
+            0.4
+          ],
+          "result": "main:now"
+        },
+        "assertion_id": "policy-aware-model-output",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T47"
+  ],
+  "severity": "HARD",
+  "title": "policy feedback and online updates are versioned",
+  "workload_id": "T47"
+}

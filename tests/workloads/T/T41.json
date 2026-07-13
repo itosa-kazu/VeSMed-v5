@@ -1,0 +1,152 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "p1-root",
+              "p2-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "p1-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "specimen_result",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "specimen_result=positive",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": "S1",
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "p1-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "positive"
+        },
+        {
+          "artifact_id": "p2-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "specimen_result",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "specimen_result=negative",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E2",
+            "specimen_id": "S2",
+            "subject_id": "P2"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "p2-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "negative"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "specimen_result",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "result": "main:result",
+          "root": "p1-root",
+          "visible": true
+        },
+        "assertion_id": "own-scope-visible",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "result": "main:result",
+          "root": "p2-root",
+          "visible": false
+        },
+        "assertion_id": "foreign-scope-hidden",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T41"
+  ],
+  "severity": "HARD",
+  "title": "subject encounter and specimen scopes do not cross",
+  "workload_id": "T41"
+}

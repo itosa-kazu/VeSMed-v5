@@ -1,0 +1,208 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "register-old",
+            "module_id": "active-rule-v1",
+            "op": "register_module"
+          },
+          {
+            "capture": "register-now",
+            "module_id": "retired-rule-v2",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "raw-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "old",
+            "op": "query",
+            "query_id": "q-old"
+          },
+          {
+            "capture": "now",
+            "op": "query",
+            "query_id": "q-now"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "raw-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "severity_marker_raw",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "severity_marker_raw=marker-positive",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "raw-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "marker-positive"
+        }
+      ],
+      "modules": [
+        {
+          "family": "versioned_knowledge_rule",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "severity-v1",
+          "module_id": "active-rule-v1",
+          "public_model": {
+            "closed_ir": {
+              "from": "marker-positive",
+              "op": "map",
+              "to": "high"
+            },
+            "input": "severity_marker_raw",
+            "output": "derived_severity"
+          }
+        },
+        {
+          "family": "versioned_knowledge_rule",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "severity-v2",
+          "module_id": "retired-rule-v2",
+          "public_model": {
+            "closed_ir": {
+              "op": "retired",
+              "replaces": "active-rule-v1",
+              "rules": []
+            },
+            "input": "severity_marker_raw",
+            "output": "derived_severity"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "replay_as_then",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "severity-v1",
+          "query_id": "q-old",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "derived_severity",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "reinterpret_now",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "severity-v2",
+          "query_id": "q-now",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "derived_severity",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "left": "main:old",
+          "right": "main:now",
+          "semantic_only": true
+        },
+        "assertion_id": "versioned-interpretation",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "left": "main:old",
+          "right": "main:now"
+        },
+        "assertion_id": "raw-root-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.same_roots@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "high"
+          ],
+          "result": "main:old"
+        },
+        "assertion_id": "old-rule-live",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "forbidden": "high",
+          "result": "main:now"
+        },
+        "assertion_id": "retired-rule-not-used",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.not_contains@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T36"
+  ],
+  "severity": "HARD",
+  "title": "rule removal changes reinterpretation, not raw history",
+  "workload_id": "T36"
+}

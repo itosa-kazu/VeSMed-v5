@@ -1,0 +1,156 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "forecast",
+            "op": "query",
+            "query_id": "q-forecast"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "typed_open_ode",
+          "module_id": "public-model",
+          "public_model": {
+            "initial": {
+              "burden": 0.25,
+              "drug_amount": 0.0,
+              "renal_capacity": 0.45
+            },
+            "input": {
+              "end_hour": 8,
+              "infusion_rate": 0.18,
+              "start_hour": 0
+            },
+            "interaction_equations": [
+              "clearance = CL0*renal*amount/(Km+amount)",
+              "efficacy = Emax*amount/(EC50+amount)",
+              "toxicity = (amount^2/(Tmax^2+amount^2))*(1-renal)",
+              "dBurden_dt = r_burden*burden*(1-burden)-efficacy*burden"
+            ],
+            "model_kind": "typed_open_ode",
+            "parameters": {
+              "CL0": 0.8,
+              "EC50": 0.4,
+              "Emax": 0.9,
+              "Km": 0.3,
+              "Tmax": 0.7,
+              "r_burden": 0.25
+            },
+            "ports": [
+              "A.drug_effect<-I.efficacy",
+              "I.burden<-A.burden",
+              "I.amount<-C.amount",
+              "I.renal<-B.capacity",
+              "C.clearance<-I.clearance"
+            ],
+            "query_hours": [
+              4,
+              8,
+              12,
+              24
+            ]
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": 24,
+          "intervention": null,
+          "kind": "forecast",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-forecast",
+          "requested_guarantees": [
+            "explicit_interaction"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "burden",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "initial": {
+        "burden": 0.25,
+        "drug_amount": 0.0,
+        "renal_capacity": 0.45
+      },
+      "input": {
+        "end_hour": 8,
+        "infusion_rate": 0.18,
+        "start_hour": 0
+      },
+      "interaction_equations": [
+        "clearance = CL0*renal*amount/(Km+amount)",
+        "efficacy = Emax*amount/(EC50+amount)",
+        "toxicity = (amount^2/(Tmax^2+amount^2))*(1-renal)",
+        "dBurden_dt = r_burden*burden*(1-burden)-efficacy*burden"
+      ],
+      "model_kind": "typed_open_ode",
+      "parameters": {
+        "CL0": 0.8,
+        "EC50": 0.4,
+        "Emax": 0.9,
+        "Km": 0.3,
+        "Tmax": 0.7,
+        "r_burden": 0.25
+      },
+      "ports": [
+        "A.drug_effect<-I.efficacy",
+        "I.burden<-A.burden",
+        "I.amount<-C.amount",
+        "I.renal<-B.capacity",
+        "C.clearance<-I.clearance"
+      ],
+      "query_hours": [
+        4,
+        8,
+        12,
+        24
+      ]
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 0.08,
+          "reference_id": "E06",
+          "reference_path": "/trajectory",
+          "relative_tolerance": 0.15,
+          "result": "main:forecast"
+        },
+        "assertion_id": "nonlinear-composition",
+        "dimension": "composition",
+        "hard_gate": true,
+        "oracle_id": "reference.trajectory@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E06"
+  ],
+  "severity": "HARD",
+  "title": "nonlinear three-module composition and explicit interaction",
+  "workload_id": "E06"
+}

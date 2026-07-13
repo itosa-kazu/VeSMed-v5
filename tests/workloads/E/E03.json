@@ -1,0 +1,207 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "factual"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "cf",
+            "op": "query",
+            "query_id": "q-cf"
+          },
+          {
+            "capture": "population",
+            "op": "query",
+            "query_id": "q-pop"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "factual",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "factual_T1_Y2",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "factual_T1_Y2={'T': 1, 'Y': 2}",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "factual",
+          "supersedes": null,
+          "unit": null,
+          "value": {
+            "T": 1,
+            "Y": 2
+          }
+        }
+      ],
+      "modules": [
+        {
+          "family": "finite_scm",
+          "module_id": "public-model",
+          "public_model": {
+            "R": {
+              "probabilities": [
+                0.5,
+                0.5
+              ],
+              "values": [
+                0,
+                1
+              ]
+            },
+            "cross_world_policy": "share_abduced_exogenous",
+            "factual_evidence": {
+              "T": 1,
+              "Y": 2
+            },
+            "model_kind": "finite_scm",
+            "structural_equation": "Y = R*(1+T) + (1-R)*(-T)"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": {
+            "value": 0,
+            "variable": "T"
+          },
+          "kind": "counterfactual",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-cf",
+          "requested_guarantees": [
+            "share_abduced_exogenous"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y",
+          "task": "individual",
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": {
+            "value": 0,
+            "variable": "T"
+          },
+          "kind": "intervene",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-pop",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "Y",
+          "task": "population",
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "R": {
+        "probabilities": [
+          0.5,
+          0.5
+        ],
+        "values": [
+          0,
+          1
+        ]
+      },
+      "cross_world_policy": "share_abduced_exogenous",
+      "factual_evidence": {
+        "T": 1,
+        "Y": 2
+      },
+      "model_kind": "finite_scm",
+      "structural_equation": "Y = R*(1+T) + (1-R)*(-T)"
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value/mean",
+            "/value"
+          ],
+          "reference_id": "E03",
+          "reference_path": "/individual_counterfactual_Y_T0",
+          "result": "main:cf"
+        },
+        "assertion_id": "individual-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      },
+      {
+        "args": {
+          "absolute_tolerance": 1e-09,
+          "candidate_paths": [
+            "/value/probability",
+            "/value/mean",
+            "/value"
+          ],
+          "reference_id": "E03",
+          "reference_path": "/population_do_mean_Y_T0",
+          "result": "main:population"
+        },
+        "assertion_id": "population-exact",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "reference.scalar@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E03"
+  ],
+  "severity": "HARD",
+  "title": "individual counterfactual shares abduced exogenous background",
+  "workload_id": "E03"
+}

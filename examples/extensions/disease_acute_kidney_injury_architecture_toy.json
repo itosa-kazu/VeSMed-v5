@@ -1,0 +1,137 @@
+{
+  "kind": "dynamic",
+  "module_id": "disease-acute-kidney-injury-architecture-toy",
+  "version": "1.0.0",
+  "step_hours": 24,
+  "max_joint_states": 16,
+  "variables": [
+    {
+      "name": "AKI",
+      "role": "latent",
+      "domain": [0, 1]
+    },
+    {
+      "name": "CREATININE_SIGNAL",
+      "role": "observation",
+      "domain": [0, 1],
+      "concept": "serum_creatinine_elevated"
+    }
+  ],
+  "initial": [
+    {
+      "target": "AKI",
+      "masses": [
+        {
+          "value": 0,
+          "probability": 0.8
+        },
+        {
+          "value": 1,
+          "probability": 0.2
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "target": "AKI",
+      "masses": [
+        {
+          "value": 0,
+          "probability": {
+            "op": "sub",
+            "args": [
+              1,
+              {
+                "op": "add",
+                "args": [
+                  0.05,
+                  {
+                    "op": "mul",
+                    "args": [
+                      0.9,
+                      {
+                        "op": "var",
+                        "value": "prev__AKI"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": 1,
+          "probability": {
+            "op": "add",
+            "args": [
+              0.05,
+              {
+                "op": "mul",
+                "args": [
+                  0.9,
+                  {
+                    "op": "var",
+                    "value": "prev__AKI"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "emissions": [
+    {
+      "target": "CREATININE_SIGNAL",
+      "masses": [
+        {
+          "value": 0,
+          "probability": {
+            "op": "sub",
+            "args": [
+              1,
+              {
+                "op": "add",
+                "args": [
+                  0.1,
+                  {
+                    "op": "mul",
+                    "args": [
+                      0.8,
+                      {
+                        "op": "var",
+                        "value": "state__AKI"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "value": 1,
+          "probability": {
+            "op": "add",
+            "args": [
+              0.1,
+              {
+                "op": "mul",
+                "args": [
+                  0.8,
+                  {
+                    "op": "var",
+                    "value": "state__AKI"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

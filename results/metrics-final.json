@@ -1,0 +1,1108 @@
+{
+  "candidates": {
+    "causal_state": {
+      "manifest": {
+        "candidate_id": "candidate-b-dynamic-causal-state",
+        "companion_layer_count": 0,
+        "companion_layers": [],
+        "declared_failure_type_count": 6,
+        "declared_failure_types": [
+          "unsupported",
+          "insufficient",
+          "conflicting",
+          "invalid",
+          "numerical_failure",
+          "out_of_model"
+        ],
+        "declared_query_capabilities": [
+          "project",
+          "condition",
+          "filter",
+          "forecast",
+          "intervene",
+          "counterfactual"
+        ],
+        "declared_query_capability_count": 6,
+        "execution_semantics": [
+          "exact finite enumeration",
+          "typed latent/observation/action roles",
+          "closed Expr IR",
+          "explicit coverage and numerical failure"
+        ],
+        "execution_semantics_count": 4,
+        "foreign_boundaries": [
+          {
+            "boundary": "evidence_history",
+            "does_not_provide": [
+              "historical transaction cuts",
+              "retraction",
+              "derivation lineage"
+            ],
+            "native": false,
+            "provides": [],
+            "semantic_family": "not implemented natively"
+          }
+        ],
+        "foreign_boundary_count": 1,
+        "formal_signature": [
+          "DBN: P(X0) product_t P(X_t|X_{t-1},A_t) P(Y_t|X_t,A_t)",
+          "SCM: M=(U,V,F,P(U)); condition != do; CF=AAP(U_same)"
+        ],
+        "formal_signature_count": 2,
+        "primitive_group_count": 3,
+        "primitive_item_count": 8,
+        "primitive_profile": {
+          "foreign_companion": [],
+          "native_causal": [
+            "exogenous distribution",
+            "structural equation",
+            "do replacement",
+            "AAP shared-exogenous counterfactual"
+          ],
+          "native_state": [
+            "finite variable",
+            "conditional probability factor",
+            "Bayes filter",
+            "Markov transition"
+          ]
+        },
+        "unique_primitive_count": 8,
+        "unique_primitives": [
+          "AAP shared-exogenous counterfactual",
+          "Bayes filter",
+          "Markov transition",
+          "conditional probability factor",
+          "do replacement",
+          "exogenous distribution",
+          "finite variable",
+          "structural equation"
+        ],
+        "version": "0.2.0"
+      },
+      "source_files": [
+        {
+          "anti_dispatch_scan": {
+            "forbidden_harness_or_reference_import_count": 0,
+            "forbidden_harness_or_reference_imports": [],
+            "literal_test_id_count": 0,
+            "literal_test_id_locations": [],
+            "static_special_case_indicator_count": 0,
+            "suspicious_identifier_occurrences": {},
+            "test_or_oracle_dispatch_site_count": 0,
+            "test_or_oracle_dispatch_sites": []
+          },
+          "bytes": 103420,
+          "complexity_proxy": {
+            "decision_points": 507,
+            "module_cyclomatic_proxy": 508
+          },
+          "definitions": {
+            "async_function_count": 0,
+            "class_count": 13,
+            "class_names": [
+              "CausalStateCandidate",
+              "DynamicModule",
+              "FiniteConditional",
+              "FiniteSCMModule",
+              "FiniteVariable",
+              "StructuralEquation",
+              "ValueProbability",
+              "VariableRole",
+              "_ConflictingEvidence",
+              "_InsufficientEvidence",
+              "_LedgerEvent",
+              "_OutOfModel",
+              "_UnsupportedSemantic"
+            ],
+            "closed_ir_rule_like_class_count": 3,
+            "closed_ir_rule_like_class_names": [
+              "DynamicModule",
+              "FiniteSCMModule",
+              "StructuralEquation"
+            ],
+            "function_count_including_methods_and_nested": 64,
+            "method_count": 54,
+            "top_level_function_count": 9
+          },
+          "imports": [
+            "__future__",
+            "copy",
+            "dataclasses",
+            "datetime",
+            "enum",
+            "itertools",
+            "math",
+            "prototype.contract",
+            "prototype.ir",
+            "typing"
+          ],
+          "loc": {
+            "ast_statement_count": 1023,
+            "blank_lines": 131,
+            "comment_only_lines": 33,
+            "nonblank_non_comment_lines": 2080,
+            "physical_lines": 2244
+          },
+          "path": "prototype/candidates/causal_state.py",
+          "sha256": "b1e84caa79da522aa82889339ef1090c14ce53a443cb74babf898748f7f893e4"
+        }
+      ],
+      "totals": {
+        "anti_dispatch_scan": {
+          "forbidden_harness_or_reference_import_count": 0,
+          "literal_test_id_count": 0,
+          "static_special_case_indicator_count": 0,
+          "test_or_oracle_dispatch_site_count": 0
+        },
+        "complexity_proxy": {
+          "decision_points": 507,
+          "per_file_cyclomatic_proxy_sum": 508
+        },
+        "definitions": {
+          "async_function_count": 0,
+          "class_count": 13,
+          "closed_ir_rule_like_class_count": 3,
+          "function_count_including_methods_and_nested": 64,
+          "method_count": 54,
+          "top_level_function_count": 9
+        },
+        "file_count": 1,
+        "loc": {
+          "ast_statement_count": 1023,
+          "blank_lines": 131,
+          "comment_only_lines": 33,
+          "nonblank_non_comment_lines": 2080,
+          "physical_lines": 2244
+        }
+      }
+    },
+    "clinical_kernel": {
+      "manifest": {
+        "candidate_id": "k0-typed-clinical-control-plane",
+        "companion_layer_count": 1,
+        "companion_layers": [
+          "versioned evidence-to-model materialisation bridge"
+        ],
+        "declared_failure_type_count": 7,
+        "declared_failure_types": [
+          "ok",
+          "unsupported",
+          "insufficient",
+          "conflicting",
+          "invalid",
+          "numerical_failure",
+          "out_of_model"
+        ],
+        "declared_query_capabilities": [
+          "condition",
+          "counterfactual",
+          "filter",
+          "forecast",
+          "intervene",
+          "project",
+          "reachability",
+          "reinterpret_now",
+          "replay_as_then"
+        ],
+        "declared_query_capability_count": 9,
+        "execution_semantics": [
+          "explicit semantic-subkernel routing",
+          "append evidence + non-causal rewrite replica",
+          "fresh causal run per bridged evidence cut",
+          "origin/version/witness preserving product result"
+        ],
+        "execution_semantics_count": 4,
+        "foreign_boundaries": [
+          {
+            "boundary": "evidence_to_model",
+            "callbacks": false,
+            "fresh_run": true,
+            "policy": "only registered EvidenceModelBridge"
+          },
+          {
+            "boundary": "continuous/public benchmark models",
+            "callbacks": false,
+            "policy": "unsupported until a typed audited adapter is installed"
+          }
+        ],
+        "foreign_boundary_count": 2,
+        "formal_signature": [
+          "TypedArtifactRole + IdentityAndScope + TypedTimeAndCut",
+          "VersionedDerivationAndProvenance + ClosedQueryAlgebra",
+          "ProductResultAndFailure + InvariantEnforcement",
+          "EvidenceCut --versioned closed bridge--> model input"
+        ],
+        "formal_signature_count": 4,
+        "primitive_group_count": 2,
+        "primitive_item_count": 7,
+        "primitive_profile": {
+          "control_plane": [
+            "typed artifact qualification",
+            "explicit time cut",
+            "closed route",
+            "orthogonal failure"
+          ],
+          "non_unified_native_states": [
+            "temporal evidence cut",
+            "finite posterior/counterfactual world",
+            "typed rewrite configuration"
+          ]
+        },
+        "unique_primitive_count": 7,
+        "unique_primitives": [
+          "closed route",
+          "explicit time cut",
+          "finite posterior/counterfactual world",
+          "orthogonal failure",
+          "temporal evidence cut",
+          "typed artifact qualification",
+          "typed rewrite configuration"
+        ],
+        "version": "k0-reference-0.1.0"
+      },
+      "source_files": [
+        {
+          "anti_dispatch_scan": {
+            "forbidden_harness_or_reference_import_count": 0,
+            "forbidden_harness_or_reference_imports": [],
+            "literal_test_id_count": 0,
+            "literal_test_id_locations": [],
+            "static_special_case_indicator_count": 0,
+            "suspicious_identifier_occurrences": {},
+            "test_or_oracle_dispatch_site_count": 0,
+            "test_or_oracle_dispatch_sites": []
+          },
+          "bytes": 36527,
+          "complexity_proxy": {
+            "decision_points": 110,
+            "module_cyclomatic_proxy": 111
+          },
+          "definitions": {
+            "async_function_count": 0,
+            "class_count": 6,
+            "class_names": [
+              "BridgeTransform",
+              "BridgedQuery",
+              "ClinicalKernel",
+              "EvidenceModelBridge",
+              "RoutedQuery",
+              "Subkernel"
+            ],
+            "closed_ir_rule_like_class_count": 0,
+            "closed_ir_rule_like_class_names": [],
+            "function_count_including_methods_and_nested": 28,
+            "method_count": 24,
+            "top_level_function_count": 4
+          },
+          "imports": [
+            "__future__",
+            "copy",
+            "dataclasses",
+            "enum",
+            "hashlib",
+            "json",
+            "prototype.candidates.causal_state",
+            "prototype.candidates.rewrite_open",
+            "prototype.candidates.temporal_ledger",
+            "prototype.contract",
+            "typing"
+          ],
+          "loc": {
+            "ast_statement_count": 308,
+            "blank_lines": 61,
+            "comment_only_lines": 25,
+            "nonblank_non_comment_lines": 694,
+            "physical_lines": 780
+          },
+          "path": "prototype/kernel.py",
+          "sha256": "25a3d529757edb09957c89ad3ab9712f867054be6ff181d98c9fe60348761c53"
+        }
+      ],
+      "totals": {
+        "anti_dispatch_scan": {
+          "forbidden_harness_or_reference_import_count": 0,
+          "literal_test_id_count": 0,
+          "static_special_case_indicator_count": 0,
+          "test_or_oracle_dispatch_site_count": 0
+        },
+        "complexity_proxy": {
+          "decision_points": 110,
+          "per_file_cyclomatic_proxy_sum": 111
+        },
+        "definitions": {
+          "async_function_count": 0,
+          "class_count": 6,
+          "closed_ir_rule_like_class_count": 0,
+          "function_count_including_methods_and_nested": 28,
+          "method_count": 24,
+          "top_level_function_count": 4
+        },
+        "file_count": 1,
+        "loc": {
+          "ast_statement_count": 308,
+          "blank_lines": 61,
+          "comment_only_lines": 25,
+          "nonblank_non_comment_lines": 694,
+          "physical_lines": 780
+        }
+      }
+    },
+    "model_subkernel": {
+      "manifest": {
+        "candidate_id": "experimental-model-subkernel",
+        "companion_layer_count": 0,
+        "companion_layers": [],
+        "declared_failure_type_count": 5,
+        "declared_failure_types": [
+          "invalid",
+          "unsupported",
+          "insufficient",
+          "numerical_failure",
+          "out_of_model"
+        ],
+        "declared_query_capabilities": [
+          "condition",
+          "filter",
+          "forecast",
+          "intervene",
+          "counterfactual",
+          "reachability",
+          "check_invariant",
+          "explain"
+        ],
+        "declared_query_capability_count": 8,
+        "execution_semantics": [
+          "exact finite enumeration",
+          "abduction-action-prediction",
+          "deterministic RK4 with explicit discontinuities",
+          "finite-hypothesis Bayes update",
+          "typed fixed-point classification"
+        ],
+        "execution_semantics_count": 5,
+        "foreign_boundaries": [],
+        "foreign_boundary_count": 0,
+        "formal_signature": [
+          "ClosedPublicModel",
+          "SourceArtifact",
+          "QuerySpec",
+          "CapabilityResult"
+        ],
+        "formal_signature_count": 4,
+        "primitive_group_count": 1,
+        "primitive_item_count": 7,
+        "primitive_profile": {
+          "native": [
+            "controlled_state_space",
+            "finite_scm",
+            "nonlinear_state_space",
+            "finite_hypothesis_model",
+            "typed_open_ode",
+            "composition_law_probe",
+            "feedback_and_support"
+          ]
+        },
+        "unique_primitive_count": 7,
+        "unique_primitives": [
+          "composition_law_probe",
+          "controlled_state_space",
+          "feedback_and_support",
+          "finite_hypothesis_model",
+          "finite_scm",
+          "nonlinear_state_space",
+          "typed_open_ode"
+        ],
+        "version": "experimental-model-subkernel-v1"
+      },
+      "source_files": [
+        {
+          "anti_dispatch_scan": {
+            "forbidden_harness_or_reference_import_count": 0,
+            "forbidden_harness_or_reference_imports": [],
+            "literal_test_id_count": 0,
+            "literal_test_id_locations": [],
+            "static_special_case_indicator_count": 0,
+            "suspicious_identifier_occurrences": {
+              "oracle": 1,
+              "oracle_view": 1,
+              "reference_output": 1,
+              "test_id": 1,
+              "workload_id": 1
+            },
+            "test_or_oracle_dispatch_site_count": 0,
+            "test_or_oracle_dispatch_sites": []
+          },
+          "bytes": 64470,
+          "complexity_proxy": {
+            "decision_points": 309,
+            "module_cyclomatic_proxy": 310
+          },
+          "definitions": {
+            "async_function_count": 0,
+            "class_count": 3,
+            "class_names": [
+              "ExperimentalModelSubkernel",
+              "ModelSchemaError",
+              "_ModelRecord"
+            ],
+            "closed_ir_rule_like_class_count": 0,
+            "closed_ir_rule_like_class_names": [],
+            "function_count_including_methods_and_nested": 51,
+            "method_count": 28,
+            "top_level_function_count": 18
+          },
+          "imports": [
+            "__future__",
+            "copy",
+            "dataclasses",
+            "datetime",
+            "hashlib",
+            "json",
+            "math",
+            "prototype.contract",
+            "re",
+            "typing"
+          ],
+          "loc": {
+            "ast_statement_count": 692,
+            "blank_lines": 103,
+            "comment_only_lines": 7,
+            "nonblank_non_comment_lines": 1202,
+            "physical_lines": 1312
+          },
+          "path": "prototype/model_subkernel.py",
+          "sha256": "4d0610870c47d81379ed57409aaa9e2d61044f90111f71155117f3de23c77223"
+        }
+      ],
+      "totals": {
+        "anti_dispatch_scan": {
+          "forbidden_harness_or_reference_import_count": 0,
+          "literal_test_id_count": 0,
+          "static_special_case_indicator_count": 0,
+          "test_or_oracle_dispatch_site_count": 0
+        },
+        "complexity_proxy": {
+          "decision_points": 309,
+          "per_file_cyclomatic_proxy_sum": 310
+        },
+        "definitions": {
+          "async_function_count": 0,
+          "class_count": 3,
+          "closed_ir_rule_like_class_count": 0,
+          "function_count_including_methods_and_nested": 51,
+          "method_count": 28,
+          "top_level_function_count": 18
+        },
+        "file_count": 1,
+        "loc": {
+          "ast_statement_count": 692,
+          "blank_lines": 103,
+          "comment_only_lines": 7,
+          "nonblank_non_comment_lines": 1202,
+          "physical_lines": 1312
+        }
+      }
+    },
+    "rewrite_open": {
+      "manifest": {
+        "candidate_id": "typed-rewrite-open",
+        "companion_layer_count": 0,
+        "companion_layers": [],
+        "declared_failure_type_count": 6,
+        "declared_failure_types": [
+          "invalid",
+          "insufficient",
+          "conflicting",
+          "unsupported",
+          "numerical_failure",
+          "out_of_model"
+        ],
+        "declared_query_capabilities": [
+          "project",
+          "replay_as_then",
+          "reinterpret_now",
+          "reachability"
+        ],
+        "declared_query_capability_count": 4,
+        "execution_semantics": [
+          "immutable source history with available/recorded/effective cuts",
+          "grounded monotone least-fixed-point local rewriting",
+          "four-valued positive/negative evidence projection",
+          "typed fail-closed open-component wiring",
+          "only explicitly declared subalgebras expose composition laws"
+        ],
+        "execution_semantics_count": 5,
+        "foreign_boundaries": [],
+        "foreign_boundary_count": 0,
+        "formal_signature": [
+          "PresenceTerm|QuantityTerm|CodeTerm|TextTerm|NoValueTerm|ActionTerm|EffectTokenTerm",
+          "FactPremise|ActionPremise + NumericGuard -> ConclusionTemplate",
+          "RewriteModule",
+          "Port + OpenComponent + Wire + InteractionDeclaration"
+        ],
+        "formal_signature_count": 4,
+        "primitive_group_count": 9,
+        "primitive_item_count": 29,
+        "primitive_profile": {
+          "composition_wiring_operators": [
+            "typed_wire",
+            "explicit_interaction",
+            "declared_subalgebra"
+          ],
+          "foreign_semantic_escape_hatches": [],
+          "intervention_counterfactual_operators": [],
+          "persistence_replay_operators": [
+            "immutable_artifact_store",
+            "clean_rebuild"
+          ],
+          "query_readout_operators": [
+            "project",
+            "replay_as_then",
+            "reinterpret_now",
+            "reachability",
+            "explain"
+          ],
+          "state_update_operators": [
+            "source_ingest",
+            "retraction_delta",
+            "guarded_local_rewrite",
+            "least_fixed_point"
+          ],
+          "time_visibility_operators": [
+            "available_cut",
+            "recorded_cut",
+            "effective_interval_cut",
+            "knowledge_known_from_cut"
+          ],
+          "typed_object_value_constructors": [
+            "PresenceTerm",
+            "QuantityTerm",
+            "CodeTerm",
+            "TextTerm",
+            "NoValueTerm",
+            "ActionTerm",
+            "EffectTokenTerm"
+          ],
+          "uncertainty_belief_operators": [
+            "positive_root_set",
+            "negative_root_set",
+            "explicit_unknown",
+            "localized_conflict"
+          ]
+        },
+        "unique_primitive_count": 29,
+        "unique_primitives": [
+          "ActionTerm",
+          "CodeTerm",
+          "EffectTokenTerm",
+          "NoValueTerm",
+          "PresenceTerm",
+          "QuantityTerm",
+          "TextTerm",
+          "available_cut",
+          "clean_rebuild",
+          "declared_subalgebra",
+          "effective_interval_cut",
+          "explain",
+          "explicit_interaction",
+          "explicit_unknown",
+          "guarded_local_rewrite",
+          "immutable_artifact_store",
+          "knowledge_known_from_cut",
+          "least_fixed_point",
+          "localized_conflict",
+          "negative_root_set",
+          "positive_root_set",
+          "project",
+          "reachability",
+          "recorded_cut",
+          "reinterpret_now",
+          "replay_as_then",
+          "retraction_delta",
+          "source_ingest",
+          "typed_wire"
+        ],
+        "version": "0.2.0"
+      },
+      "source_files": [
+        {
+          "anti_dispatch_scan": {
+            "forbidden_harness_or_reference_import_count": 0,
+            "forbidden_harness_or_reference_imports": [],
+            "literal_test_id_count": 0,
+            "literal_test_id_locations": [],
+            "static_special_case_indicator_count": 0,
+            "suspicious_identifier_occurrences": {},
+            "test_or_oracle_dispatch_site_count": 0,
+            "test_or_oracle_dispatch_sites": []
+          },
+          "bytes": 131032,
+          "complexity_proxy": {
+            "decision_points": 646,
+            "module_cyclomatic_proxy": 647
+          },
+          "definitions": {
+            "async_function_count": 0,
+            "class_count": 40,
+            "class_names": [
+              "ActionPhase",
+              "ActionPremise",
+              "ActionTerm",
+              "CodeTerm",
+              "ComponentFamily",
+              "CompositionLaw",
+              "CompositionSpec",
+              "ConclusionMode",
+              "ConclusionTemplate",
+              "DeclaredSubalgebra",
+              "EffectTokenTerm",
+              "FactPremise",
+              "GuardOperator",
+              "InteractionDeclaration",
+              "NoValueTerm",
+              "NumericGuard",
+              "OpenComponent",
+              "OwnershipKind",
+              "Polarity",
+              "Port",
+              "PortDirection",
+              "PortRef",
+              "PortRole",
+              "PresenceTerm",
+              "ProofNode",
+              "ProvenancePolicy",
+              "QuantityComparator",
+              "QuantityTerm",
+              "RewriteModule",
+              "RewriteOpenCandidate",
+              "RewriteRule",
+              "RewriteStrategy",
+              "RuleOutputSemantics",
+              "ScopeBinding",
+              "TermKind",
+              "TextTerm",
+              "TimeBasis",
+              "UncertaintySemantics",
+              "Wire",
+              "_Configuration"
+            ],
+            "closed_ir_rule_like_class_count": 5,
+            "closed_ir_rule_like_class_names": [
+              "ActionPremise",
+              "FactPremise",
+              "NumericGuard",
+              "RewriteModule",
+              "RewriteRule"
+            ],
+            "function_count_including_methods_and_nested": 81,
+            "method_count": 44,
+            "top_level_function_count": 34
+          },
+          "imports": [
+            "__future__",
+            "copy",
+            "dataclasses",
+            "datetime",
+            "enum",
+            "hashlib",
+            "itertools",
+            "json",
+            "math",
+            "prototype.contract",
+            "typing"
+          ],
+          "loc": {
+            "ast_statement_count": 1525,
+            "blank_lines": 268,
+            "comment_only_lines": 27,
+            "nonblank_non_comment_lines": 3013,
+            "physical_lines": 3308
+          },
+          "path": "prototype/candidates/rewrite_open.py",
+          "sha256": "a11095f7a42018dce4d6411f519f40dc9df62c81c1c8ace78fd6695cfd225e99"
+        }
+      ],
+      "totals": {
+        "anti_dispatch_scan": {
+          "forbidden_harness_or_reference_import_count": 0,
+          "literal_test_id_count": 0,
+          "static_special_case_indicator_count": 0,
+          "test_or_oracle_dispatch_site_count": 0
+        },
+        "complexity_proxy": {
+          "decision_points": 646,
+          "per_file_cyclomatic_proxy_sum": 647
+        },
+        "definitions": {
+          "async_function_count": 0,
+          "class_count": 40,
+          "closed_ir_rule_like_class_count": 5,
+          "function_count_including_methods_and_nested": 81,
+          "method_count": 44,
+          "top_level_function_count": 34
+        },
+        "file_count": 1,
+        "loc": {
+          "ast_statement_count": 1525,
+          "blank_lines": 268,
+          "comment_only_lines": 27,
+          "nonblank_non_comment_lines": 3013,
+          "physical_lines": 3308
+        }
+      }
+    },
+    "temporal_ledger": {
+      "manifest": {
+        "candidate_id": "temporal-evidence-ledger-positive-tms",
+        "companion_layer_count": 0,
+        "companion_layers": [],
+        "declared_failure_type_count": 6,
+        "declared_failure_types": [
+          "unsupported",
+          "insufficient",
+          "conflicting",
+          "invalid",
+          "numerical_failure",
+          "out_of_model"
+        ],
+        "declared_query_capabilities": [
+          "project",
+          "replay_as_then",
+          "reinterpret_now"
+        ],
+        "declared_query_capability_count": 3,
+        "execution_semantics": [
+          "append/idempotent-ingest",
+          "bitemporal-eligibility-with-expiry",
+          "positive-acyclic-fixpoint",
+          "root-provenance-union",
+          "source-retraction-and-supersession",
+          "replay-as-then-versus-reinterpret-now",
+          "role-preserving-task-projection"
+        ],
+        "execution_semantics_count": 7,
+        "foreign_boundaries": [
+          {
+            "boundary": "physiological dynamics",
+            "policy": "unsupported",
+            "reason": "no latent transition kernel"
+          },
+          {
+            "boundary": "causal intervention/counterfactual",
+            "policy": "unsupported",
+            "reason": "no SCM/do semantics"
+          },
+          {
+            "boundary": "module execution",
+            "callbacks": false,
+            "policy": "closed typed data only"
+          }
+        ],
+        "foreign_boundary_count": 3,
+        "formal_signature": [
+          "Artifact(scope, semantic_role, information_state, value, clocks, source)",
+          "PositivePremise(concept, role, information_state, closed value guard)",
+          "Rule(premises, deterministic conclusion, temporal/scope guard)",
+          "Derivation(root-source union, support tuple, rule version)",
+          "Projection(task, included roles/concepts)"
+        ],
+        "formal_signature_count": 5,
+        "primitive_group_count": 5,
+        "primitive_item_count": 20,
+        "primitive_profile": {
+          "evidence": [
+            "typed artifact",
+            "explicit information state",
+            "root source",
+            "source family"
+          ],
+          "maintenance": [
+            "retraction",
+            "supersession",
+            "clean rebuild",
+            "module version"
+          ],
+          "projection": [
+            "semantic role",
+            "task projection",
+            "conflict-preserving claim set"
+          ],
+          "rules": [
+            "positive premise",
+            "closed guard",
+            "deterministic conclusion",
+            "scope relation"
+          ],
+          "time": [
+            "effective interval",
+            "collection",
+            "availability",
+            "record",
+            "expiry"
+          ]
+        },
+        "unique_primitive_count": 20,
+        "unique_primitives": [
+          "availability",
+          "clean rebuild",
+          "closed guard",
+          "collection",
+          "conflict-preserving claim set",
+          "deterministic conclusion",
+          "effective interval",
+          "expiry",
+          "explicit information state",
+          "module version",
+          "positive premise",
+          "record",
+          "retraction",
+          "root source",
+          "scope relation",
+          "semantic role",
+          "source family",
+          "supersession",
+          "task projection",
+          "typed artifact"
+        ],
+        "version": "0.3.0"
+      },
+      "source_files": [
+        {
+          "anti_dispatch_scan": {
+            "forbidden_harness_or_reference_import_count": 0,
+            "forbidden_harness_or_reference_imports": [],
+            "literal_test_id_count": 0,
+            "literal_test_id_locations": [],
+            "static_special_case_indicator_count": 0,
+            "suspicious_identifier_occurrences": {},
+            "test_or_oracle_dispatch_site_count": 0,
+            "test_or_oracle_dispatch_sites": []
+          },
+          "bytes": 102372,
+          "complexity_proxy": {
+            "decision_points": 557,
+            "module_cyclomatic_proxy": 558
+          },
+          "definitions": {
+            "async_function_count": 0,
+            "class_count": 8,
+            "class_names": [
+              "RuleConclusion",
+              "TaskProjection",
+              "TemporalEvidenceLedger",
+              "TemporalPremise",
+              "TemporalRule",
+              "TemporalRuleModule",
+              "_Fact",
+              "_MissingType"
+            ],
+            "closed_ir_rule_like_class_count": 3,
+            "closed_ir_rule_like_class_names": [
+              "TemporalPremise",
+              "TemporalRule",
+              "TemporalRuleModule"
+            ],
+            "function_count_including_methods_and_nested": 63,
+            "method_count": 44,
+            "top_level_function_count": 16
+          },
+          "imports": [
+            "__future__",
+            "copy",
+            "dataclasses",
+            "datetime",
+            "hashlib",
+            "itertools",
+            "json",
+            "math",
+            "prototype.contract",
+            "typing"
+          ],
+          "loc": {
+            "ast_statement_count": 981,
+            "blank_lines": 126,
+            "comment_only_lines": 45,
+            "nonblank_non_comment_lines": 1996,
+            "physical_lines": 2167
+          },
+          "path": "prototype/candidates/temporal_ledger.py",
+          "sha256": "0affca297a128ace19735635ba3bcfc6ab2f149f9527ad9cb8f739580c7969d1"
+        }
+      ],
+      "totals": {
+        "anti_dispatch_scan": {
+          "forbidden_harness_or_reference_import_count": 0,
+          "literal_test_id_count": 0,
+          "static_special_case_indicator_count": 0,
+          "test_or_oracle_dispatch_site_count": 0
+        },
+        "complexity_proxy": {
+          "decision_points": 557,
+          "per_file_cyclomatic_proxy_sum": 558
+        },
+        "definitions": {
+          "async_function_count": 0,
+          "class_count": 8,
+          "closed_ir_rule_like_class_count": 3,
+          "function_count_including_methods_and_nested": 63,
+          "method_count": 44,
+          "top_level_function_count": 16
+        },
+        "file_count": 1,
+        "loc": {
+          "ast_statement_count": 981,
+          "blank_lines": 126,
+          "comment_only_lines": 45,
+          "nonblank_non_comment_lines": 1996,
+          "physical_lines": 2167
+        }
+      }
+    }
+  },
+  "extension_blast_radius_input": {
+    "evaluation_harness": [
+      {
+        "bytes": 63153,
+        "exists": true,
+        "path": "prototype/benchmark.py",
+        "physical_lines": 1381,
+        "sha256": "79e2cc5813664ec0b44fb90e959a0836d10ed593d8bdb37cacf2a34d4dffc7ab"
+      },
+      {
+        "bytes": 65308,
+        "exists": true,
+        "path": "prototype/workloads.py",
+        "physical_lines": 1009,
+        "sha256": "2273d6960165c15c503ac6cc6f95b4b73958b002e559bed456748ed7870e52c2"
+      },
+      {
+        "bytes": 17275,
+        "exists": true,
+        "path": "prototype/reference_models.py",
+        "physical_lines": 478,
+        "sha256": "9a6ed0960e744e9360825b297118df0293a0799e2d6890765c4e8ec369e8347f"
+      },
+      {
+        "bytes": 20146,
+        "exists": true,
+        "path": "prototype/isolated_benchmark.py",
+        "physical_lines": 539,
+        "sha256": "be274816f930ad611c1374a0c815e68ab6a836793f66a00cb05c545e6664ef84"
+      },
+      {
+        "bytes": 25772,
+        "exists": true,
+        "path": "prototype/isolated_worker.py",
+        "physical_lines": 650,
+        "sha256": "b853ecc125250358255ea8a9378412f16dd4258284ec26896f4d035123d95028"
+      },
+      {
+        "bytes": 20128,
+        "exists": true,
+        "path": "prototype/experiment.py",
+        "physical_lines": 529,
+        "sha256": "8b9e82f9688574fefcc0d1328889be7442063f19a0e25590c57aee31cc1b3937"
+      }
+    ],
+    "fixed_core_file_count": 7,
+    "fixed_core_groups": {
+      "candidate_engines": [
+        {
+          "bytes": 102372,
+          "exists": true,
+          "path": "prototype/candidates/temporal_ledger.py",
+          "physical_lines": 2167,
+          "sha256": "0affca297a128ace19735635ba3bcfc6ab2f149f9527ad9cb8f739580c7969d1"
+        },
+        {
+          "bytes": 103420,
+          "exists": true,
+          "path": "prototype/candidates/causal_state.py",
+          "physical_lines": 2244,
+          "sha256": "b1e84caa79da522aa82889339ef1090c14ce53a443cb74babf898748f7f893e4"
+        },
+        {
+          "bytes": 131032,
+          "exists": true,
+          "path": "prototype/candidates/rewrite_open.py",
+          "physical_lines": 3308,
+          "sha256": "a11095f7a42018dce4d6411f519f40dc9df62c81c1c8ace78fd6695cfd225e99"
+        },
+        {
+          "bytes": 36527,
+          "exists": true,
+          "path": "prototype/kernel.py",
+          "physical_lines": 780,
+          "sha256": "25a3d529757edb09957c89ad3ab9712f867054be6ff181d98c9fe60348761c53"
+        },
+        {
+          "bytes": 64470,
+          "exists": true,
+          "path": "prototype/model_subkernel.py",
+          "physical_lines": 1312,
+          "sha256": "4d0610870c47d81379ed57409aaa9e2d61044f90111f71155117f3de23c77223"
+        }
+      ],
+      "shared_control_plane": [
+        {
+          "bytes": 23327,
+          "exists": true,
+          "path": "prototype/contract.py",
+          "physical_lines": 573,
+          "sha256": "4cd16cb3a7c521afa2739a4fdeba8d0b72f4baad9bd48d09e0d048d4bc8b5bc6"
+        },
+        {
+          "bytes": 8048,
+          "exists": true,
+          "path": "prototype/ir.py",
+          "physical_lines": 211,
+          "sha256": "f23997e15dae8a5bef700296d7e1f2fded2b210bfe32d16cfd0e6dbe744db1fc"
+        }
+      ]
+    },
+    "knowledge_extension_file_count": 4,
+    "knowledge_extension_files": [
+      {
+        "bytes": 2759,
+        "exists": true,
+        "path": "examples/extensions/disease_acute_kidney_injury_architecture_toy.json",
+        "sha256": "101382ac929e431cade4475335a3fc932036477e5cbf7a4375611398cbbc45e5"
+      },
+      {
+        "bytes": 1199,
+        "exists": true,
+        "path": "examples/extensions/intervention_norepinephrine_architecture_toy.json",
+        "sha256": "d4c6eec644f85f44383353a16e7c2280883ab91fc12c4b0495edb52037072634"
+      },
+      {
+        "bytes": 625,
+        "exists": true,
+        "path": "examples/extensions/task_projection_renal_safety_review.json",
+        "sha256": "5d522d190c547b7025284d626d8a435dd84ecffda47ac98eec4a1598b9f59d65"
+      },
+      {
+        "bytes": 994,
+        "exists": true,
+        "path": "examples/extensions/test_method_cystatin_c_architecture_toy.json",
+        "sha256": "2cb66abfe4a92b6d642478a7f87fc44f1681352af4042536a7db4993834beec5"
+      }
+    ]
+  },
+  "generated_at_utc": "2026-07-13T12:32:11.324181+00:00",
+  "limitations": [
+    "静态 LOC/AST 计量不代表医学正确性、临床效用或形式正确性。",
+    "manifest 原语数是实现自声明口径；它可审计，但不自动证明原语独立或最小。",
+    "rule-like class count 只按类型名后缀计数，不等于运行时加载的知识规则数。",
+    "特例扫描只覆盖测试身份/oracle/reference 耦合；领域硬编码仍需代码审查和 holdout 验证。",
+    "blast radius 只有与扩展前基线比较时才是观测值；单个快照只是输入。"
+  ],
+  "measurement_semantics": {
+    "complexity_proxy": "1 + static decision points (if/loop/handler/match/bool/comprehension); not a runtime or maintainability score",
+    "core_primitive_count": "unique leaf strings explicitly declared in CandidateManifest.primitive_profile; profile group names are not counted as primitives",
+    "extension_blast_radius": "compare SHA-256 fingerprints of fixed core before and after a data/module extension; harness and examples/extensions are reported separately",
+    "loc": "physical_lines=splitlines; nonblank_non_comment excludes blank and lines whose first non-space character is #; ast_statement_count counts ast.stmt nodes",
+    "special_case_indicator": "static lower-bound scan for literal Txx/Exx IDs, condition dispatch on test/oracle identity fields, and imports from benchmark/workload/reference modules; zero is evidence against these mechanisms, not proof that all domain special cases are absent"
+  },
+  "report_sha256": "8ff17a7aebd57cbcd060d3262318ace02c7b70273db7b1101bcc0ae1e64165cf",
+  "root": "C:/Users/wangw/Documents/vesmed",
+  "schema_version": "1.0.0"
+}

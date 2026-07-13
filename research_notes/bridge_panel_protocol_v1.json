@@ -1,0 +1,275 @@
+{
+  "api": {
+    "function": "execute",
+    "query_dispatch": "closed operator enum, never expected-output/test-id branching",
+    "required_result_fields": [
+      "operator",
+      "value",
+      "trace",
+      "diagnostics"
+    ],
+    "signature": "execute(public_model: Mapping, query: Mapping) -> Mapping"
+  },
+  "forbidden_imports": [
+    "prototype.reference_models",
+    "prototype.model_subkernel",
+    "other bridge implementation"
+  ],
+  "models": {
+    "E01": {
+      "control": {
+        "U_bounds": [
+          0,
+          1
+        ],
+        "performed_intervals": [
+          [
+            4,
+            12
+          ]
+        ]
+      },
+      "dynamics": "dS_dt = 0.08*(1-S) - 0.18*U*S",
+      "model_kind": "controlled_state_space",
+      "observation": "MAP = 75 - 25*S + 18*U + Normal(0,1.5)",
+      "observation_hours": [
+        0,
+        2,
+        4,
+        6,
+        9,
+        12,
+        15,
+        20
+      ],
+      "query_hours": [
+        9,
+        12,
+        18,
+        24
+      ],
+      "seed": 1103,
+      "state": {
+        "S0_prior": {
+          "alpha": 8,
+          "beta": 2,
+          "kind": "beta"
+        },
+        "bounds": [
+          0,
+          1
+        ]
+      }
+    },
+    "E02": {
+      "P_bad": {
+        "mild_T0": 0.2,
+        "mild_T1": 0.05,
+        "severe_T0": 0.9,
+        "severe_T1": 0.6
+      },
+      "P_severe": 0.5,
+      "P_treated_given_mild": 0.1,
+      "P_treated_given_severe": 0.9,
+      "model_kind": "finite_scm"
+    },
+    "E03": {
+      "R": {
+        "probabilities": [
+          0.5,
+          0.5
+        ],
+        "values": [
+          0,
+          1
+        ]
+      },
+      "cross_world_policy": "share_abduced_exogenous",
+      "factual_evidence": {
+        "T": 1,
+        "Y": 2
+      },
+      "model_kind": "finite_scm",
+      "structural_equation": "Y = R*(1+T) + (1-R)*(-T)"
+    },
+    "E04": {
+      "dynamics": [
+        "dB_dt = r*B*(1-B/K) - k_abx*A*B",
+        "I = B^hill_h/(hill_K^hill_h+B^hill_h)",
+        "dC_dt = (I-C)/tau_hours"
+      ],
+      "initial": {
+        "B": 0.08,
+        "C": 0.0118
+      },
+      "model_kind": "nonlinear_state_space",
+      "observation_hours": [
+        0,
+        3,
+        7,
+        11,
+        16,
+        24,
+        31
+      ],
+      "parameters": {
+        "K": 1.0,
+        "hill_K": 0.35,
+        "hill_h": 3,
+        "k_abx": 1.0,
+        "r": 0.35,
+        "tau_hours": 6.0
+      },
+      "pulse": {
+        "A": 1,
+        "end_hour": 10,
+        "start_hour": 6
+      },
+      "query_hours": [
+        7,
+        16,
+        24,
+        40
+      ],
+      "seed": 2207
+    },
+    "E05": {
+      "P_mechanism_response_after_antibiotic": {
+        "infection": 0.9,
+        "sterile": 0.2
+      },
+      "P_response_after_antipyretic": {
+        "infection": 0.8,
+        "sterile": 0.8
+      },
+      "model_kind": "finite_hypothesis_model",
+      "pre_treatment_phenotype_likelihood": {
+        "infection": 0.8,
+        "sterile": 0.8
+      },
+      "prior": {
+        "infection": 0.5,
+        "sterile": 0.5
+      }
+    },
+    "E06": {
+      "initial": {
+        "burden": 0.25,
+        "drug_amount": 0.0,
+        "renal_capacity": 0.45
+      },
+      "input": {
+        "end_hour": 8,
+        "infusion_rate": 0.18,
+        "start_hour": 0
+      },
+      "interaction_equations": [
+        "clearance = CL0*renal*amount/(Km+amount)",
+        "efficacy = Emax*amount/(EC50+amount)",
+        "toxicity = (amount^2/(Tmax^2+amount^2))*(1-renal)",
+        "dBurden_dt = r_burden*burden*(1-burden)-efficacy*burden"
+      ],
+      "model_kind": "typed_open_ode",
+      "parameters": {
+        "CL0": 0.8,
+        "EC50": 0.4,
+        "Emax": 0.9,
+        "Km": 0.3,
+        "Tmax": 0.7,
+        "r_burden": 0.25
+      },
+      "ports": [
+        "A.drug_effect<-I.efficacy",
+        "I.burden<-A.burden",
+        "I.amount<-C.amount",
+        "I.renal<-B.capacity",
+        "C.clearance<-I.clearance"
+      ],
+      "query_hours": [
+        4,
+        8,
+        12,
+        24
+      ]
+    }
+  },
+  "numeric_contract": {
+    "comparison_tolerance": {
+      "absolute": 1e-06,
+      "relative": 1e-06
+    },
+    "deterministic": true,
+    "finite_only": true,
+    "recommended_max_step_hours": 0.0016666666666666668
+  },
+  "purpose": "pre-registered public E01-E06 commitments; no oracle outputs",
+  "queries": {
+    "E01": {
+      "operator": "controlled_state_space",
+      "outputs": [
+        "state_trajectory",
+        "observations",
+        "natural_map_at_9",
+        "supported_map_at_9",
+        "stop_support_direction"
+      ],
+      "query_id": "panel-e01"
+    },
+    "E02": {
+      "operator": "condition_and_population_do",
+      "outputs": [
+        "P_bad_given_T1",
+        "P_bad_given_T0",
+        "P_bad_given_do_T1",
+        "P_bad_given_do_T0"
+      ],
+      "query_id": "panel-e02"
+    },
+    "E03": {
+      "factual_evidence": {
+        "T": 1,
+        "Y": 2
+      },
+      "intervention": {
+        "T": 0
+      },
+      "operator": "same_patient_aap",
+      "outputs": [
+        "posterior_R1",
+        "individual_counterfactual_Y_T0",
+        "population_do_mean_Y_T0"
+      ],
+      "query_id": "panel-e03"
+    },
+    "E04": {
+      "operator": "nonlinear_state_space",
+      "outputs": [
+        "trajectory",
+        "C_peak_hour",
+        "phase_at_7",
+        "phase_at_16"
+      ],
+      "query_id": "panel-e04"
+    },
+    "E05": {
+      "operator": "finite_hypothesis_update",
+      "outputs": [
+        "pre_treatment",
+        "after_antipyretic",
+        "after_antibiotic_response"
+      ],
+      "query_id": "panel-e05"
+    },
+    "E06": {
+      "operator": "typed_open_ode",
+      "outputs": [
+        "renal_capacity",
+        "trajectory",
+        "interaction_required"
+      ],
+      "query_id": "panel-e06",
+      "renal_capacity": 0.45
+    }
+  },
+  "schema_version": "bridge-panel-protocol-v1"
+}

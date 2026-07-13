@@ -1,0 +1,125 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "raw-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "raw-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "serum_creatinine",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "mapping_version": "fixture-map-v1",
+            "payload_sha256": "sha256:fixture",
+            "source_text": "Cr 1.8 mg/dL",
+            "span": [
+              0,
+              13
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "raw-root",
+          "supersedes": null,
+          "unit": "mg/dL",
+          "value": 1.8
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "raw_roundtrip"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "serum_creatinine",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "result": "main:result",
+          "root": "raw-root"
+        },
+        "assertion_id": "raw-root-trace",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      },
+      {
+        "args": {
+          "mapping_version": "fixture-map-v1",
+          "raw_unit": "mg/dL",
+          "raw_value": 1.8,
+          "result": "main:result",
+          "root": "raw-root",
+          "span": [
+            0,
+            13
+          ]
+        },
+        "assertion_id": "raw-fields-roundtrip",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.raw_roundtrip@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T45"
+  ],
+  "severity": "HARD",
+  "title": "normalization round-trips to raw evidence",
+  "workload_id": "T45"
+}

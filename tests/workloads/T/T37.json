@@ -1,0 +1,179 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "ordered",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "ordered"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      },
+      {
+        "branch_id": "performed",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "performed"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "ordered",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "drug_effect",
+          "context": {
+            "performed": false,
+            "stage": "ordered"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "drug_effect=drug-X",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "order",
+          "source_family": null,
+          "source_id": "ordered",
+          "supersedes": null,
+          "unit": null,
+          "value": "drug-X"
+        },
+        {
+          "artifact_id": "performed",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "drug_effect",
+          "context": {
+            "actual_interval": [
+              "2026-01-01T08:00:00Z",
+              "2026-01-01T10:00:00Z"
+            ],
+            "stage": "performed"
+          },
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "drug_effect=drug-X",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "performed_intervention",
+          "source_family": null,
+          "source_id": "performed",
+          "supersedes": null,
+          "unit": null,
+          "value": "drug-X"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "drug_effect",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "left": "ordered:result",
+          "right": "performed:result",
+          "semantic_only": true
+        },
+        "assertion_id": "action-stage-distinct",
+        "dimension": "causal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      },
+      {
+        "args": {
+          "result": "performed:result",
+          "root": "performed"
+        },
+        "assertion_id": "performed-action-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T37"
+  ],
+  "severity": "HARD",
+  "title": "only performed action intervals create effects",
+  "workload_id": "T37"
+}

@@ -1,0 +1,101 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "before",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      },
+      {
+        "branch_id": "after",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "extension-module",
+            "op": "register_module"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "closed_ir": {
+            "op": "identity",
+            "target": "new_disease_hypothesis"
+          },
+          "concept": "new_disease_hypothesis",
+          "family": "typed_extension",
+          "module_id": "extension-module"
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "new_disease_hypothesis",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "expected": [
+            "ok"
+          ],
+          "result": "after:registration"
+        },
+        "assertion_id": "registration-called",
+        "dimension": "extension",
+        "hard_gate": false,
+        "oracle_id": "result.status@1"
+      },
+      {
+        "args": {
+          "left": "before:result",
+          "right": "after:result",
+          "semantic_only": true
+        },
+        "assertion_id": "extension-behavior",
+        "dimension": "extension",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T21"
+  ],
+  "severity": "HARD",
+  "title": "new disease is a local module extension",
+  "workload_id": "T21"
+}

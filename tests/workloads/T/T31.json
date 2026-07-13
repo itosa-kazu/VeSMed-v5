@@ -1,0 +1,153 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "rootless",
+        "fresh_session": true,
+        "steps": [
+          {
+            "module_id": "cycle",
+            "op": "register_module"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      },
+      {
+        "branch_id": "grounded-control",
+        "fresh_session": true,
+        "steps": [
+          {
+            "module_id": "cycle",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "ground-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "ground-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "B",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "B=True",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "ground-root",
+          "supersedes": null,
+          "unit": null,
+          "value": true
+        }
+      ],
+      "modules": [
+        {
+          "family": "rewrite",
+          "module_id": "cycle",
+          "rules": [
+            {
+              "if": "B",
+              "then": "unsupported_claim"
+            },
+            {
+              "if": "unsupported_claim",
+              "then": "B"
+            }
+          ]
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "reachability",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [
+            "rooted_support"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "unsupported_claim",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "expected": 0,
+          "result": "rootless:result"
+        },
+        "assertion_id": "no-rootless-support",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_count@1"
+      },
+      {
+        "args": {
+          "result": "grounded-control:result",
+          "root": "ground-root"
+        },
+        "assertion_id": "grounded-cycle-is-live",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T31"
+  ],
+  "severity": "HARD",
+  "title": "rootless support cycles create no evidence",
+  "workload_id": "T31"
+}

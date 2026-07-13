@@ -1,0 +1,63 @@
+{
+  "kind": "finite_scm",
+  "module_id": "intervention-norepinephrine-architecture-toy",
+  "version": "1.0.0",
+  "max_worlds": 16,
+  "variables": [
+    {
+      "name": "RESPONSE_TYPE",
+      "role": "exogenous",
+      "domain": [0, 1]
+    },
+    {
+      "name": "NOREPINEPHRINE",
+      "role": "action",
+      "domain": [0, 1],
+      "concept": "norepinephrine_exposure",
+      "intervenable": true
+    },
+    {
+      "name": "MAP_RESPONSE",
+      "role": "outcome",
+      "domain": [0, 1],
+      "concept": "mean_arterial_pressure_response_binary"
+    }
+  ],
+  "exogenous_distributions": [
+    {
+      "target": "RESPONSE_TYPE",
+      "masses": [
+        {
+          "value": 0,
+          "probability": 0.6
+        },
+        {
+          "value": 1,
+          "probability": 0.4
+        }
+      ]
+    }
+  ],
+  "equations": [
+    {
+      "target": "NOREPINEPHRINE",
+      "expression": 0
+    },
+    {
+      "target": "MAP_RESPONSE",
+      "expression": {
+        "op": "mul",
+        "args": [
+          {
+            "op": "var",
+            "value": "RESPONSE_TYPE"
+          },
+          {
+            "op": "var",
+            "value": "NOREPINEPHRINE"
+          }
+        ]
+      }
+    }
+  ]
+}

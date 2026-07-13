@@ -1,0 +1,177 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "registration",
+            "module_id": "public-model",
+            "op": "register_module"
+          },
+          {
+            "capture": "filter",
+            "op": "query",
+            "query_id": "q-filter"
+          },
+          {
+            "capture": "forecast",
+            "op": "query",
+            "query_id": "q-forecast"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [],
+      "modules": [
+        {
+          "family": "nonlinear_state_space",
+          "module_id": "public-model",
+          "public_model": {
+            "dynamics": [
+              "dB_dt = r*B*(1-B/K) - k_abx*A*B",
+              "I = B^hill_h/(hill_K^hill_h+B^hill_h)",
+              "dC_dt = (I-C)/tau_hours"
+            ],
+            "initial": {
+              "B": 0.08,
+              "C": 0.0118
+            },
+            "model_kind": "nonlinear_state_space",
+            "observation_hours": [
+              0,
+              3,
+              7,
+              11,
+              16,
+              24,
+              31
+            ],
+            "parameters": {
+              "K": 1.0,
+              "hill_K": 0.35,
+              "hill_h": 3,
+              "k_abx": 1.0,
+              "r": 0.35,
+              "tau_hours": 6.0
+            },
+            "pulse": {
+              "A": 1,
+              "end_hour": 10,
+              "start_hour": 6
+            },
+            "query_hours": [
+              7,
+              16,
+              24,
+              40
+            ],
+            "seed": 2207
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T16:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "filter",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-filter",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "C",
+          "task": null,
+          "valid_at": "2026-01-01T16:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-02T00:00:00Z",
+          "assumptions": [],
+          "horizon_hours": 16,
+          "intervention": null,
+          "kind": "forecast",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-forecast",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "C",
+          "task": null,
+          "valid_at": "2026-01-02T00:00:00Z"
+        }
+      ]
+    },
+    "public_model": {
+      "dynamics": [
+        "dB_dt = r*B*(1-B/K) - k_abx*A*B",
+        "I = B^hill_h/(hill_K^hill_h+B^hill_h)",
+        "dC_dt = (I-C)/tau_hours"
+      ],
+      "initial": {
+        "B": 0.08,
+        "C": 0.0118
+      },
+      "model_kind": "nonlinear_state_space",
+      "observation_hours": [
+        0,
+        3,
+        7,
+        11,
+        16,
+        24,
+        31
+      ],
+      "parameters": {
+        "K": 1.0,
+        "hill_K": 0.35,
+        "hill_h": 3,
+        "k_abx": 1.0,
+        "r": 0.35,
+        "tau_hours": 6.0
+      },
+      "pulse": {
+        "A": 1,
+        "end_hour": 10,
+        "start_hour": 6
+      },
+      "query_hours": [
+        7,
+        16,
+        24,
+        40
+      ],
+      "seed": 2207
+    }
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "absolute_tolerance": 0.08,
+          "reference_id": "E04",
+          "reference_path": "/trajectory",
+          "relative_tolerance": 0.15,
+          "result": "main:forecast"
+        },
+        "assertion_id": "trajectory-reference",
+        "dimension": "dynamic",
+        "hard_gate": true,
+        "oracle_id": "reference.trajectory@1"
+      }
+    ]
+  },
+  "panel": "E",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-E04"
+  ],
+  "severity": "HARD",
+  "title": "irregular nonlinear lagged dynamics with pulse intervention",
+  "workload_id": "E04"
+}

@@ -1,0 +1,203 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "capture": "register-old",
+            "module_id": "severity-rule-v1",
+            "op": "register_module"
+          },
+          {
+            "capture": "register-now",
+            "module_id": "severity-rule-v2",
+            "op": "register_module"
+          },
+          {
+            "artifact_ids": [
+              "raw-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "old",
+            "op": "query",
+            "query_id": "q-old"
+          },
+          {
+            "capture": "now",
+            "op": "query",
+            "query_id": "q-now"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "raw-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "severity_score_raw",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "severity_score_raw=4.5",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "raw-root",
+          "supersedes": null,
+          "unit": null,
+          "value": 4.5
+        }
+      ],
+      "modules": [
+        {
+          "family": "versioned_knowledge_rule",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "severity-v1",
+          "module_id": "severity-rule-v1",
+          "public_model": {
+            "closed_ir": {
+              "else": "low",
+              "ge": 4.0,
+              "op": "threshold",
+              "then": "high"
+            },
+            "input": "severity_score_raw",
+            "output": "derived_severity"
+          }
+        },
+        {
+          "family": "versioned_knowledge_rule",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "severity-v2",
+          "module_id": "severity-rule-v2",
+          "public_model": {
+            "closed_ir": {
+              "else": "low",
+              "ge": 5.0,
+              "op": "threshold",
+              "then": "high"
+            },
+            "input": "severity_score_raw",
+            "output": "derived_severity"
+          }
+        }
+      ],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "replay_as_then",
+          "knowledge_version": "knowledge-v1",
+          "model_version": "severity-v1",
+          "query_id": "q-old",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "derived_severity",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "reinterpret_now",
+          "knowledge_version": "knowledge-v2",
+          "model_version": "severity-v2",
+          "query_id": "q-now",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "derived_severity",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "left": "main:old",
+          "right": "main:now",
+          "semantic_only": true
+        },
+        "assertion_id": "versioned-interpretation",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.distinct@1"
+      },
+      {
+        "args": {
+          "left": "main:old",
+          "right": "main:now"
+        },
+        "assertion_id": "raw-root-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.same_roots@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "high"
+          ],
+          "result": "main:old"
+        },
+        "assertion_id": "old-rule-output",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "low"
+          ],
+          "result": "main:now"
+        },
+        "assertion_id": "new-rule-output",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T23"
+  ],
+  "severity": "HARD",
+  "title": "as-then replay differs from reinterpret-now",
+  "workload_id": "T23"
+}

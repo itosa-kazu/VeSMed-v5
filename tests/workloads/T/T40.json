@@ -1,0 +1,185 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "warm",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "late-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "warm-late",
+            "op": "query",
+            "query_id": "q-late"
+          },
+          {
+            "capture": "early",
+            "op": "query",
+            "query_id": "q-early"
+          }
+        ]
+      },
+      {
+        "branch_id": "cold",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "late-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "early",
+            "op": "query",
+            "query_id": "q-early"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "late-root",
+          "clocks": {
+            "available_at": "2026-01-01T12:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T12:00:00Z"
+          },
+          "concept": "historical_state",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "historical_state=visible-value",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "late-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "visible-value"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T09:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-early",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "historical_state",
+          "task": null,
+          "valid_at": "2026-01-01T09:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T13:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-late",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "historical_state",
+          "task": null,
+          "valid_at": "2026-01-01T13:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "left": "warm:early",
+          "right": "cold:early",
+          "semantic_only": true
+        },
+        "assertion_id": "cache-invariance",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "result.equivalent@1"
+      },
+      {
+        "args": {
+          "result": "warm:warm-late",
+          "root": "late-root",
+          "visible": true
+        },
+        "assertion_id": "warmed-late-value-live",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "result": "warm:early",
+          "root": "late-root",
+          "visible": false
+        },
+        "assertion_id": "warm-path-future-hidden",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      },
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "result": "cold:early",
+          "root": "late-root",
+          "visible": false
+        },
+        "assertion_id": "cold-path-future-hidden",
+        "dimension": "temporal",
+        "hard_gate": true,
+        "oracle_id": "temporal.root_visibility@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T40"
+  ],
+  "severity": "HARD",
+  "title": "warm caches cannot inject future results into replay",
+  "workload_id": "T40"
+}

@@ -1,0 +1,185 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "knowledge-only",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "knowledge-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      },
+      {
+        "branch_id": "patient-control",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "knowledge-root",
+              "patient-root"
+            ],
+            "op": "ingest"
+          },
+          {
+            "capture": "result",
+            "op": "query",
+            "query_id": "q-main"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "knowledge-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "disease_knowledge_rule",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "disease_knowledge_rule={'antecedent': 'exposure-X', 'consequent': 'patient_has_disease'}",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "general_knowledge",
+          "source_family": null,
+          "source_id": "knowledge-root",
+          "supersedes": null,
+          "unit": null,
+          "value": {
+            "antecedent": "exposure-X",
+            "consequent": "patient_has_disease"
+          }
+        },
+        {
+          "artifact_id": "patient-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "patient_has_disease",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": null,
+          "raw_payload": {
+            "source_text": "patient_has_disease=P1_has_condition",
+            "span": [
+              0,
+              8
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "patient-root",
+          "supersedes": null,
+          "unit": null,
+          "value": "P1_has_condition"
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-main",
+          "requested_guarantees": [],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "patient_has_disease",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "allow_ineligible_statuses": [
+            "insufficient"
+          ],
+          "forbidden": "P1_has_condition",
+          "result": "knowledge-only:result"
+        },
+        "assertion_id": "knowledge-not-patient-fact",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "result.not_contains@1"
+      },
+      {
+        "args": {
+          "expected": [
+            "P1_has_condition"
+          ],
+          "result": "patient-control:result"
+        },
+        "assertion_id": "patient-evidence-is-live",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "result.contains_all@1"
+      },
+      {
+        "args": {
+          "result": "patient-control:result",
+          "root": "patient-root"
+        },
+        "assertion_id": "patient-root-trace",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.root_present@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T49"
+  ],
+  "severity": "HARD",
+  "title": "general knowledge is not a patient fact without a bridge",
+  "workload_id": "T49"
+}

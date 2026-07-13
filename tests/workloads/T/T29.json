@@ -1,0 +1,164 @@
+{
+  "candidate_view": {
+    "branches": [
+      {
+        "branch_id": "main",
+        "fresh_session": true,
+        "steps": [
+          {
+            "artifact_ids": [
+              "unknown-device-root"
+            ],
+            "capture": "ingest",
+            "op": "ingest"
+          },
+          {
+            "capture": "raw",
+            "op": "query",
+            "query_id": "q-raw"
+          },
+          {
+            "capture": "canonical",
+            "op": "query",
+            "query_id": "q-canonical"
+          }
+        ]
+      }
+    ],
+    "fixtures": {
+      "artifacts": [
+        {
+          "artifact_id": "unknown-device-root",
+          "clocks": {
+            "available_at": "2026-01-01T08:00:00Z",
+            "collected_at": "2026-01-01T08:00:00Z",
+            "effective_end": null,
+            "effective_start": "2026-01-01T08:00:00Z",
+            "expires_at": null,
+            "recorded_at": "2026-01-01T08:00:00Z"
+          },
+          "concept": "device_measurement",
+          "context": {},
+          "information_state": "present",
+          "mapping_version": "fixture-map-v1",
+          "method": "unregistered-device-v99",
+          "raw_payload": {
+            "device_packet": "opaque-but-preserved",
+            "span": [
+              0,
+              20
+            ]
+          },
+          "reliability": 0.95,
+          "scope": {
+            "encounter_id": "E1",
+            "specimen_id": null,
+            "subject_id": "P1"
+          },
+          "semantic_role": "raw_observation",
+          "source_family": null,
+          "source_id": "unknown-device-root",
+          "supersedes": null,
+          "unit": "vendor-unit-v99",
+          "value": 77
+        }
+      ],
+      "modules": [],
+      "queries": [
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-raw",
+          "requested_guarantees": [
+            "raw_roundtrip"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "device_measurement",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        },
+        {
+          "as_known_at": "2026-01-01T12:00:00Z",
+          "assumptions": [],
+          "horizon_hours": null,
+          "intervention": null,
+          "kind": "project",
+          "knowledge_version": "knowledge-v1",
+          "model_version": null,
+          "query_id": "q-canonical",
+          "requested_guarantees": [
+            "registered_device_adapter"
+          ],
+          "seed": 1103,
+          "subject_id": "P1",
+          "target": "canonical_device_measurement",
+          "task": null,
+          "valid_at": "2026-01-01T08:00:00Z"
+        }
+      ]
+    },
+    "public_model": {}
+  },
+  "oracle_view": {
+    "assertions": [
+      {
+        "args": {
+          "expected": [
+            "ok"
+          ],
+          "result": "main:ingest"
+        },
+        "assertion_id": "raw-ingest-accepted",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "result.status@1"
+      },
+      {
+        "args": {
+          "mapping_version": "fixture-map-v1",
+          "raw_unit": "vendor-unit-v99",
+          "raw_value": 77,
+          "result": "main:raw",
+          "root": "unknown-device-root",
+          "span": [
+            0,
+            20
+          ]
+        },
+        "assertion_id": "unknown-device-raw-preserved",
+        "dimension": "audit",
+        "hard_gate": true,
+        "oracle_id": "evidence.raw_roundtrip@1"
+      },
+      {
+        "args": {
+          "allowed": [
+            "invalid",
+            "unsupported",
+            "insufficient",
+            "out_of_model"
+          ],
+          "result": "main:canonical"
+        },
+        "assertion_id": "unknown-device-canonical-typed",
+        "dimension": "safety",
+        "hard_gate": true,
+        "oracle_id": "result.typed_boundary@1"
+      }
+    ]
+  },
+  "panel": "T",
+  "protocol_version": "archbench/1.0",
+  "requirements": [
+    "ARCH-T29"
+  ],
+  "severity": "HARD",
+  "title": "unknown device is typed quarantine with raw preservation",
+  "workload_id": "T29"
+}
