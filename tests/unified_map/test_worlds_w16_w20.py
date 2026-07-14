@@ -4,7 +4,9 @@ from dataclasses import replace
 
 import pytest
 
+from prototype.unified_map.candidate_protocol import ResultStatus
 from prototype.unified_map.canonical import canonical_json_bytes
+from prototype.unified_map.extensions import _open_custody
 from prototype.unified_map.metrics import (
     InformationRelation,
     PairProbe,
@@ -12,14 +14,32 @@ from prototype.unified_map.metrics import (
 )
 from prototype.unified_map.schema import ActionPlan, EventKind, PlanKind
 from prototype.unified_map.worlds.base import WorldSplit
-from prototype.unified_map.worlds.w16 import W16World
-from prototype.unified_map.worlds.w17 import W17World
+from prototype.unified_map.worlds.w16 import W16World, make_w16_extension_custody
+from prototype.unified_map.worlds.w17 import W17World, make_w17_extension_custody
 from prototype.unified_map.worlds.w18 import W18World
 from prototype.unified_map.worlds.w19 import W19World
 from prototype.unified_map.worlds.w20 import W20World
 
 
 WORLD_TYPES = (W16World, W17World, W18World, W19World, W20World)
+
+
+def _revealed_w16() -> W16World:
+    custody = make_w16_extension_custody()
+    reveal = _open_custody(custody)
+    return W16World(
+        extension_commitment=custody.public.commitment,
+        extension_reveal=reveal,
+    )
+
+
+def _revealed_w17() -> W17World:
+    custody = make_w17_extension_custody()
+    reveal = _open_custody(custody)
+    return W17World(
+        extension_commitment=custody.public.commitment,
+        extension_reveal=reveal,
+    )
 
 
 def _oracle_signature(oracle: object) -> bytes:
@@ -120,7 +140,7 @@ def test_w16_w20_public_oracle_does_not_read_private_realization(
 
 
 def test_w16_primary_scope_is_exactly_equivalent_before_extension_reveal() -> None:
-    world = W16World()
+    world = _revealed_w16()
     left, right = world.pre_result_alias_pair()
     assert left.public_history.digest == right.public_history.digest
     assert left.invariant_parameters != right.invariant_parameters
@@ -137,7 +157,7 @@ def test_w16_primary_scope_is_exactly_equivalent_before_extension_reveal() -> No
 
 
 def test_w16_local_q2_update_splits_one_sealed_old_prefix_only_after_result() -> None:
-    world = W16World()
+    world = _revealed_w16()
     negative, positive = world.extension_result_pair()
     negative_prefix = [
         event.to_wire()
@@ -166,14 +186,15 @@ def test_w16_local_q2_update_splits_one_sealed_old_prefix_only_after_result() ->
 
 
 def test_w16_legacy_scope_insufficient_is_honest_limit_not_prediction_failure() -> None:
-    assert W16World.legacy_extension_verdict("scope_insufficient") == "HONEST_LIMIT"
     assert (
-        W16World.legacy_extension_verdict(
-            "supported", supported_and_correct=True
-        )
-        == "PASS"
+        W16World.legacy_extension_verdict(ResultStatus.SCOPE_INSUFFICIENT)
+        == "HONEST_LIMIT"
     )
-    assert W16World.legacy_extension_verdict("supported") == "HARD_FAILURE"
+    assert W16World.legacy_extension_verdict(ResultStatus.OK) == "UNSCORED_OK"
+    assert (
+        W16World.legacy_extension_verdict(ResultStatus.UNSUPPORTED)
+        == "HARD_FAILURE"
+    )
 
 
 def test_w17_s0_oracle_ignores_context_that_only_future_a2_makes_relevant() -> None:
@@ -187,7 +208,7 @@ def test_w17_s0_oracle_ignores_context_that_only_future_a2_makes_relevant() -> N
 
 
 def test_w17_revealed_a2_splits_old_histories_without_rewriting_s0() -> None:
-    world = W17World()
+    world = _revealed_w17()
     base_left, base_right = world.extension_split_pair()
     base_left_wire = base_left.public_history.to_wire()
     left = world.as_extension_episode(base_left)
@@ -212,18 +233,14 @@ def test_w17_revealed_a2_splits_old_histories_without_rewriting_s0() -> None:
 
 
 def test_w17_scope_insufficient_and_explicit_migration_semantics() -> None:
-    assert W17World.legacy_extension_verdict("scope_insufficient") == "HONEST_LIMIT"
     assert (
-        W17World.legacy_extension_verdict(
-            "scope_insufficient", replayed_history=True
-        )
-        == "HARD_FAILURE"
+        W17World.legacy_extension_verdict(ResultStatus.SCOPE_INSUFFICIENT)
+        == "HONEST_LIMIT"
     )
+    assert W17World.legacy_extension_verdict(ResultStatus.OK) == "UNSCORED_OK"
     assert (
-        W17World.legacy_extension_verdict(
-            "supported", supported_and_correct=True
-        )
-        == "PASS"
+        W17World.legacy_extension_verdict(ResultStatus.UNSUPPORTED)
+        == "HARD_FAILURE"
     )
 
 
@@ -232,7 +249,7 @@ def test_w18_sealed_split_contains_half_attributable_half_irreducible_c2() -> No
     c2_rows = [
         world.generate_episode(WorldSplit.SEALED_TEST, 888, index)
         for index in range(20)
-        if index % 5 == 0
+        if index % 10 in {0, 1}
     ]
     tags = [world.attribution_tag(episode) for episode in c2_rows]
     assert tags.count("OOD_ATTRIBUTABLE") == 2
@@ -284,8 +301,10 @@ def test_w19_dedicated_tail_probe_is_not_in_population_denominator() -> None:
     common, tail = world.tail_probe_pair(seed=17, probe_index=255)
     assert common.invariant_parameters["cohort"] == "dedicated-probe"
     assert tail.invariant_parameters["cohort"] == "dedicated-probe"
-    assert common.invariant_parameters["population_weight"] == 0.0
-    assert tail.invariant_parameters["population_weight"] == 0.0
+    assert "population_weight" not in common.invariant_parameters
+    assert "population_weight" not in tail.invariant_parameters
+    assert not world.population_membership(common)
+    assert not world.population_membership(tail)
     assert not common.oracle_anchor["probe_cohort_in_population_denominator"]
     with pytest.raises(ValueError):
         world.tail_probe_pair(seed=17, probe_index=256)
@@ -323,8 +342,9 @@ def test_w19_marker_evidence_changes_safe_action_and_tail_metrics_remain_visible
     assert tail_values[1] - tail_values[0] > 10.0
     outcome = world.counterfactual(tail, a1, 4, 0).outcome_distribution
     assert outcome["catastrophic_action_probability"] > 0.40
-    assert "tail_only_regret" in outcome["reporting_contract"]
-    assert "cvar95" in outcome["reporting_contract"]
+    assert outcome["tail_only_regret"] > 10.0
+    assert "lower_tail_cvar_95" in outcome
+    assert outcome["catastrophic_hard_gate_exposed"]
 
 
 def test_w20_public_performed_actions_close_exact_exposure_memory() -> None:
