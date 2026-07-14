@@ -289,3 +289,33 @@ final evaluator gates remain to be wired and audited before freeze.
 
 `KEEP FOR ITERATION`: checkpoint W06–W10 independently from the other world
 groups; benchmark status remains `PRE-FREEZE`.
+
+## 2026-07-15 — Fail-closed C01–C33 mutation matrix registry
+
+### Outcome
+
+- Added an executable registry for all C01–C33 gates, 26 required malicious
+  controls, and four specificity controls.
+- A kill counts only when the actual decisive gate and failure code match the
+  mutant contract and an exact record digest is present; crashes, timeouts and
+  unrelated failures do not count.
+- Freeze readiness now fails closed for missing mutant executions, uncovered
+  gates, survivors, or false-positive rejection of a specificity control.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_mutation_matrix.py
+6 passed
+```
+
+### Evidence boundary
+
+This checkpoint freezes the **registry and evidence validator only**. It does
+not claim that the 26 mutant implementations or 33 decisive detector records
+already exist. An empty matrix correctly reports `HARNESS_INCOMPLETE`.
+
+### Decision
+
+`KEEP AS PRE-FREEZE HARNESS`: next wire real mutation executions into this
+matrix; never synthesize `killed=true` from declarations.
