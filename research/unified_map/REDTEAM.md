@@ -1,6 +1,6 @@
-# UCM benchmark v1 冻结后 red-team 反例套件（agent 草案）
+# UCM benchmark v1 冻结后 Red-Team 反例套件
 
-> **状态：DRAFT / 非 benchmark v1 组成部分。** 这份文件只定义冻结顺序、攻击族、关系性 oracle 判据和证据合同。它不得被 benchmark v1 的 world、oracle、训练集、验证集或测试生成器 import；也不得在这里写入任何实际攻击实例、机制图、参数、seed、case ID、检查/治疗身份、效应量、患病率、horizon 分配、效用值或判定阈值。实际 red-team pack 只能在 benchmark v1 与候选快照都冻结后由独立流程生成。
+> **状态：PRE-REGISTERED / NOT EXECUTED / 非 benchmark v1 primary score 组成部分。** 这份文件只定义冻结顺序、攻击族、关系性 oracle 判据和证据合同。它不得被 benchmark v1 的 world、oracle、训练集、验证集或测试生成器 import；也不得在这里写入任何实际攻击实例、机制图、参数、seed、case ID、检查/治疗身份、效应量、患病率、horizon 分配、效用值或判定阈值。实际 red-team pack 只能在 benchmark v1 与候选快照都冻结后由独立流程生成。
 
 ## 1. 红队究竟攻击什么
 
@@ -35,7 +35,7 @@ S = (observation operators,
 对旧作用域 `S_old` 最小充分，不代表对扩展后的 `S_ext` 仍充分。新检查、新治疗、新读出或更长 horizon 都可能合法地拆分旧等价类。红队必须区分：
 
 - 候选能用冻结状态和预注册扩展算法局部细化，支持更强的 UCM 主张；
-- 候选诚实报告 `state_scope_invalid` / `insufficient_for_query` / OOD，并停止高置信决策，只支持**有限作用域共享状态**；
+- 候选诚实报告 `scope_insufficient` / OOD，并停止高置信决策，只支持**有限作用域共享状态**；
 - 候选静默假装旧状态仍充分，给出高置信错误反事实或危险治疗，这是硬失败。
 
 “永远 abstain”不能成为赢家。它可避免安全硬失败，但 verdict 只能是 `HONEST_LIMIT`，并必须报告 coverage。

@@ -1,7 +1,7 @@
 # Unified Clinical Map 研究计划
 
 > 轨道：`UCM`（Unified Clinical Map）
-> 状态：**Phase 0，benchmark v1 尚未冻结；禁止实现候选**
+> 状态：**Phase 2（W01–W20 executable benchmark），benchmark v1 尚未冻结；禁止实现候选**
 > 起始日期：2026-07-15
 > 研究边界：患者世界模型层；不是 K0/TEL/控制面续作
 > 完成标准：以仓库根目录 goal 附件中的 15 项完成条件为准，本文件不能缩小它们。
@@ -67,7 +67,7 @@ results/unified_map/    append-only run bundle
 
 ## 5. 阶段与退出门
 
-### Phase 0 — 被动映射与边界（进行中）
+### Phase 0 — 被动映射与边界（已完成）
 
 交付：本计划、仓库映射、K0 复用白名单/禁用清单。
 
@@ -78,6 +78,8 @@ results/unified_map/    append-only run bundle
 - 当前 git revision/status 已进入研究日志。
 
 ### Phase 1 — 第一原理和可证伪假说
+
+状态：**规格初版已完成；仍随 PRE-FREEZE 一致性审查修正，不构成运行证据。**
 
 交付：
 
@@ -92,6 +94,8 @@ results/unified_map/    append-only run bundle
 - 每个候选家族有可杀死的预测，不能只列优点。
 
 ### Phase 2 — W01–W20 与 benchmark v1
+
+状态：**进行中。** 正式 PRE-FREEZE 语义规格已覆盖 W01–W20；生成器、独立 oracle、expected cells、mutation kill matrix 和 freeze manifest 尚未齐全。
 
 交付：
 
@@ -108,7 +112,7 @@ results/unified_map/    append-only run bundle
 3. true-state 上界和简单错误候选证明评分方向正确；
 4. 状态碰撞、虚假拆分和任务绕过测试具有正/负对照；
 5. freeze manifest 覆盖代码、参数、split、oracle、指标和测试；
-6. `benchmark_v1.lock.json` 生成后只读，测试能检测静默漂移。
+6. `FREEZE_MANIFEST.json` 与 sidecar 生成后 append-only，测试能检测静默漂移。
 
 **只有本门通过后才允许开始 Phase 3。**
 
@@ -218,9 +222,11 @@ results/unified_map/    append-only run bundle
 
 ## 9. 当前下一批动作
 
-1. 完成 `FIRST_PRINCIPLES.md` 和 `MICROWORLDS.md` 的候选中立初稿；
-2. 冻结 public/private 数据边界和 candidate protocol；
-3. 实现 W01–W20 生成器和 oracle，不写候选；
-4. 实现合规作弊测试与 metric 正负对照；
-5. 生成 benchmark v1 freeze manifest；
-6. benchmark 冻结审计通过后，再打开候选目录。
+1. 把 W01–W20 语义逐个落成生成器、production oracle 与 source-distinct reference check；
+2. 完成 public/train-target/judge-private 物理投影、family-atomic split 和 expected cells；
+3. 扩全统一 metrics、raw-to-summary rebuilder 与 append-only result schema；
+4. 让 C01–C33 合规门杀死预注册恶意 controls，并保留 specificity controls；
+5. 完成 clean-checkout replay、依赖/环境锁和 freeze manifest drift 测试；
+6. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才打开 F01–F12 与四类正式 baseline 的实现。
+
+候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。

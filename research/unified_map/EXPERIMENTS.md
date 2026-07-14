@@ -1,16 +1,35 @@
-# UCM 实验注册、执行、统计与决策草案
+# UCM 实验注册、执行、统计与决策
 
-> 状态：**agent draft；尚未冻结，尚未运行任何候选**
-> 目标文件：经主 agent/benchmark owner 审核后并入 `research/unified_map/EXPERIMENTS.md`。
-> 边界：只设计 UCM 轨道的 experiment registry、运行循环、统计和选择；不修改 K0 结论，不把 K0 当 UCM 候选。
-> 证据口径：本文件中的 `EXP-*` 全是预注册计划，不是已完成实验，也不能计入 30 个完成数。
+> 状态：**Phase 1 正式研究登记规则；benchmark v1 尚未冻结，候选实验完成数为 0/30。**
+> 边界：只规定 UCM 轨道的 experiment registry、运行循环、统计和选择；不修改 K0 结论，不把 K0 当 UCM 候选。
+> 证据口径：下文 `EXP-001`–`EXP-040` 目前只是 `PLANNED` 预算槽位，不是已冻结 preregistration、不是 run、不是已完成实验，也不能计入完成数。
+> 权威性：实际完成事实将来自未来 append-only registry event 与不可覆盖 run bundle；本 Markdown 是规则和派生的人类可读视图，不能自行把计划升级为证据。
+
+## 0. 当前完成账本
+
+截至本文建立时，权威计数如下：
+
+| 完成门 | 当前值 | 目标 | 说明 |
+|---|---:|---:|---|
+| benchmark v1 freeze | 0 | 1 | 尚未冻结；因此不得运行普通候选 |
+| `DECIDED` 且 `count_eligible=true` 的重大实验 | **0** | **至少 30** | 计划卡、代码草图和 harness fixture 均不计数 |
+| 非局部参数调整的重大实验 | **0** | **至少 20** | 下文预留 35 个结构槽位不等于已完成 |
+| 完整 W01–W20 共享候选 | **0** | 至少 3 | 每个仍须至少 5 seed |
+| 完整候选的五-seed panels | **0** | 至少 3 | 缺任一 required seed/cell 不完整 |
+| 独立实现复现 | **0** | 至少 1 | 必须 source-distinct |
+| candidate-freeze 后 red-team | **0** | 至少 1 轮 | 不得回写 benchmark v1 |
+| cadence counterexample | **0** | 每完成 5 个实验至少 1 个 | 当前 `completion_ordinal=0`，尚未触发 |
+| cadence architecture review | **0** | 每完成 10 个实验 1 次 | 当前尚未触发 |
+
+计数只能由 registry 重放得出。未来如本表与 registry events 冲突，以通过 integrity check 的 registry 和 raw run evidence 为准，并通过追加 correction 更新本文，不得直接改写历史。
 
 ## 1. 先固定“实验”“运行”和“证据”的含义
 
-为防止把五个 seed、一次失败重跑或一组超参数冒充多个重大实验，使用五层对象：
+为防止把五个 seed、一次失败重跑或一组超参数冒充多个重大实验，使用六层对象：
 
 | 对象 | 含义 | 是否计入 30+ |
 |---|---|---:|
+| `PlannedSlot` | 本文预算矩阵中的待办位置；未冻结 experiment card | 否 |
 | `Experiment` | 一个预先写明假说、已知失败、最小结构改动、可证伪预测和决定规则的科学比较 | 只有 `count_eligible=true` 且完成决定后计 1 |
 | `Attempt` | 一个冻结 candidate/config/code/benchmark hash 后的执行尝试 | 否 |
 | `Run` | 一个不可覆盖的 runner 调用；可以包含整个 5-seed × W01–W20 矩阵 | 否 |
@@ -24,7 +43,7 @@
 3. 一个网格的每个格子不能分别登记成实验；网格是同一个实验的一组 attempt。
 4. 只有在**第一份 raw 产生前**冻结 experiment card，且最后有 `keep/revert/refine/abandon` 决定，才可计数。
 5. 未完成、hash 漂移、缺 seed、缺 world 或隔离未证明的 run 必须保留，但不计入完成数。
-6. 四个规定 baseline 是实质运行，但为保守起见**不用于满足 30 个重大候选/消融最低数**。下文另外预注册 36 个结构实验。
+6. 四个规定 baseline 是实质运行，但为保守起见**不用于满足 30 个重大候选/消融最低数**。下文另外预留 36 个结构实验槽位。
 7. 独立复现、confirmatory rerun 和 post-freeze red-team 是额外强制证据，不靠重复计数凑 30。
 
 ## 2. 证据状态机：不能把“跑过”写成“证明了”
@@ -32,6 +51,8 @@
 ### 2.1 Experiment 状态
 
 ```text
+PLANNED             # 仅预算槽位；不是实验事实，不计数
+  -> DRAFT
 DRAFT
   -> PREREGISTERED
   -> FROZEN
@@ -46,6 +67,18 @@ DRAFT
 ```
 
 `registered_at < frozen_at < first_raw_at` 必须由自动测试验证。产生 raw 后不得修改 hypothesis、falsifier、seed policy、primary metrics、decision rule 或 `count_eligible`。
+
+只有同时满足以下条件，`major_count` 才增加 1：
+
+```text
+status == DECIDED
+and count_eligible == true
+and at least one valid run has raw evidence
+and required seeds/cells for the preregistered stage are complete
+and decision in {keep, revert, refine, abandon}
+```
+
+`PLANNED`、`DRAFT`、`PREREGISTERED`、`FROZEN`、只有代码没有 run、只有 smoke 没有卡片要求的证据、`INVALIDATED` 和 `STOPPED` 都不计。失败候选在有效证据和正式 `revert/abandon` 决定后可以计一个已完成实验；无效 harness run 不可以。
 
 ### 2.2 三类失败必须分开
 
@@ -428,23 +461,26 @@ state-size / latency / memory tails
 
 ### 11.1 Candidate hard fail code
 
-任一经有效 harness 证明的下列事件，候选不能进入 Pareto：
+failure code 的权威 registry 在 `FORMAL_SPEC.md`。本文件不再创建一套漂移的 `H-*` 别名。任一经有效 harness 证明的下列事件，候选不能进入 Pareto：
 
-| Code | 硬失败 |
+| Formal code | 实验层触发摘要 |
 |---|---|
-| `H-LEAK-FUTURE` | 状态产生使用未来观察、真实未来或实际反事实结果 |
-| `H-LEAK-TRUESTATE` | 读取 simulator hidden state/oracle（true-state upper bound 除外） |
-| `H-TEST-BRANCH` | 按 world/test/case ID、疾病名或预期答案分支 |
-| `H-NOT-SHARED` | 三任务没有读取同一冻结 state bytes/hash |
-| `H-HISTORY-BYPASS` | head、治疗 query 或 cache 绕过 state 重读原始历史 |
-| `H-PRIVATE-LATENT` | 保存 task-specific patient latent/缓存作为第二状态 |
-| `H-BAD-UPDATE` | 新观察/动作未通过声明的同一更新算子，或在 query 时另建表示 |
-| `H-OBS-DO-CONFLATION` | 把 observation conditioning 当 intervention，或关联冒充因果效果 |
-| `H-DANGEROUS-COLLISION` | 治疗反应方向相反/灾难禁忌的患者被危险合并 |
-| `H-OOD-FORCED` | 冻结定义下将未知机制高置信强塞入已知状态 |
-| `H-TEST-SPECIFIC-CORE` | 新检查/治疗只能通过按测试重写核心通过 |
-| `H-NONREPRODUCIBLE` | exact bundle、环境和 seed 下超出冻结容差且候选自身非确定性无法解释 |
-| `H-HISTORY-MASQUERADE` | 完整历史记忆器声称紧凑有限状态；诚实标注 full-history baseline 不触发 |
+| `UCM-F001-FUTURE_LEAK` | 状态产生使用未来观察、真实未来或实际反事实结果 |
+| `UCM-F002-ORACLE_TRUE_STATE_ACCESS` | 读取 simulator hidden state/oracle（true-state upper bound 除外） |
+| `UCM-F003-TEST_ID_BRANCH` | 按 world/test/case ID、疾病名或预期答案分支 |
+| `UCM-F005-TASK_SPECIFIC_STATE` / `UCM-F007-STATE_FANOUT_MISMATCH` / `UCM-F013-SPLIT_TRANSITION_CORE` | 三任务未读取同一状态，或实际维护多套患者 dynamics/state |
+| `UCM-F004-HEAD_HISTORY_ACCESS` | head 或治疗 query 绕过 state 重读原始历史 |
+| `UCM-F005-TASK_SPECIFIC_STATE` / `UCM-F006-HIDDEN_PATIENT_CACHE` | 保存 task-specific patient latent/cache 作为第二状态 |
+| `UCM-F010-UPDATE_NOT_RECURSIVE` / `UCM-F019-UPDATE_INCONSISTENT` | 新观察/动作未通过同一递推更新，或 replay/batch/query-order 不一致 |
+| `UCM-F014-ACTION_SEMANTICS_CONFLATED` / `UCM-F015-CONDITIONING_AS_INTERVENTION` | 混淆 no-op/continue/stop/do/planned/performed，或关联冒充干预 |
+| `UCM-F016-DANGEROUS_COLLISION` | 治疗反应方向相反/灾难禁忌的患者被危险合并 |
+| `UCM-F017-OOD_FORCED_MATCH` | 冻结定义下将未知机制高置信强塞入已知状态 |
+| `UCM-F018-FULL_HISTORY_MISCLAIM` | 完整历史记忆器声称紧凑有限状态；诚实标注 full-history baseline 不触发 |
+| `UCM-F020-NONREPRODUCIBLE` | exact bundle、环境和 seed 下超出冻结容差且非确定性无法解释 |
+| `UCM-F023-RESULT_EVIDENCE_LOSS` | 覆盖旧结果、缺 raw/seed/seal/checksum 或 summary 无法追溯 |
+| `UCM-F024-SCOPE_OVERCLAIM` | 新检查/治疗超出旧 scope 却通过测试专属重写继续声称原状态充分 |
+
+若 sandbox、mutation kill、oracle 或 probe 证据不足，应记录 `UCM-E001`–`UCM-E003` 的 `INCOMPLETE`，不能伪装成候选 PASS，也不能直接升级为上述 candidate failure。
 
 自动合规的最低执行方式：
 
@@ -565,11 +601,11 @@ registry 维护两个计数：
 
 CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle/hash 或运行记录时，禁止登记下一批。
 
-## 15. 40 项预注册研究矩阵
+## 15. 40 项 planned experiment registry（当前完成 0）
 
-下表是**架构级预算地图**，不是宣称这些实现已存在。最终卡片必须在运行前进一步写明参数域和量化 falsifier。
+下表是**架构级预算地图**，不是冻结 preregistration，更不是宣称这些实现或结果已存在。所有行当前统一为 `status=PLANNED`、`valid_run_count=0`、`decision=null`、`counts_toward_completed=0`。只有单独生成并在 raw 之前冻结 experiment card、完成要求的有效 run/analysis、记录正式决定后，某行才可进入完成计数。最终卡片必须在运行前进一步写明参数域和量化 falsifier；若届时发现更高信息增益路径，允许通过 append-only registry 记录取消/替代，但不能把未跑计划计数。
 
-### 15.1 规定 baseline（不用于凑 30 个重大候选/消融）
+### 15.1 规定 baseline 计划（不用于凑 30 个重大候选/消融）
 
 | ID | 类型 | 假说/用途 | 关键 falsifier / 限制 |
 |---|---|---|---|
@@ -578,7 +614,7 @@ CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle
 | EXP-003 | Separate-task baseline | 测量不共享状态时三个任务各自最佳参考 | 天生不合规，只用于 noninferiority/优势比较 |
 | EXP-004 | K0-only negative control | 证明控制面/接口不能替代患者世界状态 | 若动态任务异常高分，先怀疑泄漏或 evaluator；通过独立 subprocess 调用，不让 UCM import K0 语义代码 |
 
-### 15.2 36 个结构实验预算（其中至少 35 个 count-eligible）
+### 15.2 36 个结构实验计划槽位（其中最多 35 个可在实际完成后 count-eligible）
 
 | ID | 家族/结构改动 | 主要假说 | 首要攻击点/杀死条件 |
 |---|---|---|---|
@@ -619,7 +655,7 @@ CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle
 | EXP-039 | compositional operator ablation | 结构化 operator 而非容量带来新共病组合泛化 | 打乱/移除 composition law 后不退化，说明组合主张未证实 |
 | EXP-040 | single-scale vs hierarchical multi-timescale state | 同一 state 能稳定支持 1h/24h/7d，而非每 horizon 私有 latent | state 随 horizon 线性膨胀或某尺度出现系统性 collision |
 
-即便保守排除 EXP-037，仍有 35 个 count-eligible 结构候选/消融，超过 30；它们都不是单纯学习率/层数/隐藏维度调整。
+即便保守排除 EXP-037，预算仍预留 35 个可能 `count_eligible` 的结构候选/消融槽位，超过 30；它们都不是单纯学习率/层数/隐藏维度调整。这里的 `35` 是搜索预算容量，**当前完成数仍是 0**。
 
 ## 16. Full benchmark、top-3、独立复现和 red-team
 
@@ -701,10 +737,10 @@ test_redteam_artifacts_do_not_rewrite_benchmark_v1
 5. 所有实验按固定循环运行；先保留失败 raw，再决定，不“清理”历史。
 6. 每五/十次 cadence gate 由 CI 强制，不靠人工记忆。
 
-## 19. 本草案明确不主张
+## 19. 当前证据状态与禁止声明
 
 - 没有任何候选已实现或已运行；
-- 没有 30 个实验已完成；
+- 重大实验完成账本是 **0/30**；`EXP-001`–`EXP-040` 只是 planned slots，一个都不能计为完成；
 - 没有 winner、Pareto 前沿或有限 UCM 存在性结论；
 - 五 seed 只支持冻结合成 benchmark 内的稳定性估计，不支持真实临床有效性；
 - hash 链是仓库内篡改检测，不是外部签名 WORM；
