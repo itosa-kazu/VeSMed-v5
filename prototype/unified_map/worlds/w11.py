@@ -116,6 +116,48 @@ def _last_channel(episode: PrivateEpisode, channel: str) -> float | None:
     return None if not values else float(values[-1])
 
 
+def _channel_rows(
+    episode: PrivateEpisode, channel: str
+) -> tuple[tuple[int, float], ...]:
+    """Return semantic observations in occurrence order, ignoring opaque UIDs.
+
+    Oracle conditioning is deliberately routed through this public projection.
+    Nothing in this helper can read ``hidden_state_at_cut`` or
+    ``invariant_parameters``.
+    """
+
+    rows = [
+        (event.occurred_at, float(event.payload["value"]))
+        for event in episode.public_history.events
+        if event.kind is EventKind.OBSERVATION_AVAILABLE
+        and event.payload.get("channel_id") == channel
+    ]
+    return tuple(sorted(rows))
+
+
+def _normal_log_likelihood(observed: float, mean: float, sigma: float) -> float:
+    residual = (observed - mean) / sigma
+    return -0.5 * residual * residual
+
+
+def _normalise_log_particles(
+    rows: list[tuple[tuple[Any, ...], float]],
+) -> tuple[tuple[Any, ...], ...]:
+    """Attach normalized weights to finite public-posterior particles."""
+
+    if not rows:
+        raise ProtocolViolation("public posterior grid is empty")
+    maximum = max(log_weight for _, log_weight in rows)
+    weights = [math.exp(max(-745.0, value - maximum)) for _, value in rows]
+    total = math.fsum(weights)
+    if not math.isfinite(total) or total <= 0.0:
+        raise ProtocolViolation("public posterior failed to normalize")
+    return tuple(
+        (*particle, weight / total)
+        for (particle, _), weight in zip(rows, weights, strict=True)
+    )
+
+
 def _semantic_events(episode: PrivateEpisode) -> list[dict[str, Any]]:
     """Fixture-only projection that deliberately ignores opaque UID alpha names."""
 
@@ -183,6 +225,18 @@ class World11(MicroWorld):
     ) -> PrivateEpisode:
         _validate_episode_request(split, generator_seed, episode_index)
         key: tuple[str | int, ...] = ("w11", split.value, episode_index)
+        if split is WorldSplit.SEALED_TEST:
+            residue = episode_index % 20
+            split_stratum = (
+                "iid" if residue < 8
+                else "same-q0-opposite-source-probe" if residue < 14
+                else "q1-missing" if residue < 17
+                else "q1-contradictory-noise"
+            )
+        elif split is WorldSplit.VALIDATION:
+            split_stratum = "mixed-35-percent"
+        else:
+            split_stratum = "mixed-20-percent"
         c = (episode_index + (split is WorldSplit.VALIDATION)) % 2
         severity = 0.45 + 0.85 * uniform01(generator_seed, *key, "severity")
         minor = 0.02 + 0.10 * uniform01(generator_seed, *key, "minor")
@@ -199,11 +253,15 @@ class World11(MicroWorld):
                 break
             p_q1 = 0.15 + 0.30 / (1.0 + math.exp(-(q0 - 0.5)))
             p_q1 = 0.90 * p_q1 + 0.05
+            if split_stratum == "q1-missing":
+                p_q1 = 0.0
             ordered = bernoulli(p_q1, generator_seed, *key, "q1", tick)
             if ordered:
                 contrast = x0 - x1 + 0.08 * normal01(
                     generator_seed, *key, "q1-value", tick
                 )
+                if split_stratum == "q1-contradictory-noise":
+                    contrast = -contrast
                 events.append(
                     _observation(
                         generator_seed,
@@ -289,10 +347,11 @@ class World11(MicroWorld):
             factual_utility=float(factual_utility),
             oracle_anchor={
                 "oracle_family": "reflected-component-dynamics",
-                "split_stratum": (
-                    "same-total-probe"
-                    if split is WorldSplit.SEALED_TEST and episode_index % 4 == 0
-                    else "routine"
+                "split_stratum": split_stratum,
+                "probe_attribution": (
+                    "candidate-attributable"
+                    if split_stratum != "q1-missing"
+                    else "posterior-ambiguity-expected"
                 ),
             },
         )
@@ -309,44 +368,65 @@ class World11(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        x0, x1 = (float(v) for v in episode.hidden_state_at_cut["components"])
+        particles = self._public_posterior(episode)
         schedule = _plan_ids(policy, horizon)
         latent_steps: list[dict[str, Any]] = []
         observation_steps: list[dict[str, Any]] = []
         utility = 0.0
         variance0 = variance1 = 0.0
+        working = [(x0, x1, weight) for x0, x1, weight in particles]
         for offset, ids in enumerate(schedule):
             action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
-            x0, x1 = self._step(x0, x1, action)
+            working = [(*self._step(x0, x1, action), weight) for x0, x1, weight in working]
             variance0 = 0.92**2 * variance0 + 0.035**2
             variance1 = 0.76**2 * variance1 + 0.035**2
             check_cost = 0.07 * float("Q1" in ids)
+            mean0 = math.fsum(weight * x0 for x0, _, weight in working)
+            mean1 = math.fsum(weight * x1 for _, x1, weight in working)
+            second_sum = math.fsum(
+                weight * (x0 + x1) ** 2 for x0, x1, weight in working
+            )
+            cross = math.fsum(weight * x0 * x1 for x0, x1, weight in working)
+            posterior_var0 = math.fsum(
+                weight * (x0 - mean0) ** 2 for x0, _, weight in working
+            )
+            posterior_var1 = math.fsum(
+                weight * (x1 - mean1) ** 2 for _, x1, weight in working
+            )
             expected_cost = (
-                (x0 + x1) ** 2
-                + variance0
-                + variance1
-                + 0.25 * x0 * x1
-                + 0.06 * float(action is not None)
-                + check_cost
+                second_sum + variance0 + variance1 + 0.25 * cross
+                + 0.06 * float(action is not None) + check_cost
             )
             utility -= 0.97**offset * expected_cost
             latent_steps.append(
                 {
                     "offset": offset + 1,
-                    "mean": [x0, x1],
-                    "variance": [variance0, variance1],
+                    "mean": [mean0, mean1],
+                    "variance": [posterior_var0 + variance0, posterior_var1 + variance1],
                 }
             )
             observation_steps.append(
                 {
                     "offset": offset + 1,
-                    "obs_0_mean": x0 + x1,
-                    "obs_0_variance": variance0 + variance1 + 0.05**2,
-                    "obs_1_mean": x0 - x1,
-                    "obs_1_variance": variance0 + variance1 + 0.08**2,
+                    "obs_0_mean": mean0 + mean1,
+                    "obs_0_variance": (
+                        math.fsum(
+                            weight * ((x0 + x1) - (mean0 + mean1)) ** 2
+                            for x0, x1, weight in working
+                        )
+                        + variance0 + variance1 + 0.05**2
+                    ),
+                    "obs_1_mean": mean0 - mean1,
+                    "obs_1_variance": (
+                        math.fsum(
+                            weight * ((x0 - x1) - (mean0 - mean1)) ** 2
+                            for x0, x1, weight in working
+                        )
+                        + variance0 + variance1 + 0.08**2
+                    ),
                 }
             )
-        c = int(episode.invariant_parameters["mechanism_index"])
+        p_c0 = math.fsum(weight for x0, x1, weight in particles if x0 >= x1)
         return CounterfactualOracle(
             policy=policy,
             horizon=horizon,
@@ -357,7 +437,7 @@ class World11(MicroWorld):
             latent_distribution={
                 "family": "two-component-state",
                 "steps": latent_steps,
-                "diagnostic_posterior": {"C0": float(c == 0), "C1": float(c == 1)},
+                "diagnostic_posterior": {"C0": p_c0, "C1": 1.0 - p_c0},
             },
             outcome_distribution={
                 "utility_family": "discounted-quadratic",
@@ -365,11 +445,113 @@ class World11(MicroWorld):
             },
             expected_utility=float(utility),
             numerical_diagnostics={
-                "method": "analytic-interior-moments-with-reflection",
-                "absolute_error_bound": 0.01,
-                "posterior_fork": "single-cut-state",
+                "method": "public-history-component-grid",
+                "absolute_error_bound": 0.03,
+                "posterior_fork": "single-public-posterior",
+                "private_state_used": False,
             },
         )
+
+    @staticmethod
+    def _public_posterior(
+        episode: PrivateEpisode,
+    ) -> tuple[tuple[float, float, float], ...]:
+        """Production posterior: Cartesian component grid conditioned on H."""
+
+        totals = _channel_rows(episode, "obs_0")
+        if not totals:
+            raise ProtocolViolation("W11 requires a public obs_0 at the cut")
+        y_total = totals[-1][1]
+        contrasts = _channel_rows(episode, "obs_1")
+        y_contrast = contrasts[-1][1] if contrasts else None
+        upper = max(1.8, y_total + 0.8)
+        rows: list[tuple[tuple[Any, ...], float]] = []
+        for i in range(31):
+            x0 = upper * i / 30.0
+            for j in range(31):
+                x1 = upper * j / 30.0
+                log_weight = _normal_log_likelihood(y_total, x0 + x1, 0.08)
+                if y_contrast is not None:
+                    log_weight += _normal_log_likelihood(
+                        y_contrast, x0 - x1, 0.13
+                    )
+                rows.append(((x0, x1), log_weight))
+        return _normalise_log_particles(rows)  # type: ignore[return-value]
+
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+    ) -> float:
+        """Independent sum/contrast quadrature reference for expected utility.
+
+        This path intentionally does not call ``_public_posterior`` or
+        ``_step``.  It exists solely as a freeze-time reference check.
+        """
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W11 policy set")
+        totals = _channel_rows(episode, "obs_0")
+        if not totals:
+            raise ProtocolViolation("W11 reference requires obs_0")
+        y0 = totals[-1][1]
+        contrasts = _channel_rows(episode, "obs_1")
+        y1 = contrasts[-1][1] if contrasts else None
+        upper = max(1.8, y0 + 0.8)
+        raw: list[tuple[float, float, float]] = []
+        for si in range(1, 61):
+            total = 2.0 * upper * (si - 0.5) / 60.0
+            for di in range(1, 61):
+                contrast = -upper + 2.0 * upper * (di - 0.5) / 60.0
+                x0 = 0.5 * (total + contrast)
+                x1 = 0.5 * (total - contrast)
+                if x0 < 0.0 or x1 < 0.0 or x0 > upper or x1 > upper:
+                    continue
+                score = _normal_log_likelihood(y0, total, 0.08)
+                if y1 is not None:
+                    score += _normal_log_likelihood(y1, contrast, 0.13)
+                raw.append((x0, x1, score))
+        peak = max(row[2] for row in raw)
+        weighted = [(x0, x1, math.exp(max(-745.0, score - peak))) for x0, x1, score in raw]
+        normalizer = math.fsum(row[2] for row in weighted)
+        particles = [(x0, x1, weight / normalizer) for x0, x1, weight in weighted]
+        utility = 0.0
+        variance0 = variance1 = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            next_rows = []
+            for x0, x1, weight in particles:
+                next0 = max(0.0, 0.92 * x0 + 0.08 - 0.42 * float(action == "A1"))
+                next1 = max(0.0, 0.76 * x1 + 0.20 - 0.42 * float(action == "A2"))
+                next_rows.append((next0, next1, weight))
+            particles = next_rows
+            variance0 = 0.92**2 * variance0 + 0.035**2
+            variance1 = 0.76**2 * variance1 + 0.035**2
+            expected = math.fsum(
+                weight * ((x0 + x1) ** 2 + 0.25 * x0 * x1)
+                for x0, x1, weight in particles
+            )
+            expected += variance0 + variance1
+            expected += 0.06 * float(action is not None) + 0.07 * float("Q1" in ids)
+            utility -= 0.97**offset * expected
+        return float(utility)
+
+    def private_state_upper_bound(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Judge-only realized-state upper bound; never used for scoring."""
+
+        x0, x1 = (float(v) for v in episode.hidden_state_at_cut["components"])
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            x0, x1 = self._step(x0, x1, action)
+            utility -= 0.97**offset * (
+                (x0 + x1) ** 2 + 0.25 * x0 * x1
+                + 0.06 * float(action is not None) + 0.07 * float("Q1" in ids)
+            )
+        return float(utility)
 
     def _fixture_episode(
         self,
@@ -398,7 +580,10 @@ class World11(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={
+                "fixture": "paired",
+                "probe_attribution": "candidate-attributable",
+            },
         )
         if alpha_namespace is None:
             return episode

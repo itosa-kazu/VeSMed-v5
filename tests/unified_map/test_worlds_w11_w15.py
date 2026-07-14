@@ -144,9 +144,12 @@ def test_w12_expression_is_not_the_shared_mechanism_state() -> None:
     same_x_low, same_x_high = world.same_mechanism_fixture()
     low_future = world.counterfactual(same_x_low, no_action, 1, 1)
     high_future = world.counterfactual(same_x_high, no_action, 1, 1)
-    assert low_future.latent_distribution["steps"] == high_future.latent_distribution[
-        "steps"
-    ]
+    # Both public posteriors recover the same mechanism mean.  Their variance
+    # may differ because h changes Q0 measurement precision; that uncertainty
+    # is part of the posterior and must not be silently discarded.
+    assert low_future.latent_distribution["steps"][0]["mean"] == pytest.approx(
+        high_future.latent_distribution["steps"][0]["mean"], abs=1e-10
+    )
     assert (
         low_future.observation_distribution["steps"][0]["obs_0_mean"]
         != high_future.observation_distribution["steps"][0]["obs_0_mean"]

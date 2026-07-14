@@ -28,7 +28,10 @@ from .w06 import (
 )
 from .w11 import (
     _case_key,
+    _channel_rows,
     _finite_policy_set,
+    _normal_log_likelihood,
+    _normalise_log_particles,
     _observation,
     _plan_ids,
     _treatment,
@@ -91,7 +94,8 @@ class World12(MicroWorld):
         key: tuple[str | int, ...] = ("w12", split.value, episode_index)
         host_class = (episode_index + int(split is WorldSplit.VALIDATION)) % 2
         host = self._HOST[host_class]
-        if split is WorldSplit.SEALED_TEST and episode_index % 10 < 3:
+        residue = episode_index % 10
+        if split is WorldSplit.SEALED_TEST and residue < 3:
             # Same-expression stratum: both host classes are mapped around 0.60.
             x = 0.60 / host + 0.04 * (
                 2.0 * uniform01(generator_seed, *key, "same-expression") - 1.0
@@ -99,7 +103,17 @@ class World12(MicroWorld):
             stratum = "same-expression"
         else:
             x = 0.15 + 1.05 * uniform01(generator_seed, *key, "initial-x")
-            stratum = "routine"
+            stratum = (
+                "same-mechanism-different-expression"
+                if split is WorldSplit.SEALED_TEST and residue < 5
+                else "marker-missing"
+                if split is WorldSplit.SEALED_TEST and residue < 7
+                else "iid"
+                if split is WorldSplit.SEALED_TEST
+                else "validation-same-expression-holdout"
+                if split is WorldSplit.VALIDATION
+                else "train-host-x-balanced"
+            )
         events: list[Any] = []
         propensities: list[dict[str, Any]] = []
         marker_seen = False
@@ -110,6 +124,8 @@ class World12(MicroWorld):
             if tick == 0:
                 break
             p_q1 = 0.08 if marker_seen else 0.30
+            if stratum == "marker-missing":
+                p_q1 = 0.0
             p_q2 = 0.12 + 0.20 / (
                 1.0 + math.exp(-(abs(y) - 0.5))
             )
@@ -216,7 +232,15 @@ class World12(MicroWorld):
             factual_future=future,
             action_propensities=propensities,
             factual_utility=float(utility),
-            oracle_anchor={"stratum": stratum, "oracle_family": "host-enumeration"},
+            oracle_anchor={
+                "stratum": stratum,
+                "oracle_family": "host-enumeration",
+                "probe_attribution": (
+                    "posterior-ambiguity-expected"
+                    if stratum == "marker-missing"
+                    else "candidate-attributable"
+                ),
+            },
         )
 
     def counterfactual(
@@ -231,37 +255,65 @@ class World12(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        host_class = int(episode.invariant_parameters["host_class"])
-        host = self._HOST[host_class]
-        x = float(episode.hidden_state_at_cut["mechanism_activity"])
+        particles = self._public_posterior(episode)
         variance = 0.0
         utility = 0.0
         latent_steps: list[dict[str, Any]] = []
         observed_steps: list[dict[str, Any]] = []
+        working = [(host_class, x, weight) for host_class, x, weight in particles]
         for offset, ids in enumerate(_plan_ids(policy, horizon)):
             action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
-            x = self._step(x, host_class, action)
+            working = [
+                (host_class, self._step(x, host_class, action), weight)
+                for host_class, x, weight in working
+            ]
             variance = 0.91**2 * variance + 0.04**2
             check_cost = 0.06 * float("Q1" in ids) + 0.09 * float("Q2" in ids)
-            utility -= 0.97**offset * (
-                x * x
-                + variance
-                + 0.20 * host * host * (x * x + variance)
-                + 0.06 * float(action is not None)
-                + check_cost
+            expected_cost = math.fsum(
+                weight
+                * (
+                    x * x
+                    + variance
+                    + 0.20 * self._HOST[host_class] ** 2 * (x * x + variance)
+                )
+                for host_class, x, weight in working
+            )
+            expected_cost += 0.06 * float(action is not None) + check_cost
+            utility -= 0.97**offset * expected_cost
+            mean_x = math.fsum(weight * x for _, x, weight in working)
+            var_x = math.fsum(
+                weight * (x - mean_x) ** 2 for _, x, weight in working
+            ) + variance
+            mean_y = math.fsum(
+                weight * self._HOST[host_class] * x
+                for host_class, x, weight in working
+            )
+            var_y = math.fsum(
+                weight * (self._HOST[host_class] * x - mean_y) ** 2
+                for host_class, x, weight in working
+            ) + math.fsum(
+                weight * self._HOST[host_class] ** 2 * variance
+                for host_class, _, weight in working
+            )
+            mean_host = math.fsum(
+                weight * self._HOST[host_class]
+                for host_class, _, weight in working
             )
             latent_steps.append(
-                {"offset": offset + 1, "mean": x, "variance": variance}
+                {"offset": offset + 1, "mean": mean_x, "variance": var_x}
             )
             observed_steps.append(
                 {
                     "offset": offset + 1,
-                    "obs_0_mean": host * x,
-                    "obs_0_variance": host * host * variance + 0.05**2,
-                    "obs_1_mean": host,
-                    "obs_2_mean": x,
+                    "obs_0_mean": mean_y,
+                    "obs_0_variance": var_y + 0.05**2,
+                    "obs_1_mean": mean_host,
+                    "obs_2_mean": mean_x,
                 }
             )
+        p_c0 = math.fsum(
+            weight for host_class, _, weight in particles if host_class == 0
+        )
         return CounterfactualOracle(
             policy=policy,
             horizon=horizon,
@@ -273,8 +325,8 @@ class World12(MicroWorld):
                 "family": "shared-mechanism-state",
                 "steps": latent_steps,
                 "diagnostic_posterior": {
-                    "C0": float(host_class == 0),
-                    "C1": float(host_class == 1),
+                    "C0": p_c0,
+                    "C1": 1.0 - p_c0,
                 },
             },
             outcome_distribution={
@@ -283,11 +335,109 @@ class World12(MicroWorld):
             },
             expected_utility=float(utility),
             numerical_diagnostics={
-                "method": "analytic-host-enumerated-moments",
-                "absolute_error_bound": 0.01,
-                "posterior_fork": "single-cut-state",
+                "method": "public-history-host-x-grid",
+                "absolute_error_bound": 0.03,
+                "posterior_fork": "single-public-posterior",
+                "private_state_used": False,
             },
         )
+
+    @classmethod
+    def _public_posterior(
+        cls, episode: PrivateEpisode
+    ) -> tuple[tuple[int, float, float], ...]:
+        routine = _channel_rows(episode, "obs_0")
+        if not routine:
+            raise ProtocolViolation("W12 requires public obs_0")
+        y = routine[-1][1]
+        markers = _channel_rows(episode, "obs_1")
+        mechanisms = _channel_rows(episode, "obs_2")
+        marker = markers[-1][1] if markers else None
+        mechanism = mechanisms[-1][1] if mechanisms else None
+        upper = max(1.6, abs(y) / 0.60 + 0.5)
+        rows: list[tuple[tuple[Any, ...], float]] = []
+        for host_class, host in enumerate(cls._HOST):
+            for i in range(81):
+                x = upper * i / 80.0
+                score = _normal_log_likelihood(y, host * x, 0.08)
+                if marker is not None:
+                    score += _normal_log_likelihood(marker, host, 0.10)
+                if mechanism is not None:
+                    score += _normal_log_likelihood(mechanism, x, 0.14)
+                rows.append(((host_class, x), score))
+        return _normalise_log_particles(rows)  # type: ignore[return-value]
+
+    def reference_counterfactual(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Independent midpoint quadrature with inline host transitions."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W12 policy set")
+        routine = _channel_rows(episode, "obs_0")
+        if not routine:
+            raise ProtocolViolation("W12 reference requires obs_0")
+        y = routine[-1][1]
+        markers = _channel_rows(episode, "obs_1")
+        mechanisms = _channel_rows(episode, "obs_2")
+        marker = markers[-1][1] if markers else None
+        mechanism = mechanisms[-1][1] if mechanisms else None
+        upper = max(1.6, abs(y) / 0.60 + 0.5)
+        raw: list[tuple[int, float, float]] = []
+        for host_class, host in enumerate((0.60, 1.40)):
+            for i in range(120):
+                x = upper * (i + 0.5) / 120.0
+                score = _normal_log_likelihood(y, host * x, 0.08)
+                if marker is not None:
+                    score += _normal_log_likelihood(marker, host, 0.10)
+                if mechanism is not None:
+                    score += _normal_log_likelihood(mechanism, x, 0.14)
+                raw.append((host_class, x, score))
+        peak = max(row[2] for row in raw)
+        weighted = [(h, x, math.exp(max(-745.0, s - peak))) for h, x, s in raw]
+        norm = math.fsum(row[2] for row in weighted)
+        particles = [(h, x, w / norm) for h, x, w in weighted]
+        variance = 0.0
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            next_particles = []
+            for host_class, x, weight in particles:
+                effect = (0.22, 0.42)[host_class] if action == "A1" else 0.18 if action == "A2" else 0.0
+                next_x = max(0.0, 0.91 * x + 0.10 - effect)
+                next_particles.append((host_class, next_x, weight))
+            particles = next_particles
+            variance = 0.91**2 * variance + 0.04**2
+            expected = math.fsum(
+                weight * (
+                    x * x + variance
+                    + 0.20 * (0.60, 1.40)[host_class] ** 2 * (x * x + variance)
+                )
+                for host_class, x, weight in particles
+            )
+            expected += 0.06 * float(action is not None)
+            expected += 0.06 * float("Q1" in ids) + 0.09 * float("Q2" in ids)
+            utility -= 0.97**offset * expected
+        return float(utility)
+
+    def private_state_upper_bound(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Judge-only realized-state comparator, excluded from scoring."""
+
+        host_class = int(episode.invariant_parameters["host_class"])
+        host = self._HOST[host_class]
+        x = float(episode.hidden_state_at_cut["mechanism_activity"])
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            x = self._step(x, host_class, action)
+            utility -= 0.97**offset * (
+                x * x + 0.20 * (host * x) ** 2
+                + 0.06 * float(action is not None)
+                + 0.06 * float("Q1" in ids) + 0.09 * float("Q2" in ids)
+            )
+        return float(utility)
 
     def _fixture(
         self,
@@ -325,7 +475,10 @@ class World12(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={
+                "fixture": "paired",
+                "probe_attribution": "candidate-attributable",
+            },
         )
 
     def distinguishable_fixture(

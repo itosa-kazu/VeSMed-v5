@@ -33,7 +33,10 @@ from .w06 import (
 )
 from .w11 import (
     _case_key,
+    _channel_rows,
     _finite_policy_set,
+    _normal_log_likelihood,
+    _normalise_log_particles,
     _observation,
     _plan_ids,
     _treatment,
@@ -100,10 +103,22 @@ class World15A(MicroWorld):
     ) -> PrivateEpisode:
         _validate_episode_request(split, generator_seed, episode_index)
         key: tuple[str | int, ...] = ("w15a", split.value, episode_index)
-        confounder = int(
-            bernoulli(0.5, generator_seed, *key, "confounder")
-        )
-        severity = 0.25 + 1.05 * uniform01(generator_seed, *key, "severity")
+        confounder = (episode_index + int(split is WorldSplit.VALIDATION)) % 2
+        draw = uniform01(generator_seed, *key, "severity")
+        if split is WorldSplit.TRAIN:
+            # Training diagonal: both host strata remain represented while the
+            # opposite severity x u combinations are held for sealed test.
+            severity = (0.25 + 0.35 * draw) if confounder == 0 else (0.95 + 0.35 * draw)
+            stratum = "train-severity-u-diagonal"
+        elif split is WorldSplit.VALIDATION:
+            severity = 0.55 + 0.40 * draw
+            stratum = "validation-middle-band"
+        elif episode_index % 10 < 6:
+            severity = (0.95 + 0.35 * draw) if confounder == 0 else (0.25 + 0.35 * draw)
+            stratum = "sealed-heldout-severity-u-cross"
+        else:
+            severity = 0.25 + 1.05 * draw
+            stratum = "sealed-iid"
         events: list[Any] = []
         propensities: list[dict[str, Any]] = []
 
@@ -164,8 +179,9 @@ class World15A(MicroWorld):
         severity_class = int(severity >= 0.80)
         future: list[dict[str, Any]] = []
         utility = 0.0
+        current_public_y = y
         for offset in range(4):
-            p_treat = _sigmoid(1.5 * severity)
+            p_treat = _sigmoid(1.5 * current_public_y)
             treated = bernoulli(
                 p_treat, generator_seed, *key, "future-treatment", offset
             )
@@ -175,12 +191,29 @@ class World15A(MicroWorld):
                 treated,
                 0.04 * normal01(generator_seed, *key, "future-process", offset),
             )
+            current_public_y = severity + 0.05 * normal01(
+                generator_seed, *key, "future-q0", offset
+            )
             utility -= 0.97**offset * (severity * severity + 0.05 * treated)
             future.append(
                 {
                     "offset": offset + 1,
-                    "observations": {"obs_0": severity},
+                    "observations": {"obs_0": current_public_y},
                     "performed_action": "A1" if treated else "NoNewAction",
+                }
+            )
+            propensities.append(
+                {
+                    "decision_at": offset,
+                    "assignment": "behavioral",
+                    "probabilities": {
+                        "A1": p_treat,
+                        "NoNewAction": 1.0 - p_treat,
+                    },
+                    "selected": "A1" if treated else "NoNewAction",
+                    "check_probabilities": {"Q1": 0.0, "NoCheck": 1.0},
+                    "selected_check": "NoCheck",
+                    "phase": "factual-future",
                 }
             )
 
@@ -205,6 +238,8 @@ class World15A(MicroWorld):
                 "panel": "randomized-identifiable",
                 "randomized_fraction": 0.30,
                 "causal_effect_identified": True,
+                "split_stratum": stratum,
+                "probe_attribution": "causal-effect-attributable",
             },
         )
 
@@ -220,29 +255,39 @@ class World15A(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        severity = float(episode.hidden_state_at_cut["severity"])
-        confounder = int(episode.invariant_parameters["confounder"])
+        particles = self._public_posterior(episode)
         variance = 0.0
         utility = 0.0
         steps: list[dict[str, Any]] = []
+        working = [(confounder, severity, weight) for confounder, severity, weight in particles]
         for offset, ids in enumerate(_plan_ids(policy, horizon)):
             treated = "A1" in ids
-            severity = self._step(severity, confounder, treated)
+            working = [
+                (confounder, self._step(severity, confounder, treated), weight)
+                for confounder, severity, weight in working
+            ]
             variance = 0.92**2 * variance + 0.04**2
-            utility -= 0.97**offset * (
-                severity * severity
-                + variance
-                + 0.05 * treated
-                + 0.06 * float("Q1" in ids)
+            expected = math.fsum(
+                weight * severity * severity
+                for _, severity, weight in working
+            )
+            expected += variance + 0.05 * treated + 0.06 * float("Q1" in ids)
+            utility -= 0.97**offset * expected
+            mean = math.fsum(weight * severity for _, severity, weight in working)
+            posterior_variance = math.fsum(
+                weight * (severity - mean) ** 2
+                for _, severity, weight in working
             )
             steps.append(
                 {
                     "offset": offset + 1,
-                    "severity_mean": severity,
-                    "severity_variance": variance,
+                    "severity_mean": mean,
+                    "severity_variance": posterior_variance + variance,
                 }
             )
-        severity_class = int(episode.diagnostic_target["C1"] > 0.5)
+        p_c0 = math.fsum(
+            weight for _, severity, weight in particles if severity < 0.80
+        )
         return CounterfactualOracle(
             policy=policy,
             horizon=horizon,
@@ -261,8 +306,8 @@ class World15A(MicroWorld):
                 "family": "severity-confounder-state",
                 "steps": steps,
                 "diagnostic_posterior": {
-                    "C0": float(severity_class == 0),
-                    "C1": float(severity_class == 1),
+                    "C0": p_c0,
+                    "C1": 1.0 - p_c0,
                 },
             },
             outcome_distribution={
@@ -272,10 +317,158 @@ class World15A(MicroWorld):
             },
             expected_utility=float(utility),
             numerical_diagnostics={
-                "method": "analytic-randomized-anchor-scm",
-                "absolute_error_bound": 0.005,
-                "posterior_fork": "single-cut-state",
+                "method": "public-history-randomized-anchor-grid",
+                "absolute_error_bound": 0.025,
+                "posterior_fork": "single-public-posterior",
+                "private_state_used": False,
+                "identified_transition_effect": -0.35,
             },
+        )
+
+    @classmethod
+    def _public_posterior(
+        cls, episode: PrivateEpisode
+    ) -> tuple[tuple[int, float, float], ...]:
+        observations = _channel_rows(episode, "obs_0")
+        if not observations:
+            raise ProtocolViolation("W15A requires public obs_0")
+        latest = observations[-1][1]
+        markers = _channel_rows(episode, "obs_1")
+        marker = markers[-1][1] if markers else None
+        actions = {
+            event.occurred_at
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") == "A1"
+        }
+        # Public transition residuals sharpen u without conditioning on the
+        # realized private confounder.
+        residual_scores = {0: 0.0, 1: 0.0}
+        for (tick0, y0), (tick1, y1) in zip(observations, observations[1:]):
+            treated = tick0 in actions
+            for confounder in (0, 1):
+                predicted = 0.92 * y0 + 0.20 * confounder - 0.35 * treated
+                residual_scores[confounder] += _normal_log_likelihood(
+                    y1, predicted, 0.10
+                )
+        upper = max(1.8, latest + 0.6)
+        rows: list[tuple[tuple[Any, ...], float]] = []
+        for confounder in (0, 1):
+            for i in range(91):
+                severity = upper * i / 90.0
+                score = _normal_log_likelihood(latest, severity, 0.075)
+                score += residual_scores[confounder]
+                if marker is not None:
+                    score += _normal_log_likelihood(
+                        marker, float(confounder), 0.10
+                    )
+                rows.append(((confounder, severity), score))
+        return _normalise_log_particles(rows)  # type: ignore[return-value]
+
+    def reference_counterfactual(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Independent midpoint enumeration with inline randomized SCM."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W15A policy set")
+        observations = _channel_rows(episode, "obs_0")
+        if not observations:
+            raise ProtocolViolation("W15A reference requires obs_0")
+        latest = observations[-1][1]
+        markers = _channel_rows(episode, "obs_1")
+        marker = markers[-1][1] if markers else None
+        actions = {
+            event.occurred_at
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") == "A1"
+        }
+        raw: list[tuple[int, float, float]] = []
+        upper = max(1.8, latest + 0.6)
+        for confounder in (0, 1):
+            residual_score = 0.0
+            for (tick0, y0), (_, y1) in zip(observations, observations[1:]):
+                mean = 0.92 * y0 + 0.20 * confounder - 0.35 * float(tick0 in actions)
+                residual_score += _normal_log_likelihood(y1, mean, 0.10)
+            if marker is not None:
+                residual_score += _normal_log_likelihood(marker, float(confounder), 0.10)
+            for i in range(140):
+                severity = upper * (i + 0.5) / 140.0
+                score = residual_score + _normal_log_likelihood(latest, severity, 0.075)
+                raw.append((confounder, severity, score))
+        peak = max(row[2] for row in raw)
+        weighted = [(u, x, math.exp(max(-745.0, s - peak))) for u, x, s in raw]
+        norm = math.fsum(row[2] for row in weighted)
+        particles = [(u, x, w / norm) for u, x, w in weighted]
+        variance = 0.0
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            treated = "A1" in ids
+            particles = [
+                (u, max(0.0, 0.92 * x + 0.20 * u - 0.35 * treated), weight)
+                for u, x, weight in particles
+            ]
+            variance = 0.92**2 * variance + 0.04**2
+            expected = math.fsum(weight * x * x for _, x, weight in particles)
+            expected += variance + 0.05 * treated + 0.06 * float("Q1" in ids)
+            utility -= 0.97**offset * expected
+        return float(utility)
+
+    def private_state_upper_bound(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Judge-only realized-confounder comparator, excluded from scoring."""
+
+        severity = float(episode.hidden_state_at_cut["severity"])
+        confounder = int(episode.invariant_parameters["confounder"])
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            treated = "A1" in ids
+            severity = self._step(severity, confounder, treated)
+            utility -= 0.97**offset * (
+                severity * severity + 0.05 * treated + 0.06 * float("Q1" in ids)
+            )
+        return float(utility)
+
+    @staticmethod
+    def estimate_randomized_anchor_effect(
+        episodes: tuple[PrivateEpisode, ...]
+    ) -> float:
+        """Estimate the one-step effect from public randomized slots only.
+
+        This is a benchmark audit helper, not the production oracle.  It
+        demonstrates that identification comes from observable randomization
+        rather than from the private confounder field.
+        """
+
+        treated_residuals: list[float] = []
+        control_residuals: list[float] = []
+        for episode in episodes:
+            observations = dict(_channel_rows(episode, "obs_0"))
+            randomized_ticks = {
+                tick
+                for tick, value in _channel_rows(episode, "obs_2")
+                if value == 1.0
+            }
+            treated_ticks = {
+                event.occurred_at
+                for event in episode.public_history.events
+                if event.kind is EventKind.PERFORMED_TREATMENT
+                and event.payload.get("action_id") == "A1"
+            }
+            for tick in randomized_ticks:
+                if tick not in observations or tick + 1 not in observations:
+                    continue
+                residual = observations[tick + 1] - 0.92 * observations[tick]
+                (treated_residuals if tick in treated_ticks else control_residuals).append(
+                    residual
+                )
+        if not treated_residuals or not control_residuals:
+            raise ProtocolViolation("randomized anchor sample lacks both arms")
+        return (
+            math.fsum(treated_residuals) / len(treated_residuals)
+            - math.fsum(control_residuals) / len(control_residuals)
         )
 
     def _fixture(
@@ -303,7 +496,10 @@ class World15A(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "randomized-identifiable"},
+            oracle_anchor={
+                "fixture": "randomized-identifiable",
+                "probe_attribution": "candidate-attributable",
+            },
         )
 
     def distinguishable_fixture(
@@ -373,29 +569,20 @@ class World15B(MicroWorld):
         neutral_context = 2.0 * uniform01(
             generator_seed, *public_key, "neutral-context"
         ) - 1.0
+        # The candidate cut is explicitly *before* the observational action
+        # and outcome.  Therefore a NoNewAction query sets the upcoming action
+        # to zero; it never attempts to undo a treatment already in history.
         events: list[Any] = [
             _observation(
                 generator_seed,
                 public_key,
                 "obs_0",
                 neutral_context,
-                -1,
+                0,
                 slot=0,
             )
         ]
-        if confounder == 1:
-            events.append(_treatment(generator_seed, public_key, "A1", -1))
         observed_outcome = float(confounder)
-        events.append(
-            _observation(
-                generator_seed,
-                public_key,
-                "obs_1",
-                observed_outcome,
-                0,
-                slot=1,
-            )
-        )
         factual_utility = observed_outcome - 0.05 * confounder
         return PrivateEpisode(
             case_key=_case_key(
@@ -405,30 +592,31 @@ class World15B(MicroWorld):
             split=split,
             generator_seed=generator_seed,
             public_history=_visible_history(events, self.catalog),
-            hidden_state_at_cut={"observed_confounder": confounder},
+            hidden_state_at_cut={"latent_confounder": confounder},
             invariant_parameters={"private_scm": model},
             # The diagnostic target is identifiable exposure/severity class;
             # the private SCM identity is intentionally absent.
             diagnostic_target={
-                "C0": float(confounder == 0),
-                "C1": float(confounder == 1),
+                "C0": 0.5,
+                "C1": 0.5,
             },
             factual_future=[
                 {
-                    "offset": 0,
+                    "offset": 1,
                     "observations": {"obs_1": observed_outcome},
                     "performed_action": "A1" if confounder else "NoNewAction",
                 }
             ],
             action_propensities=[
                 {
-                    "decision_at": -1,
+                    "decision_at": 0,
                     "probabilities": {
                         "A1": float(confounder == 1),
                         "NoNewAction": float(confounder == 0),
                     },
                     "selected": "A1" if confounder else "NoNewAction",
                     "positivity": "absent",
+                    "phase": "factual-future",
                 }
             ],
             factual_utility=float(factual_utility),
@@ -436,17 +624,10 @@ class World15B(MicroWorld):
                 "panel": "observational-nonidentified",
                 "public_scm_posterior": {"Mplus": 0.5, "Mminus": 0.5},
                 "point_effect_scoring": False,
+                "cut_semantics": "pre-action-pre-outcome",
+                "split_stratum": "exact-observational-twin",
+                "probe_attribution": "nonidentified-not-candidate-error",
             },
-        )
-
-    @staticmethod
-    def _public_confounder(episode: PrivateEpisode) -> int:
-        return int(
-            any(
-                event.kind is EventKind.PERFORMED_TREATMENT
-                and event.payload.get("action_id") == "A1"
-                for event in episode.public_history.events
-            )
         )
 
     def counterfactual(
@@ -461,31 +642,31 @@ class World15B(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        confounder = self._public_confounder(episode)
         treated = any("A1" in ids for ids in _plan_ids(policy, 1))
         outcomes = []
         utilities = []
         for model in ("Mplus", "Mminus"):
-            y0, y1 = self._potential_outcomes(model, confounder)
-            outcome = y1 if treated else y0
-            outcomes.append(outcome)
-            utilities.append(outcome - 0.05 * treated)
-        expected_outcome = math.fsum(outcomes) / 2.0
-        expected_utility = math.fsum(utilities) / 2.0
+            for confounder in (0, 1):
+                y0, y1 = self._potential_outcomes(model, confounder)
+                outcome = y1 if treated else y0
+                outcomes.append(outcome)
+                utilities.append(outcome - 0.05 * treated)
+        expected_outcome = math.fsum(outcomes) / 4.0
+        expected_utility = math.fsum(utilities) / 4.0
         return CounterfactualOracle(
             policy=policy,
             horizon=1,
             observation_distribution={
                 "family": "two-scm-public-evidence-mixture",
                 "obs_1_support": outcomes,
-                "obs_1_probabilities": [0.5, 0.5],
+                "obs_1_probabilities": [0.25, 0.25, 0.25, 0.25],
                 "obs_1_mean": expected_outcome,
             },
             latent_distribution={
                 "family": "nonidentified-scm-set",
                 "diagnostic_posterior": {
-                    "C0": float(confounder == 0),
-                    "C1": float(confounder == 1),
+                    "C0": 0.5,
+                    "C1": 0.5,
                 },
                 "causal_model_posterior": {"Mplus": 0.5, "Mminus": 0.5},
             },
@@ -502,14 +683,44 @@ class World15B(MicroWorld):
                 "method": "exact-observational-equivalence-class",
                 "absolute_error_bound": 0.0,
                 "private_scm_used_for_scoring": False,
+                "private_confounder_used_for_scoring": False,
+                "cut_semantics": "pre-action-pre-outcome",
             },
         )
+
+    def reference_counterfactual(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Source-distinct exact table enumerator for the public equivalence set."""
+
+        del episode
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W15B policy set")
+        treated = any("A1" in ids for ids in _plan_ids(policy, 1))
+        # Rows are (Mplus,u0), (Mplus,u1), (Mminus,u0), (Mminus,u1).
+        do_zero = (0.0, 0.0, 0.0, 2.0)
+        do_one = (1.0, 1.0, -1.0, 1.0)
+        selected = do_one if treated else do_zero
+        return math.fsum(value - 0.05 * treated for value in selected) / 4.0
+
+    def private_state_upper_bound(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Judge-only realized-SCM utility; prohibited as a scoring target."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W15B policy set")
+        model = str(episode.invariant_parameters["private_scm"])
+        confounder = int(episode.hidden_state_at_cut["latent_confounder"])
+        treated = any("A1" in ids for ids in _plan_ids(policy, 1))
+        y0, y1 = self._potential_outcomes(model, confounder)
+        return float((y1 if treated else y0) - 0.05 * treated)
 
     def judge_structural_effect(self, episode: PrivateEpisode) -> float:
         """Judge-only red-team fact; never used by the candidate scoring oracle."""
 
         model = str(episode.invariant_parameters["private_scm"])
-        confounder = int(episode.hidden_state_at_cut["observed_confounder"])
+        confounder = int(episode.hidden_state_at_cut["latent_confounder"])
         y0, y1 = self._potential_outcomes(model, confounder)
         return y1 - y0
 

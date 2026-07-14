@@ -7,7 +7,7 @@ from dataclasses import replace
 from typing import Any
 
 from ..canonical import ProtocolViolation
-from ..schema import ActionPlan
+from ..schema import ActionPlan, EventKind
 from .base import (
     ActionSpec,
     ChannelSpec,
@@ -28,7 +28,10 @@ from .w06 import (
 )
 from .w11 import (
     _case_key,
+    _channel_rows,
     _finite_policy_set,
+    _normal_log_likelihood,
+    _normalise_log_particles,
     _observation,
     _plan_ids,
     _treatment,
@@ -137,6 +140,8 @@ class World14(MicroWorld):
                     },
                     "selected": "NoNewAction" if action is None else action,
                     "check_probabilities": {"Q1": p_q1, "NoCheck": 1.0 - p_q1},
+                    "selected_check": "Q1" if take_q1 else "NoCheck",
+                    "phase": "observed-prefix",
                 }
             )
             if action is not None:
@@ -152,26 +157,67 @@ class World14(MicroWorld):
         memory_class = int(memory >= 0.9)
         future: list[dict[str, Any]] = []
         utility = 0.0
+        current_public_y = y
         for offset in range(4):
-            probabilities = self._behavior(x, public_ewma)
+            # The behavior policy is a function of the currently available
+            # public prefix only.  Hidden x/memory never enter these logits.
+            probabilities = self._behavior(current_public_y, public_ewma)
+            p_q1 = 0.12 + 0.30 / (1.0 + math.exp(-(public_ewma - 0.8)))
+            take_q1 = bernoulli(
+                p_q1, generator_seed, *key, "future-q1-take", offset
+            )
             choice = categorical(
                 probabilities, generator_seed, *key, "future-action", offset
             )
             action = (None, "A1", "A2")[choice]
+            propensities.append(
+                {
+                    "decision_at": offset,
+                    "probabilities": {
+                        "NoNewAction": probabilities[0],
+                        "A1": probabilities[1],
+                        "A2": probabilities[2],
+                    },
+                    "selected": "NoNewAction" if action is None else action,
+                    "check_probabilities": {
+                        "Q1": p_q1,
+                        "NoCheck": 1.0 - p_q1,
+                    },
+                    "selected_check": "Q1" if take_q1 else "NoCheck",
+                    "phase": "factual-future",
+                    "public_inputs": {
+                        "latest_obs_0": current_public_y,
+                        "public_ewma": public_ewma,
+                    },
+                }
+            )
             x, memory = self._step(
                 x,
                 memory,
                 action,
                 0.04 * normal01(generator_seed, *key, "future-process", offset),
             )
-            utility -= 0.97**offset * (
-                x * x + 0.45 * memory * memory + 0.06 * float(action is not None)
+            current_public_y = x + 0.05 * normal01(
+                generator_seed, *key, "future-q0", offset
             )
+            public_ewma = 0.75 * public_ewma + current_public_y
+            utility -= 0.97**offset * (
+                x * x
+                + 0.45 * memory * memory
+                + 0.06 * float(action is not None)
+                + 0.08 * float(take_q1)
+            )
+            observations = {"obs_0": current_public_y}
+            if take_q1:
+                observations["obs_1"] = memory + 0.10 * normal01(
+                    generator_seed, *key, "future-q1-value", offset
+                )
             future.append(
                 {
                     "offset": offset + 1,
-                    "observations": {"obs_0": x},
+                    "observations": observations,
                     "performed_action": "NoNewAction" if action is None else action,
+                    "performed_check": "Q1" if take_q1 else "NoCheck",
                 }
             )
 
@@ -211,7 +257,12 @@ class World14(MicroWorld):
             factual_future=future,
             action_propensities=propensities,
             factual_utility=float(utility),
-            oracle_anchor={"stratum": stratum, "markov_state": ["x", "r"]},
+            oracle_anchor={
+                "stratum": stratum,
+                "markov_state": ["x", "r"],
+                "probe_attribution": "candidate-attributable",
+                "behavior_policy_inputs": "public-prefix-only",
+            },
         )
 
     def counterfactual(
@@ -226,32 +277,46 @@ class World14(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        x = float(episode.hidden_state_at_cut["current_activity"])
-        memory = float(episode.hidden_state_at_cut["path_memory"])
+        particles = self._public_posterior(episode)
         utility = 0.0
         variance = 0.0
         steps: list[dict[str, Any]] = []
+        working = [(x, memory, weight) for x, memory, weight in particles]
         for offset, ids in enumerate(_plan_ids(policy, horizon)):
             action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
-            x, memory = self._step(x, memory, action)
+            working = [
+                (*self._step(x, memory, action), weight)
+                for x, memory, weight in working
+            ]
             variance = 0.90**2 * variance + 0.04**2
             check_cost = 0.08 * float("Q1" in ids)
-            utility -= 0.97**offset * (
-                x * x
-                + variance
-                + 0.45 * memory * memory
-                + 0.06 * float(action is not None)
-                + check_cost
+            expected = math.fsum(
+                weight * (x * x + 0.45 * memory * memory)
+                for x, memory, weight in working
+            )
+            expected += variance + 0.06 * float(action is not None) + check_cost
+            utility -= 0.97**offset * expected
+            mean_x = math.fsum(weight * x for x, _, weight in working)
+            mean_memory = math.fsum(
+                weight * memory for _, memory, weight in working
+            )
+            var_x = math.fsum(
+                weight * (x - mean_x) ** 2 for x, _, weight in working
+            ) + variance
+            var_memory = math.fsum(
+                weight * (memory - mean_memory) ** 2
+                for _, memory, weight in working
             )
             steps.append(
                 {
                     "offset": offset + 1,
-                    "activity_mean": x,
-                    "memory_mean": memory,
-                    "activity_variance": variance,
+                    "activity_mean": mean_x,
+                    "memory_mean": mean_memory,
+                    "activity_variance": var_x,
+                    "memory_variance": var_memory,
                 }
             )
-        memory_class = int(episode.invariant_parameters["memory_class"])
+        p_c0 = math.fsum(weight for _, memory, weight in particles if memory < 0.9)
         return CounterfactualOracle(
             policy=policy,
             horizon=horizon,
@@ -271,8 +336,8 @@ class World14(MicroWorld):
                 "family": "finite-path-memory-state",
                 "steps": steps,
                 "diagnostic_posterior": {
-                    "C0": float(memory_class == 0),
-                    "C1": float(memory_class == 1),
+                    "C0": p_c0,
+                    "C1": 1.0 - p_c0,
                 },
             },
             outcome_distribution={
@@ -281,12 +346,152 @@ class World14(MicroWorld):
             },
             expected_utility=float(utility),
             numerical_diagnostics={
-                "method": "augmented-state-moment-rollout",
-                "absolute_error_bound": 0.01,
+                "method": "public-prefix-augmented-state-grid",
+                "absolute_error_bound": 0.04,
                 "markov_closure": ["activity", "path_memory"],
-                "posterior_fork": "single-cut-state",
+                "posterior_fork": "single-public-posterior",
+                "private_state_used": False,
             },
         )
+
+    @staticmethod
+    def _public_memory_summary(episode: PrivateEpisode) -> tuple[float, float]:
+        """Compute the finite lag statistic from public observations/actions."""
+
+        observations = _channel_rows(episode, "obs_0")
+        if not observations:
+            raise ProtocolViolation("W14 requires public obs_0")
+        actions_by_tick = {
+            event.occurred_at: str(event.payload.get("action_id"))
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+        }
+        previous_tick, first_value = observations[0]
+        summary = first_value
+        for tick, value in observations[1:]:
+            # A2 at the previous decision clears memory before the next Q0.
+            summary = 0.75 * summary + value - 0.45 * float(
+                actions_by_tick.get(previous_tick) == "A2"
+            )
+            previous_tick = tick
+        return observations[-1][1], max(0.0, summary)
+
+    @classmethod
+    def _public_posterior(
+        cls, episode: PrivateEpisode
+    ) -> tuple[tuple[float, float, float], ...]:
+        current, summary = cls._public_memory_summary(episode)
+        memory_checks = _channel_rows(episode, "obs_1")
+        if memory_checks:
+            check_tick, checked_memory = memory_checks[-1]
+            latest_tick = _channel_rows(episode, "obs_0")[-1][0]
+            if check_tick < latest_tick:
+                action_at_check = any(
+                    event.kind is EventKind.PERFORMED_TREATMENT
+                    and event.occurred_at == check_tick
+                    and event.payload.get("action_id") == "A2"
+                    for event in episode.public_history.events
+                )
+                checked_memory = max(
+                    0.0,
+                    0.75 * checked_memory
+                    + current
+                    - 0.45 * float(action_at_check),
+                )
+            summary = 0.35 * summary + 0.65 * checked_memory
+        rows: list[tuple[tuple[Any, ...], float]] = []
+        x_low, x_high = max(0.0, current - 0.30), max(0.35, current + 0.30)
+        r_low, r_high = max(0.0, summary - 0.70), max(0.80, summary + 0.70)
+        for i in range(25):
+            x = x_low + (x_high - x_low) * i / 24.0
+            for j in range(31):
+                memory = r_low + (r_high - r_low) * j / 30.0
+                score = _normal_log_likelihood(current, x, 0.07)
+                score += _normal_log_likelihood(summary, memory, 0.18)
+                rows.append(((x, memory), score))
+        return _normalise_log_particles(rows)  # type: ignore[return-value]
+
+    def reference_counterfactual(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Independent rectangular quadrature with inline lag transitions."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W14 policy set")
+        current, summary = self._public_memory_summary(episode)
+        checks = _channel_rows(episode, "obs_1")
+        if checks:
+            check_tick, checked_memory = checks[-1]
+            latest_tick = _channel_rows(episode, "obs_0")[-1][0]
+            if check_tick < latest_tick:
+                cleared = any(
+                    event.kind is EventKind.PERFORMED_TREATMENT
+                    and event.occurred_at == check_tick
+                    and event.payload.get("action_id") == "A2"
+                    for event in episode.public_history.events
+                )
+                checked_memory = max(
+                    0.0,
+                    0.75 * checked_memory + current - 0.45 * float(cleared),
+                )
+            summary = 0.35 * summary + 0.65 * checked_memory
+        raw: list[tuple[float, float, float]] = []
+        x_low, x_high = max(0.0, current - 0.35), max(0.40, current + 0.35)
+        r_low, r_high = max(0.0, summary - 0.80), max(0.90, summary + 0.80)
+        for i in range(40):
+            x = x_low + (x_high - x_low) * (i + 0.5) / 40.0
+            for j in range(48):
+                memory = r_low + (r_high - r_low) * (j + 0.5) / 48.0
+                score = _normal_log_likelihood(current, x, 0.07)
+                score += _normal_log_likelihood(summary, memory, 0.18)
+                raw.append((x, memory, score))
+        peak = max(row[2] for row in raw)
+        weighted = [(x, r, math.exp(max(-745.0, s - peak))) for x, r, s in raw]
+        norm = math.fsum(row[2] for row in weighted)
+        particles = [(x, r, w / norm) for x, r, w in weighted]
+        variance = 0.0
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            next_rows = []
+            for x, memory, weight in particles:
+                next_x = max(
+                    0.0,
+                    0.90 * x + 0.08 - 0.32 * float(action == "A1")
+                    + 0.10 * math.tanh(memory - 1.0),
+                )
+                next_memory = max(
+                    0.0,
+                    0.75 * memory + next_x - 0.45 * float(action == "A2"),
+                )
+                next_rows.append((next_x, next_memory, weight))
+            particles = next_rows
+            variance = 0.90**2 * variance + 0.04**2
+            expected = math.fsum(
+                weight * (x * x + 0.45 * memory * memory)
+                for x, memory, weight in particles
+            )
+            expected += variance + 0.06 * float(action is not None)
+            expected += 0.08 * float("Q1" in ids)
+            utility -= 0.97**offset * expected
+        return float(utility)
+
+    def private_state_upper_bound(
+        self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
+    ) -> float:
+        """Judge-only realized lag-state comparator, excluded from scoring."""
+
+        x = float(episode.hidden_state_at_cut["current_activity"])
+        memory = float(episode.hidden_state_at_cut["path_memory"])
+        utility = 0.0
+        for offset, ids in enumerate(_plan_ids(policy, horizon)):
+            action = "A1" if "A1" in ids else "A2" if "A2" in ids else None
+            x, memory = self._step(x, memory, action)
+            utility -= 0.97**offset * (
+                x * x + 0.45 * memory * memory
+                + 0.06 * float(action is not None) + 0.08 * float("Q1" in ids)
+            )
+        return float(utility)
 
     def _fixture(
         self,
@@ -320,7 +525,10 @@ class World14(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={
+                "fixture": "paired",
+                "probe_attribution": "candidate-attributable",
+            },
         )
 
     def distinguishable_fixture(
@@ -360,7 +568,9 @@ class World14(MicroWorld):
         second = self._fixture(
             seed=seed,
             salt=4,
-            history_values=(0.95, 0.18, 0.42),
+            # .75*(.75*.80+.10)+.42 ==
+            # .75*(.75*.20+.55)+.42, so the public finite statistic agrees.
+            history_values=(0.80, 0.10, 0.42),
             x=0.42,
             memory=1.10,
         )
