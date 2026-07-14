@@ -401,8 +401,28 @@ class W02World(MicroWorld):
             factual_future=factual_future,
             action_propensities=propensities,
             factual_utility=_json_float(factual_utility),
-            oracle_anchor={"posterior": "two-component-kalman-mixture"},
+            oracle_anchor={
+                "posterior": "two-component-kalman-mixture",
+                "strata": [
+                    "iid_support",
+                    *(
+                        ["boundary_tail"]
+                        if split is WorldSplit.SEALED_TEST
+                        and episode_index % 5 in {1, 2}
+                        else []
+                    ),
+                ],
+            },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        value = episode.oracle_anchor.get("strata")
+        if type(value) is not list or not value or any(type(item) is not str for item in value):
+            raise ValueError("W02 episode lacks exact generator strata")
+        result = tuple(value)
+        if result not in {("iid_support",), ("iid_support", "boundary_tail")}:
+            raise ValueError("W02 episode declares an impossible generator stratum")
+        return result
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, Any]]:
         components: list[dict[str, Any]] = [
@@ -655,6 +675,315 @@ class W02World(MicroWorld):
             },
         )
 
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        oracle_seed: int,
+    ) -> CounterfactualOracle:
+        """Independent public-history filter and moment enumerator.
+
+        The implementation is deliberately self-contained: it does not call
+        the production Kalman conditioner, mixture normalizer, posterior,
+        rollout, adaptive integrator, or treatment-schedule helper.
+        """
+
+        del oracle_seed
+        if horizon not in (1, 4, 8):
+            raise ValueError("unsupported W02 horizon")
+
+        matrices = (
+            ((0.85, 0.25), (-0.10, 0.80)),
+            ((0.85, -0.25), (0.10, 0.80)),
+        )
+        check_rows = {
+            "obs_0": ((1.0, 1.0), 0.18**2, 0.01),
+            "obs_1": ((1.0, 0.0), 0.08**2, 0.04),
+            "obs_2": ((0.0, 1.0), 0.08**2, 0.04),
+        }
+
+        def clean(value: float) -> float:
+            result = float(value)
+            return 0.0 if result == 0.0 else result
+
+        def normalize(rows: list[dict[str, Any]]) -> None:
+            peak = max(float(row["log_weight"]) for row in rows)
+            raw = [math.exp(float(row["log_weight"]) - peak) for row in rows]
+            total = math.fsum(raw)
+            for row, value in zip(rows, raw, strict=True):
+                weight = value / total
+                row["weight"] = weight
+                row["log_weight"] = math.log(weight) if weight > 0.0 else -math.inf
+
+        def condition(
+            row: dict[str, Any],
+            h: tuple[float, float],
+            value: float,
+            noise: float,
+        ) -> tuple[list[float], list[list[float]], float]:
+            m0, m1 = (float(item) for item in row["mean"])
+            covariance = row["covariance"]
+            c00, c01 = float(covariance[0][0]), float(covariance[0][1])
+            c10, c11 = float(covariance[1][0]), float(covariance[1][1])
+            h0, h1 = h
+            predicted = h0 * m0 + h1 * m1
+            innovation = (
+                h0 * (c00 * h0 + c01 * h1)
+                + h1 * (c10 * h0 + c11 * h1)
+                + noise
+            )
+            gain0 = (c00 * h0 + c01 * h1) / innovation
+            gain1 = (c10 * h0 + c11 * h1) / innovation
+            residual = value - predicted
+            right0 = h0 * c00 + h1 * c10
+            right1 = h0 * c01 + h1 * c11
+            updated = [m0 + gain0 * residual, m1 + gain1 * residual]
+            updated_covariance = [
+                [c00 - gain0 * right0, c01 - gain0 * right1],
+                [c10 - gain1 * right0, c11 - gain1 * right1],
+            ]
+            off_diagonal = 0.5 * (
+                updated_covariance[0][1] + updated_covariance[1][0]
+            )
+            updated_covariance[0][1] = off_diagonal
+            updated_covariance[1][0] = off_diagonal
+            log_likelihood = -0.5 * (
+                math.log(2.0 * math.pi * innovation) + residual * residual / innovation
+            )
+            return updated, updated_covariance, log_likelihood
+
+        components: list[dict[str, Any]] = [
+            {
+                "class_index": c,
+                "mean": [0.0, 0.0],
+                "covariance": [[0.8**2, 0.0], [0.0, 0.8**2]],
+                "weight": 0.5,
+                "log_weight": math.log(0.5),
+            }
+            for c in (0, 1)
+        ]
+        observations: dict[int, list[Any]] = {}
+        actions: dict[int, str] = {}
+        for event in episode.public_history.events:
+            if event.kind is EventKind.OBSERVATION_AVAILABLE:
+                observations.setdefault(int(event.collected_at), []).append(event)
+            elif event.kind is EventKind.PERFORMED_TREATMENT:
+                actions[event.occurred_at] = str(event.payload["action_id"])
+        for tick in range(-4, 1):
+            # A tuple key is intentionally source-distinct from the production
+            # filter's scalar-key lambda while preserving the same ordering.
+            for event in sorted(
+                observations.get(tick, ()), key=lambda item: (item.event_uid,)
+            ):
+                channel = str(event.payload["channel_id"])
+                h, noise, _ = check_rows[channel]
+                value = float(event.payload["value"])
+                for row in components:
+                    mean, covariance, increment = condition(row, h, value, noise)
+                    row["mean"] = mean
+                    row["covariance"] = covariance
+                    row["log_weight"] = float(row["log_weight"]) + increment
+                normalize(components)
+            if tick < 0:
+                action = actions.get(tick)
+                dose = 1.0 if action == "A1" else -1.0 if action == "A2" else 0.0
+                for row in components:
+                    matrix = matrices[int(row["class_index"])]
+                    a00, a01 = matrix[0]
+                    a10, a11 = matrix[1]
+                    m0, m1 = (float(item) for item in row["mean"])
+                    covariance = row["covariance"]
+                    source = np.asarray(covariance, dtype=float)
+                    transition = np.asarray(matrix, dtype=float)
+                    advanced = transition @ source @ transition.T
+                    advanced[0, 0] += 0.06**2
+                    advanced[1, 1] += 0.06**2
+                    row["mean"] = [
+                        a00 * m0 + a01 * m1 - 0.30 * dose,
+                        a10 * m0 + a11 * m1 + 0.12 * dose,
+                    ]
+                    row["covariance"] = advanced.tolist()
+
+        def rollout(
+            posterior: list[dict[str, Any]],
+            doses: list[float],
+            check_cost: float,
+        ) -> tuple[list[dict[str, Any]], float]:
+            work = [
+                {
+                    **row,
+                    "mean": list(row["mean"]),
+                    "covariance": [list(inner) for inner in row["covariance"]],
+                }
+                for row in posterior
+            ]
+            utility = -check_cost
+            projected: list[dict[str, Any]] = []
+            for offset, dose in enumerate(doses):
+                aggregate_mean = np.zeros(2, dtype=float)
+                aggregate_second = np.zeros((2, 2), dtype=float)
+                expected_cost = 0.0
+                for row in work:
+                    matrix = np.asarray(matrices[int(row["class_index"])], dtype=float)
+                    mean = matrix @ np.asarray(row["mean"], dtype=float)
+                    mean += np.asarray([-0.30 * dose, 0.12 * dose], dtype=float)
+                    covariance = matrix @ np.asarray(row["covariance"], dtype=float) @ matrix.T
+                    covariance += np.diag([0.06**2, 0.06**2])
+                    row["mean"] = mean.tolist()
+                    row["covariance"] = covariance.tolist()
+                    weight = float(row["weight"])
+                    aggregate_mean += weight * mean
+                    aggregate_second += weight * (covariance + np.outer(mean, mean))
+                    expected_cost += weight * (
+                        mean[0] ** 2
+                        + covariance[0, 0]
+                        + 0.7 * (mean[1] ** 2 + covariance[1, 1])
+                        + 0.05 * dose**2
+                    )
+                aggregate_covariance = aggregate_second - np.outer(
+                    aggregate_mean, aggregate_mean
+                )
+                utility -= 0.97**offset * float(expected_cost)
+                projected.append(
+                    {
+                        "offset": offset + 1,
+                        "mean": [clean(value) for value in aggregate_mean],
+                        "covariance": [
+                            [clean(value) for value in inner]
+                            for inner in aggregate_covariance
+                        ],
+                    }
+                )
+            return projected, float(utility)
+
+        adaptive_check: str | None = None
+        if policy.kind is PlanKind.ACTION_SEQUENCE and len(policy.actions) == 1:
+            action = policy.actions[0]
+            if action.parameters.get("adaptive_rule"):
+                adaptive_check = action.action_id
+        if adaptive_check is None:
+            doses = [0.0] * horizon
+            check_cost = 0.0
+            if policy.kind is PlanKind.ACTION_SEQUENCE:
+                for action in policy.actions:
+                    if action.offset < horizon:
+                        if action.action_id == "A1":
+                            doses[action.offset] = 1.0
+                        elif action.action_id == "A2":
+                            doses[action.offset] = -1.0
+                    if action.action_id in {"Q0", "Q1", "Q2"}:
+                        check_cost += check_rows[action.action_id.replace("Q", "obs_")][2]
+            steps, utility = rollout(components, doses, check_cost)
+            method = "independent-public-kalman-enumeration"
+            quadrature_order = 0
+        else:
+            channel = adaptive_check.replace("Q", "obs_")
+            h, noise, check_cost = check_rows[channel]
+            coordinate = 0 if adaptive_check == "Q1" else 1
+            nodes, weights = hermgauss(32)
+            first = [np.zeros(2, dtype=float) for _ in range(horizon)]
+            second = [np.zeros((2, 2), dtype=float) for _ in range(horizon)]
+            utility_sum = 0.0
+            mass = 0.0
+            for source in components:
+                source_mean = np.asarray(source["mean"], dtype=float)
+                source_covariance = np.asarray(source["covariance"], dtype=float)
+                predictive_mean = float(np.asarray(h) @ source_mean)
+                predictive_variance = float(
+                    np.asarray(h) @ source_covariance @ np.asarray(h) + noise
+                )
+                for node, node_weight in zip(nodes, weights, strict=True):
+                    observed = predictive_mean + math.sqrt(
+                        2.0 * predictive_variance
+                    ) * float(node)
+                    branch_weight = (
+                        float(source["weight"])
+                        * float(node_weight)
+                        / math.sqrt(math.pi)
+                    )
+                    branch: list[dict[str, Any]] = []
+                    for row in components:
+                        mean, covariance, increment = condition(row, h, observed, noise)
+                        branch.append(
+                            {
+                                **row,
+                                "mean": mean,
+                                "covariance": covariance,
+                                "log_weight": math.log(float(row["weight"])) + increment,
+                            }
+                        )
+                    normalize(branch)
+                    posterior_coordinate = math.fsum(
+                        float(row["weight"]) * float(row["mean"][coordinate])
+                        for row in branch
+                    )
+                    doses = [0.0] * horizon
+                    if horizon > 1:
+                        doses[1] = 1.0 if posterior_coordinate > 0.0 else -1.0
+                    branch_steps, branch_utility = rollout(branch, doses, check_cost)
+                    mass += branch_weight
+                    utility_sum += branch_weight * branch_utility
+                    for offset, step in enumerate(branch_steps):
+                        mean = np.asarray(step["mean"], dtype=float)
+                        covariance = np.asarray(step["covariance"], dtype=float)
+                        first[offset] += branch_weight * mean
+                        second[offset] += branch_weight * (
+                            covariance + np.outer(mean, mean)
+                        )
+            steps = []
+            for offset in range(horizon):
+                mean = first[offset] / mass
+                covariance = second[offset] / mass - np.outer(mean, mean)
+                steps.append(
+                    {
+                        "offset": offset + 1,
+                        "mean": [clean(value) for value in mean],
+                        "covariance": [
+                            [clean(value) for value in inner] for inner in covariance
+                        ],
+                    }
+                )
+            utility = utility_sum / mass
+            method = "independent-nested-hermite-public-mixture"
+            quadrature_order = 32
+
+        posterior = {
+            f"C{c}": clean(
+                math.fsum(
+                    float(row["weight"])
+                    for row in components
+                    if int(row["class_index"]) == c
+                )
+            )
+            for c in (0, 1)
+        }
+        utility = clean(utility)
+        return CounterfactualOracle(
+            policy=policy,
+            horizon=horizon,
+            observation_distribution={
+                "family": "gaussian-mixture",
+                "channels": ["obs_0", "obs_1", "obs_2"],
+                "latent_moment_projection": steps,
+            },
+            latent_distribution={
+                "family": "class-conditioned-gaussian-mixture",
+                "diagnostic_posterior": posterior,
+                "steps": steps,
+            },
+            outcome_distribution={
+                "utility_family": "mixture-quadratic-form",
+                "expected_utility": utility,
+            },
+            expected_utility=utility,
+            numerical_diagnostics={
+                "method": method,
+                "quadrature_order": quadrature_order,
+                "private_state_used": False,
+            },
+        )
+
     def _fixture_episode(
         self,
         values: tuple[tuple[int, str, float], ...],
@@ -684,7 +1013,7 @@ class W02World(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={"fixture": "paired", "strata": ["iid_support"]},
         )
 
     def collision_fixture(self, seed: int = 201) -> tuple[PrivateEpisode, PrivateEpisode]:

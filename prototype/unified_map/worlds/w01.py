@@ -428,8 +428,28 @@ class W01World(MicroWorld):
                 "policy_count_by_horizon": {
                     str(h): len(self.policy_set(h)) for h in self.catalog.horizons
                 },
+                "strata": [
+                    "iid_support",
+                    *(
+                        ["boundary_tail"]
+                        if split is WorldSplit.SEALED_TEST
+                        and episode_index % 5 == 0
+                        else []
+                    ),
+                ],
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Return the exact judge-side generator cell for registry materialization."""
+
+        value = episode.oracle_anchor.get("strata")
+        if type(value) is not list or not value or any(type(item) is not str for item in value):
+            raise ValueError("W01 episode lacks exact generator strata")
+        result = tuple(value)
+        if result not in {("iid_support",), ("iid_support", "boundary_tail")}:
+            raise ValueError("W01 episode declares an impossible generator stratum")
+        return result
 
     def _public_cut_state(self, episode: PrivateEpisode) -> tuple[int, np.ndarray]:
         latest = {
@@ -501,6 +521,112 @@ class W01World(MicroWorld):
             },
         )
 
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        oracle_seed: int,
+    ) -> CounterfactualOracle:
+        """Independent scalar moment recursion from the public cut panel.
+
+        This reference intentionally does not call ``_public_cut_state``,
+        ``_treatment_schedule``, ``_json_float`` or the production oracle.  It
+        expands the two-dimensional Gaussian recurrence into scalar equations,
+        providing a source-distinct freeze-time check of the analytic path.
+        """
+
+        del oracle_seed
+        if horizon not in (1, 4, 8):
+            raise ValueError("unsupported W01 horizon")
+        latest: dict[str, float] = {}
+        for event in episode.public_history.events:
+            if event.kind is EventKind.OBSERVATION_AVAILABLE:
+                channel = event.payload.get("channel_id")
+                if channel in {"obs_0", "obs_1", "obs_2"}:
+                    latest[str(channel)] = float(event.payload["value"])
+        if set(latest) != {"obs_0", "obs_1", "obs_2"}:
+            raise ValueError("W01 reference requires a complete public cut panel")
+        mechanism = int(latest["obs_2"])
+        if mechanism not in (0, 1):
+            raise ValueError("W01 public mechanism value must be binary")
+        matrix = (
+            ((0.82, 0.10), (0.00, 0.75))
+            if mechanism == 0
+            else ((0.92, 0.18), (-0.05, 0.80))
+        )
+        doses = [0.0 for _ in range(horizon)]
+        if policy.kind is PlanKind.ACTION_SEQUENCE:
+            for action in policy.actions:
+                if action.offset < horizon:
+                    if action.action_id == "A1":
+                        doses[action.offset] = 1.0
+                    elif action.action_id == "A2":
+                        doses[action.offset] = -1.0
+
+        mean0, mean1 = latest["obs_0"], latest["obs_1"]
+        c00 = c01 = c10 = c11 = 0.0
+        utility = 0.0
+        steps: list[dict[str, Any]] = []
+        a00, a01 = matrix[0]
+        a10, a11 = matrix[1]
+        for offset, dose in enumerate(doses):
+            prior0, prior1 = mean0, mean1
+            mean0 = a00 * prior0 + a01 * prior1 - 0.35 * dose
+            mean1 = a10 * prior0 + a11 * prior1 + 0.20 * dose
+            t00 = a00 * c00 + a01 * c10
+            t01 = a00 * c01 + a01 * c11
+            t10 = a10 * c00 + a11 * c10
+            t11 = a10 * c01 + a11 * c11
+            c00 = t00 * a00 + t01 * a01 + 0.04**2
+            c01 = t00 * a10 + t01 * a11
+            c10 = t10 * a00 + t11 * a01
+            c11 = t10 * a10 + t11 * a11 + 0.04**2
+            utility -= 0.97**offset * (
+                mean0 * mean0 + c00 + 0.5 * (mean1 * mean1 + c11) + 0.05 * dose * dose
+            )
+            steps.append(
+                {
+                    "offset": offset + 1,
+                    "mean": [0.0 if mean0 == 0.0 else mean0, 0.0 if mean1 == 0.0 else mean1],
+                    "covariance": [
+                        [0.0 if c00 == 0.0 else c00, 0.0 if c01 == 0.0 else c01],
+                        [0.0 if c10 == 0.0 else c10, 0.0 if c11 == 0.0 else c11],
+                    ],
+                }
+            )
+        utility = 0.0 if utility == 0.0 else float(utility)
+        posterior = {
+            "C0": float(mechanism == 0),
+            "C1": float(mechanism == 1),
+        }
+        return CounterfactualOracle(
+            policy=policy,
+            horizon=horizon,
+            observation_distribution={
+                "family": "joint-gaussian",
+                "channels": ["obs_0", "obs_1"],
+                "steps": steps,
+                "obs_2_point_mass": mechanism,
+            },
+            latent_distribution={
+                "family": "joint-gaussian",
+                "state_channels": ["x0", "x1"],
+                "steps": steps,
+                "diagnostic_posterior": posterior,
+            },
+            outcome_distribution={
+                "utility_family": "quadratic-form-of-gaussian",
+                "expected_utility": utility,
+            },
+            expected_utility=utility,
+            numerical_diagnostics={
+                "method": "independent-scalar-gaussian-moment-recursion",
+                "absolute_error_bound": 0.0,
+                "spectral_radius_verified": True,
+            },
+        )
+
     def _episode_from_public_state(
         self,
         state: tuple[float, float],
@@ -534,7 +660,7 @@ class W01World(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={"fixture": "paired", "strata": ["iid_support"]},
         )
 
     def collision_fixture(self, seed: int = 101) -> tuple[PrivateEpisode, PrivateEpisode]:

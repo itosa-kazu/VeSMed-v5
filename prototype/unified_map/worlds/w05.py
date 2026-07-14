@@ -309,8 +309,34 @@ class W05World(MicroWorld):
             factual_future=future,
             action_propensities=propensities,
             factual_utility=_json_float(factual_utility),
-            oracle_anchor={"augmented_state": ["x", "reservoir", "x_lag_1", "x_lag_2"]},
+            oracle_anchor={
+                "augmented_state": ["x", "reservoir", "x_lag_1", "x_lag_2"],
+                "strata": [
+                    "iid_support",
+                    *(
+                        ["boundary_tail"]
+                        if split is WorldSplit.SEALED_TEST and design_group == 0
+                        else ["policy_coverage_holdout"]
+                        if split is WorldSplit.SEALED_TEST and design_group == 1
+                        else []
+                    ),
+                ],
+            },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        value = episode.oracle_anchor.get("strata")
+        if type(value) is not list or not value or any(type(item) is not str for item in value):
+            raise ValueError("W05 episode lacks exact generator strata")
+        result = tuple(value)
+        allowed = {
+            ("iid_support",),
+            ("iid_support", "boundary_tail"),
+            ("iid_support", "policy_coverage_holdout"),
+        }
+        if result not in allowed:
+            raise ValueError("W05 episode declares an impossible generator stratum")
+        return result
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, Any]]:
         cached = self._posterior_cache.get(episode.public_history.digest)
@@ -471,6 +497,205 @@ class W05World(MicroWorld):
             },
         )
 
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        oracle_seed: int,
+    ) -> CounterfactualOracle:
+        """Independent augmented-state quadrature using inline transitions."""
+
+        del oracle_seed
+        if horizon not in (1, 4, 8):
+            raise ValueError("unsupported W05 horizon")
+
+        def clean(value: float) -> float:
+            result = float(value)
+            return 0.0 if result == 0.0 else result
+
+        x_nodes, x_weights = leggauss(16)
+        r_nodes, r_weights = leggauss(16)
+        classes: list[int] = []
+        means: list[np.ndarray] = []
+        covariances: list[np.ndarray] = []
+        weights: list[float] = []
+        log_weights: list[float] = []
+        for mechanism in (0, 1):
+            for x_node, x_weight in zip(x_nodes, x_weights, strict=True):
+                x = 0.75 + 0.75 * float(x_node)
+                for r_node, r_weight in zip(r_nodes, r_weights, strict=True):
+                    reservoir = 0.30 * float(r_node)
+                    weight = 0.5 * float(x_weight) / 2.0 * float(r_weight) / 2.0
+                    classes.append(mechanism)
+                    means.append(np.array([x, reservoir, x, x], dtype=float))
+                    covariances.append(np.zeros((4, 4), dtype=float))
+                    weights.append(weight)
+                    log_weights.append(math.log(weight))
+
+        observations: dict[int, list[Any]] = {}
+        actions: dict[int, str] = {}
+        for event in episode.public_history.events:
+            if event.kind is EventKind.OBSERVATION_AVAILABLE:
+                observations.setdefault(int(event.collected_at), []).append(event)
+            elif event.kind is EventKind.PERFORMED_TREATMENT:
+                actions[event.occurred_at] = str(event.payload["action_id"])
+        for tick in range(-4, 1):
+            for event in sorted(
+                observations.get(tick, ()), key=lambda item: (item.event_uid,)
+            ):
+                channel = str(event.payload["channel_id"])
+                h = (
+                    np.array([0.0, 0.0, 0.0, 1.0], dtype=float)
+                    if channel == "obs_0"
+                    else np.array([1.0, 0.0, 0.0, 0.0], dtype=float)
+                )
+                noise = 0.05**2 if channel == "obs_0" else 0.10**2
+                observed = float(event.payload["value"])
+                for index in range(len(means)):
+                    mean = means[index]
+                    covariance = covariances[index]
+                    predicted = float(h @ mean)
+                    innovation = float(h @ covariance @ h + noise)
+                    residual = observed - predicted
+                    gain = covariance @ h / innovation
+                    means[index] = mean + gain * residual
+                    updated = covariance - np.outer(gain, h @ covariance)
+                    covariances[index] = 0.5 * (updated + updated.T)
+                    log_weights[index] += -0.5 * (
+                        math.log(2.0 * math.pi * innovation)
+                        + residual * residual / innovation
+                    )
+                peak = max(log_weights)
+                raw = [math.exp(value - peak) for value in log_weights]
+                total = math.fsum(raw)
+                weights = [value / total for value in raw]
+                log_weights = [
+                    math.log(value) if value > 0.0 else -math.inf
+                    for value in weights
+                ]
+            if tick < 0:
+                action = actions.get(tick)
+                dose = 1.0 if action == "A1" else -1.0 if action == "A2" else 0.0
+                for index, mechanism in enumerate(classes):
+                    decay = 0.35 if mechanism == 0 else 0.65
+                    matrix = np.array(
+                        [
+                            [0.94, -0.50 * decay, 0.0, 0.0],
+                            [0.0, decay, 0.0, 0.0],
+                            [1.0, 0.0, 0.0, 0.0],
+                            [0.0, 0.0, 1.0, 0.0],
+                        ],
+                        dtype=float,
+                    )
+                    intercept = np.array(
+                        [0.12 - 0.40 * dose, 0.80 * dose, 0.0, 0.0],
+                        dtype=float,
+                    )
+                    means[index] = matrix @ means[index] + intercept
+                    covariance = matrix @ covariances[index] @ matrix.T
+                    covariance[0, 0] += 0.045**2
+                    covariances[index] = covariance
+
+        doses = [0.0] * horizon
+        check_cost = 0.0
+        if policy.kind is PlanKind.ACTION_SEQUENCE:
+            for action in policy.actions:
+                if action.offset < horizon:
+                    if action.action_id == "A1":
+                        doses[action.offset] = 1.0
+                    elif action.action_id == "A2":
+                        doses[action.offset] = -1.0
+                if action.action_id == "Q1":
+                    check_cost += 0.08
+        active_means = [value.copy() for value in means]
+        active_covariances = [value.copy() for value in covariances]
+        utility = -check_cost
+        steps: list[dict[str, Any]] = []
+        for offset, dose in enumerate(doses):
+            mean_total = np.zeros(4, dtype=float)
+            second_total = np.zeros((4, 4), dtype=float)
+            expected_cost = 0.0
+            for index, mechanism in enumerate(classes):
+                decay = 0.35 if mechanism == 0 else 0.65
+                matrix = np.array(
+                    [
+                        [0.94, -0.50 * decay, 0.0, 0.0],
+                        [0.0, decay, 0.0, 0.0],
+                        [1.0, 0.0, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                    ],
+                    dtype=float,
+                )
+                intercept = np.array(
+                    [0.12 - 0.40 * dose, 0.80 * dose, 0.0, 0.0], dtype=float
+                )
+                active_means[index] = matrix @ active_means[index] + intercept
+                covariance = matrix @ active_covariances[index] @ matrix.T
+                covariance[0, 0] += 0.045**2
+                active_covariances[index] = covariance
+                weight = weights[index]
+                mean = active_means[index]
+                mean_total += weight * mean
+                second_total += weight * (covariance + np.outer(mean, mean))
+                expected_cost += weight * (
+                    mean[0] ** 2
+                    + covariance[0, 0]
+                    + 0.05 * float(dose != 0.0)
+                )
+            covariance_total = second_total - np.outer(mean_total, mean_total)
+            utility -= 0.97**offset * expected_cost
+            steps.append(
+                {
+                    "offset": offset + 1,
+                    "internal_mean": clean(mean_total[0]),
+                    "internal_variance": clean(max(0.0, covariance_total[0, 0])),
+                    "reservoir_mean": clean(mean_total[1]),
+                    "routine_observation_mean": clean(mean_total[3]),
+                    "routine_observation_variance": clean(
+                        max(0.0, covariance_total[3, 3] + 0.05**2)
+                    ),
+                }
+            )
+
+        posterior = {
+            f"C{mechanism}": clean(
+                math.fsum(
+                    weight
+                    for label, weight in zip(classes, weights, strict=True)
+                    if label == mechanism
+                )
+            )
+            for mechanism in (0, 1)
+        }
+        utility = clean(utility)
+        return CounterfactualOracle(
+            policy=policy,
+            horizon=horizon,
+            observation_distribution={
+                "family": "delayed-gaussian-mixture",
+                "channels": ["obs_0", "obs_1"],
+                "steps": steps,
+                "fixed_routine_lag": 2,
+            },
+            latent_distribution={
+                "family": "class-conditioned-augmented-gaussian-mixture",
+                "diagnostic_posterior": posterior,
+                "steps": steps,
+            },
+            outcome_distribution={
+                "utility_family": "internal-state-quadratic-form",
+                "expected_utility": utility,
+            },
+            expected_utility=utility,
+            numerical_diagnostics={
+                "method": "independent-parallel-array-augmented-quadrature",
+                "initial_x_quadrature_order": 16,
+                "initial_reservoir_quadrature_order": 16,
+                "private_state_used": False,
+            },
+        )
+
     def _fixture_episode(
         self, *, exposed: bool, seed: int, salt: int
     ) -> PrivateEpisode:
@@ -507,7 +732,7 @@ class W05World(MicroWorld):
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,
-            oracle_anchor={"fixture": "paired"},
+            oracle_anchor={"fixture": "paired", "strata": ["iid_support"]},
         )
 
     def collision_fixture(self, seed: int = 501) -> tuple[PrivateEpisode, PrivateEpisode]:
