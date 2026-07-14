@@ -1066,6 +1066,51 @@ def _audit_arg(value: Any) -> str:
     return text[:512]
 
 
+def _classify_denied_audit(
+    audit_events: list[dict[str, Any]], request: CandidateRequest | None
+) -> str:
+    """Map a denied capability to the most specific registered failure code.
+
+    The decision uses only the audited capability/path and request operation;
+    it does not trust a candidate-provided label.  Generic head file access is
+    history access, while explicit future/oracle/model paths retain their more
+    decisive information-flow semantics.
+    """
+
+    joined = " ".join(
+        str(part).lower()
+        for row in audit_events
+        for part in (row.get("event"), *row.get("args", []))
+    )
+    if any(token in joined for token in ("model", "checkpoint", "weights")) and any(
+        token in joined for token in ("'w'", "'a'", "'x'", "'+'")
+    ):
+        return "UCM-F009-MODEL_MUTATION"
+    if any(
+        token in joined
+        for token in (
+            "simulator",
+            "hidden-state",
+            "hidden_state",
+            "true-state",
+            "true_state",
+            "oracle",
+        )
+    ):
+        return "UCM-F002-ORACLE_TRUE_STATE_ACCESS"
+    if any(
+        token in joined
+        for token in ("actual-future", "actual_future", "future", "results")
+    ):
+        return "UCM-F001-FUTURE_LEAK"
+    if request is not None and request.operation in {
+        Operation.DIAGNOSE,
+        Operation.ROLLOUT,
+    }:
+        return "UCM-F004-HEAD_HISTORY_ACCESS"
+    return "UCM-F008-STATE_NOT_CLOSED"
+
+
 def _worker_main(module_name: str, qualname: str) -> int:
     """Private subprocess entry point.  The parent parses only this envelope."""
 
@@ -1112,11 +1157,8 @@ def _worker_main(module_name: str, qualname: str) -> int:
     except Exception as exc:
         # A denied capability attempt is more decisive than the generic call
         # wrapper that may have caught the resulting PermissionError.
-        if audit_events and request is not None and request.operation in {
-            Operation.DIAGNOSE,
-            Operation.ROLLOUT,
-        }:
-            failure_code = "UCM-F004-HEAD_HISTORY_ACCESS"
+        if audit_events:
+            failure_code = _classify_denied_audit(audit_events, request)
         elif isinstance(exc, CandidateCallViolation):
             failure_code = exc.failure_code
         else:

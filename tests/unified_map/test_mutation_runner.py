@@ -59,12 +59,22 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["GlobalSecondState"].actual_failure_code == (
         "UCM-F006-HIDDEN_PATIENT_CACHE"
     )
+    assert by_id["FileHandleState"].actual_failure_code == (
+        "UCM-F008-STATE_NOT_CLOSED"
+    )
     assert by_id["RawHistoryHead"].actual_failure_code == (
         "UCM-F004-HEAD_HISTORY_ACCESS"
     )
     assert by_id["CounterfactualMutator"].actual_failure_code == (
         "UCM-F012-QUERY_MUTATES_FACT"
     )
+    assert by_id["MutableCheckpoint"].actual_failure_code == (
+        "UCM-F009-MODEL_MUTATION"
+    )
+    assert by_id["TrueStateReader"].actual_failure_code == (
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS"
+    )
+    assert by_id["FutureReader"].actual_failure_code == "UCM-F001-FUTURE_LEAK"
     assert by_id["ImplicitRNGState"].actual_failure_code == (
         "UCM-F020-NONREPRODUCIBLE"
     )
@@ -87,11 +97,23 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
     assert report.benchmark_status == "HARNESS_INCOMPLETE"
     assert set(report.valid_kills) == {
         "GlobalSecondState",
+        "FileHandleState",
         "RawHistoryHead",
+        "MutableCheckpoint",
+        "TrueStateReader",
+        "FutureReader",
         "CounterfactualMutator",
         "ImplicitRNGState",
     }
-    assert set(report.covered_gates) == {"C02", "C04", "C16", "C30"}
+    assert set(report.covered_gates) == {
+        "C02",
+        "C04",
+        "C06",
+        "C07",
+        "C08",
+        "C16",
+        "C30",
+    }
     assert set(report.passed_specificity_controls) == {
         "ExplicitSeedStochasticState"
     }

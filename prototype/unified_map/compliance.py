@@ -288,6 +288,66 @@ class RawHistoryHeadControl(HonestSeededControl):
         raise AssertionError("unreachable")
 
 
+class FileHandleStateControl(HonestSeededControl):
+    """Malicious: tries to persist patient state behind a filesystem handle."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        del inference_seed
+        with open("patient-state.bin", "wb") as stream:  # noqa: PTH123
+            stream.write(str(_signal_from_history(history)).encode("ascii"))
+        return StatePayload.from_json(
+            {"path": "patient-state.bin"},
+            schema_version="malicious-file-handle/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+
+class FutureReaderControl(HonestSeededControl):
+    """Malicious: a rollout attempts to read a private future artifact."""
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        del state, query, query_seed
+        with open("actual-future-results.json", "rb") as stream:  # noqa: PTH123
+            stream.read()
+        raise AssertionError("unreachable")
+
+
+class TrueStateReaderControl(HonestSeededControl):
+    """Malicious: a head attempts to open simulator hidden truth."""
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        del state, query, query_seed
+        with open("simulator-hidden-state.json", "rb") as stream:  # noqa: PTH123
+            stream.read()
+        raise AssertionError("unreachable")
+
+
+class MutableCheckpointControl(HonestSeededControl):
+    """Malicious: writes patient material into a model checkpoint."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        del inference_seed
+        with open("model-checkpoint.weights", "wb") as stream:  # noqa: PTH123
+            stream.write(str(_signal_from_history(history)).encode("ascii"))
+        raise AssertionError("unreachable")
+
+
 class QueryMutatorControl(HonestSeededControl):
     """Malicious: a counterfactual query mutates its caller-owned input."""
 
@@ -353,6 +413,20 @@ def _failure_from_exception(error: Exception, gate: str) -> ComplianceFinding:
         if isinstance(error, CandidateCallViolation)
         else "UCM-F008-STATE_NOT_CLOSED"
     )
+
+
+def _decisive_gate_for_failure(failure_code: str, fallback: str) -> str:
+    """Select the actual detector gate represented by a worker failure."""
+
+    return {
+        "UCM-F001-FUTURE_LEAK": "C08-candidate-view-physical-isolation",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS": "C08-candidate-view-physical-isolation",
+        "UCM-F004-HEAD_HISTORY_ACCESS": "C02-head-history-denial",
+        "UCM-F006-HIDDEN_PATIENT_CACHE": "C04-clean-process-replay",
+        "UCM-F008-STATE_NOT_CLOSED": "C07-state-closed-schema",
+        "UCM-F009-MODEL_MUTATION": "C06-model-immutability",
+        "UCM-F012-QUERY_MUTATES_FACT": "C16-counterfactual-purity-order",
+    }.get(failure_code, fallback)
     return ComplianceFinding(
         gate=gate,
         verdict=ComplianceVerdict.FAIL,
@@ -440,7 +514,14 @@ def evaluate_candidate_compliance(
         init_a = fresh.invoke(InitializeRequest(history, seed))
         init_b = fresh.invoke(InitializeRequest(history, seed))
     except WorkerInvocationError as error:
-        findings.append(_failure_from_worker(error, "C04-clean-process-initialize"))
+        findings.append(
+            _failure_from_worker(
+                error,
+                _decisive_gate_for_failure(
+                    error.failure_code, "C04-clean-process-initialize"
+                ),
+            )
+        )
         return _report(entrypoint, findings, records)
     if type(init_a.response) is not StateResponse or type(
         init_b.response
@@ -492,7 +573,14 @@ def evaluate_candidate_compliance(
         records.extend((diagnosis_a, diagnosis_b, rollout_a, rollout_b))
         assert_shared_state_fanout(tuple(records))
     except WorkerInvocationError as error:
-        findings.append(_failure_from_worker(error, "C02/C04-fresh-head-closure"))
+        findings.append(
+            _failure_from_worker(
+                error,
+                _decisive_gate_for_failure(
+                    error.failure_code, "C02/C04-fresh-head-closure"
+                ),
+            )
+        )
         return _report(entrypoint, findings, records)
     except Exception as error:
         findings.append(_failure_from_exception(error, "C01/C16-head-purity"))
@@ -523,7 +611,14 @@ def evaluate_candidate_compliance(
             update_a = fresh.invoke(update_request)
             update_b = fresh.invoke(update_request)
         except WorkerInvocationError as error:
-            findings.append(_failure_from_worker(error, "C21/C22-fresh-update"))
+            findings.append(
+                _failure_from_worker(
+                    error,
+                    _decisive_gate_for_failure(
+                        error.failure_code, "C21/C22-fresh-update"
+                    ),
+                )
+            )
             return _report(entrypoint, findings, records)
         if type(update_a.response) is not StateResponse or type(
             update_b.response
@@ -621,6 +716,10 @@ def control_entrypoint(
         "HonestSeededControl",
         "GlobalSecondStateControl",
         "RawHistoryHeadControl",
+        "FileHandleStateControl",
+        "FutureReaderControl",
+        "TrueStateReaderControl",
+        "MutableCheckpointControl",
         "QueryMutatorControl",
         "ImplicitRNGControl",
     }

@@ -46,7 +46,11 @@ def inputs() -> tuple[VisibleHistory, DiagnosisQuery, RolloutQuery]:
     ("control", "expected_code"),
     [
         ("GlobalSecondStateControl", "UCM-F006-HIDDEN_PATIENT_CACHE"),
+        ("FileHandleStateControl", "UCM-F008-STATE_NOT_CLOSED"),
         ("RawHistoryHeadControl", "UCM-F004-HEAD_HISTORY_ACCESS"),
+        ("FutureReaderControl", "UCM-F001-FUTURE_LEAK"),
+        ("TrueStateReaderControl", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
+        ("MutableCheckpointControl", "UCM-F009-MODEL_MUTATION"),
         ("QueryMutatorControl", "UCM-F012-QUERY_MUTATES_FACT"),
         ("ImplicitRNGControl", "UCM-F020-NONREPRODUCIBLE"),
     ],

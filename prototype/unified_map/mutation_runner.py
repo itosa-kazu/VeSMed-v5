@@ -49,10 +49,34 @@ PORTABLE_MUTATION_CASES: tuple[PortableMutationCase, ...] = (
         "UCM-F006-HIDDEN_PATIENT_CACHE",
     ),
     PortableMutationCase(
+        "FileHandleState",
+        "FileHandleStateControl",
+        "C07",
+        "UCM-F008-STATE_NOT_CLOSED",
+    ),
+    PortableMutationCase(
         "RawHistoryHead",
         "RawHistoryHeadControl",
         "C02",
         "UCM-F004-HEAD_HISTORY_ACCESS",
+    ),
+    PortableMutationCase(
+        "MutableCheckpoint",
+        "MutableCheckpointControl",
+        "C06",
+        "UCM-F009-MODEL_MUTATION",
+    ),
+    PortableMutationCase(
+        "TrueStateReader",
+        "TrueStateReaderControl",
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+    ),
+    PortableMutationCase(
+        "FutureReader",
+        "FutureReaderControl",
+        "C08",
+        "UCM-F001-FUTURE_LEAK",
     ),
     PortableMutationCase(
         "CounterfactualMutator",
@@ -108,6 +132,14 @@ def _decisive_finding(
     return matches[0] if matches else None
 
 
+def _finding_gate_tokens(finding: ComplianceFinding) -> frozenset[str]:
+    return frozenset(
+        token
+        for token in finding.gate.replace("/", " ").replace("-", " ").split()
+        if len(token) == 3 and token.startswith("C") and token[1:].isdigit()
+    )
+
+
 def run_portable_mutation_evidence(
     *,
     history: VisibleHistory,
@@ -132,6 +164,10 @@ def run_portable_mutation_evidence(
             seed=execution_seed,
         )
         decisive = _decisive_finding(report.findings, case.expected_failure_code)
+        if decisive is not None and case.decisive_gate not in _finding_gate_tokens(
+            decisive
+        ):
+            decisive = None
         rows.append(
             MutationObservation(
                 subject_id=case.matrix_subject_id,

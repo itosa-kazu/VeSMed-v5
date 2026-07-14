@@ -324,11 +324,11 @@ matrix; never synthesize `killed=true` from declarations.
 
 ### Outcome
 
-- Wired four existing malicious controls through the real fresh-worker
+- Wired eight malicious controls through the real fresh-worker
   compliance runner into mutation-matrix observations.
-- Produced decisive record digests for hidden global state, head history
-  access, query mutation and implicit RNG, plus one passing explicit-seed
-  specificity control.
+- Produced decisive record digests for hidden global/file state, head history
+  access, future/true-state reads, model mutation, query mutation and implicit
+  RNG, plus one passing explicit-seed specificity control.
 - The partial matrix deliberately remains `HARNESS_INCOMPLETE` rather than
   treating those four kills as coverage of the whole contract.
 
@@ -341,9 +341,9 @@ python -m pytest -q -p no:cacheprovider tests/unified_map/test_mutation_runner.p
 
 ### Evidence boundary
 
-Current executed coverage is exactly C02, C04, C16 and C30, with 4/26 mutants
-and 1/4 specificity controls. Remaining declarations have no kill evidence yet
-and therefore block freeze.
+Current executed coverage is exactly C02, C04, C06, C07, C08, C16 and C30,
+with 8/26 mutants and 1/4 specificity controls. Remaining declarations have no
+kill evidence yet and therefore block freeze.
 
 ### Decision
 
