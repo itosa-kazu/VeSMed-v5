@@ -349,3 +349,71 @@ kill evidence yet and therefore block freeze.
 
 `KEEP`: extend this runner with real controls and decisive transcripts; never
 fill uncovered cells with synthetic test rows.
+
+## 2026-07-15 — Clean interface replay and fail-closed freeze audit
+
+### Outcome
+
+- Preserved a clean, commit-bound UCM test replay at source revision
+  `1d0222a0cd4409aab076c62d10b146f6d7898241` under
+  `results/unified_map/pre_freeze/20260715-1d0222a-full-suite/`.
+- Added a 16-axis freeze evidence collector whose contracts cannot be replaced
+  by callers. Producer-reported `PASS` values are not accepted: a check can
+  pass only through collector-owned extraction from digest-bound raw bytes.
+- Implemented one typed extractor for the mutation matrix. It reconstructs
+  each observation, reruns the matrix evaluator, and requires canonical report
+  equality plus witnessed source and decisive-record bytes.
+
+### Verification
+
+```text
+clean archived replay: 439 passed in 183.79s
+freeze audit / manifest / mutation registry: 33 passed in 0.35s
+```
+
+### Evidence boundary
+
+All sixteen freeze axes remain typed `INCOMPLETE`. Fifteen axes intentionally
+have no collector-owned extractor yet; the mutation axis is also incomplete
+because the committed execution matrix does not cover all 26 mutants, C01-C33
+and four specificity controls. The archived green pytest log is regression
+evidence, not freeze authorization.
+
+### Decision
+
+`KEEP AS PRE-FREEZE EVIDENCE BOUNDARY`: add typed extractors and raw artifacts
+axis by axis. Do not materialize a `FREEZE_MANIFEST` from test names or
+producer-authored summaries.
+
+## 2026-07-15 — Remove private split identity from W03/W18/W19 scoring
+
+### Outcome
+
+- W03 now uses one frozen public drift prior for scoring rather than the
+  judge-private `episode.split`.
+- W18 now uses one public scoring prior/support envelope across train,
+  validation and sealed-test while leaving generator quotas unchanged.
+- W19 now uses one public marker kernel (`sensitivity=.98`, `FPR=.02`, tail
+  prior `1/64`) while preserving the finite generator quota of exactly one
+  tail episode per 64 rows.
+- Added private-swap tests that retain byte-identical public histories while
+  replacing split, case/environment keys, generator seed, hidden state,
+  targets, future, propensities, utility and oracle anchors.
+
+### Verification
+
+```text
+W18/W19 public-prior + semantic + registry tests: 65 passed in 28.01s
+```
+
+### Evidence boundary
+
+These fixes remove a concrete forbidden information path from scoring. They do
+not prove the full split contract: a pre-split counterfactual-family manifest,
+family/prefix/pair no-overlap audit, authoritative exact expected cells and
+public-versus-judge-only stratum separation are still absent.
+
+### Decision
+
+`KEEP`: scoring is now invariant to private split swaps in W03/W18/W19, but
+benchmark v1 remains `PRE-FREEZE` and candidate implementation stays closed.
