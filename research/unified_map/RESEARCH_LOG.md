@@ -228,3 +228,34 @@ until their conditioning/weight contracts are finalized.
 
 `KEEP FOR ITERATION`: this commit supplies the shared world helper layer used
 by later worlds, but does not satisfy the semantic-freeze gate.
+
+## 2026-07-15 — W11–W15 executable pre-freeze checkpoint
+
+### Outcome
+
+- Materialized deterministic generators, finite policy sets, judge-side
+  counterfactual outputs and paired fixtures for W11–W14.
+- Split W15 into a randomized-identifiable panel and an observationally
+  nonidentified SCM-twin panel. The latter returns an identified set and
+  abstention contract rather than scoring a private realized point effect.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_worlds_w11_w15.py
+44 passed
+```
+
+### Evidence boundary
+
+`PRE-FREEZE PROTOTYPE`. W11–W14 currently condition key counterfactual paths
+on judge-side realized cut state; independent public-history posterior
+production/reference solvers have not been implemented. Their green focused
+tests therefore do not certify candidate-facing probability oracles. W15's
+identification boundary is exercised, but its end-to-end evaluator integration
+still remains outside this checkpoint.
+
+### Decision
+
+`KEEP FOR ITERATION`: preserve the executable semantics and W15 negative
+control while leaving the benchmark freeze gate closed.
