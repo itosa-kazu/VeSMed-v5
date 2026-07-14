@@ -21,7 +21,12 @@ from typing import Any, Iterable
 import numpy as np
 
 from .candidate_protocol import ResultStatus
-from .canonical import ProtocolViolation, digest_json, validate_json_like
+from .canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_json,
+    validate_json_like,
+)
 from .metrics import PairClassification, PairProbe, binary_roc_auc, classify_pair
 
 
@@ -73,6 +78,13 @@ class EvaluationTask(str, Enum):
     NEW_READOUT = "new_readout"
 
 
+class EvaluationSplit(str, Enum):
+    TRAIN = "train"
+    VALIDATION = "validation"
+    TEST = "test"
+    REDTEAM = "redteam"
+
+
 class OODAttribution(str, Enum):
     NOT_APPLICABLE = "not_applicable"
     KNOWN = "known"
@@ -117,6 +129,14 @@ class ExpectedEvaluationCell:
     episode_alias: str
     cohort: EvaluationCohort
     task: EvaluationTask
+    scope_digest: str
+    split: EvaluationSplit
+    family_id: str
+    cut_alias: str
+    training_replicate_id: str
+    evaluation_replicate_id: str
+    horizon: int
+    policy_alias: str
     tail_member: bool = False
     ood_attribution: OODAttribution = OODAttribution.NOT_APPLICABLE
     identification: IdentificationKind = IdentificationKind.POINT
@@ -134,6 +154,19 @@ class ExpectedEvaluationCell:
             raise ProtocolViolation("cohort must be EvaluationCohort")
         if type(self.task) is not EvaluationTask:
             raise ProtocolViolation("task must be EvaluationTask")
+        _digest(self.scope_digest, "expected scope_digest")
+        if type(self.split) is not EvaluationSplit:
+            raise ProtocolViolation("split must be EvaluationSplit")
+        for value, label in (
+            (self.family_id, "family_id"),
+            (self.cut_alias, "cut_alias"),
+            (self.training_replicate_id, "training_replicate_id"),
+            (self.evaluation_replicate_id, "evaluation_replicate_id"),
+            (self.policy_alias, "policy_alias"),
+        ):
+            _name(value, label)
+        if type(self.horizon) is not int or self.horizon < 0:
+            raise ProtocolViolation("horizon must be a non-negative integer")
         if type(self.tail_member) is not bool:
             raise ProtocolViolation("tail_member must be boolean")
         if type(self.ood_attribution) is not OODAttribution:
@@ -146,6 +179,28 @@ class ExpectedEvaluationCell:
             raise ProtocolViolation("unsafe_action_ids must be tuple[str, ...]")
         if len(set(self.unsafe_action_ids)) != len(self.unsafe_action_ids):
             raise ProtocolViolation("unsafe_action_ids must be unique")
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "record_id": self.record_id,
+            "world_slot": self.world_slot,
+            "panel_id": self.panel_id,
+            "episode_alias": self.episode_alias,
+            "cohort": self.cohort.value,
+            "task": self.task.value,
+            "scope_digest": self.scope_digest,
+            "split": self.split.value,
+            "family_id": self.family_id,
+            "cut_alias": self.cut_alias,
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+            "horizon": self.horizon,
+            "policy_alias": self.policy_alias,
+            "tail_member": self.tail_member,
+            "ood_attribution": self.ood_attribution.value,
+            "identification": self.identification.value,
+            "unsafe_action_ids": list(self.unsafe_action_ids),
+        }
 
 
 @dataclass(frozen=True, slots=True)
@@ -165,6 +220,13 @@ class RawEvaluationRecord:
     task: EvaluationTask
     result_status: ResultStatus
     scope_digest: str
+    split: EvaluationSplit
+    family_id: str
+    cut_alias: str
+    training_replicate_id: str
+    evaluation_replicate_id: str
+    horizon: int
+    policy_alias: str
     state_hash: str
     public_input_digest: str
     query_digest: str
@@ -197,6 +259,18 @@ class RawEvaluationRecord:
             raise ProtocolViolation("task must be EvaluationTask")
         if type(self.result_status) is not ResultStatus:
             raise ProtocolViolation("result_status must be ResultStatus")
+        if type(self.split) is not EvaluationSplit:
+            raise ProtocolViolation("raw split must be EvaluationSplit")
+        for value, label in (
+            (self.family_id, "raw family_id"),
+            (self.cut_alias, "raw cut_alias"),
+            (self.training_replicate_id, "raw training_replicate_id"),
+            (self.evaluation_replicate_id, "raw evaluation_replicate_id"),
+            (self.policy_alias, "raw policy_alias"),
+        ):
+            _name(value, label)
+        if type(self.horizon) is not int or self.horizon < 0:
+            raise ProtocolViolation("raw horizon must be a non-negative integer")
         for value, label in (
             (self.scope_digest, "scope_digest"),
             (self.state_hash, "state_hash"),
@@ -263,6 +337,15 @@ class PairThresholds:
         ):
             _finite(getattr(self, name), name, nonnegative=True)
 
+    def to_wire(self) -> dict[str, float]:
+        return {
+            "candidate_same_epsilon": self.candidate_same_epsilon,
+            "candidate_split_delta": self.candidate_split_delta,
+            "oracle_distinguishable_delta": self.oracle_distinguishable_delta,
+            "oracle_equivalent_epsilon": self.oracle_equivalent_epsilon,
+            "catastrophic_margin": self.catastrophic_margin,
+        }
+
 
 @dataclass(frozen=True, slots=True)
 class ExpectedPairCell:
@@ -270,6 +353,11 @@ class ExpectedPairCell:
     world_slot: str
     panel_id: str
     thresholds: PairThresholds
+    scope_digest: str
+    split: EvaluationSplit
+    family_id: str
+    training_replicate_id: str
+    evaluation_replicate_id: str
 
     def __post_init__(self) -> None:
         _name(self.pair_id, "pair_id")
@@ -277,6 +365,28 @@ class ExpectedPairCell:
         _name(self.panel_id, "pair panel_id")
         if type(self.thresholds) is not PairThresholds:
             raise ProtocolViolation("pair thresholds must be PairThresholds")
+        _digest(self.scope_digest, "pair scope_digest")
+        if type(self.split) is not EvaluationSplit:
+            raise ProtocolViolation("pair split must be EvaluationSplit")
+        for value, label in (
+            (self.family_id, "pair family_id"),
+            (self.training_replicate_id, "pair training_replicate_id"),
+            (self.evaluation_replicate_id, "pair evaluation_replicate_id"),
+        ):
+            _name(value, label)
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "pair_id": self.pair_id,
+            "world_slot": self.world_slot,
+            "panel_id": self.panel_id,
+            "thresholds": self.thresholds.to_wire(),
+            "scope_digest": self.scope_digest,
+            "split": self.split.value,
+            "family_id": self.family_id,
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+        }
 
 
 @dataclass(frozen=True, slots=True)
@@ -285,6 +395,11 @@ class RawPairRecord:
     world_slot: str
     panel_id: str
     probe: PairProbe
+    scope_digest: str
+    split: EvaluationSplit
+    family_id: str
+    training_replicate_id: str
+    evaluation_replicate_id: str
     analysis_weight: float
     candidate_record: dict[str, Any]
     candidate_record_digest: str
@@ -300,6 +415,15 @@ class RawPairRecord:
             _name(value, label)
         if type(self.probe) is not PairProbe or self.probe.pair_id != self.pair_id:
             raise ProtocolViolation("pair probe must match pair_id")
+        _digest(self.scope_digest, "raw pair scope_digest")
+        if type(self.split) is not EvaluationSplit:
+            raise ProtocolViolation("raw pair split must be EvaluationSplit")
+        for value, label in (
+            (self.family_id, "raw pair family_id"),
+            (self.training_replicate_id, "raw pair training_replicate_id"),
+            (self.evaluation_replicate_id, "raw pair evaluation_replicate_id"),
+        ):
+            _name(value, label)
         _finite(self.analysis_weight, "pair analysis_weight", nonnegative=True)
         if type(self.candidate_record) is not dict or type(self.oracle_record) is not dict:
             raise ProtocolViolation("pair raw records must be exact objects")
@@ -340,6 +464,7 @@ class W19SafetyDeclaration:
 
 @dataclass(frozen=True, slots=True)
 class EvaluationManifest:
+    scope_digest: str
     expected_cells: tuple[ExpectedEvaluationCell, ...]
     expected_pairs: tuple[ExpectedPairCell, ...] = ()
     w19_safety: W19SafetyDeclaration | None = None
@@ -347,6 +472,7 @@ class EvaluationManifest:
     forced_known_max_unknown: float = 0.10
 
     def __post_init__(self) -> None:
+        _digest(self.scope_digest, "evaluation manifest scope_digest")
         if type(self.expected_cells) is not tuple or not self.expected_cells:
             raise ProtocolViolation("expected_cells must be non-empty")
         if any(type(item) is not ExpectedEvaluationCell for item in self.expected_cells):
@@ -354,6 +480,8 @@ class EvaluationManifest:
         ids = [cell.record_id for cell in self.expected_cells]
         if len(ids) != len(set(ids)):
             raise ProtocolViolation("expected record ids must be unique")
+        if any(cell.scope_digest != self.scope_digest for cell in self.expected_cells):
+            raise ProtocolViolation("expected cells do not share manifest scope_digest")
         if type(self.expected_pairs) is not tuple or any(
             type(item) is not ExpectedPairCell for item in self.expected_pairs
         ):
@@ -361,6 +489,8 @@ class EvaluationManifest:
         pair_ids = [cell.pair_id for cell in self.expected_pairs]
         if len(pair_ids) != len(set(pair_ids)):
             raise ProtocolViolation("expected pair ids must be unique")
+        if any(cell.scope_digest != self.scope_digest for cell in self.expected_pairs):
+            raise ProtocolViolation("expected pairs do not share manifest scope_digest")
         if self.w19_safety is not None and type(self.w19_safety) is not W19SafetyDeclaration:
             raise ProtocolViolation("w19_safety must be W19SafetyDeclaration")
         for value, label in (
@@ -370,6 +500,34 @@ class EvaluationManifest:
             number = _finite(value, label)
             if not 0.0 <= number <= 1.0:
                 raise ProtocolViolation(f"{label} must lie in [0,1]")
+
+    def to_wire(self) -> dict[str, Any]:
+        body = {
+            "schema_version": "ucm-expected-cells/1",
+            "scope_digest": self.scope_digest,
+            "expected_cells": [cell.to_wire() for cell in self.expected_cells],
+            "expected_pairs": [cell.to_wire() for cell in self.expected_pairs],
+            "w19_safety": None
+            if self.w19_safety is None
+            else {
+                "tail_episode_aliases": list(self.w19_safety.tail_episode_aliases),
+                "tail_cohort_digest": self.w19_safety.tail_cohort_digest,
+                "contraindicated_action_id": self.w19_safety.contraindicated_action_id,
+                "catastrophic_margin": self.w19_safety.catastrophic_margin,
+            },
+            "forced_known_max_known": self.forced_known_max_known,
+            "forced_known_max_unknown": self.forced_known_max_unknown,
+        }
+        validate_json_like(body)
+        return body
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        return canonical_json_bytes(self.to_wire())
+
+    @property
+    def digest(self) -> str:
+        return digest_json(self.to_wire())
 
 
 @dataclass(frozen=True, slots=True)
@@ -571,17 +729,27 @@ def _action_regret(record: RawEvaluationRecord) -> tuple[str, float] | None:
     return chosen, regret
 
 
-def _headline(records: tuple[RawEvaluationRecord, ...]) -> tuple[HeadlineSlice, ...]:
-    groups: dict[tuple[str, str, EvaluationTask], list[RawEvaluationRecord]] = {}
-    for record in records:
-        if record.cohort is EvaluationCohort.POPULATION:
-            groups.setdefault(
-                (record.world_slot, record.panel_id, record.task), []
-            ).append(record)
+def _headline(
+    cells: tuple[ExpectedEvaluationCell, ...],
+    trusted_records: dict[str, RawEvaluationRecord],
+) -> tuple[HeadlineSlice, ...]:
+    groups: dict[
+        tuple[str, str, EvaluationTask], list[ExpectedEvaluationCell]
+    ] = {}
+    for cell in cells:
+        if cell.cohort is EvaluationCohort.POPULATION:
+            groups.setdefault((cell.world_slot, cell.panel_id, cell.task), []).append(
+                cell
+            )
     result = []
-    for (world, panel, task), rows in sorted(
+    for (world, panel, task), expected_rows in sorted(
         groups.items(), key=lambda item: (item[0][0], item[0][1], item[0][2].value)
     ):
+        rows = [
+            trusted_records[cell.record_id]
+            for cell in expected_rows
+            if cell.record_id in trusted_records
+        ]
         losses = [
             float(row.loss)
             for row in rows
@@ -592,7 +760,7 @@ def _headline(records: tuple[RawEvaluationRecord, ...]) -> tuple[HeadlineSlice, 
                 world,
                 panel,
                 task.value,
-                len(rows),
+                len(expected_rows),
                 len(losses),
                 sum(row.result_status is ResultStatus.ABSTAIN for row in rows),
                 sum(
@@ -606,7 +774,9 @@ def _headline(records: tuple[RawEvaluationRecord, ...]) -> tuple[HeadlineSlice, 
     return tuple(result)
 
 
-def _risk_coverage(rows: list[RawEvaluationRecord]) -> tuple[tuple[RiskCoveragePoint, ...], float | None]:
+def _risk_coverage(
+    rows: list[RawEvaluationRecord], expected_denominator: int
+) -> tuple[tuple[RiskCoveragePoint, ...], float | None]:
     accepted = [
         row
         for row in rows
@@ -615,39 +785,46 @@ def _risk_coverage(rows: list[RawEvaluationRecord]) -> tuple[tuple[RiskCoverageP
         and row.selection_confidence is not None
     ]
     accepted.sort(key=lambda row: (-float(row.selection_confidence), row.record_id))
-    if not accepted or not rows:
+    if not accepted or expected_denominator <= 0:
         return (), None
     points = []
     running = 0.0
     for index, row in enumerate(accepted, 1):
         running += float(row.loss)
-        points.append(RiskCoveragePoint(index / len(rows), running / index))
+        points.append(RiskCoveragePoint(index / expected_denominator, running / index))
     # Rectangle rule with a fixed 1/N increment.  Abstained suffix remains in
     # the denominator rather than disappearing from the curve.
-    aurc = float(sum(point.selective_risk for point in points) / len(rows))
+    aurc = float(
+        sum(point.selective_risk for point in points) / expected_denominator
+    )
     return tuple(points), aurc
 
 
 def _ood_summary(
-    records: tuple[RawEvaluationRecord, ...],
+    trusted_records: dict[str, RawEvaluationRecord],
     expected: dict[str, ExpectedEvaluationCell],
 ) -> OODSummary | None:
-    ood_rows = [row for row in records if row.task is EvaluationTask.OOD]
-    if not ood_rows:
+    ood_cells = [cell for cell in expected.values() if cell.task is EvaluationTask.OOD]
+    if not ood_cells:
         return None
-    primary = []
-    irreducible = 0
-    for row in ood_rows:
-        attribution = expected[row.record_id].ood_attribution
-        if attribution is OODAttribution.IRREDUCIBLE:
-            irreducible += 1
-            continue
-        if attribution in {
+    primary_cells = [
+        cell
+        for cell in ood_cells
+        if cell.ood_attribution
+        in {
             OODAttribution.KNOWN,
             OODAttribution.KNOWN_EXTREME,
             OODAttribution.ATTRIBUTABLE,
-        }:
-            primary.append(row)
+        }
+    ]
+    irreducible = sum(
+        cell.ood_attribution is OODAttribution.IRREDUCIBLE for cell in ood_cells
+    )
+    primary = [
+        trusted_records[cell.record_id]
+        for cell in primary_cells
+        if cell.record_id in trusted_records
+    ]
     attributable = [
         row
         for row in primary
@@ -674,16 +851,25 @@ def _ood_summary(
         label_array = np.asarray(labels, dtype=int)
         auroc = binary_roc_auc(score_array, label_array)
         average_precision = _average_precision(score_array, label_array)
-    curve, aurc = _risk_coverage(primary)
+    curve, aurc = _risk_coverage(primary, len(primary_cells))
+    expected_known_count = sum(
+        cell.ood_attribution in {OODAttribution.KNOWN, OODAttribution.KNOWN_EXTREME}
+        for cell in primary_cells
+    )
+    expected_attributable_count = sum(
+        cell.ood_attribution is OODAttribution.ATTRIBUTABLE
+        for cell in primary_cells
+    )
     known_coverage = (
-        sum(row.result_status is ResultStatus.OK for row in known) / len(known)
-        if known
+        sum(row.result_status is ResultStatus.OK for row in known)
+        / expected_known_count
+        if expected_known_count
         else None
     )
     ood_abstention = (
         sum(row.result_status is ResultStatus.ABSTAIN for row in attributable)
-        / len(attributable)
-        if attributable
+        / expected_attributable_count
+        if expected_attributable_count
         else None
     )
     unsafe = sum(
@@ -692,9 +878,9 @@ def _ood_summary(
         for row in attributable
     )
     return OODSummary(
-        len(primary),
-        len(attributable),
-        len(known),
+        len(primary_cells),
+        expected_attributable_count,
+        expected_known_count,
         irreducible,
         auroc,
         average_precision,
@@ -726,8 +912,10 @@ def evaluate_records(
     failures: list[EvaluationIssue] = []
     expected = {cell.record_id: cell for cell in manifest.expected_cells}
     actual: dict[str, RawEvaluationRecord] = {}
+    duplicate_record_ids: set[str] = set()
     for row in rows:
         if row.record_id in actual:
+            duplicate_record_ids.add(row.record_id)
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -755,16 +943,28 @@ def evaluate_records(
         )
 
     common_ids = sorted(set(expected) & set(actual))
+    trusted_actual: dict[str, RawEvaluationRecord] = {}
     for record_id in common_ids:
         row = actual[record_id]
         cell = expected[record_id]
+        trusted = record_id not in duplicate_record_ids
         if (
             row.world_slot != cell.world_slot
             or row.panel_id != cell.panel_id
             or row.episode_alias != cell.episode_alias
             or row.cohort is not cell.cohort
             or row.task is not cell.task
+            or row.scope_digest != cell.scope_digest
+            or row.scope_digest != manifest.scope_digest
+            or row.split is not cell.split
+            or row.family_id != cell.family_id
+            or row.cut_alias != cell.cut_alias
+            or row.training_replicate_id != cell.training_replicate_id
+            or row.evaluation_replicate_id != cell.evaluation_replicate_id
+            or row.horizon != cell.horizon
+            or row.policy_alias != cell.policy_alias
         ):
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -774,6 +974,7 @@ def evaluate_records(
             )
         expected_weight = 1.0 if cell.cohort is EvaluationCohort.POPULATION else 0.0
         if not math.isclose(float(row.analysis_weight), expected_weight, abs_tol=0.0):
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -782,6 +983,7 @@ def evaluate_records(
                 )
             )
         if digest_json(row.candidate_output) != row.candidate_output_digest:
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-F023-RESULT_EVIDENCE_LOSS",
@@ -790,6 +992,7 @@ def evaluate_records(
                 )
             )
         if digest_json(row.oracle_record) != row.oracle_record_digest:
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-F023-RESULT_EVIDENCE_LOSS",
@@ -797,6 +1000,9 @@ def evaluate_records(
                     "oracle raw record digest mismatch",
                 )
             )
+        if not trusted:
+            continue
+        trusted_actual[record_id] = row
         if row.result_status is ResultStatus.OK and row.loss is None:
             blockers.append(
                 EvaluationIssue(
@@ -871,8 +1077,10 @@ def evaluate_records(
 
     expected_pair = {cell.pair_id: cell for cell in manifest.expected_pairs}
     actual_pair: dict[str, RawPairRecord] = {}
+    duplicate_pair_ids: set[str] = set()
     for row in pairs:
         if row.pair_id in actual_pair:
+            duplicate_pair_ids.add(row.pair_id)
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -900,10 +1108,22 @@ def evaluate_records(
         )
 
     classifications = []
+    trusted_pairs: dict[str, RawPairRecord] = {}
     for pair_id in sorted(set(expected_pair) & set(actual_pair)):
         row = actual_pair[pair_id]
         cell = expected_pair[pair_id]
-        if row.world_slot != cell.world_slot or row.panel_id != cell.panel_id:
+        trusted = pair_id not in duplicate_pair_ids
+        if (
+            row.world_slot != cell.world_slot
+            or row.panel_id != cell.panel_id
+            or row.scope_digest != cell.scope_digest
+            or row.scope_digest != manifest.scope_digest
+            or row.split is not cell.split
+            or row.family_id != cell.family_id
+            or row.training_replicate_id != cell.training_replicate_id
+            or row.evaluation_replicate_id != cell.evaluation_replicate_id
+        ):
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -912,6 +1132,7 @@ def evaluate_records(
                 )
             )
         if float(row.analysis_weight) != 0.0:
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-E003-HARNESS_INCOMPLETE",
@@ -920,6 +1141,7 @@ def evaluate_records(
                 )
             )
         if digest_json(row.candidate_record) != row.candidate_record_digest:
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-F023-RESULT_EVIDENCE_LOSS",
@@ -928,6 +1150,7 @@ def evaluate_records(
                 )
             )
         if digest_json(row.oracle_record) != row.oracle_record_digest:
+            trusted = False
             blockers.append(
                 EvaluationIssue(
                     "UCM-F023-RESULT_EVIDENCE_LOSS",
@@ -935,6 +1158,9 @@ def evaluate_records(
                     "pair oracle record digest mismatch",
                 )
             )
+        if not trusted:
+            continue
+        trusted_pairs[pair_id] = row
         thresholds = cell.thresholds
         classification = classify_pair(
             row.probe,
@@ -996,9 +1222,9 @@ def evaluate_records(
                     )
                 )
             observed_tail = {
-                actual[cell.record_id].episode_alias
+                trusted_actual[cell.record_id].episode_alias
                 for cell in w19_cells
-                if cell.tail_member and cell.record_id in actual
+                if cell.tail_member and cell.record_id in trusted_actual
             }
             if observed_tail != expected_aliases:
                 blockers.append(
@@ -1009,12 +1235,16 @@ def evaluate_records(
                     )
                 )
             tail_interventions = [
-                actual[cell.record_id]
+                trusted_actual[cell.record_id]
                 for cell in w19_cells
                 if cell.tail_member
                 and cell.task is EvaluationTask.INTERVENTION
-                and cell.record_id in actual
+                and cell.record_id in trusted_actual
             ]
+            expected_tail_intervention_count = sum(
+                cell.tail_member and cell.task is EvaluationTask.INTERVENTION
+                for cell in w19_cells
+            )
             regrets: list[float] = []
             catastrophic = 0
             selected = 0
@@ -1055,7 +1285,7 @@ def evaluate_records(
             w19_summary = W19Summary(
                 len(expected_aliases),
                 len(observed_tail),
-                len(tail_interventions),
+                expected_tail_intervention_count,
                 selected,
                 abstained,
                 float(np.mean(regrets)) if regrets else None,
@@ -1063,10 +1293,12 @@ def evaluate_records(
                 max(regrets) if regrets else None,
                 _upper_cvar95(regrets),
                 catastrophic,
-                catastrophic / len(tail_interventions) if tail_interventions else 0.0,
+                catastrophic / expected_tail_intervention_count
+                if expected_tail_intervention_count
+                else 0.0,
             )
 
-    ood = _ood_summary(rows, expected) if common_ids else None
+    ood = _ood_summary(trusted_actual, expected) if common_ids else None
     # If the frozen manifest declares a primary OOD panel, both attributable
     # and known rows are needed for primary discrimination metrics.
     expected_ood = [cell for cell in manifest.expected_cells if cell.task is EvaluationTask.OOD]
@@ -1092,7 +1324,7 @@ def evaluate_records(
         CandidateGateStatus.HARD_FAILURE
         if any(issue.code.startswith("UCM-F0") and issue.code not in {"UCM-F021-REQUIRED_QUERY_UNSUPPORTED"} for issue in failures)
         else CandidateGateStatus.NO_HARD_FAILURE_OBSERVED,
-        _headline(rows),
+        _headline(manifest.expected_cells, trusted_actual),
         pair_summary,
         ood,
         w19_summary,
@@ -1109,6 +1341,7 @@ __all__ = [
     "EvaluationIssue",
     "EvaluationManifest",
     "EvaluationReport",
+    "EvaluationSplit",
     "EvaluationTask",
     "EvidenceStatus",
     "ExpectedEvaluationCell",
