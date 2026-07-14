@@ -58,10 +58,19 @@ def test_all_panels_declare_exact_default_population_and_nonempty_probe_contract
             assert panel.episode_count(WorldSplit.SEALED_TEST) == 2048
 
 
-def test_registry_audit_confirms_all_declared_world_interfaces_are_ready() -> None:
+def test_registry_audit_keeps_two_stage_extension_freeze_evidence_incomplete() -> None:
     report = audit_registry_readiness()
-    assert report.status is ReadinessStatus.READY
-    assert report.blockers == ()
+    assert report.status is ReadinessStatus.INCOMPLETE
+    assert {blocker.world_slot for blocker in report.blockers} == {"W16", "W17"}
+    expected = {
+        "extension_query_contract",
+        "extension_execution_isolation",
+        "extension_initialization_provenance",
+        "extension_source_hiding",
+        "extension_atomic_publish",
+    }
+    assert {blocker.interface for blocker in report.blockers} == expected
+    assert len(report.blockers) == 10
 
 
 def test_materializer_physically_separates_public_and_private_rows_and_denominators(
