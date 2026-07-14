@@ -198,3 +198,33 @@ aggregator are also not yet wired.
 
 `KEEP FOR ITERATION`: checkpoint these executable worlds without changing the
 benchmark status or opening candidate implementation.
+
+## 2026-07-15 — W01–W05 executable pre-freeze checkpoint
+
+### Outcome
+
+- Materialized deterministic generators, public catalogs, finite policy sets,
+  posterior-aware counterfactual paths and focused collision/false-split
+  fixtures for W01–W05.
+- Kept candidate/public DTOs separate from sampled judge truth and preserved
+  no-new-action semantics without synthetic zero-dose events.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_worlds_w01_w05.py
+31 passed
+```
+
+### Evidence boundary
+
+`PRE-FREEZE PROTOTYPE`. Native adaptive-check DTOs, exact event-index
+semantics, several preregistered probe families, complete future propensity
+ledgers and independent oracle certification remain open. W03/W04 matched
+fixtures must not enter headline calibration as ordinary IID population rows
+until their conditioning/weight contracts are finalized.
+
+### Decision
+
+`KEEP FOR ITERATION`: this commit supplies the shared world helper layer used
+by later worlds, but does not satisfy the semantic-freeze gate.
