@@ -470,6 +470,13 @@ class EvaluationManifest:
     w19_safety: W19SafetyDeclaration | None = None
     forced_known_max_known: float = 0.90
     forced_known_max_unknown: float = 0.10
+    # When the manifest is produced from a frozen corpus/query contract, this
+    # digest binds the otherwise path-free expected-cell rows back to the
+    # exact corpus digests and query declarations used to create them.  Hand-
+    # assembled unit fixtures may leave it unset.  This is only a local
+    # contract binding; it is not an authoritative freeze receipt and cannot
+    # make ``benchmark_freeze_eligible`` true.
+    cell_contract_digest: str | None = None
 
     def __post_init__(self) -> None:
         _digest(self.scope_digest, "evaluation manifest scope_digest")
@@ -493,6 +500,8 @@ class EvaluationManifest:
             raise ProtocolViolation("expected pairs do not share manifest scope_digest")
         if self.w19_safety is not None and type(self.w19_safety) is not W19SafetyDeclaration:
             raise ProtocolViolation("w19_safety must be W19SafetyDeclaration")
+        if self.cell_contract_digest is not None:
+            _digest(self.cell_contract_digest, "cell_contract_digest")
         for value, label in (
             (self.forced_known_max_known, "forced_known_max_known"),
             (self.forced_known_max_unknown, "forced_known_max_unknown"),
@@ -517,6 +526,7 @@ class EvaluationManifest:
             },
             "forced_known_max_known": self.forced_known_max_known,
             "forced_known_max_unknown": self.forced_known_max_unknown,
+            "cell_contract_digest": self.cell_contract_digest,
         }
         validate_json_like(body)
         return body
@@ -664,8 +674,30 @@ class EvaluationReport:
     w19: W19Summary | None
     blockers: tuple[EvaluationIssue, ...]
     failures: tuple[EvaluationIssue, ...]
+    # The current evaluator checks local row/denominator integrity but its
+    # cells do not yet bind authoritative public-input/query/oracle/state
+    # ledger roots.  A structurally complete report is therefore never, by
+    # itself, benchmark-freeze evidence.
+    benchmark_freeze_eligible: bool
+    benchmark_evidence_status: EvidenceStatus
     raw_population_count: int
     raw_probe_pair_count: int
+
+    def __post_init__(self) -> None:
+        if type(self.benchmark_freeze_eligible) is not bool:
+            raise ProtocolViolation("benchmark_freeze_eligible must be boolean")
+        if self.benchmark_freeze_eligible:
+            raise ProtocolViolation(
+                "this evaluator revision cannot produce benchmark-freeze-eligible evidence"
+            )
+        if type(self.benchmark_evidence_status) is not EvidenceStatus:
+            raise ProtocolViolation(
+                "benchmark_evidence_status must be EvidenceStatus"
+            )
+        if self.benchmark_evidence_status is not EvidenceStatus.INCOMPLETE:
+            raise ProtocolViolation(
+                "this evaluator revision requires incomplete benchmark evidence"
+            )
 
     def to_wire(self) -> dict[str, Any]:
         return {
@@ -678,6 +710,11 @@ class EvaluationReport:
             "w19": None if self.w19 is None else self.w19.to_wire(),
             "blockers": [item.to_wire() for item in self.blockers],
             "failures": [item.to_wire() for item in self.failures],
+            # Defence in depth: even low-level mutation that bypasses the
+            # frozen dataclass constructor cannot serialize false freeze
+            # evidence from this evaluator revision.
+            "benchmark_freeze_eligible": False,
+            "benchmark_evidence_status": EvidenceStatus.INCOMPLETE.value,
             "raw_population_count": self.raw_population_count,
             "raw_probe_pair_count": self.raw_probe_pair_count,
         }
@@ -910,6 +947,15 @@ def evaluate_records(
 
     blockers: list[EvaluationIssue] = []
     failures: list[EvaluationIssue] = []
+    if manifest.cell_contract_digest is not None:
+        blockers.append(
+            EvaluationIssue(
+                "UCM-E003-HARNESS_INCOMPLETE",
+                None,
+                "cell-contract-bound manifest is PRE_FREEZE_SCAFFOLD only; "
+                "authoritative per-cell public/query/oracle/state roots are absent",
+            )
+        )
     expected = {cell.record_id: cell for cell in manifest.expected_cells}
     actual: dict[str, RawEvaluationRecord] = {}
     duplicate_record_ids: set[str] = set()
@@ -1330,6 +1376,8 @@ def evaluate_records(
         w19_summary,
         tuple(blockers),
         tuple(failures),
+        False,
+        EvidenceStatus.INCOMPLETE,
         sum(row.cohort is EvaluationCohort.POPULATION for row in rows),
         len(pairs),
     )

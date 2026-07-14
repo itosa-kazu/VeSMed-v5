@@ -5,7 +5,11 @@ from dataclasses import replace
 import pytest
 
 from prototype.unified_map.candidate_protocol import ResultStatus
-from prototype.unified_map.canonical import canonical_json_bytes, digest_json
+from prototype.unified_map.canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_json,
+)
 from prototype.unified_map.evaluator import (
     CandidateGateStatus,
     EvaluationCohort,
@@ -191,12 +195,14 @@ def _manifest(
     pairs: tuple[ExpectedPairCell, ...] = (),
     *,
     w19_safety: W19SafetyDeclaration | None = None,
+    cell_contract_digest: str | None = None,
 ) -> EvaluationManifest:
     return EvaluationManifest(
         scope_digest=SCOPE,
         expected_cells=cells,
         expected_pairs=pairs,
         w19_safety=w19_safety,
+        cell_contract_digest=cell_contract_digest,
     )
 
 
@@ -219,6 +225,45 @@ def test_headline_keeps_safe_abstention_in_denominator_without_fake_failure() ->
     assert report.headline[0].scored_count == 1
     assert report.headline[0].abstain_count == 1
     assert report.headline[0].mean_loss == pytest.approx(0.25)
+
+
+def test_pre_freeze_cell_contract_binding_forces_top_level_incomplete() -> None:
+    cell = _cell("pre-freeze")
+    report = evaluate_records(
+        (_record(cell),),
+        (),
+        _manifest(
+            (cell,),
+            cell_contract_digest=digest_json({"contract": "pre-freeze-scaffold"}),
+        ),
+    )
+
+    assert report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert not report.benchmark_freeze_eligible
+    assert report.benchmark_evidence_status is EvidenceStatus.INCOMPLETE
+    assert any(
+        issue.code == "UCM-E003-HARNESS_INCOMPLETE"
+        and "PRE_FREEZE_SCAFFOLD" in issue.detail
+        for issue in report.blockers
+    )
+
+
+def test_benchmark_freeze_fields_cannot_be_forged_or_serialized() -> None:
+    cell = _cell("freeze-forgery")
+    report = evaluate_records((_record(cell),), (), _manifest((cell,)))
+
+    with pytest.raises(ProtocolViolation, match="benchmark-freeze-eligible"):
+        replace(report, benchmark_freeze_eligible=True)
+    with pytest.raises(ProtocolViolation, match="incomplete benchmark evidence"):
+        replace(report, benchmark_evidence_status=EvidenceStatus.COMPLETE)
+
+    # Even mutation below the frozen dataclass boundary cannot produce a wire
+    # claim that this revision expressly cannot support.
+    object.__setattr__(report, "benchmark_freeze_eligible", True)
+    object.__setattr__(report, "benchmark_evidence_status", EvidenceStatus.COMPLETE)
+    wire = report.to_wire()
+    assert wire["benchmark_freeze_eligible"] is False
+    assert wire["benchmark_evidence_status"] == "incomplete"
 
 
 def test_missing_raw_cell_is_typed_incomplete_not_a_pass() -> None:
