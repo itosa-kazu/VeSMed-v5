@@ -176,14 +176,36 @@ class SourceSeparationPolicy:
     """Frozen rules for deciding which shared frames are neutral plumbing."""
 
     allowed_shared_module_prefixes: tuple[str, ...] = (
-        "prototype.unified_map.canonical",
         "prototype.unified_map.oracle_certification",
-        "prototype.unified_map.schema",
-        "prototype.unified_map.worlds.base",
         "collections",
         "dataclasses",
         "enum",
         "numpy",
+    )
+    # Project-owned modules are never neutral merely because of their module
+    # name.  Only the exact DTO/canonical frames below may be shared by the two
+    # solvers.  This prevents a substantive algorithm from being hidden inside
+    # ``worlds.base`` or ``schema`` and then waived wholesale.
+    allowed_shared_frames: tuple[tuple[str, str], ...] = (
+        ("prototype.unified_map.canonical", "validate_json_like"),
+        (
+            "prototype.unified_map.canonical",
+            "validate_json_like.<locals>.walk",
+        ),
+        (
+            "prototype.unified_map.worlds.base",
+            "__create_fn__.<locals>.__init__",
+        ),
+        (
+            "prototype.unified_map.worlds.base",
+            "CounterfactualOracle.__post_init__",
+        ),
+        (
+            "prototype.unified_map.schema",
+            "__create_fn__.<locals>.__init__",
+        ),
+        ("prototype.unified_map.schema", "ActionPlan.__post_init__"),
+        ("prototype.unified_map.schema", "ActionPlan.to_wire"),
     )
     allowed_shared_code_digests: tuple[str, ...] = ()
     require_source_text: bool = True
@@ -197,6 +219,17 @@ class SourceSeparationPolicy:
             raise ProtocolViolation(
                 "allowed_shared_module_prefixes must be non-empty strings"
             )
+        if type(self.allowed_shared_frames) is not tuple or any(
+            type(item) is not tuple
+            or len(item) != 2
+            or any(type(value) is not str or not value for value in item)
+            for item in self.allowed_shared_frames
+        ):
+            raise ProtocolViolation(
+                "allowed_shared_frames must contain exact module/qualname pairs"
+            )
+        if len(self.allowed_shared_frames) != len(set(self.allowed_shared_frames)):
+            raise ProtocolViolation("allowed_shared_frames must be unique")
         if type(self.allowed_shared_code_digests) is not tuple or any(
             type(item) is not str
             or not item.startswith("sha256:")
@@ -224,11 +257,18 @@ class SourceSeparationPolicy:
             for prefix in self.allowed_shared_module_prefixes
         )
 
+    def row_is_neutral(self, row: "CodeEvidence") -> bool:
+        return self.module_is_neutral(row.module) or (
+            row.module,
+            row.qualname,
+        ) in self.allowed_shared_frames
+
     def to_wire(self) -> dict[str, Any]:
         return {
             "allowed_shared_module_prefixes": list(
                 self.allowed_shared_module_prefixes
             ),
+            "allowed_shared_frames": [list(item) for item in self.allowed_shared_frames],
             "allowed_shared_code_digests": sorted(
                 self.allowed_shared_code_digests
             ),
@@ -885,9 +925,7 @@ def _source_separation(
         right = reference_rows[digest]
         if digest in allowed:
             continue
-        if policy.module_is_neutral(left.module) and policy.module_is_neutral(
-            right.module
-        ):
+        if policy.row_is_neutral(left) and policy.row_is_neutral(right):
             continue
         shared.append(digest)
     if policy.reject_shared_runtime_code and shared:

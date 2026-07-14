@@ -31,6 +31,7 @@ from prototype.unified_map.worlds.base import (
     PublicCatalog,
     WorldSplit,
 )
+from prototype.unified_map.worlds import base as world_base
 
 
 CATALOG = PublicCatalog(
@@ -41,6 +42,35 @@ CATALOG = PublicCatalog(
     horizons=(2,),
 )
 PLAN = ActionPlan(PlanKind.NO_NEW_ACTION)
+
+
+# A malicious benchmark author could otherwise hide one substantive solver in
+# a broadly whitelisted project-owned plumbing module.  Define such a helper in
+# the real ``worlds.base`` globals so the runtime frame genuinely carries that
+# module identity; the certification policy must still reject it.
+exec(
+    compile(
+        """
+def _oracle_certification_malicious_shared_base(episode, policy, horizon, oracle_seed):
+    del oracle_seed
+    value = float(episode.public_history.events[-1].payload['value'])
+    prediction = value + 0.25 * horizon
+    return CounterfactualOracle(
+        policy=policy,
+        horizon=horizon,
+        observation_distribution={'family': 'point', 'mean': prediction},
+        latent_distribution={'family': 'point', 'mean': prediction},
+        outcome_distribution={'family': 'point', 'expected_utility': -prediction},
+        expected_utility=-prediction,
+        numerical_diagnostics={'method': 'hidden-shared-base-core'},
+    )
+""",
+        "<ucm-malicious-shared-base>",
+        "exec",
+    ),
+    world_base.__dict__,
+)
+_SHARED_BASE_CORE = world_base._oracle_certification_malicious_shared_base
 
 
 def _episode(*, private_bias: float, uid: str = "public-observation") -> PrivateEpisode:
@@ -242,6 +272,25 @@ def shared_reference(
     return _shared_algorithm(episode, policy, horizon, oracle_seed)
 
 
+def shared_base_production(
+    episode: PrivateEpisode,
+    policy: ActionPlan,
+    horizon: int,
+    oracle_seed: int,
+) -> CounterfactualOracle:
+    return _SHARED_BASE_CORE(episode, policy, horizon, oracle_seed)
+
+
+def shared_base_reference(
+    episode: PrivateEpisode,
+    policy: ActionPlan,
+    horizon: int,
+    oracle_seed: int,
+) -> CounterfactualOracle:
+    result = _SHARED_BASE_CORE(episode, policy, horizon, oracle_seed)
+    return result
+
+
 def _certify(
     production=production_oracle,
     reference=reference_oracle,
@@ -358,6 +407,27 @@ def test_shared_substantive_implementation_control_is_killed() -> None:
     assert not report.source_separation.passed
     assert REASON_RUNTIME_IMPLEMENTATION_SHARED in report.reason_codes
     assert report.source_separation.shared_substantive_code_digests
+
+
+def test_substantive_helper_hidden_in_project_base_module_is_not_whitelisted() -> None:
+    report = _certify(
+        production=shared_base_production,
+        reference=shared_base_reference,
+    )
+    assert not report.passed
+    assert REASON_RUNTIME_IMPLEMENTATION_SHARED in report.reason_codes
+    shared_rows = {
+        row.code_digest: (row.module, row.qualname)
+        for row in report.production_implementation.code_rows
+    }
+    assert any(
+        shared_rows[digest]
+        == (
+            "prototype.unified_map.worlds.base",
+            "_oracle_certification_malicious_shared_base",
+        )
+        for digest in report.source_separation.shared_substantive_code_digests
+    )
 
 
 def test_private_reader_control_is_killed_by_same_public_swap() -> None:
