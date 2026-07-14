@@ -31,6 +31,8 @@ from .w06 import (
     _mixed_categorical,
     _no_action,
     _opaque_token,
+    _reference_linear_condition,
+    _reference_normalized_weights,
     _sequence,
     _softmax,
     _validate_episode_request,
@@ -79,6 +81,7 @@ class World07(MicroWorld):
         events = []
         pending = []
         propensities: list[dict[str, Any]] = []
+        performed_sequence: list[tuple[int, str]] = []
         latest_y = x - 0.55 * r + 0.05 * normal01(
             generator_seed, *key, "q0", -4
         )
@@ -117,16 +120,21 @@ class World07(MicroWorld):
             propensities.append(
                 {
                     "tick": tick,
+                    "conditioning": "available_public_prefix",
+                    "public_inputs": {"latest_obs_0": latest_y},
                     "action": {
                         "NoNewAction": action_probabilities[0],
                         "A1": action_probabilities[1],
                         "A2": action_probabilities[2],
                     },
                     "check": {"Q1": p_check, "NoCheck": 1.0 - p_check},
+                    "selected_action": action_id or "NoNewAction",
+                    "selected_check": "Q1" if take_check else "NoCheck",
                 }
             )
             dose = 0.0 if action_id is None else self._DOSE[action_id]
             if action_id is not None:
+                performed_sequence.append((tick, action_id))
                 events.append(
                     _event(
                         kind=EventKind.PERFORMED_TREATMENT,
@@ -208,6 +216,18 @@ class World07(MicroWorld):
                 }
             )
             factual_utility -= 0.97 ** (step - 1) * future_x * future_x
+        strata = ["iid_support"]
+        if split is WorldSplit.SEALED_TEST and (
+            x <= -0.15 or x >= 1.35 or r >= 2.5
+        ):
+            strata.append("boundary_tail")
+        if split is WorldSplit.SEALED_TEST and any(
+            left_id == "A2" and right_id == "A1" and right_tick == left_tick + 1
+            for (left_tick, left_id), (right_tick, right_id) in zip(
+                performed_sequence, performed_sequence[1:]
+            )
+        ):
+            strata.append("policy_coverage_holdout")
         return PrivateEpisode(
             case_key=f"w07-private-{split.value}-{episode_index}",
             environment_key=self.environment_key,
@@ -223,8 +243,46 @@ class World07(MicroWorld):
             oracle_anchor={
                 "posterior_source": "public_history_only",
                 "paths": ["state_mediated", "channel_direct"],
+                "split_strata": strata,
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        if episode.environment_key != self.environment_key:
+            raise ProtocolViolation("episode belongs to a different world")
+        recorded = episode.oracle_anchor.get("split_strata")
+        if not isinstance(recorded, list) or any(type(item) is not str for item in recorded):
+            raise ProtocolViolation("W07 episode lacks exact split strata")
+        strata = ["iid_support"]
+        x = float(episode.hidden_state_at_cut["x"])
+        r = float(episode.hidden_state_at_cut["r"])
+        if episode.split is WorldSplit.SEALED_TEST and (
+            x <= -0.15 or x >= 1.35 or r >= 2.5
+        ):
+            strata.append("boundary_tail")
+        performed = sorted(
+            (
+                event.occurred_at,
+                str(event.payload["action_id"]),
+            )
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") in {"A1", "A2"}
+        )
+        if episode.split is WorldSplit.SEALED_TEST and any(
+            left_id == "A2" and right_id == "A1" and right_tick == left_tick + 1
+            for (left_tick, left_id), (right_tick, right_id) in zip(
+                performed, performed[1:]
+            )
+        ):
+            strata.append("policy_coverage_holdout")
+        strata = tuple(strata)
+        allowed = {"iid_support", "boundary_tail", "policy_coverage_holdout"}
+        if not strata or strata[0] != "iid_support" or set(strata) - allowed:
+            raise ProtocolViolation("W07 split strata contradict the registry")
+        if tuple(recorded) != strata:
+            raise ProtocolViolation("W07 stored split stratum is stale")
+        return strata
 
     def policy_set(self, horizon: int) -> tuple[ActionPlan, ...]:
         if horizon not in self.catalog.horizons:
@@ -239,8 +297,8 @@ class World07(MicroWorld):
         ))
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, Any]]:
-        if episode.environment_key != self.environment_key:
-            raise ProtocolViolation("episode belongs to a different world")
+        if episode.public_history.catalog_digest != self.catalog.digest:
+            raise ProtocolViolation("public history uses a different catalog")
         times = list(range(-4, 1))
         time_index = {tick: position for position, tick in enumerate(times)}
         actions: dict[int, float] = {}
@@ -428,6 +486,125 @@ class World07(MicroWorld):
                 "oracle_seed_used": False,
             },
         )
+
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        *,
+        oracle_seed: int = 0,
+    ) -> float:
+        """Independent public-prefix information-form reference utility."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the W07 frozen policy set")
+        if type(oracle_seed) is not int or oracle_seed < 0:
+            raise ProtocolViolation("oracle_seed must be non-negative")
+        del oracle_seed
+        times = tuple(range(-4, 1))
+        time_index = {tick: offset for offset, tick in enumerate(times)}
+        factual_actions: dict[int, float] = {}
+        for event in episode.public_history.events:
+            if event.kind is EventKind.PERFORMED_TREATMENT:
+                identifier = event.payload.get("action_id")
+                if identifier in self._DOSE:
+                    factual_actions[event.occurred_at] = self._DOSE[str(identifier)]
+        observations = [
+            event
+            for event in episode.public_history.events
+            if event.kind is EventKind.OBSERVATION_AVAILABLE
+            and event.payload.get("channel_id") in {"obs_0", "obs_1"}
+            and event.collected_at in time_index
+        ]
+        observed = np.asarray(
+            [float(event.payload["value"]) for event in observations], dtype=float
+        )
+        components: list[tuple[int, np.ndarray, np.ndarray]] = []
+        log_weights: list[float] = []
+        for class_index, beta in enumerate(self._BETA):
+            prior_mean = np.zeros(6, dtype=float)
+            prior_covariance = np.zeros((6, 6), dtype=float)
+            prior_mean[0] = 0.8
+            prior_covariance[0, 0] = 1.6**2 / 12.0
+            prior_mean[5] = 0.25
+            prior_covariance[5, 5] = 0.5**2 / 12.0
+            for offset, tick in enumerate(range(-4, 0), start=1):
+                dose = factual_actions.get(tick, 0.0)
+                prior_mean[offset] = 0.95 * prior_mean[offset - 1] + 0.12 - beta * dose
+                prior_covariance[offset, :offset] = (
+                    0.95 * prior_covariance[offset - 1, :offset]
+                )
+                prior_covariance[:offset, offset] = prior_covariance[offset, :offset]
+                prior_covariance[offset, offset] = (
+                    0.95**2 * prior_covariance[offset - 1, offset - 1]
+                    + 0.045**2
+                )
+            r_coefficient = {-4: 1.0}
+            r_offset = {-4: 0.0}
+            for tick in range(-4, 0):
+                r_coefficient[tick + 1] = 0.35 * r_coefficient[tick]
+                r_offset[tick + 1] = (
+                    0.35 * r_offset[tick] + factual_actions.get(tick, 0.0)
+                )
+            design = np.zeros((len(observations), 6), dtype=float)
+            adjusted = observed.copy()
+            noise = np.zeros((len(observations), len(observations)), dtype=float)
+            for row, event in enumerate(observations):
+                tick = int(event.collected_at)
+                design[row, time_index[tick]] = 1.0
+                if event.payload["channel_id"] == "obs_0":
+                    design[row, 5] = -0.55 * r_coefficient[tick]
+                    adjusted[row] += 0.55 * r_offset[tick]
+                    noise[row, row] = 0.05**2
+                else:
+                    noise[row, row] = 0.09**2
+            posterior_mean, posterior_covariance, likelihood = (
+                _reference_linear_condition(
+                    prior_mean, prior_covariance, design, adjusted, noise
+                )
+            )
+            selector = np.zeros((2, 6), dtype=float)
+            selector[0, 4] = 1.0
+            selector[1, 5] = r_coefficient[0]
+            cut_mean = selector @ posterior_mean
+            cut_mean[1] += r_offset[0]
+            cut_covariance = selector @ posterior_covariance @ selector.T
+            components.append((class_index, cut_mean, cut_covariance))
+            log_weights.append(math.log(0.5) + likelihood)
+        weights = _reference_normalized_weights(log_weights)
+        future_actions = {
+            item.offset: item.action_id
+            for item in policy.actions
+            if item.action_id in self._DOSE
+        }
+        checks = {
+            item.offset for item in policy.actions if item.action_id == "Q1"
+        }
+        total_utility = 0.0
+        for (class_index, mean, covariance), weight in zip(components, weights):
+            component_utility = 0.0
+            for step in range(1, horizon + 1):
+                offset = step - 1
+                dose = self._DOSE.get(future_actions.get(offset), 0.0)
+                mean = np.asarray(
+                    [
+                        0.95 * float(mean[0]) + 0.12 - self._BETA[class_index] * dose,
+                        0.35 * float(mean[1]) + dose,
+                    ],
+                    dtype=float,
+                )
+                transition = np.diag([0.95, 0.35])
+                covariance = transition @ covariance @ transition.T
+                covariance[0, 0] += 0.045**2
+                component_utility -= 0.97**offset * (
+                    float(covariance[0, 0])
+                    + float(mean[0]) ** 2
+                    + 0.04 * dose * dose
+                    + 0.10 * float(offset in checks)
+                )
+            total_utility += weight * component_utility
+        return float(total_utility)
 
     def probe_fixtures(
         self, generator_seed: int = 707

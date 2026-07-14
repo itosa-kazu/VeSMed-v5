@@ -21,7 +21,7 @@ from .base import (
     PublicCatalog,
     WorldSplit,
 )
-from .randomness import categorical, normal01, uniform01
+from .randomness import bernoulli, categorical, normal01, uniform01
 from .w06 import (
     _alpha_rename,
     _condition_gaussian,
@@ -31,6 +31,8 @@ from .w06 import (
     _mixed_categorical,
     _no_action,
     _opaque_token,
+    _reference_linear_condition,
+    _reference_normalized_weights,
     _sequence,
     _softmax,
     _validate_episode_request,
@@ -209,6 +211,7 @@ class World10(MicroWorld):
         key = ("episode", episode_index, split.value)
         c = categorical((0.5, 0.5), generator_seed, *key, "class")
         x = 1.2 * uniform01(generator_seed, *key, "initial-x")
+        initial_x = x
         events = []
         pending = []
         propensities: list[dict[str, Any]] = []
@@ -240,6 +243,8 @@ class World10(MicroWorld):
             propensities.append(
                 {
                     "tick": tick,
+                    "conditioning": "available_public_prefix",
+                    "public_inputs": {"latest_available_sensor_mean": latest_mean},
                     "action": {
                         "NoNewAction": action_probabilities[0],
                         "A1": action_probabilities[1],
@@ -250,6 +255,8 @@ class World10(MicroWorld):
                         "Q1": check_probabilities[1],
                         "Q2": check_probabilities[2],
                     },
+                    "selected_action": action_id or "NoNewAction",
+                    "selected_check": check_id,
                 }
             )
             dose = 0.0 if action_id is None else self._DOSE[action_id]
@@ -298,15 +305,30 @@ class World10(MicroWorld):
             elif check_id == "Q1":
                 specimen = _opaque_token(generator_seed, *key, "specimen", tick, 0)
                 shock = 0.25 * normal01(generator_seed, *key, "shock", tick, 0)
+                if split is WorldSplit.TRAIN:
+                    q1_slots = (0, 1, 2)
+                elif split is WorldSplit.SEALED_TEST and bernoulli(
+                    0.15, generator_seed, *key, "q1-heldout-subset", tick
+                ):
+                    q1_slots = (1, 2)
+                else:
+                    subset_index = categorical(
+                        (0.30, 0.30, 0.40),
+                        generator_seed,
+                        *key,
+                        "q1-supported-subset",
+                        tick,
+                    )
+                    q1_slots = ((0, 1), (0, 2), (0, 1, 2))[subset_index]
                 values = [
                     (
                         slot,
                         float(self._LOADINGS[slot] * x + shock)
                         + 0.06 * normal01(generator_seed, *key, "sensor", tick, slot),
                     )
-                    for slot in range(3)
+                    for slot in q1_slots
                 ]
-                specimens = [specimen] * 3
+                specimens = [specimen] * len(q1_slots)
             else:
                 values = []
                 specimens = []
@@ -353,6 +375,24 @@ class World10(MicroWorld):
             future.append({"offset": step, "mechanism": future_x, "crossed": crossed})
             factual_utility -= 0.97 ** (step - 1) * future_x * future_x
         factual_utility -= 1.5 * float(crossed)
+        visible_q1_subsets: dict[tuple[int, int], set[int]] = {}
+        for event in history.events:
+            if (
+                event.kind is EventKind.OBSERVATION_AVAILABLE
+                and event.payload.get("check_id") == "Q1"
+            ):
+                group = (int(event.collected_at), int(event.available_at))
+                visible_q1_subsets.setdefault(group, set()).add(
+                    int(event.payload["assay_slot"])
+                )
+        subset_rows = [sorted(value) for value in visible_q1_subsets.values()]
+        strata = ["iid_support"]
+        if split is WorldSplit.SEALED_TEST and (
+            initial_x <= 0.12 or initial_x >= 1.08 or crossed
+        ):
+            strata.append("boundary_tail")
+        if split is WorldSplit.SEALED_TEST and [1, 2] in subset_rows:
+            strata.append("compositional_holdout")
         return PrivateEpisode(
             case_key=f"w10-private-{split.value}-{episode_index}",
             environment_key=self.environment_key,
@@ -360,7 +400,11 @@ class World10(MicroWorld):
             generator_seed=generator_seed,
             public_history=history,
             hidden_state_at_cut={"mechanism": x},
-            invariant_parameters={"c": c, "rho": self._RHO[c]},
+            invariant_parameters={
+                "c": c,
+                "rho": self._RHO[c],
+                "initial_mechanism": initial_x,
+            },
             diagnostic_target={"C0": float(c == 0), "C1": float(c == 1)},
             factual_future=future,
             action_propensities=propensities,
@@ -368,8 +412,43 @@ class World10(MicroWorld):
             oracle_anchor={
                 "posterior_source": "public_history_only",
                 "specimen_covariance": "shared_rank_one_plus_sensor_diagonal",
+                "visible_q1_sensor_subsets": subset_rows,
+                "split_strata": strata,
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        if episode.environment_key != self.environment_key:
+            raise ProtocolViolation("episode belongs to a different world")
+        recorded = episode.oracle_anchor.get("split_strata")
+        if not isinstance(recorded, list) or any(type(item) is not str for item in recorded):
+            raise ProtocolViolation("W10 episode lacks exact split strata")
+        initial = float(episode.invariant_parameters["initial_mechanism"])
+        crossed = any(bool(row.get("crossed", False)) for row in episode.factual_future)
+        subsets: dict[tuple[int, int], set[int]] = {}
+        for event in episode.public_history.events:
+            if (
+                event.kind is EventKind.OBSERVATION_AVAILABLE
+                and event.payload.get("check_id") == "Q1"
+            ):
+                group = (int(event.collected_at), int(event.available_at))
+                subsets.setdefault(group, set()).add(int(event.payload["assay_slot"]))
+        strata = ["iid_support"]
+        if episode.split is WorldSplit.SEALED_TEST and (
+            initial <= 0.12 or initial >= 1.08 or crossed
+        ):
+            strata.append("boundary_tail")
+        if episode.split is WorldSplit.SEALED_TEST and any(
+            tuple(sorted(value)) == (1, 2) for value in subsets.values()
+        ):
+            strata.append("compositional_holdout")
+        strata = tuple(strata)
+        allowed = {"iid_support", "boundary_tail", "compositional_holdout"}
+        if not strata or strata[0] != "iid_support" or set(strata) - allowed:
+            raise ProtocolViolation("W10 split strata contradict the registry")
+        if tuple(recorded) != strata:
+            raise ProtocolViolation("W10 stored split stratum is stale")
+        return strata
 
     def policy_set(self, horizon: int) -> tuple[ActionPlan, ...]:
         if horizon not in self.catalog.horizons:
@@ -385,8 +464,8 @@ class World10(MicroWorld):
         ))
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, float]]:
-        if episode.environment_key != self.environment_key:
-            raise ProtocolViolation("episode belongs to a different world")
+        if episode.public_history.catalog_digest != self.catalog.digest:
+            raise ProtocolViolation("public history uses a different catalog")
         times = list(range(-4, 1))
         position = {tick: index for index, tick in enumerate(times)}
         actions: dict[int, float] = {}
@@ -586,6 +665,155 @@ class World10(MicroWorld):
         )
         self._oracle_cache[cache_key] = answer
         return answer
+
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        *,
+        oracle_seed: int = 0,
+    ) -> float:
+        """Independent grouped-likelihood + Philox tail reference utility."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the W10 frozen policy set")
+        if type(oracle_seed) is not int or oracle_seed < 0 or oracle_seed >= 2**128:
+            raise ProtocolViolation("oracle_seed must be an unsigned 128-bit integer")
+        times = tuple(range(-4, 1))
+        time_index = {tick: offset for offset, tick in enumerate(times)}
+        factual_actions: dict[int, float] = {}
+        for event in episode.public_history.events:
+            if event.kind is EventKind.PERFORMED_TREATMENT:
+                identifier = event.payload.get("action_id")
+                if identifier in self._DOSE:
+                    factual_actions[event.occurred_at] = self._DOSE[str(identifier)]
+        observations = [
+            event
+            for event in episode.public_history.events
+            if event.kind is EventKind.OBSERVATION_AVAILABLE
+            and event.payload.get("channel_id") in {"obs_0", "obs_1", "obs_2"}
+            and event.collected_at in time_index
+        ]
+        observed = np.asarray(
+            [float(event.payload["value"]) for event in observations], dtype=float
+        )
+        components: list[tuple[int, float, float]] = []
+        log_weights: list[float] = []
+        for class_index, rho in enumerate(self._RHO):
+            prior_mean = np.zeros(5, dtype=float)
+            prior_covariance = np.zeros((5, 5), dtype=float)
+            prior_mean[0] = 0.6
+            prior_covariance[0, 0] = 1.2**2 / 12.0
+            for offset, tick in enumerate(range(-4, 0), start=1):
+                prior_mean[offset] = (
+                    rho * prior_mean[offset - 1]
+                    + 0.10
+                    - factual_actions.get(tick, 0.0)
+                )
+                prior_covariance[offset, :offset] = (
+                    rho * prior_covariance[offset - 1, :offset]
+                )
+                prior_covariance[:offset, offset] = prior_covariance[offset, :offset]
+                prior_covariance[offset, offset] = (
+                    rho * rho * prior_covariance[offset - 1, offset - 1]
+                    + 0.055**2
+                )
+            design = np.zeros((len(observations), 5), dtype=float)
+            noise = np.zeros((len(observations), len(observations)), dtype=float)
+            groups: list[str] = []
+            for row, event in enumerate(observations):
+                slot = int(
+                    event.payload.get(
+                        "assay_slot", int(str(event.payload["channel_id"])[-1])
+                    )
+                )
+                design[row, time_index[int(event.collected_at)]] = self._LOADINGS[slot]
+                groups.append(str(event.payload.get("specimen_uid", event.event_uid)))
+                noise[row, row] = 0.25**2 + 0.06**2
+            for left in range(len(observations)):
+                for right in range(left + 1, len(observations)):
+                    if groups[left] == groups[right]:
+                        noise[left, right] = noise[right, left] = 0.25**2
+            posterior_mean, posterior_covariance, likelihood = (
+                _reference_linear_condition(
+                    prior_mean, prior_covariance, design, observed, noise
+                )
+            )
+            components.append(
+                (
+                    class_index,
+                    float(posterior_mean[-1]),
+                    float(max(0.0, posterior_covariance[-1, -1])),
+                )
+            )
+            log_weights.append(math.log(0.5) + likelihood)
+        weights = _reference_normalized_weights(log_weights)
+        future_actions = {
+            item.offset: item.action_id
+            for item in policy.actions
+            if item.action_id in self._DOSE
+        }
+        checks = [
+            item.action_id
+            for item in policy.actions
+            if item.action_id in {"Q0", "Q1", "Q2"}
+        ]
+        analytic_utility = 0.0
+        for (class_index, mean, variance), weight in zip(components, weights):
+            component_utility = 0.0
+            rho = self._RHO[class_index]
+            for step in range(1, horizon + 1):
+                offset = step - 1
+                action_id = future_actions.get(offset)
+                dose = self._DOSE.get(action_id, 0.0)
+                mean = rho * mean + 0.10 - dose
+                variance = rho * rho * variance + 0.055**2
+                action_cost = (
+                    0.05 if action_id == "A1" else 0.12 if action_id == "A2" else 0.0
+                )
+                component_utility -= 0.97**offset * (
+                    variance + mean * mean + action_cost
+                )
+            analytic_utility += weight * component_utility
+        analytic_utility -= math.fsum(
+            0.02 if check == "Q0" else 0.05 if check == "Q1" else 0.10
+            for check in checks
+        )
+
+        # A separate Philox/antithetic implementation validates the nested
+        # Owen-Sobol production estimator without sharing its direction table,
+        # scramble, inverse-normal or tail helper.
+        seed_material = canonical_json_bytes(
+            [
+                oracle_seed,
+                episode.public_history.digest,
+                policy.to_wire(),
+                horizon,
+                "w10-independent-philox-reference",
+            ]
+        )
+        philox_seed = int.from_bytes(hashlib.sha256(seed_material).digest()[:16], "big")
+        rng = np.random.Generator(np.random.Philox(philox_seed))
+        half_count = 1 << 17
+        base_normals = rng.standard_normal((half_count, horizon + 1))
+        normals = np.concatenate((base_normals, -base_normals), axis=0)
+        tail_probability = 0.0
+        for (class_index, mean, variance), weight in zip(components, weights):
+            paths = mean + math.sqrt(variance) * normals[:, 0]
+            maximum = np.full(paths.shape, -np.inf, dtype=float)
+            rho = self._RHO[class_index]
+            for step in range(1, horizon + 1):
+                action_id = future_actions.get(step - 1)
+                paths = (
+                    rho * paths
+                    + 0.10
+                    - self._DOSE.get(action_id, 0.0)
+                    + 0.055 * normals[:, step]
+                )
+                maximum = np.maximum(maximum, paths)
+            tail_probability += weight * float(np.mean(maximum > 0.9))
+        return float(analytic_utility - 1.5 * tail_probability)
 
     def _panel_episode(
         self,

@@ -30,6 +30,8 @@ from .w06 import (
     _mixed_categorical,
     _no_action,
     _opaque_token,
+    _reference_linear_condition,
+    _reference_normalized_weights,
     _sequence,
     _softmax,
     _validate_episode_request,
@@ -105,6 +107,7 @@ class World08(MicroWorld):
         latest_y = 0.0
         course_starts: dict[int, int] = {}
         delivered_results: set[str] = set()
+        drawn_delays: list[dict[str, Any]] = []
 
         for tick in range(-16, 0):
             newly_available = sorted(
@@ -114,7 +117,12 @@ class World08(MicroWorld):
                     if event.available_at <= tick
                     and event.event_uid not in delivered_results
                 ],
-                key=lambda event: (event.available_at, event.event_uid),
+                key=lambda event: (
+                    event.available_at,
+                    event.occurred_at,
+                    event.kind.value,
+                    event.event_uid,
+                ),
             )
             for event in newly_available:
                 latest_y = float(event.payload["value"])
@@ -131,11 +139,16 @@ class World08(MicroWorld):
                 propensities.append(
                     {
                         "tick": tick,
+                        "conditioning": "available_public_prefix",
+                        "public_inputs": {"latest_available_value": latest_y},
                         "action": {
                             "NoNewAction": probabilities[0],
                             "A1": probabilities[1],
                             "A2": probabilities[2],
                         },
+                        "selected_action": (
+                            "A1" if direction > 0 else "A2" if direction < 0 else "NoNewAction"
+                        ),
                     }
                 )
                 if direction:
@@ -162,7 +175,10 @@ class World08(MicroWorld):
             propensities.append(
                 {
                     "tick": tick,
+                    "conditioning": "available_public_prefix",
+                    "public_inputs": {"latest_available_value": latest_y},
                     "check": {"AnyCheck": p_order, "NoCheck": 1.0 - p_order},
+                    "selected_check": "AnyCheck" if order else "NoCheck",
                 }
             )
             if order:
@@ -174,6 +190,9 @@ class World08(MicroWorld):
                 check_id = "Q0" if channel == "obs_0" else "Q1"
                 delay = self._delay(
                     split, channel, generator_seed, *key, "delay", channel, tick
+                )
+                drawn_delays.append(
+                    {"channel_id": channel, "delay": delay, "collected_at": tick}
                 )
                 value = float(x[0 if channel == "obs_0" else 1]) + 0.10 * normal01(
                     generator_seed, *key, "observation", channel, tick
@@ -259,6 +278,17 @@ class World08(MicroWorld):
                 float(future_x[0] ** 2 + 0.6 * future_x[1] ** 2)
                 + 0.04 * active * active
             )
+        strata = ["iid_support"]
+        available_times = [event.available_at for event in pending]
+        if split is WorldSplit.SEALED_TEST and any(
+            value in {0, 1} for value in available_times
+        ):
+            strata.append("boundary_tail")
+        if split is WorldSplit.SEALED_TEST and any(
+            row["channel_id"] == "obs_0" and row["delay"] == 8
+            for row in drawn_delays
+        ):
+            strata.append("schedule_time_holdout")
         return PrivateEpisode(
             case_key=f"w08-private-{split.value}-{episode_index}",
             environment_key=self.environment_key,
@@ -294,8 +324,38 @@ class World08(MicroWorld):
             oracle_anchor={
                 "posterior_source": "available_public_history_only",
                 "late_result_rule": "condition_on_collected_at",
+                "drawn_delays": drawn_delays,
+                "split_strata": strata,
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        if episode.environment_key != self.environment_key:
+            raise ProtocolViolation("episode belongs to a different world")
+        recorded = episode.oracle_anchor.get("split_strata")
+        delays = episode.oracle_anchor.get("drawn_delays")
+        if not isinstance(recorded, list) or any(type(item) is not str for item in recorded):
+            raise ProtocolViolation("W08 episode lacks exact split strata")
+        if not isinstance(delays, list) or any(type(item) is not dict for item in delays):
+            raise ProtocolViolation("W08 episode lacks exact delay ledger")
+        strata = ["iid_support"]
+        if episode.split is WorldSplit.SEALED_TEST and any(
+            int(row["collected_at"]) + int(row["delay"]) in {0, 1}
+            for row in delays
+        ):
+            strata.append("boundary_tail")
+        if episode.split is WorldSplit.SEALED_TEST and any(
+            row["channel_id"] == "obs_0" and int(row["delay"]) == 8
+            for row in delays
+        ):
+            strata.append("schedule_time_holdout")
+        strata = tuple(strata)
+        allowed = {"iid_support", "boundary_tail", "schedule_time_holdout"}
+        if not strata or strata[0] != "iid_support" or set(strata) - allowed:
+            raise ProtocolViolation("W08 split strata contradict the registry")
+        if tuple(recorded) != strata:
+            raise ProtocolViolation("W08 stored split stratum is stale")
+        return strata
 
     def policy_set(self, horizon: int) -> tuple[ActionPlan, ...]:
         if horizon not in self.catalog.horizons:
@@ -336,8 +396,8 @@ class World08(MicroWorld):
         return (direction if remaining else 0), remaining
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, Any]]:
-        if episode.environment_key != self.environment_key:
-            raise ProtocolViolation("episode belongs to a different world")
+        if episode.public_history.catalog_digest != self.catalog.digest:
+            raise ProtocolViolation("public history uses a different catalog")
         times = list(range(-16, 1))
         position = {tick: index for index, tick in enumerate(times)}
         actions: dict[int, int] = {}
@@ -497,6 +557,142 @@ class World08(MicroWorld):
             },
         )
 
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        *,
+        oracle_seed: int = 0,
+    ) -> float:
+        """Independent full-trajectory batch reference conditioned at collection time."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the W08 frozen policy set")
+        if type(oracle_seed) is not int or oracle_seed < 0:
+            raise ProtocolViolation("oracle_seed must be non-negative")
+        del oracle_seed
+        times = tuple(range(-16, 1))
+        time_index = {tick: offset for offset, tick in enumerate(times)}
+        factual_exposure: dict[int, int] = {}
+        latest_course_tick: int | None = None
+        latest_course_direction = 0
+        for event in episode.public_history.events:
+            if (
+                event.kind is EventKind.PERFORMED_TREATMENT
+                and event.payload.get("action_id") in {"A1", "A2"}
+            ):
+                direction = 1 if event.payload["action_id"] == "A1" else -1
+                if latest_course_tick is None or event.occurred_at > latest_course_tick:
+                    latest_course_tick = event.occurred_at
+                    latest_course_direction = direction
+                for tick in range(event.occurred_at, event.occurred_at + 4):
+                    if -16 <= tick < 0:
+                        factual_exposure[tick] = direction
+        observations = [
+            event
+            for event in episode.public_history.events
+            if event.kind is EventKind.OBSERVATION_AVAILABLE
+            and event.payload.get("channel_id") in {"obs_0", "obs_1"}
+            and event.collected_at in time_index
+        ]
+        observed = np.asarray(
+            [float(event.payload["value"]) for event in observations], dtype=float
+        )
+        dimension = 2 * len(times)
+        components: list[tuple[int, np.ndarray, np.ndarray]] = []
+        log_weights: list[float] = []
+        for class_index in range(2):
+            prior_mean = np.zeros(dimension, dtype=float)
+            prior_covariance = np.zeros((dimension, dimension), dtype=float)
+            prior_covariance[:2, :2] = np.eye(2) * 0.8**2
+            transition = np.eye(2) + self._DELTA * self._F[class_index]
+            process = np.eye(2) * (self._DELTA * 0.05**2)
+            for offset, tick in enumerate(range(-16, 0), start=1):
+                previous = slice(2 * (offset - 1), 2 * offset)
+                current = slice(2 * offset, 2 * (offset + 1))
+                prior_mean[current] = (
+                    transition @ prior_mean[previous]
+                    + self._DELTA * self._B * factual_exposure.get(tick, 0)
+                )
+                prior_covariance[current, : 2 * offset] = (
+                    transition @ prior_covariance[previous, : 2 * offset]
+                )
+                prior_covariance[: 2 * offset, current] = (
+                    prior_covariance[current, : 2 * offset].T
+                )
+                prior_covariance[current, current] = (
+                    transition @ prior_covariance[previous, previous] @ transition.T
+                    + process
+                )
+            design = np.zeros((len(observations), dimension), dtype=float)
+            noise = np.eye(len(observations), dtype=float) * 0.10**2
+            for row, event in enumerate(observations):
+                coordinate = 0 if event.payload["channel_id"] == "obs_0" else 1
+                design[row, 2 * time_index[int(event.collected_at)] + coordinate] = 1.0
+            posterior_mean, posterior_covariance, likelihood = (
+                _reference_linear_condition(
+                    prior_mean, prior_covariance, design, observed, noise
+                )
+            )
+            components.append(
+                (
+                    class_index,
+                    posterior_mean[-2:].copy(),
+                    posterior_covariance[-2:, -2:].copy(),
+                )
+            )
+            log_weights.append(math.log(0.5) + likelihood)
+        weights = _reference_normalized_weights(log_weights)
+        current_remaining = (
+            0
+            if latest_course_tick is None
+            else max(0, 4 - (0 - latest_course_tick))
+        )
+        current_exposure = latest_course_direction if current_remaining else 0
+        planned_starts = {
+            action.offset: (1 if action.action_id == "A1" else -1)
+            for action in policy.actions
+            if action.action_id in {"A1", "A2"}
+        }
+        check_count = sum(
+            action.action_id in {"Q0", "Q1"} for action in policy.actions
+        )
+        total_utility = 0.0
+        for (class_index, mean, covariance), weight in zip(components, weights):
+            exposure = current_exposure
+            remaining = current_remaining
+            if policy.kind is PlanKind.STOP_CONTROLLABLE:
+                exposure = remaining = 0
+            component_utility = -0.03 * check_count
+            transition = np.eye(2) + self._DELTA * self._F[class_index]
+            process = np.eye(2) * (self._DELTA * 0.05**2)
+            for step in range(1, horizon + 1):
+                offset = step - 1
+                if offset in planned_starts:
+                    exposure, remaining = planned_starts[offset], 4
+                elif (
+                    policy.kind is PlanKind.CONTINUE_CURRENT
+                    and offset % 4 == 0
+                    and current_exposure != 0
+                ):
+                    exposure, remaining = current_exposure, 4
+                active = exposure if remaining > 0 else 0
+                mean = transition @ mean + self._DELTA * self._B * active
+                covariance = transition @ covariance @ transition.T + process
+                component_utility -= self._DELTA * 0.995**offset * (
+                    float(covariance[0, 0])
+                    + float(mean[0]) ** 2
+                    + 0.6 * (float(covariance[1, 1]) + float(mean[1]) ** 2)
+                    + 0.04 * active * active
+                )
+                if remaining > 0:
+                    remaining -= 1
+                    if remaining == 0:
+                        exposure = 0
+            total_utility += weight * component_utility
+        return float(total_utility)
+
     def probe_fixtures(
         self, generator_seed: int = 808
     ) -> dict[str, tuple[PrivateEpisode, PrivateEpisode]]:
@@ -554,9 +750,28 @@ class World08(MicroWorld):
             case_key="w08-private-boundary-hidden",
             public_history=_visible_history([hidden_boundary], self.catalog),
         )
+        delivery = _event(
+            kind=EventKind.OBSERVATION_AVAILABLE,
+            occurred_at=-4,
+            collected_at=-4,
+            available_at=-4,
+            uid=hashlib.sha256(b"w08-availability-equivalent").hexdigest()[:32],
+            payload={"channel_id": "obs_0", "check_id": "Q0", "value": 0.42},
+        )
+        delivery_early = replace(
+            base,
+            case_key="w08-private-availability-early",
+            public_history=_visible_history([delivery], self.catalog),
+        )
+        delivery_late = replace(
+            base,
+            case_key="w08-private-availability-late",
+            public_history=_visible_history([replace(delivery, available_at=0)], self.catalog),
+        )
         return {
             "collection_time_collision": (collection("fresh", 0), collection("stale", -8)),
             "availability_boundary": (boundary_left, boundary_right),
+            "availability_equivalent": (delivery_early, delivery_late),
             "identical_prefix_future_swap": (base, future_swap),
             "false_split_alpha_rename": (base, renamed),
         }

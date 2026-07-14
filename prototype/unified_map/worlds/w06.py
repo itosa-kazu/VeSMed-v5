@@ -207,6 +207,60 @@ def _condition_gaussian(
     )
 
 
+def _reference_linear_condition(
+    prior_mean: np.ndarray,
+    prior_covariance: np.ndarray,
+    design: np.ndarray,
+    observed: np.ndarray,
+    observation_covariance: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, float]:
+    """Source-distinct batch reference for a linear Gaussian observation.
+
+    The production path above uses a solve-based Kalman gain.  Freeze-time
+    references use an independently written information calculation with an
+    explicit inverse and a Cholesky log determinant.  Keeping this code out of
+    the production call graph lets the oracle certification harness detect a
+    shared implementation instead of accepting two labels on one solver.
+    """
+
+    if observed.size == 0:
+        return prior_mean.copy(), prior_covariance.copy(), 0.0
+    marginal_covariance = (
+        design @ prior_covariance @ design.T + observation_covariance
+    )
+    marginal_covariance = (
+        marginal_covariance + marginal_covariance.T
+    ) * 0.5
+    inverse = np.linalg.inv(marginal_covariance)
+    residual = observed - design @ prior_mean
+    posterior_mean = (
+        prior_mean + prior_covariance @ design.T @ inverse @ residual
+    )
+    posterior_covariance = prior_covariance - (
+        prior_covariance @ design.T @ inverse @ design @ prior_covariance
+    )
+    posterior_covariance = (
+        posterior_covariance + posterior_covariance.T
+    ) * 0.5
+    cholesky = np.linalg.cholesky(marginal_covariance)
+    log_determinant = 2.0 * math.fsum(
+        math.log(float(value)) for value in np.diag(cholesky)
+    )
+    log_likelihood = -0.5 * (
+        observed.size * math.log(2.0 * math.pi)
+        + log_determinant
+        + float(residual @ inverse @ residual)
+    )
+    return posterior_mean, posterior_covariance, float(log_likelihood)
+
+
+def _reference_normalized_weights(log_weights: list[float]) -> list[float]:
+    peak = max(log_weights)
+    raw = [math.exp(value - peak) for value in log_weights]
+    total = math.fsum(raw)
+    return [value / total for value in raw]
+
+
 def _mixture_moments(
     weights: list[float], means: list[float], variances: list[float]
 ) -> tuple[float, float]:
@@ -312,8 +366,12 @@ class World06(MicroWorld):
             propensities.append(
                 {
                     "tick": tick,
+                    "conditioning": "available_public_prefix",
+                    "public_inputs": {"latest_obs_0": latest_y},
                     "action": {"A1": p_action, "NoNewAction": 1.0 - p_action},
                     "check": {"Q1": p_check, "NoCheck": 1.0 - p_check},
+                    "selected_action": "A1" if take_action else "NoNewAction",
+                    "selected_check": "Q1" if take_check else "NoCheck",
                 }
             )
             if take_action:
@@ -392,6 +450,14 @@ class World06(MicroWorld):
         factual_future, factual_utility = self._realized_natural_future(
             x, r, c, generator_seed, key
         )
+        strata = ["iid_support"]
+        if split is WorldSplit.SEALED_TEST and (x <= 0.15 or x >= 1.25):
+            strata.append("boundary_tail")
+        if split is WorldSplit.SEALED_TEST and all(
+            tick in actions_by_tick and actions_by_tick[tick]
+            for tick in range(-4, 0)
+        ):
+            strata.append("policy_coverage_holdout")
         return PrivateEpisode(
             case_key=f"w06-private-{split.value}-{episode_index}",
             environment_key=self.environment_key,
@@ -411,8 +477,37 @@ class World06(MicroWorld):
             oracle_anchor={
                 "posterior_source": "public_history_only",
                 "latent_action_effect": 0.0,
+                "split_strata": strata,
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        if episode.environment_key != self.environment_key:
+            raise ProtocolViolation("episode belongs to a different world")
+        recorded = episode.oracle_anchor.get("split_strata")
+        if not isinstance(recorded, list) or any(type(item) is not str for item in recorded):
+            raise ProtocolViolation("W06 episode lacks exact split strata")
+        strata = ["iid_support"]
+        x = float(episode.hidden_state_at_cut["x"])
+        if episode.split is WorldSplit.SEALED_TEST and (x <= 0.15 or x >= 1.25):
+            strata.append("boundary_tail")
+        performed = {
+            event.occurred_at
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") == "A1"
+        }
+        if episode.split is WorldSplit.SEALED_TEST and all(
+            tick in performed for tick in range(-4, 0)
+        ):
+            strata.append("policy_coverage_holdout")
+        strata = tuple(strata)
+        allowed = {"iid_support", "boundary_tail", "policy_coverage_holdout"}
+        if not strata or strata[0] != "iid_support" or set(strata) - allowed:
+            raise ProtocolViolation("W06 split strata contradict the registry")
+        if tuple(recorded) != strata:
+            raise ProtocolViolation("W06 stored split stratum is stale")
+        return strata
 
     def _realized_natural_future(
         self,
@@ -448,8 +543,8 @@ class World06(MicroWorld):
         ))
 
     def _posterior(self, episode: PrivateEpisode) -> list[dict[str, float]]:
-        if episode.environment_key != self.environment_key:
-            raise ProtocolViolation("episode belongs to a different world")
+        if episode.public_history.catalog_digest != self.catalog.digest:
+            raise ProtocolViolation("public history uses a different catalog")
         times = list(range(-4, 1))
         index = {tick: position for position, tick in enumerate(times)}
         performed = {
@@ -462,7 +557,7 @@ class World06(MicroWorld):
         for tick in range(-4, 0):
             r_by_time[tick + 1] = 0.25 * r_by_time[tick] + float(tick in performed)
 
-        low, high = self._prior(episode.split)
+        low, high = 0.0, 1.4
         observations = [
             event
             for event in episode.public_history.events
@@ -621,6 +716,115 @@ class World06(MicroWorld):
                 "oracle_seed_used": False,
             },
         )
+
+    def reference_counterfactual(
+        self,
+        episode: PrivateEpisode,
+        policy: ActionPlan,
+        horizon: int,
+        *,
+        oracle_seed: int = 0,
+    ) -> float:
+        """Independent public-history Gaussian reference for expected utility."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the W06 frozen policy set")
+        if type(oracle_seed) is not int or oracle_seed < 0:
+            raise ProtocolViolation("oracle_seed must be non-negative")
+        del oracle_seed
+        times = tuple(range(-4, 1))
+        time_index = {tick: offset for offset, tick in enumerate(times)}
+        performed = {
+            event.occurred_at
+            for event in episode.public_history.events
+            if event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") == "A1"
+        }
+        exposure = {-4: 0.0}
+        for tick in range(-4, 0):
+            exposure[tick + 1] = 0.25 * exposure[tick] + float(tick in performed)
+        observations = [
+            event
+            for event in episode.public_history.events
+            if event.kind is EventKind.OBSERVATION_AVAILABLE
+            and event.payload.get("channel_id") in {"obs_0", "obs_1"}
+            and event.collected_at in time_index
+        ]
+        values = np.asarray(
+            [float(event.payload["value"]) for event in observations], dtype=float
+        )
+        components: list[tuple[int, float, float, float, float]] = []
+        log_weights: list[float] = []
+        for class_index, (rho, bias) in enumerate(zip(self._RHO, self._BIAS)):
+            prior_mean = np.zeros(5, dtype=float)
+            prior_covariance = np.zeros((5, 5), dtype=float)
+            prior_mean[0] = 0.7
+            prior_covariance[0, 0] = 1.4**2 / 12.0
+            for offset in range(1, 5):
+                prior_mean[offset] = rho * prior_mean[offset - 1] + bias
+                prior_covariance[offset, :offset] = (
+                    rho * prior_covariance[offset - 1, :offset]
+                )
+                prior_covariance[:offset, offset] = prior_covariance[offset, :offset]
+                prior_covariance[offset, offset] = (
+                    rho * rho * prior_covariance[offset - 1, offset - 1]
+                    + 0.04**2
+                )
+            design = np.zeros((len(observations), 5), dtype=float)
+            adjusted = values.copy()
+            noise = np.zeros((len(observations), len(observations)), dtype=float)
+            for row, event in enumerate(observations):
+                tick = int(event.collected_at)
+                design[row, time_index[tick]] = 1.0
+                if event.payload["channel_id"] == "obs_0":
+                    adjusted[row] += 0.75 * exposure[tick]
+                    noise[row, row] = 0.05**2
+                else:
+                    noise[row, row] = 0.08**2
+            posterior_mean, posterior_covariance, likelihood = (
+                _reference_linear_condition(
+                    prior_mean, prior_covariance, design, adjusted, noise
+                )
+            )
+            log_weights.append(math.log(0.5) + likelihood)
+            components.append(
+                (
+                    class_index,
+                    float(posterior_mean[-1]),
+                    float(max(0.0, posterior_covariance[-1, -1])),
+                    exposure[0],
+                    0.0,
+                )
+            )
+        weights = _reference_normalized_weights(log_weights)
+        action_offsets = {
+            item.offset for item in policy.actions if item.action_id == "A1"
+        }
+        check_offsets = {
+            item.offset for item in policy.actions if item.action_id == "Q1"
+        }
+        total_utility = 0.0
+        for (class_index, mean_x, variance_x, current_r, _), weight in zip(
+            components, weights
+        ):
+            component_utility = 0.0
+            for step in range(1, horizon + 1):
+                offset = step - 1
+                treated = offset in action_offsets
+                rho = self._RHO[class_index]
+                mean_x = rho * mean_x + self._BIAS[class_index]
+                variance_x = rho * rho * variance_x + 0.04**2
+                current_r = 0.25 * current_r + float(treated)
+                routine_mean = mean_x - 0.75 * current_r
+                component_utility -= 0.97**offset * (
+                    variance_x
+                    + mean_x * mean_x
+                    + 0.60 * _positive_square_moment(routine_mean, variance_x)
+                    + 0.30 * float(treated)
+                    + 0.10 * float(offset in check_offsets)
+                )
+            total_utility += weight * component_utility
+        return float(total_utility)
 
     def probe_fixtures(
         self, generator_seed: int = 606
