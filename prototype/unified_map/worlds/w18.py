@@ -45,43 +45,47 @@ _PRECISE_HALF_WIDTH = 0.01
 _KNOWN_TOLERANCE = 2.0 * _NOISE_HALF_WIDTH + 1e-12
 _OBS_SD = _NOISE_HALF_WIDTH / math.sqrt(3.0)
 
-# The sealed scoring population is a finite stratified population.  A randomly
-# selected candidate-visible row has these class priors; the row index and its
-# private stratum are never conditioned on by the scoring oracle.
-_SCORING_PRIORS = {
-    WorldSplit.TRAIN: {"C0": 0.5, "C1": 0.5},
-    WorldSplit.VALIDATION: {"C0": 0.4, "C1": 0.4, "Cdev": 0.2},
-    WorldSplit.SEALED_TEST: {"C0": 0.4, "C1": 0.4, "C2": 0.2},
+# The generator deliberately changes finite-population composition across
+# train/validation/sealed-test.  Scoring must not condition on that hidden
+# cohort identity: ``episode.split`` is not part of candidate-visible history.
+# This one frozen public prior covers both known mechanisms and the two
+# unknown-reference components used by the benchmark.  Generator quotas remain
+# implemented independently in ``_mechanism_for`` / ``_initial_x`` below.
+_SCORING_PRIORS = {"C0": 0.4, "C1": 0.4, "C2": 0.1, "Cdev": 0.1}
+
+# Likewise, scoring support is a single frozen envelope.  It contains the
+# regular known range, the designated low-density known extremes, the unseen
+# C2 mixture, and the validation-only development anomaly.  The mixture is a
+# public reference measure, not a reconstruction of any finite split quota.
+_SCORING_X_PRIOR_COMPONENTS = {
+    "C0": (
+        (0.75, -1.15, 1.15),
+        (0.125, -1.45, -1.30),
+        (0.125, 1.30, 1.45),
+    ),
+    "C1": (
+        (0.75, -1.15, 1.15),
+        (0.125, -1.45, -1.30),
+        (0.125, 1.30, 1.45),
+    ),
+    "C2": (
+        (0.25, -1.40, -0.50),
+        (0.50, 0.0, 0.0),
+        (0.25, 0.50, 1.40),
+    ),
+    "Cdev": ((1.0, -1.15, 1.15),),
 }
 
 
-def _x_prior_components(
-    split: WorldSplit, mechanism: str
+def _scoring_x_prior_components(
+    mechanism: str,
 ) -> tuple[tuple[float, float, float], ...]:
-    """Return ``(mixture weight, low, high)`` for the frozen x prior.
+    """Return the split-independent frozen public x-reference measure."""
 
-    ``low == high`` denotes a point mass.  The test generator uses exact
-    ten-row strata: each known class is 75% regular and 25% low-density
-    extreme; C2 is half bounded-away-from-zero and half an overlap point mass.
-    """
-
-    if mechanism in {"C0", "C1"}:
-        if split is WorldSplit.SEALED_TEST:
-            return (
-                (0.75, -1.15, 1.15),
-                (0.125, -1.45, -1.30),
-                (0.125, 1.30, 1.45),
-            )
-        return ((1.0, -1.15, 1.15),)
-    if mechanism == "C2":
-        return (
-            (0.25, -1.40, -0.50),
-            (0.50, 0.0, 0.0),
-            (0.25, 0.50, 1.40),
-        )
-    if mechanism == "Cdev":
-        return ((1.0, -1.15, 1.15),)
-    raise ValueError(f"unknown W18 mechanism {mechanism!r}")
+    try:
+        return _SCORING_X_PRIOR_COMPONENTS[mechanism]
+    except KeyError as exc:
+        raise ValueError(f"unknown W18 mechanism {mechanism!r}") from exc
 
 
 def _emission_interval(
@@ -182,7 +186,7 @@ class W18World(MicroWorld):
     def known_support(self, episode: PrivateEpisode) -> tuple[bool, bool]:
         obs_0, obs_1 = _latest(episode, "obs_0"), _latest(episode, "obs_1")
         return tuple(
-            self._class_likelihood(episode.split, mechanism, obs_0, obs_1) > 0.0
+            self._class_likelihood(mechanism, obs_0, obs_1) > 0.0
             for mechanism in ("C0", "C1")
         )  # type: ignore[return-value]
 
@@ -195,21 +199,21 @@ class W18World(MicroWorld):
 
     @staticmethod
     def _class_likelihood(
-        split: WorldSplit, mechanism: str, obs_0: float, obs_1: float
+        mechanism: str, obs_0: float, obs_1: float
     ) -> float:
         return math.fsum(
             _component_likelihood(mechanism, obs_0, obs_1, weight, low, high)
-            for weight, low, high in _x_prior_components(split, mechanism)
+            for weight, low, high in _scoring_x_prior_components(mechanism)
         )
 
     @classmethod
     def _mechanism_posterior_values(
-        cls, split: WorldSplit, obs_0: float, obs_1: float
+        cls, obs_0: float, obs_1: float
     ) -> dict[str, float]:
         raw = {
             mechanism: prior
-            * cls._class_likelihood(split, mechanism, obs_0, obs_1)
-            for mechanism, prior in _SCORING_PRIORS[split].items()
+            * cls._class_likelihood(mechanism, obs_0, obs_1)
+            for mechanism, prior in _SCORING_PRIORS.items()
         }
         total = math.fsum(raw.values())
         if total <= 0.0:
@@ -220,7 +224,7 @@ class W18World(MicroWorld):
         """P(C0,C1,unknown | public H, frozen regime), never private truth."""
 
         mechanism = self._mechanism_posterior_values(
-            episode.split, _latest(episode, "obs_0"), _latest(episode, "obs_1")
+            _latest(episode, "obs_0"), _latest(episode, "obs_1")
         )
         return {
             "C0": mechanism.get("C0", 0.0),
@@ -232,11 +236,34 @@ class W18World(MicroWorld):
         """Source-distinct midpoint integration used only for certification."""
 
         y0, y1 = _latest(episode, "obs_0"), _latest(episode, "obs_1")
+        # Deliberately duplicate the frozen reference measure here rather than
+        # calling the production likelihood/support helpers.  This keeps the
+        # certification path source-distinct while using the same public
+        # mathematical contract.
+        reference_priors = (("C0", 0.4), ("C1", 0.4), ("C2", 0.1), ("Cdev", 0.1))
+        reference_supports = {
+            "C0": (
+                (0.75, -1.15, 1.15),
+                (0.125, -1.45, -1.30),
+                (0.125, 1.30, 1.45),
+            ),
+            "C1": (
+                (0.75, -1.15, 1.15),
+                (0.125, -1.45, -1.30),
+                (0.125, 1.30, 1.45),
+            ),
+            "C2": (
+                (0.25, -1.40, -0.50),
+                (0.50, 0.0, 0.0),
+                (0.25, 0.50, 1.40),
+            ),
+            "Cdev": ((1.0, -1.15, 1.15),),
+        }
         raw: dict[str, float] = {}
-        for mechanism, prior in _SCORING_PRIORS[episode.split].items():
+        for mechanism, prior in reference_priors:
             sign = _PARAMETERS[mechanism][3]
             likelihood = 0.0
-            for weight, low, high in _x_prior_components(episode.split, mechanism):
+            for weight, low, high in reference_supports[mechanism]:
                 if low == high:
                     inside = (
                         abs(y0 - low) <= _NOISE_HALF_WIDTH
@@ -248,7 +275,7 @@ class W18World(MicroWorld):
                     continue
                 # An independent deterministic Riemann solver.  It deliberately
                 # does not call the production interval-intersection functions.
-                cells = 20001
+                cells = 40001
                 width = (high - low) / cells
                 hits = 0
                 for index in range(cells):
@@ -360,9 +387,9 @@ class W18World(MicroWorld):
         return 1.0 - p_a1, p_a1
 
     def _diagnostic_target_from_public(
-        self, split: WorldSplit, obs_0: float, obs_1: float
+        self, obs_0: float, obs_1: float
     ) -> dict[str, float]:
-        mechanism = self._mechanism_posterior_values(split, obs_0, obs_1)
+        mechanism = self._mechanism_posterior_values(obs_0, obs_1)
         return {
             "C0": mechanism.get("C0", 0.0),
             "C1": mechanism.get("C1", 0.0),
@@ -420,7 +447,7 @@ class W18World(MicroWorld):
             )
         )
         utility = -(next_x * next_x + 0.08 * (action == "A1"))
-        target = self._diagnostic_target_from_public(split, obs_0, obs_1)
+        target = self._diagnostic_target_from_public(obs_0, obs_1)
         episode = PrivateEpisode(
             case_key=_case_key(
                 self.environment_key, split, generator_seed, episode_index
@@ -490,7 +517,7 @@ class W18World(MicroWorld):
             raise ValueError("unsupported W18 horizon")
         support = self.known_support(episode)
         mechanism_posterior = self._mechanism_posterior_values(
-            episode.split, _latest(episode, "obs_0"), _latest(episode, "obs_1")
+            _latest(episode, "obs_0"), _latest(episode, "obs_1")
         )
         public_components = tuple(mechanism_posterior.items())
         diagnostic = {
@@ -590,21 +617,20 @@ class W18World(MicroWorld):
                 )
         y0, y1 = visible["obs_0"], visible["obs_1"]
 
-        priors = {
-            WorldSplit.TRAIN: (("C0", 0.5), ("C1", 0.5)),
-            WorldSplit.VALIDATION: (("C0", 0.4), ("C1", 0.4), ("Cdev", 0.2)),
-            WorldSplit.SEALED_TEST: (("C0", 0.4), ("C1", 0.4), ("C2", 0.2)),
-        }[episode.split]
+        # Independent literal implementation of the one frozen public scoring
+        # regime.  In particular, neither the priors nor support depend on the
+        # private train/validation/sealed-test cohort label.
+        priors = (("C0", 0.4), ("C1", 0.4), ("C2", 0.1), ("Cdev", 0.1))
         prior_supports = {
             "C0": (
-                ((0.75, -1.15, 1.15), (0.125, -1.45, -1.30), (0.125, 1.30, 1.45))
-                if episode.split is WorldSplit.SEALED_TEST
-                else ((1.0, -1.15, 1.15),)
+                (0.75, -1.15, 1.15),
+                (0.125, -1.45, -1.30),
+                (0.125, 1.30, 1.45),
             ),
             "C1": (
-                ((0.75, -1.15, 1.15), (0.125, -1.45, -1.30), (0.125, 1.30, 1.45))
-                if episode.split is WorldSplit.SEALED_TEST
-                else ((1.0, -1.15, 1.15),)
+                (0.75, -1.15, 1.15),
+                (0.125, -1.45, -1.30),
+                (0.125, 1.30, 1.45),
             ),
             "C2": ((0.25, -1.40, -0.50), (0.50, 0.0, 0.0), (0.25, 0.50, 1.40)),
             "Cdev": ((1.0, -1.15, 1.15),),
@@ -761,9 +787,7 @@ class W18World(MicroWorld):
                 "subtype": "fixture",
                 "known_extreme": known_extreme,
             },
-            diagnostic_target=self._diagnostic_target_from_public(
-                WorldSplit.SEALED_TEST, obs_0, obs_1
-            ),
+            diagnostic_target=self._diagnostic_target_from_public(obs_0, obs_1),
             factual_future=[],
             action_propensities=[],
             factual_utility=0.0,

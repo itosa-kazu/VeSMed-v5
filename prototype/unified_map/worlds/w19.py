@@ -48,6 +48,10 @@ _OBS_SD = 0.05
 _CATASTROPHE = 30.0
 _X_PRIOR_LOW = 0.20
 _X_PRIOR_HIGH = 1.30
+# The finite split quotas below are a generator contract, not a scoring prior.
+# Scoring uses this one frozen public marker kernel for every cohort/split.
+_PUBLIC_MARKER_SENSITIVITY = 0.98
+_PUBLIC_MARKER_FALSE_POSITIVE_RATE = 0.02
 
 
 @dataclass(frozen=True, slots=True)
@@ -240,8 +244,8 @@ class W19World(MicroWorld):
         common = size - tail
         # Small frozen splits cannot represent exactly .98 with binary rows.
         # Keep one false-negative in every split so both marker outcomes and
-        # every safety branch have deterministic support; the exact marginal
-        # kernel below is what the Bayesian scoring oracle uses.
+        # every safety branch have deterministic generator support.  These
+        # finite-sample counts must not be fed back into the scoring kernel.
         tail_positive = max(1, tail - 1)
         common_positive = max(1, round(0.02 * common))
         return {
@@ -301,17 +305,20 @@ class W19World(MicroWorld):
         )
         return action, probabilities  # type: ignore[return-value]
 
-    @classmethod
-    def _marker_posterior(cls, split: WorldSplit, marker: int | None) -> float:
+    @staticmethod
+    def _marker_posterior(marker: int | None) -> float:
         if marker is None:
             return _TAIL_RATE
-        manifest = cls.population_quota_manifest(split)
-        sensitivity = manifest["tail_marker"]["positive"] / manifest["tail"]
-        false_positive = (
-            manifest["common_marker"]["positive"] / manifest["common"]
+        likelihood_tail = (
+            _PUBLIC_MARKER_SENSITIVITY
+            if marker == 1
+            else 1.0 - _PUBLIC_MARKER_SENSITIVITY
         )
-        likelihood_tail = sensitivity if marker == 1 else 1.0 - sensitivity
-        likelihood_common = false_positive if marker == 1 else 1.0 - false_positive
+        likelihood_common = (
+            _PUBLIC_MARKER_FALSE_POSITIVE_RATE
+            if marker == 1
+            else 1.0 - _PUBLIC_MARKER_FALSE_POSITIVE_RATE
+        )
         numerator = _TAIL_RATE * likelihood_tail
         return numerator / (numerator + (1.0 - _TAIL_RATE) * likelihood_common)
 
@@ -346,7 +353,7 @@ class W19World(MicroWorld):
         x_mean, x_variance, evidence = _truncated_uniform_gaussian_moments(
             observations
         )
-        p_tail = self._marker_posterior(episode.split, _latest_marker(episode))
+        p_tail = self._marker_posterior(_latest_marker(episode))
         return {
             "C0": 1.0 - p_tail,
             "C1": p_tail,
@@ -385,11 +392,10 @@ class W19World(MicroWorld):
         )
 
         marker = _latest_marker(episode)
-        manifest = self.population_quota_manifest(episode.split)
-        sensitivity = manifest["tail_marker"]["positive"] / manifest["tail"]
-        false_positive = (
-            manifest["common_marker"]["positive"] / manifest["common"]
-        )
+        # Independent reference integration uses the same frozen public
+        # measurement contract, never the realized finite-split quota.
+        sensitivity = 0.98
+        false_positive = 0.02
         if marker is None:
             p_tail = _TAIL_RATE
         else:
@@ -482,7 +488,7 @@ class W19World(MicroWorld):
         ) - _CATASTROPHE * catastrophe
         # Scoring targets are public-history posterior probabilities rather
         # than the realized private tail bit.
-        p_tail = self._marker_posterior(split, marker)
+        p_tail = self._marker_posterior(marker)
         return PrivateEpisode(
             case_key=_case_key(
                 self.environment_key, split, generator_seed, episode_index
@@ -748,15 +754,11 @@ class W19World(MicroWorld):
             - ratio * ratio
         )
 
-        population_size = {
-            WorldSplit.TRAIN: 4096,
-            WorldSplit.VALIDATION: 1024,
-            WorldSplit.SEALED_TEST: 2048,
-        }[episode.split]
-        tail_count = population_size // 64
-        common_count = population_size - tail_count
-        sensitivity = max(1, tail_count - 1) / tail_count
-        false_positive = max(1, round(0.02 * common_count)) / common_count
+        # The reference path intentionally re-implements Bayes' rule, but its
+        # inputs are the same frozen public marker kernel as production.  The
+        # split-specific population quota is generator-only evidence.
+        sensitivity = 0.98
+        false_positive = 0.02
         if marker is None:
             p_tail = 1.0 / 64.0
         else:
@@ -946,7 +948,7 @@ class W19World(MicroWorld):
                 )
         else:
             events = list(shared_events)
-        posterior = self._marker_posterior(WorldSplit.SEALED_TEST, marker)
+        posterior = self._marker_posterior(marker)
         return PrivateEpisode(
             case_key=digest_json(
                 {"cohort": "w19-probe", "seed": seed, "index": probe_index, "tail": tail}
