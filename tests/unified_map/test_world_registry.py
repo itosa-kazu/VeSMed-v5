@@ -58,17 +58,10 @@ def test_all_panels_declare_exact_default_population_and_nonempty_probe_contract
             assert panel.episode_count(WorldSplit.SEALED_TEST) == 2048
 
 
-def test_registry_audit_reports_real_missing_interfaces_as_typed_incomplete() -> None:
+def test_registry_audit_confirms_all_declared_world_interfaces_are_ready() -> None:
     report = audit_registry_readiness()
-    assert report.status is ReadinessStatus.INCOMPLETE
-    assert report.blockers
-    assert {blocker.code for blocker in report.blockers} == {
-        "UCM-E003-HARNESS_INCOMPLETE"
-    }
-    # The adapter must not pretend that the existing production counterfactual
-    # implementation is an independent reference solver.
-    assert any(blocker.interface == "reference_counterfactual" for blocker in report.blockers)
-    assert any(blocker.interface == "strata_for_episode" for blocker in report.blockers)
+    assert report.status is ReadinessStatus.READY
+    assert report.blockers == ()
 
 
 def test_materializer_physically_separates_public_and_private_rows_and_denominators(
