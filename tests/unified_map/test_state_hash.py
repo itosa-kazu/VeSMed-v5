@@ -15,8 +15,9 @@ from prototype.unified_map.state import (
 
 CANDIDATE = "sha256:" + "1" * 64
 MODEL = "sha256:" + "2" * 64
-CATALOG = "sha256:" + "3" * 64
-DELTA = "sha256:" + "4" * 64
+SCOPE = "sha256:" + "3" * 64
+CATALOG = "sha256:" + "4" * 64
+DELTA = "sha256:" + "5" * 64
 
 
 def payload(value: float = 1.0) -> StatePayload:
@@ -31,6 +32,7 @@ def kwargs() -> dict[str, object]:
     return {
         "candidate_bundle_digest": CANDIDATE,
         "model_digest": MODEL,
+        "scope_digest": SCOPE,
         "catalog_digest": CATALOG,
         "as_of_available_at": 7,
     }
@@ -71,7 +73,8 @@ def test_parent_operation_and_delta_are_lineage_not_content_identity() -> None:
         {"payload": payload(2.0)},
         {"candidate_bundle_digest": "sha256:" + "5" * 64},
         {"model_digest": "sha256:" + "6" * 64},
-        {"catalog_digest": "sha256:" + "7" * 64},
+        {"scope_digest": "sha256:" + "7" * 64},
+        {"catalog_digest": "sha256:" + "8" * 64},
         {"as_of_available_at": 8},
     ],
 )

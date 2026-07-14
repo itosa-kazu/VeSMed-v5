@@ -97,3 +97,42 @@ performance.
 
 `KEEP`: use these primitives as the benchmark harness substrate. Candidate
 implementation remains closed until the full PRE-FREEZE checklist passes.
+
+## 2026-07-15 — Candidate protocol and portable closure controls
+
+### Outcome
+
+- Added exact `initialize/update/diagnose/rollout` value envelopes.
+- Bound harness state identity to candidate bundle, model, full scope,
+  catalog, cut metadata, codec/schema/class and exact inert payload bytes.
+- Added same-state fanout records for diagnosis and all rollout policies.
+- Added fresh Python process execution with empty cwd, environment allow-list,
+  explicit seeds and method-phase Python audit denial.
+- Added honest specificity control and four executable malicious controls for
+  global patient cache, head history access, query mutation and hidden RNG.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider \
+  tests/unified_map/test_state_hash.py \
+  tests/unified_map/test_candidate_protocol.py \
+  tests/unified_map/test_shared_state_compliance.py \
+  tests/unified_map/test_compliance_negative_controls.py
+30 passed in 9.12s
+```
+
+### Evidence boundary
+
+The portable battery can show exact payload fanout and catch the registered
+Python mutations. It explicitly emits both
+`UCM-E001-SEMANTIC_UNITY_UNVERIFIED` and
+`UCM-E002-ISOLATION_INCOMPLETE`: an opaque blob may still multiplex task
+latents, and method-phase Python auditing does not exclude import-time or
+native/Windows-kernel escape. These axes are **INCOMPLETE**, not PASS.
+
+### Decision
+
+`KEEP AS PRE-FREEZE HARNESS`: this is operational evidence only. Decision-grade
+native candidates still require the stronger frozen isolation profile and the
+remaining C01–C33 mutation matrix.

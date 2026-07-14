@@ -124,6 +124,7 @@ class HarnessStateRecord:
     delta_digest: str | None
     candidate_bundle_digest: str
     model_digest: str
+    scope_digest: str
     catalog_digest: str
     as_of_available_at: int
     payload_size_bytes: int
@@ -143,6 +144,7 @@ class HarnessStateRecord:
         for value, label in (
             (self.candidate_bundle_digest, "candidate_bundle_digest"),
             (self.model_digest, "model_digest"),
+            (self.scope_digest, "scope_digest"),
             (self.catalog_digest, "catalog_digest"),
         ):
             _digest(value, label)
@@ -165,6 +167,7 @@ def compute_state_hash(
     *,
     candidate_bundle_digest: str,
     model_digest: str,
+    scope_digest: str,
     catalog_digest: str,
     as_of_available_at: int,
 ) -> str:
@@ -173,6 +176,7 @@ def compute_state_hash(
     for value, label in (
         (candidate_bundle_digest, "candidate_bundle_digest"),
         (model_digest, "model_digest"),
+        (scope_digest, "scope_digest"),
         (catalog_digest, "catalog_digest"),
     ):
         _digest(value, label)
@@ -191,6 +195,7 @@ def compute_state_hash(
         [
             candidate_bundle_digest.encode("ascii"),
             model_digest.encode("ascii"),
+            scope_digest.encode("ascii"),
             catalog_digest.encode("ascii"),
             metadata,
             payload.payload,
@@ -203,6 +208,7 @@ def seal_state(
     *,
     candidate_bundle_digest: str,
     model_digest: str,
+    scope_digest: str,
     catalog_digest: str,
     as_of_available_at: int,
     operation: str,
@@ -214,6 +220,7 @@ def seal_state(
         payload,
         candidate_bundle_digest=candidate_bundle_digest,
         model_digest=model_digest,
+        scope_digest=scope_digest,
         catalog_digest=catalog_digest,
         as_of_available_at=as_of_available_at,
     )
@@ -226,6 +233,7 @@ def seal_state(
         delta_digest=delta_digest,
         candidate_bundle_digest=candidate_bundle_digest,
         model_digest=model_digest,
+        scope_digest=scope_digest,
         catalog_digest=catalog_digest,
         as_of_available_at=as_of_available_at,
         payload_size_bytes=len(payload.payload),
