@@ -101,12 +101,24 @@ class World12(MicroWorld):
                 2.0 * uniform01(generator_seed, *key, "same-expression") - 1.0
             )
             stratum = "same-expression"
+        elif split is WorldSplit.SEALED_TEST and residue < 5:
+            # Residues 3/4 are opposite host classes with one genuinely shared
+            # mechanism draw.  The shared key intentionally omits the member
+            # index, making this an executable compositional pair rather than
+            # a judge-only label attached to independent IID rows.
+            pair_index = episode_index // 10
+            x = 0.15 + 1.05 * uniform01(
+                generator_seed,
+                "w12",
+                split.value,
+                "same-mechanism-pair",
+                pair_index,
+            )
+            stratum = "same-mechanism-different-expression"
         else:
             x = 0.15 + 1.05 * uniform01(generator_seed, *key, "initial-x")
             stratum = (
-                "same-mechanism-different-expression"
-                if split is WorldSplit.SEALED_TEST and residue < 5
-                else "marker-missing"
+                "marker-missing"
                 if split is WorldSplit.SEALED_TEST and residue < 7
                 else "iid"
                 if split is WorldSplit.SEALED_TEST
@@ -242,6 +254,47 @@ class World12(MicroWorld):
                 ),
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Return exact W12 registry strata from frozen generator evidence.
+
+        Host identity and the realized mechanism state are deliberately not
+        consulted.  The held-out membership is the preallocated generator
+        cell; marker-boundary membership is additionally checked against the
+        actually emitted public history and judge-side check propensities.
+        """
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W12 strata require a W12 PrivateEpisode")
+        strata = ["iid_support"]
+        cell = episode.oracle_anchor.get("stratum")
+        if episode.oracle_anchor.get("fixture") == "paired":
+            if cell is not None or episode.factual_future or episode.action_propensities:
+                raise ProtocolViolation("W12 pair fixture has population material")
+            return tuple(strata)
+
+        allowed = {
+            WorldSplit.TRAIN: {"train-host-x-balanced"},
+            WorldSplit.VALIDATION: {"validation-same-expression-holdout"},
+            WorldSplit.SEALED_TEST: {
+                "same-expression",
+                "same-mechanism-different-expression",
+                "marker-missing",
+                "iid",
+            },
+        }[episode.split]
+        if cell not in allowed:
+            raise ProtocolViolation("W12 episode lacks a valid generator-cell witness")
+        if cell == "marker-missing":
+            if _channel_rows(episode, "obs_1") or any(
+                row.get("check_probabilities", {}).get("Q1") != 0.0
+                for row in episode.action_propensities
+            ):
+                raise ProtocolViolation("W12 marker-missing witness contradicts generated material")
+            strata.append("boundary_tail")
+        if cell in {"same-expression", "same-mechanism-different-expression"}:
+            strata.append("compositional_holdout")
+        return tuple(strata)
 
     def counterfactual(
         self,

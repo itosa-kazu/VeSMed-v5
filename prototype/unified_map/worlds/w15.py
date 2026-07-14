@@ -243,6 +243,53 @@ class World15A(MicroWorld):
             },
         )
 
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Return W15A strata from public values and frozen generator cells."""
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W15A strata require a W15A PrivateEpisode")
+        strata = ["iid_support"]
+        values = tuple(value for _, value in _channel_rows(episode, "obs_0"))
+        if not values:
+            raise ProtocolViolation("W15A stratum classification requires public obs_0")
+        if any(value <= 0.20 or value >= 1.20 for value in values):
+            strata.append("boundary_tail")
+
+        pair_member = episode.oracle_anchor.get("behavior_pair_member", False)
+        if type(pair_member) is not bool:
+            raise ProtocolViolation("W15A behavior-pair witness must be boolean")
+        cell = episode.oracle_anchor.get("split_stratum")
+        if pair_member:
+            if cell is not None or episode.factual_future or episode.action_propensities:
+                raise ProtocolViolation("W15A pair witness is inconsistent with a population row")
+        else:
+            allowed = {
+                WorldSplit.TRAIN: {"train-severity-u-diagonal"},
+                WorldSplit.VALIDATION: {"validation-middle-band"},
+                WorldSplit.SEALED_TEST: {
+                    "sealed-heldout-severity-u-cross",
+                    "sealed-iid",
+                },
+            }[episode.split]
+            if cell not in allowed:
+                raise ProtocolViolation("W15A episode lacks a valid generator-cell witness")
+            prefix_rows = [
+                row
+                for row in episode.action_propensities
+                if row.get("phase") != "factual-future"
+            ]
+            limited_policy_support = any(
+                min(float(value) for value in row.get("probabilities", {}).values())
+                <= 0.20
+                for row in prefix_rows
+                if row.get("assignment") == "behavioral"
+            )
+            if episode.split is WorldSplit.SEALED_TEST and limited_policy_support:
+                strata.append("policy_coverage_holdout")
+        if pair_member:
+            strata.append("behavior_pair")
+        return tuple(strata)
+
     def counterfactual(
         self,
         episode: PrivateEpisode,
@@ -498,6 +545,7 @@ class World15A(MicroWorld):
             factual_utility=0.0,
             oracle_anchor={
                 "fixture": "randomized-identifiable",
+                "behavior_pair_member": True,
                 "probe_attribution": "candidate-attributable",
             },
         )
@@ -630,6 +678,46 @@ class World15B(MicroWorld):
             },
         )
 
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Classify W15B without using the realized SCM or confounder.
+
+        Lack of policy coverage is witnessed by the frozen zero/one factual
+        propensity record.  Boundary membership uses only the public neutral
+        context.  Only clones returned by explicit pair producers receive the
+        judge-side behavior-pair bit, so adjacent population twins remain in
+        the population denominator rather than being silently reclassified.
+        """
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W15B strata require a W15B PrivateEpisode")
+        if episode.oracle_anchor.get("split_stratum") != "exact-observational-twin":
+            raise ProtocolViolation("W15B episode lacks the frozen observational-cell witness")
+        strata = ["iid_support"]
+        values = tuple(value for _, value in _channel_rows(episode, "obs_0"))
+        if len(values) != 1:
+            raise ProtocolViolation("W15B stratum classification requires one public context")
+        if abs(values[0]) >= 0.90:
+            strata.append("boundary_tail")
+
+        no_overlap_rows = [
+            row
+            for row in episode.action_propensities
+            if row.get("positivity") == "absent"
+        ]
+        if not no_overlap_rows or any(
+            sorted(row.get("probabilities", {}).values()) != [0.0, 1.0]
+            for row in no_overlap_rows
+        ):
+            raise ProtocolViolation("W15B policy-coverage witness is missing or non-exact")
+        strata.append("policy_coverage_holdout")
+
+        pair_member = episode.oracle_anchor.get("behavior_pair_member", False)
+        if type(pair_member) is not bool:
+            raise ProtocolViolation("W15B behavior-pair witness must be boolean")
+        if pair_member:
+            strata.append("behavior_pair")
+        return tuple(strata)
+
     def counterfactual(
         self,
         episode: PrivateEpisode,
@@ -730,19 +818,39 @@ class World15B(MicroWorld):
         # Choose a pair index with the requested public confounder under test.
         offset = int(WorldSplit.SEALED_TEST is WorldSplit.VALIDATION)
         pair_index = (confounder - offset) % 2
-        return (
+        pair = (
             self.generate_episode(WorldSplit.SEALED_TEST, seed, 2 * pair_index),
             self.generate_episode(WorldSplit.SEALED_TEST, seed, 2 * pair_index + 1),
         )
+        return tuple(
+            replace(
+                episode,
+                oracle_anchor={
+                    **episode.oracle_anchor,
+                    "behavior_pair_member": True,
+                },
+            )
+            for episode in pair
+        )  # type: ignore[return-value]
 
     def distinguishable_fixture(
         self, seed: int = 1522
     ) -> tuple[PrivateEpisode, PrivateEpisode]:
         # Pair index 0 exposes u=0; pair index 1 exposes u=1.
-        return (
+        pair = (
             self.generate_episode(WorldSplit.SEALED_TEST, seed, 0),
             self.generate_episode(WorldSplit.SEALED_TEST, seed, 2),
         )
+        return tuple(
+            replace(
+                episode,
+                oracle_anchor={
+                    **episode.oracle_anchor,
+                    "behavior_pair_member": True,
+                },
+            )
+            for episode in pair
+        )  # type: ignore[return-value]
 
     def equivalent_fixture(
         self, seed: int = 1523

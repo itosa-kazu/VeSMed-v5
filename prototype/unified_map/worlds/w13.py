@@ -251,6 +251,40 @@ class World13(MicroWorld):
             },
         )
 
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Map W13's preallocated interaction cells to registry strata.
+
+        Membership uses the generator cell and split only.  It never infers a
+        stratum from ``interaction_class`` or the realized hidden components.
+        Explicit pair fixtures remain probe-cohort rows and therefore receive
+        only the universal IID-support tag here.
+        """
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W13 strata require a W13 PrivateEpisode")
+        strata = ["iid_support"]
+        cell = episode.oracle_anchor.get("stratum")
+        if episode.oracle_anchor.get("fixture") == "paired":
+            if cell is not None or episode.factual_future or episode.action_propensities:
+                raise ProtocolViolation("W13 pair fixture has population material")
+            return tuple(strata)
+
+        allowed = {
+            WorldSplit.TRAIN: {"train-combination-cell"},
+            WorldSplit.VALIDATION: {"validation-combination-cell"},
+            WorldSplit.SEALED_TEST: {
+                "threshold-shell",
+                "sealed-heldout-combination-cell",
+            },
+        }[episode.split]
+        if cell not in allowed:
+            raise ProtocolViolation("W13 episode lacks a valid generator-cell witness")
+        if cell == "threshold-shell":
+            strata.append("boundary_tail")
+        if cell == "threshold-shell":
+            strata.append("compositional_holdout")
+        return tuple(strata)
+
     def counterfactual(
         self,
         episode: PrivateEpisode,

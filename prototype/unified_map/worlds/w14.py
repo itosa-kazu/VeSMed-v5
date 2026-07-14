@@ -100,13 +100,36 @@ class World14(MicroWorld):
     ) -> PrivateEpisode:
         _validate_episode_request(split, generator_seed, episode_index)
         key: tuple[str | int, ...] = ("w14", split.value, episode_index)
+        if split is WorldSplit.SEALED_TEST:
+            residue = episode_index % 10
+            stratum = (
+                "same-current-different-memory"
+                if residue < 3
+                else "same-sufficient-state-different-history"
+                if residue < 5
+                else "long-gap"
+                if residue < 7
+                else "routine"
+            )
+        elif split is WorldSplit.VALIDATION:
+            stratum = "intermittent-pulse"
+        else:
+            stratum = "short-pulse"
         x = 0.10 + 0.75 * uniform01(generator_seed, *key, "initial-x")
         memory = 0.20 + 1.80 * uniform01(generator_seed, *key, "initial-memory")
         public_ewma = x
         events: list[Any] = []
         propensities: list[dict[str, Any]] = []
 
-        for tick in range(-5, 1):
+        # The long-gap allocation uses a genuinely unseen public time grid;
+        # it does not merely attach a textual stratum name to the routine
+        # schedule.  The number/order of state transitions remains unchanged.
+        ticks = (
+            (-12, -8, -4, -2, -1, 0)
+            if stratum == "long-gap"
+            else tuple(range(-5, 1))
+        )
+        for tick in ticks:
             y = x + 0.05 * normal01(generator_seed, *key, "q0", tick)
             public_ewma = 0.75 * public_ewma + y
             events.append(_observation(generator_seed, key, "obs_0", y, tick))
@@ -221,22 +244,6 @@ class World14(MicroWorld):
                 }
             )
 
-        if split is WorldSplit.SEALED_TEST:
-            residue = episode_index % 10
-            stratum = (
-                "same-current-different-memory"
-                if residue < 3
-                else "same-sufficient-state-different-history"
-                if residue < 5
-                else "long-gap"
-                if residue < 7
-                else "routine"
-            )
-        elif split is WorldSplit.VALIDATION:
-            stratum = "intermittent-pulse"
-        else:
-            stratum = "short-pulse"
-
         return PrivateEpisode(
             case_key=_case_key(
                 self.environment_key, split, generator_seed, episode_index
@@ -264,6 +271,58 @@ class World14(MicroWorld):
                 "behavior_policy_inputs": "public-prefix-only",
             },
         )
+
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Classify W14 path/schedule cells without consulting hidden memory.
+
+        ``schedule_time_holdout`` is tied to the frozen generator allocation,
+        while ``boundary_tail`` is replayed directly from candidate-visible
+        observations.  The latter cannot be manufactured by a private memory
+        class.  Pair membership is an explicit judge-side probe-cohort bit.
+        """
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W14 strata require a W14 PrivateEpisode")
+        strata = ["iid_support"]
+        obs0_rows = _channel_rows(episode, "obs_0")
+        values = tuple(value for _, value in obs0_rows)
+        if not values:
+            raise ProtocolViolation("W14 stratum classification requires public obs_0")
+        if any(value <= 0.05 or value >= 1.0 for value in values):
+            strata.append("boundary_tail")
+
+        pair_member = episode.oracle_anchor.get("behavior_pair_member", False)
+        if type(pair_member) is not bool:
+            raise ProtocolViolation("W14 behavior-pair witness must be boolean")
+        cell = episode.oracle_anchor.get("stratum")
+        if pair_member:
+            if cell is not None or episode.factual_future or episode.action_propensities:
+                raise ProtocolViolation("W14 pair witness is inconsistent with a population row")
+        else:
+            allowed = {
+                WorldSplit.TRAIN: {"short-pulse"},
+                WorldSplit.VALIDATION: {"intermittent-pulse"},
+                WorldSplit.SEALED_TEST: {
+                    "same-current-different-memory",
+                    "same-sufficient-state-different-history",
+                    "long-gap",
+                    "routine",
+                },
+            }[episode.split]
+            if cell not in allowed:
+                raise ProtocolViolation("W14 episode lacks a valid generator-cell witness")
+            public_times = tuple(row[0] for row in obs0_rows)
+            has_long_gap = any(
+                later - earlier > 1
+                for earlier, later in zip(public_times, public_times[1:])
+            )
+            if (cell == "long-gap") != has_long_gap:
+                raise ProtocolViolation("W14 schedule witness contradicts public event times")
+            if has_long_gap:
+                strata.append("schedule_time_holdout")
+        if pair_member:
+            strata.append("behavior_pair")
+        return tuple(strata)
 
     def counterfactual(
         self,
@@ -527,6 +586,7 @@ class World14(MicroWorld):
             factual_utility=0.0,
             oracle_anchor={
                 "fixture": "paired",
+                "behavior_pair_member": True,
                 "probe_attribution": "candidate-attributable",
             },
         )

@@ -356,6 +356,64 @@ class World11(MicroWorld):
             },
         )
 
+    def strata_for_episode(self, episode: PrivateEpisode) -> tuple[str, ...]:
+        """Classify the frozen W11 generator cell without reading private truth.
+
+        The broad registry strata are derived from the judge-side generator
+        design recorded at construction time.  In particular, the population
+        cell whose historical name contains ``probe`` is *not* a pair probe:
+        only episodes produced by the explicit pair-fixture constructors carry
+        ``behavior_pair_member``.  This keeps probe rows out of the headline
+        population denominator.
+        """
+
+        if type(episode) is not PrivateEpisode or episode.environment_key != self.environment_key:
+            raise ProtocolViolation("W11 strata require a W11 PrivateEpisode")
+
+        strata = ["iid_support"]
+        pair_member = episode.oracle_anchor.get("behavior_pair_member", False)
+        if type(pair_member) is not bool:
+            raise ProtocolViolation("W11 behavior-pair witness must be boolean")
+
+        cell = episode.oracle_anchor.get("split_stratum")
+        if pair_member:
+            if cell is not None or episode.factual_future or episode.action_propensities:
+                raise ProtocolViolation("W11 pair witness is inconsistent with a population row")
+        else:
+            allowed = {
+                WorldSplit.TRAIN: {"mixed-20-percent"},
+                WorldSplit.VALIDATION: {"mixed-35-percent"},
+                WorldSplit.SEALED_TEST: {
+                    "iid",
+                    "same-q0-opposite-source-probe",
+                    "q1-missing",
+                    "q1-contradictory-noise",
+                },
+            }[episode.split]
+            if cell not in allowed:
+                raise ProtocolViolation("W11 episode lacks a valid generator-cell witness")
+            if cell == "q1-missing":
+                q1_rows = _channel_rows(episode, "obs_1")
+                prefix_propensities = [
+                    row
+                    for row in episode.action_propensities
+                    if row.get("phase") != "factual-future"
+                ]
+                if q1_rows or not prefix_propensities or any(
+                    row.get("check_probabilities", {}).get("Q1") != 0.0
+                    for row in prefix_propensities
+                ):
+                    raise ProtocolViolation("W11 q1-missing witness contradicts generated material")
+                strata.append("boundary_tail")
+            elif cell == "q1-contradictory-noise":
+                # The sign-reversed measurement kernel is a judge-side
+                # generator setting, not an inferred private mechanism label.
+                strata.append("boundary_tail")
+
+        if pair_member:
+            strata.append("behavior_pair")
+        return tuple(strata)
+
     def counterfactual(
         self,
         episode: PrivateEpisode,
@@ -582,6 +640,7 @@ class World11(MicroWorld):
             factual_utility=0.0,
             oracle_anchor={
                 "fixture": "paired",
+                "behavior_pair_member": True,
                 "probe_attribution": "candidate-attributable",
             },
         )
