@@ -319,3 +319,33 @@ already exist. An empty matrix correctly reports `HARNESS_INCOMPLETE`.
 
 `KEEP AS PRE-FREEZE HARNESS`: next wire real mutation executions into this
 matrix; never synthesize `killed=true` from declarations.
+
+## 2026-07-15 — First real mutation execution records
+
+### Outcome
+
+- Wired four existing malicious controls through the real fresh-worker
+  compliance runner into mutation-matrix observations.
+- Produced decisive record digests for hidden global state, head history
+  access, query mutation and implicit RNG, plus one passing explicit-seed
+  specificity control.
+- The partial matrix deliberately remains `HARNESS_INCOMPLETE` rather than
+  treating those four kills as coverage of the whole contract.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_mutation_runner.py
+2 passed
+```
+
+### Evidence boundary
+
+Current executed coverage is exactly C02, C04, C16 and C30, with 4/26 mutants
+and 1/4 specificity controls. Remaining declarations have no kill evidence yet
+and therefore block freeze.
+
+### Decision
+
+`KEEP`: extend this runner with real controls and decisive transcripts; never
+fill uncovered cells with synthetic test rows.
