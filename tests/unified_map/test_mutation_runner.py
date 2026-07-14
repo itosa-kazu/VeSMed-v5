@@ -65,6 +65,12 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["RawHistoryHead"].actual_failure_code == (
         "UCM-F004-HEAD_HISTORY_ACCESS"
     )
+    assert by_id["TrainerTargetSmuggler"].actual_failure_code == (
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS"
+    )
+    assert by_id["QueryReencoder"].actual_failure_code == (
+        "UCM-F004-HEAD_HISTORY_ACCESS"
+    )
     assert by_id["CounterfactualMutator"].actual_failure_code == (
         "UCM-F012-QUERY_MUTATES_FACT"
     )
@@ -99,6 +105,8 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         "GlobalSecondState",
         "FileHandleState",
         "RawHistoryHead",
+        "TrainerTargetSmuggler",
+        "QueryReencoder",
         "MutableCheckpoint",
         "TrueStateReader",
         "FutureReader",

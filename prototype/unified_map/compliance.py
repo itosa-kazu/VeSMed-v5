@@ -288,6 +288,34 @@ class RawHistoryHeadControl(HonestSeededControl):
         raise AssertionError("unreachable")
 
 
+class TrainerTargetSmugglerControl(HonestSeededControl):
+    """Malicious: initialization attempts to read trainer/judge-only targets."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        del history, inference_seed
+        with open("trainer-target-oracle.json", "rb") as stream:  # noqa: PTH123
+            stream.read()
+        raise AssertionError("unreachable")
+
+
+class QueryReencoderControl(HonestSeededControl):
+    """Malicious: a task head attempts to reopen and re-encode raw history."""
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        del state, query, query_seed
+        with open("patient-history-for-query-reencoder.json", "rb") as stream:  # noqa: PTH123
+            stream.read()
+        raise AssertionError("unreachable")
+
+
 class FileHandleStateControl(HonestSeededControl):
     """Malicious: tries to persist patient state behind a filesystem handle."""
 
@@ -413,6 +441,12 @@ def _failure_from_exception(error: Exception, gate: str) -> ComplianceFinding:
         if isinstance(error, CandidateCallViolation)
         else "UCM-F008-STATE_NOT_CLOSED"
     )
+    return ComplianceFinding(
+        gate=gate,
+        verdict=ComplianceVerdict.FAIL,
+        failure_code=code,
+        detail=f"{type(error).__name__}: {error}",
+    )
 
 
 def _decisive_gate_for_failure(failure_code: str, fallback: str) -> str:
@@ -427,12 +461,6 @@ def _decisive_gate_for_failure(failure_code: str, fallback: str) -> str:
         "UCM-F009-MODEL_MUTATION": "C06-model-immutability",
         "UCM-F012-QUERY_MUTATES_FACT": "C16-counterfactual-purity-order",
     }.get(failure_code, fallback)
-    return ComplianceFinding(
-        gate=gate,
-        verdict=ComplianceVerdict.FAIL,
-        failure_code=code,
-        detail=f"{type(error).__name__}: {error}",
-    )
 
 
 def _report(
@@ -722,6 +750,8 @@ def control_entrypoint(
         "MutableCheckpointControl",
         "QueryMutatorControl",
         "ImplicitRNGControl",
+        "TrainerTargetSmugglerControl",
+        "QueryReencoderControl",
     }
     if control_name not in allowed:
         raise ProtocolViolation(f"unknown compliance control {control_name!r}")

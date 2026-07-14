@@ -61,6 +61,18 @@ PORTABLE_MUTATION_CASES: tuple[PortableMutationCase, ...] = (
         "UCM-F004-HEAD_HISTORY_ACCESS",
     ),
     PortableMutationCase(
+        "TrainerTargetSmuggler",
+        "TrainerTargetSmugglerControl",
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+    ),
+    PortableMutationCase(
+        "QueryReencoder",
+        "QueryReencoderControl",
+        "C02",
+        "UCM-F004-HEAD_HISTORY_ACCESS",
+    ),
+    PortableMutationCase(
         "MutableCheckpoint",
         "MutableCheckpointControl",
         "C06",

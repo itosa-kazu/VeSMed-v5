@@ -53,6 +53,8 @@ def inputs() -> tuple[VisibleHistory, DiagnosisQuery, RolloutQuery]:
         ("MutableCheckpointControl", "UCM-F009-MODEL_MUTATION"),
         ("QueryMutatorControl", "UCM-F012-QUERY_MUTATES_FACT"),
         ("ImplicitRNGControl", "UCM-F020-NONREPRODUCIBLE"),
+        ("TrainerTargetSmugglerControl", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
+        ("QueryReencoderControl", "UCM-F004-HEAD_HISTORY_ACCESS"),
     ],
 )
 def test_each_malicious_control_is_killed_by_its_semantic_gate(
