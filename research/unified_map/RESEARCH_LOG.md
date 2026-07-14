@@ -259,3 +259,33 @@ still remains outside this checkpoint.
 
 `KEEP FOR ITERATION`: preserve the executable semantics and W15 negative
 control while leaving the benchmark freeze gate closed.
+
+## 2026-07-15 — W06–W10 executable pre-freeze checkpoint
+
+### Outcome
+
+- Materialized public-history posterior paths for observation-channel versus
+  latent effects (W06), joint effects (W07), delayed/out-of-sequence evidence
+  (W08), personal baselines (W09), and grouped-measurement tail risk (W10).
+- Added focused availability, private-swap, alpha-renaming, grouping,
+  baseline/deviation and query-purity fixtures.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_worlds_w06_w10.py
+17 passed
+```
+
+### Evidence boundary
+
+`PRE-FREEZE PROTOTYPE`. These tests exercise the current public-history
+filters and numerical diagnostics, but do not yet constitute independent
+production/reference oracle certification. Adaptive check policies still use
+the provisional planned-action encoding, and population/probe assembly plus
+final evaluator gates remain to be wired and audited before freeze.
+
+### Decision
+
+`KEEP FOR ITERATION`: checkpoint W06–W10 independently from the other world
+groups; benchmark status remains `PRE-FREEZE`.
