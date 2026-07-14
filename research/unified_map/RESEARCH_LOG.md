@@ -136,3 +136,32 @@ native/Windows-kernel escape. These axes are **INCOMPLETE**, not PASS.
 `KEEP AS PRE-FREEZE HARNESS`: this is operational evidence only. Decision-grade
 native candidates still require the stronger frozen isolation profile and the
 remaining C01–C33 mutation matrix.
+
+## 2026-07-15 — Append-only freeze tooling checkpoint
+
+### Outcome
+
+- Added exact byte inventory for the isolated UCM roots only.
+- Added canonical `PRE-FREEZE` / `FROZEN-v1` manifests with required-path and
+  blocker gates.
+- Added non-overwriting manifest sidecars and byte-drift verification.
+- Kept split-seed commit and reveal as separate append-only, hash-chained
+  artifacts; raw seed/reveal material is rejected from the freeze manifest.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_freeze_manifest.py
+8 passed
+```
+
+### Evidence boundary
+
+This is freeze **tooling**, not a benchmark freeze. No `FREEZE_MANIFEST.json`
+has been emitted and benchmark status remains `PRE-FREEZE`; unresolved oracle,
+independent-reference and isolation blockers still prevent `FROZEN-v1`.
+
+### Decision
+
+`KEEP AS PRE-FREEZE TOOLING`: commit separately from the still-changing
+microworld implementations.
