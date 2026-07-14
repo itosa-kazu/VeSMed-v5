@@ -165,3 +165,36 @@ independent-reference and isolation blockers still prevent `FROZEN-v1`.
 
 `KEEP AS PRE-FREEZE TOOLING`: commit separately from the still-changing
 microworld implementations.
+
+## 2026-07-15 — W16–W20 executable pre-freeze checkpoint
+
+### Outcome
+
+- Materialized deterministic generators, public catalogs, policy sets,
+  judge-side counterfactual outputs and focused fixtures for W16–W20.
+- Added two-stage check/treatment extension controls, attributable OOD tags,
+  fixed 1/64 population-tail allocation plus a separate probe cohort, and
+  exposure-memory collision/false-split fixtures.
+
+### Verification
+
+```text
+python -m pytest -q -p no:cacheprovider tests/unified_map/test_worlds_w16_w20.py
+39 passed
+```
+
+### Evidence boundary
+
+`PRE-FREEZE PROTOTYPE`, not an oracle sign-off. The focused tests prove the
+implemented invariants and candidate projection only. Independent
+production/reference posterior solvers are not yet present. In particular,
+the continuous-state counterfactual paths currently use a latest-observation
+Gaussian approximation; W20's different-history/same-state fixture must be
+revalidated against the specified full public-history posterior before it can
+serve as a freeze oracle. The extension runner and final tail hard-gate
+aggregator are also not yet wired.
+
+### Decision
+
+`KEEP FOR ITERATION`: checkpoint these executable worlds without changing the
+benchmark status or opening candidate implementation.
