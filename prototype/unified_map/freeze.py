@@ -19,6 +19,7 @@ from .canonical import (
     ProtocolViolation,
     canonical_json_bytes,
     digest_bytes,
+    digest_json,
     validate_json_like,
 )
 from .splits import seed_commitment, verify_seed_commitment
@@ -36,10 +37,36 @@ FORBIDDEN_SECRET_FIELDS = frozenset(
     {"seed", "nonce", "secret", "raw_seed", "seed_bytes", "reveal"}
 )
 
+AUTHORIZATION_PROTOCOL = "ucm-freeze-authorization/1"
+REQUIRED_FREEZE_EVIDENCE_AXES = (
+    "semantic_scope",
+    "world_generators",
+    "oracle_reference",
+    "catalog_schemas",
+    "projection_boundary",
+    "split_isolation",
+    "seed_protocol",
+    "expected_cells",
+    "probe_thresholds",
+    "metrics_weights",
+    "mutation_matrix",
+    "candidate_protocol",
+    "baseline_budgets",
+    "replay_entrypoints",
+    "runtime_lock",
+    "limitations_registry",
+)
+
 
 class FreezeStatus(str, Enum):
     PRE_FREEZE = "PRE-FREEZE"
     FROZEN_V1 = "FROZEN-v1"
+
+
+class FreezeEvidenceStatus(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+    INCOMPLETE = "INCOMPLETE"
 
 
 def _name(value: object, label: str) -> str:
@@ -92,6 +119,138 @@ class FreezeFile:
         return {"path": self.path, "bytes": self.bytes, "sha256": self.sha256}
 
 
+@dataclass(frozen=True, slots=True)
+class FreezeAxisEvidence:
+    axis: str
+    status: FreezeEvidenceStatus
+    artifact_digest: str
+    detail: str
+
+    def __post_init__(self) -> None:
+        _name(self.axis, "freeze evidence axis")
+        if self.axis not in REQUIRED_FREEZE_EVIDENCE_AXES:
+            raise ProtocolViolation("unknown freeze evidence axis")
+        if type(self.status) is not FreezeEvidenceStatus:
+            raise ProtocolViolation("freeze evidence status must be typed")
+        _digest(self.artifact_digest, "freeze evidence artifact_digest")
+        _name(self.detail, "freeze evidence detail")
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "axis": self.axis,
+            "status": self.status.value,
+            "artifact_digest": self.artifact_digest,
+            "detail": self.detail,
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class FreezeAuthorization:
+    benchmark_id: str
+    scope_digest: str
+    source_revision: str
+    required_paths: tuple[str, ...]
+    evidence: tuple[FreezeAxisEvidence, ...]
+
+    def __post_init__(self) -> None:
+        _name(self.benchmark_id, "authorization benchmark_id")
+        _digest(self.scope_digest, "authorization scope_digest")
+        _name(self.source_revision, "authorization source_revision")
+        canonical_paths = tuple(
+            sorted(
+                (_relative_path(path) for path in self.required_paths),
+                key=lambda value: value.encode("utf-8"),
+            )
+        )
+        if canonical_paths != self.required_paths or len(canonical_paths) != len(
+            set(canonical_paths)
+        ):
+            raise ProtocolViolation(
+                "authorization required_paths must be unique and canonically sorted"
+            )
+        if type(self.evidence) is not tuple or any(
+            type(item) is not FreezeAxisEvidence for item in self.evidence
+        ):
+            raise ProtocolViolation("authorization evidence must be typed")
+        axes = tuple(item.axis for item in self.evidence)
+        if axes != REQUIRED_FREEZE_EVIDENCE_AXES:
+            raise ProtocolViolation(
+                "authorization evidence must cover every frozen axis in canonical order"
+            )
+        not_passed = [item.axis for item in self.evidence if item.status is not FreezeEvidenceStatus.PASS]
+        if not_passed:
+            raise ProtocolViolation(
+                f"cannot authorize freeze with non-PASS axes: {not_passed!r}"
+            )
+
+    @property
+    def required_paths_digest(self) -> str:
+        return digest_json(
+            {
+                "protocol": "ucm-freeze-required-paths/1",
+                "paths": list(self.required_paths),
+            }
+        )
+
+    def to_wire(self) -> dict[str, Any]:
+        body = {
+            "protocol": AUTHORIZATION_PROTOCOL,
+            "benchmark_id": self.benchmark_id,
+            "scope_digest": self.scope_digest,
+            "source_revision": self.source_revision,
+            "required_paths_digest": self.required_paths_digest,
+            "evidence": [item.to_wire() for item in self.evidence],
+        }
+        body["authorization_digest"] = digest_json(body)
+        return body
+
+    @property
+    def digest(self) -> str:
+        return self.to_wire()["authorization_digest"]
+
+
+def authorize_freeze(
+    *,
+    benchmark_id: str,
+    scope_digest: str,
+    source_revision: str,
+    required_paths: Iterable[str],
+    evidence: Iterable[FreezeAxisEvidence],
+) -> FreezeAuthorization:
+    """Issue a value-bound receipt only for an exact all-PASS evidence vector.
+
+    This is an assembly guard, not a substitute for the evidence producers.
+    Each axis digest must refer to a separately persisted, inventoried artifact;
+    the final manifest binds this receipt and those file bytes together.
+    """
+
+    paths = tuple(
+        sorted(
+            (_relative_path(path) for path in required_paths),
+            key=lambda value: value.encode("utf-8"),
+        )
+    )
+    rows_by_axis: dict[str, FreezeAxisEvidence] = {}
+    for row in evidence:
+        if type(row) is not FreezeAxisEvidence:
+            raise ProtocolViolation("freeze evidence contains an untyped row")
+        if row.axis in rows_by_axis:
+            raise ProtocolViolation("duplicate freeze evidence axis")
+        rows_by_axis[row.axis] = row
+    ordered = tuple(
+        rows_by_axis[axis]
+        for axis in REQUIRED_FREEZE_EVIDENCE_AXES
+        if axis in rows_by_axis
+    )
+    return FreezeAuthorization(
+        benchmark_id=benchmark_id,
+        scope_digest=scope_digest,
+        source_revision=source_revision,
+        required_paths=paths,
+        evidence=ordered,
+    )
+
+
 def inventory_files(repo_root: Path, relative_paths: Iterable[str]) -> tuple[FreezeFile, ...]:
     if not isinstance(repo_root, Path):
         raise ProtocolViolation("repo_root must be pathlib.Path")
@@ -141,6 +300,7 @@ def build_freeze_manifest(
     required_paths: tuple[str, ...],
     seed_commitment_digest: str | None = None,
     metadata: dict[str, Any] | None = None,
+    freeze_authorization: FreezeAuthorization | None = None,
 ) -> dict[str, Any]:
     _name(benchmark_id, "benchmark_id")
     if type(status) is not FreezeStatus:
@@ -160,15 +320,47 @@ def build_freeze_manifest(
         raise ProtocolViolation("required_paths contains duplicates")
     present = {row.path for row in files}
     missing = sorted(set(required) - present)
-    if status is FreezeStatus.FROZEN_V1 and (prefreeze_blockers or missing):
-        raise ProtocolViolation(
-            f"cannot freeze with blockers={list(prefreeze_blockers)!r}, missing={missing!r}"
-        )
+    if status is FreezeStatus.FROZEN_V1:
+        if prefreeze_blockers or missing:
+            raise ProtocolViolation(
+                f"cannot freeze with blockers={list(prefreeze_blockers)!r}, missing={missing!r}"
+            )
+        if type(freeze_authorization) is not FreezeAuthorization:
+            raise ProtocolViolation(
+                "cannot freeze without an exact all-PASS FreezeAuthorization"
+            )
+        if (
+            freeze_authorization.benchmark_id != benchmark_id
+            or freeze_authorization.source_revision != source_revision
+            or freeze_authorization.required_paths
+            != tuple(sorted(required, key=lambda value: value.encode("utf-8")))
+        ):
+            raise ProtocolViolation(
+                "freeze authorization does not match benchmark/revision/required paths"
+            )
+        inventoried_digests = {row.sha256 for row in files}
+        unbound_axes = [
+            row.axis
+            for row in freeze_authorization.evidence
+            if row.artifact_digest not in inventoried_digests
+        ]
+        if unbound_axes:
+            raise ProtocolViolation(
+                f"freeze evidence digests are not in file inventory: {unbound_axes!r}"
+            )
+    elif freeze_authorization is not None:
+        raise ProtocolViolation("PRE-FREEZE manifest must not carry freeze authorization")
     if seed_commitment_digest is not None:
         _digest(seed_commitment_digest, "seed_commitment_digest")
-    extra = metadata or {}
-    if type(extra) is not dict:
+    raw_extra = metadata or {}
+    if type(raw_extra) is not dict:
         raise ProtocolViolation("freeze metadata must be an exact dict")
+    extra = dict(raw_extra)
+    if status is FreezeStatus.FROZEN_V1:
+        assert freeze_authorization is not None
+        if "freeze_authorization" in extra:
+            raise ProtocolViolation("freeze authorization metadata is runner-owned")
+        extra["freeze_authorization"] = freeze_authorization.to_wire()
     _reject_secret_material(extra, "$.metadata")
     manifest = {
         "protocol": MANIFEST_PROTOCOL,
@@ -180,11 +372,78 @@ def build_freeze_manifest(
         "required_paths": sorted(required, key=lambda value: value.encode("utf-8")),
         "missing_required_paths": missing,
         "seed_commitment_digest": seed_commitment_digest,
+        "freeze_authorization_digest": (
+            freeze_authorization.digest if freeze_authorization is not None else None
+        ),
         "files": [row.to_wire() for row in files],
         "metadata": extra,
     }
     _reject_secret_material(manifest)
     return manifest
+
+
+def _validate_manifest_freeze_authorization(manifest: dict[str, Any]) -> None:
+    status = manifest.get("benchmark_status")
+    if status not in {item.value for item in FreezeStatus}:
+        raise ProtocolViolation("freeze manifest has an unknown benchmark_status")
+    metadata = manifest.get("metadata")
+    if type(metadata) is not dict:
+        raise ProtocolViolation("freeze manifest metadata is missing")
+    wire = metadata.get("freeze_authorization")
+    top_digest = manifest.get("freeze_authorization_digest")
+    if status == FreezeStatus.PRE_FREEZE.value:
+        if wire is not None or top_digest is not None:
+            raise ProtocolViolation("PRE-FREEZE manifest carries a freeze authorization")
+        return
+    if type(wire) is not dict or wire.get("protocol") != AUTHORIZATION_PROTOCOL:
+        raise ProtocolViolation("FROZEN-v1 manifest lacks a typed freeze authorization")
+    evidence_wire = wire.get("evidence")
+    if type(evidence_wire) is not list:
+        raise ProtocolViolation("freeze authorization evidence is missing")
+    rows: list[FreezeAxisEvidence] = []
+    try:
+        for item in evidence_wire:
+            if type(item) is not dict or set(item) != {
+                "axis",
+                "status",
+                "artifact_digest",
+                "detail",
+            }:
+                raise ProtocolViolation("freeze authorization evidence row is not closed")
+            rows.append(
+                FreezeAxisEvidence(
+                    axis=item["axis"],
+                    status=FreezeEvidenceStatus(item["status"]),
+                    artifact_digest=item["artifact_digest"],
+                    detail=item["detail"],
+                )
+            )
+        receipt = authorize_freeze(
+            benchmark_id=manifest.get("benchmark_id"),
+            scope_digest=wire.get("scope_digest"),
+            source_revision=manifest.get("source_revision"),
+            required_paths=tuple(manifest.get("required_paths", ())),
+            evidence=tuple(rows),
+        )
+    except ProtocolViolation:
+        raise
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ProtocolViolation("freeze authorization is malformed") from exc
+    if receipt.to_wire() != wire or receipt.digest != top_digest:
+        raise ProtocolViolation("freeze authorization digest or binding mismatch")
+    file_rows = manifest.get("files")
+    if type(file_rows) is not list or any(type(item) is not dict for item in file_rows):
+        raise ProtocolViolation("freeze file inventory is missing")
+    inventoried_digests = {item.get("sha256") for item in file_rows}
+    unbound_axes = [
+        row.axis
+        for row in receipt.evidence
+        if row.artifact_digest not in inventoried_digests
+    ]
+    if unbound_axes:
+        raise ProtocolViolation(
+            f"freeze evidence digests are not in file inventory: {unbound_axes!r}"
+        )
 
 
 def _exclusive_write(path: Path, payload: bytes) -> None:
@@ -201,6 +460,7 @@ def write_freeze_manifest(directory: Path, manifest: dict[str, Any]) -> tuple[Pa
     if type(manifest) is not dict or manifest.get("protocol") != MANIFEST_PROTOCOL:
         raise ProtocolViolation("not a UCM freeze manifest")
     _reject_secret_material(manifest)
+    _validate_manifest_freeze_authorization(manifest)
     payload = canonical_json_bytes(manifest)
     target = directory / "FREEZE_MANIFEST.json"
     sidecar = directory / "FREEZE_MANIFEST.json.sha256"
@@ -242,6 +502,7 @@ def verify_freeze_manifest(repo_root: Path, manifest_path: Path) -> FreezeVerifi
     if canonical_json_bytes(manifest) != payload or manifest.get("protocol") != MANIFEST_PROTOCOL:
         raise ProtocolViolation("freeze manifest is not canonical or has wrong protocol")
     _reject_secret_material(manifest)
+    _validate_manifest_freeze_authorization(manifest)
     rows = manifest.get("files")
     if type(rows) is not list:
         raise ProtocolViolation("freeze manifest files are missing")

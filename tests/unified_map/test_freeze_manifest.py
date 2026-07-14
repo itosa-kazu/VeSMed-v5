@@ -7,7 +7,11 @@ import pytest
 
 from prototype.unified_map.canonical import ProtocolViolation, digest_bytes
 from prototype.unified_map.freeze import (
+    REQUIRED_FREEZE_EVIDENCE_AXES,
+    FreezeAxisEvidence,
+    FreezeEvidenceStatus,
     FreezeStatus,
+    authorize_freeze,
     build_freeze_manifest,
     inventory_files,
     verify_freeze_manifest,
@@ -35,11 +39,11 @@ def manifest(root: Path, names: tuple[str, ...], *, blockers: tuple[str, ...] = 
     files = inventory_files(root, reversed(names))
     return build_freeze_manifest(
         benchmark_id="ucm-benchmark-v1",
-        status=FreezeStatus.PRE_FREEZE if blockers else FreezeStatus.FROZEN_V1,
+        status=FreezeStatus.PRE_FREEZE,
         files=files,
         source_revision="deadbeef",
         created_at="2026-07-15T00:00:00Z",
-        prefreeze_blockers=blockers,
+        prefreeze_blockers=blockers or ("unit-test-prefreeze",),
         required_paths=names,
         metadata={"claim_level": "synthetic-only"},
     )
@@ -83,6 +87,123 @@ def test_frozen_status_requires_no_blockers_and_every_required_path(tmp_path: Pa
             created_at="2026-07-15T00:00:00Z",
             prefreeze_blockers=("oracle-reference-missing",),
             required_paths=names,
+        )
+
+
+def _passing_evidence(
+    artifact_digests: tuple[str, ...] | None = None,
+) -> tuple[FreezeAxisEvidence, ...]:
+    digests = artifact_digests or tuple(
+        digest_bytes(f"evidence:{axis}".encode("ascii"))
+        for axis in REQUIRED_FREEZE_EVIDENCE_AXES
+    )
+    assert digests
+    return tuple(
+        FreezeAxisEvidence(
+            axis=axis,
+            status=FreezeEvidenceStatus.PASS,
+            artifact_digest=digests[index % len(digests)],
+            detail=f"unit evidence for {axis}",
+        )
+        for index, axis in enumerate(REQUIRED_FREEZE_EVIDENCE_AXES)
+    )
+
+
+def test_empty_caller_blocker_list_cannot_authorize_a_freeze(tmp_path: Path) -> None:
+    root, names = repo_fixture(tmp_path)
+    with pytest.raises(ProtocolViolation, match="FreezeAuthorization"):
+        build_freeze_manifest(
+            benchmark_id="ucm-benchmark-v1",
+            status=FreezeStatus.FROZEN_V1,
+            files=inventory_files(root, names),
+            source_revision="deadbeef",
+            created_at="2026-07-15T00:00:00Z",
+            prefreeze_blockers=(),
+            required_paths=names,
+        )
+
+
+def test_authorization_requires_every_axis_to_be_present_and_pass() -> None:
+    rows = list(_passing_evidence())
+    with pytest.raises(ProtocolViolation, match="every frozen axis"):
+        authorize_freeze(
+            benchmark_id="ucm-benchmark-v1",
+            scope_digest=digest_bytes(b"scope"),
+            source_revision="deadbeef",
+            required_paths=("research/unified_map/BENCHMARK.md",),
+            evidence=rows[:-1],
+        )
+    rows[-1] = FreezeAxisEvidence(
+        axis=rows[-1].axis,
+        status=FreezeEvidenceStatus.INCOMPLETE,
+        artifact_digest=rows[-1].artifact_digest,
+        detail="known incomplete unit evidence",
+    )
+    with pytest.raises(ProtocolViolation, match="non-PASS axes"):
+        authorize_freeze(
+            benchmark_id="ucm-benchmark-v1",
+            scope_digest=digest_bytes(b"scope"),
+            source_revision="deadbeef",
+            required_paths=("research/unified_map/BENCHMARK.md",),
+            evidence=rows,
+        )
+
+
+def test_frozen_manifest_binds_all_pass_receipt_and_rejects_tampering(
+    tmp_path: Path,
+) -> None:
+    root, names = repo_fixture(tmp_path)
+    files = inventory_files(root, names)
+    authorization = authorize_freeze(
+        benchmark_id="ucm-benchmark-v1",
+        scope_digest=digest_bytes(b"scope"),
+        source_revision="deadbeef",
+        required_paths=names,
+        evidence=_passing_evidence(tuple(row.sha256 for row in files)),
+    )
+    built = build_freeze_manifest(
+        benchmark_id="ucm-benchmark-v1",
+        status=FreezeStatus.FROZEN_V1,
+        files=files,
+        source_revision="deadbeef",
+        created_at="2026-07-15T00:00:00Z",
+        prefreeze_blockers=(),
+        required_paths=names,
+        freeze_authorization=authorization,
+    )
+    assert built["freeze_authorization_digest"] == authorization.digest
+    target, _ = write_freeze_manifest(tmp_path / "authorized-freeze", built)
+    assert verify_freeze_manifest(root, target).ok
+
+    tampered = json.loads(target.read_bytes())
+    tampered["metadata"]["freeze_authorization"]["evidence"][0]["status"] = (
+        "INCOMPLETE"
+    )
+    with pytest.raises(ProtocolViolation, match="non-PASS axes"):
+        write_freeze_manifest(tmp_path / "tampered-freeze", tampered)
+
+
+def test_authorization_evidence_must_be_bound_to_inventoried_file_bytes(
+    tmp_path: Path,
+) -> None:
+    root, names = repo_fixture(tmp_path)
+    authorization = authorize_freeze(
+        benchmark_id="ucm-benchmark-v1",
+        scope_digest=digest_bytes(b"scope"),
+        source_revision="deadbeef",
+        required_paths=names,
+        evidence=_passing_evidence(),
+    )
+    with pytest.raises(ProtocolViolation, match="not in file inventory"):
+        build_freeze_manifest(
+            benchmark_id="ucm-benchmark-v1",
+            status=FreezeStatus.FROZEN_V1,
+            files=inventory_files(root, names),
+            source_revision="deadbeef",
+            created_at="2026-07-15T00:00:00Z",
+            prefreeze_blockers=(),
+            required_paths=names,
+            freeze_authorization=authorization,
         )
 
 
