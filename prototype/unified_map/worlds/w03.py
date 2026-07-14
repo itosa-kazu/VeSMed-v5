@@ -43,6 +43,10 @@ from .w02 import _condition_scalar, _normalize_components
 _U3 = {"A1": -1.0, "A2": 1.0}
 _PROCESS_VARIANCE = 0.035**2
 _OBSERVATIONS = {"obs_0": (0.04**2, 0.0), "obs_1": (0.015**2, 0.03)}
+# The scoring oracle uses one frozen population prior for every benchmark split.
+# Split-specific supports below are generator-only covariate shifts and are not
+# candidate-visible query semantics.
+_PUBLIC_DRIFT_PRIOR_BOUNDS = (0.20, 0.30)
 
 
 def _schedule(policy: ActionPlan, horizon: int) -> tuple[float, ...]:
@@ -95,7 +99,7 @@ class W03World(MicroWorld):
         return tuple(policies)
 
     @staticmethod
-    def _d_bounds(split: WorldSplit) -> tuple[float, float]:
+    def _generator_d_bounds(split: WorldSplit) -> tuple[float, float]:
         if split is WorldSplit.TRAIN:
             return (0.20, 0.27)
         if split is WorldSplit.VALIDATION:
@@ -125,7 +129,7 @@ class W03World(MicroWorld):
         sparse_history = (
             split is WorldSplit.SEALED_TEST and pair_group % 5 == 2
         )
-        lower, upper = self._d_bounds(split)
+        lower, upper = self._generator_d_bounds(split)
         d = lower + (upper - lower) * uniform01(
             generator_seed,
             "w03",
@@ -335,7 +339,7 @@ class W03World(MicroWorld):
             return cached
         x_nodes, x_weights = leggauss(16)
         d_nodes, d_weights = leggauss(64)
-        d_lower, d_upper = self._d_bounds(episode.split)
+        d_lower, d_upper = _PUBLIC_DRIFT_PRIOR_BOUNDS
         components: list[dict[str, Any]] = []
         for c in (0, 1):
             for x_node, x_weight in zip(x_nodes, x_weights, strict=True):
@@ -390,7 +394,6 @@ class W03World(MicroWorld):
     def _semantic_history_key(episode: PrivateEpisode) -> str:
         return digest_json(
             {
-                "split": episode.split.value,
                 "events": sorted(
                     (
                         {
@@ -647,12 +650,10 @@ class W03World(MicroWorld):
 
         x_nodes, x_weights = leggauss(16)
         d_nodes, d_weights = leggauss(64)
-        if episode.split is WorldSplit.TRAIN:
-            d_lower, d_upper = 0.20, 0.27
-        elif episode.split is WorldSplit.VALIDATION:
-            d_lower, d_upper = 0.20, 0.30
-        else:
-            d_lower, d_upper = 0.23, 0.30
+        # Independent implementation of the same frozen public scoring prior.
+        # The private train/validation/sealed-test identity must not enter the
+        # posterior once the public history and query are fixed.
+        d_lower, d_upper = 0.20, 0.30
         classes: list[int] = []
         drifts: list[float] = []
         means: list[float] = []
