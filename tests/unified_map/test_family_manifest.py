@@ -173,11 +173,20 @@ def test_producer_cannot_forge_or_smuggle_family_digest() -> None:
 @pytest.mark.parametrize(
     "forbidden_key",
     [
+        "schema_version",
+        "blockers",
         "status",
         "freeze_grade_evidence",
         "freezeGradeEvidence",
         "benchmark_freeze_eligible",
+        "benchmark_id",
+        "benchmark_revision",
+        "authority_origin",
+        "authorityRole",
+        "authority-scope-digest",
         "split",
+        "split_policy_digest",
+        "splitSeedCommitment",
         "record_id",
         "case_key",
         "generator_seed",
@@ -186,7 +195,28 @@ def test_producer_cannot_forge_or_smuggle_family_digest() -> None:
         "population_index",
         "randomness_transcript",
         "builder-run-id",
+        "builder_version",
         "latent_transcript",
+        "registry_digest",
+        "generatorBundleDigest",
+        "topology-contract-digest",
+        "query_contract_digest",
+        "assignment_cluster_digests",
+        "authority_digests",
+        "split_weight_totals",
+        "preSplitSource",
+        "assignments",
+        "connectedComponents",
+        "materialization-receipts",
+        "family_identity",
+        "randomnessIdentity",
+        "input_digest",
+        "rowJoin",
+        "row_count",
+        "total-weight",
+        "units",
+        "pair_topology",
+        "atomicLinks",
         "candidate_row_digest",
         "rawResponseDigest",
         "receipt_digest",
@@ -741,6 +771,18 @@ def test_to_wire_revalidates_mutated_builder_inputs_fail_closed() -> None:
     transcript.latent_transcript["draws"] = [999.0]
     with pytest.raises(ProtocolViolation, match="not builder-derived"):
         source.to_wire()
+
+
+def test_source_rejects_mutated_nested_builder_provenance() -> None:
+    source = _source((_draft("family-a"),))
+    unit = source.units[0]
+    forged_transcript = replace(
+        unit.randomness_transcript,
+        builder_id="evil-builder",
+    )
+    forged_unit = replace(unit, randomness_transcript=forged_transcript)
+    with pytest.raises(ProtocolViolation, match="does not match source builder"):
+        replace(source, units=(forged_unit,))
 
 
 def test_source_wire_contains_no_post_split_identity_or_generator_seed() -> None:

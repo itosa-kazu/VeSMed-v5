@@ -50,13 +50,22 @@ INCOMPLETE_CODE = "UCM-E003-HARNESS_INCOMPLETE"
 
 _PRODUCER_FORBIDDEN = frozenset(
     {
+        "schema_version",
         "status",
+        "blockers",
         "freeze_grade_evidence",
         "benchmark_freeze_eligible",
+        "benchmark_id",
+        "benchmark_revision",
+        "authority_origin",
+        "authority_role",
         "family_digest",
         "patient_family_digest",
         "assignment_cluster_digest",
+        "assignment_cluster_digests",
         "authority_digest",
+        "authority_digests",
+        "authority_scope_digest",
         "source_unit_digest",
         "source_digest",
         "member_digest",
@@ -84,7 +93,28 @@ _PRODUCER_FORBIDDEN = frozenset(
         "acquisition_transcript",
         "owner_role",
         "builder_id",
+        "builder_version",
         "builder_run_id",
+        "registry_digest",
+        "generator_bundle_digest",
+        "topology_contract_digest",
+        "query_contract_digest",
+        "split_policy_digest",
+        "split_seed_commitment",
+        "split_weight_totals",
+        "pre_split_source",
+        "assignments",
+        "connected_components",
+        "materialization_receipts",
+        "family_identity",
+        "randomness_identity",
+        "input_digest",
+        "row_join",
+        "row_count",
+        "total_weight",
+        "units",
+        "pair_topology",
+        "atomic_links",
         "public_history_digest",
         "hidden_state_at_cut_digest",
         "query_cell_digest",
@@ -811,6 +841,10 @@ class PreSplitFamilySource:
             unit.__post_init__()
             if unit.authority_scope_digest != self.authority_scope_digest:
                 raise ProtocolViolation("source unit authority scope is stale or mismatched")
+            if unit.randomness_transcript.builder_id != self.builder_id:
+                raise ProtocolViolation(
+                    "source unit transcript builder_id does not match source builder"
+                )
         for pair in self.pairs:
             pair.__post_init__()
         for link in self.atomic_links:
