@@ -172,7 +172,7 @@ def test_generic_unrevealed_materializer_is_typed_incomplete_and_never_calls_ext
     assert result.status is MaterializationStatus.INCOMPLETE
     assert result.probe_record_count == 0
     assert any(blocker.interface == "two_stage_extension" for blocker in result.blockers)
-    with pytest.raises(ProtocolViolation, match="derived from its blocker set"):
+    with pytest.raises(ProtocolViolation, match="must remain INCOMPLETE"):
         replace(result, status=MaterializationStatus.COMPLETE)
     object.__setattr__(result, "status", MaterializationStatus.COMPLETE)
     assert result.to_wire()["status"] == MaterializationStatus.INCOMPLETE.value
@@ -203,7 +203,7 @@ def test_generic_full_non_test_extension_split_cannot_masquerade_as_complete(
     assert not any(blocker.interface == "split_size" for blocker in result.blockers)
 
 
-def test_generic_materialization_without_blockers_remains_complete_and_derived(
+def test_generic_materialization_remains_incomplete_without_authority_and_is_derived(
     tmp_path: Path,
 ) -> None:
     result = materialize_world_split(
@@ -214,13 +214,16 @@ def test_generic_materialization_without_blockers_remains_complete_and_derived(
         tmp_path / "w01-train",
         alias_secret=b"c" * 32,
     )
-    assert result.blockers == ()
-    assert result.status is MaterializationStatus.COMPLETE
-    assert result.to_wire()["status"] == MaterializationStatus.COMPLETE.value
-    with pytest.raises(ProtocolViolation, match="derived from its blocker set"):
-        replace(result, status=MaterializationStatus.INCOMPLETE)
-    object.__setattr__(result, "status", MaterializationStatus.INCOMPLETE)
-    assert result.to_wire()["status"] == MaterializationStatus.COMPLETE.value
+    assert {blocker.interface for blocker in result.blockers} == {
+        "pre_split_family_authority",
+        "dual_channel_stratum_authority",
+    }
+    assert result.status is MaterializationStatus.INCOMPLETE
+    assert result.to_wire()["status"] == "incomplete"
+    with pytest.raises(ProtocolViolation, match="must remain INCOMPLETE"):
+        replace(result, status=MaterializationStatus.COMPLETE)
+    object.__setattr__(result, "status", MaterializationStatus.COMPLETE)
+    assert result.to_wire()["status"] == "incomplete"
 
 
 @pytest.mark.parametrize("split", (WorldSplit.TRAIN, WorldSplit.VALIDATION))

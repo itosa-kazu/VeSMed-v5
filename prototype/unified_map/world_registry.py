@@ -380,10 +380,29 @@ class RegistryReadiness:
     status: ReadinessStatus
     blockers: tuple[HarnessBlocker, ...]
 
+    def __post_init__(self) -> None:
+        if type(self.status) is not ReadinessStatus:
+            raise ProtocolViolation("registry readiness status must be typed")
+        if self.status is not ReadinessStatus.INCOMPLETE:
+            raise ProtocolViolation(
+                "legacy registry readiness must remain INCOMPLETE"
+            )
+        if type(self.blockers) is not tuple or any(
+            type(blocker) is not HarnessBlocker for blocker in self.blockers
+        ):
+            raise ProtocolViolation("registry readiness blockers must be typed")
+        if not self.blockers:
+            raise ProtocolViolation(
+                "legacy registry readiness requires an incomplete blocker"
+            )
+
     def to_wire(self) -> dict[str, Any]:
         return {
             "schema_version": "ucm-world-registry-readiness/1",
-            "status": self.status.value,
+            # The legacy registry audit cannot establish family/stratum
+            # authority.  In-process mutation must not turn that evidence gap
+            # into a wire-level READY claim.
+            "status": "incomplete",
             "blockers": [blocker.to_wire() for blocker in self.blockers],
         }
 
@@ -401,6 +420,30 @@ def audit_registry_readiness() -> RegistryReadiness:
     blockers: list[HarnessBlocker] = []
     for slot, declaration in WORLD_REGISTRY.items():
         for panel in declaration.panels:
+            # A callable world classifier is useful development machinery, but
+            # it is not independent evidence that rows were grouped before the
+            # split or that public-replay predicates were joined to a frozen
+            # judge allocation.  Keep those two authority layers explicit and
+            # fail closed until the future authority-aware materializer binds
+            # their typed artifacts.
+            blockers.extend(
+                (
+                    HarnessBlocker(
+                        "UCM-E003-HARNESS_INCOMPLETE",
+                        slot,
+                        panel.panel_id,
+                        "pre_split_family_authority",
+                        "pre-split family source, weighted atomic assignment, and row receipts are not registry-bound",
+                    ),
+                    HarnessBlocker(
+                        "UCM-E003-HARNESS_INCOMPLETE",
+                        slot,
+                        panel.panel_id,
+                        "dual_channel_stratum_authority",
+                        "public-replay evidence is not joined to a frozen judge-side stratum allocation",
+                    ),
+                )
+            )
             try:
                 world = panel.instantiate()
             except Exception as exc:  # a broken factory is evidence, not a crash-only PASS
@@ -518,30 +561,25 @@ class MaterializationResult:
     def __post_init__(self) -> None:
         if type(self.status) is not MaterializationStatus:
             raise ProtocolViolation("materialization status must be typed")
+        if self.status is not MaterializationStatus.INCOMPLETE:
+            raise ProtocolViolation(
+                "legacy materialization result must remain INCOMPLETE"
+            )
         if type(self.blockers) is not tuple or any(
             type(blocker) is not HarnessBlocker for blocker in self.blockers
         ):
             raise ProtocolViolation("materialization blockers must be typed")
-        expected = (
-            MaterializationStatus.INCOMPLETE
-            if self.blockers
-            else MaterializationStatus.COMPLETE
-        )
-        if self.status is not expected:
+        if not self.blockers:
             raise ProtocolViolation(
-                "materialization status must be derived from its blocker set"
+                "legacy materialization result requires an incomplete blocker"
             )
 
     def to_wire(self) -> dict[str, Any]:
         return {
             "schema_version": "ucm-materialization-result/1",
-            # Never trust a mutable status field when the blocker set is the
-            # authoritative fail-closed evidence.
-            "status": (
-                MaterializationStatus.INCOMPLETE.value
-                if self.blockers
-                else MaterializationStatus.COMPLETE.value
-            ),
+            # This schema is the legacy adapter, so neither a mutable status
+            # field nor an in-process blocker-set mutation can elevate it.
+            "status": "incomplete",
             "world_slot": self.world_slot,
             "panel_id": self.panel_id,
             "split": self.split,
@@ -1125,6 +1163,41 @@ def _strata_for_episode(
     if unknown:
         raise ProtocolViolation(f"world returned undeclared strata: {sorted(unknown)!r}")
     return value, ()
+
+
+def _unverified_probe_strata(
+    world: MicroWorld,
+    panel: PanelDeclaration,
+    episode: PrivateEpisode,
+) -> tuple[str, ...]:
+    """Best-effort legacy probe annotations, never membership authority.
+
+    Population classifiers may deliberately reject synthetic probe episodes
+    whose histories were transformed after generation.  That must not make a
+    development corpus crash, nor may the generic adapter promote a fallback
+    into verified membership.  Preserve a well-typed world report when one is
+    available and otherwise retain only the panel's declared labels, all in
+    the judge row's explicitly unverified field.
+    """
+
+    classifier = getattr(world, "strata_for_episode", None)
+    if not callable(classifier):
+        return panel.strata
+    try:
+        value = classifier(episode)
+    except ProtocolViolation:
+        return panel.strata
+    if type(value) is not tuple or any(type(item) is not str for item in value):
+        raise ProtocolViolation("probe stratum classifier must return tuple[str, ...]")
+    if not value:
+        raise ProtocolViolation("probe stratum classifier returned no labels")
+    if len(set(value)) != len(value):
+        raise ProtocolViolation("probe stratum classifier returned duplicate labels")
+    declared = set(panel.strata)
+    if any(item not in declared for item in value):
+        raise ProtocolViolation("probe stratum classifier returned an undeclared label")
+    selected = set(value)
+    return tuple(item for item in panel.strata if item in selected)
 
 
 def _flatten_probe_result(
@@ -2519,7 +2592,27 @@ def materialize_world_split(
     output_dir.mkdir(parents=True, exist_ok=False)
     candidate_path = output_dir / "candidate-public.jsonl"
     judge_path = output_dir / "judge-private.jsonl"
-    blockers: list[HarnessBlocker] = []
+    # This entry point is deliberately the legacy post-split adapter.  It can
+    # exercise generators and produce physically separated streams, but it
+    # cannot create family or stratum authority from rows that already know
+    # their split.  These blockers are unconditional; a future authority-aware
+    # materializer must be a separate entry point with exact typed joins.
+    blockers: list[HarnessBlocker] = [
+        HarnessBlocker(
+            "UCM-E003-HARNESS_INCOMPLETE",
+            world_slot,
+            panel.panel_id,
+            "pre_split_family_authority",
+            "legacy post-split materialization has no pre-split family source, weighted assignment, or row receipt",
+        ),
+        HarnessBlocker(
+            "UCM-E003-HARNESS_INCOMPLETE",
+            world_slot,
+            panel.panel_id,
+            "dual_channel_stratum_authority",
+            "legacy episode classifiers do not bind public replay to a frozen judge-side allocation",
+        ),
+    ]
     if world_slot in EXTENSION_WORLD_REGISTRY:
         blockers.append(
             HarnessBlocker(
@@ -2616,19 +2709,6 @@ def materialize_world_split(
                         result = method(generator_seed)
                     groups = _flatten_probe_result(result, declaration=probe)
                     for local_name, episodes in groups:
-                        pair_id = "p-" + hmac.new(
-                            alias_secret,
-                            b"UCM-PAIR-ALIAS-v1\0"
-                            + canonical_json_bytes(
-                                {
-                                    "panel": panel.panel_id,
-                                    "probe": local_name,
-                                    "probe_index": probe_index,
-                                    "slot": world_slot,
-                                }
-                            ),
-                            hashlib.sha256,
-                        ).hexdigest()
                         for side, episode in enumerate(episodes):
                             if type(episode) is not PrivateEpisode:
                                 raise ProtocolViolation("probe contains a non-episode")
@@ -2639,6 +2719,16 @@ def materialize_world_split(
                                 raise ProtocolViolation(
                                     "probe episode contradicts requested world/split"
                                 )
+                            # Probe membership is not pair authority.  Preserve
+                            # the world/declaration labels only as explicitly
+                            # unverified evidence; do not turn every singleton
+                            # or tuple returned by a probe producer into an
+                            # authoritative behavior-pair stratum.
+                            unverified_probe_strata = _unverified_probe_strata(
+                                world,
+                                panel,
+                                episode,
+                            )
                             record_id = _opaque_alias(
                                 alias_secret,
                                 slot=world_slot,
@@ -2658,10 +2748,14 @@ def materialize_world_split(
                                     cohort="probe",
                                     ordinal=None,
                                     probe_id=local_name,
-                                    pair_id=pair_id,
-                                    pair_side=side,
-                                    strata=("behavior_pair",),
-                                    unverified_strata=(),
+                                    # The legacy post-split adapter has no
+                                    # authoritative family topology.  Even a
+                                    # tuple-shaped producer result therefore
+                                    # cannot mint pair identity.
+                                    pair_id=None,
+                                    pair_side=None,
+                                    strata=(),
+                                    unverified_strata=unverified_probe_strata,
                                 )
                             )
                             probe_ordinal += 1
@@ -2687,7 +2781,7 @@ def materialize_world_split(
     candidate_bytes = candidate_path.read_bytes()
     judge_bytes = judge_path.read_bytes()
     result = MaterializationResult(
-        MaterializationStatus.INCOMPLETE if blockers else MaterializationStatus.COMPLETE,
+        MaterializationStatus.INCOMPLETE,
         world_slot,
         panel.panel_id,
         split.value,
