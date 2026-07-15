@@ -2632,6 +2632,13 @@ def materialize_world_split(
                         for side, episode in enumerate(episodes):
                             if type(episode) is not PrivateEpisode:
                                 raise ProtocolViolation("probe contains a non-episode")
+                            if (
+                                episode.split is not split
+                                or episode.environment_key != world.environment_key
+                            ):
+                                raise ProtocolViolation(
+                                    "probe episode contradicts requested world/split"
+                                )
                             record_id = _opaque_alias(
                                 alias_secret,
                                 slot=world_slot,

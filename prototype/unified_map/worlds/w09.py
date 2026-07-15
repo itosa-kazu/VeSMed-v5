@@ -636,10 +636,15 @@ class World09(MicroWorld):
     def probe_fixtures(
         self, generator_seed: int = 909
     ) -> dict[str, tuple[PrivateEpisode, PrivateEpisode]]:
-        # Search only for a declared interior approximate translation pair.
-        base = self.generate_episode(WorldSplit.TRAIN, generator_seed, 0)
+        # Probe custody is part of the sealed cohort.  In particular, do not
+        # recycle the same-seed TRAIN population stream as judge-only probes.
+        # Search only the SEALED_TEST stream for a declared interior
+        # approximate translation pair.
+        base = self.generate_episode(WorldSplit.SEALED_TEST, generator_seed, 0)
         for index in range(64):
-            candidate = self.generate_episode(WorldSplit.TRAIN, generator_seed, index)
+            candidate = self.generate_episode(
+                WorldSplit.SEALED_TEST, generator_seed, index
+            )
             b = float(candidate.hidden_state_at_cut["baseline"])
             if -0.4 <= b <= 0.4:
                 translated = self._translate_history(candidate, 0.05)
