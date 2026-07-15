@@ -5,9 +5,17 @@ from pathlib import Path
 
 import pytest
 
-from prototype.unified_map.canonical import ProtocolViolation, digest_bytes
+from prototype.unified_map.canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+)
 from prototype.unified_map.freeze import (
+    EMPTY_REQUIRED_PATHS_BLOCKER,
+    MISSING_REQUIRED_PATHS_BLOCKER,
+    OFFICIAL_FREEZE_ISSUER_BLOCKERS,
     REQUIRED_FREEZE_EVIDENCE_AXES,
+    FreezeAuthorization,
     FreezeAxisEvidence,
     FreezeEvidenceStatus,
     FreezeStatus,
@@ -60,7 +68,14 @@ def test_inventory_and_manifest_are_order_independent_and_canonical(tmp_path: Pa
         digest_bytes(target.read_bytes()) + "  FREEZE_MANIFEST.json\n"
     )
     verification = verify_freeze_manifest(root, target)
-    assert verification.ok and verification.file_count == 3
+    assert verification.prefreeze_integrity_ok and verification.file_count == 3
+    assert verification.integrity_ok  # compatibility alias remains non-authoritative
+    assert verification.declared_status is FreezeStatus.PRE_FREEZE
+    assert not verification.authorized_frozen
+    assert not verification.ok
+    assert set(OFFICIAL_FREEZE_ISSUER_BLOCKERS) <= set(
+        verification.authorization_blockers
+    )
 
 
 def test_freeze_manifest_is_non_overwriting_and_detects_byte_drift(tmp_path: Path) -> None:
@@ -71,6 +86,7 @@ def test_freeze_manifest_is_non_overwriting_and_detects_byte_drift(tmp_path: Pat
         write_freeze_manifest(tmp_path / "freeze", built)
     root.joinpath(*names[1].split("/")).write_bytes(b"changed\n")
     verification = verify_freeze_manifest(root, target)
+    assert not verification.prefreeze_integrity_ok
     assert not verification.ok
     assert verification.drifted_paths == (names[1],)
 
@@ -78,7 +94,7 @@ def test_freeze_manifest_is_non_overwriting_and_detects_byte_drift(tmp_path: Pat
 def test_frozen_status_requires_no_blockers_and_every_required_path(tmp_path: Path) -> None:
     root, names = repo_fixture(tmp_path)
     files = inventory_files(root, names[:-1])
-    with pytest.raises(ProtocolViolation, match="cannot freeze"):
+    with pytest.raises(ProtocolViolation, match="FROZEN-v1 issuance is disabled"):
         build_freeze_manifest(
             benchmark_id="ucm-benchmark-v1",
             status=FreezeStatus.FROZEN_V1,
@@ -111,7 +127,7 @@ def _passing_evidence(
 
 def test_empty_caller_blocker_list_cannot_authorize_a_freeze(tmp_path: Path) -> None:
     root, names = repo_fixture(tmp_path)
-    with pytest.raises(ProtocolViolation, match="FreezeAuthorization"):
+    with pytest.raises(ProtocolViolation, match="FROZEN-v1 issuance is disabled"):
         build_freeze_manifest(
             benchmark_id="ucm-benchmark-v1",
             status=FreezeStatus.FROZEN_V1,
@@ -123,23 +139,11 @@ def test_empty_caller_blocker_list_cannot_authorize_a_freeze(tmp_path: Path) -> 
         )
 
 
-def test_authorization_requires_every_axis_to_be_present_and_pass() -> None:
-    rows = list(_passing_evidence())
-    with pytest.raises(ProtocolViolation, match="every frozen axis"):
-        authorize_freeze(
-            benchmark_id="ucm-benchmark-v1",
-            scope_digest=digest_bytes(b"scope"),
-            source_revision="deadbeef",
-            required_paths=("research/unified_map/BENCHMARK.md",),
-            evidence=rows[:-1],
-        )
-    rows[-1] = FreezeAxisEvidence(
-        axis=rows[-1].axis,
-        status=FreezeEvidenceStatus.INCOMPLETE,
-        artifact_digest=rows[-1].artifact_digest,
-        detail="known incomplete unit evidence",
-    )
-    with pytest.raises(ProtocolViolation, match="non-PASS axes"):
+@pytest.mark.parametrize("rows", [(), _passing_evidence()[:-1], _passing_evidence()])
+def test_generic_authorization_api_never_trusts_caller_evidence(
+    rows: tuple[FreezeAxisEvidence, ...],
+) -> None:
+    with pytest.raises(ProtocolViolation, match="issuer is disabled"):
         authorize_freeze(
             benchmark_id="ucm-benchmark-v1",
             scope_digest=digest_bytes(b"scope"),
@@ -149,62 +153,169 @@ def test_authorization_requires_every_axis_to_be_present_and_pass() -> None:
         )
 
 
-def test_frozen_manifest_binds_all_pass_receipt_and_rejects_tampering(
+def test_sixteen_same_digest_pass_rows_cannot_self_sign_a_frozen_manifest(
     tmp_path: Path,
 ) -> None:
     root, names = repo_fixture(tmp_path)
     files = inventory_files(root, names)
-    authorization = authorize_freeze(
-        benchmark_id="ucm-benchmark-v1",
-        scope_digest=digest_bytes(b"scope"),
-        source_revision="deadbeef",
-        required_paths=names,
-        evidence=_passing_evidence(tuple(row.sha256 for row in files)),
-    )
-    built = build_freeze_manifest(
-        benchmark_id="ucm-benchmark-v1",
-        status=FreezeStatus.FROZEN_V1,
-        files=files,
-        source_revision="deadbeef",
-        created_at="2026-07-15T00:00:00Z",
-        prefreeze_blockers=(),
-        required_paths=names,
-        freeze_authorization=authorization,
-    )
-    assert built["freeze_authorization_digest"] == authorization.digest
-    target, _ = write_freeze_manifest(tmp_path / "authorized-freeze", built)
-    assert verify_freeze_manifest(root, target).ok
-
-    tampered = json.loads(target.read_bytes())
-    tampered["metadata"]["freeze_authorization"]["evidence"][0]["status"] = (
-        "INCOMPLETE"
-    )
-    with pytest.raises(ProtocolViolation, match="non-PASS axes"):
-        write_freeze_manifest(tmp_path / "tampered-freeze", tampered)
-
-
-def test_authorization_evidence_must_be_bound_to_inventoried_file_bytes(
-    tmp_path: Path,
-) -> None:
-    root, names = repo_fixture(tmp_path)
-    authorization = authorize_freeze(
-        benchmark_id="ucm-benchmark-v1",
-        scope_digest=digest_bytes(b"scope"),
-        source_revision="deadbeef",
-        required_paths=names,
-        evidence=_passing_evidence(),
-    )
-    with pytest.raises(ProtocolViolation, match="not in file inventory"):
+    same_digest = (files[0].sha256,)
+    with pytest.raises(ProtocolViolation, match="issuer is disabled"):
+        authorize_freeze(
+            benchmark_id="ucm-benchmark-v1",
+            scope_digest=digest_bytes(b"scope"),
+            source_revision="deadbeef",
+            required_paths=names,
+            evidence=_passing_evidence(same_digest),
+        )
+    with pytest.raises(ProtocolViolation, match="FROZEN-v1 issuance is disabled"):
         build_freeze_manifest(
             benchmark_id="ucm-benchmark-v1",
             status=FreezeStatus.FROZEN_V1,
-            files=inventory_files(root, names),
+            files=files,
             source_revision="deadbeef",
             created_at="2026-07-15T00:00:00Z",
             prefreeze_blockers=(),
             required_paths=names,
-            freeze_authorization=authorization,
         )
+
+
+def test_freeze_authorization_dto_cannot_be_constructed_directly() -> None:
+    with pytest.raises(ProtocolViolation, match="issuer is disabled"):
+        FreezeAuthorization(
+            benchmark_id="ucm-benchmark-v1",
+            scope_digest=digest_bytes(b"scope"),
+            source_revision="deadbeef",
+            required_paths=("research/unified_map/BENCHMARK.md",),
+            evidence=_passing_evidence(),
+        )
+    forged = object.__new__(FreezeAuthorization)
+    with pytest.raises(ProtocolViolation, match="issuer is disabled"):
+        forged.to_wire()
+
+
+def test_empty_or_missing_inventory_stays_explicitly_pre_freeze(
+    tmp_path: Path,
+) -> None:
+    root, names = repo_fixture(tmp_path)
+    empty = build_freeze_manifest(
+        benchmark_id="ucm-benchmark-v1",
+        status=FreezeStatus.PRE_FREEZE,
+        files=(),
+        source_revision="deadbeef",
+        created_at="2026-07-15T00:00:00Z",
+        prefreeze_blockers=(),
+        required_paths=(),
+    )
+    assert EMPTY_REQUIRED_PATHS_BLOCKER in empty["prefreeze_blockers"]
+    target, _ = write_freeze_manifest(tmp_path / "empty-prefreeze", empty)
+    verified = verify_freeze_manifest(root, target)
+    assert verified.prefreeze_integrity_ok and not verified.ok
+
+    partial = build_freeze_manifest(
+        benchmark_id="ucm-benchmark-v1",
+        status=FreezeStatus.PRE_FREEZE,
+        files=inventory_files(root, names[:-1]),
+        source_revision="deadbeef",
+        created_at="2026-07-15T00:00:00Z",
+        prefreeze_blockers=(),
+        required_paths=names,
+    )
+    assert partial["missing_required_paths"] == [names[-1]]
+    assert MISSING_REQUIRED_PATHS_BLOCKER in partial["prefreeze_blockers"]
+
+
+def _write_unvalidated_manifest(directory: Path, value: dict) -> Path:
+    """Bypass the writer to exercise verify-time closed-schema validation."""
+
+    directory.mkdir(parents=True)
+    target = directory / "FREEZE_MANIFEST.json"
+    payload = canonical_json_bytes(value)
+    target.write_bytes(payload)
+    target.with_name(target.name + ".sha256").write_bytes(
+        (digest_bytes(payload) + "  FREEZE_MANIFEST.json\n").encode("ascii")
+    )
+    return target
+
+
+@pytest.mark.parametrize(
+    "attack",
+    (
+        "extra-top-level",
+        "remove-authority-blocker",
+        "false-missing-list",
+        "open-file-row",
+        "inventory-outside-required",
+        "fake-authorization-digest",
+        "fake-frozen-status",
+    ),
+)
+def test_verify_rechecks_closed_manifest_invariants(
+    tmp_path: Path,
+    attack: str,
+) -> None:
+    root, names = repo_fixture(tmp_path / "repo")
+    attacked = manifest(root, names)
+    if attack == "extra-top-level":
+        attacked["attacker_claim"] = "PASS"
+    elif attack == "remove-authority-blocker":
+        attacked["prefreeze_blockers"].remove(OFFICIAL_FREEZE_ISSUER_BLOCKERS[0])
+    elif attack == "false-missing-list":
+        attacked["missing_required_paths"] = [names[0]]
+    elif attack == "open-file-row":
+        attacked["files"][0]["attacker_claim"] = "PASS"
+    elif attack == "inventory-outside-required":
+        attacked["required_paths"] = list(names[1:])
+    elif attack == "fake-authorization-digest":
+        attacked["freeze_authorization_digest"] = digest_bytes(b"fake")
+    elif attack == "fake-frozen-status":
+        attacked["benchmark_status"] = FreezeStatus.FROZEN_V1.value
+        attacked["prefreeze_blockers"] = []
+    else:  # pragma: no cover - exhaustive test table
+        raise AssertionError(attack)
+    target = _write_unvalidated_manifest(tmp_path / f"attack-{attack}", attacked)
+    with pytest.raises(ProtocolViolation):
+        verify_freeze_manifest(root, target)
+
+
+def test_recomputed_sidecar_and_arbitrary_root_never_upgrade_prefreeze(
+    tmp_path: Path,
+) -> None:
+    first_root, names = repo_fixture(tmp_path / "first")
+    built = manifest(first_root, names)
+
+    # The attacker can alter a non-authoritative PRE-FREEZE claim and recompute
+    # its unkeyed sidecar.  Byte integrity may still validate, but authority may
+    # not: ``ok`` is reserved for an issuer-authenticated frozen artifact.
+    built["metadata"]["attacker_claim"] = "FROZEN-v1"
+    target = _write_unvalidated_manifest(tmp_path / "recomputed", built)
+    first = verify_freeze_manifest(first_root, target)
+    assert first.prefreeze_integrity_ok
+    assert not first.authorized_frozen
+    assert not first.ok
+
+    # Mirroring the inventoried bytes under an arbitrary alternate root likewise
+    # proves only that the bytes match this PRE-FREEZE inventory.
+    second_root, _ = repo_fixture(tmp_path / "second")
+    second = verify_freeze_manifest(second_root, target)
+    assert second.prefreeze_integrity_ok
+    assert not second.authorized_frozen
+    assert not second.ok
+
+
+def test_writer_rejects_caller_fabricated_frozen_wire_even_with_new_sidecar_root(
+    tmp_path: Path,
+) -> None:
+    root, names = repo_fixture(tmp_path / "repo")
+    attacked = manifest(root, names)
+    attacked["benchmark_status"] = FreezeStatus.FROZEN_V1.value
+    attacked["prefreeze_blockers"] = []
+    attacked["freeze_authorization_digest"] = digest_bytes(b"fake-issuer")
+    attacked["metadata"]["freeze_authorization"] = {
+        "protocol": "ucm-freeze-authorization/1",
+        "evidence": [item.to_wire() for item in _passing_evidence()],
+    }
+    with pytest.raises(ProtocolViolation, match="not authorized"):
+        write_freeze_manifest(tmp_path / "attacker-selected-root", attacked)
 
 
 @pytest.mark.parametrize(
