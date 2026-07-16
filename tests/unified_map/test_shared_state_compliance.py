@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import ast
+import inspect
+
+import prototype.unified_map.compliance as compliance
 from prototype.unified_map.compliance import (
     ComplianceVerdict,
     control_entrypoint,
@@ -19,6 +23,60 @@ from prototype.unified_map.schema import (
 
 CATALOG = "sha256:" + "a" * 64
 UTILITY = "sha256:" + "b" * 64
+
+
+def test_portable_sequence_probes_share_one_source_bound_timeout_budget() -> None:
+    assert compliance.PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS == 20.0
+
+    evaluate_tree = ast.parse(
+        inspect.getsource(compliance.evaluate_candidate_compliance)
+    )
+    probe_calls: dict[str, ast.Call] = {}
+    for node in ast.walk(evaluate_tree):
+        if (
+            isinstance(node, ast.Assign)
+            and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and isinstance(node.value, ast.Call)
+            and isinstance(node.value.func, ast.Name)
+            and node.value.func.id == "_invoke_observed_sequence"
+        ):
+            probe_calls[node.targets[0].id] = node.value
+
+    # The two late/future warm sequences and C04 warm/cold sequence must not
+    # silently acquire different machine-sensitive budgets.
+    assert set(probe_calls) == {
+        "initialize_sequence",
+        "update_sequence",
+        "warm_sequence",
+    }
+    for call in probe_calls.values():
+        timeout = next(
+            keyword.value
+            for keyword in call.keywords
+            if keyword.arg == "timeout_seconds"
+        )
+        assert isinstance(timeout, ast.Name)
+        assert timeout.id == "PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS"
+
+    # The helper still forwards an explicit caller deadline.  This keeps the
+    # short-deadline candidate-protocol tests independent of the probe budget.
+    helper_tree = ast.parse(inspect.getsource(compliance._invoke_observed_sequence))
+    executor_calls = [
+        node
+        for node in ast.walk(helper_tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "SequentialProcessExecutor"
+    ]
+    assert len(executor_calls) == 1
+    forwarded = next(
+        keyword.value
+        for keyword in executor_calls[0].keywords
+        if keyword.arg == "timeout_seconds"
+    )
+    assert isinstance(forwarded, ast.Name)
+    assert forwarded.id == "timeout_seconds"
 
 
 def fixture_inputs() -> tuple[

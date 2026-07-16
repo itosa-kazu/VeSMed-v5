@@ -74,6 +74,10 @@ PORTABLE_SEMANTIC_PROBES = frozenset(
     }
 )
 PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/4"
+# Portable compliance probes launch a cold isolated interpreter and re-hash the
+# code-owned authority surface.  Keep that budget source-bound here rather than
+# embedding a machine-sensitive literal at individual probe call sites.
+PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS = 20.0
 SEMANTIC_ABS_TOLERANCE = 1e-9
 SEMANTIC_REL_TOLERANCE = 0.0
 UPDATE_CONSISTENCY_LINEAGE_XOR_MASK = 0x6A09E667F3BCC909
@@ -2244,7 +2248,7 @@ def evaluate_candidate_compliance(
                     ),
                 ),
                 bindings,
-                timeout_seconds=5.0,
+                timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
             )
             initialize_old_diagnosis = initialize_sequence[1]
             initialize_old_rollout = initialize_sequence[2]
@@ -2274,7 +2278,7 @@ def evaluate_candidate_compliance(
                     ),
                 ),
                 bindings,
-                timeout_seconds=5.0,
+                timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
             )
             update_old_diagnosis = update_sequence[2]
             update_old_rollout = update_sequence[3]
@@ -2414,7 +2418,7 @@ def evaluate_candidate_compliance(
                     ),
                 ),
                 bindings,
-                timeout_seconds=5.0,
+                timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
             )
         except WorkerInvocationError as error:
             findings.append(_failure_from_worker(error, "C04-warm-cold-equivalence"))
