@@ -3,8 +3,9 @@
 Only observed detector outcomes are converted to kill records.  The static
 mapping below selects which already-executed gate is decisive; it never turns
 a crash, timeout, missing failure code, or unrelated rejection into a kill.
-The resulting partial matrix is intentionally HARNESS_INCOMPLETE until all
-public benchmark mutants and specificity controls have real executions.
+The resulting content-addressed raw bundle contains the recomputed partial
+matrix and remains intentionally HARNESS_INCOMPLETE until all public benchmark
+mutants and specificity controls have real executions.
 """
 
 from __future__ import annotations
@@ -21,7 +22,18 @@ from pathlib import PurePosixPath
 from types import CodeType
 from typing import Any
 
-from .canonical import ProtocolViolation, digest_bytes, digest_json
+from .candidate_protocol import (
+    _delta_from_wire,
+    _diagnosis_query_from_wire,
+    _history_from_wire,
+    _rollout_query_from_wire,
+)
+from .canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+    digest_json,
+)
 from .compliance import (
     PORTABLE_SEMANTIC_PROBE_PROTOCOL,
     ComplianceFinding,
@@ -35,10 +47,16 @@ from .mutation_matrix import (
     SubjectKind,
     evaluate_mutation_matrix,
 )
+from .mutation_evidence import (
+    BENCHMARK_ID,
+    MutationEvidenceBuilder,
+    MutationEvidenceBundle,
+    portable_runner_contract,
+)
 from .schema import DiagnosisQuery, RolloutQuery, VisibleDelta, VisibleHistory
 
 
-RUNNER_PROTOCOL = "ucm-portable-mutation-runner/15"
+RUNNER_PROTOCOL = "ucm-portable-mutation-runner/17"
 
 
 def _runtime_metadata() -> dict[str, Any]:
@@ -500,21 +518,75 @@ def _registered_callable_reference(value: Any, label: str) -> dict[str, Any]:
     aliases = sorted(
         name for name, candidate in vars(owner).items() if candidate is value
     )
+    bound_module_aliases: list[str] | None = None
+    implementation = "bound-by-live-module-alias"
+    if not aliases and "<locals>" not in qualname:
+        # An imported Python function can remain a live dependency after its
+        # defining-module alias is replaced.  Permit that narrow case only when
+        # the function is demonstrably defined by the canonical owner globals
+        # and still has an identity alias in an anchored source module.  Such
+        # aliases are independently expanded by ``_live_module_code_binding``.
+        # Builtins and arbitrary sys.modules consumers do not get this fallback.
+        if not inspect.isfunction(value) or value.__globals__ is not vars(owner):
+            raise ProtocolViolation(
+                f"callable dependency has no owner alias for {label}"
+            )
+        anchors = globals().get("_SOURCE_IDENTITY_ANCHORS")
+        bound_modules = (
+            anchors.get("modules") if type(anchors) is dict else None
+        )
+        if type(bound_modules) is not dict:
+            raise ProtocolViolation(f"malformed source module anchors for {label}")
+        anchored_owner = False
+        for anchored_module in bound_modules.values():
+            anchored_name = getattr(anchored_module, "__name__", None)
+            if (
+                anchored_module is owner
+                and anchored_name == module_name
+                and sys.modules.get(anchored_name) is anchored_module
+            ):
+                anchored_owner = True
+                break
+        if not anchored_owner:
+            raise ProtocolViolation(
+                f"callable dependency has no anchored owner for {label}"
+            )
+        discovered: set[str] = set()
+        for bound_module in bound_modules.values():
+            bound_name = getattr(bound_module, "__name__", None)
+            if (
+                type(bound_name) is not str
+                or sys.modules.get(bound_name) is not bound_module
+            ):
+                raise ProtocolViolation(f"unregistered source module anchor for {label}")
+            discovered.update(
+                f"{bound_name}.{name}"
+                for name, candidate in vars(bound_module).items()
+                if candidate is value
+            )
+        if not discovered:
+            raise ProtocolViolation(
+                f"callable dependency has no owner alias for {label}"
+            )
+        bound_module_aliases = sorted(discovered)
+        implementation = "bound-by-live-import-alias"
     # Nested closure functions need not have a module alias: the containing
     # callable binds their code/defaults/closure directly.  A referenced
-    # module-global callable, however, must have one authoritative owner alias.
-    if not aliases and "<locals>" not in qualname:
-        raise ProtocolViolation(f"callable dependency has no owner alias for {label}")
+    # module-global callable, however, must have either its authoritative owner
+    # alias or the narrowly verified anchored-import alias above.
     code = getattr(value, "__code__", None)
     if code is not None and type(code) is not CodeType:
         raise ProtocolViolation(f"malformed callable dependency for {label}")
-    return {
+    binding = {
         "kind": "callable-reference",
         "owner": module_name,
         "qualname": qualname,
         "aliases": aliases,
-        "implementation": "bound-by-live-module-alias",
+        "implementation": implementation,
     }
+    if bound_module_aliases is not None:
+        binding["bound_module_aliases"] = bound_module_aliases
+    return binding
 
 
 def _module_reference_binding(value: Any, label: str) -> dict[str, Any]:
@@ -1198,6 +1270,7 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         candidate_protocol,
         canonical,
         compliance,
+        mutation_evidence,
         mutation_matrix,
         schema,
         state,
@@ -1221,6 +1294,7 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
@@ -2225,6 +2299,7 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         candidate_protocol,
         canonical,
         compliance,
+        mutation_evidence,
         mutation_matrix,
         schema,
         state,
@@ -2237,6 +2312,7 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
@@ -2274,6 +2350,7 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
         schema=schema,
@@ -2987,6 +3064,91 @@ def _portable_runner_contract() -> dict[str, Any]:
     }
 
 
+def _active_portable_execution_rows(
+    code_owned_contract: dict[str, Any],
+) -> tuple[
+    tuple[tuple[int, PortableMutationCase, str], ...],
+    tuple[tuple[int, tuple[str, str, str, frozenset[str]], str], ...],
+]:
+    """Bind an active subset to immutable full-registry row indices."""
+
+    if type(code_owned_contract) is not dict or set(code_owned_contract) != {
+        "runner_protocol",
+        "runner_semantic_probe_protocol_alias",
+        "update_consistency_lineage_xor_mask",
+        "mutation_cases",
+        "specificity_cases",
+    }:
+        raise ProtocolViolation("code-owned portable runner contract is malformed")
+    from . import compliance
+
+    active_contract = _portable_runner_contract()
+    if (
+        code_owned_contract["runner_protocol"] != RUNNER_PROTOCOL
+        or code_owned_contract["runner_semantic_probe_protocol_alias"]
+        != PORTABLE_SEMANTIC_PROBE_PROTOCOL
+        or code_owned_contract["update_consistency_lineage_xor_mask"]
+        != compliance.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
+    ):
+        raise ProtocolViolation("code-owned portable runner protocol aliases drifted")
+    code_owned_mutants = code_owned_contract["mutation_cases"]
+    code_owned_controls = code_owned_contract["specificity_cases"]
+    if type(code_owned_mutants) is not list or type(code_owned_controls) is not list:
+        raise ProtocolViolation("code-owned portable runner rows must be exact lists")
+
+    mutant_rows: list[tuple[int, PortableMutationCase, str]] = []
+    seen_indices: set[int] = set()
+    for case, payload in zip(
+        PORTABLE_MUTATION_CASES,
+        active_contract["mutation_cases"],
+        strict=True,
+    ):
+        matches = [
+            (index, expected.get("head_record_shape"))
+            for index, expected in enumerate(code_owned_mutants)
+            if type(expected) is dict
+            and set(expected) == set(payload) | {"head_record_shape"}
+            and all(expected[key] == value for key, value in payload.items())
+            and expected.get("head_record_shape") in {"empty", "replay_ddrr"}
+        ]
+        if len(matches) != 1 or matches[0][0] in seen_indices:
+            raise ProtocolViolation(
+                f"active mutant {case.matrix_subject_id!r} is not one unique "
+                "code-owned portable row"
+            )
+        row_index, head_record_shape = matches[0]
+        seen_indices.add(row_index)
+        mutant_rows.append((row_index, case, head_record_shape))
+
+    control_rows: list[
+        tuple[int, tuple[str, str, str, frozenset[str]], str]
+    ] = []
+    for row, payload in zip(
+        PORTABLE_SPECIFICITY_CASES,
+        active_contract["specificity_cases"],
+        strict=True,
+    ):
+        matches = [
+            (index, expected.get("head_record_shape"))
+            for index, expected in enumerate(code_owned_controls)
+            if type(expected) is dict
+            and set(expected) == set(payload) | {"head_record_shape"}
+            and all(expected[key] == value for key, value in payload.items())
+            and expected.get("head_record_shape") in {"empty", "replay_ddrr"}
+        ]
+        full_row_index = (
+            len(code_owned_mutants) + matches[0][0] if len(matches) == 1 else -1
+        )
+        if len(matches) != 1 or full_row_index in seen_indices:
+            raise ProtocolViolation(
+                f"active specificity control {row[0]!r} is not one unique "
+                "code-owned portable row"
+        )
+        seen_indices.add(full_row_index)
+        control_rows.append((full_row_index, row, matches[0][1]))
+    return tuple(mutant_rows), tuple(control_rows)
+
+
 def _enum_runtime_contract(value: Any, label: str) -> dict[str, Any]:
     if not inspect.isclass(value) or not issubclass(value, Enum):
         raise ProtocolViolation(f"{label} is not a live enum class")
@@ -3008,6 +3170,7 @@ def _freeze_critical_runtime_contract(
     *,
     candidate_protocol: Any,
     compliance: Any,
+    mutation_evidence: Any,
     mutation_matrix: Any,
     runner_module: Any,
     schema: Any,
@@ -3083,6 +3246,27 @@ def _freeze_critical_runtime_contract(
                 "REGISTRY_DIGEST",
             ),
         ),
+        "mutation_evidence": (
+            mutation_evidence,
+            (
+                "MUTATION_EVIDENCE_PROTOCOL",
+                "MUTATION_EXECUTION_CONTEXT_PROTOCOL",
+                "MUTATION_INPUT_PREIMAGE_PROTOCOL",
+                "MUTATION_PRE_SOURCE_WITNESS_PROTOCOL",
+                "MUTATION_POST_SOURCE_WITNESS_PROTOCOL",
+                "MUTATION_SOURCE_RECORD_PROTOCOL",
+                "MUTATION_REPORT_TRANSCRIPT_PROTOCOL",
+                "MUTATION_ERROR_TRANSCRIPT_PROTOCOL",
+                "MUTATION_DECISION_RECORD_PROTOCOL",
+                "MUTATION_DECISIVE_RECORD_PROTOCOL",
+                "BENCHMARK_ID",
+                "PRE_FREEZE_STATUS",
+                "ISOLATION_INCOMPLETE_CODE",
+                "HARNESS_INCOMPLETE_CODE",
+                "MUTATION_EVIDENCE_BLOCKERS",
+                "UPDATE_CONSISTENCY_LINEAGE_XOR_MASK",
+            ),
+        ),
         "mutation_runner": (
             runner_module,
             (
@@ -3134,6 +3318,7 @@ def _critical_alias_identity_contract(
     candidate_protocol: Any,
     canonical: Any,
     compliance: Any,
+    mutation_evidence: Any,
     mutation_matrix: Any,
     runner_module: Any,
     schema: Any,
@@ -3143,6 +3328,7 @@ def _critical_alias_identity_contract(
         "candidate_protocol": candidate_protocol,
         "canonical": canonical,
         "compliance": compliance,
+        "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "mutation_runner": runner_module,
         "schema": schema,
@@ -3227,10 +3413,42 @@ def _critical_alias_identity_contract(
             "canonical_json_bytes": ("canonical", "canonical_json_bytes"),
             "digest_json": ("canonical", "digest_json"),
         },
-        "mutation_runner": {
+        "mutation_evidence": {
             "ProtocolViolation": ("canonical", "ProtocolViolation"),
+            "canonical_json_bytes": ("canonical", "canonical_json_bytes"),
             "digest_bytes": ("canonical", "digest_bytes"),
             "digest_json": ("canonical", "digest_json"),
+            "validate_json_like": ("canonical", "validate_json_like"),
+            "MutationObservation": (
+                "mutation_matrix",
+                "MutationObservation",
+            ),
+            "REGISTRY_DIGEST": ("mutation_matrix", "REGISTRY_DIGEST"),
+            "ObservationOutcome": (
+                "mutation_matrix",
+                "ObservationOutcome",
+            ),
+            "SubjectKind": ("mutation_matrix", "SubjectKind"),
+            "evaluate_mutation_matrix": (
+                "mutation_matrix",
+                "evaluate_mutation_matrix",
+            ),
+        },
+        "mutation_runner": {
+            "ProtocolViolation": ("canonical", "ProtocolViolation"),
+            "canonical_json_bytes": ("canonical", "canonical_json_bytes"),
+            "digest_bytes": ("canonical", "digest_bytes"),
+            "digest_json": ("canonical", "digest_json"),
+            "_delta_from_wire": ("candidate_protocol", "_delta_from_wire"),
+            "_diagnosis_query_from_wire": (
+                "candidate_protocol",
+                "_diagnosis_query_from_wire",
+            ),
+            "_history_from_wire": ("candidate_protocol", "_history_from_wire"),
+            "_rollout_query_from_wire": (
+                "candidate_protocol",
+                "_rollout_query_from_wire",
+            ),
             "ComplianceFinding": ("compliance", "ComplianceFinding"),
             "ComplianceVerdict": ("compliance", "ComplianceVerdict"),
             "control_entrypoint": ("compliance", "control_entrypoint"),
@@ -3250,6 +3468,19 @@ def _critical_alias_identity_contract(
             "evaluate_mutation_matrix": (
                 "mutation_matrix",
                 "evaluate_mutation_matrix",
+            ),
+            "BENCHMARK_ID": ("mutation_evidence", "BENCHMARK_ID"),
+            "MutationEvidenceBuilder": (
+                "mutation_evidence",
+                "MutationEvidenceBuilder",
+            ),
+            "MutationEvidenceBundle": (
+                "mutation_evidence",
+                "MutationEvidenceBundle",
+            ),
+            "portable_runner_contract": (
+                "mutation_evidence",
+                "portable_runner_contract",
             ),
         },
         "schema": {
@@ -3292,14 +3523,21 @@ def _source_binding_witness(
     control_class_name: str,
     semantic_probes: frozenset[str],
     *,
+    execution_seed: int | None = None,
     expected_runtime_import_cache_contract_digest: str | None = None,
 ) -> dict[str, Any]:
     """Return the canonical live implementation transcript for one control."""
+
+    if execution_seed is not None and (
+        type(execution_seed) is not int or not 0 <= execution_seed < 2**64
+    ):
+        raise ProtocolViolation("source witness execution_seed must be uint64 or null")
 
     from . import (
         candidate_protocol,
         canonical,
         compliance,
+        mutation_evidence,
         mutation_matrix,
         schema,
         state,
@@ -3323,6 +3561,7 @@ def _source_binding_witness(
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
@@ -3450,6 +3689,7 @@ def _source_binding_witness(
     freeze_critical_runtime_contract = _freeze_critical_runtime_contract(
         candidate_protocol=candidate_protocol,
         compliance=compliance,
+        mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
         schema=schema,
@@ -3459,6 +3699,7 @@ def _source_binding_witness(
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
         schema=schema,
@@ -3467,9 +3708,14 @@ def _source_binding_witness(
     expected_live_execution_binding = _expected_live_execution_binding(
         control_class_name
     )
+    expected_entrypoint = compliance.control_entrypoint(control_class_name)
+    expected_candidate = (
+        f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
+    )
     return {
-        "protocol": "ucm-portable-control-source-binding/15",
+        "protocol": "ucm-portable-control-source-binding/17",
         "control": control_class_name,
+        "execution_seed": execution_seed,
         "control_mro": mro_sources,
         "source_identity_anchors": source_identity_anchors,
         "external_attribute_identities": external_attribute_identities,
@@ -3485,8 +3731,9 @@ def _source_binding_witness(
         "live_runtime_constants": live_runtime_constants,
         "freeze_critical_runtime_contract": freeze_critical_runtime_contract,
         "critical_alias_identities": critical_alias_identities,
+        "expected_candidate": expected_candidate,
         "expected_live_execution_binding": expected_live_execution_binding,
-        "portable_runner_contract": _portable_runner_contract(),
+        "portable_runner_contract": portable_runner_contract(RUNNER_PROTOCOL),
         "semantic_probe_contract": compliance.PORTABLE_SEMANTIC_PROBE_PROTOCOL,
         "enabled_semantic_probes": sorted(semantic_probes),
         "runtime_metadata": _runtime_metadata(),
@@ -3527,29 +3774,579 @@ def _finding_gate_tokens(finding: ComplianceFinding) -> frozenset[str]:
     )
 
 
+def _typed_execution_error(stage: str, error: Exception) -> dict[str, str]:
+    """Return a JSON-only error record without losing its execution stage."""
+
+    try:
+        message = str(error)
+    except Exception as rendering_error:
+        message = (
+            "unrenderable exception message: "
+            f"{type(rendering_error).__module__}.{type(rendering_error).__qualname__}"
+        )
+    try:
+        message.encode("utf-8")
+    except UnicodeEncodeError:
+        message = message.encode("utf-8", "backslashreplace").decode("utf-8")
+    return {
+        "stage": stage,
+        "exception_type": f"{type(error).__module__}.{type(error).__qualname__}",
+        "message": message,
+    }
+
+
+def _execution_input_wire(
+    history: VisibleHistory,
+    diagnosis_query: DiagnosisQuery,
+    rollout_query: RolloutQuery,
+    delta: VisibleDelta | None,
+) -> dict[str, Any]:
+    """Return the exact runner input preimage without retaining caller aliases."""
+
+    if type(history) is not VisibleHistory:
+        raise ProtocolViolation("runner history must be an exact VisibleHistory")
+    if type(diagnosis_query) is not DiagnosisQuery:
+        raise ProtocolViolation(
+            "runner diagnosis_query must be an exact DiagnosisQuery"
+        )
+    if type(rollout_query) is not RolloutQuery:
+        raise ProtocolViolation("runner rollout_query must be an exact RolloutQuery")
+    if delta is not None and type(delta) is not VisibleDelta:
+        raise ProtocolViolation("runner delta must be an exact VisibleDelta or null")
+    return {
+        "history": history.to_wire(),
+        "diagnosis_query": diagnosis_query.to_wire(),
+        "rollout_query": rollout_query.to_wire(),
+        "delta": None if delta is None else delta.to_wire(),
+    }
+
+
+def _decode_execution_input_snapshot(snapshot: bytes) -> dict[str, Any]:
+    """Decode one canonical immutable input snapshot into detached inert data."""
+
+    if type(snapshot) is not bytes:
+        raise ProtocolViolation("runner input snapshot must be exact bytes")
+    from . import candidate_protocol
+
+    try:
+        payload = candidate_protocol.json.loads(snapshot)
+    except Exception as error:
+        raise ProtocolViolation("runner input snapshot is not valid JSON") from error
+    if type(payload) is not dict or set(payload) != {
+        "history",
+        "diagnosis_query",
+        "rollout_query",
+        "delta",
+    }:
+        raise ProtocolViolation("runner input snapshot has an invalid closed schema")
+    if canonical_json_bytes(payload) != snapshot:
+        raise ProtocolViolation("runner input snapshot is not canonical JSON bytes")
+    return payload
+
+
+def _fresh_execution_inputs(
+    snapshot: bytes,
+) -> tuple[VisibleHistory, DiagnosisQuery, RolloutQuery, VisibleDelta | None]:
+    """Reparse a fresh typed copy from the same immutable canonical snapshot."""
+
+    payload = _decode_execution_input_snapshot(snapshot)
+    history = _history_from_wire(payload["history"])
+    diagnosis_query = _diagnosis_query_from_wire(payload["diagnosis_query"])
+    rollout_query = _rollout_query_from_wire(payload["rollout_query"])
+    delta_payload = payload["delta"]
+    delta = None if delta_payload is None else _delta_from_wire(delta_payload)
+    if (
+        type(history) is not VisibleHistory
+        or type(diagnosis_query) is not DiagnosisQuery
+        or type(rollout_query) is not RolloutQuery
+        or (delta is not None and type(delta) is not VisibleDelta)
+    ):
+        raise ProtocolViolation("runner input reparse returned an inexact schema type")
+    if canonical_json_bytes(
+        _execution_input_wire(history, diagnosis_query, rollout_query, delta)
+    ) != snapshot:
+        raise ProtocolViolation("runner input typed reparse did not round-trip exactly")
+    return history, diagnosis_query, rollout_query, delta
+
+
+def _assert_execution_inputs_unchanged(
+    snapshot: bytes,
+    execution_inputs: tuple[
+        VisibleHistory,
+        DiagnosisQuery,
+        RolloutQuery,
+        VisibleDelta | None,
+    ],
+) -> None:
+    """Prove one execution did not mutate its detached typed input copy."""
+
+    if type(execution_inputs) is not tuple or len(execution_inputs) != 4:
+        raise ProtocolViolation("runner execution inputs are not one exact 4-tuple")
+    if canonical_json_bytes(_execution_input_wire(*execution_inputs)) != snapshot:
+        raise ProtocolViolation(
+            "runner execution mutated its canonical input snapshot copy"
+        )
+
+
+def _execution_input_incomplete_error(
+    stage: str, error: Exception
+) -> dict[str, str]:
+    """Retain the typed cause while classifying input closure as E003."""
+
+    typed_error = _typed_execution_error(stage, error)
+    return {
+        "stage": stage,
+        "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+        "message": (
+            f"{typed_error['exception_type']}: {typed_error['message']}"
+        ),
+    }
+
+
+def _attempt_source_witness(
+    control_class_name: str,
+    semantic_probes: frozenset[str],
+    *,
+    stage: str,
+    execution_seed: int,
+    runtime_import_cache_contract_digest: str | None,
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    """Capture one live witness, returning a typed unavailable preimage on error."""
+
+    try:
+        if runtime_import_cache_contract_digest is None:
+            witness = _source_binding_witness(
+                control_class_name,
+                semantic_probes,
+                execution_seed=execution_seed,
+            )
+        else:
+            witness = _source_binding_witness(
+                control_class_name,
+                semantic_probes,
+                execution_seed=execution_seed,
+                expected_runtime_import_cache_contract_digest=(
+                    runtime_import_cache_contract_digest
+                ),
+            )
+        expected_entrypoint = control_entrypoint(control_class_name)
+        expected_candidate = (
+            f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
+        )
+        if witness.get("control") != control_class_name:
+            raise ProtocolViolation("source witness control identity drifted")
+        if witness.get("execution_seed") != execution_seed:
+            raise ProtocolViolation("source witness execution seed drifted")
+        if witness.get("expected_candidate") != expected_candidate:
+            raise ProtocolViolation("source witness candidate identity drifted")
+        if witness.get("enabled_semantic_probes") != sorted(semantic_probes):
+            raise ProtocolViolation("source witness semantic probe set drifted")
+        digest_json(witness)
+        return witness, None
+    except Exception as error:
+        return (
+            {
+                **_unavailable_source_witness(stage, error),
+                "control": control_class_name,
+                "execution_seed": execution_seed,
+                "enabled_semantic_probes": sorted(semantic_probes),
+            },
+            _typed_execution_error(stage, error),
+        )
+
+
+def _validate_complete_report_transcript(
+    transcript: dict[str, Any],
+    *,
+    pre_source_witness: dict[str, Any],
+    post_source_witness: dict[str, Any],
+    expected_head_record_shape: str,
+) -> None:
+    """Reject a report that cannot support a raw decisive observation."""
+
+    required_fields = {
+        "runner_protocol",
+        "control_class_name",
+        "expected_candidate",
+        "execution_seed",
+        "candidate",
+        "operational_state_closure",
+        "semantic_unity",
+        "isolation_completeness",
+        "isolation_assurance",
+        "failure_codes",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "harness_bundle_digest",
+        "import_inventory_digest",
+        "module_origin",
+        "execution_binding",
+        "execution_binding_error",
+        "pre_source_witness_digest",
+        "post_source_witness_digest",
+        "post_source_witness_error",
+        "harness_stable_during_execution",
+        "findings",
+        "head_records",
+        "paired_semantic_equivalence",
+        "input_preimage_digest",
+        "invocation_transcript_digest",
+        "request_records",
+    }
+    if set(transcript) != required_fields:
+        raise ProtocolViolation("report transcript does not have its exact 27 fields")
+    if transcript["runner_protocol"] != RUNNER_PROTOCOL:
+        raise ProtocolViolation("report transcript runner protocol drifted")
+    for label in ("control_class_name", "expected_candidate", "isolation_assurance"):
+        value = transcript[label]
+        if type(value) is not str or not value or value.strip() != value:
+            raise ProtocolViolation(f"report transcript {label} is not canonical")
+    if transcript["candidate"] != transcript["expected_candidate"]:
+        raise ProtocolViolation("report candidate differs from expected candidate")
+    execution_seed = transcript["execution_seed"]
+    if type(execution_seed) is not int or not 0 <= execution_seed < 2**64:
+        raise ProtocolViolation("report execution seed must be uint64")
+    for verdict_field in (
+        "operational_state_closure",
+        "semantic_unity",
+        "isolation_completeness",
+    ):
+        if transcript[verdict_field] not in {"pass", "fail", "incomplete"}:
+            raise ProtocolViolation(f"report {verdict_field} has an unknown verdict")
+
+    _exact_digest(
+        transcript["input_preimage_digest"],
+        "report transcript input_preimage_digest",
+    )
+    request_records = transcript["request_records"]
+    request_record_fields = {
+        "operation",
+        "seed",
+        "execution_mode",
+        "status",
+        "request_wire",
+        "request_digest",
+        "request_fully_sent",
+        "received_request_digest",
+        "response_wire",
+        "response_digest",
+        "failure_origin",
+        "failure_code",
+    }
+    if type(request_records) is not list:
+        raise ProtocolViolation("report request_records must be an exact list")
+    if not request_records:
+        raise ProtocolViolation(
+            "report request_records cannot prove that candidate execution started"
+        )
+    for index, request_record in enumerate(request_records):
+        if type(request_record) is not dict or set(request_record) != request_record_fields:
+            raise ProtocolViolation(
+                f"report request record {index} is not one exact 12-field record"
+            )
+        canonical_json_bytes(request_record)
+    invocation_transcript_digest = digest_json(request_records)
+    _exact_digest(
+        transcript["invocation_transcript_digest"],
+        "report transcript invocation_transcript_digest",
+    )
+    if transcript["invocation_transcript_digest"] != invocation_transcript_digest:
+        raise ProtocolViolation("report invocation transcript digest drifted")
+
+    findings = transcript["findings"]
+    failure_codes = transcript["failure_codes"]
+    if type(findings) is not list or type(failure_codes) is not list:
+        raise ProtocolViolation("report findings/failure_codes must be exact lists")
+    derived_failure_codes: list[str] = []
+    for index, finding in enumerate(findings):
+        if type(finding) is not dict or set(finding) != {
+            "gate",
+            "verdict",
+            "failure_code",
+            "detail",
+            "evidence",
+        }:
+            raise ProtocolViolation(f"report finding {index} is not a closed record")
+        gate = finding["gate"]
+        if type(gate) is not str or not gate or gate.strip() != gate:
+            raise ProtocolViolation(f"report finding {index} gate is not canonical")
+        verdict = finding["verdict"]
+        if verdict not in {"pass", "fail", "incomplete"}:
+            raise ProtocolViolation(f"report finding {index} has an unknown verdict")
+        failure_code = finding["failure_code"]
+        if failure_code is not None and (
+            type(failure_code) is not str
+            or not failure_code
+            or failure_code.strip() != failure_code
+        ):
+            raise ProtocolViolation(
+                f"report finding {index} failure code is not canonical"
+            )
+        if verdict == "fail":
+            if failure_code is None:
+                raise ProtocolViolation(
+                    f"report failed finding {index} lacks a failure code"
+                )
+            if failure_code not in derived_failure_codes:
+                derived_failure_codes.append(failure_code)
+        elif verdict == "pass" and failure_code is not None:
+            raise ProtocolViolation(
+                f"report passed finding {index} carries a failure code"
+            )
+        detail = finding["detail"]
+        if type(detail) is not str:
+            raise ProtocolViolation(f"report finding {index} detail is not a string")
+        detail.encode("utf-8")
+        if type(finding["evidence"]) is not dict:
+            raise ProtocolViolation(f"report finding {index} evidence is not an object")
+    if failure_codes != derived_failure_codes:
+        raise ProtocolViolation(
+            "report failure_codes differ from ordered unique failed findings"
+        )
+
+    binding = transcript["execution_binding"]
+    binding_keys = {
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "harness_bundle_digest",
+        "import_inventory_digest",
+        "module_origin",
+    }
+    if type(binding) is not dict or set(binding) != binding_keys:
+        raise ProtocolViolation("report execution binding is not closed")
+    if transcript["execution_binding_error"] is not None:
+        raise ProtocolViolation("report execution binding is incomplete")
+    for field_name in binding_keys:
+        if transcript[field_name] != binding[field_name]:
+            raise ProtocolViolation(f"report top-level {field_name} binding drifted")
+    for digest_field in binding_keys.difference({"module_origin"}):
+        _exact_digest(binding[digest_field], f"report binding {digest_field}")
+
+    if pre_source_witness.get("control") != transcript["control_class_name"]:
+        raise ProtocolViolation("report control differs from its pre witness")
+    if pre_source_witness.get("expected_candidate") != transcript["candidate"]:
+        raise ProtocolViolation("report candidate differs from its pre witness")
+    if pre_source_witness.get("execution_seed") != execution_seed:
+        raise ProtocolViolation("report seed differs from its pre witness")
+    if pre_source_witness.get("expected_live_execution_binding") != binding:
+        raise ProtocolViolation("report binding differs from its pre witness")
+    if transcript["post_source_witness_error"] is not None:
+        raise ProtocolViolation("report has a post-source witness error")
+    if digest_json(pre_source_witness) != digest_json(post_source_witness):
+        raise ProtocolViolation("report pre/post source witnesses drifted")
+    if transcript["harness_stable_during_execution"] is not True:
+        raise ProtocolViolation("report does not prove stable harness execution")
+    if transcript["pre_source_witness_digest"] != digest_json(pre_source_witness):
+        raise ProtocolViolation("report pre-source witness digest drifted")
+    if transcript["post_source_witness_digest"] != digest_json(post_source_witness):
+        raise ProtocolViolation("report post-source witness digest drifted")
+
+    head_records = transcript["head_records"]
+    head_keys = binding_keys | {
+        "consumed_state_hash",
+        "isolation",
+        "operation",
+        "request_digest",
+        "response_digest",
+        "seed",
+    }
+    if expected_head_record_shape == "empty":
+        if type(head_records) is not list or head_records:
+            raise ProtocolViolation(
+                "report head_records differ from the code-owned empty shape"
+            )
+        return
+    if expected_head_record_shape != "replay_ddrr":
+        raise ProtocolViolation("unknown code-owned head record shape")
+    if type(head_records) is not list or len(head_records) != 4:
+        raise ProtocolViolation(
+            "report head_records must contain exactly two diagnose and two rollout records"
+        )
+    observed_operations: list[tuple[str, int]] = []
+    for index, head_record in enumerate(head_records):
+        if type(head_record) is not dict or set(head_record) != head_keys:
+            raise ProtocolViolation(f"report head record {index} is not closed")
+        if any(head_record[field] != binding[field] for field in binding_keys):
+            raise ProtocolViolation(f"report head record {index} binding drifted")
+        operation = head_record["operation"]
+        expected_seed = {
+            "diagnose": execution_seed + 1,
+            "rollout": execution_seed + 2,
+        }.get(operation)
+        if type(head_record["seed"]) is not int or head_record["seed"] != expected_seed:
+            raise ProtocolViolation(
+                f"report head record {index} operation/seed binding drifted"
+            )
+        observed_operations.append((operation, head_record["seed"]))
+        for digest_field in (
+            "consumed_state_hash",
+            "request_digest",
+            "response_digest",
+        ):
+            _exact_digest(
+                head_record[digest_field],
+                f"report head record {index} {digest_field}",
+            )
+        isolation = head_record["isolation"]
+        if type(isolation) is not str or not isolation or isolation.strip() != isolation:
+            raise ProtocolViolation(
+                f"report head record {index} isolation is not canonical"
+            )
+    expected_operations = [
+        ("diagnose", execution_seed + 1),
+        ("diagnose", execution_seed + 1),
+        ("rollout", execution_seed + 2),
+        ("rollout", execution_seed + 2),
+    ]
+    if sorted(observed_operations) != sorted(expected_operations):
+        raise ProtocolViolation("report replay operation/seed multiset drifted")
+
+
+def _complete_report_transcript(
+    report: Any,
+    *,
+    control_class_name: str,
+    expected_candidate: str,
+    execution_seed: int,
+    execution_binding: dict[str, str],
+    execution_binding_error: str | None,
+    pre_source_witness: dict[str, Any],
+    post_source_witness: dict[str, Any],
+    post_source_witness_error: dict[str, str] | None,
+    paired_semantic_equivalence: dict[str, Any] | None,
+    input_preimage_digest: str,
+) -> dict[str, Any]:
+    """Materialize every scored field of one compliance report as raw JSON."""
+
+    request_record_view = report.request_records
+    if type(request_record_view) is not tuple:
+        raise ProtocolViolation(
+            "compliance report request_records must be an exact immutable tuple view"
+        )
+    request_records = list(request_record_view)
+    # The report property returns a fresh decode of its immutable byte snapshot.
+    # Preserve that exact ordered view; never regenerate planned calls from the
+    # input or the code-owned runner contract.
+    canonical_json_bytes(request_records)
+    invocation_transcript_digest = digest_json(request_records)
+    transcript = {
+        "runner_protocol": RUNNER_PROTOCOL,
+        "control_class_name": control_class_name,
+        "expected_candidate": expected_candidate,
+        "execution_seed": execution_seed,
+        "candidate": report.candidate,
+        "operational_state_closure": report.operational_state_closure.value,
+        "semantic_unity": report.semantic_unity.value,
+        "isolation_completeness": report.isolation_completeness.value,
+        "isolation_assurance": report.isolation_assurance,
+        "failure_codes": list(report.failure_codes),
+        "candidate_bundle_digest": getattr(
+            report, "candidate_bundle_digest", None
+        ),
+        "candidate_model_digest": getattr(report, "candidate_model_digest", None),
+        "harness_bundle_digest": getattr(report, "harness_bundle_digest", None),
+        "import_inventory_digest": getattr(report, "import_inventory_digest", None),
+        "module_origin": getattr(report, "module_origin", None),
+        "execution_binding": execution_binding,
+        "execution_binding_error": execution_binding_error,
+        "pre_source_witness_digest": digest_json(pre_source_witness),
+        "post_source_witness_digest": digest_json(post_source_witness),
+        "post_source_witness_error": post_source_witness_error,
+        "harness_stable_during_execution": (
+            post_source_witness_error is None
+            and digest_json(pre_source_witness) == digest_json(post_source_witness)
+        ),
+        "findings": [_finding_wire(finding) for finding in report.findings],
+        "head_records": list(report.head_records),
+        "paired_semantic_equivalence": paired_semantic_equivalence,
+        "input_preimage_digest": input_preimage_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
+        "request_records": request_records,
+    }
+    # Canonical materialization is separate from decisive eligibility.  A
+    # complete but ineligible report (for example, an early failure with no
+    # replay heads) is retained as raw evidence and later classified CRASHED.
+    digest_json(transcript)
+    return transcript
+
+
+def _raw_source_record(
+    *,
+    pre_source_witness: dict[str, Any],
+    post_source_witness: dict[str, Any],
+    execution_binding: dict[str, str],
+    harness_stable: bool,
+) -> dict[str, Any]:
+    executed = _execution_bound_source_witness(
+        pre_source_witness, execution_binding
+    )
+    return {
+        "runner_protocol": RUNNER_PROTOCOL,
+        "execution_bound_source_witness": executed,
+        "execution_bound_source_witness_digest": digest_json(executed),
+        "pre_source_witness_digest": digest_json(pre_source_witness),
+        "post_source_witness_digest": digest_json(post_source_witness),
+        "harness_stable_during_execution": harness_stable,
+    }
+
+
+def _preflight_decisive_record(
+    *,
+    run_id: str,
+    base_seed: int,
+    input_preimage: dict[str, Any],
+    execution_context: dict[str, Any],
+    record_kwargs: dict[str, Any],
+) -> None:
+    """Apply the bundle's full code-owned validator before claiming a decision."""
+
+    preflight = MutationEvidenceBuilder(
+        run_id=run_id,
+        runner_protocol=RUNNER_PROTOCOL,
+        base_seed=base_seed,
+        input_preimage=input_preimage,
+        execution_context=execution_context,
+    )
+    preflight.add_record(**record_kwargs)
+    preflight.finalize()
+
+
 def run_portable_mutation_evidence(
     *,
+    run_id: str,
     history: VisibleHistory,
     diagnosis_query: DiagnosisQuery,
     rollout_query: RolloutQuery,
     delta: VisibleDelta | None = None,
     seed: int,
-) -> tuple[MutationObservation, ...]:
+) -> MutationEvidenceBundle:
+    """Execute the portable matrix once and retain every canonical preimage."""
+
     from . import candidate_protocol, compliance
 
     # MutationObservation uses a uint128 storage field, but the executable
     # candidate protocol is deliberately uint64.  Every compliance execution
     # derives up to three additional operation seeds, so reject a base seed
     # that this producer could not actually send on its last row.
+    if type(run_id) is not str or not run_id or run_id.strip() != run_id:
+        raise ProtocolViolation("run_id must be a canonical non-empty string")
     if type(seed) is not int or seed < 0:
         raise ProtocolViolation(
             "seed and all derived operation seeds must fit unsigned 64-bit integer"
         )
-    row_profiles = tuple(
-        case.semantic_probes for case in PORTABLE_MUTATION_CASES
-    ) + tuple(case[3] for case in PORTABLE_SPECIFICITY_CASES)
-    for index, semantic_probes in enumerate(row_profiles):
-        execution_seed = seed + index
+    code_owned_contract = portable_runner_contract(RUNNER_PROTOCOL)
+    active_mutant_rows, active_control_rows = _active_portable_execution_rows(
+        code_owned_contract
+    )
+    code_owned_rows = (
+        code_owned_contract["mutation_cases"]
+        + code_owned_contract["specificity_cases"]
+    )
+    for row_index, row in enumerate(code_owned_rows):
+        if type(row) is not dict or type(row.get("semantic_probes")) is not list:
+            raise ProtocolViolation("code-owned portable semantic probes are malformed")
+        semantic_probes = row["semantic_probes"]
+        execution_seed = seed + row_index
         if execution_seed + 3 >= 2**64:
             raise ProtocolViolation(
                 "seed and all derived operation seeds must fit unsigned 64-bit integer"
@@ -3558,7 +4355,7 @@ def run_portable_mutation_evidence(
             "update_consistency" in semantic_probes
             and (
                 execution_seed
-                ^ compliance.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
+                ^ code_owned_contract["update_consistency_lineage_xor_mask"]
             )
             + 2
             >= 2**64
@@ -3566,438 +4363,794 @@ def run_portable_mutation_evidence(
             raise ProtocolViolation(
                 "update-consistency lineage seeds must fit unsigned 64-bit integer"
             )
+
     try:
         runtime_import_cache_baseline = _prepare_runtime_import_cache()
         runtime_import_cache_baseline_digest = digest_json(
             runtime_import_cache_baseline
         )
         source_preparation_error: Exception | None = None
+        source_preparation_record: dict[str, str] | None = None
     except Exception as error:
-        # The runtime inventory cache is legitimate harness preparation state.
-        # Populate it before the first source snapshot so the first candidate
-        # execution cannot create a false source-drift signal.  A failed
-        # preparation is represented per row below and never starts a candidate.
+        # The failed preparation is captured in the same-run context and every
+        # row.  No candidate starts, but the finally path below still attempts
+        # a post witness; no candidate is ever rerun to manufacture evidence.
+        runtime_import_cache_baseline_digest = None
         source_preparation_error = error
-    rows: list[MutationObservation] = []
-    for index, case in enumerate(PORTABLE_MUTATION_CASES):
-        execution_seed = seed + index
-        try:
-            if source_preparation_error is not None:
-                raise RuntimeError(
-                    "runtime import inventory could not be prepared"
-                ) from source_preparation_error
-            pre_source_witness = _source_binding_witness(
-                case.control_class_name,
-                case.semantic_probes,
-                expected_runtime_import_cache_contract_digest=(
-                    runtime_import_cache_baseline_digest
+        source_preparation_record = _typed_execution_error(
+            "runtime-import-preparation", error
+        )
+
+    # This is the only read of caller-owned input objects.  The canonical bytes
+    # are the execution authority as well as the bundle preimage.  Reparse once
+    # now to fail closed on schema/type/round-trip drift, then deliberately drop
+    # every caller reference.  Each execution below reparses its own fresh copy
+    # from these immutable bytes, so nested payload/parameters dicts cannot
+    # create capture-A/use-B or cross-row aliasing.
+    input_snapshot = canonical_json_bytes(
+        _execution_input_wire(history, diagnosis_query, rollout_query, delta)
+    )
+    input_preimage = _decode_execution_input_snapshot(input_snapshot)
+    _fresh_execution_inputs(input_snapshot)
+    del history, diagnosis_query, rollout_query, delta
+    execution_context = {
+        "benchmark_id": BENCHMARK_ID,
+        "runtime_metadata": _runtime_metadata(),
+        "portable_runner_contract": code_owned_contract,
+        "runtime_import_cache_contract_digest": (
+            runtime_import_cache_baseline_digest
+        ),
+        "source_preparation_error": source_preparation_record,
+    }
+    builder = MutationEvidenceBuilder(
+        run_id=run_id,
+        runner_protocol=RUNNER_PROTOCOL,
+        base_seed=seed,
+        input_preimage=input_preimage,
+        execution_context=execution_context,
+    )
+    input_preimage_digest = builder.input_preimage_digest
+
+    for row_index, case, expected_head_record_shape in active_mutant_rows:
+        execution_seed = seed + row_index
+        errors: list[dict[str, str]] = []
+        if source_preparation_record is not None:
+            errors.append(source_preparation_record)
+            pre_source_witness = {
+                **_unavailable_source_witness(
+                    "pre-execution", source_preparation_error
                 ),
-            )
-        except Exception as error:
-            unavailable = {
-                **_unavailable_source_witness("pre-execution", error),
                 "control": case.control_class_name,
+                "execution_seed": execution_seed,
                 "enabled_semantic_probes": sorted(case.semantic_probes),
             }
-            rows.append(
-                MutationObservation(
-                    subject_id=case.matrix_subject_id,
-                    subject_kind=SubjectKind.MUTANT,
-                    source_digest=digest_json(
-                        _execution_bound_source_witness(unavailable, {})
-                    ),
-                    execution_seed=execution_seed,
-                    outcome=ObservationOutcome.CRASHED,
-                    actual_gate=None,
-                    actual_failure_code=None,
-                    decisive_record_digest=None,
-                )
+            pre_source_error = _typed_execution_error(
+                "pre-execution", source_preparation_error
             )
-            continue
-        entrypoint = control_entrypoint(case.control_class_name)
-        expected_candidate = f"{entrypoint.module}:{entrypoint.qualname}"
-        try:
-            report = evaluate_candidate_compliance(
-                entrypoint,
-                history=history,
-                diagnosis_query=diagnosis_query,
-                rollout_query=rollout_query,
-                delta=delta,
-                seed=execution_seed,
-                semantic_probes=case.semantic_probes,
-            )
-        except Exception:
-            source_binding = digest_json(
-                _execution_bound_source_witness(pre_source_witness, {})
-            )
-            rows.append(
-                MutationObservation(
-                    subject_id=case.matrix_subject_id,
-                    subject_kind=SubjectKind.MUTANT,
-                    source_digest=source_binding,
-                    execution_seed=execution_seed,
-                    outcome=ObservationOutcome.CRASHED,
-                    actual_gate=None,
-                    actual_failure_code=None,
-                    decisive_record_digest=None,
-                )
-            )
-            continue
-        post_source_error: str | None = None
-        try:
-            post_source_witness = _source_binding_witness(
+            errors.append(pre_source_error)
+        else:
+            pre_source_witness, pre_source_error = _attempt_source_witness(
                 case.control_class_name,
                 case.semantic_probes,
-                expected_runtime_import_cache_contract_digest=(
+                stage="pre-execution",
+                execution_seed=execution_seed,
+                runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
                 ),
             )
-        except Exception as error:
-            post_source_witness = _unavailable_source_witness(
-                "post-execution", error
+            if pre_source_error is not None:
+                errors.append(pre_source_error)
+
+        report: Any | None = None
+        expected_candidate: str | None = None
+        execution_input_closure_ok = True
+        try:
+            if pre_source_error is None:
+                try:
+                    execution_inputs = _fresh_execution_inputs(input_snapshot)
+                except Exception as error:
+                    execution_input_closure_ok = False
+                    errors.append(
+                        _execution_input_incomplete_error(
+                            "execution-input-reparse", error
+                        )
+                    )
+                else:
+                    try:
+                        entrypoint = control_entrypoint(case.control_class_name)
+                        expected_candidate = (
+                            f"{entrypoint.module}:{entrypoint.qualname}"
+                        )
+                        report = evaluate_candidate_compliance(
+                            entrypoint,
+                            history=execution_inputs[0],
+                            diagnosis_query=execution_inputs[1],
+                            rollout_query=execution_inputs[2],
+                            delta=execution_inputs[3],
+                            seed=execution_seed,
+                            semantic_probes=case.semantic_probes,
+                        )
+                        if report is None:
+                            raise ProtocolViolation(
+                                "candidate compliance evaluator returned no report"
+                            )
+                    except Exception as error:
+                        errors.append(
+                            _typed_execution_error("candidate-evaluation", error)
+                        )
+                    finally:
+                        try:
+                            _assert_execution_inputs_unchanged(
+                                input_snapshot, execution_inputs
+                            )
+                        except Exception as error:
+                            execution_input_closure_ok = False
+                            errors.append(
+                                _execution_input_incomplete_error(
+                                    "execution-input-postcondition", error
+                                )
+                            )
+        finally:
+            post_source_witness, post_source_error = _attempt_source_witness(
+                case.control_class_name,
+                case.semantic_probes,
+                stage="post-execution",
+                execution_seed=execution_seed,
+                runtime_import_cache_contract_digest=(
+                    runtime_import_cache_baseline_digest
+                ),
             )
-            post_source_error = (
-                f"{type(error).__module__}.{type(error).__qualname__}"
-            )
+            if post_source_error is not None:
+                errors.append(post_source_error)
+
         harness_stable = (
-            post_source_error is None
+            pre_source_error is None
+            and post_source_error is None
             and digest_json(pre_source_witness) == digest_json(post_source_witness)
         )
-        try:
-            execution_binding = _report_execution_binding(
-                report,
-                expected_candidate=expected_candidate,
-                expected_execution_binding=pre_source_witness[
-                    "expected_live_execution_binding"
-                ],
-            )
-            execution_binding_complete = True
-            binding_error = None
-        except ProtocolViolation as error:
-            execution_binding = {}
-            execution_binding_complete = False
-            binding_error = f"{type(error).__name__}: {error}"
-        source_witness = _execution_bound_source_witness(
-            pre_source_witness, execution_binding
-        )
-        source_binding = digest_json(source_witness)
-        decisive = _decisive_finding(report.findings, case.expected_failure_code)
-        if decisive is not None and case.decisive_gate not in _finding_gate_tokens(
-            decisive
+        if (
+            pre_source_error is None
+            and post_source_error is None
+            and not harness_stable
         ):
-            decisive = None
-        harness_incomplete = any(
-            finding.verdict is ComplianceVerdict.INCOMPLETE
-            and finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
-            for finding in report.findings
+            errors.append(
+                {
+                    "stage": "post-execution",
+                    "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                    "message": "pre/post source witness drifted during execution",
+                }
+            )
+        execution_binding: dict[str, str] = {}
+        execution_binding_complete = False
+        binding_error: str | None = None
+        decisive: ComplianceFinding | None = None
+        harness_incomplete = not execution_input_closure_ok
+        decision_processing_complete = (
+            report is not None and execution_input_closure_ok
         )
+        report_transcript: dict[str, Any] | None = None
+        if report is not None:
+            try:
+                execution_binding = _report_execution_binding(
+                    report,
+                    expected_candidate=expected_candidate,
+                    expected_execution_binding=pre_source_witness[
+                        "expected_live_execution_binding"
+                    ],
+                )
+                execution_binding_complete = True
+            except Exception as error:
+                typed_error = _typed_execution_error("report-binding", error)
+                binding_error = (
+                    f"{typed_error['exception_type']}: {typed_error['message']}"
+                )
+                errors.append(typed_error)
+            try:
+                decisive = _decisive_finding(
+                    report.findings, case.expected_failure_code
+                )
+                if (
+                    decisive is not None
+                    and case.decisive_gate not in _finding_gate_tokens(decisive)
+                ):
+                    decisive = None
+                harness_incomplete = harness_incomplete or any(
+                    finding.verdict is ComplianceVerdict.INCOMPLETE
+                    and finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+                    for finding in report.findings
+                )
+                if harness_incomplete:
+                    errors.append(
+                        {
+                            "stage": "compliance-report",
+                            "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                            "message": "compliance report contains harness-incomplete finding",
+                        }
+                    )
+            except Exception as error:
+                decisive = None
+                decision_processing_complete = False
+                errors.append(_typed_execution_error("mutation-decision", error))
+            try:
+                report_transcript = _complete_report_transcript(
+                    report,
+                    control_class_name=case.control_class_name,
+                    expected_candidate=expected_candidate,
+                    execution_seed=execution_seed,
+                    execution_binding=execution_binding,
+                    execution_binding_error=binding_error,
+                    pre_source_witness=pre_source_witness,
+                    post_source_witness=post_source_witness,
+                    post_source_witness_error=post_source_error,
+                    paired_semantic_equivalence=None,
+                    input_preimage_digest=input_preimage_digest,
+                )
+                try:
+                    _validate_complete_report_transcript(
+                        report_transcript,
+                        pre_source_witness=pre_source_witness,
+                        post_source_witness=post_source_witness,
+                        expected_head_record_shape=expected_head_record_shape,
+                    )
+                except Exception as error:
+                    typed_error = _typed_execution_error(
+                        "report-decisive-validation", error
+                    )
+                    errors.append(
+                        {
+                            "stage": typed_error["stage"],
+                            "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                            "message": (
+                                f"{typed_error['exception_type']}: "
+                                f"{typed_error['message']}"
+                            ),
+                        }
+                    )
+                    harness_incomplete = True
+                    decision_processing_complete = False
+            except Exception as error:
+                report_transcript = None
+                decision_processing_complete = False
+                errors.append(_typed_execution_error("report-transcript", error))
+
         if (
             not harness_stable
             or not execution_binding_complete
             or harness_incomplete
+            or not decision_processing_complete
+            or report_transcript is None
         ):
-            # A detector result is not a kill unless the exact harness and
-            # worker snapshot that produced it are themselves bound.
             decisive = None
-        raw_report_transcript = {
-            "candidate": report.candidate,
-            "operational_state_closure": report.operational_state_closure.value,
-            "candidate_bundle_digest": getattr(
-                report, "candidate_bundle_digest", None
-            ),
-            "candidate_model_digest": getattr(
-                report, "candidate_model_digest", None
-            ),
-            "harness_bundle_digest": getattr(
-                report, "harness_bundle_digest", None
-            ),
-            "import_inventory_digest": getattr(
-                report, "import_inventory_digest", None
-            ),
-            "module_origin": getattr(report, "module_origin", None),
-            "execution_binding": execution_binding,
-            "execution_binding_error": binding_error,
-            "pre_source_witness_digest": digest_json(pre_source_witness),
-            "post_source_witness_digest": digest_json(post_source_witness),
-            "post_source_witness_error": post_source_error,
-            "source_witness_digest": source_binding,
-            "harness_stable_during_execution": harness_stable,
-            "findings": [_finding_wire(finding) for finding in report.findings],
-            "head_records": list(report.head_records),
-        }
-        rows.append(
-            MutationObservation(
-                subject_id=case.matrix_subject_id,
-                subject_kind=SubjectKind.MUTANT,
-                source_digest=source_binding,
-                execution_seed=execution_seed,
-                outcome=(
-                    ObservationOutcome.KILLED
-                    if decisive is not None
-                    else (
-                        ObservationOutcome.CRASHED
-                        if (
-                            not harness_stable
-                            or not execution_binding_complete
-                            or harness_incomplete
-                        )
-                        else ObservationOutcome.SURVIVED
-                    )
-                ),
-                actual_gate=case.decisive_gate if decisive is not None else None,
-                actual_failure_code=(
-                    decisive.failure_code if decisive is not None else None
-                ),
-                decisive_record_digest=(
-                    digest_json(
-                        {
-                            "protocol": RUNNER_PROTOCOL,
-                            "candidate": report.candidate,
-                            "finding": _finding_wire(decisive),
-                            "source_binding": source_binding,
-                            "execution_binding": execution_binding,
-                            "pre_source_witness_digest": digest_json(
-                                pre_source_witness
-                            ),
-                            "post_source_witness_digest": digest_json(
-                                post_source_witness
-                            ),
-                            "raw_report_transcript_digest": digest_json(
-                                raw_report_transcript
-                            ),
-                            "runtime_metadata": _runtime_metadata(),
-                        }
-                    )
-                    if decisive is not None
-                    else None
-                ),
+        outcome = (
+            ObservationOutcome.KILLED
+            if decisive is not None
+            else (
+                ObservationOutcome.CRASHED
+                if (
+                    report is None
+                    or not harness_stable
+                    or not execution_binding_complete
+                    or harness_incomplete
+                    or not decision_processing_complete
+                    or report_transcript is None
+                )
+                else ObservationOutcome.SURVIVED
             )
         )
+        actual_gate = case.decisive_gate if decisive is not None else None
+        actual_failure_code = (
+            decisive.failure_code if decisive is not None else None
+        )
+        source_record = _raw_source_record(
+            pre_source_witness=pre_source_witness,
+            post_source_witness=post_source_witness,
+            execution_binding=execution_binding,
+            harness_stable=harness_stable,
+        )
+        invocation_transcript_digest = (
+            report_transcript["invocation_transcript_digest"]
+            if report_transcript is not None
+            else digest_json([])
+        )
+        decision_record = {
+            "runner_protocol": RUNNER_PROTOCOL,
+            "decision_kind": "mutant-observation",
+            "expected_gate": case.decisive_gate,
+            "expected_failure_code": case.expected_failure_code,
+            "report_available": report_transcript is not None,
+            "harness_stable_during_execution": harness_stable,
+            "execution_binding_complete": execution_binding_complete,
+            "harness_incomplete": harness_incomplete,
+            "decision_processing_complete": decision_processing_complete,
+            "derived_outcome": outcome.value,
+            "actual_gate": actual_gate,
+            "actual_failure_code": actual_failure_code,
+            "input_preimage_digest": input_preimage_digest,
+            "invocation_transcript_digest": invocation_transcript_digest,
+        }
+        decisive_record = (
+            {
+                "runner_protocol": RUNNER_PROTOCOL,
+                "decision_kind": "mutant_kill",
+                "candidate": report_transcript["candidate"],
+                "finding": _finding_wire(decisive),
+                "source_record_payload_digest": digest_json(source_record),
+                "report_transcript_payload_digest": digest_json(
+                    report_transcript
+                ),
+                "decision_record_payload_digest": digest_json(decision_record),
+                "runtime_metadata": _runtime_metadata(),
+                "input_preimage_digest": input_preimage_digest,
+                "invocation_transcript_digest": invocation_transcript_digest,
+            }
+            if decisive is not None and report_transcript is not None
+            else None
+        )
+        error_transcript = {
+            "runner_protocol": RUNNER_PROTOCOL,
+            "status": "error" if errors else "none",
+            "errors": errors,
+        }
+        record_kwargs = {
+            "subject_id": case.matrix_subject_id,
+            "subject_kind": SubjectKind.MUTANT,
+            "execution_seed": execution_seed,
+            "outcome": outcome,
+            "actual_gate": actual_gate,
+            "actual_failure_code": actual_failure_code,
+            "classification": None,
+            "pre_source_witness": pre_source_witness,
+            "post_source_witness": post_source_witness,
+            "source_record": source_record,
+            "report_transcript": report_transcript,
+            "error_transcript": error_transcript,
+            "decision_record": decision_record,
+            "decisive_record": decisive_record,
+        }
+        if decisive_record is not None:
+            try:
+                _preflight_decisive_record(
+                    run_id=run_id,
+                    base_seed=seed,
+                    input_preimage=input_preimage,
+                    execution_context=execution_context,
+                    record_kwargs=record_kwargs,
+                )
+            except Exception as error:
+                errors.append(
+                    _typed_execution_error("decisive-evidence-validation", error)
+                )
+                decisive = None
+                outcome = ObservationOutcome.CRASHED
+                actual_gate = None
+                actual_failure_code = None
+                decision_processing_complete = False
+                decision_record.update(
+                    {
+                        "decision_processing_complete": False,
+                        "derived_outcome": outcome.value,
+                        "actual_gate": None,
+                        "actual_failure_code": None,
+                    }
+                )
+                error_transcript = {
+                    "runner_protocol": RUNNER_PROTOCOL,
+                    "status": "error",
+                    "errors": errors,
+                }
+                record_kwargs.update(
+                    {
+                        "outcome": outcome,
+                        "actual_gate": None,
+                        "actual_failure_code": None,
+                        "error_transcript": error_transcript,
+                        "decision_record": decision_record,
+                        "decisive_record": None,
+                    }
+                )
+        builder.add_record(**record_kwargs)
 
-    for control_index, (
+    for row_index, (
         subject_id,
         control_class_name,
         classification,
         semantic_probes,
-    ) in enumerate(PORTABLE_SPECIFICITY_CASES):
-        execution_seed = seed + len(PORTABLE_MUTATION_CASES) + control_index
-        try:
-            if source_preparation_error is not None:
-                raise RuntimeError(
-                    "runtime import inventory could not be prepared"
-                ) from source_preparation_error
-            pre_source_witness = _source_binding_witness(
-                control_class_name,
-                semantic_probes,
-                expected_runtime_import_cache_contract_digest=(
-                    runtime_import_cache_baseline_digest
+    ), expected_head_record_shape in active_control_rows:
+        execution_seed = seed + row_index
+        errors: list[dict[str, str]] = []
+        if source_preparation_record is not None:
+            errors.append(source_preparation_record)
+            pre_source_witness = {
+                **_unavailable_source_witness(
+                    "pre-execution", source_preparation_error
                 ),
-            )
-        except Exception as error:
-            unavailable = {
-                **_unavailable_source_witness("pre-execution", error),
                 "control": control_class_name,
+                "execution_seed": execution_seed,
                 "enabled_semantic_probes": sorted(semantic_probes),
             }
-            rows.append(
-                MutationObservation(
-                    subject_id=subject_id,
-                    subject_kind=SubjectKind.SPECIFICITY_CONTROL,
-                    source_digest=digest_json(
-                        _execution_bound_source_witness(unavailable, {})
-                    ),
-                    execution_seed=execution_seed,
-                    outcome=ObservationOutcome.CRASHED,
-                    actual_gate=None,
-                    actual_failure_code=None,
-                    decisive_record_digest=None,
-                    classification=classification,
-                )
+            pre_source_error = _typed_execution_error(
+                "pre-execution", source_preparation_error
             )
-            continue
-        entrypoint = control_entrypoint(control_class_name)
-        expected_candidate = f"{entrypoint.module}:{entrypoint.qualname}"
-        try:
-            control_report = evaluate_candidate_compliance(
-                entrypoint,
-                history=history,
-                diagnosis_query=diagnosis_query,
-                rollout_query=rollout_query,
-                delta=delta,
-                seed=execution_seed,
-                semantic_probes=semantic_probes,
-            )
-        except Exception:
-            control_source_binding = digest_json(
-                _execution_bound_source_witness(pre_source_witness, {})
-            )
-            rows.append(
-                MutationObservation(
-                    subject_id=subject_id,
-                    subject_kind=SubjectKind.SPECIFICITY_CONTROL,
-                    source_digest=control_source_binding,
-                    execution_seed=execution_seed,
-                    outcome=ObservationOutcome.CRASHED,
-                    actual_gate=None,
-                    actual_failure_code=None,
-                    decisive_record_digest=None,
-                    classification=classification,
-                )
-            )
-            continue
-        paired_evidence: dict[str, Any] | None = None
-        paired_probe_incomplete = False
-        if subject_id == "BehaviorEquivalentSerialization":
-            try:
-                paired_evidence = paired_serialization_equivalence_evidence(
-                    history=history,
-                    diagnosis_query=diagnosis_query,
-                    rollout_query=rollout_query,
-                    delta=delta,
-                    seed=execution_seed,
-                )
-            except Exception as error:
-                paired_probe_incomplete = True
-                paired_evidence = {
-                    "protocol": PORTABLE_SEMANTIC_PROBE_PROTOCOL,
-                    "passed": False,
-                    "probe_incomplete": f"{type(error).__name__}: {error}",
-                }
-        # The post witness deliberately follows every parent-side probe whose
-        # result can decide this specificity row.  Otherwise a probe can alter
-        # the parent harness after the witness and still produce PASSED.
-        post_source_error: str | None = None
-        try:
-            post_source_witness = _source_binding_witness(
+            errors.append(pre_source_error)
+        else:
+            pre_source_witness, pre_source_error = _attempt_source_witness(
                 control_class_name,
                 semantic_probes,
-                expected_runtime_import_cache_contract_digest=(
+                stage="pre-execution",
+                execution_seed=execution_seed,
+                runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
                 ),
             )
-        except Exception as error:
-            post_source_witness = _unavailable_source_witness(
-                "post-execution", error
+            if pre_source_error is not None:
+                errors.append(pre_source_error)
+
+        control_report: Any | None = None
+        expected_candidate: str | None = None
+        paired_evidence: dict[str, Any] | None = None
+        paired_probe_incomplete = False
+        execution_input_closure_ok = True
+        paired_input_closure_ok = True
+        try:
+            if pre_source_error is None:
+                try:
+                    execution_inputs = _fresh_execution_inputs(input_snapshot)
+                except Exception as error:
+                    execution_input_closure_ok = False
+                    errors.append(
+                        _execution_input_incomplete_error(
+                            "execution-input-reparse", error
+                        )
+                    )
+                else:
+                    try:
+                        entrypoint = control_entrypoint(control_class_name)
+                        expected_candidate = (
+                            f"{entrypoint.module}:{entrypoint.qualname}"
+                        )
+                        control_report = evaluate_candidate_compliance(
+                            entrypoint,
+                            history=execution_inputs[0],
+                            diagnosis_query=execution_inputs[1],
+                            rollout_query=execution_inputs[2],
+                            delta=execution_inputs[3],
+                            seed=execution_seed,
+                            semantic_probes=semantic_probes,
+                        )
+                        if control_report is None:
+                            raise ProtocolViolation(
+                                "candidate compliance evaluator returned no report"
+                            )
+                    except Exception as error:
+                        errors.append(
+                            _typed_execution_error("candidate-evaluation", error)
+                        )
+                    finally:
+                        try:
+                            _assert_execution_inputs_unchanged(
+                                input_snapshot, execution_inputs
+                            )
+                        except Exception as error:
+                            execution_input_closure_ok = False
+                            errors.append(
+                                _execution_input_incomplete_error(
+                                    "execution-input-postcondition", error
+                                )
+                            )
+
+                    if (
+                        control_report is not None
+                        and subject_id == "BehaviorEquivalentSerialization"
+                    ):
+                        try:
+                            paired_inputs = _fresh_execution_inputs(input_snapshot)
+                        except Exception as error:
+                            paired_input_closure_ok = False
+                            paired_probe_incomplete = True
+                            errors.append(
+                                _execution_input_incomplete_error(
+                                    "paired-input-reparse", error
+                                )
+                            )
+                        else:
+                            try:
+                                paired_result = paired_serialization_equivalence_evidence(
+                                    history=paired_inputs[0],
+                                    diagnosis_query=paired_inputs[1],
+                                    rollout_query=paired_inputs[2],
+                                    delta=paired_inputs[3],
+                                    seed=execution_seed,
+                                )
+                                if type(paired_result) is not dict:
+                                    raise ProtocolViolation(
+                                        "paired semantic probe returned a non-object"
+                                    )
+                                paired_evidence = paired_result
+                            except Exception as error:
+                                paired_probe_incomplete = True
+                                typed_error = _typed_execution_error(
+                                    "paired-semantic-probe", error
+                                )
+                                errors.append(typed_error)
+                                paired_evidence = {
+                                    "protocol": PORTABLE_SEMANTIC_PROBE_PROTOCOL,
+                                    "passed": False,
+                                    "probe_incomplete": (
+                                        f"{typed_error['exception_type']}: "
+                                        f"{typed_error['message']}"
+                                    ),
+                                }
+                            finally:
+                                try:
+                                    _assert_execution_inputs_unchanged(
+                                        input_snapshot, paired_inputs
+                                    )
+                                except Exception as error:
+                                    paired_input_closure_ok = False
+                                    paired_probe_incomplete = True
+                                    errors.append(
+                                        _execution_input_incomplete_error(
+                                            "paired-input-postcondition", error
+                                        )
+                                    )
+        finally:
+            # This follows every parent-side semantic probe.  A probe cannot
+            # mutate the parent harness after the witness and still pass.
+            post_source_witness, post_source_error = _attempt_source_witness(
+                control_class_name,
+                semantic_probes,
+                stage="post-execution",
+                execution_seed=execution_seed,
+                runtime_import_cache_contract_digest=(
+                    runtime_import_cache_baseline_digest
+                ),
             )
-            post_source_error = (
-                f"{type(error).__module__}.{type(error).__qualname__}"
-            )
+            if post_source_error is not None:
+                errors.append(post_source_error)
+
         harness_stable = (
-            post_source_error is None
+            pre_source_error is None
+            and post_source_error is None
             and digest_json(pre_source_witness) == digest_json(post_source_witness)
         )
-        try:
-            execution_binding = _report_execution_binding(
-                control_report,
-                expected_candidate=expected_candidate,
-                expected_execution_binding=pre_source_witness[
-                    "expected_live_execution_binding"
-                ],
+        if (
+            pre_source_error is None
+            and post_source_error is None
+            and not harness_stable
+        ):
+            errors.append(
+                {
+                    "stage": "post-execution",
+                    "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                    "message": "pre/post source witness drifted during execution",
+                }
             )
-            execution_binding_complete = True
-            binding_error = None
-        except ProtocolViolation as error:
-            execution_binding = {}
-            execution_binding_complete = False
-            binding_error = f"{type(error).__name__}: {error}"
-        probe_incomplete = paired_probe_incomplete or any(
-            finding.verdict is ComplianceVerdict.INCOMPLETE
-            and finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
-            for finding in control_report.findings
+        execution_binding: dict[str, str] = {}
+        execution_binding_complete = False
+        binding_error: str | None = None
+        report_transcript: dict[str, Any] | None = None
+        report_processing_complete = (
+            control_report is not None
+            and execution_input_closure_ok
+            and paired_input_closure_ok
         )
+        probe_incomplete = (
+            paired_probe_incomplete
+            or not execution_input_closure_ok
+            or not paired_input_closure_ok
+        )
+        eligible = False
+        if control_report is not None:
+            try:
+                execution_binding = _report_execution_binding(
+                    control_report,
+                    expected_candidate=expected_candidate,
+                    expected_execution_binding=pre_source_witness[
+                        "expected_live_execution_binding"
+                    ],
+                )
+                execution_binding_complete = True
+            except Exception as error:
+                typed_error = _typed_execution_error("report-binding", error)
+                binding_error = (
+                    f"{typed_error['exception_type']}: {typed_error['message']}"
+                )
+                errors.append(typed_error)
+            try:
+                report_harness_incomplete = any(
+                    finding.verdict is ComplianceVerdict.INCOMPLETE
+                    and finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+                    for finding in control_report.findings
+                )
+                probe_incomplete = probe_incomplete or report_harness_incomplete
+                if report_harness_incomplete:
+                    errors.append(
+                        {
+                            "stage": "compliance-report",
+                            "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                            "message": "specificity report contains harness-incomplete finding",
+                        }
+                    )
+                eligible = _specificity_report_eligible(control_report)
+            except Exception as error:
+                report_processing_complete = False
+                errors.append(_typed_execution_error("specificity-decision", error))
+            try:
+                report_transcript = _complete_report_transcript(
+                    control_report,
+                    control_class_name=control_class_name,
+                    expected_candidate=expected_candidate,
+                    execution_seed=execution_seed,
+                    execution_binding=execution_binding,
+                    execution_binding_error=binding_error,
+                    pre_source_witness=pre_source_witness,
+                    post_source_witness=post_source_witness,
+                    post_source_witness_error=post_source_error,
+                    paired_semantic_equivalence=paired_evidence,
+                    input_preimage_digest=input_preimage_digest,
+                )
+                try:
+                    _validate_complete_report_transcript(
+                        report_transcript,
+                        pre_source_witness=pre_source_witness,
+                        post_source_witness=post_source_witness,
+                        expected_head_record_shape=expected_head_record_shape,
+                    )
+                except Exception as error:
+                    typed_error = _typed_execution_error(
+                        "report-decisive-validation", error
+                    )
+                    errors.append(
+                        {
+                            "stage": typed_error["stage"],
+                            "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
+                            "message": (
+                                f"{typed_error['exception_type']}: "
+                                f"{typed_error['message']}"
+                            ),
+                        }
+                    )
+                    probe_incomplete = True
+                    report_processing_complete = False
+            except Exception as error:
+                report_transcript = None
+                report_processing_complete = False
+                errors.append(_typed_execution_error("report-transcript", error))
+
         passed = (
-            _specificity_report_eligible(control_report)
+            eligible
             and harness_stable
             and execution_binding_complete
+            and report_processing_complete
+            and report_transcript is not None
+            and not probe_incomplete
         )
         if paired_evidence is not None:
-            passed = passed and paired_evidence["passed"] is True
-        control_source_witness = _execution_bound_source_witness(
-            pre_source_witness, execution_binding
-        )
-        control_source_binding = digest_json(control_source_witness)
-        rows.append(
-            MutationObservation(
-                subject_id=subject_id,
-                subject_kind=SubjectKind.SPECIFICITY_CONTROL,
-                source_digest=control_source_binding,
-                execution_seed=execution_seed,
-                outcome=(
-                    ObservationOutcome.PASSED
-                    if passed
-                    else (
-                        ObservationOutcome.CRASHED
-                        if (
-                            not harness_stable
-                            or not execution_binding_complete
-                            or probe_incomplete
-                        )
-                        else ObservationOutcome.REJECTED
-                    )
-                ),
-                actual_gate=None,
-                actual_failure_code=None,
-                decisive_record_digest=digest_json(
-                    {
-                        "protocol": RUNNER_PROTOCOL,
-                        "candidate": control_report.candidate,
-                        "operational_state_closure": (
-                            control_report.operational_state_closure.value
-                        ),
-                        "failure_codes": list(control_report.failure_codes),
-                        "candidate_bundle_digest": getattr(
-                            control_report, "candidate_bundle_digest", None
-                        ),
-                        "candidate_model_digest": getattr(
-                            control_report, "candidate_model_digest", None
-                        ),
-                        "harness_bundle_digest": getattr(
-                            control_report, "harness_bundle_digest", None
-                        ),
-                        "import_inventory_digest": getattr(
-                            control_report, "import_inventory_digest", None
-                        ),
-                        "module_origin": getattr(
-                            control_report, "module_origin", None
-                        ),
-                        "execution_binding": execution_binding,
-                        "execution_binding_error": binding_error,
-                        "pre_source_witness_digest": digest_json(
-                            pre_source_witness
-                        ),
-                        "post_source_witness_digest": digest_json(
-                            post_source_witness
-                        ),
-                        "harness_stable_during_execution": harness_stable,
-                        "post_source_witness_error": post_source_error,
-                        "findings": [
-                            _finding_wire(finding)
-                            for finding in control_report.findings
-                        ],
-                        "head_records": list(control_report.head_records),
-                        "paired_semantic_equivalence": paired_evidence,
-                        "probe_incomplete": probe_incomplete,
-                        "source_binding": control_source_binding,
-                        "raw_report_transcript_digest": digest_json(
-                            {
-                                "candidate": control_report.candidate,
-                                "findings": [
-                                    _finding_wire(finding)
-                                    for finding in control_report.findings
-                                ],
-                                "head_records": list(control_report.head_records),
-                            }
-                        ),
-                        "runtime_metadata": _runtime_metadata(),
-                    }
-                ),
-                classification=classification,
+            passed = passed and paired_evidence.get("passed") is True
+        outcome = (
+            ObservationOutcome.PASSED
+            if passed
+            else (
+                ObservationOutcome.CRASHED
+                if (
+                    control_report is None
+                    or not harness_stable
+                    or not execution_binding_complete
+                    or probe_incomplete
+                    or not report_processing_complete
+                    or report_transcript is None
+                )
+                else ObservationOutcome.REJECTED
             )
         )
-    # Evaluate immediately so an accidental registry mismatch fails at the
-    # producer boundary rather than much later during freeze assembly.
-    evaluate_mutation_matrix(rows)
-    return tuple(rows)
+        source_record = _raw_source_record(
+            pre_source_witness=pre_source_witness,
+            post_source_witness=post_source_witness,
+            execution_binding=execution_binding,
+            harness_stable=harness_stable,
+        )
+        invocation_transcript_digest = (
+            report_transcript["invocation_transcript_digest"]
+            if report_transcript is not None
+            else digest_json([])
+        )
+        decision_record = {
+            "runner_protocol": RUNNER_PROTOCOL,
+            "decision_kind": "specificity-observation",
+            "classification": classification,
+            "report_available": report_transcript is not None,
+            "harness_stable_during_execution": harness_stable,
+            "execution_binding_complete": execution_binding_complete,
+            "probe_incomplete": probe_incomplete,
+            "report_processing_complete": report_processing_complete,
+            "semantic_equivalence_passed": (
+                None
+                if paired_evidence is None
+                else paired_evidence.get("passed") is True
+            ),
+            "derived_outcome": outcome.value,
+            "input_preimage_digest": input_preimage_digest,
+            "invocation_transcript_digest": invocation_transcript_digest,
+        }
+        decisive_record = (
+            {
+                "runner_protocol": RUNNER_PROTOCOL,
+                "decision_kind": "specificity_pass",
+                "candidate": report_transcript["candidate"],
+                "classification": classification,
+                "source_record_payload_digest": digest_json(source_record),
+                "report_transcript_payload_digest": digest_json(
+                    report_transcript
+                ),
+                "decision_record_payload_digest": digest_json(decision_record),
+                "runtime_metadata": _runtime_metadata(),
+                "input_preimage_digest": input_preimage_digest,
+                "invocation_transcript_digest": invocation_transcript_digest,
+            }
+            if passed and report_transcript is not None
+            else None
+        )
+        error_transcript = {
+            "runner_protocol": RUNNER_PROTOCOL,
+            "status": "error" if errors else "none",
+            "errors": errors,
+        }
+        record_kwargs = {
+            "subject_id": subject_id,
+            "subject_kind": SubjectKind.SPECIFICITY_CONTROL,
+            "execution_seed": execution_seed,
+            "outcome": outcome,
+            "actual_gate": None,
+            "actual_failure_code": None,
+            "classification": classification,
+            "pre_source_witness": pre_source_witness,
+            "post_source_witness": post_source_witness,
+            "source_record": source_record,
+            "report_transcript": report_transcript,
+            "error_transcript": error_transcript,
+            "decision_record": decision_record,
+            "decisive_record": decisive_record,
+        }
+        if decisive_record is not None:
+            try:
+                _preflight_decisive_record(
+                    run_id=run_id,
+                    base_seed=seed,
+                    input_preimage=input_preimage,
+                    execution_context=execution_context,
+                    record_kwargs=record_kwargs,
+                )
+            except Exception as error:
+                errors.append(
+                    _typed_execution_error("decisive-evidence-validation", error)
+                )
+                passed = False
+                outcome = ObservationOutcome.CRASHED
+                report_processing_complete = False
+                decision_record.update(
+                    {
+                        "report_processing_complete": False,
+                        "derived_outcome": outcome.value,
+                    }
+                )
+                error_transcript = {
+                    "runner_protocol": RUNNER_PROTOCOL,
+                    "status": "error",
+                    "errors": errors,
+                }
+                record_kwargs.update(
+                    {
+                        "outcome": outcome,
+                        "error_transcript": error_transcript,
+                        "decision_record": decision_record,
+                        "decisive_record": None,
+                    }
+                )
+        builder.add_record(**record_kwargs)
+
+    # The builder recomputes the partial matrix and closes every raw digest.
+    # Its protocol deliberately retains fixed E002/E003 PRE-FREEZE blockers.
+    return builder.finalize()
 
 
 # Capture after every runner class/function has been created, but before any

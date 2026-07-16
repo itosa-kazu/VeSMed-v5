@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import functools
 import inspect
+import json
 import subprocess
 import sys
 import types
@@ -14,6 +15,7 @@ from prototype.unified_map import (
     candidate_protocol,
     canonical,
     compliance,
+    mutation_evidence,
     mutation_matrix,
     mutation_runner,
 )
@@ -38,6 +40,7 @@ from prototype.unified_map.schema import (
     DiagnosisQuery,
     EventKind,
     PlanKind,
+    PlannedAction,
     RolloutQuery,
     VisibleDelta,
     VisibleHistory,
@@ -77,15 +80,63 @@ def inputs() -> tuple[VisibleHistory, DiagnosisQuery, RolloutQuery, VisibleDelta
     )
 
 
+def mutable_nested_inputs() -> tuple[
+    VisibleHistory, DiagnosisQuery, RolloutQuery, VisibleDelta
+]:
+    event = CandidateVisibleEvent(
+        EventKind.OBSERVATION_AVAILABLE,
+        occurred_at=0,
+        available_at=0,
+        event_uid="portable-mutation-nested-initial",
+        payload={"nested": {"value": "captured"}},
+    )
+    follow_up = CandidateVisibleEvent(
+        EventKind.OBSERVATION_AVAILABLE,
+        occurred_at=1,
+        available_at=1,
+        event_uid="portable-mutation-nested-update",
+        payload={"nested": {"value": "captured-delta"}},
+    )
+    return (
+        VisibleHistory((event,), 0, CATALOG),
+        DiagnosisQuery(("a", "b")),
+        RolloutQuery(
+            2,
+            ActionPlan(
+                PlanKind.ACTION_SEQUENCE,
+                (
+                    PlannedAction(
+                        0,
+                        "dose",
+                        {"nested": {"amount": 1}},
+                    ),
+                ),
+            ),
+            ("x",),
+            UTILITY,
+        ),
+        VisibleDelta(1, (follow_up,)),
+    )
+
+
+def _blob_payload(
+    bundle: mutation_evidence.MutationEvidenceBundle, digest: str
+) -> dict:
+    body = json.loads(bundle.blob_bytes(digest).decode("utf-8"))
+    return body["payload"]
+
+
 def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> None:
     history, diagnosis, rollout, delta = inputs()
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="portable-real-evidence-701",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=701,
     )
+    rows = bundle.observations
     by_id = {row.subject_id: row for row in rows}
     assert by_id["GlobalSecondState"].actual_failure_code == (
         "UCM-F006-HIDDEN_PATIENT_CACHE"
@@ -130,20 +181,124 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["BehaviorEquivalentSerialization"].outcome.value == "passed"
     assert by_id["DeclaredFullHistoryBaseline"].outcome.value == "passed"
 
+    assert isinstance(bundle, mutation_evidence.MutationEvidenceBundle)
+    assert bundle.benchmark_id == mutation_evidence.BENCHMARK_ID
+    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+        bundle.canonical_bytes()
+    ) == bundle
+    wire = bundle.to_wire()
+    assert wire["status"] == "PRE-FREEZE"
+    assert wire["blockers"] == [
+        "UCM-E002-ISOLATION_INCOMPLETE",
+        "UCM-E003-HARNESS_INCOMPLETE",
+    ]
+    context = json.loads(
+        bundle.blob_bytes(bundle.execution_context_digest).decode("utf-8")
+    )
+    code_owned_contract = mutation_evidence.portable_runner_contract(
+        mutation_runner.RUNNER_PROTOCOL
+    )
+    assert context["payload"]["portable_runner_contract"] == code_owned_contract
+    head_shape_by_subject = {
+        row["matrix_subject_id"]: row["head_record_shape"]
+        for row in code_owned_contract["mutation_cases"]
+    } | {
+        row["subject_id"]: row["head_record_shape"]
+        for row in code_owned_contract["specificity_cases"]
+    }
+    input_preimage = json.loads(
+        bundle.blob_bytes(context["input_preimage_digest"]).decode("utf-8")
+    )
+    assert input_preimage["payload"] == {
+        "history": history.to_wire(),
+        "diagnosis_query": diagnosis.to_wire(),
+        "rollout_query": rollout.to_wire(),
+        "delta": delta.to_wire(),
+    }
+    for record in bundle.records:
+        observation = record.observation
+        pre = _blob_payload(bundle, record.pre_source_witness_digest)
+        post = _blob_payload(bundle, record.post_source_witness_digest)
+        source = _blob_payload(bundle, record.source_record_digest)
+        report_payload = _blob_payload(bundle, record.report_transcript_digest)
+        error = _blob_payload(bundle, record.error_transcript_digest)
+        decision = _blob_payload(bundle, record.decision_record_digest)
+        decisive = _blob_payload(bundle, observation.decisive_record_digest)
+        assert pre == post
+        assert pre["expected_candidate"] == report_payload["expected_candidate"]
+        assert report_payload["candidate"] == report_payload["expected_candidate"]
+        assert report_payload["execution_seed"] == observation.execution_seed
+        assert report_payload["input_preimage_digest"] == context[
+            "input_preimage_digest"
+        ]
+        assert report_payload["request_records"]
+        assert report_payload["invocation_transcript_digest"] == canonical.digest_json(
+            report_payload["request_records"]
+        )
+        assert decision["input_preimage_digest"] == context["input_preimage_digest"]
+        assert (
+            decision["invocation_transcript_digest"]
+            == report_payload["invocation_transcript_digest"]
+        )
+        assert decisive["input_preimage_digest"] == context["input_preimage_digest"]
+        assert (
+            decisive["invocation_transcript_digest"]
+            == report_payload["invocation_transcript_digest"]
+        )
+        expected_head_shape = head_shape_by_subject[observation.subject_id]
+        if expected_head_shape == "empty":
+            assert report_payload["head_records"] == []
+        else:
+            assert sorted(
+                (row["operation"], row["seed"])
+                for row in report_payload["head_records"]
+            ) == sorted(
+                [
+                    ("diagnose", observation.execution_seed + 1),
+                    ("diagnose", observation.execution_seed + 1),
+                    ("rollout", observation.execution_seed + 2),
+                    ("rollout", observation.execution_seed + 2),
+                ]
+            )
+        assert source["harness_stable_during_execution"] is True
+        assert error == {
+            "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
+            "status": "none",
+            "errors": [],
+        }
+        assert decision["derived_outcome"] == observation.outcome.value
+        assert decisive["source_record_payload_digest"] == canonical.digest_json(
+            source
+        )
+        assert decisive["report_transcript_payload_digest"] == canonical.digest_json(
+            report_payload
+        )
+        assert decisive["decision_record_payload_digest"] == canonical.digest_json(
+            decision
+        )
+
 
 def test_partial_real_evidence_remains_harness_incomplete() -> None:
     history, diagnosis, rollout, delta = inputs()
+    bundle = run_portable_mutation_evidence(
+        run_id="portable-partial-evidence-733",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=733,
+    )
     report = evaluate_mutation_matrix(
-        run_portable_mutation_evidence(
-            history=history,
-            diagnosis_query=diagnosis,
-            rollout_query=rollout,
-            delta=delta,
-            seed=733,
-        )
+        bundle.observations
     )
     assert not report.freeze_ready
     assert report.benchmark_status == "HARNESS_INCOMPLETE"
+    assert len(report.valid_kills) == 14
+    assert len(report.missing_or_invalid_mutants) == 12
+    assert len(report.passed_specificity_controls) == 3
+    assert len(report.failed_specificity_controls) == 1
+    assert len(report.covered_gates) == 10
+    assert len(report.uncovered_gates) == 23
     assert set(report.valid_kills) == {
         "GlobalSecondState",
         "FileHandleState",
@@ -478,6 +633,87 @@ def test_source_binding_tracks_live_adjudicator_and_wire_parser(
     )
     parser_patched = _source_digest("HonestSeededControl", probes)
     assert parser_patched != baseline
+
+
+def test_callable_reference_rejects_truly_orphaned_function() -> None:
+    name = "_ucm_test_anchored_orphan_callable"
+    namespace = vars(candidate_protocol)
+    exec(f"def {name}():\n    return None\n", namespace)
+    orphan = namespace.pop(name)
+
+    with pytest.raises(ProtocolViolation, match="has no owner alias"):
+        mutation_runner._registered_callable_reference(orphan, "test.orphan")
+
+
+def test_callable_reference_rejects_foreign_owner_with_anchored_consumer(
+    monkeypatch,
+) -> None:
+    module_name = "_ucm_test_foreign_callable_owner"
+    owner = types.ModuleType(module_name)
+    exec("def foreign():\n    return None\n", owner.__dict__)
+    foreign = owner.foreign
+    del owner.foreign
+    monkeypatch.setitem(sys.modules, module_name, owner)
+    monkeypatch.setattr(
+        compliance, "_ucm_test_foreign_callable", foreign, raising=False
+    )
+
+    with pytest.raises(ProtocolViolation, match="has no anchored owner"):
+        mutation_runner._registered_callable_reference(
+            foreign, "test.foreign_owner"
+        )
+
+
+def test_callable_reference_rejects_orphaned_builtin_consumer_alias(
+    monkeypatch,
+) -> None:
+    import _operator
+
+    orphaned_builtin = _operator.index
+    monkeypatch.setattr(_operator, "index", object())
+    monkeypatch.setattr(
+        compliance, "_ucm_test_orphaned_builtin", orphaned_builtin, raising=False
+    )
+
+    with pytest.raises(ProtocolViolation, match="has no owner alias"):
+        mutation_runner._registered_callable_reference(
+            orphaned_builtin, "test.orphaned_builtin"
+        )
+
+
+def test_source_binding_tracks_mutation_evidence_builder_and_live_alias(
+    monkeypatch,
+) -> None:
+    probes = frozenset({"update_consistency"})
+    baseline = _source_digest("HonestSeededControl", probes)
+    original_finalize = mutation_evidence.MutationEvidenceBuilder.finalize
+
+    def patched_finalize(self):
+        return original_finalize(self)
+
+    monkeypatch.setattr(
+        mutation_evidence.MutationEvidenceBuilder,
+        "finalize",
+        patched_finalize,
+    )
+    assert _source_digest("HonestSeededControl", probes) != baseline
+    monkeypatch.setattr(
+        mutation_evidence.MutationEvidenceBuilder,
+        "finalize",
+        original_finalize,
+    )
+
+    original_contract = mutation_runner.portable_runner_contract
+    monkeypatch.setattr(mutation_runner, "portable_runner_contract", object)
+    with pytest.raises(ProtocolViolation, match="critical alias identity mismatch"):
+        _source_digest("HonestSeededControl", probes)
+    monkeypatch.setattr(
+        mutation_runner, "portable_runner_contract", original_contract
+    )
+
+    monkeypatch.setattr(mutation_runner, "MutationEvidenceBuilder", object)
+    with pytest.raises(ProtocolViolation, match="critical alias identity mismatch"):
+        _source_digest("HonestSeededControl", probes)
 
 
 def test_source_binding_tracks_runner_contract_and_rejects_foreign_globals(
@@ -938,7 +1174,6 @@ def test_source_binding_rejects_referenced_module_and_class_alias_rewrites(
 
 
 def test_source_binding_rejects_synchronized_executor_clone_before_metaclass_use(
-    monkeypatch,
 ) -> None:
     original = candidate_protocol.FreshProcessExecutor
     poisoned_accesses: list[str] = []
@@ -957,12 +1192,15 @@ def test_source_binding_rejects_synchronized_executor_clone_before_metaclass_use
     namespace["__qualname__"] = "FreshProcessExecutor"
     clone = PoisonMeta("FreshProcessExecutor", original.__bases__, namespace)
     poisoned_accesses.clear()
-    monkeypatch.setattr(candidate_protocol, "FreshProcessExecutor", clone)
-    monkeypatch.setattr(compliance, "FreshProcessExecutor", clone)
-
-    with pytest.raises(ProtocolViolation, match="identity mismatch"):
-        _source_digest("HonestSeededControl", frozenset())
-    assert poisoned_accesses == []
+    setattr(candidate_protocol, "FreshProcessExecutor", clone)
+    setattr(compliance, "FreshProcessExecutor", clone)
+    try:
+        with pytest.raises(ProtocolViolation, match="identity mismatch"):
+            _source_digest("HonestSeededControl", frozenset())
+        assert poisoned_accesses == []
+    finally:
+        setattr(candidate_protocol, "FreshProcessExecutor", original)
+        setattr(compliance, "FreshProcessExecutor", original)
 
 
 def test_source_binding_rejects_synchronized_same_name_verdict_enum(
@@ -1009,11 +1247,13 @@ def _install_exact_fresh_executor(monkeypatch) -> dict[str, str]:
         def invoke(self, request):
             candidate = compliance.HonestSeededControl()
             response = candidate_protocol._dispatch_candidate(candidate, request)
+            request_digest = candidate_protocol.digest_json(request.to_wire())
             return candidate_protocol.InvocationOutcome(
                 response=response,
-                request_digest=candidate_protocol.digest_json(request.to_wire()),
+                request_digest=request_digest,
                 response_digest=candidate_protocol.digest_json(response.to_wire()),
                 isolation="test-exact-bound-worker",
+                received_request_digest=request_digest,
                 **binding,
             )
 
@@ -1023,10 +1263,16 @@ def _install_exact_fresh_executor(monkeypatch) -> dict[str, str]:
 
 def test_candidate_worker_failure_retains_complete_execution_binding() -> None:
     binding = _binding_kwargs()
+    history, _, _, _ = inputs()
+    request = candidate_protocol.InitializeRequest(history, 19)
+    request_digest = candidate_protocol.digest_json(request.to_wire())
     error = candidate_protocol.WorkerInvocationError(
         "candidate policy rejection",
         failure_code="UCM-F004-HEAD_HISTORY_ACCESS",
         failure_origin="candidate",
+        request_digest=request_digest,
+        request_fully_sent=True,
+        received_request_digest=request_digest,
         **binding,
     )
 
@@ -1038,7 +1284,7 @@ def test_candidate_worker_failure_retains_complete_execution_binding() -> None:
     collector = compliance._ExecutionBindingCollector()
     executor = compliance._BindingObservedExecutor(FailingExecutor(), collector)
     with pytest.raises(candidate_protocol.WorkerInvocationError) as raised:
-        executor.invoke(object())
+        executor.invoke(request)
 
     assert raised.value is error
     assert collector.complete
@@ -1136,18 +1382,24 @@ def test_candidate_failure_missing_binding_is_incomplete_and_not_decisive(
             nonlocal calls
             calls += 1
             if calls > 2:
+                request_digest = candidate_protocol.digest_json(request.to_wire())
                 raise candidate_protocol.WorkerInvocationError(
                     "candidate operation failed without its snapshot binding",
                     failure_code="UCM-F008-STATE_NOT_CLOSED",
                     failure_origin="candidate",
+                    request_digest=request_digest,
+                    request_fully_sent=True,
+                    received_request_digest=request_digest,
                 )
             candidate = compliance.HonestSeededControl()
             response = candidate_protocol._dispatch_candidate(candidate, request)
+            request_digest = candidate_protocol.digest_json(request.to_wire())
             return candidate_protocol.InvocationOutcome(
                 response=response,
-                request_digest=candidate_protocol.digest_json(request.to_wire()),
+                request_digest=request_digest,
                 response_digest=candidate_protocol.digest_json(response.to_wire()),
                 isolation="test-missing-error-binding",
+                received_request_digest=request_digest,
                 **binding,
             )
 
@@ -1219,13 +1471,15 @@ def test_candidate_failure_missing_binding_is_incomplete_and_not_decisive(
         mutation_runner, "PORTABLE_MUTATION_CASES", (file_handle_case,)
     )
     monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="incomplete-report-61",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=61,
     )
+    rows = bundle.observations
     assert rows[0].outcome is mutation_matrix.ObservationOutcome.CRASHED
     assert rows[0].actual_failure_code is None
     assert rows[0].decisive_record_digest is None
@@ -1508,7 +1762,7 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
     monkeypatch,
 ) -> None:
     history, diagnosis, rollout, _ = inputs()
-    _install_exact_fresh_executor(monkeypatch)
+    binding = _install_exact_fresh_executor(monkeypatch)
     warm_phase = False
     original_to_wire = candidate_protocol.StateResponse.to_wire
 
@@ -1524,11 +1778,34 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
         entrypoint, requests, collector, *, timeout_seconds
     ):
         nonlocal warm_phase
-        del timeout_seconds
-        executor = compliance.FreshProcessExecutor(entrypoint)
+        del entrypoint, timeout_seconds
+
+        class ExactSequentialDelegate:
+            def __init__(self) -> None:
+                self.candidate = compliance.HonestSeededControl()
+
+            def invoke(self, request):
+                response = candidate_protocol._dispatch_candidate(
+                    self.candidate, request
+                )
+                request_digest = candidate_protocol.digest_json(request.to_wire())
+                return candidate_protocol.InvocationOutcome(
+                    response=response,
+                    request_digest=request_digest,
+                    response_digest=candidate_protocol.digest_json(
+                        response.to_wire()
+                    ),
+                    isolation="test-exact-sequential-worker",
+                    received_request_digest=request_digest,
+                    **binding,
+                )
+
+        executor = compliance._BindingObservedExecutor(
+            ExactSequentialDelegate(),
+            collector,
+            execution_mode="sequential",
+        )
         outcomes = tuple(executor.invoke(request) for request in requests)
-        for outcome in outcomes:
-            collector.observe(outcome)
         warm_phase = True
         return outcomes
 
@@ -1566,6 +1843,8 @@ def test_initialize_replay_helper_failure_is_harness_incomplete(
 ) -> None:
     history, diagnosis, rollout, _ = inputs()
     binding = _binding_kwargs()
+    serializer_calls = 0
+    original_to_wire = candidate_protocol.StateResponse.to_wire
 
     class BoundInitializeExecutor:
         def __init__(self, entrypoint):
@@ -1576,19 +1855,27 @@ def test_initialize_replay_helper_failure_is_harness_incomplete(
             state = compliance.HonestSeededControl().initialize(
                 request.history, inference_seed=request.seed
             )
+            response = candidate_protocol.StateResponse(
+                candidate_protocol.Operation.INITIALIZE, state
+            )
+            request_digest = candidate_protocol.digest_json(request.to_wire())
             return candidate_protocol.InvocationOutcome(
-                response=candidate_protocol.StateResponse(
-                    candidate_protocol.Operation.INITIALIZE, state
+                response=response,
+                request_digest=request_digest,
+                response_digest=candidate_protocol.digest_json(
+                    original_to_wire(response)
                 ),
-                request_digest="sha256:" + "1" * 64,
-                response_digest="sha256:" + "2" * 64,
                 isolation="test-initialize-replay-helper",
+                received_request_digest=request_digest,
                 **binding,
             )
 
     def broken_to_wire(self):
-        del self
-        raise RuntimeError("initialize response serializer unavailable")
+        nonlocal serializer_calls
+        serializer_calls += 1
+        if serializer_calls > 2:
+            raise RuntimeError("initialize response serializer unavailable")
+        return original_to_wire(self)
 
     monkeypatch.setattr(compliance, "FreshProcessExecutor", BoundInitializeExecutor)
     monkeypatch.setattr(candidate_protocol.StateResponse, "to_wire", broken_to_wire)
@@ -1617,11 +1904,13 @@ def test_compliance_seal_uses_worker_exact_bundle_and_model_binding(
 
     def outcome(candidate, request):
         response = candidate_protocol._dispatch_candidate(candidate, request)
+        request_digest = candidate_protocol.digest_json(request.to_wire())
         return candidate_protocol.InvocationOutcome(
             response=response,
-            request_digest=candidate_protocol.digest_json(request.to_wire()),
+            request_digest=request_digest,
             response_digest=candidate_protocol.digest_json(response.to_wire()),
             isolation="test-exact-worker",
+            received_request_digest=request_digest,
             **binding,
         )
 
@@ -1705,14 +1994,16 @@ def test_compliance_binding_drift_is_harness_incomplete_before_seal(
             calls += 1
             candidate = compliance.HonestSeededControl()
             response = candidate_protocol._dispatch_candidate(candidate, request)
+            request_digest = candidate_protocol.digest_json(request.to_wire())
             binding = _binding_kwargs(
                 bundle="sha256:" + ("a" if calls == 1 else "f") * 64
             )
             return candidate_protocol.InvocationOutcome(
                 response=response,
-                request_digest=candidate_protocol.digest_json(request.to_wire()),
+                request_digest=request_digest,
                 response_digest=candidate_protocol.digest_json(response.to_wire()),
                 isolation="test-drifting-worker",
+                received_request_digest=request_digest,
                 **binding,
             )
 
@@ -1882,6 +2173,35 @@ def test_source_binding_rejects_inherited_new_rewrite_in_isolated_process(
         f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
     )
     assert completed.stdout.strip() == "isolated-inherited-new-rejected"
+
+
+def test_inherited_new_probe_block_leaves_parent_constructors_usable() -> None:
+    """Canary the four constructors that must never be rewritten in pytest."""
+
+    completed = subprocess.run(
+        [sys.executable, "-S", "-c", "pass"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+
+    thread_ran: list[bool] = []
+    thread = candidate_protocol.threading.Thread(
+        target=lambda: thread_ran.append(True)
+    )
+    thread.start()
+    thread.join(timeout=5)
+    assert not thread.is_alive()
+    assert thread_ran == [True]
+
+    work_queue = candidate_protocol.queue.Queue()
+    work_queue.put("constructor-canary")
+    assert work_queue.get_nowait() == "constructor-canary"
+
+    with candidate_protocol.tempfile.TemporaryDirectory() as directory:
+        assert candidate_protocol.Path(directory).is_dir()
 
 
 @pytest.mark.parametrize(
@@ -2220,13 +2540,15 @@ def test_transient_self_restore_during_execution_cannot_produce_a_kill(
     monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", (case,))
     monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
 
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="self-restoring-source-59",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=59,
     )
+    rows = bundle.observations
 
     assert len(rows) == 1
     assert rows[0].outcome is mutation_matrix.ObservationOutcome.CRASHED
@@ -2240,15 +2562,24 @@ def test_pre_execution_source_witness_failure_is_recorded_per_row(
     history, diagnosis, rollout, delta = inputs()
     mutant_case = mutation_runner.PORTABLE_MUTATION_CASES[0]
     specificity_case = mutation_runner.PORTABLE_SPECIFICITY_CASES[0]
+    witness_calls = 0
 
     def unavailable_witness(*args, **kwargs):
+        nonlocal witness_calls
         del args, kwargs
+        witness_calls += 1
         raise RuntimeError("source witness unavailable before execution")
 
     def evaluator_must_not_run(*args, **kwargs):
         del args, kwargs
         raise AssertionError("candidate execution must not start without a witness")
 
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", unavailable_witness)
     monkeypatch.setattr(
         mutation_runner, "evaluate_candidate_compliance", evaluator_must_not_run
@@ -2258,13 +2589,15 @@ def test_pre_execution_source_witness_failure_is_recorded_per_row(
         mutation_runner, "PORTABLE_SPECIFICITY_CASES", (specificity_case,)
     )
 
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="pre-source-unavailable-63",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=63,
     )
+    rows = bundle.observations
 
     assert len(rows) == 2
     assert all(
@@ -2273,6 +2606,21 @@ def test_pre_execution_source_witness_failure_is_recorded_per_row(
     assert all(row.actual_failure_code is None for row in rows)
     assert all(row.decisive_record_digest is None for row in rows)
     assert rows[0].source_digest != rows[1].source_digest
+    assert witness_calls == 4
+    for record in bundle.records:
+        assert record.report_transcript_digest is None
+        assert _blob_payload(bundle, record.post_source_witness_digest)[
+            "stage"
+        ] == "post-execution"
+        error = _blob_payload(bundle, record.error_transcript_digest)
+        assert error["status"] == "error"
+        assert [item["stage"] for item in error["errors"]] == [
+            "pre-execution",
+            "post-execution",
+        ]
+        assert _blob_payload(bundle, record.decision_record_digest)[
+            "derived_outcome"
+        ] == "crashed"
 
 
 def test_paired_specificity_probe_is_inside_pre_post_source_witness(
@@ -2293,12 +2641,15 @@ def test_paired_specificity_probe_is_inside_pre_post_source_witness(
 
     def witness(control_class_name, semantic_probes, **kwargs):
         nonlocal witness_calls
-        del kwargs
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
         witness_calls += 1
         return {
             "protocol": "test-source-witness",
             "control": control_class_name,
-            "semantic_probes": sorted(semantic_probes),
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
             "semantic_abs_tolerance": compliance.SEMANTIC_ABS_TOLERANCE,
             "expected_live_execution_binding": dict(binding),
         }
@@ -2344,19 +2695,315 @@ def test_paired_specificity_probe_is_inside_pre_post_source_witness(
         mutation_runner, "PORTABLE_SPECIFICITY_CASES", (paired_case,)
     )
 
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="paired-probe-source-drift-64",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=64,
     )
+    rows = bundle.observations
 
     assert paired_calls == 1
     assert witness_calls == 2
     assert len(rows) == 1
     assert rows[0].outcome is mutation_matrix.ObservationOutcome.CRASHED
-    assert rows[0].decisive_record_digest is not None
+    assert rows[0].decisive_record_digest is None
+    record = bundle.records[0]
+    assert _blob_payload(bundle, record.pre_source_witness_digest) != _blob_payload(
+        bundle, record.post_source_witness_digest
+    )
+    error = _blob_payload(bundle, record.error_transcript_digest)
+    assert error["status"] == "error"
+    assert any(
+        item["stage"] == "post-execution"
+        and item["exception_type"] == "UCM-E003-HARNESS_INCOMPLETE"
+        for item in error["errors"]
+    )
+
+
+def test_runner_executes_captured_snapshot_after_caller_nested_mutation(
+    monkeypatch,
+) -> None:
+    history, diagnosis, rollout, delta = mutable_nested_inputs()
+    captured_preimage = json.loads(
+        canonical.canonical_json_bytes(
+            {
+                "history": history.to_wire(),
+                "diagnosis_query": diagnosis.to_wire(),
+                "rollout_query": rollout.to_wire(),
+                "delta": delta.to_wire(),
+            }
+        )
+    )
+    case = next(
+        row
+        for row in mutation_runner.PORTABLE_MUTATION_CASES
+        if row.matrix_subject_id == "FileHandleState"
+    )
+    witness_calls = 0
+    evaluated_inputs: list[tuple[object, ...]] = []
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        nonlocal witness_calls
+        if witness_calls == 0:
+            history.events[0].payload["nested"]["value"] = "caller-mutated"
+            rollout.plan.actions[0].parameters["nested"]["amount"] = 99
+            delta.events[0].payload["nested"]["value"] = "caller-delta-mutated"
+        witness_calls += 1
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        del entrypoint
+        execution_inputs = (
+            kwargs["history"],
+            kwargs["diagnosis_query"],
+            kwargs["rollout_query"],
+            kwargs["delta"],
+        )
+        evaluated_inputs.append(execution_inputs)
+        assert execution_inputs[0].to_wire() == captured_preimage["history"]
+        assert execution_inputs[1].to_wire() == captured_preimage["diagnosis_query"]
+        assert execution_inputs[2].to_wire() == captured_preimage["rollout_query"]
+        assert execution_inputs[3].to_wire() == captured_preimage["delta"]
+        assert execution_inputs[0] is not history
+        assert execution_inputs[2] is not rollout
+        raise RuntimeError("intentional stop after detached-input assertion")
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", (case,))
+    monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
+
+    bundle = run_portable_mutation_evidence(
+        run_id="captured-input-vs-caller-mutation-69",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=69,
+    )
+
+    assert len(evaluated_inputs) == 1
+    assert history.events[0].payload["nested"]["value"] == "caller-mutated"
+    assert rollout.plan.actions[0].parameters["nested"]["amount"] == 99
+    context = json.loads(
+        bundle.blob_bytes(bundle.execution_context_digest).decode("utf-8")
+    )
+    captured_blob = json.loads(
+        bundle.blob_bytes(context["input_preimage_digest"]).decode("utf-8")
+    )
+    assert captured_blob["payload"] == captured_preimage
+    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+        bundle.canonical_bytes()
+    ) == bundle
+
+
+def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
+    history, diagnosis, rollout, delta = mutable_nested_inputs()
+    cases = tuple(
+        row
+        for row in mutation_runner.PORTABLE_MUTATION_CASES
+        if row.matrix_subject_id in {"FileHandleState", "RawHistoryHead"}
+    )
+    seen_inputs: list[
+        tuple[VisibleHistory, DiagnosisQuery, RolloutQuery, VisibleDelta | None]
+    ] = []
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        del entrypoint
+        row_inputs = (
+            kwargs["history"],
+            kwargs["diagnosis_query"],
+            kwargs["rollout_query"],
+            kwargs["delta"],
+        )
+        seen_inputs.append(row_inputs)
+        assert row_inputs[0].events[0].payload["nested"]["value"] == "captured"
+        assert (
+            row_inputs[2].plan.actions[0].parameters["nested"]["amount"] == 1
+        )
+        assert row_inputs[3].events[0].payload["nested"]["value"] == (
+            "captured-delta"
+        )
+        if len(seen_inputs) == 1:
+            row_inputs[0].events[0].payload["nested"]["value"] = "row-one"
+            row_inputs[2].plan.actions[0].parameters["nested"]["amount"] = 77
+            row_inputs[3].events[0].payload["nested"]["value"] = "row-one-delta"
+        raise RuntimeError("intentional per-row execution stop")
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", cases)
+    monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
+
+    bundle = run_portable_mutation_evidence(
+        run_id="per-row-input-copy-isolation-70",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=70,
+    )
+
+    assert len(seen_inputs) == 2
+    assert seen_inputs[0][0] is not seen_inputs[1][0]
+    assert seen_inputs[0][2] is not seen_inputs[1][2]
+    assert seen_inputs[0][3] is not seen_inputs[1][3]
+    stages = [
+        {
+            item["stage"]
+            for item in _blob_payload(bundle, record.error_transcript_digest)[
+                "errors"
+            ]
+        }
+        for record in bundle.records
+    ]
+    assert "execution-input-postcondition" in stages[0]
+    assert "execution-input-postcondition" not in stages[1]
+    assert history.events[0].payload["nested"]["value"] == "captured"
+    assert rollout.plan.actions[0].parameters["nested"]["amount"] == 1
+    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+        bundle.canonical_bytes()
+    ) == bundle
+
+
+def test_paired_probe_reparses_independent_inputs_after_control_mutation(
+    monkeypatch,
+) -> None:
+    history, diagnosis, rollout, delta = mutable_nested_inputs()
+    paired_case = next(
+        row
+        for row in mutation_runner.PORTABLE_SPECIFICITY_CASES
+        if row[0] == "BehaviorEquivalentSerialization"
+    )
+    binding = _binding_kwargs()
+    control_inputs: list[tuple[object, ...]] = []
+    paired_inputs: list[tuple[object, ...]] = []
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+            "expected_live_execution_binding": dict(binding),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        row_inputs = (
+            kwargs["history"],
+            kwargs["diagnosis_query"],
+            kwargs["rollout_query"],
+            kwargs["delta"],
+        )
+        control_inputs.append(row_inputs)
+        row_inputs[0].events[0].payload["nested"]["value"] = "control-mutated"
+        row_inputs[2].plan.actions[0].parameters["nested"]["amount"] = 55
+        return compliance.ComplianceReport(
+            candidate=f"{entrypoint.module}:{entrypoint.qualname}",
+            operational_state_closure=ComplianceVerdict.PASS,
+            semantic_unity=ComplianceVerdict.INCOMPLETE,
+            isolation_completeness=ComplianceVerdict.INCOMPLETE,
+            isolation_assurance="test",
+            findings=(),
+            head_records=(),
+            **binding,
+        )
+
+    def paired_probe(**kwargs):
+        probe_inputs = (
+            kwargs["history"],
+            kwargs["diagnosis_query"],
+            kwargs["rollout_query"],
+            kwargs["delta"],
+        )
+        paired_inputs.append(probe_inputs)
+        assert probe_inputs[0].events[0].payload["nested"]["value"] == "captured"
+        assert probe_inputs[2].plan.actions[0].parameters["nested"]["amount"] == 1
+        return {"protocol": "test-paired-probe", "passed": True}
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(
+        mutation_runner, "paired_serialization_equivalence_evidence", paired_probe
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", ())
+    monkeypatch.setattr(
+        mutation_runner, "PORTABLE_SPECIFICITY_CASES", (paired_case,)
+    )
+
+    bundle = run_portable_mutation_evidence(
+        run_id="paired-probe-input-copy-isolation-71",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=71,
+    )
+
+    assert len(control_inputs) == len(paired_inputs) == 1
+    assert control_inputs[0][0] is not paired_inputs[0][0]
+    assert control_inputs[0][2] is not paired_inputs[0][2]
+    error = _blob_payload(bundle, bundle.records[0].error_transcript_digest)
+    assert any(
+        item["stage"] == "execution-input-postcondition"
+        and item["exception_type"] == "UCM-E003-HARNESS_INCOMPLETE"
+        for item in error["errors"]
+    )
+    assert not any(
+        item["stage"] == "paired-input-postcondition" for item in error["errors"]
+    )
+    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+        bundle.canonical_bytes()
+    ) == bundle
 
 
 def test_runtime_inventory_prewarm_failure_is_recorded_per_row(
@@ -2385,13 +3032,15 @@ def test_runtime_inventory_prewarm_failure_is_recorded_per_row(
         mutation_runner, "PORTABLE_SPECIFICITY_CASES", (specificity_case,)
     )
 
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="runtime-prewarm-unavailable-65",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=65,
     )
+    rows = bundle.observations
 
     assert len(rows) == 2
     assert all(
@@ -2423,7 +3072,9 @@ def test_transient_runtime_inventory_builder_cannot_poison_then_restore(
             0,
         )
         monkeypatch.setattr(candidate_protocol, "_RUNTIME_IMPORT_CACHE", poisoned)
-        candidate_protocol._runtime_import_read_allowlist = original
+        monkeypatch.setattr(
+            candidate_protocol, "_runtime_import_read_allowlist", original
+        )
         return poisoned
 
     def evaluator_must_not_run(*args, **kwargs):
@@ -2439,13 +3090,15 @@ def test_transient_runtime_inventory_builder_cannot_poison_then_restore(
     monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", (mutant_case,))
     monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
 
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="runtime-cache-poison-66",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=66,
     )
+    rows = bundle.observations
 
     assert poison_calls == 0
     assert len(rows) == 1
@@ -2575,26 +3228,349 @@ def test_runner_records_harness_exceptions_and_incomplete_controls_as_crashed(
     monkeypatch.setattr(
         mutation_runner, "PORTABLE_SPECIFICITY_CASES", (specificity_case,)
     )
-    rows = run_portable_mutation_evidence(
+    bundle = run_portable_mutation_evidence(
+        run_id="harness-exceptions-67",
         history=history,
         diagnosis_query=diagnosis,
         rollout_query=rollout,
         delta=delta,
         seed=67,
     )
+    rows = bundle.observations
 
     assert [row.outcome for row in rows] == [
         mutation_matrix.ObservationOutcome.CRASHED,
         mutation_matrix.ObservationOutcome.CRASHED,
     ]
     assert all(row.actual_failure_code is None for row in rows)
-    assert rows[0].decisive_record_digest is None
+    assert all(row.decisive_record_digest is None for row in rows)
+    by_kind = {record.observation.subject_kind: record for record in bundle.records}
+    mutant_record = by_kind[mutation_matrix.SubjectKind.MUTANT]
+    control_record = by_kind[mutation_matrix.SubjectKind.SPECIFICITY_CONTROL]
+    assert mutant_record.report_transcript_digest is None
+    assert _blob_payload(
+        bundle, mutant_record.pre_source_witness_digest
+    ) == _blob_payload(bundle, mutant_record.post_source_witness_digest)
+    assert "candidate-evaluation" in {
+        item["stage"]
+        for item in _blob_payload(
+            bundle, mutant_record.error_transcript_digest
+        )["errors"]
+    }
+    assert control_record.report_transcript_digest is not None
+    assert "compliance-report" in {
+        item["stage"]
+        for item in _blob_payload(
+            bundle, control_record.error_transcript_digest
+        )["errors"]
+    }
+    assert all(
+        _blob_payload(bundle, record.decision_record_digest)["derived_outcome"]
+        == "crashed"
+        for record in bundle.records
+    )
+
+
+def test_evaluator_none_is_a_serializable_zero_request_crash(monkeypatch) -> None:
+    history, diagnosis, rollout, delta = inputs()
+    mutant_case = mutation_runner.PORTABLE_MUTATION_CASES[0]
+    binding = _binding_kwargs()
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+            "expected_live_execution_binding": dict(binding),
+        }
+
+    def evaluator(*args, **kwargs):
+        del args, kwargs
+        return None
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(
+        mutation_runner, "PORTABLE_MUTATION_CASES", (mutant_case,)
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
+
+    bundle = run_portable_mutation_evidence(
+        run_id="evaluator-none-zero-request-72",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=72,
+    )
+
+    assert len(bundle.records) == 1
+    record = bundle.records[0]
+    assert record.observation.outcome is mutation_matrix.ObservationOutcome.CRASHED
+    assert record.report_transcript_digest is None
+    error = _blob_payload(bundle, record.error_transcript_digest)
+    assert error["status"] == "error"
+    assert any(
+        item["stage"] == "candidate-evaluation"
+        and "returned no report" in item["message"]
+        for item in error["errors"]
+    )
+    context = json.loads(
+        bundle.blob_bytes(bundle.execution_context_digest).decode("utf-8")
+    )
+    decision = _blob_payload(bundle, record.decision_record_digest)
+    assert decision["input_preimage_digest"] == context["input_preimage_digest"]
+    assert decision["invocation_transcript_digest"] == canonical.digest_json([])
+    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+        bundle.canonical_bytes()
+    ) == bundle
+
+
+def test_empty_request_report_is_retained_but_cannot_be_decisive(monkeypatch) -> None:
+    history, diagnosis, rollout, delta = inputs()
+    specificity_case = mutation_runner.PORTABLE_SPECIFICITY_CASES[0]
+    binding = _binding_kwargs()
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+            "expected_live_execution_binding": dict(binding),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        del kwargs
+        return compliance.ComplianceReport(
+            candidate=f"{entrypoint.module}:{entrypoint.qualname}",
+            operational_state_closure=ComplianceVerdict.PASS,
+            semantic_unity=ComplianceVerdict.INCOMPLETE,
+            isolation_completeness=ComplianceVerdict.INCOMPLETE,
+            isolation_assurance="test",
+            findings=(),
+            head_records=(),
+            **binding,
+        )
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", ())
+    monkeypatch.setattr(
+        mutation_runner, "PORTABLE_SPECIFICITY_CASES", (specificity_case,)
+    )
+
+    bundle = run_portable_mutation_evidence(
+        run_id="empty-request-report-73",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=73,
+    )
+
+    record = bundle.records[0]
+    assert record.observation.outcome is mutation_matrix.ObservationOutcome.CRASHED
+    assert record.observation.decisive_record_digest is None
+    assert record.report_transcript_digest is not None
+    report = _blob_payload(bundle, record.report_transcript_digest)
+    assert report["request_records"] == []
+    assert report["invocation_transcript_digest"] == canonical.digest_json([])
+    decision = _blob_payload(bundle, record.decision_record_digest)
+    assert decision["invocation_transcript_digest"] == canonical.digest_json([])
+    error = _blob_payload(bundle, record.error_transcript_digest)
+    assert any(
+        item["stage"] == "report-decisive-validation"
+        and "cannot prove that candidate execution started" in item["message"]
+        for item in error["errors"]
+    )
+
+
+def test_paired_probe_non_object_is_typed_fail_closed(monkeypatch) -> None:
+    history, diagnosis, rollout, delta = inputs()
+    paired_case = next(
+        row
+        for row in mutation_runner.PORTABLE_SPECIFICITY_CASES
+        if row[0] == "BehaviorEquivalentSerialization"
+    )
+    binding = _binding_kwargs()
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+            "expected_live_execution_binding": dict(binding),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        del kwargs
+        return compliance.ComplianceReport(
+            candidate=f"{entrypoint.module}:{entrypoint.qualname}",
+            operational_state_closure=ComplianceVerdict.PASS,
+            semantic_unity=ComplianceVerdict.INCOMPLETE,
+            isolation_completeness=ComplianceVerdict.INCOMPLETE,
+            isolation_assurance="test",
+            findings=(),
+            head_records=(),
+            **binding,
+        )
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(
+        mutation_runner,
+        "paired_serialization_equivalence_evidence",
+        lambda **kwargs: [kwargs["seed"]],
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", ())
+    monkeypatch.setattr(
+        mutation_runner, "PORTABLE_SPECIFICITY_CASES", (paired_case,)
+    )
+
+    bundle = run_portable_mutation_evidence(
+        run_id="paired-non-object-74",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=74,
+    )
+
+    record = bundle.records[0]
+    assert record.observation.outcome is mutation_matrix.ObservationOutcome.CRASHED
+    assert record.observation.decisive_record_digest is None
+    error = _blob_payload(bundle, record.error_transcript_digest)
+    paired_errors = [
+        item for item in error["errors"] if item["stage"] == "paired-semantic-probe"
+    ]
+    assert len(paired_errors) == 1
+    assert paired_errors[0]["exception_type"].endswith(".ProtocolViolation")
+    assert "non-object" in paired_errors[0]["message"]
+
+
+def test_unrenderable_harness_exception_is_retained_as_typed_error(
+    monkeypatch,
+) -> None:
+    history, diagnosis, rollout, delta = inputs()
+    mutant_case = mutation_runner.PORTABLE_MUTATION_CASES[0]
+    binding = _binding_kwargs()
+
+    class UnrenderableHarnessError(RuntimeError):
+        def __str__(self) -> str:
+            raise RuntimeError("exception rendering also failed")
+
+    def prepared_cache():
+        return {"protocol": "test-runtime-cache", "cache_digest": CATALOG}
+
+    def witness(control_class_name, semantic_probes, **kwargs):
+        execution_seed = kwargs["execution_seed"]
+        entrypoint = mutation_runner.control_entrypoint(control_class_name)
+        return {
+            "protocol": "test-source-witness",
+            "control": control_class_name,
+            "expected_candidate": f"{entrypoint.module}:{entrypoint.qualname}",
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": sorted(semantic_probes),
+            "expected_live_execution_binding": dict(binding),
+        }
+
+    def evaluator(entrypoint, **kwargs):
+        del kwargs
+        return compliance.ComplianceReport(
+            candidate=f"{entrypoint.module}:{entrypoint.qualname}",
+            operational_state_closure=ComplianceVerdict.PASS,
+            semantic_unity=ComplianceVerdict.PASS,
+            isolation_completeness=ComplianceVerdict.PASS,
+            isolation_assurance="test",
+            findings=(),
+            head_records=(),
+            **binding,
+        )
+
+    def unrenderable_binding(*args, **kwargs):
+        del args, kwargs
+        raise UnrenderableHarnessError()
+
+    monkeypatch.setattr(
+        mutation_runner, "_prepare_runtime_import_cache", prepared_cache
+    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
+    monkeypatch.setattr(
+        mutation_runner, "evaluate_candidate_compliance", evaluator
+    )
+    monkeypatch.setattr(
+        mutation_runner, "_report_execution_binding", unrenderable_binding
+    )
+    monkeypatch.setattr(
+        mutation_runner, "PORTABLE_MUTATION_CASES", (mutant_case,)
+    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_SPECIFICITY_CASES", ())
+
+    bundle = run_portable_mutation_evidence(
+        run_id="unrenderable-harness-error-68",
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        seed=68,
+    )
+
+    assert len(bundle.records) == 1
+    record = bundle.records[0]
+    assert record.observation.outcome is mutation_matrix.ObservationOutcome.CRASHED
+    assert record.observation.decisive_record_digest is None
+    error = _blob_payload(bundle, record.error_transcript_digest)
+    binding_errors = [item for item in error["errors"] if item["stage"] == "report-binding"]
+    assert len(binding_errors) == 1
+    assert binding_errors[0]["exception_type"].endswith(
+        ".UnrenderableHarnessError"
+    )
+    assert binding_errors[0]["message"].startswith(
+        "unrenderable exception message: "
+    )
 
 
 def test_runner_rejects_seed_that_protocol_or_lineage_would_reject() -> None:
     history, diagnosis, rollout, delta = inputs()
     with pytest.raises(ProtocolViolation, match="unsigned 64-bit"):
         run_portable_mutation_evidence(
+            run_id="invalid-seed-u64",
             history=history,
             diagnosis_query=diagnosis,
             rollout_query=rollout,
@@ -2614,6 +3590,7 @@ def test_runner_rejects_seed_that_protocol_or_lineage_would_reject() -> None:
     base_seed = execution_seed - update_index
     with pytest.raises(ProtocolViolation, match="lineage seeds"):
         run_portable_mutation_evidence(
+            run_id="invalid-lineage-seed",
             history=history,
             diagnosis_query=diagnosis,
             rollout_query=rollout,

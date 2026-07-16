@@ -334,6 +334,45 @@ _PORTABLE_MUTATION_CONTRACTS = (
     ("ReplayBatchDivergence", "ReplayBatchDivergenceControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
     ("DoubleCountEvent", "DoubleCountEventControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
 )
+# Empty head records mean that the candidate failed before a successful head
+# response could be materialized; they do not mean that an arbitrary prefix is
+# decisive evidence.  These are the exact live request stages reached by each
+# code-owned empty-head subject.  The final row is always the sole candidate
+# worker error and therefore no later request may be fabricated.
+_EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES = {
+    "FileHandleState": (("initialize", 0, "worker_error"),),
+    "RawHistoryHead": (
+        ("initialize", 0, "success"),
+        ("initialize", 0, "success"),
+        ("diagnose", 1, "worker_error"),
+    ),
+    "TrainerTargetSmuggler": (("initialize", 0, "worker_error"),),
+    "QueryReencoder": (
+        ("initialize", 0, "success"),
+        ("initialize", 0, "success"),
+        ("diagnose", 1, "worker_error"),
+    ),
+    "MutableCheckpoint": (("initialize", 0, "worker_error"),),
+    "TrueStateReader": (
+        ("initialize", 0, "success"),
+        ("initialize", 0, "success"),
+        ("diagnose", 1, "worker_error"),
+    ),
+    "FutureReader": (
+        ("initialize", 0, "success"),
+        ("initialize", 0, "success"),
+        ("diagnose", 1, "success"),
+        ("diagnose", 1, "success"),
+        ("rollout", 2, "worker_error"),
+    ),
+    "CounterfactualMutator": (
+        ("initialize", 0, "success"),
+        ("initialize", 0, "success"),
+        ("diagnose", 1, "success"),
+        ("diagnose", 1, "success"),
+        ("rollout", 2, "worker_error"),
+    ),
+}
 _PORTABLE_SPECIFICITY_CONTRACTS = (
     (
         "ExplicitSeedStochasticState",
@@ -1093,6 +1132,7 @@ def _validate_request_records(
     rollout_query: RolloutQuery,
     delta: VisibleDelta | None,
     execution_seed: int,
+    expected_subject_id: str,
     expected_failure_code: str | None,
     expected_semantic_probes: tuple[str, ...],
     expected_head_record_shape: str,
@@ -1832,8 +1872,39 @@ def _validate_request_records(
                 raise ProtocolViolation(
                     "replay killed transcript lacks actual input coverage"
                 )
-        elif not value:
-            raise ProtocolViolation("empty-head killed transcript has no attempted request")
+        else:
+            expected_topology = _EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES.get(
+                expected_subject_id
+            )
+            if expected_topology is None:
+                raise ProtocolViolation(
+                    "code-owned empty-head subject lacks a terminal request topology"
+                )
+            actual_topology = [
+                (
+                    record["execution_mode"],
+                    record["operation"],
+                    record["seed"],
+                    record["status"],
+                    record["failure_code"],
+                )
+                for record in value
+            ]
+            exact_topology = [
+                (
+                    "fresh",
+                    operation,
+                    execution_seed + seed_offset,
+                    status,
+                    expected_failure_code if status == "worker_error" else None,
+                )
+                for operation, seed_offset, status in expected_topology
+            ]
+            if actual_topology != exact_topology:
+                raise ProtocolViolation(
+                    "empty-head killed transcript differs from the code-owned "
+                    "exact terminal request topology"
+                )
 
         allowed_response_drift_positions: set[int] = set()
         if comparison_failure:
@@ -2110,7 +2181,7 @@ def _validate_decisive_source_witness(
     execution_context_payload: dict[str, Any],
 ) -> None:
     witness = _closed_object(witness, _SOURCE_WITNESS_KEYS, label)
-    if witness["protocol"] != "ucm-portable-control-source-binding/16":
+    if witness["protocol"] != "ucm-portable-control-source-binding/17":
         raise ProtocolViolation(f"{label} protocol mismatch")
     if witness["control"] != expected_control:
         raise ProtocolViolation(f"{label} control identity mismatch")
@@ -2381,6 +2452,7 @@ def _validate_record_semantics(
             rollout_query=input_rollout_query,
             delta=input_delta,
             execution_seed=observation.execution_seed,
+            expected_subject_id=observation.subject_id,
             expected_failure_code=expected_failure_code,
             expected_semantic_probes=expected_semantic_probes,
             expected_head_record_shape=expected_head_record_shape,
@@ -2735,6 +2807,7 @@ def _validate_record_semantics(
         rollout_query=input_rollout_query,
         delta=input_delta,
         execution_seed=observation.execution_seed,
+        expected_subject_id=observation.subject_id,
         expected_failure_code=expected_failure_code,
         expected_semantic_probes=expected_semantic_probes,
         expected_head_record_shape=expected_head_record_shape,

@@ -57,6 +57,72 @@ REPLAY_HEAD_CONTROLS = frozenset(
         "DeclaredFullHistoryBaselineControl",
     }
 )
+EMPTY_HEAD_CASES = (
+    (
+        "FileHandleState",
+        "FileHandleStateControl",
+        1,
+        "C07",
+        "UCM-F008-STATE_NOT_CLOSED",
+        "initialize",
+    ),
+    (
+        "RawHistoryHead",
+        "RawHistoryHeadControl",
+        2,
+        "C02",
+        "UCM-F004-HEAD_HISTORY_ACCESS",
+        "diagnose",
+    ),
+    (
+        "TrainerTargetSmuggler",
+        "TrainerTargetSmugglerControl",
+        3,
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+        "initialize",
+    ),
+    (
+        "QueryReencoder",
+        "QueryReencoderControl",
+        4,
+        "C02",
+        "UCM-F004-HEAD_HISTORY_ACCESS",
+        "diagnose",
+    ),
+    (
+        "MutableCheckpoint",
+        "MutableCheckpointControl",
+        5,
+        "C06",
+        "UCM-F009-MODEL_MUTATION",
+        "initialize",
+    ),
+    (
+        "TrueStateReader",
+        "TrueStateReaderControl",
+        6,
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+        "diagnose",
+    ),
+    (
+        "FutureReader",
+        "FutureReaderControl",
+        7,
+        "C08",
+        "UCM-F001-FUTURE_LEAK",
+        "rollout",
+    ),
+    (
+        "CounterfactualMutator",
+        "QueryMutatorControl",
+        8,
+        "C16",
+        "UCM-F012-QUERY_MUTATES_FACT",
+        "rollout",
+    ),
+)
 _DEFAULT_PASS_DELTA = object()
 
 
@@ -178,6 +244,32 @@ def _request_transcript(
     killed_failure_code: str | None = None,
     control_class_name: str = "",
 ) -> list[dict[str, object]]:
+    empty_head_terminal_operation = {
+        "FileHandleStateControl": "initialize",
+        "RawHistoryHeadControl": "diagnose",
+        "TrainerTargetSmugglerControl": "initialize",
+        "QueryReencoderControl": "diagnose",
+        "MutableCheckpointControl": "initialize",
+        "TrueStateReaderControl": "diagnose",
+        "FutureReaderControl": "rollout",
+        "QueryMutatorControl": "rollout",
+    }.get(control_class_name)
+
+    def candidate_worker_error(
+        successful_record: dict[str, object], failure_code: str
+    ) -> dict[str, object]:
+        record = deepcopy(successful_record)
+        record.update(
+            {
+                "status": "worker_error",
+                "response_wire": None,
+                "response_digest": None,
+                "failure_origin": "candidate",
+                "failure_code": failure_code,
+            }
+        )
+        return record
+
     inputs = _input_preimage(delta={} if include_delta else None)
     state = _state_wire("main")
     next_state = _state_wire("updated")
@@ -193,7 +285,13 @@ def _request_transcript(
         "state": state,
     }
     rows = [_request_record(init_request, init_response)]
-    if not full:
+    if (
+        not full
+        and empty_head_terminal_operation == "initialize"
+        and killed_failure_code is not None
+    ):
+        return [candidate_worker_error(rows[0], killed_failure_code)]
+    if not full and empty_head_terminal_operation is None:
         return rows
     rows.append(_request_record(deepcopy(init_request), deepcopy(init_response)))
     diagnosis_request = {
@@ -218,6 +316,31 @@ def _request_transcript(
         response["result"]["probabilities"] = {"a": 0.75, "b": 0.25}
         return response
 
+    if (
+        not full
+        and empty_head_terminal_operation == "diagnose"
+        and killed_failure_code is not None
+    ):
+        rows.append(
+            candidate_worker_error(
+                _request_record(diagnosis_request, diagnosis_response),
+                killed_failure_code,
+            )
+        )
+        return rows
+    rows.extend(
+        [
+            _request_record(diagnosis_request, diagnosis_response),
+            _request_record(
+                deepcopy(diagnosis_request),
+                (
+                    drifted_diagnosis_response()
+                    if killed_failure_code == "UCM-F020-NONREPRODUCIBLE"
+                    else deepcopy(diagnosis_response)
+                ),
+            ),
+        ]
+    )
     rollout_request = {
         "protocol": "ucm-candidate-request/1",
         "operation": "rollout",
@@ -235,17 +358,20 @@ def _request_transcript(
             "metadata": {},
         },
     }
+    if (
+        not full
+        and empty_head_terminal_operation == "rollout"
+        and killed_failure_code is not None
+    ):
+        rows.append(
+            candidate_worker_error(
+                _request_record(rollout_request, rollout_response),
+                killed_failure_code,
+            )
+        )
+        return rows
     rows.extend(
         [
-            _request_record(diagnosis_request, diagnosis_response),
-            _request_record(
-                deepcopy(diagnosis_request),
-                (
-                    drifted_diagnosis_response()
-                    if killed_failure_code == "UCM-F020-NONREPRODUCIBLE"
-                    else deepcopy(diagnosis_response)
-                ),
-            ),
             _request_record(rollout_request, rollout_response),
             _request_record(deepcopy(rollout_request), deepcopy(rollout_response)),
         ]
@@ -694,7 +820,7 @@ def _source_witness(
         "prototype.unified_map.compliance:" + control_class_name
     )
     return {
-        "protocol": "ucm-portable-control-source-binding/16",
+        "protocol": "ucm-portable-control-source-binding/17",
         "control": control_class_name,
         "execution_seed": execution_seed,
         "control_mro": [],
@@ -1886,6 +2012,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         execution_seed=execution_seed,
         include_delta=False,
         full=False,
+        killed_failure_code="UCM-F004-HEAD_HISTORY_ACCESS",
+        control_class_name="RawHistoryHeadControl",
     )
     invocation_transcript_digest = digest_json(request_records)
     report = {
@@ -2039,6 +2167,208 @@ def test_portable_registry_binds_exact_head_shapes_and_lineage_mask() -> None:
     )
     with pytest.raises(ProtocolViolation, match="code-owned registry"):
         forged.finalize()
+
+
+def test_empty_head_terminal_topology_registry_covers_every_empty_subject() -> None:
+    empty_subjects = {
+        row[0]
+        for row in mutation_evidence._PORTABLE_MUTATION_CONTRACTS
+        if row[-1] == "empty"
+    }
+    assert set(mutation_evidence._EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES) == (
+        empty_subjects
+    )
+    assert {row[0] for row in EMPTY_HEAD_CASES} == empty_subjects
+    for topology in mutation_evidence._EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES.values():
+        assert topology
+        assert topology[-1][2] == "worker_error"
+        assert sum(status == "worker_error" for _, _, status in topology) == 1
+
+
+@pytest.mark.parametrize(
+    (
+        "subject_id",
+        "control_class_name",
+        "row_index",
+        "gate",
+        "failure_code",
+        "terminal_operation",
+    ),
+    EMPTY_HEAD_CASES,
+)
+def test_every_empty_head_kill_binds_its_exact_live_terminal_topology(
+    subject_id: str,
+    control_class_name: str,
+    row_index: int,
+    gate: str,
+    failure_code: str,
+    terminal_operation: str,
+) -> None:
+    execution_seed = TEST_BASE_SEED + row_index
+    report = _decisive_raw(
+        binding_digit="3",
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": f"{gate}-unit-test",
+                "verdict": "fail",
+                "failure_code": failure_code,
+                "detail": "exact empty-head terminal topology",
+                "evidence": {},
+            }
+        ],
+        failure_codes=[failure_code],
+        decision_kind="mutant_kill",
+        expected_gate=gate,
+        expected_failure_code=failure_code,
+    )[3]
+    records = report["request_records"]
+    assert type(records) is list
+    expected_success_prefix = {
+        "initialize": [],
+        "diagnose": [
+            ("fresh", "initialize", execution_seed, "success", None),
+            ("fresh", "initialize", execution_seed, "success", None),
+        ],
+        "rollout": [
+            ("fresh", "initialize", execution_seed, "success", None),
+            ("fresh", "initialize", execution_seed, "success", None),
+            ("fresh", "diagnose", execution_seed + 1, "success", None),
+            ("fresh", "diagnose", execution_seed + 1, "success", None),
+        ],
+    }[terminal_operation]
+    assert [
+        (
+            row["execution_mode"],
+            row["operation"],
+            row["seed"],
+            row["status"],
+            row["failure_code"],
+        )
+        for row in records
+    ] == [
+        *expected_success_prefix,
+        (
+            "fresh",
+            terminal_operation,
+            execution_seed
+            + {"initialize": 0, "diagnose": 1, "rollout": 2}[
+                terminal_operation
+            ],
+            "worker_error",
+            failure_code,
+        ),
+    ]
+    assert report["head_records"] == []
+
+    bundle = _invalid_kill_builder(
+        subject_id=subject_id,
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        actual_gate=gate,
+        actual_failure_code=failure_code,
+    ).finalize()
+    assert bundle.observations[0].outcome is ObservationOutcome.KILLED
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "old_single_initialize_success",
+        "missing_terminal",
+        "premature_terminal",
+        "post_terminal_call",
+        "wrong_operation",
+        "wrong_seed",
+        "wrong_mode",
+        "wrong_status",
+        "wrong_code",
+    ],
+)
+def test_empty_head_kill_rejects_nonexact_terminal_topology(mutation: str) -> None:
+    report = _decisive_raw(
+        binding_digit="3",
+        control_class_name="RawHistoryHeadControl",
+        execution_seed=RAW_HISTORY_SEED,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C02-unit-test",
+                "verdict": "fail",
+                "failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+                "detail": "exact empty-head terminal topology",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F004-HEAD_HISTORY_ACCESS"],
+        decision_kind="mutant_kill",
+        expected_gate="C02",
+        expected_failure_code="UCM-F004-HEAD_HISTORY_ACCESS",
+    )[3]
+    exact = deepcopy(report["request_records"])
+    assert type(exact) is list and len(exact) == 3
+
+    def as_worker_error(
+        record: dict[str, object], failure_code: str
+    ) -> dict[str, object]:
+        mutated = deepcopy(record)
+        mutated.update(
+            {
+                "status": "worker_error",
+                "response_wire": None,
+                "response_digest": None,
+                "failure_origin": "candidate",
+                "failure_code": failure_code,
+            }
+        )
+        return mutated
+
+    if mutation == "old_single_initialize_success":
+        records = exact[:1]
+    elif mutation == "missing_terminal":
+        records = exact[:-1]
+    elif mutation == "premature_terminal":
+        records = [
+            as_worker_error(exact[0], "UCM-F004-HEAD_HISTORY_ACCESS")
+        ]
+    elif mutation == "post_terminal_call":
+        records = [*exact, deepcopy(exact[0])]
+    elif mutation == "wrong_operation":
+        records = [
+            *exact[:2],
+            as_worker_error(exact[0], "UCM-F004-HEAD_HISTORY_ACCESS"),
+        ]
+    elif mutation == "wrong_seed":
+        records = exact
+        records[-1]["request_wire"]["seed"] = RAW_HISTORY_SEED + 2
+        records[-1]["seed"] = RAW_HISTORY_SEED + 2
+        _refresh_request_record(records[-1])
+    elif mutation == "wrong_mode":
+        records = exact
+        records[-1]["execution_mode"] = "sequential"
+    elif mutation == "wrong_status":
+        complete = _request_transcript(
+            execution_seed=RAW_HISTORY_SEED,
+            include_delta=False,
+            full=True,
+        )
+        records = [*exact[:2], deepcopy(complete[2])]
+    else:
+        records = exact
+        records[-1]["failure_code"] = "UCM-F008-STATE_NOT_CLOSED"
+
+    invocation_digest = digest_json(records)
+    invalid = _invalid_kill_builder(
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation):
+        invalid.finalize()
 
 
 def test_builder_and_parser_reject_every_code_owned_seed_overflow_boundary() -> None:
