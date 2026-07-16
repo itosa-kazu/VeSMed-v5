@@ -10,11 +10,17 @@ from pathlib import Path
 
 import pytest
 
+from prototype.unified_map import mutation_evidence, run_store
 from prototype.unified_map.canonical import (
     ProtocolViolation,
     canonical_json_bytes,
     digest_bytes,
     digest_json,
+)
+from prototype.unified_map.mutation_evidence import (
+    BENCHMARK_ID as MUTATION_BENCHMARK_ID,
+    MutationEvidenceBuilder,
+    MutationEvidenceBundle,
 )
 from prototype.unified_map.run_store import (
     AppendOnlyRunWriter,
@@ -26,6 +32,7 @@ from prototype.unified_map.run_store import (
     RunStatus,
     RunVerificationReceipt,
     RuntimeManifest,
+    MUTATION_EVIDENCE_PATH,
     required_payload_paths,
     results_root_digest,
     verify_run_bundle,
@@ -45,6 +52,7 @@ EXPECTED_REQUIRED_PAYLOAD_PATHS = (
     "raw/oracle-judge.jsonl",
     "raw/process-audit.jsonl",
     "raw/resources.jsonl",
+    "raw/mutation-evidence.json",
     "metrics/per-query.jsonl",
     "metrics/per-episode.jsonl",
     "metrics/per-world.jsonl",
@@ -57,8 +65,43 @@ EXPECTED_REQUIRED_PAYLOAD_PATHS = (
     "logs/stderr.log",
 )
 EXPECTED_REQUIRED_LAYOUT_DIGEST = (
-    "sha256:5cf7ac4f4b15bc084f22e132fb8b9f7febfc8efe06dfd0685adb70817e7c2bcb"
+    "sha256:e6d0fe15f4342cc129535bbbcfa5a567aae57056f5a1b99307e6179164ed6fd4"
 )
+
+TEST_MUTATION_RUNNER_PROTOCOL = "ucm-portable-mutation-runner/run-store-test"
+TEST_MUTATION_RUNTIME_IMPORT_CACHE = {"entries": []}
+
+
+def _mutation_bundle(run_id: str, *, base_seed: int = 100) -> MutationEvidenceBundle:
+    return MutationEvidenceBuilder(
+        run_id=run_id,
+        runner_protocol=TEST_MUTATION_RUNNER_PROTOCOL,
+        base_seed=base_seed,
+        input_preimage={
+            "history": {"events": []},
+            "diagnosis_query": {"labels": []},
+            "rollout_query": {"horizon": 0},
+            "delta": None,
+        },
+        execution_context={
+            "benchmark_id": MUTATION_BENCHMARK_ID,
+            "runtime_metadata": {
+                "python_implementation": "CPython",
+                "python_version": "3.12.0",
+                "platform_system": "unit-test",
+                "platform_release": "unit-test",
+                "platform_machine": "unit-test",
+                "byteorder": "little",
+            },
+            "portable_runner_contract": mutation_evidence.portable_runner_contract(
+                TEST_MUTATION_RUNNER_PROTOCOL
+            ),
+            "runtime_import_cache_contract_digest": digest_json(
+                TEST_MUTATION_RUNTIME_IMPORT_CACHE
+            ),
+            "source_preparation_error": None,
+        },
+    ).finalize()
 
 
 def manifest(
@@ -130,7 +173,16 @@ def _payload(path: str, expected: RunManifest | None = None) -> bytes:
 
 def _write_complete(writer: AppendOnlyRunWriter) -> None:
     for path in EXPECTED_REQUIRED_PAYLOAD_PATHS:
-        writer.write_bytes(path, _payload(path, writer.manifest))
+        if path == MUTATION_EVIDENCE_PATH:
+            writer.write_mutation_evidence(_mutation_bundle(writer.manifest.run_id))
+        else:
+            writer.write_bytes(path, _payload(path, writer.manifest))
+
+
+def _write_without_mutation_evidence(writer: AppendOnlyRunWriter) -> None:
+    for path in EXPECTED_REQUIRED_PAYLOAD_PATHS:
+        if path != MUTATION_EVIDENCE_PATH:
+            writer.write_bytes(path, _payload(path, writer.manifest))
 
 
 def _publish(root: Path, *, run_id: str = "run-a") -> tuple[Path, RunManifest]:
@@ -195,6 +247,231 @@ def test_run_bundle_is_exact_inventoried_rehashed_and_locally_sealed(
         AppendOnlyRunWriter(tmp_path, "run-a", expected)
 
 
+def test_mutation_evidence_uses_typed_only_same_run_write_path(tmp_path: Path) -> None:
+    expected = manifest(tmp_path, run_id="typed-evidence")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    try:
+        with pytest.raises(ProtocolViolation, match="requires write_mutation_evidence"):
+            writer.write_bytes(MUTATION_EVIDENCE_PATH, b"{}")
+        with pytest.raises(ProtocolViolation, match="requires write_mutation_evidence"):
+            writer.write_json(MUTATION_EVIDENCE_PATH, {})
+        with pytest.raises(ProtocolViolation, match="typed MutationEvidenceBundle"):
+            writer.write_mutation_evidence({})  # type: ignore[arg-type]
+        with pytest.raises(ProtocolViolation, match="run_id differs"):
+            writer.write_mutation_evidence(_mutation_bundle("other-run"))
+        forged_benchmark = _mutation_bundle(expected.run_id)
+        object.__setattr__(forged_benchmark, "benchmark_id", "other-benchmark")
+        with pytest.raises(ProtocolViolation, match="benchmark_id differs"):
+            writer.write_mutation_evidence(forged_benchmark)
+
+        writer.write_mutation_evidence(_mutation_bundle(expected.run_id))
+        assert MutationEvidenceBundle.from_canonical_bytes(
+            (writer.temporary / MUTATION_EVIDENCE_PATH).read_bytes()
+        ).run_id == expected.run_id
+    finally:
+        writer.abort()
+
+
+def test_finalized_run_requires_real_canonical_mutation_evidence(
+    tmp_path: Path,
+) -> None:
+    expected = manifest(tmp_path, run_id="missing-mutation-evidence")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_without_mutation_evidence(writer)
+    try:
+        with pytest.raises(ProtocolViolation, match="missing required paths"):
+            writer.finalize()
+    finally:
+        writer.abort()
+
+    expected = manifest(tmp_path, run_id="malformed-mutation-evidence")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_without_mutation_evidence(writer)
+    injected = writer.temporary / MUTATION_EVIDENCE_PATH
+    injected.parent.mkdir(parents=True, exist_ok=True)
+    injected.write_bytes(b"{}")
+    try:
+        with pytest.raises(ProtocolViolation, match="mutation evidence bundle"):
+            writer.finalize()
+    finally:
+        writer.abort()
+
+
+def test_finalize_reparses_live_mutation_evidence_bytes_and_binds_run(
+    tmp_path: Path,
+) -> None:
+    expected = manifest(tmp_path, run_id="live-mutation-binding")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_complete(writer)
+    (writer.temporary / MUTATION_EVIDENCE_PATH).write_bytes(
+        _mutation_bundle("substituted-run").canonical_bytes()
+    )
+    try:
+        with pytest.raises(ProtocolViolation, match="run_id differs"):
+            writer.finalize()
+    finally:
+        writer.abort()
+
+
+@pytest.mark.parametrize(
+    ("replace_after_scan", "expected_message"),
+    [
+        (2, "changed between checksum and inventory snapshots"),
+        (3, "final pre-publication payload differs from inventory snapshot"),
+    ],
+)
+def test_finalize_rejects_canonical_same_run_evidence_snapshot_swap(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    replace_after_scan: int,
+    expected_message: str,
+) -> None:
+    expected = manifest(tmp_path, run_id=f"snapshot-swap-{replace_after_scan}")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_complete(writer)
+    replacement = _mutation_bundle(expected.run_id, base_seed=101).canonical_bytes()
+    original_scan = run_store._scan_tree
+    temporary_scan_count = 0
+
+    def swapping_scan(root: Path) -> object:
+        nonlocal temporary_scan_count
+        snapshot = original_scan(root)
+        if root == writer.temporary:
+            temporary_scan_count += 1
+            if temporary_scan_count == replace_after_scan:
+                (writer.temporary / MUTATION_EVIDENCE_PATH).write_bytes(replacement)
+        return snapshot
+
+    monkeypatch.setattr(run_store, "_scan_tree", swapping_scan)
+    with pytest.raises(ProtocolViolation, match=expected_message):
+        writer.finalize()
+    assert not (tmp_path / expected.run_id).exists()
+    assert not (tmp_path / f".{expected.run_id}.local-seal.json").exists()
+
+
+def test_control_generation_uses_inventory_snapshot_not_detached_live_reads(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    expected = manifest(tmp_path, run_id="inventory-snapshot-controls")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_complete(writer)
+    manifest_path = writer.temporary / "RUN_MANIFEST.json"
+    original_manifest_bytes = manifest_path.read_bytes()
+    original_scan = run_store._scan_tree
+    original_write_control = writer._write_control
+    temporary_scan_count = 0
+
+    def transient_manifest_after_inventory_scan(root: Path) -> object:
+        nonlocal temporary_scan_count
+        snapshot = original_scan(root)
+        if root == writer.temporary:
+            temporary_scan_count += 1
+            if temporary_scan_count == 3:
+                manifest_path.write_bytes(b"transient bytes outside captured snapshot")
+        return snapshot
+
+    def restore_before_final_snapshot(relative: str, payload: bytes) -> None:
+        original_write_control(relative, payload)
+        if relative == "FINALIZED.json":
+            manifest_path.write_bytes(original_manifest_bytes)
+
+    monkeypatch.setattr(run_store, "_scan_tree", transient_manifest_after_inventory_scan)
+    monkeypatch.setattr(writer, "_write_control", restore_before_final_snapshot)
+    target = writer.finalize()
+    receipt = verify_run_bundle(target, expected_manifest=expected)
+    assert receipt.run_id == expected.run_id
+
+
+def test_mutation_evidence_is_atomically_inventoried_and_live_reparsed(
+    tmp_path: Path,
+) -> None:
+    target, expected = _publish(tmp_path, run_id="mutation-inventory")
+    payload = (target / MUTATION_EVIDENCE_PATH).read_bytes()
+    parsed = MutationEvidenceBundle.from_canonical_bytes(payload)
+    assert parsed.run_id == expected.run_id
+    assert parsed.benchmark_id == expected.benchmark_id
+
+    inventory = json.loads((target / "INVENTORY.json").read_bytes())
+    row = next(item for item in inventory["files"] if item["path"] == MUTATION_EVIDENCE_PATH)
+    assert row == {
+        "path": MUTATION_EVIDENCE_PATH,
+        "bytes": len(payload),
+        "sha256": digest_bytes(payload),
+    }
+    checksum_line = (
+        f"{digest_bytes(payload)[7:]}  {MUTATION_EVIDENCE_PATH}\n".encode("ascii")
+    )
+    assert checksum_line in (target / "checksums.sha256").read_bytes().splitlines(
+        keepends=True
+    )
+    receipt = verify_run_bundle(target, expected_manifest=expected)
+    assert receipt.to_wire()["custody_assurance"] == (
+        "LOCAL_REHASH_AND_SIBLING_SEAL_ONLY"
+    )
+    assert receipt.to_wire()["external_worm_verified"] is False
+
+    evidence_path = target / MUTATION_EVIDENCE_PATH
+    _writable(evidence_path)
+    evidence_path.write_bytes(
+        _mutation_bundle(expected.run_id, base_seed=101).canonical_bytes()
+    )
+    with pytest.raises(ProtocolViolation, match="live bundle bytes differ from inventory"):
+        verify_run_bundle(target, expected_manifest=expected)
+
+    evidence_path.write_bytes(payload)
+    assert verify_run_bundle(target, expected_manifest=expected).run_id == expected.run_id
+    evidence_path.write_bytes(_mutation_bundle("post-finalize-substitute").canonical_bytes())
+    with pytest.raises(ProtocolViolation, match="run_id differs"):
+        verify_run_bundle(target, expected_manifest=expected)
+
+
+def test_post_rename_failure_retains_evidence_but_verifier_rejects_lock(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    expected = manifest(tmp_path, run_id="post-rename-failure")
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_complete(writer)
+
+    def fail_after_target_and_seal_rename(root: Path) -> None:
+        assert root == writer.target
+        assert writer.target.is_dir()
+        assert writer.local_seal.is_file()
+        assert writer.lock.is_file()
+        raise OSError("simulated post-rename readonly failure")
+
+    monkeypatch.setattr(
+        run_store,
+        "_apply_auxiliary_readonly",
+        fail_after_target_and_seal_rename,
+    )
+    with pytest.raises(OSError, match="simulated post-rename readonly failure"):
+        writer.finalize()
+
+    assert writer.target.is_dir()
+    assert writer.local_seal.is_file()
+    assert writer.lock.is_file()
+    assert not (tmp_path / f".{expected.run_id}.local-seal.pending").exists()
+    with pytest.raises(ProtocolViolation, match="incomplete publication marker"):
+        verify_run_bundle(writer.target, expected_manifest=expected)
+
+    # Preserve the failed publication through all assertions; only relax the
+    # local seal mode so pytest can remove its temporary test root afterward.
+    _writable(writer.local_seal)
+
+
+def test_verifier_rejects_stray_pending_publication_marker(tmp_path: Path) -> None:
+    target, expected = _publish(tmp_path, run_id="pending-marker")
+    pending = tmp_path / f".{expected.run_id}.local-seal.pending"
+    pending.write_bytes(b"unpublished local seal bytes")
+    try:
+        with pytest.raises(ProtocolViolation, match="local-seal.pending"):
+            verify_run_bundle(target, expected_manifest=expected)
+    finally:
+        pending.unlink()
+
+
 def test_manifest_is_typed_closed_and_bound_to_run_and_root(tmp_path: Path) -> None:
     expected = manifest(tmp_path)
     with pytest.raises(ProtocolViolation, match="typed RunManifest"):
@@ -231,6 +508,9 @@ def test_finalize_rechecks_live_manifest_and_candidate_artifact_bindings(
     expected = manifest(tmp_path, run_id="candidate-tamper")
     writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
     for path in required_payload_paths(expected.run_class):
+        if path == MUTATION_EVIDENCE_PATH:
+            writer.write_mutation_evidence(_mutation_bundle(expected.run_id))
+            continue
         payload = _payload(path, expected)
         if path == "candidate/source-manifest.json":
             payload = canonical_json_bytes(
@@ -344,6 +624,7 @@ def test_crashed_run_requires_typed_placeholders_for_exact_missing_layout(
     placeholder_rows = json.loads(
         (target / "CRASH_PLACEHOLDERS.json").read_bytes()
     )["placeholders"]
+    assert MUTATION_EVIDENCE_PATH in {item["path"] for item in placeholder_rows}
     assert all(
         item["evidence_path"] == "raw/process-audit.jsonl"
         for item in placeholder_rows
@@ -352,6 +633,7 @@ def test_crashed_run_requires_typed_placeholders_for_exact_missing_layout(
         row["path"]: row
         for row in json.loads((target / "INVENTORY.json").read_bytes())["files"]
     }
+    assert MUTATION_EVIDENCE_PATH not in inventory_rows
     assert all(
         item["evidence_digest"]
         == inventory_rows[item["evidence_path"]]["sha256"]

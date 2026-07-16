@@ -29,6 +29,7 @@ from .canonical import (
     digest_bytes,
     digest_json,
 )
+from .mutation_evidence import MutationEvidenceBundle
 
 
 RUN_MANIFEST_PROTOCOL = "ucm-run-manifest/1"
@@ -45,6 +46,7 @@ FINALIZATION_BINDING_PROTOCOL = "ucm-run-finalization-binding/1"
 ROOT_BINDING_PROTOCOL = "ucm-results-root-binding/1"
 CANDIDATE_SOURCE_MANIFEST_PROTOCOL = "ucm-candidate-source-manifest/1"
 CANDIDATE_MODEL_MANIFEST_PROTOCOL = "ucm-candidate-model-manifest/1"
+MUTATION_EVIDENCE_PATH = "raw/mutation-evidence.json"
 
 BENCHMARK_ID = "UCM-BENCHMARK-v1"
 PRE_FREEZE_STATUS = "PRE-FREEZE"
@@ -98,6 +100,7 @@ _DEVELOPMENT_REQUIRED_PAYLOAD_PATHS = (
     "raw/oracle-judge.jsonl",
     "raw/process-audit.jsonl",
     "raw/resources.jsonl",
+    MUTATION_EVIDENCE_PATH,
     "metrics/per-query.jsonl",
     "metrics/per-episode.jsonl",
     "metrics/per-world.jsonl",
@@ -929,6 +932,60 @@ def _entry_exists(path: Path) -> bool:
     return os.path.lexists(os.fspath(path))
 
 
+def _validate_mutation_evidence_binding(
+    bundle: MutationEvidenceBundle,
+    manifest: RunManifest,
+    *,
+    label: str,
+) -> None:
+    if type(bundle) is not MutationEvidenceBundle:
+        raise ProtocolViolation(f"{label} must be typed MutationEvidenceBundle")
+    if bundle.run_id != manifest.run_id:
+        raise ProtocolViolation(f"{label} run_id differs from RUN_MANIFEST.json")
+    if bundle.benchmark_id != manifest.benchmark_id:
+        raise ProtocolViolation(
+            f"{label} benchmark_id differs from RUN_MANIFEST.json"
+        )
+
+
+def _parse_and_bind_mutation_evidence(
+    payload: bytes,
+    manifest: RunManifest,
+    *,
+    label: str,
+) -> MutationEvidenceBundle:
+    bundle = MutationEvidenceBundle.from_canonical_bytes(payload)
+    _validate_mutation_evidence_binding(bundle, manifest, label=label)
+    return bundle
+
+
+def _bound_snapshot_payloads(
+    snapshot: _TreeSnapshot,
+    manifest: RunManifest,
+    *,
+    label: str,
+) -> dict[str, bytes]:
+    payloads = {path: payload for path, payload, _ in snapshot.files}
+    if len(payloads) != len(snapshot.files):
+        raise ProtocolViolation(f"{label} contains duplicate filesystem paths")
+    manifest_payload = payloads.get("RUN_MANIFEST.json")
+    if manifest_payload is None:
+        raise ProtocolViolation(f"{label} is missing RUN_MANIFEST.json")
+    live_manifest = RunManifest.from_wire(
+        _decode_json(manifest_payload, f"{label} RUN_MANIFEST.json")
+    )
+    if live_manifest != manifest:
+        raise ProtocolViolation(f"{label} manifest differs from typed writer manifest")
+    _validate_candidate_artifact_bindings(manifest, payloads)
+    if MUTATION_EVIDENCE_PATH in payloads:
+        _parse_and_bind_mutation_evidence(
+            payloads[MUTATION_EVIDENCE_PATH],
+            manifest,
+            label=f"{label} mutation evidence",
+        )
+    return payloads
+
+
 class AppendOnlyRunWriter:
     """Build one exact run in a sibling temporary directory, then publish once."""
 
@@ -982,13 +1039,23 @@ class AppendOnlyRunWriter:
             self.abort()
             raise
 
-    def _destination(self, relative: str, *, control: bool = False) -> Path:
+    def _destination(
+        self,
+        relative: str,
+        *,
+        control: bool = False,
+        typed_mutation_evidence: bool = False,
+    ) -> Path:
         if self._closed:
             raise RuntimeError("run writer is closed")
         safe = _safe_relative(relative).as_posix()
         allowed = _CONTROL_PATHS if control else frozenset(required_payload_paths(self.manifest.run_class))
         if safe not in allowed:
             raise ProtocolViolation(f"path {safe!r} is not in the exact run-class layout")
+        if safe == MUTATION_EVIDENCE_PATH and not typed_mutation_evidence:
+            raise ProtocolViolation(
+                f"{MUTATION_EVIDENCE_PATH} requires write_mutation_evidence"
+            )
         target = self.temporary / _safe_relative(safe)
         target.parent.mkdir(parents=True, exist_ok=True)
         return target
@@ -1010,6 +1077,35 @@ class AppendOnlyRunWriter:
     def write_json(self, relative: str, value: Any) -> None:
         self.write_bytes(relative, canonical_json_bytes(value))
 
+    def write_mutation_evidence(self, bundle: MutationEvidenceBundle) -> None:
+        """Write the typed, same-run mutation evidence through its sole API."""
+
+        if type(bundle) is not MutationEvidenceBundle:
+            raise ProtocolViolation(
+                "mutation evidence must be typed MutationEvidenceBundle"
+            )
+        _validate_mutation_evidence_binding(
+            bundle,
+            self.manifest,
+            label="typed mutation evidence",
+        )
+        payload = bundle.canonical_bytes()
+        # Reparse the exact bytes before accepting them.  This deliberately
+        # does not make the caller-supplied object's constructor our authority.
+        parsed = MutationEvidenceBundle.from_canonical_bytes(payload)
+        _validate_mutation_evidence_binding(
+            parsed,
+            self.manifest,
+            label="serialized mutation evidence",
+        )
+        self._write_exact(
+            self._destination(
+                MUTATION_EVIDENCE_PATH,
+                typed_mutation_evidence=True,
+            ),
+            payload,
+        )
+
     def _validate_layout_and_placeholders(
         self,
         crash_placeholders: tuple[CrashPlaceholder, ...],
@@ -1017,19 +1113,17 @@ class AppendOnlyRunWriter:
     ) -> None:
         snapshot = _scan_tree(self.temporary)
         actual = {path for path, _, _ in snapshot.files}
-        payloads = {path: payload for path, payload, _ in snapshot.files}
+        payloads = _bound_snapshot_payloads(
+            snapshot,
+            self.manifest,
+            label="live pre-finalization snapshot",
+        )
         payload_required = set(required_payload_paths(self.manifest.run_class))
         unexpected = actual - payload_required - {"RUN_MANIFEST.json"}
         if unexpected:
             raise ProtocolViolation(
                 f"run contains files outside the exact layout: {sorted(unexpected)!r}"
             )
-        live_manifest = RunManifest.from_wire(
-            _decode_json(payloads["RUN_MANIFEST.json"], "RUN_MANIFEST.json")
-        )
-        if live_manifest != self.manifest:
-            raise ProtocolViolation("live RUN_MANIFEST.json differs from typed writer manifest")
-        _validate_candidate_artifact_bindings(self.manifest, payloads)
         present_payload = actual & payload_required
         missing = payload_required - present_payload
         if self.manifest.status is RunStatus.FINALIZED:
@@ -1154,11 +1248,31 @@ class AppendOnlyRunWriter:
             )
 
         base_snapshot = _scan_tree(self.temporary)
+        _bound_snapshot_payloads(
+            base_snapshot,
+            self.manifest,
+            label="live checksum snapshot",
+        )
         base_rows = _rows_from_files(base_snapshot.files)
         self._write_control("checksums.sha256", _checksum_bytes(base_rows))
 
         inventory_snapshot = _scan_tree(self.temporary)
+        inventory_payloads = _bound_snapshot_payloads(
+            inventory_snapshot,
+            self.manifest,
+            label="live inventory snapshot",
+        )
         inventory_rows = _rows_from_files(inventory_snapshot.files)
+        checksum_source_rows = [
+            row for row in inventory_rows if row["path"] != "checksums.sha256"
+        ]
+        if inventory_payloads.get("checksums.sha256") != _checksum_bytes(
+            checksum_source_rows
+        ):
+            raise ProtocolViolation(
+                "live payload changed between checksum and inventory snapshots"
+            )
+        checksums_bytes = inventory_payloads["checksums.sha256"]
         inventory_paths = tuple(row["path"] for row in inventory_rows)
         expected_inventory_paths = {
             "RUN_MANIFEST.json",
@@ -1184,7 +1298,10 @@ class AppendOnlyRunWriter:
                 "files": inventory_rows,
             }
         )
-        manifest_bytes = (self.temporary / "RUN_MANIFEST.json").read_bytes()
+        # All control inputs come from the already parsed, mutually checked
+        # inventory snapshot.  Detached live reads here would permit a
+        # transient byte view to influence the seal without entering rows.
+        manifest_bytes = inventory_payloads["RUN_MANIFEST.json"]
         manifest_sha256 = digest_bytes(manifest_bytes)
         binding = _finalization_binding(self.manifest, manifest_sha256, tree_digest)
         inventory = {
@@ -1208,7 +1325,6 @@ class AppendOnlyRunWriter:
         }
         inventory_bytes = canonical_json_bytes(inventory)
         self._write_control("INVENTORY.json", inventory_bytes)
-        checksums_bytes = (self.temporary / "checksums.sha256").read_bytes()
         finalized = {
             "schema_version": FINALIZED_PROTOCOL,
             "state": "FINALIZED",
@@ -1273,6 +1389,71 @@ class AppendOnlyRunWriter:
                 os.fsync(descriptor)
             finally:
                 os.close(descriptor)
+            # Last user-space coherence check before rename.  It rejects the
+            # known checksum/inventory and control-file interleavings, but it
+            # cannot make the remaining scan-to-rename window race-free; the
+            # resulting receipt therefore stays explicitly local PRE-FREEZE.
+            final_snapshot = _scan_tree(self.temporary)
+            final_payloads = _bound_snapshot_payloads(
+                final_snapshot,
+                self.manifest,
+                label="final pre-publication snapshot",
+            )
+            final_rows = _rows_from_files(final_snapshot.files)
+            if final_rows != inventory_rows:
+                raise ProtocolViolation(
+                    "final pre-publication payload differs from inventory snapshot"
+                )
+            if final_snapshot.directories != expected_dirs:
+                raise ProtocolViolation(
+                    "final pre-publication directory tree differs from inventory"
+                )
+            expected_controls = {
+                "checksums.sha256": checksums_bytes,
+                "INVENTORY.json": inventory_bytes,
+                "FINALIZED.json": finalized_bytes,
+            }
+            for relative, expected_payload in expected_controls.items():
+                if final_payloads.get(relative) != expected_payload:
+                    raise ProtocolViolation(
+                        f"final pre-publication {relative} differs from generated control"
+                    )
+            final_checksum_source_rows = [
+                row for row in final_rows if row["path"] != "checksums.sha256"
+            ]
+            if final_payloads["checksums.sha256"] != _checksum_bytes(
+                final_checksum_source_rows
+            ):
+                raise ProtocolViolation(
+                    "final pre-publication checksums do not bind live payload"
+                )
+            if _parse_inventory(final_payloads["INVENTORY.json"]) != inventory:
+                raise ProtocolViolation(
+                    "final pre-publication inventory differs from generated inventory"
+                )
+            final_manifest_sha256 = digest_bytes(
+                final_payloads["RUN_MANIFEST.json"]
+            )
+            final_tree_digest = digest_json(
+                {
+                    "protocol": TREE_PROTOCOL,
+                    "directories": list(final_snapshot.directories),
+                    "files": final_rows,
+                }
+            )
+            final_binding = _finalization_binding(
+                self.manifest,
+                final_manifest_sha256,
+                final_tree_digest,
+            )
+            if (
+                final_manifest_sha256 != manifest_sha256
+                or final_tree_digest != tree_digest
+                or final_binding != binding
+            ):
+                raise ProtocolViolation(
+                    "final pre-publication identity binding differs from inventory"
+                )
             if _entry_exists(self.target) or _entry_exists(self.local_seal):
                 raise FileExistsError(f"run appeared before publish: {self.target}")
             self.temporary.rename(self.target)
@@ -1286,7 +1467,14 @@ class AppendOnlyRunWriter:
             self._closed = True
             return self.target
         except BaseException:
-            pending_seal.unlink(missing_ok=True)
+            try:
+                pending_seal.unlink(missing_ok=True)
+            except PermissionError:
+                # Windows enforces the 0400 auxiliary mode for deletion.  The
+                # pending seal is not authority until its atomic rename, so
+                # make this exact unpublished file writable before cleanup.
+                os.chmod(pending_seal, stat.S_IRUSR | stat.S_IWUSR)
+                pending_seal.unlink(missing_ok=True)
             # If target has already appeared, retain it and the lock as an
             # unmistakably incomplete publication rather than deleting evidence.
             if not _entry_exists(self.target):
@@ -1532,6 +1720,19 @@ def verify_run_bundle(
     validate_run_id(actual_run_id)
     _assert_no_reparse_ancestors(root, "results root")
     _assert_plain_directory(root, "results root")
+    incomplete_siblings = tuple(
+        path
+        for path in (
+            root / f".{actual_run_id}.lock",
+            root / f".{actual_run_id}.local-seal.pending",
+        )
+        if _entry_exists(path)
+    )
+    if incomplete_siblings:
+        raise ProtocolViolation(
+            "incomplete publication marker remains beside run: "
+            + ", ".join(path.name for path in incomplete_siblings)
+        )
     if actual_run_id != expected_manifest.run_id:
         raise ProtocolViolation("verification run_id differs from expected manifest")
     actual_root_digest = results_root_digest(root)
@@ -1554,6 +1755,12 @@ def verify_run_bundle(
     if manifest != expected_manifest or manifest.digest != expected_manifest.digest:
         raise ProtocolViolation("bundle manifest differs from out-of-band expected manifest")
     manifest_sha256 = digest_bytes(manifest_bytes)
+    if MUTATION_EVIDENCE_PATH in file_map:
+        _parse_and_bind_mutation_evidence(
+            file_map[MUTATION_EVIDENCE_PATH][0],
+            manifest,
+            label="live published mutation evidence",
+        )
     _validate_candidate_artifact_bindings(
         manifest, {path: payload for path, (payload, _) in file_map.items()}
     )
