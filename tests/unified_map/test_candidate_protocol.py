@@ -259,6 +259,110 @@ def test_fresh_executor_rehydrates_state_without_initializer_process() -> None:
     assert diagnosed.worker_pid != rolled.worker_pid
     assert diagnosed.isolation == "fresh-python-process-audit-v2"
     assert diagnosed.audit_events == ()
+    assert diagnosed.received_request_digest == diagnosed.request_digest
+    assert rolled.received_request_digest == rolled.request_digest
+
+
+def test_fresh_executor_freezes_request_once_and_binds_worker_received_digest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    request = InitializeRequest(history(), seed=2100)
+    expected_bytes = candidate_protocol.canonical_json_bytes(request.to_wire())
+    response = StateResponse(
+        Operation.INITIALIZE,
+        HonestSeededControl().initialize(history(), inference_seed=2100),
+    )
+    original = InitializeRequest.to_wire
+    calls = 0
+
+    def counted(self):  # type: ignore[no-untyped-def]
+        nonlocal calls
+        if self is request:
+            calls += 1
+        return original(self)
+
+    def fake_worker(_command, **kwargs):  # type: ignore[no-untyped-def]
+        request_digest = candidate_protocol.digest_bytes(kwargs["request_bytes"])
+        envelope = {
+            "protocol": candidate_protocol.WORKER_PROTOCOL,
+            "ok": True,
+            "failure_origin": None,
+            "received_request_digest": request_digest,
+            "response": response.to_wire(),
+            "audit_events": [],
+            "audit_overflow": False,
+            "captured_stdout": "",
+            "captured_stderr": "",
+            "worker_pid": 12100,
+            "worker_cwd_isolated": True,
+            **kwargs["binding_fields"],
+        }
+        return candidate_protocol._BoundedCompletedProcess(
+            returncode=0,
+            stdout=candidate_protocol.canonical_json_bytes(envelope),
+            stdout_overflow=False,
+            stderr=b"",
+            stderr_overflow=False,
+            prepared_attested=True,
+            request_fully_sent=True,
+        )
+
+    monkeypatch.setattr(InitializeRequest, "to_wire", counted)
+    monkeypatch.setattr(
+        candidate_protocol, "_run_fresh_process_bounded", fake_worker
+    )
+    outcome = FreshProcessExecutor(
+        control_entrypoint("HonestSeededControl")
+    ).invoke(request)
+
+    assert calls == 1
+    assert outcome.request_digest == candidate_protocol.digest_bytes(expected_bytes)
+    assert outcome.received_request_digest == outcome.request_digest
+
+
+def test_fresh_received_request_digest_mismatch_is_e003(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    response = StateResponse(
+        Operation.INITIALIZE,
+        HonestSeededControl().initialize(history(), inference_seed=2105),
+    )
+
+    def fake_worker(_command, **kwargs):  # type: ignore[no-untyped-def]
+        envelope = {
+            "protocol": candidate_protocol.WORKER_PROTOCOL,
+            "ok": True,
+            "failure_origin": None,
+            "received_request_digest": "sha256:" + "0" * 64,
+            "response": response.to_wire(),
+            "audit_events": [],
+            "audit_overflow": False,
+            "captured_stdout": "",
+            "captured_stderr": "",
+            "worker_pid": 12105,
+            "worker_cwd_isolated": True,
+            **kwargs["binding_fields"],
+        }
+        return candidate_protocol._BoundedCompletedProcess(
+            returncode=0,
+            stdout=candidate_protocol.canonical_json_bytes(envelope),
+            stdout_overflow=False,
+            stderr=b"",
+            stderr_overflow=False,
+            prepared_attested=True,
+            request_fully_sent=True,
+        )
+
+    monkeypatch.setattr(
+        candidate_protocol, "_run_fresh_process_bounded", fake_worker
+    )
+    with pytest.raises(WorkerInvocationError, match="digest mismatch") as captured:
+        FreshProcessExecutor(control_entrypoint("HonestSeededControl")).invoke(
+            InitializeRequest(history(), seed=2105)
+        )
+
+    assert captured.value.failure_origin == "harness"
+    assert captured.value.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
 
 
 def test_fresh_executor_rejects_noncanonical_complete_worker_envelope(
@@ -274,6 +378,9 @@ def test_fresh_executor_rejects_noncanonical_complete_worker_envelope(
             "protocol": candidate_protocol.WORKER_PROTOCOL,
             "ok": True,
             "failure_origin": None,
+            "received_request_digest": candidate_protocol.digest_bytes(
+                kwargs["request_bytes"]
+            ),
             "response": response.to_wire(),
             "audit_events": [],
             "audit_overflow": False,
@@ -311,6 +418,9 @@ def test_fresh_executor_rejects_forged_harness_origin_with_candidate_code(
             "protocol": candidate_protocol.WORKER_PROTOCOL,
             "ok": False,
             "failure_origin": "harness",
+            "received_request_digest": candidate_protocol.digest_bytes(
+                kwargs["request_bytes"]
+            ),
             "error": {
                 "failure_code": "UCM-F008-STATE_NOT_CLOSED",
                 "type": "ProtocolViolation",
@@ -363,6 +473,9 @@ def test_fresh_success_rejects_non_exact_worker_pid(
             "protocol": candidate_protocol.WORKER_PROTOCOL,
             "ok": True,
             "failure_origin": None,
+            "received_request_digest": candidate_protocol.digest_bytes(
+                kwargs["request_bytes"]
+            ),
             "response": response.to_wire(),
             "audit_events": [],
             "audit_overflow": False,
@@ -407,6 +520,9 @@ def test_fresh_success_cannot_cross_total_deadline_during_response_validation(
             "protocol": candidate_protocol.WORKER_PROTOCOL,
             "ok": True,
             "failure_origin": None,
+            "received_request_digest": candidate_protocol.digest_bytes(
+                kwargs["request_bytes"]
+            ),
             "response": response.to_wire(),
             "audit_events": [],
             "audit_overflow": False,
@@ -444,6 +560,9 @@ def test_fresh_success_cannot_cross_total_deadline_during_response_validation(
 
     assert captured.value.failure_origin == "harness"
     assert captured.value.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+    assert captured.value.request_fully_sent is True
+    assert captured.value.request_digest is not None
+    assert captured.value.received_request_digest == captured.value.request_digest
     assert elapsed < 20.0
 
 
@@ -478,6 +597,13 @@ def test_fresh_unknown_external_pipe_overflow_is_harness_incomplete(
 
     assert captured.value.failure_origin == "harness"
     assert captured.value.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+    assert captured.value.request_fully_sent is request_fully_sent
+    assert captured.value.request_digest == candidate_protocol.digest_bytes(
+        candidate_protocol.canonical_json_bytes(
+            InitializeRequest(history(), seed=2105).to_wire()
+        )
+    )
+    assert captured.value.received_request_digest is None
 
 
 def test_sequential_cleanup_reuses_one_absolute_grace_deadline(
@@ -545,6 +671,10 @@ def test_sequential_executor_uses_one_bounded_child_for_frozen_requests() -> Non
         DiagnoseResponse,
         RolloutResponse,
     ]
+    assert all(
+        outcome.received_request_digest == outcome.request_digest
+        for outcome in outcomes
+    )
 
 
 def test_prepared_marker_is_retired_before_any_candidate_delivery() -> None:
@@ -579,6 +709,14 @@ def test_sequential_executor_times_out_infinite_candidate() -> None:
         executor.invoke_sequence((InitializeRequest(history(), seed=41),))
     assert captured.value.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
     assert captured.value.failure_origin == "harness"
+    assert captured.value.request_index == 0
+    assert type(captured.value.request_fully_sent) is bool
+    assert captured.value.request_digest == candidate_protocol.digest_bytes(
+        candidate_protocol.canonical_json_bytes(
+            InitializeRequest(history(), seed=41).to_wire()
+        )
+    )
+    assert captured.value.completed_outcomes == ()
 
 
 @pytest.mark.parametrize("executor_kind", ["fresh", "sequential"])
@@ -619,6 +757,54 @@ def _write_candidate_module(tmp_path: Path, source: str) -> CandidateEntrypoint:
     module_path = tmp_path / "candidate_fixture.py"
     module_path.write_text(textwrap.dedent(source), encoding="utf-8")
     return CandidateEntrypoint(tmp_path, "candidate_fixture", "Candidate")
+
+
+def test_sequential_later_timeout_retains_exact_completed_prefix(
+    tmp_path: Path,
+) -> None:
+    entrypoint = _write_candidate_module(
+        tmp_path,
+        """
+        from prototype.unified_map.state import StatePayload, StateClass
+
+        class Candidate:
+            def initialize(self, history, *, inference_seed):
+                return StatePayload.from_json(
+                    {"seed": inference_seed},
+                    schema_version="timeout-state/1",
+                    state_class=StateClass.COMPRESSED_SHARED,
+                )
+
+            def update(self, state, delta, *, inference_seed):
+                return state.payload
+
+            def diagnose(self, state, query, *, query_seed):
+                while True:
+                    pass
+
+            def rollout(self, state, query, *, query_seed):
+                raise AssertionError("unused")
+        """,
+    )
+    payload = HonestSeededControl().initialize(history(), inference_seed=42)
+    requests = (
+        InitializeRequest(history(), seed=42),
+        DiagnoseRequest(
+            CandidateStateInput(payload), diagnosis_query(), seed=43
+        ),
+    )
+
+    with pytest.raises(WorkerInvocationError, match="timed out") as captured:
+        SequentialProcessExecutor(entrypoint, timeout_seconds=5.0).invoke_sequence(
+            requests
+        )
+
+    assert len(captured.value.completed_outcomes) == 1
+    assert captured.value.request_index == 1
+    assert captured.value.request_fully_sent is True
+    assert captured.value.request_digest == candidate_protocol.digest_bytes(
+        candidate_protocol.canonical_json_bytes(requests[1].to_wire())
+    )
 
 
 @pytest.mark.parametrize("executor_kind", ["fresh", "sequential"])

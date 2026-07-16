@@ -16,12 +16,17 @@ import os
 import random
 import signal
 import zlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from .canonical import ProtocolViolation, canonical_json_bytes, digest_json
+from .canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+    digest_json,
+)
 from .candidate_protocol import (
     CandidateCallViolation,
     CandidateEntrypoint,
@@ -44,6 +49,10 @@ from .candidate_protocol import (
     assert_shared_state_fanout,
     invoke_diagnose,
     invoke_rollout,
+    request_from_wire,
+    response_from_wire,
+    _canonical_candidate_failure_code,
+    _validate_response_for_request,
 )
 from .schema import (
     DiagnosisQuery,
@@ -120,11 +129,33 @@ class ComplianceReport:
     isolation_assurance: str
     findings: tuple[ComplianceFinding, ...]
     head_records: tuple[dict[str, Any], ...] = ()
+    _request_record_bytes: tuple[bytes, ...] = field(
+        default=(), repr=False
+    )
     candidate_bundle_digest: str | None = None
     candidate_model_digest: str | None = None
     harness_bundle_digest: str | None = None
     import_inventory_digest: str | None = None
     module_origin: str | None = None
+
+    @property
+    def request_records(self) -> tuple[dict[str, Any], ...]:
+        # Return a fresh decoded view.  The authoritative snapshot is the
+        # immutable canonical byte tuple, so mutating a consumer's nested dict
+        # cannot rewrite an already materialized compliance report.
+        return tuple(
+            json.loads(encoded.decode("utf-8"))
+            for encoded in self._request_record_bytes
+        )
+
+    @property
+    def request_records_digest(self) -> str:
+        return digest_json(
+            {
+                "protocol": "ucm-compliance-request-records/1",
+                "records": list(self.request_records),
+            }
+        )
 
     @property
     def failure_codes(self) -> tuple[str, ...]:
@@ -179,6 +210,7 @@ class _ExecutionBindingCollector:
     module_origin: str | None = None
     observed: int = 0
     violations: list[str] = field(default_factory=list)
+    request_records: list[dict[str, Any]] = field(default_factory=list)
 
     def observe(self, value: Any, *, allow_missing: bool = False) -> None:
         raw = {
@@ -247,13 +279,23 @@ class _ExecutionBindingCollector:
 
 
 class _BindingObservedExecutor:
-    def __init__(self, delegate: Any, collector: _ExecutionBindingCollector) -> None:
+    def __init__(
+        self,
+        delegate: Any,
+        collector: _ExecutionBindingCollector,
+        *,
+        execution_mode: str = "fresh",
+    ) -> None:
+        if execution_mode not in {"fresh", "sequential"}:
+            raise ProtocolViolation("unknown observed execution mode")
         self._delegate = delegate
         self._collector = collector
+        self._execution_mode = execution_mode
 
     def invoke(self, request: Any) -> InvocationOutcome:
+        frozen = _freeze_observed_request(request)
         try:
-            outcome = self._delegate.invoke(request)
+            outcome = self._delegate.invoke(frozen.request)
         except WorkerInvocationError as error:
             self._collector.observe(
                 error,
@@ -261,9 +303,398 @@ class _BindingObservedExecutor:
                     getattr(error, "failure_origin", "harness") != "candidate"
                 ),
             )
-            raise
+            normalized = _record_observed_error(
+                self._collector,
+                frozen,
+                error,
+                execution_mode=self._execution_mode,
+            )
+            raise normalized
+        except Exception as error:
+            normalized = _observed_harness_error(
+                error,
+                frozen=frozen,
+                message="observed candidate invocation escaped its worker envelope",
+            )
+            _record_observed_error(
+                self._collector,
+                frozen,
+                normalized,
+                execution_mode=self._execution_mode,
+            )
+            raise normalized from error
         self._collector.observe(outcome)
-        return outcome
+        try:
+            return _record_observed_success(
+                self._collector,
+                frozen,
+                outcome,
+                execution_mode=self._execution_mode,
+            )
+        except WorkerInvocationError as error:
+            raise error
+        except Exception as error:
+            normalized = _observed_harness_error(
+                error,
+                frozen=frozen,
+                outcome=outcome,
+                message="observed invocation transcript validation incomplete",
+            )
+            _record_observed_error(
+                self._collector,
+                frozen,
+                normalized,
+                execution_mode=self._execution_mode,
+                response=_best_effort_response_evidence(outcome),
+            )
+            raise normalized from error
+
+
+@dataclass(frozen=True, slots=True)
+class _FrozenObservedRequest:
+    request: Any
+    wire: dict[str, Any]
+    encoded: bytes
+    digest: str
+    operation: str
+    seed: int
+
+
+def _freeze_observed_request(request: Any) -> _FrozenObservedRequest:
+    encoded = canonical_json_bytes(request.to_wire())
+    wire = json.loads(encoded.decode("utf-8"))
+    # Keep the retained wire and the delegate's typed object disjoint.  Some
+    # typed schema leaves contain mutable JSON dicts; a hostile delegate must
+    # not be able to rewrite the already captured transcript through aliases.
+    frozen = request_from_wire(json.loads(encoded.decode("utf-8")))
+    return _FrozenObservedRequest(
+        request=frozen,
+        wire=wire,
+        encoded=encoded,
+        digest=digest_bytes(encoded),
+        operation=frozen.operation.value,
+        seed=frozen.seed,
+    )
+
+
+def _binding_error_kwargs(value: Any) -> dict[str, Any]:
+    return {
+        "import_inventory_digest": getattr(
+            value, "import_inventory_digest", None
+        ),
+        "harness_bundle_digest": getattr(value, "harness_bundle_digest", None),
+        "candidate_bundle_digest": getattr(
+            value, "candidate_bundle_digest", None
+        ),
+        "candidate_model_digest": getattr(
+            value, "candidate_model_digest", None
+        ),
+        "module_origin": getattr(value, "module_origin", None),
+    }
+
+
+def _observed_harness_error(
+    error: BaseException,
+    *,
+    frozen: _FrozenObservedRequest,
+    message: str,
+    outcome: Any | None = None,
+) -> WorkerInvocationError:
+    source = outcome if outcome is not None else error
+    return WorkerInvocationError(
+        f"{message}: {type(error).__name__}: {error}",
+        failure_code="UCM-E003-HARNESS_INCOMPLETE",
+        failure_origin="harness",
+        request_digest=frozen.digest,
+        request_fully_sent=bool(
+            getattr(error, "request_fully_sent", outcome is not None)
+        ),
+        received_request_digest=getattr(
+            source, "received_request_digest", None
+        ),
+        **_binding_error_kwargs(source),
+    )
+
+
+def _request_record(
+    frozen: _FrozenObservedRequest,
+    *,
+    execution_mode: str,
+    status: str,
+    request_fully_sent: bool,
+    received_request_digest: str | None,
+    response_wire: dict[str, Any] | None,
+    response_digest: str | None,
+    failure_origin: str | None,
+    failure_code: str | None,
+) -> dict[str, Any]:
+    # This exact closed schema is consumed by typed mutation evidence.  Do not
+    # add candidate-visible harness state hashes here: full request/response
+    # wires carry the candidate-visible state lineage, while harness seals are
+    # bound separately by the runner.
+    return {
+        "operation": frozen.operation,
+        "seed": frozen.seed,
+        "execution_mode": execution_mode,
+        "status": status,
+        "request_wire": frozen.wire,
+        "request_digest": frozen.digest,
+        "request_fully_sent": request_fully_sent,
+        "received_request_digest": received_request_digest,
+        "response_wire": response_wire,
+        "response_digest": response_digest,
+        "failure_origin": failure_origin,
+        "failure_code": failure_code,
+    }
+
+
+_REQUEST_RECORD_KEYS = frozenset(
+    {
+        "operation",
+        "seed",
+        "execution_mode",
+        "status",
+        "request_wire",
+        "request_digest",
+        "request_fully_sent",
+        "received_request_digest",
+        "response_wire",
+        "response_digest",
+        "failure_origin",
+        "failure_code",
+    }
+)
+
+
+def _validated_request_record_bytes(value: object) -> bytes:
+    if type(value) is not dict or frozenset(value) != _REQUEST_RECORD_KEYS:
+        raise ProtocolViolation(
+            "request record must use the exact closed field set"
+        )
+    operation = value["operation"]
+    seed = value["seed"]
+    if operation not in {item.value for item in Operation}:
+        raise ProtocolViolation("request record operation is invalid")
+    if type(seed) is not int or not 0 <= seed < 2**64:
+        raise ProtocolViolation("request record seed is invalid")
+    if value["execution_mode"] not in {"fresh", "sequential"}:
+        raise ProtocolViolation("request record execution_mode is invalid")
+    if value["status"] not in {
+        "success",
+        "worker_error",
+        "harness_error",
+    }:
+        raise ProtocolViolation("request record status is invalid")
+    if type(value["request_wire"]) is not dict:
+        raise ProtocolViolation("request record request_wire must be an object")
+    request_bytes = canonical_json_bytes(value["request_wire"])
+    request_digest = _binding_digest(
+        value["request_digest"], "request record request_digest"
+    )
+    if request_digest != digest_bytes(request_bytes):
+        raise ProtocolViolation("request record request digest mismatch")
+    request = request_from_wire(
+        json.loads(request_bytes.decode("utf-8"))
+    )
+    if request.operation.value != operation or request.seed != seed:
+        raise ProtocolViolation("request record operation/seed binding mismatch")
+    sent = value["request_fully_sent"]
+    if type(sent) is not bool:
+        raise ProtocolViolation("request_fully_sent must be an exact boolean")
+    received = value["received_request_digest"]
+    if received is not None:
+        _binding_digest(received, "request record received_request_digest")
+    if not sent and received is not None:
+        raise ProtocolViolation(
+            "an incompletely sent request cannot have a worker received digest"
+        )
+    response_wire = value["response_wire"]
+    response_digest = value["response_digest"]
+    if (response_wire is None) != (response_digest is None):
+        raise ProtocolViolation("response wire/digest nullability mismatch")
+    response = None
+    if response_wire is not None:
+        if type(response_wire) is not dict:
+            raise ProtocolViolation("response_wire must be an object or null")
+        response_bytes = canonical_json_bytes(response_wire)
+        if _binding_digest(
+            response_digest, "request record response_digest"
+        ) != digest_bytes(response_bytes):
+            raise ProtocolViolation("request record response digest mismatch")
+        response = response_from_wire(
+            json.loads(response_bytes.decode("utf-8"))
+        )
+
+    status = value["status"]
+    origin = value["failure_origin"]
+    code = value["failure_code"]
+    if status == "success":
+        if (
+            sent is not True
+            or received != request_digest
+            or response is None
+            or origin is not None
+            or code is not None
+        ):
+            raise ProtocolViolation("successful request record is inconsistent")
+        _validate_response_for_request(request, response)
+    elif status == "worker_error":
+        if (
+            sent is not True
+            or received != request_digest
+            or response_wire is not None
+            or origin != "candidate"
+            or _canonical_candidate_failure_code(code) is None
+        ):
+            raise ProtocolViolation("candidate worker error record is inconsistent")
+    else:
+        if origin != "harness" or code != "UCM-E003-HARNESS_INCOMPLETE":
+            raise ProtocolViolation("harness error record is inconsistent")
+        if not sent and (received is not None or response_wire is not None):
+            raise ProtocolViolation(
+                "unsent harness error cannot claim worker receipt/response"
+            )
+        if sent and received not in {None, request_digest}:
+            raise ProtocolViolation(
+                "harness error received digest must be null or exact"
+            )
+        if response is not None:
+            if received != request_digest:
+                raise ProtocolViolation(
+                    "retained harness response requires exact worker receipt"
+                )
+            _validate_response_for_request(request, response)
+    return canonical_json_bytes(value)
+
+
+def _best_effort_response_evidence(
+    outcome: Any,
+) -> tuple[dict[str, Any] | None, str | None]:
+    try:
+        encoded = canonical_json_bytes(outcome.response.to_wire())
+        wire = json.loads(encoded.decode("utf-8"))
+    except Exception:
+        return None, None
+    return wire, digest_bytes(encoded)
+
+
+def _record_observed_error(
+    collector: _ExecutionBindingCollector,
+    frozen: _FrozenObservedRequest,
+    error: WorkerInvocationError,
+    *,
+    execution_mode: str,
+    response: tuple[dict[str, Any] | None, str | None] = (None, None),
+) -> WorkerInvocationError:
+    origin = getattr(error, "failure_origin", "harness")
+    sent = getattr(error, "request_fully_sent", False)
+    received = getattr(error, "received_request_digest", None)
+    claimed = getattr(error, "request_digest", None)
+    candidate_proven = (
+        origin == "candidate"
+        and sent is True
+        and claimed == frozen.digest
+        and received == frozen.digest
+    )
+    if origin == "candidate" and not candidate_proven:
+        error = _observed_harness_error(
+            ProtocolViolation(
+                "candidate worker error lacked exact sent/received request binding"
+            ),
+            frozen=frozen,
+            outcome=error,
+            message="candidate failure request binding incomplete",
+        )
+        origin = "harness"
+        sent = bool(getattr(error, "request_fully_sent", False))
+        received = getattr(error, "received_request_digest", None)
+    status = "worker_error" if origin == "candidate" else "harness_error"
+    if status == "harness_error" and received not in {None, frozen.digest}:
+        # A mismatching worker claim is why this row is harness-incomplete; it
+        # is not a verified received-request binding and therefore cannot
+        # occupy the verified digest field.
+        received = None
+    response_wire, response_digest = response
+    if status == "harness_error" and (
+        sent is not True or received != frozen.digest
+    ):
+        response_wire = None
+        response_digest = None
+    collector.request_records.append(
+        _request_record(
+            frozen,
+            execution_mode=execution_mode,
+            status=status,
+            request_fully_sent=sent is True,
+            received_request_digest=(
+                received if type(received) is str else None
+            ),
+            response_wire=response_wire,
+            response_digest=response_digest,
+            failure_origin=origin if origin in {"candidate", "harness"} else "harness",
+            failure_code=(
+                error.failure_code
+                if type(getattr(error, "failure_code", None)) is str
+                else "UCM-E003-HARNESS_INCOMPLETE"
+            ),
+        )
+    )
+    return error
+
+
+def _record_observed_success(
+    collector: _ExecutionBindingCollector,
+    frozen: _FrozenObservedRequest,
+    outcome: InvocationOutcome,
+    *,
+    execution_mode: str,
+) -> InvocationOutcome:
+    if type(outcome) is not InvocationOutcome:
+        raise ProtocolViolation("executor outcome must be InvocationOutcome")
+    response_bytes = canonical_json_bytes(outcome.response.to_wire())
+    response_wire = json.loads(response_bytes.decode("utf-8"))
+    response = response_from_wire(json.loads(response_bytes.decode("utf-8")))
+    _validate_response_for_request(frozen.request, response)
+    response_digest = digest_bytes(response_bytes)
+    if (
+        outcome.request_digest != frozen.digest
+        or outcome.received_request_digest != frozen.digest
+        or outcome.response_digest != response_digest
+    ):
+        error = _observed_harness_error(
+            ProtocolViolation("executor request/response digest binding mismatch"),
+            frozen=frozen,
+            outcome=outcome,
+            message="successful invocation digest validation incomplete",
+        )
+        _record_observed_error(
+            collector,
+            frozen,
+            error,
+            execution_mode=execution_mode,
+            response=(response_wire, response_digest),
+        )
+        raise error
+    collector.request_records.append(
+        _request_record(
+            frozen,
+            execution_mode=execution_mode,
+            status="success",
+            request_fully_sent=True,
+            received_request_digest=frozen.digest,
+            response_wire=response_wire,
+            response_digest=response_digest,
+            failure_origin=None,
+            failure_code=None,
+        )
+    )
+    return replace(
+        outcome,
+        response=response,
+        request_digest=frozen.digest,
+        response_digest=response_digest,
+        received_request_digest=frozen.digest,
+    )
 
 
 def _invoke_observed_sequence(
@@ -273,10 +704,11 @@ def _invoke_observed_sequence(
     *,
     timeout_seconds: float,
 ) -> tuple[InvocationOutcome, ...]:
+    frozen_requests = tuple(_freeze_observed_request(item) for item in requests)
     try:
         outcomes = SequentialProcessExecutor(
             entrypoint, timeout_seconds=timeout_seconds
-        ).invoke_sequence(requests)
+        ).invoke_sequence(tuple(item.request for item in frozen_requests))
     except WorkerInvocationError as error:
         collector.observe(
             error,
@@ -284,10 +716,109 @@ def _invoke_observed_sequence(
                 getattr(error, "failure_origin", "harness") != "candidate"
             ),
         )
-        raise
-    for outcome in outcomes:
+        completed_raw = getattr(error, "completed_outcomes", ())
+        if (
+            type(completed_raw) is not tuple
+            or len(completed_raw) > len(frozen_requests)
+        ):
+            completed: tuple[InvocationOutcome, ...] = ()
+            prefix_contract_valid = False
+        else:
+            completed = completed_raw
+            prefix_contract_valid = True
+        completed_count = len(completed)
+        error_index = getattr(error, "request_index", None)
+        error_digest = getattr(error, "request_digest", None)
+        error_sent = getattr(error, "request_fully_sent", False)
+        error_received = getattr(error, "received_request_digest", None)
+        error_origin = getattr(error, "failure_origin", "harness")
+        if completed_count < len(frozen_requests):
+            expected = frozen_requests[completed_count]
+            prefix_contract_valid = prefix_contract_valid and (
+                error_index == completed_count
+                and error_digest == expected.digest
+                and type(error_sent) is bool
+                and (error_sent or error_received is None)
+            )
+        else:
+            # No candidate request exists after a complete prefix.  Only a
+            # harness-owned close/postcheck error may follow it.
+            prefix_contract_valid = prefix_contract_valid and (
+                error_origin == "harness"
+                and error_index is None
+                and error_digest is None
+                and error_sent is False
+                and error_received is None
+            )
+        if not prefix_contract_valid:
+            if completed_count < len(frozen_requests):
+                expected = frozen_requests[completed_count]
+            else:
+                expected = frozen_requests[-1]
+            error = WorkerInvocationError(
+                "sequential error/prefix binding was inconsistent",
+                failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                failure_origin="harness",
+                request_digest=(
+                    expected.digest
+                    if completed_count < len(frozen_requests)
+                    else None
+                ),
+                request_fully_sent=False,
+                request_index=(
+                    completed_count
+                    if completed_count < len(frozen_requests)
+                    else None
+                ),
+                completed_outcomes=completed,
+                **_binding_error_kwargs(error),
+            )
+        for frozen, outcome in zip(frozen_requests, completed):
+            collector.observe(outcome)
+            _record_observed_success(
+                collector,
+                frozen,
+                outcome,
+                execution_mode="sequential",
+            )
+        if completed_count < len(frozen_requests):
+            normalized = _record_observed_error(
+                collector,
+                frozen_requests[completed_count],
+                error,
+                execution_mode="sequential",
+            )
+            raise normalized
+        # A close/postcheck failure is not another candidate request.  The
+        # exact completed call prefix is retained, while the caller's E003
+        # finding preserves the failed harness phase without fabricating a
+        # duplicate request record.
+        raise error
+    if len(outcomes) != len(frozen_requests):
+        error = _observed_harness_error(
+            ProtocolViolation("sequential outcome count mismatch"),
+            frozen=frozen_requests[0],
+            message="sequential transcript incomplete",
+        )
+        _record_observed_error(
+            collector,
+            frozen_requests[0],
+            error,
+            execution_mode="sequential",
+        )
+        raise error
+    normalized_outcomes: list[InvocationOutcome] = []
+    for frozen, outcome in zip(frozen_requests, outcomes):
         collector.observe(outcome)
-    return outcomes
+        normalized_outcomes.append(
+            _record_observed_success(
+                collector,
+                frozen,
+                outcome,
+                execution_mode="sequential",
+            )
+        )
+    return tuple(normalized_outcomes)
 
 
 def _state_dict(state: CandidateStateInput) -> dict[str, Any]:
@@ -1662,6 +2193,47 @@ def _report(
             )
         )
         head_records = ()
+    try:
+        request_record_bytes = tuple(
+            _validated_request_record_bytes(record)
+            for record in bindings.request_records
+        )
+    except Exception as error:
+        normalized.append(
+            _harness_incomplete_from_exception(
+                error,
+                "harness-request-record-serialization",
+                detail="request/response transcript serialization incomplete",
+            )
+        )
+        request_record_bytes = ()
+    unmatched_request_errors: list[dict[str, Any]] = []
+    for encoded in request_record_bytes:
+        record = json.loads(encoded.decode("utf-8"))
+        if record["status"] == "success":
+            continue
+        if not any(
+            finding.failure_code == record["failure_code"]
+            for finding in normalized
+        ):
+            unmatched_request_errors.append(
+                {
+                    "operation": record["operation"],
+                    "seed": record["seed"],
+                    "status": record["status"],
+                    "failure_code": record["failure_code"],
+                }
+            )
+    if unmatched_request_errors:
+        normalized.append(
+            ComplianceFinding(
+                "request-transcript-error-consistency",
+                ComplianceVerdict.INCOMPLETE,
+                "UCM-E003-HARNESS_INCOMPLETE",
+                "request transcript errors lacked a matching compliance finding",
+                {"unmatched_records": unmatched_request_errors},
+            )
+        )
     failed = any(
         finding.verdict is ComplianceVerdict.FAIL for finding in normalized
     )
@@ -1691,6 +2263,7 @@ def _report(
         ),
         findings=tuple(normalized),
         head_records=head_records,
+        _request_record_bytes=request_record_bytes,
         candidate_bundle_digest=bindings.candidate_bundle_digest,
         candidate_model_digest=bindings.candidate_model_digest,
         harness_bundle_digest=bindings.harness_bundle_digest,

@@ -64,8 +64,8 @@ from .state import CandidateStateInput, SealedState, StateClass, StatePayload
 
 REQUEST_PROTOCOL = "ucm-candidate-request/1"
 RESPONSE_PROTOCOL = "ucm-candidate-response/1"
-WORKER_PROTOCOL = "ucm-python-worker-result/4"
-SESSION_WORKER_PROTOCOL = "ucm-python-sequential-worker-stream/4"
+WORKER_PROTOCOL = "ucm-python-worker-result/5"
+SESSION_WORKER_PROTOCOL = "ucm-python-sequential-worker-stream/5"
 SESSION_REQUEST_PROTOCOL = "ucm-candidate-request-frame/2"
 MAX_STATE_PAYLOAD_BYTES = 256 * 1024 * 1024
 MAX_SESSION_REQUESTS = 64
@@ -1209,6 +1209,7 @@ class InvocationOutcome:
     request_digest: str
     response_digest: str
     isolation: str
+    received_request_digest: str | None = None
     audit_events: tuple[dict[str, Any], ...] = ()
     audit_overflow: bool = False
     captured_stdout: str = ""
@@ -1237,12 +1238,19 @@ class InProcessExecutor:
             (InitializeRequest, UpdateRequest, DiagnoseRequest, RolloutRequest),
         ):
             raise ProtocolViolation("unknown candidate request type")
+        # Freeze the candidate-visible request exactly once, then dispatch only
+        # a fresh typed parse of those bytes.  A caller mutating a nested input
+        # after capture therefore cannot create a request use-B that differs
+        # from the request digest committed below.
+        request_bytes = canonical_json_bytes(request.to_wire())
+        frozen_request = request_from_wire(json.loads(request_bytes.decode("utf-8")))
+        request_digest = digest_bytes(request_bytes)
         stdout_accumulator = _BoundedByteAccumulator(MAX_CAPTURED_STREAM_BYTES)
         stderr_accumulator = _BoundedByteAccumulator(MAX_CAPTURED_STREAM_BYTES)
         stdout = _BoundedTextCapture(stdout_accumulator)
         stderr = _BoundedTextCapture(stderr_accumulator)
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-            response = _dispatch_candidate(self.candidate, request)
+            response = _dispatch_candidate(self.candidate, frozen_request)
         captured_stdout, stdout_overflow = stdout_accumulator.snapshot_text()
         captured_stderr, stderr_overflow = stderr_accumulator.snapshot_text()
         if stdout_overflow or stderr_overflow:
@@ -1250,11 +1258,17 @@ class InProcessExecutor:
                 "UCM-F008-STATE_NOT_CLOSED",
                 "in-process candidate output exceeded the captured stream limit",
             )
+        response_bytes = canonical_json_bytes(response.to_wire())
+        frozen_response = response_from_wire(
+            json.loads(response_bytes.decode("utf-8"))
+        )
+        _validate_response_for_request(frozen_request, frozen_response)
         return InvocationOutcome(
-            response=response,
-            request_digest=digest_json(request.to_wire()),
-            response_digest=digest_json(response.to_wire()),
+            response=frozen_response,
+            request_digest=request_digest,
+            response_digest=digest_bytes(response_bytes),
             isolation="in-process-none",
+            received_request_digest=request_digest,
             captured_stdout=captured_stdout,
             captured_stderr=captured_stderr,
         )
@@ -1309,6 +1323,11 @@ class WorkerInvocationError(RuntimeError):
         candidate_bundle_digest: str | None = None,
         candidate_model_digest: str | None = None,
         module_origin: str | None = None,
+        request_digest: str | None = None,
+        request_fully_sent: bool = False,
+        received_request_digest: str | None = None,
+        request_index: int | None = None,
+        completed_outcomes: tuple[InvocationOutcome, ...] = (),
     ) -> None:
         super().__init__(_bounded_evidence_text(message))
         _validate_failure_origin_code(failure_origin, failure_code)
@@ -1327,6 +1346,11 @@ class WorkerInvocationError(RuntimeError):
         self.candidate_bundle_digest = candidate_bundle_digest
         self.candidate_model_digest = candidate_model_digest
         self.module_origin = module_origin
+        self.request_digest = request_digest
+        self.request_fully_sent = request_fully_sent
+        self.received_request_digest = received_request_digest
+        self.request_index = request_index
+        self.completed_outcomes = completed_outcomes
 
 
 IMPORT_INVENTORY_PROTOCOL = "ucm-python-import-byte-inventory/3"
@@ -2753,6 +2777,11 @@ def _combined_postverify_failure(
     *,
     label: str,
     binding_fields: dict[str, str],
+    request_digest: str | None = None,
+    request_fully_sent: bool = False,
+    received_request_digest: str | None = None,
+    request_index: int | None = None,
+    completed_outcomes: tuple[InvocationOutcome, ...] = (),
 ) -> WorkerInvocationError:
     """Retain a primary failure when mandatory post-verification also fails."""
 
@@ -2775,12 +2804,22 @@ def _combined_postverify_failure(
             captured_stderr=primary.captured_stderr,
             returncode=primary.returncode,
             failure_origin="harness",
+            request_digest=primary.request_digest,
+            request_fully_sent=primary.request_fully_sent,
+            received_request_digest=primary.received_request_digest,
+            request_index=primary.request_index,
+            completed_outcomes=primary.completed_outcomes,
             **binding_fields,
         )
     return WorkerInvocationError(
         message,
         failure_code="UCM-E003-HARNESS_INCOMPLETE",
         failure_origin="harness",
+        request_digest=request_digest,
+        request_fully_sent=request_fully_sent,
+        received_request_digest=received_request_digest,
+        request_index=request_index,
+        completed_outcomes=completed_outcomes,
         **binding_fields,
     )
 
@@ -3014,6 +3053,10 @@ class FreshProcessExecutor:
         deadline = time.monotonic() + timeout_seconds
         worker_deadline = _worker_subdeadline(deadline, timeout_seconds)
         request_bytes = canonical_json_bytes(request.to_wire())
+        request_digest = digest_bytes(request_bytes)
+        frozen_request = request_from_wire(
+            json.loads(request_bytes.decode("utf-8"))
+        )
         if len(request_bytes) > MAX_SESSION_FRAME_BYTES:
             raise ProtocolViolation("fresh candidate request frame is too large")
         prepared_bindings: dict[str, str] = {}
@@ -3083,6 +3126,12 @@ class FreshProcessExecutor:
                             postverify_error,
                             label="fresh parent post-verification failed",
                             binding_fields=prepared_bindings,
+                            request_digest=request_digest,
+                            request_fully_sent=(
+                                completed.request_fully_sent
+                                if "completed" in locals()
+                                else False
+                            ),
                         ) from postverify_error
         except WorkerInvocationError:
             raise
@@ -3100,6 +3149,7 @@ class FreshProcessExecutor:
                 failure_origin="harness",
                 **prepared_bindings,
             ) from exc
+        received_request_digest: str | None = None
         stderr_text = _bounded_evidence_text(completed.stderr)
 
         if completed.stdout_overflow:
@@ -3110,6 +3160,9 @@ class FreshProcessExecutor:
                 captured_stderr=stderr_text,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         if completed.stderr_overflow:
@@ -3120,6 +3173,9 @@ class FreshProcessExecutor:
                 captured_stderr=stderr_text,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         try:
@@ -3132,6 +3188,9 @@ class FreshProcessExecutor:
                 captured_stderr=stderr_text,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             ) from exc
         success_fields = frozenset(
@@ -3139,6 +3198,7 @@ class FreshProcessExecutor:
                 "protocol",
                 "ok",
                 "failure_origin",
+                "received_request_digest",
                 "response",
                 "audit_events",
                 "audit_overflow",
@@ -3158,6 +3218,7 @@ class FreshProcessExecutor:
                 "protocol",
                 "ok",
                 "failure_origin",
+                "received_request_digest",
                 "error",
                 "audit_events",
                 "audit_overflow",
@@ -3185,6 +3246,9 @@ class FreshProcessExecutor:
                 captured_stderr=stderr_text,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             ) from exc
         try:
@@ -3202,6 +3266,9 @@ class FreshProcessExecutor:
                 captured_stderr=stderr_text,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             ) from exc
         combined_stderr = _merge_bounded_evidence(worker_stderr, stderr_text)
@@ -3220,6 +3287,9 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         audit_events = tuple(audit_events_raw)
@@ -3232,6 +3302,23 @@ class FreshProcessExecutor:
         )
         worker_bindings = {name: worker.get(name) for name in binding_names}
         expected_bindings = prepared_bindings
+        received_request_digest = worker.get("received_request_digest")
+        if received_request_digest is not None and (
+            type(received_request_digest) is not str
+            or re.fullmatch(r"sha256:[0-9a-f]{64}", received_request_digest)
+            is None
+        ):
+            raise WorkerInvocationError(
+                "fresh worker returned a malformed received request digest",
+                failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                captured_stdout=worker_stdout,
+                captured_stderr=combined_stderr,
+                returncode=completed.returncode,
+                failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                **prepared_bindings,
+            )
         is_error = worker["ok"] is False or completed.returncode != 0
         bindings_are_strings = all(
             type(value) is str for value in worker_bindings.values()
@@ -3249,6 +3336,9 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         if bindings_are_strings and worker_bindings != expected_bindings:
@@ -3259,15 +3349,35 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         if is_error or worker.get("ok") is not True:
+            if received_request_digest not in {None, request_digest}:
+                raise WorkerInvocationError(
+                    "fresh failed worker received request digest mismatch",
+                    failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                    captured_stdout=worker_stdout,
+                    captured_stderr=combined_stderr,
+                    returncode=completed.returncode,
+                    failure_origin="harness",
+                    request_digest=request_digest,
+                    request_fully_sent=completed.request_fully_sent,
+                    received_request_digest=received_request_digest,
+                    **prepared_bindings,
+                )
             candidate_boundary = (
                 completed.prepared_attested and completed.request_fully_sent
             )
             declared_origin = worker.get("failure_origin")
             if declared_origin not in {"candidate", "harness"} or (
-                declared_origin == "candidate" and not candidate_boundary
+                declared_origin == "candidate"
+                and (
+                    not candidate_boundary
+                    or received_request_digest != request_digest
+                )
             ):
                 raise WorkerInvocationError(
                     "fresh worker failure origin/boundary mismatch",
@@ -3276,6 +3386,9 @@ class FreshProcessExecutor:
                     captured_stderr=combined_stderr,
                     returncode=completed.returncode,
                     failure_origin="harness",
+                    request_digest=request_digest,
+                    request_fully_sent=completed.request_fully_sent,
+                    received_request_digest=received_request_digest,
                     **prepared_bindings,
                 )
             try:
@@ -3292,6 +3405,9 @@ class FreshProcessExecutor:
                     captured_stderr=combined_stderr,
                     returncode=completed.returncode,
                     failure_origin="harness",
+                    request_digest=request_digest,
+                    request_fully_sent=completed.request_fully_sent,
+                    received_request_digest=received_request_digest,
                     **prepared_bindings,
                 ) from exc
             try:
@@ -3306,6 +3422,9 @@ class FreshProcessExecutor:
                     captured_stderr=combined_stderr,
                     returncode=completed.returncode,
                     failure_origin="harness",
+                    request_digest=request_digest,
+                    request_fully_sent=completed.request_fully_sent,
+                    received_request_digest=received_request_digest,
                     **prepared_bindings,
                 ) from exc
             raise WorkerInvocationError(
@@ -3323,6 +3442,9 @@ class FreshProcessExecutor:
                     if worker.get("failure_origin") in {"candidate", "harness"}
                     else "harness"
                 ),
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **(
                     worker_bindings if bindings_are_strings else prepared_bindings
                 ),
@@ -3335,6 +3457,9 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         if not completed.prepared_attested or not completed.request_fully_sent:
@@ -3345,6 +3470,9 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         if worker["worker_cwd_isolated"] is not True:
@@ -3355,6 +3483,22 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
+                **prepared_bindings,
+            )
+        if received_request_digest != request_digest:
+            raise WorkerInvocationError(
+                "fresh worker received request digest mismatch",
+                failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                captured_stdout=worker_stdout,
+                captured_stderr=combined_stderr,
+                returncode=completed.returncode,
+                failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=True,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             )
         try:
@@ -3369,27 +3513,50 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             ) from exc
         if audit_events or audit_overflow:
             raise WorkerInvocationError(
                 "fresh candidate worker caught a denied audited capability",
-                failure_code=_classify_denied_audit(list(audit_events), request),
+                failure_code=_classify_denied_audit(
+                    list(audit_events), frozen_request
+                ),
                 audit_events=audit_events,
                 audit_overflow=audit_overflow,
                 captured_stdout=worker_stdout,
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="candidate",
+                request_digest=request_digest,
+                request_fully_sent=True,
+                received_request_digest=received_request_digest,
                 **worker_bindings,
             )
-        response = response_from_wire(worker.get("response"))
-        _validate_response_for_request(request, response)
+        try:
+            response = response_from_wire(worker.get("response"))
+            _validate_response_for_request(frozen_request, response)
+        except (ProtocolViolation, CandidateCallViolation) as exc:
+            raise WorkerInvocationError(
+                "fresh worker response could not be parsed",
+                failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                captured_stdout=worker_stdout,
+                captured_stderr=combined_stderr,
+                returncode=completed.returncode,
+                failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=True,
+                received_request_digest=received_request_digest,
+                **prepared_bindings,
+            ) from exc
         outcome = InvocationOutcome(
             response=response,
-            request_digest=digest_json(request.to_wire()),
-            response_digest=digest_json(response.to_wire()),
+            request_digest=request_digest,
+            response_digest=digest_bytes(canonical_json_bytes(response.to_wire())),
             isolation="fresh-python-process-audit-v2",
+            received_request_digest=received_request_digest,
             audit_events=audit_events,
             audit_overflow=audit_overflow,
             captured_stdout=worker_stdout,
@@ -3407,6 +3574,9 @@ class FreshProcessExecutor:
                 captured_stderr=combined_stderr,
                 returncode=completed.returncode,
                 failure_origin="harness",
+                request_digest=request_digest,
+                request_fully_sent=completed.request_fully_sent,
+                received_request_digest=received_request_digest,
                 **prepared_bindings,
             ) from exc
         return outcome
@@ -3758,6 +3928,7 @@ def _run_fresh_process_bounded(
     deadline = time.monotonic() + _positive_finite_seconds(
         timeout_seconds, "timeout_seconds"
     )
+    frozen_request_digest = digest_bytes(request_bytes)
     try:
         process = subprocess.Popen(
             command,
@@ -3892,6 +4063,8 @@ def _run_fresh_process_bounded(
                 ),
                 returncode=process.poll(),
                 failure_origin="harness",
+                request_digest=frozen_request_digest,
+                request_fully_sent=False,
                 **binding_fields,
             ) from exc
         writer_result: queue.Queue[BaseException | None] = queue.Queue(maxsize=1)
@@ -3940,6 +4113,8 @@ def _run_fresh_process_bounded(
                 ),
                 returncode=process.poll(),
                 failure_origin="harness",
+                request_digest=frozen_request_digest,
+                request_fully_sent=False,
                 **binding_fields,
             ) from exc
         if write_error is not None:
@@ -3959,6 +4134,8 @@ def _run_fresh_process_bounded(
                 ),
                 returncode=process.poll(),
                 failure_origin="harness",
+                request_digest=frozen_request_digest,
+                request_fully_sent=False,
                 **binding_fields,
             ) from write_error
         request_fully_sent = True
@@ -3980,6 +4157,10 @@ def _run_fresh_process_bounded(
             ),
             returncode=process.poll(),
             failure_origin="harness",
+            request_digest=(
+                frozen_request_digest if request_fully_sent else None
+            ),
+            request_fully_sent=request_fully_sent,
             **binding_fields,
         ) from exc
 
@@ -3997,6 +4178,10 @@ def _run_fresh_process_bounded(
             ),
             returncode=process.poll(),
             failure_origin="harness",
+            request_digest=(
+                frozen_request_digest if request_fully_sent else None
+            ),
+            request_fully_sent=request_fully_sent,
             **binding_fields,
         )
     stdout_raw, stdout_overflow = stdout_capture.snapshot_bytes()
@@ -4130,6 +4315,9 @@ class SequentialProcessExecutor:
                 "could not create sequential candidate worker directory",
                 failure_code="UCM-E003-HARNESS_INCOMPLETE",
                 failure_origin="harness",
+                request_digest=digest_bytes(frozen_bytes[0]),
+                request_fully_sent=False,
+                request_index=0,
             ) from exc
 
         try:
@@ -4251,6 +4439,7 @@ class SequentialProcessExecutor:
             worker_ready = False
             prepared_confirmed = False
             candidate_delivery_active = False
+            current_verified_received_digest: str | None = None
             session_aggregate_bytes = 0
             session_cleanup_deadline: float | None = None
 
@@ -4446,6 +4635,7 @@ class SequentialProcessExecutor:
                             "type",
                             "ok",
                             "failure_origin",
+                            "received_request_digest",
                             "error",
                             "audit_events",
                             "audit_overflow",
@@ -4483,6 +4673,26 @@ class SequentialProcessExecutor:
                     raise ProtocolViolation(
                         "sequential error request index is out of phase"
                     )
+                received_request_digest = frame["received_request_digest"]
+                if received_request_digest is not None and (
+                    type(received_request_digest) is not str
+                    or re.fullmatch(
+                        r"sha256:[0-9a-f]{64}", received_request_digest
+                    )
+                    is None
+                ):
+                    raise ProtocolViolation(
+                        "sequential error received request digest is malformed"
+                    )
+                if (
+                    declared_origin == "candidate"
+                    and expected_request_index is not None
+                    and received_request_digest
+                    != digest_bytes(frozen_bytes[expected_request_index])
+                ):
+                    raise ProtocolViolation(
+                        "sequential candidate error request binding mismatch"
+                    )
                 events = frame["audit_events"]
                 overflow = frame["audit_overflow"]
                 if (
@@ -4511,6 +4721,19 @@ class SequentialProcessExecutor:
                     ),
                     returncode=process.poll(),
                     failure_origin=declared_origin,
+                    request_digest=(
+                        digest_bytes(frozen_bytes[expected_request_index])
+                        if expected_request_index is not None
+                        and expected_request_index < len(frozen_bytes)
+                        else None
+                    ),
+                    request_fully_sent=(
+                        expected_request_index is not None
+                        and candidate_delivery_active
+                    ),
+                    received_request_digest=received_request_digest,
+                    request_index=expected_request_index,
+                    completed_outcomes=tuple(outcomes),
                     **bindings,
                 )
 
@@ -4613,6 +4836,7 @@ class SequentialProcessExecutor:
                 for index, (request, encoded_request) in enumerate(
                     zip(frozen_requests, frozen_bytes)
                 ):
+                    current_verified_received_digest = None
                     wire = json.loads(encoded_request.decode("utf-8"))
                     send_frame(
                         {
@@ -4634,6 +4858,7 @@ class SequentialProcessExecutor:
                                 "type",
                                 "ok",
                                 "failure_origin",
+                                "received_request_digest",
                                 "index",
                                 "response",
                                 "audit_events",
@@ -4654,6 +4879,27 @@ class SequentialProcessExecutor:
                         raise ProtocolViolation(
                             "sequential worker result frame is out of order"
                         )
+                    received_request_digest = row["received_request_digest"]
+                    expected_request_digest = digest_bytes(encoded_request)
+                    if received_request_digest != expected_request_digest:
+                        raise WorkerInvocationError(
+                            "sequential worker received request digest mismatch",
+                            failure_code="UCM-E003-HARNESS_INCOMPLETE",
+                            captured_stderr=raw_stderr(),
+                            returncode=process.poll(),
+                            failure_origin="harness",
+                            request_digest=expected_request_digest,
+                            request_fully_sent=True,
+                            received_request_digest=(
+                                received_request_digest
+                                if type(received_request_digest) is str
+                                else None
+                            ),
+                            request_index=index,
+                            completed_outcomes=tuple(outcomes),
+                            **prepared_bindings,
+                        )
+                    current_verified_received_digest = received_request_digest
                     row_bindings = checked_bindings(row)
                     try:
                         response = response_from_wire(row["response"])
@@ -4665,6 +4911,11 @@ class SequentialProcessExecutor:
                             captured_stderr=raw_stderr(),
                             returncode=process.poll(),
                             failure_origin="harness",
+                            request_digest=expected_request_digest,
+                            request_fully_sent=True,
+                            received_request_digest=received_request_digest,
+                            request_index=index,
+                            completed_outcomes=tuple(outcomes),
                             **prepared_bindings,
                         ) from exc
                     row_stdout = _validated_capture_field(
@@ -4699,14 +4950,22 @@ class SequentialProcessExecutor:
                             ),
                             returncode=process.poll(),
                             failure_origin="candidate",
+                            request_digest=expected_request_digest,
+                            request_fully_sent=True,
+                            received_request_digest=received_request_digest,
+                            request_index=index,
+                            completed_outcomes=tuple(outcomes),
                             **row_bindings,
                         )
                     outcomes.append(
                         InvocationOutcome(
                             response=response,
-                            request_digest=digest_json(wire),
-                            response_digest=digest_json(response.to_wire()),
+                            request_digest=expected_request_digest,
+                            response_digest=digest_bytes(
+                                canonical_json_bytes(response.to_wire())
+                            ),
                             isolation="sequential-python-process-audit-v3",
+                            received_request_digest=received_request_digest,
                             audit_events=tuple(row_audit),
                             audit_overflow=row_overflow,
                             captured_stdout=_merge_bounded_evidence(
@@ -4794,16 +5053,49 @@ class SequentialProcessExecutor:
                 return tuple(outcomes)
             except (TimeoutError, subprocess.TimeoutExpired) as exc:
                 terminate_worker()
+                request_active = (
+                    worker_ready
+                    and candidate_delivery_active
+                    and len(outcomes) < len(frozen_bytes)
+                )
                 raise WorkerInvocationError(
                     "sequential worker timed out at an unprovable in-process phase",
                     failure_code="UCM-E003-HARNESS_INCOMPLETE",
                     captured_stderr=raw_stderr(),
                     returncode=process.poll(),
                     failure_origin="harness",
+                    request_digest=(
+                        digest_bytes(frozen_bytes[len(outcomes)])
+                        if request_active
+                        else None
+                    ),
+                    request_fully_sent=request_active,
+                    request_index=(len(outcomes) if request_active else None),
+                    completed_outcomes=tuple(outcomes),
                     **prepared_bindings,
                 ) from exc
-            except WorkerInvocationError:
+            except WorkerInvocationError as error:
                 terminate_worker()
+                if (
+                    error.request_index is None
+                    and worker_ready
+                    and candidate_delivery_active
+                    and len(outcomes) < len(frozen_bytes)
+                ):
+                    error.request_index = len(outcomes)
+                    error.request_digest = digest_bytes(
+                        frozen_bytes[len(outcomes)]
+                    )
+                    error.request_fully_sent = True
+                if (
+                    error.received_request_digest is None
+                    and current_verified_received_digest is not None
+                ):
+                    error.received_request_digest = (
+                        current_verified_received_digest
+                    )
+                if not error.completed_outcomes:
+                    error.completed_outcomes = tuple(outcomes)
                 raise
             except Exception as exc:
                 terminate_worker()
@@ -4813,6 +5105,33 @@ class SequentialProcessExecutor:
                     captured_stderr=raw_stderr(),
                     returncode=process.poll(),
                     failure_origin="harness",
+                    request_digest=(
+                        digest_bytes(frozen_bytes[len(outcomes)])
+                        if worker_ready
+                        and candidate_delivery_active
+                        and len(outcomes) < len(frozen_bytes)
+                        else None
+                    ),
+                    request_fully_sent=(
+                        worker_ready
+                        and candidate_delivery_active
+                        and len(outcomes) < len(frozen_bytes)
+                    ),
+                    request_index=(
+                        len(outcomes)
+                        if worker_ready
+                        and candidate_delivery_active
+                        and len(outcomes) < len(frozen_bytes)
+                        else None
+                    ),
+                    received_request_digest=(
+                        current_verified_received_digest
+                        if worker_ready
+                        and candidate_delivery_active
+                        and len(outcomes) < len(frozen_bytes)
+                        else None
+                    ),
+                    completed_outcomes=tuple(outcomes),
                     **prepared_bindings,
                 ) from exc
         except _PreparationTimeout as exc:
@@ -4820,15 +5139,25 @@ class SequentialProcessExecutor:
                 "sequential candidate preparation timed out",
                 failure_code="UCM-E003-HARNESS_INCOMPLETE",
                 failure_origin="harness",
+                request_digest=digest_bytes(frozen_bytes[0]),
+                request_fully_sent=False,
+                request_index=0,
                 **prepared_bindings,
             ) from exc
-        except WorkerInvocationError:
+        except WorkerInvocationError as error:
+            if error.request_index is None and not error.completed_outcomes:
+                error.request_digest = digest_bytes(frozen_bytes[0])
+                error.request_fully_sent = False
+                error.request_index = 0
             raise
         except Exception as exc:
             raise WorkerInvocationError(
                 "sequential candidate preparation failed",
                 failure_code="UCM-E003-HARNESS_INCOMPLETE",
                 failure_origin="harness",
+                request_digest=digest_bytes(frozen_bytes[0]),
+                request_fully_sent=False,
+                request_index=0,
                 **prepared_bindings,
             ) from exc
         finally:
@@ -4845,6 +5174,9 @@ class SequentialProcessExecutor:
                     exc,
                     label="sequential parent post-verification failed",
                     binding_fields=prepared_bindings,
+                    completed_outcomes=(
+                        tuple(outcomes) if "outcomes" in locals() else ()
+                    ),
                 ) from exc
             finally:
                 temp_context.__exit__(None, None, None)
@@ -5158,6 +5490,7 @@ def _worker_main(
     audit_events: list[dict[str, Any]] = []
     capture = _CandidateOutputCapture()
     request: CandidateRequest | None = None
+    received_request_digest: str | None = None
     boundary: _CandidateAuditBoundary | None = None
     inventory: _WorkerImportInventory | None = None
     boundary_call: Any = None
@@ -5273,6 +5606,7 @@ def _worker_main(
             raise ProtocolViolation("fresh parent sent malformed JSON") from exc
         if canonical_json_bytes(wire) != request_frame:
             raise ProtocolViolation("fresh parent request is not canonical JSON")
+        received_request_digest = digest_bytes(request_frame)
         request = request_from_wire(wire)
         with capture:
             set_phase("candidate-import")
@@ -5332,6 +5666,7 @@ def _worker_main(
             "protocol": WORKER_PROTOCOL,
             "ok": True,
             "failure_origin": None,
+            "received_request_digest": received_request_digest,
             "response": response.to_wire(),
             "audit_events": audit_events,
             "audit_overflow": boundary.audit_overflow,
@@ -5365,6 +5700,7 @@ def _worker_main(
             "protocol": WORKER_PROTOCOL,
             "ok": False,
             "failure_origin": failure_origin,
+            "received_request_digest": received_request_digest,
             "error": {
                 "failure_code": failure_code,
                 "type": type(exc).__name__,
@@ -5401,6 +5737,7 @@ def _session_worker_main(
     current_capture = _CandidateOutputCapture()
     current_request: CandidateRequest | None = None
     current_index: int | None = None
+    current_received_request_digest: str | None = None
     completed = 0
     boundary: _CandidateAuditBoundary | None = None
     inventory: _WorkerImportInventory | None = None
@@ -5452,6 +5789,7 @@ def _session_worker_main(
             "type": "error",
             "ok": False,
             "failure_origin": failure_origin,
+            "received_request_digest": current_received_request_digest,
             "error": {
                 "failure_code": failure_code,
                 "type": type(exc).__name__,
@@ -5648,6 +5986,7 @@ def _session_worker_main(
         current_capture = _CandidateOutputCapture()
         current_request = None
         current_index = completed
+        current_received_request_digest = None
         try:
             phase = "request-parser"
             frame = read_parent_frame("request frame")
@@ -5680,6 +6019,9 @@ def _session_worker_main(
             if frame_type != "request" or frame["index"] != completed:
                 raise ProtocolViolation("sequential request index is out of order")
             request_wire = frame["request"]
+            current_received_request_digest = digest_bytes(
+                canonical_json_bytes(request_wire)
+            )
             current_request = request_from_wire(request_wire)
             audit_start = len(audit_events)
             audit_overflow_start = boundary.audit_overflow
@@ -5710,6 +6052,7 @@ def _session_worker_main(
                     "type": "result",
                     "ok": True,
                     "failure_origin": None,
+                    "received_request_digest": current_received_request_digest,
                     "index": completed,
                     "response": response_wire,
                     "audit_events": audit_events[audit_start:],
