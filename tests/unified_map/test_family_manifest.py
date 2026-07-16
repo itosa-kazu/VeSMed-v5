@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import fields, replace
 
 import pytest
 
@@ -431,6 +431,7 @@ def test_producer_cannot_forge_or_smuggle_family_digest() -> None:
         "atomic_link_alias",
         "atomicLinkDigest",
         "row_bundle_commitment_digest",
+        "strataAllocationCommitmentDigest",
         "member_coverage",
         "ledger_digest",
     ],
@@ -1442,6 +1443,111 @@ def test_evidence_receipt_and_ledger_detect_post_construction_object_rewrites() 
         ledger.to_wire()
 
 
+@pytest.mark.parametrize(
+    ("artifact_kind", "seal_attribute", "changed_message"),
+    [
+        (
+            "source",
+            "_sealed_source_digest",
+            "pre-split family source changed after construction",
+        ),
+        (
+            "assignment",
+            "_sealed_assignment_digest",
+            "weighted atomic assignment changed after construction",
+        ),
+        (
+            "evidence",
+            "evidence_digest",
+            "row materialization evidence changed after construction",
+        ),
+        (
+            "receipt",
+            "_sealed_receipt_digest",
+            "materialization receipt changed after construction",
+        ),
+        (
+            "ledger",
+            "_sealed_ledger_digest",
+            "materialization ledger changed after construction",
+        ),
+    ],
+)
+def test_external_seal_registry_rejects_complete_state_and_internal_seal_rewrite(
+    artifact_kind: str,
+    seal_attribute: str,
+    changed_message: str,
+) -> None:
+    """An attacker cannot re-bless an existing authority object in place.
+
+    Both sides of each attack are independently valid artifacts.  The attack
+    replaces the complete dataclass state of the first object with the second
+    object's state and also writes the second object's valid internal seal.
+    Only the process-external first-digest registry distinguishes that rewrite
+    from legitimate construction.
+    """
+
+    if artifact_kind == "source":
+        original = _closed_slot_source()
+        replacement = _closed_slot_source(duplicate_followup_record=True)
+    else:
+        source = _closed_slot_source()
+        train_assignment = _assignment(
+            source,
+            {source.units[0].authority_digest: FamilySplit.TRAIN},
+        )
+        validation_assignment = _assignment(
+            source,
+            {source.units[0].authority_digest: FamilySplit.VALIDATION},
+        )
+        train_receipts = issue_materialization_receipt_batch(
+            source,
+            train_assignment,
+            tuple(
+                _slot_evidence(source, train_assignment, index)
+                for index in range(len(source.materialization_slots))
+            ),
+        )
+        validation_receipts = issue_materialization_receipt_batch(
+            source,
+            validation_assignment,
+            tuple(
+                _slot_evidence(source, validation_assignment, index)
+                for index in range(len(source.materialization_slots))
+            ),
+        )
+        if artifact_kind == "assignment":
+            original, replacement = train_assignment, validation_assignment
+        elif artifact_kind == "evidence":
+            original = train_receipts[0].evidence
+            replacement = validation_receipts[0].evidence
+        elif artifact_kind == "receipt":
+            original, replacement = train_receipts[0], validation_receipts[0]
+        else:
+            original = build_materialization_receipt_ledger(
+                source, train_assignment, train_receipts
+            )
+            replacement = build_materialization_receipt_ledger(
+                source, validation_assignment, validation_receipts
+            )
+
+    original_digest = object.__getattribute__(original, seal_attribute)
+    replacement_digest = object.__getattribute__(replacement, seal_attribute)
+    assert original_digest != replacement_digest
+
+    for dataclass_field in fields(original):
+        if dataclass_field.name != seal_attribute:
+            object.__setattr__(
+                original,
+                dataclass_field.name,
+                object.__getattribute__(replacement, dataclass_field.name),
+            )
+    object.__setattr__(original, seal_attribute, replacement_digest)
+
+    with pytest.raises(ProtocolViolation, match=changed_message):
+        original.to_wire()
+
+
 def test_public_wire_boundaries_never_reinitialize_missing_seals() -> None:
     def fresh_graph():
         source = _closed_slot_source()
@@ -1845,6 +1951,76 @@ def test_post_assignment_materialization_slot_injection_breaks_source_seal() -> 
     ):
         with pytest.raises(ProtocolViolation, match="source changed after construction"):
             boundary()
+
+
+def test_materialization_slot_rejects_malformed_strata_allocation_commitment() -> None:
+    with pytest.raises(
+        ProtocolViolation,
+        match="strata_allocation_commitment_digest",
+    ):
+        MaterializationSlotDraft(
+            "strata-commitment-slot",
+            "strata-commitment-family",
+            "row",
+            MaterializationRole.STANDARD_ROW,
+            "baseline",
+            _digest("strata-commitment-cut"),
+            _digest("strata-commitment-query"),
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "strata-commitment-slot"
+            ),
+            strata_allocation_commitment_digest="not-a-sha256-digest",
+        )
+
+
+def test_strata_allocation_commitment_binds_slot_source_and_assignment() -> None:
+    draft = _draft(
+        "strata-commitment-family",
+        members=(_member("row"),),
+    )
+    baseline_slot = MaterializationSlotDraft(
+        "strata-commitment-slot",
+        "strata-commitment-family",
+        "row",
+        MaterializationRole.STANDARD_ROW,
+        "baseline",
+        _digest("strata-commitment-cut"),
+        _digest("strata-commitment-query"),
+        row_bundle_commitment_digest=_row_bundle_commitment(
+            "strata-commitment-slot"
+        ),
+        strata_allocation_commitment_digest=_digest("strata-allocation-a"),
+    )
+    changed_slot = replace(
+        baseline_slot,
+        strata_allocation_commitment_digest=_digest("strata-allocation-b"),
+    )
+
+    baseline_source = _source((draft,), slots=(baseline_slot,))
+    changed_source = _source((draft,), slots=(changed_slot,))
+    baseline_resolved_slot = baseline_source.materialization_slots[0]
+    changed_resolved_slot = changed_source.materialization_slots[0]
+
+    assert (
+        baseline_source.units[0].authority_digest
+        == changed_source.units[0].authority_digest
+    )
+    assert baseline_resolved_slot.slot_digest != changed_resolved_slot.slot_digest
+    assert baseline_source.source_digest != changed_source.source_digest
+
+    authority_digest = baseline_source.units[0].authority_digest
+    baseline_assignment = _assignment(
+        baseline_source,
+        {authority_digest: FamilySplit.TRAIN},
+    )
+    changed_assignment = _assignment(
+        changed_source,
+        {authority_digest: FamilySplit.TRAIN},
+    )
+
+    assert baseline_assignment.source is baseline_source
+    assert changed_assignment.source is changed_source
+    assert baseline_assignment.assignment_digest != changed_assignment.assignment_digest
 
 
 def test_w19_typed_row_cannot_gain_a_second_pair_bound_physical_slot() -> None:

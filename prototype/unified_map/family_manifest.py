@@ -122,6 +122,7 @@ _PRODUCER_FORBIDDEN = frozenset(
         "atomic_link_alias",
         "atomic_link_digest",
         "row_bundle_commitment_digest",
+        "strata_allocation_commitment_digest",
         "member_coverage",
         "ledger_digest",
         "evidence_digest",
@@ -149,10 +150,12 @@ _PRODUCER_FORBIDDEN = frozenset(
 # A dataclass ``__post_init__`` method is an ordinary public Python method.
 # Keeping the only initialization marker on the object would therefore let a
 # hostile in-process caller delete that marker and invoke ``__post_init__`` to
-# bless rewritten state.  Track first initialization by object identity outside
-# the artifact as well.  Weak references avoid retaining completed artifacts or
-# confusing a later object which reuses the same CPython id.
-_SEALED_OBJECT_REFS: dict[int, ReferenceType[Any]] = {}
+# bless rewritten state.  Track both first initialization and its first digest
+# by object identity outside the artifact as well; rewriting state together
+# with a recomputed in-object seal must still fail closed.  Weak references
+# avoid retaining completed artifacts or confusing a later object which reuses
+# the same CPython id.
+_SEALED_OBJECT_REFS: dict[int, tuple[ReferenceType[Any], str]] = {}
 _SEALED_OBJECT_REFS_LOCK = RLock()
 
 
@@ -168,9 +171,9 @@ def _seal_or_validate_once(
     _digest(expected_digest, f"{seal_attribute} expected digest")
     object_id = id(value)
     with _SEALED_OBJECT_REFS_LOCK:
-        existing_reference = _SEALED_OBJECT_REFS.get(object_id)
+        existing_entry = _SEALED_OBJECT_REFS.get(object_id)
         was_initialized = (
-            existing_reference is not None and existing_reference() is value
+            existing_entry is not None and existing_entry[0]() is value
         )
         try:
             sealed_digest = object.__getattribute__(value, seal_attribute)
@@ -181,11 +184,17 @@ def _seal_or_validate_once(
 
             def discard(dead_reference: ReferenceType[Any]) -> None:
                 with _SEALED_OBJECT_REFS_LOCK:
-                    if _SEALED_OBJECT_REFS.get(object_id) is dead_reference:
+                    current_entry = _SEALED_OBJECT_REFS.get(object_id)
+                    if (
+                        current_entry is not None
+                        and current_entry[0] is dead_reference
+                    ):
                         del _SEALED_OBJECT_REFS[object_id]
 
-            _SEALED_OBJECT_REFS[object_id] = ref(value, discard)
+            _SEALED_OBJECT_REFS[object_id] = (ref(value, discard), expected_digest)
             return
+        if was_initialized and existing_entry[1] != expected_digest:
+            raise ProtocolViolation(changed_message)
         if sealed_digest != expected_digest:
             raise ProtocolViolation(changed_message)
         if not was_initialized:
@@ -194,10 +203,14 @@ def _seal_or_validate_once(
             # already been re-derived above, so registering it is safe.
             def discard(dead_reference: ReferenceType[Any]) -> None:
                 with _SEALED_OBJECT_REFS_LOCK:
-                    if _SEALED_OBJECT_REFS.get(object_id) is dead_reference:
+                    current_entry = _SEALED_OBJECT_REFS.get(object_id)
+                    if (
+                        current_entry is not None
+                        and current_entry[0] is dead_reference
+                    ):
                         del _SEALED_OBJECT_REFS[object_id]
 
-            _SEALED_OBJECT_REFS[object_id] = ref(value, discard)
+            _SEALED_OBJECT_REFS[object_id] = (ref(value, discard), expected_digest)
 
 
 def _name(value: object, label: str) -> str:
@@ -1054,6 +1067,10 @@ class MaterializationSlotDraft:
     pair_side: int | None = None
     atomic_link_alias: str | None = field(default=None, kw_only=True)
     row_bundle_commitment_digest: str | None = field(default=None, kw_only=True)
+    strata_allocation_commitment_digest: str | None = field(
+        default=None,
+        kw_only=True,
+    )
 
     def __post_init__(self) -> None:
         _name(self.slot_alias, "materialization slot_alias")
@@ -1088,6 +1105,11 @@ class MaterializationSlotDraft:
             self.row_bundle_commitment_digest,
             "materialization row_bundle_commitment_digest",
         )
+        if self.strata_allocation_commitment_digest is not None:
+            _digest(
+                self.strata_allocation_commitment_digest,
+                "materialization strata_allocation_commitment_digest",
+            )
 
 
 @dataclass(frozen=True, slots=True)
@@ -1104,6 +1126,7 @@ class MaterializationSlot:
     pair_side: int | None
     atomic_link_digest: str | None
     row_bundle_commitment_digest: str
+    strata_allocation_commitment_digest: str | None
     slot_digest: str
 
     def __post_init__(self) -> None:
@@ -1137,9 +1160,14 @@ class MaterializationSlot:
             self.row_bundle_commitment_digest,
             "resolved materialization row_bundle_commitment_digest",
         )
+        if self.strata_allocation_commitment_digest is not None:
+            _digest(
+                self.strata_allocation_commitment_digest,
+                "resolved materialization strata_allocation_commitment_digest",
+            )
         _digest(self.slot_digest, "resolved materialization slot_digest")
         expected = domain_digest(
-            b"UCM\0PRE_SPLIT_MATERIALIZATION_SLOT_V1\0",
+            b"UCM\0PRE_SPLIT_MATERIALIZATION_SLOT_V2\0",
             (canonical_json_bytes(self.identity_payload()),),
         )
         if self.slot_digest != expected:
@@ -1160,6 +1188,9 @@ class MaterializationSlot:
             "pair_side": self.pair_side,
             "atomic_link_digest": self.atomic_link_digest,
             "row_bundle_commitment_digest": self.row_bundle_commitment_digest,
+            "strata_allocation_commitment_digest": (
+                self.strata_allocation_commitment_digest
+            ),
         }
 
     def to_wire(self) -> dict[str, Any]:
@@ -1877,6 +1908,9 @@ def build_pre_split_family_source(
             "pair_side": item.pair_side,
             "atomic_link_digest": atomic_link_digest,
             "row_bundle_commitment_digest": item.row_bundle_commitment_digest,
+            "strata_allocation_commitment_digest": (
+                item.strata_allocation_commitment_digest
+            ),
         }
         slots.append(
             MaterializationSlot(
@@ -1890,8 +1924,11 @@ def build_pre_split_family_source(
                 pair_side=item.pair_side,
                 atomic_link_digest=atomic_link_digest,
                 row_bundle_commitment_digest=item.row_bundle_commitment_digest,
+                strata_allocation_commitment_digest=(
+                    item.strata_allocation_commitment_digest
+                ),
                 slot_digest=domain_digest(
-                    b"UCM\0PRE_SPLIT_MATERIALIZATION_SLOT_V1\0",
+                    b"UCM\0PRE_SPLIT_MATERIALIZATION_SLOT_V2\0",
                     (canonical_json_bytes(identity),),
                 ),
             )
