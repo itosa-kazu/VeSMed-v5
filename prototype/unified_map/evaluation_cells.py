@@ -419,6 +419,931 @@ class BenchmarkCoverageLock:
         return digest_json(self.to_wire())
 
 
+_BENCHMARK_V2_SCHEMA = "ucm-benchmark-v2-coverage-lock/1"
+_BENCHMARK_V2_ID = "UCM-BENCHMARK-v1"
+_BENCHMARK_V2_REVISION = "FROZEN-v1"
+_BENCHMARK_V2_PANELS = (
+    *((f"W{index:02d}", "primary") for index in range(1, 15)),
+    ("W15", "W15A-randomized-identifiable"),
+    ("W15", "W15B-observational-nonidentified"),
+    *((f"W{index:02d}", "primary") for index in range(16, 21)),
+)
+_BENCHMARK_V2_SPLITS = (
+    EvaluationSplit.TRAIN,
+    EvaluationSplit.VALIDATION,
+    EvaluationSplit.TEST,
+)
+_BENCHMARK_V2_REPLICATE_PAIRS = tuple(
+    (f"train-{index:02d}", f"eval-{index:02d}") for index in range(1, 6)
+)
+_BENCHMARK_V2_SHARD_COUNT = 21 * 3 * 5
+
+# This dependency domain is part of the code-owned wire schema.  In particular,
+# the generator roots are committed before expected-cell compilation and cannot
+# be defined in terms of an expected-cell root, this coverage lock's digest, a
+# freeze manifest, or a run bundle.  V2 intentionally carries no embedded
+# ``lock_digest``: its digest is computed externally from these acyclic bytes.
+_GENERATOR_RAW_PREIMAGE_PROTOCOL = "ucm-generator-raw-preimage-roots/1"
+_GENERATOR_RAW_PREIMAGE_DEPENDENCIES = (
+    "candidate_corpus_bytes",
+    "judge_corpus_bytes",
+    "materialization_receipt_bytes",
+    "query_cell_preimage_bytes",
+    "oracle_target_preimage_bytes",
+    "raw_request_preimage_bytes",
+    "raw_response_preimage_bytes",
+)
+_COVERAGE_SLOT_PROTOCOL = "ucm-benchmark-v2-coverage-slot/1"
+_SOURCE_CUT_QUERY_SET_BINDING_PROTOCOL = (
+    "ucm-source-cut-query-set-bindings/1"
+)
+_PAIR_THRESHOLD_BINDING_PROTOCOL = "ucm-pair-threshold-bindings/1"
+
+
+def _closed_object(
+    value: object, keys: frozenset[str], label: str
+) -> dict[str, Any]:
+    if type(value) is not dict or set(value) != keys:
+        raise ProtocolViolation(
+            f"{label} must be a closed object with keys {sorted(keys)!r}"
+        )
+    return value
+
+
+def _decode_canonical_object(payload: bytes, label: str) -> dict[str, Any]:
+    if type(payload) is not bytes:
+        raise ProtocolViolation(f"{label} payload must be exact bytes")
+    try:
+        value = json.loads(payload.decode("utf-8"))
+    except (
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        RecursionError,
+        ValueError,
+    ) as exc:
+        raise ProtocolViolation(f"{label} is not UTF-8 JSON") from exc
+    if type(value) is not dict:
+        raise ProtocolViolation(f"{label} must be a JSON object")
+    try:
+        canonical = canonical_json_bytes(value)
+    except (ProtocolViolation, UnicodeEncodeError) as exc:
+        raise ProtocolViolation(f"{label} cannot be canonical JSON") from exc
+    if canonical != payload:
+        raise ProtocolViolation(f"{label} is not canonical JSON bytes")
+    return value
+
+
+def _v2_digest(value: object, label: str) -> str:
+    result = _digest(value, label)
+    if result != result.lower():
+        raise ProtocolViolation(f"{label} must use lowercase hexadecimal")
+    return result
+
+
+def _v2_optional_digest(value: object, label: str) -> str | None:
+    if value is None:
+        return None
+    return _v2_digest(value, label)
+
+
+def _v2_split_from_wire(value: object) -> EvaluationSplit:
+    if type(value) is not str:
+        raise ProtocolViolation("v2 shard split must be an exact string")
+    for split in _BENCHMARK_V2_SPLITS:
+        if value == split.value:
+            return split
+    raise ProtocolViolation("v2 shard split is outside train/validation/test")
+
+
+def _v2_coverage_slot_digest(
+    *,
+    world_slot: str,
+    panel_id: str,
+    split: EvaluationSplit,
+    training_replicate_id: str,
+    evaluation_replicate_id: str,
+    cohort: EvaluationCohort,
+) -> str:
+    if type(split) is not EvaluationSplit or split not in _BENCHMARK_V2_SPLITS:
+        raise ProtocolViolation("v2 coverage slot split is invalid")
+    if type(cohort) is not EvaluationCohort:
+        raise ProtocolViolation("v2 coverage slot cohort is invalid")
+    return digest_json(
+        {
+            "protocol": _COVERAGE_SLOT_PROTOCOL,
+            "world_slot": _name(world_slot, "v2 slot world_slot"),
+            "panel_id": _name(panel_id, "v2 slot panel_id"),
+            "split": split.value,
+            "training_replicate_id": _name(
+                training_replicate_id, "v2 slot training_replicate_id"
+            ),
+            "evaluation_replicate_id": _name(
+                evaluation_replicate_id, "v2 slot evaluation_replicate_id"
+            ),
+            "cohort": cohort.value,
+        }
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class LockedSourceDenominatorV2:
+    """Exact pre-cell source denominator for one shard and one cohort."""
+
+    coverage_slot_digest: str
+    denominator_contract_digest: str
+    source_count: int
+    source_record_ids_root: str
+    materialization_receipts_root: str
+
+    def __post_init__(self) -> None:
+        _v2_digest(self.coverage_slot_digest, "v2 denominator coverage_slot_digest")
+        _v2_digest(
+            self.denominator_contract_digest,
+            "v2 denominator_contract_digest",
+        )
+        if type(self.source_count) is not int or self.source_count <= 0:
+            raise ProtocolViolation("v2 source_count must be a positive integer")
+        _v2_digest(self.source_record_ids_root, "v2 source_record_ids_root")
+        _v2_digest(
+            self.materialization_receipts_root,
+            "v2 materialization_receipts_root",
+        )
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "coverage_slot_digest": self.coverage_slot_digest,
+            "denominator_contract_digest": self.denominator_contract_digest,
+            "source_count": self.source_count,
+            "source_record_ids_root": self.source_record_ids_root,
+            "materialization_receipts_root": self.materialization_receipts_root,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "LockedSourceDenominatorV2":
+        body = _closed_object(
+            value,
+            frozenset(
+                {
+                    "coverage_slot_digest",
+                    "denominator_contract_digest",
+                    "source_count",
+                    "source_record_ids_root",
+                    "materialization_receipts_root",
+                }
+            ),
+            "v2 source denominator",
+        )
+        return cls(
+            coverage_slot_digest=body["coverage_slot_digest"],
+            denominator_contract_digest=body["denominator_contract_digest"],
+            source_count=body["source_count"],
+            source_record_ids_root=body["source_record_ids_root"],
+            materialization_receipts_root=body["materialization_receipts_root"],
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class LockedQuerySetV2:
+    """Precommitted query sets plus exact source/cut/stage/role bindings."""
+
+    coverage_slot_digest: str
+    template_contract_digest: str
+    query_set_ids: tuple[str, ...]
+    template_count: int
+    query_templates_root: str
+    source_cut_binding_count: int
+    source_cut_bindings_root: str
+
+    def __post_init__(self) -> None:
+        _v2_digest(self.coverage_slot_digest, "v2 query coverage_slot_digest")
+        _v2_digest(
+            self.template_contract_digest,
+            "v2 template_contract_digest",
+        )
+        if type(self.query_set_ids) is not tuple or not self.query_set_ids:
+            raise ProtocolViolation("v2 query_set_ids must be a non-empty tuple")
+        if any(
+            type(item) is not str or not item or item.strip() != item
+            for item in self.query_set_ids
+        ):
+            raise ProtocolViolation("v2 query_set_ids contains a non-canonical id")
+        if len(set(self.query_set_ids)) != len(self.query_set_ids):
+            raise ProtocolViolation("v2 query_set_ids must be unique")
+        if type(self.template_count) is not int or self.template_count <= 0:
+            raise ProtocolViolation("v2 template_count must be a positive integer")
+        if self.template_count < len(self.query_set_ids):
+            raise ProtocolViolation(
+                "v2 template_count must cover every non-empty query set"
+            )
+        _v2_digest(self.query_templates_root, "v2 query_templates_root")
+        if (
+            type(self.source_cut_binding_count) is not int
+            or self.source_cut_binding_count <= 0
+        ):
+            raise ProtocolViolation(
+                "v2 source_cut_binding_count must be a positive integer"
+            )
+        if self.source_cut_binding_count < len(self.query_set_ids):
+            raise ProtocolViolation(
+                "v2 source_cut_binding_count must reference every query set"
+            )
+        _v2_digest(self.source_cut_bindings_root, "v2 source_cut_bindings_root")
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "coverage_slot_digest": self.coverage_slot_digest,
+            "template_contract_digest": self.template_contract_digest,
+            "query_set_ids": sorted(self.query_set_ids),
+            "template_count": self.template_count,
+            "query_templates_root": self.query_templates_root,
+            "source_cut_binding_protocol": (
+                _SOURCE_CUT_QUERY_SET_BINDING_PROTOCOL
+            ),
+            "source_cut_binding_count": self.source_cut_binding_count,
+            "source_cut_bindings_root": self.source_cut_bindings_root,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "LockedQuerySetV2":
+        body = _closed_object(
+            value,
+            frozenset(
+                {
+                    "coverage_slot_digest",
+                    "template_contract_digest",
+                    "query_set_ids",
+                    "template_count",
+                    "query_templates_root",
+                    "source_cut_binding_protocol",
+                    "source_cut_binding_count",
+                    "source_cut_bindings_root",
+                }
+            ),
+            "v2 query set",
+        )
+        if (
+            type(body["source_cut_binding_protocol"]) is not str
+            or body["source_cut_binding_protocol"]
+            != _SOURCE_CUT_QUERY_SET_BINDING_PROTOCOL
+        ):
+            raise ProtocolViolation(
+                "v2 query set source_cut_binding_protocol differs from code-owned field"
+            )
+        query_set_ids = body["query_set_ids"]
+        if type(query_set_ids) is not list:
+            raise ProtocolViolation("v2 query_set_ids must be a list")
+        return cls(
+            coverage_slot_digest=body["coverage_slot_digest"],
+            template_contract_digest=body["template_contract_digest"],
+            query_set_ids=tuple(query_set_ids),
+            template_count=body["template_count"],
+            query_templates_root=body["query_templates_root"],
+            source_cut_binding_count=body["source_cut_binding_count"],
+            source_cut_bindings_root=body["source_cut_bindings_root"],
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class LockedPairCoverageV2:
+    """Exact two-endpoint pair denominator and threshold-registry references."""
+
+    coverage_slot_digest: str
+    threshold_contract_digest: str
+    pair_count: int
+    endpoint_count: int
+    pair_endpoint_bindings_root: str
+    pair_threshold_bindings_root: str
+    threshold_registry_entry_ids: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        _v2_digest(self.coverage_slot_digest, "v2 pair coverage_slot_digest")
+        _v2_digest(
+            self.threshold_contract_digest,
+            "v2 pair threshold_contract_digest",
+        )
+        if type(self.pair_count) is not int or self.pair_count <= 0:
+            raise ProtocolViolation("v2 pair_count must be a positive integer")
+        if type(self.endpoint_count) is not int or self.endpoint_count <= 0:
+            raise ProtocolViolation("v2 endpoint_count must be a positive integer")
+        if self.endpoint_count != 2 * self.pair_count:
+            raise ProtocolViolation("v2 endpoint_count must equal twice pair_count")
+        _v2_digest(
+            self.pair_endpoint_bindings_root,
+            "v2 pair_endpoint_bindings_root",
+        )
+        _v2_digest(
+            self.pair_threshold_bindings_root,
+            "v2 pair_threshold_bindings_root",
+        )
+        if type(self.threshold_registry_entry_ids) is not tuple or not (
+            self.threshold_registry_entry_ids
+        ):
+            raise ProtocolViolation(
+                "v2 threshold_registry_entry_ids must be a non-empty tuple"
+            )
+        if any(
+            type(item) is not str or not item or item.strip() != item
+            for item in self.threshold_registry_entry_ids
+        ):
+            raise ProtocolViolation(
+                "v2 threshold_registry_entry_ids contains a non-canonical id"
+            )
+        if len(set(self.threshold_registry_entry_ids)) != len(
+            self.threshold_registry_entry_ids
+        ):
+            raise ProtocolViolation(
+                "v2 threshold_registry_entry_ids must be unique"
+            )
+        if len(self.threshold_registry_entry_ids) > self.pair_count:
+            raise ProtocolViolation(
+                "v2 pair_count cannot leave threshold registry entries unused"
+            )
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "coverage_slot_digest": self.coverage_slot_digest,
+            "threshold_contract_digest": self.threshold_contract_digest,
+            "pair_count": self.pair_count,
+            "endpoint_count": self.endpoint_count,
+            "pair_endpoint_bindings_root": self.pair_endpoint_bindings_root,
+            "pair_threshold_binding_protocol": _PAIR_THRESHOLD_BINDING_PROTOCOL,
+            "pair_threshold_bindings_root": self.pair_threshold_bindings_root,
+            "threshold_registry_entry_ids": sorted(
+                self.threshold_registry_entry_ids
+            ),
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "LockedPairCoverageV2":
+        body = _closed_object(
+            value,
+            frozenset(
+                {
+                    "coverage_slot_digest",
+                    "threshold_contract_digest",
+                    "pair_count",
+                    "endpoint_count",
+                    "pair_endpoint_bindings_root",
+                    "pair_threshold_binding_protocol",
+                    "pair_threshold_bindings_root",
+                    "threshold_registry_entry_ids",
+                }
+            ),
+            "v2 pair coverage",
+        )
+        if (
+            type(body["pair_threshold_binding_protocol"]) is not str
+            or body["pair_threshold_binding_protocol"]
+            != _PAIR_THRESHOLD_BINDING_PROTOCOL
+        ):
+            raise ProtocolViolation(
+                "v2 pair pair_threshold_binding_protocol differs from code-owned field"
+            )
+        entries = body["threshold_registry_entry_ids"]
+        if type(entries) is not list:
+            raise ProtocolViolation(
+                "v2 threshold_registry_entry_ids must be a list"
+            )
+        return cls(
+            coverage_slot_digest=body["coverage_slot_digest"],
+            threshold_contract_digest=body["threshold_contract_digest"],
+            pair_count=body["pair_count"],
+            endpoint_count=body["endpoint_count"],
+            pair_endpoint_bindings_root=body["pair_endpoint_bindings_root"],
+            pair_threshold_bindings_root=body["pair_threshold_bindings_root"],
+            threshold_registry_entry_ids=tuple(entries),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class LockedShardCoverageV2:
+    """Typed V2 coverage for one exact zipped train/evaluation shard."""
+
+    world_slot: str
+    panel_id: str
+    split: EvaluationSplit
+    training_replicate_id: str
+    evaluation_replicate_id: str
+    population_denominator: LockedSourceDenominatorV2 | None = None
+    population_query_set: LockedQuerySetV2 | None = None
+    probe_denominator: LockedSourceDenominatorV2 | None = None
+    probe_query_set: LockedQuerySetV2 | None = None
+    pair_coverage: LockedPairCoverageV2 | None = None
+
+    def __post_init__(self) -> None:
+        for value, label in (
+            (self.world_slot, "v2 shard world_slot"),
+            (self.panel_id, "v2 shard panel_id"),
+            (self.training_replicate_id, "v2 shard training_replicate_id"),
+            (self.evaluation_replicate_id, "v2 shard evaluation_replicate_id"),
+        ):
+            _name(value, label)
+        if type(self.split) is not EvaluationSplit:
+            raise ProtocolViolation("v2 shard split must be EvaluationSplit")
+        for value, expected_type, label in (
+            (
+                self.population_denominator,
+                LockedSourceDenominatorV2,
+                "population_denominator",
+            ),
+            (self.population_query_set, LockedQuerySetV2, "population_query_set"),
+            (
+                self.probe_denominator,
+                LockedSourceDenominatorV2,
+                "probe_denominator",
+            ),
+            (self.probe_query_set, LockedQuerySetV2, "probe_query_set"),
+            (self.pair_coverage, LockedPairCoverageV2, "pair_coverage"),
+        ):
+            if value is not None and type(value) is not expected_type:
+                raise ProtocolViolation(f"v2 shard {label} has a wrong type")
+
+    @property
+    def identity(self) -> tuple[str, str, EvaluationSplit, str, str]:
+        return (
+            self.world_slot,
+            self.panel_id,
+            self.split,
+            self.training_replicate_id,
+            self.evaluation_replicate_id,
+        )
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "world_slot": self.world_slot,
+            "panel_id": self.panel_id,
+            "split": self.split.value,
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+            "population_denominator": None
+            if self.population_denominator is None
+            else self.population_denominator.to_wire(),
+            "population_query_set": None
+            if self.population_query_set is None
+            else self.population_query_set.to_wire(),
+            "probe_denominator": None
+            if self.probe_denominator is None
+            else self.probe_denominator.to_wire(),
+            "probe_query_set": None
+            if self.probe_query_set is None
+            else self.probe_query_set.to_wire(),
+            "pair_coverage": None
+            if self.pair_coverage is None
+            else self.pair_coverage.to_wire(),
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "LockedShardCoverageV2":
+        body = _closed_object(
+            value,
+            frozenset(
+                {
+                    "world_slot",
+                    "panel_id",
+                    "split",
+                    "training_replicate_id",
+                    "evaluation_replicate_id",
+                    "population_denominator",
+                    "population_query_set",
+                    "probe_denominator",
+                    "probe_query_set",
+                    "pair_coverage",
+                }
+            ),
+            "v2 shard coverage",
+        )
+
+        def optional(value: object, parser: Any) -> Any:
+            return None if value is None else parser(value)
+
+        return cls(
+            world_slot=body["world_slot"],
+            panel_id=body["panel_id"],
+            split=_v2_split_from_wire(body["split"]),
+            training_replicate_id=body["training_replicate_id"],
+            evaluation_replicate_id=body["evaluation_replicate_id"],
+            population_denominator=optional(
+                body["population_denominator"],
+                LockedSourceDenominatorV2.from_wire,
+            ),
+            population_query_set=optional(
+                body["population_query_set"], LockedQuerySetV2.from_wire
+            ),
+            probe_denominator=optional(
+                body["probe_denominator"], LockedSourceDenominatorV2.from_wire
+            ),
+            probe_query_set=optional(
+                body["probe_query_set"], LockedQuerySetV2.from_wire
+            ),
+            pair_coverage=optional(
+                body["pair_coverage"], LockedPairCoverageV2.from_wire
+            ),
+        )
+
+
+def _v2_expected_outer_identities() -> frozenset[
+    tuple[str, str, EvaluationSplit, str, str]
+]:
+    return frozenset(
+        (world, panel, split, training, evaluation)
+        for world, panel in _BENCHMARK_V2_PANELS
+        for split in _BENCHMARK_V2_SPLITS
+        for training, evaluation in _BENCHMARK_V2_REPLICATE_PAIRS
+    )
+
+
+def _v2_panel_declaration(world_slot: str, panel_id: str) -> Any:
+    declaration = WORLD_REGISTRY.get(world_slot)
+    if declaration is None:
+        raise ProtocolViolation(f"v2 coverage has unknown world {world_slot!r}")
+    matches = tuple(panel for panel in declaration.panels if panel.panel_id == panel_id)
+    if len(matches) != 1:
+        raise ProtocolViolation(
+            f"v2 coverage has unknown/ambiguous panel {world_slot}/{panel_id}"
+        )
+    return matches[0]
+
+
+def _v2_population_count(
+    world_slot: str, panel_id: str, split: EvaluationSplit
+) -> int:
+    panel = _v2_panel_declaration(world_slot, panel_id)
+    source_split = "sealed_test" if split is EvaluationSplit.TEST else split.value
+    matches = tuple(
+        count for declared_split, count in panel.split_sizes
+        if declared_split.value == source_split
+    )
+    if len(matches) != 1:
+        raise ProtocolViolation(
+            f"registry does not declare one source split for {world_slot}/{panel_id}"
+        )
+    return matches[0]
+
+
+@dataclass(frozen=True, slots=True)
+class BenchmarkCoverageLockV2:
+    """Independent, authority-bound V2 coverage lock scaffold.
+
+    The constructor validates data semantics.  ``from_canonical_bytes`` is the
+    authority boundary and accepts only the exact bytes pinned by this module's
+    code-owned ``BENCHMARK_V2_COVERAGE_LOCK``.  Thus recomputing an external
+    hash after changing denominators or prior commitments cannot self-authorize
+    a replacement lock.
+
+    ``structurally_complete`` only reports populated, cross-bound metadata.
+    ``ready`` additionally requires exact equality with the code-owned bytes;
+    neither is freeze authority.  This slice deliberately exposes no builder
+    or manifest path and ``benchmark_freeze_eligible`` remains hard-coded false.
+    """
+
+    benchmark_id: str
+    benchmark_revision: str
+    registry_digest: str
+    query_template_contract_digest: str | None
+    source_denominator_contract_digest: str | None
+    pair_threshold_contract_digest: str | None
+    generator_raw_preimage_roots_digest: str | None
+    shards: tuple[LockedShardCoverageV2, ...]
+
+    def __post_init__(self) -> None:
+        live_worlds = tuple(WORLD_REGISTRY)
+        live_panels = tuple(
+            (world, panel.panel_id)
+            for world, declaration in WORLD_REGISTRY.items()
+            for panel in declaration.panels
+        )
+        if live_worlds != tuple(f"W{index:02d}" for index in range(1, 21)):
+            raise ProtocolViolation("v2 coverage requires exactly ordered W01--W20")
+        if live_panels != _BENCHMARK_V2_PANELS:
+            raise ProtocolViolation(
+                "v2 coverage requires exactly 21 code-owned registry panels"
+            )
+        if self.benchmark_id != _BENCHMARK_V2_ID or type(self.benchmark_id) is not str:
+            raise ProtocolViolation("v2 benchmark_id differs from code-owned id")
+        if (
+            self.benchmark_revision != _BENCHMARK_V2_REVISION
+            or type(self.benchmark_revision) is not str
+        ):
+            raise ProtocolViolation(
+                "v2 benchmark_revision differs from code-owned revision"
+            )
+        _v2_digest(self.registry_digest, "v2 registry_digest")
+        if self.registry_digest != registry_digest():
+            raise ProtocolViolation(
+                "v2 registry_digest differs from live code-owned registry"
+            )
+        for value, label in (
+            (
+                self.query_template_contract_digest,
+                "query_template_contract_digest",
+            ),
+            (
+                self.source_denominator_contract_digest,
+                "source_denominator_contract_digest",
+            ),
+            (
+                self.pair_threshold_contract_digest,
+                "pair_threshold_contract_digest",
+            ),
+            (
+                self.generator_raw_preimage_roots_digest,
+                "generator_raw_preimage_roots_digest",
+            ),
+        ):
+            _v2_optional_digest(value, label)
+        if type(self.shards) is not tuple or any(
+            type(item) is not LockedShardCoverageV2 for item in self.shards
+        ):
+            raise ProtocolViolation(
+                "v2 coverage shards must be a tuple of typed entries"
+            )
+        if len(self.shards) != _BENCHMARK_V2_SHARD_COUNT:
+            raise ProtocolViolation("v2 coverage must contain exactly 315 shards")
+        identities = [item.identity for item in self.shards]
+        if len(identities) != len(set(identities)):
+            raise ProtocolViolation("v2 coverage shard identities must be unique")
+        expected = _v2_expected_outer_identities()
+        actual = frozenset(identities)
+        if actual != expected:
+            missing = sorted(
+                (world, panel, split.value, training, evaluation)
+                for world, panel, split, training, evaluation in expected - actual
+            )
+            unexpected = sorted(
+                (world, panel, split.value, training, evaluation)
+                for world, panel, split, training, evaluation in actual - expected
+            )
+            raise ProtocolViolation(
+                "v2 coverage outer shape mismatch; "
+                f"missing={missing[:3]!r}, unexpected={unexpected[:3]!r}"
+            )
+        for shard in self.shards:
+            population_slot = _v2_coverage_slot_digest(
+                world_slot=shard.world_slot,
+                panel_id=shard.panel_id,
+                split=shard.split,
+                training_replicate_id=shard.training_replicate_id,
+                evaluation_replicate_id=shard.evaluation_replicate_id,
+                cohort=EvaluationCohort.POPULATION,
+            )
+            probe_slot = _v2_coverage_slot_digest(
+                world_slot=shard.world_slot,
+                panel_id=shard.panel_id,
+                split=shard.split,
+                training_replicate_id=shard.training_replicate_id,
+                evaluation_replicate_id=shard.evaluation_replicate_id,
+                cohort=EvaluationCohort.PROBE,
+            )
+            for item, expected_slot, label in (
+                (
+                    shard.population_denominator,
+                    population_slot,
+                    "population_denominator",
+                ),
+                (
+                    shard.population_query_set,
+                    population_slot,
+                    "population_query_set",
+                ),
+                (shard.probe_denominator, probe_slot, "probe_denominator"),
+                (shard.probe_query_set, probe_slot, "probe_query_set"),
+                (shard.pair_coverage, probe_slot, "pair_coverage"),
+            ):
+                if item is not None and item.coverage_slot_digest != expected_slot:
+                    raise ProtocolViolation(
+                        f"v2 {label} is cross-cohort or cross-shard spliced"
+                    )
+            for item, expected_contract, label in (
+                (
+                    shard.population_denominator,
+                    self.source_denominator_contract_digest,
+                    "population denominator",
+                ),
+                (
+                    shard.population_query_set,
+                    self.query_template_contract_digest,
+                    "population query",
+                ),
+                (
+                    shard.probe_denominator,
+                    self.source_denominator_contract_digest,
+                    "probe denominator",
+                ),
+                (
+                    shard.probe_query_set,
+                    self.query_template_contract_digest,
+                    "probe query",
+                ),
+                (
+                    shard.pair_coverage,
+                    self.pair_threshold_contract_digest,
+                    "pair threshold",
+                ),
+            ):
+                if item is None or expected_contract is None:
+                    continue
+                actual_contract = (
+                    item.denominator_contract_digest
+                    if type(item) is LockedSourceDenominatorV2
+                    else item.template_contract_digest
+                    if type(item) is LockedQuerySetV2
+                    else item.threshold_contract_digest
+                )
+                if actual_contract != expected_contract:
+                    raise ProtocolViolation(
+                        f"v2 {label} metadata contradicts its prior contract"
+                    )
+            if shard.population_denominator is not None:
+                expected_count = _v2_population_count(
+                    shard.world_slot, shard.panel_id, shard.split
+                )
+                if shard.population_denominator.source_count != expected_count:
+                    raise ProtocolViolation(
+                        "v2 population source_count contradicts registry: "
+                        f"{shard.world_slot}/{shard.panel_id}/{shard.split.value}"
+                    )
+
+    @property
+    def structurally_complete(self) -> bool:
+        """Return completeness only; this is not code-owned authority."""
+
+        if any(
+            value is None
+            for value in (
+                self.query_template_contract_digest,
+                self.source_denominator_contract_digest,
+                self.pair_threshold_contract_digest,
+                self.generator_raw_preimage_roots_digest,
+            )
+        ):
+            return False
+        for shard in self.shards:
+            if (
+                shard.population_denominator is None
+                or shard.population_query_set is None
+            ):
+                return False
+            if (
+                shard.population_denominator.denominator_contract_digest
+                != self.source_denominator_contract_digest
+                or shard.population_query_set.template_contract_digest
+                != self.query_template_contract_digest
+                or shard.population_query_set.source_cut_binding_count
+                < shard.population_denominator.source_count
+            ):
+                return False
+            panel = _v2_panel_declaration(shard.world_slot, shard.panel_id)
+            if panel.probes:
+                if (
+                    shard.probe_denominator is None
+                    or shard.probe_query_set is None
+                    or shard.pair_coverage is None
+                ):
+                    return False
+                if (
+                    shard.probe_denominator.denominator_contract_digest
+                    != self.source_denominator_contract_digest
+                    or shard.probe_query_set.template_contract_digest
+                    != self.query_template_contract_digest
+                    or shard.pair_coverage.threshold_contract_digest
+                    != self.pair_threshold_contract_digest
+                    or shard.probe_query_set.source_cut_binding_count
+                    < shard.probe_denominator.source_count
+                    or shard.pair_coverage.endpoint_count
+                    > shard.probe_denominator.source_count
+                ):
+                    return False
+            elif any(
+                value is not None
+                for value in (
+                    shard.probe_denominator,
+                    shard.probe_query_set,
+                    shard.pair_coverage,
+                )
+            ):
+                return False
+        return True
+
+    @property
+    def ready(self) -> bool:
+        if not self.structurally_complete:
+            return False
+        code_owned = globals().get("_BENCHMARK_V2_CODE_OWNED_CANONICAL_BYTES")
+        return type(code_owned) is bytes and self.canonical_bytes == code_owned
+
+    @property
+    def benchmark_freeze_eligible(self) -> bool:
+        return False
+
+    def to_wire(self) -> dict[str, Any]:
+        body = {
+            "schema_version": _BENCHMARK_V2_SCHEMA,
+            "status": "PRE-FREEZE",
+            "freeze_grade_evidence": False,
+            "benchmark_freeze_eligible": False,
+            "benchmark_id": self.benchmark_id,
+            "benchmark_revision": self.benchmark_revision,
+            "registry_digest": self.registry_digest,
+            "query_template_contract_digest": self.query_template_contract_digest,
+            "source_denominator_contract_digest": (
+                self.source_denominator_contract_digest
+            ),
+            "pair_threshold_contract_digest": self.pair_threshold_contract_digest,
+            "generator_raw_preimage_roots_digest": (
+                self.generator_raw_preimage_roots_digest
+            ),
+            "generator_raw_preimage_protocol": _GENERATOR_RAW_PREIMAGE_PROTOCOL,
+            "generator_raw_preimage_dependencies": list(
+                _GENERATOR_RAW_PREIMAGE_DEPENDENCIES
+            ),
+            "shards": [item.to_wire() for item in _canonical_sort(self.shards)],
+        }
+        validate_json_like(body)
+        return body
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        return canonical_json_bytes(self.to_wire())
+
+    @property
+    def digest(self) -> str:
+        return digest_bytes(self.canonical_bytes)
+
+    @classmethod
+    def from_canonical_bytes(cls, payload: bytes) -> "BenchmarkCoverageLockV2":
+        body = _closed_object(
+            _decode_canonical_object(payload, "v2 coverage lock"),
+            frozenset(
+                {
+                    "schema_version",
+                    "status",
+                    "freeze_grade_evidence",
+                    "benchmark_freeze_eligible",
+                    "benchmark_id",
+                    "benchmark_revision",
+                    "registry_digest",
+                    "query_template_contract_digest",
+                    "source_denominator_contract_digest",
+                    "pair_threshold_contract_digest",
+                    "generator_raw_preimage_roots_digest",
+                    "generator_raw_preimage_protocol",
+                    "generator_raw_preimage_dependencies",
+                    "shards",
+                }
+            ),
+            "v2 coverage lock",
+        )
+        fixed: dict[str, Any] = {
+            "schema_version": _BENCHMARK_V2_SCHEMA,
+            "status": "PRE-FREEZE",
+            "freeze_grade_evidence": False,
+            "benchmark_freeze_eligible": False,
+            "generator_raw_preimage_protocol": _GENERATOR_RAW_PREIMAGE_PROTOCOL,
+            "generator_raw_preimage_dependencies": list(
+                _GENERATOR_RAW_PREIMAGE_DEPENDENCIES
+            ),
+        }
+        for key, expected in fixed.items():
+            if type(body[key]) is not type(expected) or body[key] != expected:
+                raise ProtocolViolation(f"v2 coverage code-owned field differs: {key}")
+        rows = body["shards"]
+        if type(rows) is not list:
+            raise ProtocolViolation("v2 coverage shards must be a list")
+        lock = cls(
+            benchmark_id=body["benchmark_id"],
+            benchmark_revision=body["benchmark_revision"],
+            registry_digest=body["registry_digest"],
+            query_template_contract_digest=_v2_optional_digest(
+                body["query_template_contract_digest"],
+                "query_template_contract_digest",
+            ),
+            source_denominator_contract_digest=_v2_optional_digest(
+                body["source_denominator_contract_digest"],
+                "source_denominator_contract_digest",
+            ),
+            pair_threshold_contract_digest=_v2_optional_digest(
+                body["pair_threshold_contract_digest"],
+                "pair_threshold_contract_digest",
+            ),
+            generator_raw_preimage_roots_digest=_v2_optional_digest(
+                body["generator_raw_preimage_roots_digest"],
+                "generator_raw_preimage_roots_digest",
+            ),
+            shards=tuple(LockedShardCoverageV2.from_wire(row) for row in rows),
+        )
+        if lock.canonical_bytes != payload:
+            raise ProtocolViolation(
+                "v2 coverage lock list ordering is not canonical round-trip bytes"
+            )
+        code_owned = globals().get("_BENCHMARK_V2_CODE_OWNED_CANONICAL_BYTES")
+        if type(code_owned) is not bytes or payload != code_owned:
+            raise ProtocolViolation(
+                "payload is not the code-owned v2 coverage lock; caller re-signing "
+                "does not establish authority"
+            )
+        return lock
+
+
 @dataclass(frozen=True, slots=True)
 class FrozenFamilyLineage:
     source_path: Path
@@ -613,6 +1538,39 @@ def _unfrozen_benchmark_v1_lock() -> BenchmarkCoverageLock:
 # per-cell raw-ledger roots are generated independently and their exact digests
 # replace the ``None`` values in a reviewed code change.
 BENCHMARK_V1_COVERAGE_LOCK = _unfrozen_benchmark_v1_lock()
+
+
+def _unfrozen_benchmark_v2_lock() -> BenchmarkCoverageLockV2:
+    shards = tuple(
+        LockedShardCoverageV2(
+            world_slot=world,
+            panel_id=panel,
+            split=split,
+            training_replicate_id=training,
+            evaluation_replicate_id=evaluation,
+        )
+        for world, panel in _BENCHMARK_V2_PANELS
+        for split in _BENCHMARK_V2_SPLITS
+        for training, evaluation in _BENCHMARK_V2_REPLICATE_PAIRS
+    )
+    return BenchmarkCoverageLockV2(
+        benchmark_id=_BENCHMARK_V2_ID,
+        benchmark_revision=_BENCHMARK_V2_REVISION,
+        registry_digest=registry_digest(),
+        query_template_contract_digest=None,
+        source_denominator_contract_digest=None,
+        pair_threshold_contract_digest=None,
+        generator_raw_preimage_roots_digest=None,
+        shards=_canonical_sort(shards),
+    )
+
+
+# This is a new, standalone lock contract.  It is deliberately not consulted by
+# the legacy expected-cell compiler and cannot publish a manifest.  A future
+# reviewed change must replace the four absent prior commitments and every
+# per-shard denominator before ``ready`` can become true.
+BENCHMARK_V2_COVERAGE_LOCK = _unfrozen_benchmark_v2_lock()
+_BENCHMARK_V2_CODE_OWNED_CANONICAL_BYTES = BENCHMARK_V2_COVERAGE_LOCK.canonical_bytes
 
 
 @dataclass(frozen=True, slots=True)
@@ -1831,7 +2789,9 @@ def audit_raw_exact_join(
 
 __all__ = [
     "BENCHMARK_V1_COVERAGE_LOCK",
+    "BENCHMARK_V2_COVERAGE_LOCK",
     "BenchmarkCoverageLock",
+    "BenchmarkCoverageLockV2",
     "CellMaterializationBlocker",
     "CellMaterializationStatus",
     "ExpectedCellsBuildResult",
@@ -1840,7 +2800,11 @@ __all__ = [
     "FrozenCorpusShard",
     "FrozenFamilyLineage",
     "LockedQueryTemplate",
+    "LockedQuerySetV2",
+    "LockedPairCoverageV2",
     "LockedShardCoverage",
+    "LockedShardCoverageV2",
+    "LockedSourceDenominatorV2",
     "PairCellContract",
     "QueryCellContract",
     "RawJoinAudit",

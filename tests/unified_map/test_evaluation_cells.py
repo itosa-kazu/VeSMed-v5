@@ -8,16 +8,26 @@ import pytest
 
 import prototype.unified_map.evaluation_cells as cells_module
 from prototype.unified_map.candidate_protocol import ResultStatus
-from prototype.unified_map.canonical import canonical_json_bytes, digest_bytes, digest_json
+from prototype.unified_map.canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+    digest_json,
+)
 from prototype.unified_map.evaluation_cells import (
     BenchmarkCoverageLock,
+    BenchmarkCoverageLockV2,
     CellMaterializationStatus,
     ExpectedCellsScopeContract,
     FrozenAuthorityRoots,
     FrozenCorpusShard,
     FrozenFamilyLineage,
+    LockedPairCoverageV2,
     LockedQueryTemplate,
+    LockedQuerySetV2,
     LockedShardCoverage,
+    LockedShardCoverageV2,
+    LockedSourceDenominatorV2,
     PairCellContract,
     QueryCellContract,
     W19SafetyContract,
@@ -48,6 +58,7 @@ SCOPE = digest_json({"scope": "expected-cells-local-scaffold"})
 EMPTY = digest_json({})
 THRESHOLDS = PairThresholds(0.01, 0.4, 0.4, 0.01, 10.0)
 DEFAULT_CODE_LOCK = cells_module.BENCHMARK_V1_COVERAGE_LOCK
+DEFAULT_CODE_LOCK_V2 = cells_module.BENCHMARK_V2_COVERAGE_LOCK
 
 
 @pytest.fixture(autouse=True)
@@ -585,6 +596,477 @@ def _unavailable_authority(tmp_path: Path) -> tuple[FrozenFamilyLineage, FrozenA
         missing / "scope.json", missing / "raw.json", EMPTY, EMPTY
     )
     return lineage, roots
+
+
+def _v2_digest(label: str, shard: LockedShardCoverageV2 | None = None) -> str:
+    identity = None if shard is None else [
+        shard.world_slot,
+        shard.panel_id,
+        shard.split.value,
+        shard.training_replicate_id,
+        shard.evaluation_replicate_id,
+    ]
+    return digest_json({"v2-fixture": label, "shard": identity})
+
+
+def _complete_v2_lock() -> BenchmarkCoverageLockV2:
+    query_contract = _v2_digest("query-template-contract")
+    denominator_contract = _v2_digest("source-denominator-contract")
+    threshold_contract = _v2_digest("pair-threshold-contract")
+    shards: list[LockedShardCoverageV2] = []
+    for shard in DEFAULT_CODE_LOCK_V2.shards:
+        population_slot = cells_module._v2_coverage_slot_digest(
+            world_slot=shard.world_slot,
+            panel_id=shard.panel_id,
+            split=shard.split,
+            training_replicate_id=shard.training_replicate_id,
+            evaluation_replicate_id=shard.evaluation_replicate_id,
+            cohort=EvaluationCohort.POPULATION,
+        )
+        probe_slot = cells_module._v2_coverage_slot_digest(
+            world_slot=shard.world_slot,
+            panel_id=shard.panel_id,
+            split=shard.split,
+            training_replicate_id=shard.training_replicate_id,
+            evaluation_replicate_id=shard.evaluation_replicate_id,
+            cohort=EvaluationCohort.PROBE,
+        )
+        population = LockedSourceDenominatorV2(
+            coverage_slot_digest=population_slot,
+            denominator_contract_digest=denominator_contract,
+            source_count=_population_count(
+                shard.world_slot, shard.panel_id, shard.split
+            ),
+            source_record_ids_root=_v2_digest("population-source-ids", shard),
+            materialization_receipts_root=_v2_digest(
+                "population-materialization-receipts", shard
+            ),
+        )
+        population_queries = LockedQuerySetV2(
+            coverage_slot_digest=population_slot,
+            template_contract_digest=query_contract,
+            query_set_ids=(
+                (
+                    f"population:{shard.world_slot}:{shard.panel_id}:"
+                    f"{shard.split.value}:{shard.training_replicate_id}:"
+                    f"{shard.evaluation_replicate_id}"
+                ),
+            ),
+            template_count=1,
+            query_templates_root=_v2_digest("population-query-templates", shard),
+            source_cut_binding_count=population.source_count,
+            source_cut_bindings_root=_v2_digest(
+                "population-source-cut-bindings", shard
+            ),
+        )
+        probe = LockedSourceDenominatorV2(
+            coverage_slot_digest=probe_slot,
+            denominator_contract_digest=denominator_contract,
+            source_count=2,
+            source_record_ids_root=_v2_digest("probe-source-ids", shard),
+            materialization_receipts_root=_v2_digest(
+                "probe-materialization-receipts", shard
+            ),
+        )
+        probe_queries = LockedQuerySetV2(
+            coverage_slot_digest=probe_slot,
+            template_contract_digest=query_contract,
+            query_set_ids=(
+                (
+                    f"probe:{shard.world_slot}:{shard.panel_id}:"
+                    f"{shard.split.value}:{shard.training_replicate_id}:"
+                    f"{shard.evaluation_replicate_id}"
+                ),
+            ),
+            template_count=1,
+            query_templates_root=_v2_digest("probe-query-templates", shard),
+            source_cut_binding_count=probe.source_count,
+            source_cut_bindings_root=_v2_digest("probe-source-cut-bindings", shard),
+        )
+        pairs = LockedPairCoverageV2(
+            coverage_slot_digest=probe_slot,
+            threshold_contract_digest=threshold_contract,
+            pair_count=1,
+            endpoint_count=2,
+            pair_endpoint_bindings_root=_v2_digest("pair-endpoint-bindings", shard),
+            pair_threshold_bindings_root=_v2_digest(
+                "pair-threshold-bindings", shard
+            ),
+            threshold_registry_entry_ids=("behavior-pair-default",),
+        )
+        shards.append(
+            replace(
+                shard,
+                population_denominator=population,
+                population_query_set=population_queries,
+                probe_denominator=probe,
+                probe_query_set=probe_queries,
+                pair_coverage=pairs,
+            )
+        )
+    return replace(
+        DEFAULT_CODE_LOCK_V2,
+        query_template_contract_digest=query_contract,
+        source_denominator_contract_digest=denominator_contract,
+        pair_threshold_contract_digest=threshold_contract,
+        generator_raw_preimage_roots_digest=_v2_digest(
+            "generator-raw-preimage-roots"
+        ),
+        shards=tuple(shards),
+    )
+
+
+def test_builtin_v2_lock_is_closed_canonical_and_stays_pre_freeze() -> None:
+    lock = DEFAULT_CODE_LOCK_V2
+    assert not lock.ready
+    assert not lock.benchmark_freeze_eligible
+    assert len(lock.shards) == 20 * 3 * 5 + 3 * 5
+    assert {
+        item.panel_id for item in lock.shards if item.world_slot == "W15"
+    } == {"W15A-randomized-identifiable", "W15B-observational-nonidentified"}
+
+    payload = lock.canonical_bytes
+    parsed = BenchmarkCoverageLockV2.from_canonical_bytes(payload)
+    assert parsed == lock
+    assert parsed.canonical_bytes == payload
+    assert parsed.digest == digest_bytes(payload)
+
+    wire = parsed.to_wire()
+    assert wire["status"] == "PRE-FREEZE"
+    assert wire["freeze_grade_evidence"] is False
+    assert wire["benchmark_freeze_eligible"] is False
+    for field in (
+        "query_template_contract_digest",
+        "source_denominator_contract_digest",
+        "pair_threshold_contract_digest",
+        "generator_raw_preimage_roots_digest",
+    ):
+        assert wire[field] is None
+    dependencies = set(wire["generator_raw_preimage_dependencies"])
+    assert dependencies
+    assert not dependencies & {
+        "expected_cells",
+        "expected_cell_receipt_root",
+        "coverage_lock_root",
+        "freeze_manifest",
+        "run_bundle",
+    }
+
+    pretty = json.dumps(wire, indent=2, ensure_ascii=False).encode("utf-8")
+    with pytest.raises(ProtocolViolation, match="canonical JSON"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(pretty)
+
+    extra = dict(wire)
+    extra["caller_claimed_ready"] = True
+    with pytest.raises(ProtocolViolation, match="closed object"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(extra))
+
+    missing = dict(wire)
+    missing.pop("pair_threshold_contract_digest")
+    with pytest.raises(ProtocolViolation, match="closed object"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(missing))
+
+    reordered = dict(wire)
+    reordered["shards"] = list(reversed(reordered["shards"]))
+    with pytest.raises(ProtocolViolation, match="canonical round-trip"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(reordered))
+
+
+def test_v2_lock_enforces_exact_zipped_315_shard_outer_shape() -> None:
+    lock = DEFAULT_CODE_LOCK_V2
+    with pytest.raises(ProtocolViolation, match="exactly 315"):
+        replace(lock, shards=lock.shards[:-1])
+
+    duplicate = (*lock.shards[:-1], lock.shards[0])
+    with pytest.raises(ProtocolViolation, match="identities must be unique"):
+        replace(lock, shards=duplicate)
+
+    mismatched = replace(lock.shards[0], evaluation_replicate_id="eval-02")
+    with pytest.raises(ProtocolViolation, match="outer shape mismatch"):
+        replace(lock, shards=(mismatched, *lock.shards[1:]))
+
+    w15_index = next(
+        index
+        for index, shard in enumerate(lock.shards)
+        if shard.world_slot == "W15"
+        and shard.panel_id == "W15A-randomized-identifiable"
+    )
+    merged_w15 = replace(lock.shards[w15_index], panel_id="primary")
+    merged_shards = list(lock.shards)
+    merged_shards[w15_index] = merged_w15
+    with pytest.raises(ProtocolViolation, match="outer shape mismatch"):
+        replace(lock, shards=tuple(merged_shards))
+
+    without_validation = tuple(
+        shard for shard in lock.shards if shard.split is not EvaluationSplit.VALIDATION
+    )
+    with pytest.raises(ProtocolViolation, match="exactly 315"):
+        replace(lock, shards=without_validation)
+
+    cross_product = tuple(
+        LockedShardCoverageV2(
+            world_slot=world,
+            panel_id=panel,
+            split=split,
+            training_replicate_id=f"train-{training:02d}",
+            evaluation_replicate_id=f"eval-{evaluation:02d}",
+        )
+        for world, declaration in WORLD_REGISTRY.items()
+        for panel in (item.panel_id for item in declaration.panels)
+        for split in (
+            EvaluationSplit.TRAIN,
+            EvaluationSplit.VALIDATION,
+            EvaluationSplit.TEST,
+        )
+        for training in range(1, 6)
+        for evaluation in range(1, 6)
+    )
+    assert len(cross_product) == 21 * 3 * 25
+    with pytest.raises(ProtocolViolation, match="exactly 315"):
+        replace(lock, shards=cross_product)
+
+
+def test_v2_ready_requires_prior_commits_and_all_typed_denominators() -> None:
+    complete = _complete_v2_lock()
+    assert complete.structurally_complete
+    assert not complete.ready
+    assert not complete.benchmark_freeze_eligible
+
+    for field in (
+        "query_template_contract_digest",
+        "source_denominator_contract_digest",
+        "pair_threshold_contract_digest",
+        "generator_raw_preimage_roots_digest",
+    ):
+        assert not replace(complete, **{field: None}).structurally_complete
+
+    first = complete.shards[0]
+    for field in (
+        "population_denominator",
+        "population_query_set",
+        "probe_denominator",
+        "probe_query_set",
+        "pair_coverage",
+    ):
+        incomplete_shard = replace(first, **{field: None})
+        assert not replace(
+            complete, shards=(incomplete_shard, *complete.shards[1:])
+        ).structurally_complete
+
+    wrong_population_count = replace(
+        first.population_denominator,
+        source_count=first.population_denominator.source_count + 1,
+    )
+    with pytest.raises(ProtocolViolation, match="population source_count"):
+        replace(
+            complete,
+            shards=(
+                replace(first, population_denominator=wrong_population_count),
+                *complete.shards[1:],
+            ),
+        )
+
+    with pytest.raises(ProtocolViolation, match="twice pair_count"):
+        replace(first.pair_coverage, endpoint_count=4)
+    with pytest.raises(ProtocolViolation, match="non-empty tuple"):
+        replace(first.pair_coverage, threshold_registry_entry_ids=())
+    with pytest.raises(ProtocolViolation, match="template_count"):
+        replace(first.population_query_set, template_count=0)
+    with pytest.raises(ProtocolViolation, match="source_count"):
+        replace(first.population_denominator, source_count=0)
+    with pytest.raises(ProtocolViolation, match="query_set_ids must be unique"):
+        replace(
+            first.population_query_set,
+            query_set_ids=("duplicate", "duplicate"),
+        )
+    with pytest.raises(ProtocolViolation, match="cover every non-empty query set"):
+        replace(
+            first.population_query_set,
+            query_set_ids=("set-a", "set-b"),
+            template_count=1,
+        )
+    with pytest.raises(ProtocolViolation, match="reference every query set"):
+        replace(
+            first.population_query_set,
+            query_set_ids=("set-a", "set-b"),
+            template_count=2,
+            source_cut_binding_count=1,
+        )
+    with pytest.raises(
+        ProtocolViolation, match="leave threshold registry entries unused"
+    ):
+        replace(
+            first.pair_coverage,
+            threshold_registry_entry_ids=("threshold-a", "threshold-b"),
+        )
+
+    multiple_query_sets = replace(
+        first.population_query_set,
+        query_set_ids=(*first.population_query_set.query_set_ids, "stage-2-role-b"),
+        template_count=2,
+        query_templates_root=_v2_digest("multiple-query-template-sets", first),
+        source_cut_bindings_root=_v2_digest(
+            "multiple-query-set-source-cut-bindings", first
+        ),
+    )
+    multi_lock = replace(
+        complete,
+        shards=(
+            replace(first, population_query_set=multiple_query_sets),
+            *complete.shards[1:],
+        ),
+    )
+    assert multi_lock.structurally_complete
+    assert not multi_lock.ready
+
+    second = complete.shards[1]
+    for field, foreign in (
+        ("population_denominator", second.population_denominator),
+        ("population_query_set", second.population_query_set),
+        ("probe_denominator", second.probe_denominator),
+        ("probe_query_set", second.probe_query_set),
+        ("pair_coverage", second.pair_coverage),
+    ):
+        with pytest.raises(ProtocolViolation, match="cross-cohort or cross-shard"):
+            replace(
+                complete,
+                shards=(replace(first, **{field: foreign}), *complete.shards[1:]),
+            )
+
+    with pytest.raises(ProtocolViolation, match="cross-cohort or cross-shard"):
+        replace(
+            complete,
+            shards=(
+                replace(
+                    first,
+                    population_query_set=first.probe_query_set,
+                ),
+                *complete.shards[1:],
+            ),
+        )
+
+    contract_drift_cases = (
+        (
+            "population_denominator",
+            replace(
+                first.population_denominator,
+                denominator_contract_digest=_v2_digest("foreign-denominator"),
+            ),
+        ),
+        (
+            "population_query_set",
+            replace(
+                first.population_query_set,
+                template_contract_digest=_v2_digest("foreign-templates"),
+            ),
+        ),
+        (
+            "pair_coverage",
+            replace(
+                first.pair_coverage,
+                threshold_contract_digest=_v2_digest("foreign-thresholds"),
+            ),
+        ),
+    )
+    for field, drifted in contract_drift_cases:
+        with pytest.raises(ProtocolViolation, match="contradicts its prior contract"):
+            replace(
+                complete,
+                shards=(replace(first, **{field: drifted}), *complete.shards[1:]),
+            )
+
+    # Probe rows need not all be pair endpoints (W18 also has singleton OOD
+    # probes), so pair coverage is an exact subset of the probe denominator.
+    w18_index = next(
+        index
+        for index, shard in enumerate(complete.shards)
+        if shard.world_slot == "W18"
+    )
+    w18 = complete.shards[w18_index]
+    w18_with_singletons = replace(
+        w18,
+        probe_denominator=replace(w18.probe_denominator, source_count=4),
+        probe_query_set=replace(
+            w18.probe_query_set,
+            source_cut_binding_count=4,
+            source_cut_bindings_root=_v2_digest(
+                "w18-probe-source-cut-bindings-with-singletons", w18
+            ),
+        ),
+    )
+    singleton_shards = list(complete.shards)
+    singleton_shards[w18_index] = w18_with_singletons
+    singleton_lock = replace(complete, shards=tuple(singleton_shards))
+    assert singleton_lock.structurally_complete
+    assert not singleton_lock.ready
+
+    too_few_probe_sources = replace(
+        first,
+        probe_denominator=replace(first.probe_denominator, source_count=1),
+    )
+    assert not replace(
+        complete, shards=(too_few_probe_sources, *complete.shards[1:])
+    ).structurally_complete
+
+
+def test_v2_parser_rejects_caller_self_signing_and_resigning() -> None:
+    complete = _complete_v2_lock()
+    assert complete.structurally_complete
+    assert not complete.ready
+    payload = complete.canonical_bytes
+    external_resigned_digest = digest_bytes(payload)
+    assert external_resigned_digest == complete.digest
+
+    with pytest.raises(ProtocolViolation, match="code-owned v2 coverage lock"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(payload)
+
+    forged = DEFAULT_CODE_LOCK_V2.to_wire()
+    forged["generator_raw_preimage_dependencies"] = [
+        *forged["generator_raw_preimage_dependencies"],
+        "expected_cell_receipt_root",
+    ]
+    with pytest.raises(ProtocolViolation, match="code-owned field"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(forged))
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda wire: wire.__setitem__("query_template_contract_digest", 7),
+            "query_template_contract_digest",
+        ),
+        (
+            lambda wire: wire.__setitem__("freeze_grade_evidence", 0),
+            "code-owned field",
+        ),
+        (
+            lambda wire: wire["shards"][0].__setitem__("split", True),
+            "split",
+        ),
+        (
+            lambda wire: wire.__setitem__("shards", {}),
+            "shards must be a list",
+        ),
+    ],
+)
+def test_v2_parser_rejects_json_type_drift(mutate, message: str) -> None:
+    wire = DEFAULT_CODE_LOCK_V2.to_wire()
+    mutate(wire)
+    with pytest.raises(ProtocolViolation, match=message):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(wire))
+
+
+def test_v2_parser_rejects_nested_count_type_drift_before_pin_check() -> None:
+    wire = _complete_v2_lock().to_wire()
+    wire["shards"][0]["population_denominator"]["source_count"] = True
+    with pytest.raises(ProtocolViolation, match="source_count"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(wire))
+
+    wire = _complete_v2_lock().to_wire()
+    wire["shards"][0]["population_query_set"]["template_count"] = 1.0
+    with pytest.raises(ProtocolViolation, match="template_count"):
+        BenchmarkCoverageLockV2.from_canonical_bytes(canonical_json_bytes(wire))
 
 
 def test_builtin_v1_lock_is_unready_and_single_w01_cannot_claim_complete(
