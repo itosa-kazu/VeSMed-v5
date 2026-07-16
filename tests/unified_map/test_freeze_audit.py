@@ -296,6 +296,45 @@ def test_raw_artifact_digest_is_recomputed_not_trusted(tmp_path: Path) -> None:
     assert "byte binding mismatch" in result.blockers[0].detail
 
 
+def test_raw_artifacts_are_parsed_from_the_single_verified_byte_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    report = evaluate_mutation_matrix(())
+    contract, report_path = _mutation_fixture(tmp_path, report.canonical_bytes())
+    source_path = "results/unified_map/mutation-run/source-witness.bin"
+    _write(tmp_path, source_path, b"source witness bytes\n")
+    _persist(
+        tmp_path,
+        contract,
+        _axis_wire(tmp_path, contract, (report_path, source_path)),
+    )
+
+    watched = {
+        (tmp_path / Path(report_path)).resolve(),
+        (tmp_path / Path(source_path)).resolve(),
+    }
+    read_counts = {path: 0 for path in watched}
+    original_read_bytes = Path.read_bytes
+
+    def changing_second_read(path: Path) -> bytes:
+        resolved = path.resolve()
+        if resolved in read_counts:
+            read_counts[resolved] += 1
+            if read_counts[resolved] > 1:
+                return b"different bytes supplied by a second path read\n"
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", changing_second_read)
+    result = _collect(tmp_path, contract)
+
+    assert read_counts == {path: 1 for path in watched}
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert result.blockers
+    assert all(blocker.code == "predicate-incomplete" for blocker in result.blockers)
+    assert any("target-mutant-count" in blocker.detail for blocker in result.blockers)
+
+
 def test_missing_required_measurement_is_incomplete_not_pass(tmp_path: Path) -> None:
     contract, raw_path = _generic_fixture(tmp_path)
     required = tuple(item.check_id for item in contract.requirements)

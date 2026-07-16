@@ -444,13 +444,22 @@ def _parse_time(value: object, label: str) -> datetime:
     return parsed
 
 
+@dataclass(frozen=True, slots=True)
+class _VerifiedFile:
+    """One immutable byte snapshot bound to its declared path and digest."""
+
+    path: str
+    digest: str
+    payload: bytes
+
+
 def _verify_file_row(
     repo_root: Path,
     row: Any,
     *,
     allowed_prefixes: tuple[str, ...],
     label: str,
-) -> tuple[str, str]:
+) -> _VerifiedFile:
     item = _closed_object(row, frozenset({"path", "bytes", "sha256"}), label)
     relative = _relative_path(
         item["path"],
@@ -466,7 +475,7 @@ def _verify_file_row(
     payload = path.read_bytes()
     if len(payload) != item["bytes"] or digest_bytes(payload) != declared_digest:
         raise ProtocolViolation(f"{label} byte binding mismatch: {relative}")
-    return relative, declared_digest
+    return _VerifiedFile(path=relative, digest=declared_digest, payload=payload)
 
 
 def _exact_string_list(value: Any, label: str) -> tuple[str, ...]:
@@ -808,7 +817,7 @@ def collect_axis_evidence(
                 row,
                 allowed_prefixes=(_PRODUCER_PREFIX,),
                 label=f"producer_sources[{index}]",
-            )[0]
+            ).path
             for index, row in enumerate(producer_rows)
         )
         if verified_producers != contract.producer_source_paths:
@@ -817,7 +826,7 @@ def collect_axis_evidence(
         raw_rows = top["raw_artifacts"]
         if type(raw_rows) is not list or not raw_rows:
             raise ProtocolViolation("raw_artifacts must be a non-empty list")
-        raw_pairs = tuple(
+        verified_raw_files = tuple(
             _verify_file_row(
                 repo_root,
                 row,
@@ -826,19 +835,18 @@ def collect_axis_evidence(
             )
             for index, row in enumerate(raw_rows)
         )
-        raw_paths = tuple(item[0] for item in raw_pairs)
+        raw_paths = tuple(item.path for item in verified_raw_files)
         if raw_paths != tuple(sorted(raw_paths, key=lambda item: item.encode("utf-8"))):
             raise ProtocolViolation("raw_artifacts must be canonically path-sorted")
         if len(raw_paths) != len(set(raw_paths)):
             raise ProtocolViolation("raw_artifacts contain duplicate paths")
         if contract.artifact_path in raw_paths:
             raise ProtocolViolation("axis artifact cannot witness itself")
-        raw_digests = frozenset(item[1] for item in raw_pairs)
-        if len(raw_digests) != len(raw_pairs):
+        raw_digests = frozenset(item.digest for item in verified_raw_files)
+        if len(raw_digests) != len(verified_raw_files):
             raise ProtocolViolation("raw_artifacts contain duplicate byte digests")
         raw_payloads = {
-            artifact_digest: _resolved_file(repo_root, relative).read_bytes()
-            for relative, artifact_digest in raw_pairs
+            item.digest: item.payload for item in verified_raw_files
         }
 
         execution = _closed_object(
