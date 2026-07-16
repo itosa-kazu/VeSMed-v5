@@ -11,6 +11,10 @@
 - 已建立与 K0 字节/导入隔离的研究轨；
 - 已形式化共享状态、更新、干预、碰撞、虚假拆分和信息归责；
 - W01–W20 已有 PRE-FREEZE 语义规格；
+- 已建立 13-root typed corpus authority graph 和 live portable mutation
+  evidence，但两者仍是 PRE-FREEZE scaffold；E002/E003、authority-bound
+  expected cells、raw evidence custody、完整 mutation coverage 与 typed
+  extractor 阻断项均未清零；
 - 候选实现 `0/12`，重大实验 `0/30`，完整 W01–W20 候选 `0/3`；
 - 没有 frozen hidden test、独立复现或 post-freeze red-team 结果。
 

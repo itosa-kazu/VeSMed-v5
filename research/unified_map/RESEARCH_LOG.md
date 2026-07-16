@@ -417,3 +417,86 @@ public-versus-judge-only stratum separation are still absent.
 
 `KEEP`: scoring is now invariant to private split swaps in W03/W18/W19, but
 benchmark v1 remains `PRE-FREEZE` and candidate implementation stays closed.
+
+## 2026-07-16 — Pre-split strata and typed corpus authority graph
+
+### Outcome
+
+- Rejected the uncommitted `event.payload.risk_score` shortcut because the live
+  W01--W20 generators do not emit that field. Row-local `behavior_pair` labels
+  remain development proxies; benchmark authority now comes from pre-split
+  family topology and typed public/judge stratum rules.
+- Bound family-atomic assignments, materialization receipts, public/judge
+  strata and candidate/judge canonical JSONL joins through exactly 13 typed
+  authority roots.
+- Bound the same authority audit digest into the `world_generators`,
+  `projection_boundary`, `split_isolation` and `expected_cells` freeze-axis
+  contracts. Digest-shaped authority smuggling through public `event_uid`
+  values is rejected.
+
+### Verification
+
+```text
+f348535: family/strata verification 241 passed
+aebab79: corpus/freeze main verification 40 passed
+aebab79: independent targeted verification 13 passed + 4 passed
+```
+
+### Evidence boundary
+
+This is structural `PRE_FREEZE_SCAFFOLD` evidence only.
+`freeze_grade_evidence=false`,
+`live_pre_split_materialization_complete=false`, and the unconditional
+`UCM-E003-HARNESS_INCOMPLETE` blocker for independent custody and atomic
+publication remain fixed. The four authority-bound freeze axes still lack
+collector-owned typed extractors. `evaluation_cells.py` still consumes the
+legacy `ucm-pre-split-family-*/1` lineage and row-reported strata; exact
+authority-bound W09/W10/W18/W19 query/oracle/request/response receipts do not
+yet exist.
+
+### Decision
+
+`KEEP AS PRE-FREEZE AUTHORITY SCAFFOLD`: no benchmark freeze, candidate gate,
+architecture experiment or decision gate is opened.
+
+## 2026-07-16 — Portable execution boundary and live mutation-source binding
+
+### Outcome
+
+- Commit `fde49cd` bound exact candidate/model/harness/runtime inventories,
+  isolated bytecode caches, a trusted `PREPARED` handshake, one execution
+  deadline plus declared cleanup grace, and a closed candidate-versus-harness
+  failure taxonomy.
+- Commit `57d3f6e` bound mutation execution to exact live source/runtime
+  identity before and after each control, made transient tamper/restore
+  attempts fail closed, and retained typed crash/incomplete handling.
+- The executable partial matrix now has real evidence for 14/26 malicious
+  controls, 3/4 specificity controls and 10/33 decisive gates.
+
+### Verification
+
+```text
+fde49cd: candidate/compliance/shared verification 137 passed
+fde49cd: clean detached compatibility replay 8 passed
+57d3f6e: mutation runner/matrix final suite 262 passed in 2304.23s
+57d3f6e: candidate/compliance/shared regression 138 passed in 556.70s
+57d3f6e: independent focused audit 31 passed; P0/P1 findings 0
+```
+
+### Evidence boundary
+
+Portable execution is explicitly not freeze-grade isolation.
+`HarnessTamperControl` demonstrates a live same-process Python audit-hook
+bypass, so `UCM-E002-ISOLATION_INCOMPLETE` remains fixed; native-extension and
+Windows-kernel escape are also outside this assurance boundary. The mutation
+matrix remains `HARNESS_INCOMPLETE`: 12 mutants, one specificity control and
+23 gates still lack decisive coverage. The runner returns only
+`tuple[MutationObservation, ...]`; exact pre/post source witnesses, raw report
+transcripts and decisive-record preimages are reduced to digests and are not
+atomically persisted by `run_store.py`. Raw custody and freeze-audit replay
+therefore remain `UCM-E003-HARNESS_INCOMPLETE`.
+
+### Decision
+
+`KEEP AS PRE-FREEZE HARNESS`: benchmark v1 remains unfrozen; UCM candidate
+architectures remain 0 and registered experiments remain 0.

@@ -95,7 +95,13 @@ results/unified_map/    append-only run bundle
 
 ### Phase 2 — W01–W20 与 benchmark v1
 
-状态：**进行中。** 正式 PRE-FREEZE 语义规格已覆盖 W01–W20；生成器、独立 oracle、expected cells、mutation kill matrix 和 freeze manifest 尚未齐全。
+状态：**进行中。** 正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
+family/strata/corpus 的结构 authority 与 portable compliance/mutation
+harness 已落地，但仍只是 scaffold。authority-bound exact expected-cell
+receipts、mutation raw-preimage custody 与 atomic run-store publication、
+26/26 mutants、4/4 specificity controls、C01–C33 decisive coverage、16/16
+collector-owned extractors、external custody 和 clean freeze replay 尚未齐全。
+`UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 均保持有效。
 
 交付：
 
@@ -222,11 +228,19 @@ results/unified_map/    append-only run bundle
 
 ## 9. 当前下一批动作
 
-1. 把 W01–W20 语义逐个落成生成器、production oracle 与 source-distinct reference check；
-2. 完成 public/train-target/judge-private 物理投影、family-atomic split 和 expected cells；
-3. 扩全统一 metrics、raw-to-summary rebuilder 与 append-only result schema；
-4. 让 C01–C33 合规门杀死预注册恶意 controls，并保留 specificity controls；
-5. 完成 clean-checkout replay、依赖/环境锁和 freeze manifest drift 测试；
-6. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才打开 F01–F12 与四类正式 baseline 的实现。
+1. 让 mutation runner 返回 typed raw-evidence bundle，并由 `run_store.py`
+   原子保存同一次执行的 pre/post source witness、raw report、error/decision
+   transcript 和 decisive-record preimage；freeze audit 只读已保存 bytes，
+   不重新执行。
+2. 建立 authority-bound expected-cell receipts，把 world/split/replicate/
+   family/cut/horizon/policy/pair 与 query/oracle/request/response exact
+   preimages 绑定；优先闭合 W09/W10/W18/W19，并淘汰
+   `evaluation_cells.py` 的 legacy family-v1/self-reported strata authority。
+3. 扩至 26/26 malicious mutants、4/4 specificity controls 和 C01–C33 全门
+   decisive evidence；crash、timeout 或错误 gate 不得算 kill。
+4. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 clean
+   checkout replay、external custody 与一次性 atomic publication。
+5. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才打开
+   F01–F12、四类正式 baseline 和候选架构实现。
 
 候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。
