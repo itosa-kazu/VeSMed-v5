@@ -37,6 +37,14 @@ from prototype.unified_map.run_store import (
     results_root_digest,
     verify_run_bundle,
 )
+from prototype.unified_map.schema import (
+    ActionPlan,
+    DiagnosisQuery,
+    PlanKind,
+    RolloutQuery,
+    VisibleDelta,
+    VisibleHistory,
+)
 
 
 ZERO = "sha256:" + "0" * 64
@@ -73,15 +81,28 @@ TEST_MUTATION_RUNTIME_IMPORT_CACHE = {"entries": []}
 
 
 def _mutation_bundle(run_id: str, *, base_seed: int = 100) -> MutationEvidenceBundle:
+    history = VisibleHistory(
+        events=(),
+        as_of_available_at=0,
+        catalog_digest=digest_bytes(b"run-store-mutation-catalog"),
+    )
+    diagnosis_query = DiagnosisQuery(("fixture.negative", "fixture.positive"))
+    rollout_query = RolloutQuery(
+        horizon=1,
+        plan=ActionPlan(PlanKind.NO_NEW_ACTION),
+        requested_observables=("fixture.signal",),
+        utility_digest=digest_bytes(b"run-store-mutation-utility"),
+    )
+    delta = VisibleDelta(advance_to=1)
     return MutationEvidenceBuilder(
         run_id=run_id,
         runner_protocol=TEST_MUTATION_RUNNER_PROTOCOL,
         base_seed=base_seed,
         input_preimage={
-            "history": {"events": []},
-            "diagnosis_query": {"labels": []},
-            "rollout_query": {"horizon": 0},
-            "delta": None,
+            "history": history.to_wire(),
+            "diagnosis_query": diagnosis_query.to_wire(),
+            "rollout_query": rollout_query.to_wire(),
+            "delta": delta.to_wire(),
         },
         execution_context={
             "benchmark_id": MUTATION_BENCHMARK_ID,

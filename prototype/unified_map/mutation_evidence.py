@@ -7,7 +7,7 @@ canonicalizes those preimages, stores them in a content-addressed blob table,
 and emits a closed bundle whose mutation matrix is recomputed from the typed
 observations.
 
-Protocol version 1 is intentionally PRE-FREEZE.  Portable Python isolation and
+Protocol version 2 is intentionally PRE-FREEZE.  Portable Python isolation and
 external evidence custody are not complete, so every bundle carries fixed
 ``UCM-E002`` and ``UCM-E003`` blockers.  Those fields are code-owned and cannot
 be cleared by a caller.
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import base64
 import json
+import math
 from dataclasses import dataclass
 from typing import Any
 
@@ -27,6 +28,18 @@ from .canonical import (
     digest_json,
     validate_json_like,
 )
+from .candidate_protocol import (
+    DiagnoseResponse,
+    Operation,
+    RolloutResponse,
+    StateResponse,
+    _delta_from_wire,
+    _diagnosis_query_from_wire,
+    _history_from_wire,
+    _rollout_query_from_wire,
+    request_from_wire,
+    response_from_wire,
+)
 from .mutation_matrix import (
     GATE_SPECS,
     REGISTRY_DIGEST,
@@ -35,18 +48,25 @@ from .mutation_matrix import (
     SubjectKind,
     evaluate_mutation_matrix,
 )
+from .schema import (
+    DiagnosisQuery,
+    RolloutQuery,
+    VisibleDelta,
+    VisibleHistory,
+    event_sort_key,
+)
 
 
-MUTATION_EVIDENCE_PROTOCOL = "ucm-mutation-evidence-bundle/1"
-MUTATION_EXECUTION_CONTEXT_PROTOCOL = "ucm-mutation-execution-context/1"
-MUTATION_INPUT_PREIMAGE_PROTOCOL = "ucm-mutation-input-preimage/1"
+MUTATION_EVIDENCE_PROTOCOL = "ucm-mutation-evidence-bundle/2"
+MUTATION_EXECUTION_CONTEXT_PROTOCOL = "ucm-mutation-execution-context/2"
+MUTATION_INPUT_PREIMAGE_PROTOCOL = "ucm-mutation-input-preimage/2"
 MUTATION_PRE_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-pre-source-witness/1"
 MUTATION_POST_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-post-source-witness/1"
 MUTATION_SOURCE_RECORD_PROTOCOL = "ucm-mutation-source-record/1"
-MUTATION_REPORT_TRANSCRIPT_PROTOCOL = "ucm-mutation-report-transcript/1"
+MUTATION_REPORT_TRANSCRIPT_PROTOCOL = "ucm-mutation-report-transcript/2"
 MUTATION_ERROR_TRANSCRIPT_PROTOCOL = "ucm-mutation-error-transcript/1"
-MUTATION_DECISION_RECORD_PROTOCOL = "ucm-mutation-decision-record/1"
-MUTATION_DECISIVE_RECORD_PROTOCOL = "ucm-mutation-decisive-record/1"
+MUTATION_DECISION_RECORD_PROTOCOL = "ucm-mutation-decision-record/2"
+MUTATION_DECISIVE_RECORD_PROTOCOL = "ucm-mutation-decisive-record/2"
 
 BENCHMARK_ID = "UCM-BENCHMARK-v1"
 PRE_FREEZE_STATUS = "PRE-FREEZE"
@@ -108,6 +128,9 @@ _REPORT_REQUIRED_FIELDS = frozenset(
         "findings",
         "head_records",
         "paired_semantic_equivalence",
+        "input_preimage_digest",
+        "invocation_transcript_digest",
+        "request_records",
     }
 )
 _SOURCE_REQUIRED_FIELDS = frozenset(
@@ -146,6 +169,22 @@ _PAIRED_PHASE_KEYS = frozenset(
 )
 _INPUT_PREIMAGE_KEYS = frozenset(
     {"history", "diagnosis_query", "rollout_query", "delta"}
+)
+_REQUEST_RECORD_KEYS = frozenset(
+    {
+        "operation",
+        "seed",
+        "execution_mode",
+        "status",
+        "request_wire",
+        "request_digest",
+        "request_fully_sent",
+        "received_request_digest",
+        "response_wire",
+        "response_digest",
+        "failure_origin",
+        "failure_code",
+    }
 )
 _EXECUTION_CONTEXT_KEYS = frozenset(
     {
@@ -236,6 +275,8 @@ _MUTANT_DECISION_KEYS = frozenset(
         "derived_outcome",
         "actual_gate",
         "actual_failure_code",
+        "input_preimage_digest",
+        "invocation_transcript_digest",
     }
 )
 _SPECIFICITY_DECISION_KEYS = frozenset(
@@ -250,6 +291,8 @@ _SPECIFICITY_DECISION_KEYS = frozenset(
         "report_processing_complete",
         "semantic_equivalence_passed",
         "derived_outcome",
+        "input_preimage_digest",
+        "invocation_transcript_digest",
     }
 )
 _ALLOWED_SCOPE_INCOMPLETE_CODES = frozenset(
@@ -945,6 +988,1059 @@ def _payload_object(body: dict[str, Any], label: str) -> dict[str, Any]:
     return payload
 
 
+def _typed_input_preimage(
+    value: object,
+) -> tuple[VisibleHistory, DiagnosisQuery, RolloutQuery, VisibleDelta | None]:
+    """Parse the four runner inputs through the executable wire protocols.
+
+    A JSON object merely shaped *like* an input is not evidence of the input
+    that the candidate protocol can consume.  The round trips below bind this
+    bundle to the same closed parsers and canonical wire encoders used at the
+    candidate boundary.
+    """
+
+    body = _closed_object(value, _INPUT_PREIMAGE_KEYS, "input preimage payload")
+    try:
+        history = _history_from_wire(body["history"])
+        diagnosis_query = _diagnosis_query_from_wire(body["diagnosis_query"])
+        rollout_query = _rollout_query_from_wire(body["rollout_query"])
+        delta = (
+            None if body["delta"] is None else _delta_from_wire(body["delta"])
+        )
+    except ProtocolViolation:
+        raise
+    except (TypeError, ValueError) as exc:  # pragma: no cover - parser guard.
+        raise ProtocolViolation("input preimage failed typed protocol parsing") from exc
+    round_trips = (
+        ("history", history.to_wire()),
+        ("diagnosis_query", diagnosis_query.to_wire()),
+        ("rollout_query", rollout_query.to_wire()),
+        ("delta", None if delta is None else delta.to_wire()),
+    )
+    for field_name, round_trip in round_trips:
+        if body[field_name] != round_trip:
+            raise ProtocolViolation(
+                f"input preimage {field_name} is not an exact typed wire round trip"
+            )
+    return history, diagnosis_query, rollout_query, delta
+
+
+def _merged_input_history(
+    history: VisibleHistory, delta: VisibleDelta | None
+) -> VisibleHistory | None:
+    if delta is None or delta.advance_to < history.as_of_available_at:
+        return None
+    existing = {event.event_uid for event in history.events}
+    if any(event.event_uid in existing for event in delta.events):
+        return None
+    return VisibleHistory(
+        events=tuple(sorted(history.events + delta.events, key=event_sort_key)),
+        as_of_available_at=delta.advance_to,
+        catalog_digest=history.catalog_digest,
+    )
+
+
+def _scored_semantic_projection(response: object) -> dict[str, Any]:
+    """Project a typed head response onto the frozen scored surface.
+
+    This deliberately mirrors the compliance probe rather than comparing a
+    response digest: metadata and diagnostics are not diagnosis/rollout
+    semantics and therefore cannot prove or disprove F001/F019.
+    """
+
+    if isinstance(response, DiagnoseResponse):
+        return {
+            "operation": "diagnose",
+            "status": response.result.status.value,
+            "probabilities": response.result.probabilities,
+        }
+    if isinstance(response, RolloutResponse):
+        return {
+            "operation": "rollout",
+            "status": response.result.status.value,
+            "observable_predictions": response.result.observable_predictions,
+            "utility_prediction": response.result.utility_prediction,
+        }
+    raise ProtocolViolation("semantic projection requires a typed head response")
+
+
+def _scored_semantic_equal(left: object, right: object) -> bool:
+    """Use the compliance protocol's frozen recursive numeric comparator."""
+
+    if type(left) is bool or type(right) is bool:
+        return type(left) is type(right) and left == right
+    if type(left) in {int, float} and type(right) in {int, float}:
+        return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1e-9)
+    if type(left) is not type(right):
+        return False
+    if type(left) is dict:
+        return set(left) == set(right) and all(
+            _scored_semantic_equal(left[key], right[key]) for key in left
+        )
+    if type(left) is list:
+        return len(left) == len(right) and all(
+            _scored_semantic_equal(a, b) for a, b in zip(left, right)
+        )
+    return left == right
+
+
+def _validate_request_records(
+    value: object,
+    *,
+    input_preimage_digest: str,
+    history: VisibleHistory,
+    diagnosis_query: DiagnosisQuery,
+    rollout_query: RolloutQuery,
+    delta: VisibleDelta | None,
+    execution_seed: int,
+    expected_failure_code: str | None,
+    expected_semantic_probes: tuple[str, ...],
+    expected_head_record_shape: str,
+    observation_outcome: ObservationOutcome,
+    head_records: list[dict[str, Any]],
+) -> tuple[str, frozenset[str], dict[str, Any]]:
+    """Validate an ordered, exact invocation transcript and its state lineage."""
+
+    _digest(input_preimage_digest, "request transcript input_preimage_digest")
+    if type(value) is not list:
+        raise ProtocolViolation("report request_records must be an exact list")
+
+    history_wire = history.to_wire()
+    diagnosis_wire = diagnosis_query.to_wire()
+    rollout_wire = rollout_query.to_wire()
+    delta_wire = None if delta is None else delta.to_wire()
+    merged = _merged_input_history(history, delta)
+    merged_wire = None if merged is None else merged.to_wire()
+    decisive = observation_outcome in {
+        ObservationOutcome.KILLED,
+        ObservationOutcome.PASSED,
+    }
+    merged_history_probes = frozenset(
+        {"update_consistency", "warm_future_old_cut"}
+    )
+    if (
+        decisive
+        and merged_history_probes.intersection(expected_semantic_probes)
+        and merged is None
+    ):
+        raise ProtocolViolation(
+            "decisive semantic probe transcript requires a non-null, formally "
+            "mergeable input delta"
+        )
+    lineage_seed = execution_seed ^ UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
+    allowed_seeds = {
+        Operation.INITIALIZE: {execution_seed, lineage_seed},
+        Operation.DIAGNOSE: {execution_seed + 1, lineage_seed + 1},
+        Operation.ROLLOUT: {execution_seed + 2, lineage_seed + 2},
+        Operation.UPDATE: {execution_seed + 3, lineage_seed},
+    }
+
+    successful_state_wires: list[dict[str, Any]] = []
+    success_records: list[dict[str, Any]] = []
+    record_statuses: list[str] = []
+    sent_coverage: set[str] = set()
+    main_attempts: dict[Operation, int] = {operation: 0 for operation in Operation}
+    main_successes: dict[Operation, int] = {operation: 0 for operation in Operation}
+    fresh_main_sequence: list[tuple[str, int]] = []
+    fresh_main_positions: list[int] = []
+    fresh_main_records: list[dict[str, Any]] = []
+    typed_responses: list[object | None] = []
+    actual_probe_evidence: dict[str, Any] = {}
+
+    for index, record_value in enumerate(value):
+        record = _closed_object(
+            record_value,
+            _REQUEST_RECORD_KEYS,
+            f"request record {index}",
+        )
+        if record["execution_mode"] not in {"fresh", "sequential"}:
+            raise ProtocolViolation(
+                f"request record {index} execution_mode must be fresh or sequential"
+            )
+        if record["status"] not in {"success", "worker_error", "harness_error"}:
+            raise ProtocolViolation(f"request record {index} has an unknown status")
+        try:
+            request = request_from_wire(record["request_wire"])
+        except ProtocolViolation as exc:
+            raise ProtocolViolation(
+                f"request record {index} request_wire is not a typed request"
+            ) from exc
+        if request.to_wire() != record["request_wire"]:
+            raise ProtocolViolation(
+                f"request record {index} request_wire is not an exact round trip"
+            )
+        operation = request.operation
+        if record["operation"] != operation.value or record["seed"] != request.seed:
+            raise ProtocolViolation(
+                f"request record {index} operation/seed differs from request_wire"
+            )
+        _seed(record["seed"], f"request record {index} seed")
+        if request.seed not in allowed_seeds[operation]:
+            raise ProtocolViolation(
+                f"request record {index} seed is outside the code-owned execution lineage"
+            )
+        expected_request_digest = _json_digest(
+            record["request_wire"], f"request record {index} request_wire"
+        )
+        if record["request_digest"] != expected_request_digest:
+            raise ProtocolViolation(f"request record {index} request_digest mismatch")
+
+        status = record["status"]
+        record_statuses.append(status)
+        fully_sent = record["request_fully_sent"]
+        if fully_sent not in {None, False, True} or type(fully_sent) not in {
+            type(None),
+            bool,
+        }:
+            raise ProtocolViolation(
+                f"request record {index} request_fully_sent must be bool or null"
+            )
+        received_digest = record["received_request_digest"]
+        if fully_sent is True:
+            if not (
+                received_digest == expected_request_digest
+                or (status == "harness_error" and received_digest is None)
+            ):
+                raise ProtocolViolation(
+                    f"request record {index} received_request_digest mismatch"
+                )
+        elif received_digest is not None:
+            raise ProtocolViolation(
+                f"request record {index} unsent request cannot claim receipt"
+            )
+
+        response_wire = record["response_wire"]
+        response_digest = record["response_digest"]
+        failure_origin = record["failure_origin"]
+        failure_code = record["failure_code"]
+        parsed_response = None
+        if status == "success":
+            if fully_sent is not True or received_digest != expected_request_digest:
+                raise ProtocolViolation(
+                    f"request record {index} success lacks sent/received proof"
+                )
+            if failure_origin is not None or failure_code is not None:
+                raise ProtocolViolation(
+                    f"request record {index} success cannot carry failure fields"
+                )
+            if type(response_wire) is not dict:
+                raise ProtocolViolation(
+                    f"request record {index} success needs a response_wire"
+                )
+            try:
+                parsed_response = response_from_wire(response_wire)
+            except ProtocolViolation as exc:
+                raise ProtocolViolation(
+                    f"request record {index} response_wire is not a typed response"
+                ) from exc
+            if parsed_response.to_wire() != response_wire:
+                raise ProtocolViolation(
+                    f"request record {index} response_wire is not an exact round trip"
+                )
+            if parsed_response.operation is not operation:
+                raise ProtocolViolation(
+                    f"request record {index} response operation mismatch"
+                )
+            expected_response_digest = _json_digest(
+                response_wire, f"request record {index} response_wire"
+            )
+            if response_digest != expected_response_digest:
+                raise ProtocolViolation(
+                    f"request record {index} response_digest mismatch"
+                )
+        else:
+            if status == "worker_error":
+                if response_wire is not None or response_digest is not None:
+                    raise ProtocolViolation(
+                        f"request record {index} worker_error cannot carry a response"
+                    )
+                if (
+                    fully_sent is not True
+                    or received_digest != expected_request_digest
+                    or failure_origin != "candidate"
+                    or failure_code not in _CANONICAL_FAILURE_CODES
+                ):
+                    raise ProtocolViolation(
+                        f"request record {index} worker_error fields are inconsistent"
+                    )
+            else:
+                if (
+                    failure_origin != "harness"
+                    or failure_code != HARNESS_INCOMPLETE_CODE
+                    or (fully_sent is not True and received_digest is not None)
+                    or (
+                        fully_sent is True
+                        and received_digest not in {None, expected_request_digest}
+                    )
+                ):
+                    raise ProtocolViolation(
+                        f"request record {index} harness_error fields are inconsistent"
+                    )
+                if (response_wire is None) is not (response_digest is None):
+                    raise ProtocolViolation(
+                        f"request record {index} harness_error response is partial"
+                    )
+                if response_wire is not None:
+                    if fully_sent is not True or received_digest != expected_request_digest:
+                        raise ProtocolViolation(
+                            f"request record {index} harness_error cannot bind a "
+                            "response without exact sent/received proof"
+                        )
+                    if type(response_wire) is not dict:
+                        raise ProtocolViolation(
+                            f"request record {index} harness_error response_wire "
+                            "must be an exact object or null"
+                        )
+                    try:
+                        parsed_response = response_from_wire(response_wire)
+                    except ProtocolViolation as exc:
+                        raise ProtocolViolation(
+                            f"request record {index} harness_error response_wire "
+                            "is not a typed response"
+                        ) from exc
+                    if (
+                        parsed_response.to_wire() != response_wire
+                        or parsed_response.operation is not operation
+                    ):
+                        raise ProtocolViolation(
+                            f"request record {index} harness_error response "
+                            "round-trip/operation mismatch"
+                        )
+                    if response_digest != _json_digest(
+                        response_wire,
+                        f"request record {index} harness_error response_wire",
+                    ):
+                        raise ProtocolViolation(
+                            f"request record {index} harness_error response_digest mismatch"
+                        )
+        typed_responses.append(parsed_response)
+
+        # Bind every request payload to the exact runner input, not merely to
+        # a self-consistent request digest.
+        if operation is Operation.INITIALIZE:
+            request_history = request.history.to_wire()
+            if request.seed == execution_seed:
+                allowed_histories = [history_wire]
+                # Sequential semantic probes may replay the later public cut;
+                # they are not a replacement for the main fresh initialize.
+                if record["execution_mode"] == "sequential" and merged_wire is not None:
+                    allowed_histories.append(merged_wire)
+                if request_history not in allowed_histories:
+                    raise ProtocolViolation(
+                        f"request record {index} main initialize history differs from input"
+                    )
+            elif request_history not in [
+                item for item in (history_wire, merged_wire) if item is not None
+            ]:
+                raise ProtocolViolation(
+                    f"request record {index} lineage initialize history is not input/merged"
+                )
+            if request_history == history_wire and fully_sent is True:
+                sent_coverage.add("history")
+        elif operation is Operation.DIAGNOSE:
+            if request.query.to_wire() != diagnosis_wire:
+                raise ProtocolViolation(
+                    f"request record {index} diagnosis query differs from input"
+                )
+            if fully_sent is True:
+                sent_coverage.add("diagnosis_query")
+        elif operation is Operation.ROLLOUT:
+            if request.query.to_wire() != rollout_wire:
+                raise ProtocolViolation(
+                    f"request record {index} rollout query differs from input"
+                )
+            if fully_sent is True:
+                sent_coverage.add("rollout_query")
+        else:
+            if delta_wire is None or request.delta.to_wire() != delta_wire:
+                raise ProtocolViolation(
+                    f"request record {index} update delta differs from input"
+                )
+            if fully_sent is True:
+                sent_coverage.add("delta")
+
+        if operation is not Operation.INITIALIZE:
+            request_state = record["request_wire"]["state"]
+            if request_state not in successful_state_wires:
+                raise ProtocolViolation(
+                    f"request record {index} state was not produced by a prior "
+                    "successful StateResponse"
+                )
+
+        main_seed = {
+            Operation.INITIALIZE: execution_seed,
+            Operation.DIAGNOSE: execution_seed + 1,
+            Operation.ROLLOUT: execution_seed + 2,
+            Operation.UPDATE: execution_seed + 3,
+        }[operation]
+        if request.seed == main_seed and record["execution_mode"] == "fresh":
+            fresh_main_sequence.append((operation.value, request.seed))
+            fresh_main_positions.append(index)
+            fresh_main_records.append(record)
+            main_attempts[operation] += 1
+            if status == "success":
+                main_successes[operation] += 1
+
+        if status == "success":
+            assert parsed_response is not None
+            success_records.append(record)
+            if type(parsed_response) is StateResponse:
+                successful_state_wires.append(response_wire["state"])
+
+    expected_fresh_main_sequence = [
+        (Operation.INITIALIZE.value, execution_seed),
+        (Operation.INITIALIZE.value, execution_seed),
+        (Operation.DIAGNOSE.value, execution_seed + 1),
+        (Operation.DIAGNOSE.value, execution_seed + 1),
+        (Operation.ROLLOUT.value, execution_seed + 2),
+        (Operation.ROLLOUT.value, execution_seed + 2),
+    ]
+    if delta is not None:
+        expected_fresh_main_sequence.extend(
+            [
+                (Operation.UPDATE.value, execution_seed + 3),
+                (Operation.UPDATE.value, execution_seed + 3),
+            ]
+        )
+    if fresh_main_sequence != expected_fresh_main_sequence[
+        : len(fresh_main_sequence)
+    ] or len(fresh_main_sequence) > len(expected_fresh_main_sequence):
+        raise ProtocolViolation(
+            "fresh main requests are not the exact code-owned ordered flow prefix"
+        )
+    if fresh_main_positions != list(range(len(fresh_main_positions))):
+        raise ProtocolViolation(
+            "fresh main flow must be the physical request_records prefix before "
+            "semantic/sequential invocations"
+        )
+    for left_index, right_index, label in (
+        (0, 1, "initialize"),
+        (2, 3, "diagnose"),
+        (4, 5, "rollout"),
+        (6, 7, "update"),
+    ):
+        if len(fresh_main_records) > right_index and (
+            fresh_main_records[left_index]["request_digest"]
+            != fresh_main_records[right_index]["request_digest"]
+        ):
+            raise ProtocolViolation(
+                f"fresh main {label} replay pair must use one exact request wire"
+            )
+    state_consumers = [
+        fresh_main_records[index]["request_wire"]["state"]
+        for index in (2, 4, 6)
+        if len(fresh_main_records) > index
+    ]
+    if state_consumers and any(
+        state_wire != state_consumers[0] for state_wire in state_consumers[1:]
+    ):
+        raise ProtocolViolation(
+            "fresh main diagnose/rollout/update requests must consume one shared "
+            "initialize state wire"
+        )
+
+    main_length = len(expected_fresh_main_sequence)
+
+    def require_exact_shape(
+        records: list[dict[str, Any]],
+        expected: list[tuple[str, str, int]],
+        label: str,
+    ) -> None:
+        actual = [
+            (record["execution_mode"], record["operation"], record["seed"])
+            for record in records
+        ]
+        if actual != expected:
+            raise ProtocolViolation(
+                f"{label} differs from the code-owned exact invocation shape"
+            )
+
+    def require_successful_records(
+        records: list[dict[str, Any]], label: str
+    ) -> None:
+        if any(record["status"] != "success" for record in records):
+            raise ProtocolViolation(f"{label} must contain only successful invocations")
+
+    def response_at(index: int) -> object:
+        response = typed_responses[index]
+        if response is None:
+            raise ProtocolViolation(
+                f"request record {index} lacks the successful typed response "
+                "required by a decisive comparison"
+            )
+        return response
+
+    def head_behavior(diagnosis_index: int, rollout_index: int) -> dict[str, Any]:
+        return {
+            "diagnosis": _scored_semantic_projection(response_at(diagnosis_index)),
+            "rollout": _scored_semantic_projection(response_at(rollout_index)),
+        }
+
+    def raw_head_behavior(
+        diagnosis_index: int, rollout_index: int
+    ) -> dict[str, Any]:
+        return {
+            "diagnosis": value[diagnosis_index]["response_wire"],
+            "rollout": value[rollout_index]["response_wire"],
+        }
+
+    def validate_update_consistency_suffix(
+        consistency: list[dict[str, Any]], *, absolute_offset: int
+    ) -> dict[str, Any]:
+        require_exact_shape(
+            consistency,
+            [
+                ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                ("fresh", Operation.UPDATE.value, lineage_seed),
+                ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                ("fresh", Operation.UPDATE.value, lineage_seed),
+                ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+            ],
+            "update-consistency suffix",
+        )
+        require_successful_records(consistency, "update-consistency suffix")
+        if (
+            consistency[0]["request_wire"]["history"] != history_wire
+            or consistency[2]["request_wire"]["history"] != merged_wire
+        ):
+            raise ProtocolViolation(
+                "update-consistency initialize histories differ from input/merged"
+            )
+        lineage_initial_state = consistency[0]["response_wire"]["state"]
+        incremental_state = consistency[1]["response_wire"]["state"]
+        replay_state = consistency[2]["response_wire"]["state"]
+        duplicate_state = consistency[3]["response_wire"]["state"]
+        if consistency[1]["request_wire"]["state"] != lineage_initial_state:
+            raise ProtocolViolation(
+                "update-consistency first update does not consume lineage initialize"
+            )
+        if consistency[3]["request_wire"]["state"] != incremental_state:
+            raise ProtocolViolation(
+                "update-consistency duplicate update does not consume incremental state"
+            )
+        expected_head_states = (
+            incremental_state,
+            incremental_state,
+            replay_state,
+            replay_state,
+            duplicate_state,
+            duplicate_state,
+        )
+        if tuple(
+            record["request_wire"]["state"] for record in consistency[4:]
+        ) != expected_head_states:
+            raise ProtocolViolation(
+                "update-consistency head calls do not bind all three actual lineages"
+            )
+        incremental_behavior = head_behavior(
+            absolute_offset + 4, absolute_offset + 5
+        )
+        replay_behavior = head_behavior(absolute_offset + 6, absolute_offset + 7)
+        duplicate_behavior = head_behavior(
+            absolute_offset + 8, absolute_offset + 9
+        )
+        return {
+            "incremental_behavior_digest": _json_digest(
+                incremental_behavior, "incremental scored behavior"
+            ),
+            "replay_behavior_digest": _json_digest(
+                replay_behavior, "replay scored behavior"
+            ),
+            "duplicate_behavior_digest": _json_digest(
+                duplicate_behavior, "duplicate scored behavior"
+            ),
+            "incremental_equals_replay": _scored_semantic_equal(
+                incremental_behavior, replay_behavior
+            ),
+            "duplicate_event_is_idempotent": _scored_semantic_equal(
+                incremental_behavior, duplicate_behavior
+            ),
+        }
+
+    def validate_warm_future_suffix(
+        warm: list[dict[str, Any]],
+        *,
+        absolute_offset: int,
+        main_state_wire: dict[str, Any],
+    ) -> dict[str, Any]:
+        require_exact_shape(
+            warm,
+            [
+                ("sequential", Operation.INITIALIZE.value, execution_seed),
+                ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                ("sequential", Operation.INITIALIZE.value, execution_seed),
+                ("sequential", Operation.UPDATE.value, execution_seed + 3),
+                ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+            ],
+            "warm-future suffix",
+        )
+        require_successful_records(warm, "warm-future suffix")
+        if (
+            warm[0]["request_wire"]["history"] != merged_wire
+            or warm[3]["request_wire"]["history"] != history_wire
+        ):
+            raise ProtocolViolation(
+                "warm-future initialize histories differ from merged/input history"
+            )
+        warm_state_consumers = (
+            warm[1]["request_wire"]["state"],
+            warm[2]["request_wire"]["state"],
+            warm[4]["request_wire"]["state"],
+            warm[5]["request_wire"]["state"],
+            warm[6]["request_wire"]["state"],
+        )
+        if any(state != main_state_wire for state in warm_state_consumers):
+            raise ProtocolViolation(
+                "warm-future sequence does not query/update the sealed main state"
+            )
+        before_behavior = head_behavior(2, 4)
+        before_raw_wire = raw_head_behavior(2, 4)
+        after_initialize_behavior = head_behavior(
+            absolute_offset + 1, absolute_offset + 2
+        )
+        after_initialize_raw_wire = raw_head_behavior(
+            absolute_offset + 1, absolute_offset + 2
+        )
+        after_update_behavior = head_behavior(
+            absolute_offset + 5, absolute_offset + 6
+        )
+        after_update_raw_wire = raw_head_behavior(
+            absolute_offset + 5, absolute_offset + 6
+        )
+        return {
+            "before_behavior_digest": _json_digest(
+                before_behavior, "warm-future before scored behavior"
+            ),
+            "before_raw_wire_digest": _json_digest(
+                before_raw_wire, "warm-future before raw behavior"
+            ),
+            "after_initialize_later_digest": _json_digest(
+                after_initialize_behavior,
+                "warm-future after-initialize scored behavior",
+            ),
+            "after_initialize_later_raw_wire_digest": _json_digest(
+                after_initialize_raw_wire,
+                "warm-future after-initialize raw behavior",
+            ),
+            "after_update_old_delta_digest": _json_digest(
+                after_update_behavior, "warm-future after-update scored behavior"
+            ),
+            "after_update_old_delta_raw_wire_digest": _json_digest(
+                after_update_raw_wire, "warm-future after-update raw behavior"
+            ),
+            "initialize_later_stable": _scored_semantic_equal(
+                before_behavior, after_initialize_behavior
+            ),
+            "update_old_delta_stable": _scored_semantic_equal(
+                before_behavior, after_update_behavior
+            ),
+            "initialize_later_raw_exact": before_raw_wire
+            == after_initialize_raw_wire,
+            "update_old_delta_raw_exact": before_raw_wire
+            == after_update_raw_wire,
+        }
+
+    def validate_warm_cold_suffix(
+        warm_cold: list[dict[str, Any]],
+        *,
+        main_state_wire: dict[str, Any],
+    ) -> None:
+        require_exact_shape(
+            warm_cold,
+            [
+                ("sequential", Operation.INITIALIZE.value, execution_seed),
+                ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+            ],
+            "warm-cold suffix",
+        )
+        require_successful_records(warm_cold, "warm-cold suffix")
+        if warm_cold[0]["request_wire"]["history"] != history_wire or any(
+            record["request_wire"]["state"] != main_state_wire
+            for record in warm_cold[1:]
+        ):
+            raise ProtocolViolation(
+                "warm-cold sequence does not bind input history and sealed main state"
+            )
+
+    if decisive and not main_attempts[Operation.INITIALIZE]:
+        raise ProtocolViolation("killed/passed transcript lacks attempted main initialize")
+    if observation_outcome is ObservationOutcome.PASSED:
+        if any(status != "success" for status in record_statuses):
+            raise ProtocolViolation(
+                "passed transcript cannot contain worker/harness error records"
+            )
+        if fresh_main_sequence != expected_fresh_main_sequence:
+            raise ProtocolViolation(
+                "passed transcript lacks the exact complete fresh main request flow"
+            )
+        semantic_suffix = value[main_length:]
+        expected_suffix_shape: list[tuple[str, str, int]] = []
+        if "update_consistency" in expected_semantic_probes:
+            expected_suffix_shape.extend(
+                [
+                    ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                    ("fresh", Operation.UPDATE.value, lineage_seed),
+                    ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                    ("fresh", Operation.UPDATE.value, lineage_seed),
+                    ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                    ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                    ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                    ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                    ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                    ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                ]
+            )
+        if "warm_future_old_cut" in expected_semantic_probes:
+            expected_suffix_shape.extend(
+                [
+                    ("sequential", Operation.INITIALIZE.value, execution_seed),
+                    ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                    ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                    ("sequential", Operation.INITIALIZE.value, execution_seed),
+                    ("sequential", Operation.UPDATE.value, execution_seed + 3),
+                    ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                    ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                ]
+            )
+        # The warm-vs-cold sequence is part of every successful compliance
+        # evaluation, independent of optional semantic probes.
+        expected_suffix_shape.extend(
+            [
+                ("sequential", Operation.INITIALIZE.value, execution_seed),
+                ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+            ]
+        )
+        require_exact_shape(
+            semantic_suffix,
+            expected_suffix_shape,
+            "passed transcript semantic-probe/warm suffix",
+        )
+
+        main_state_wire = fresh_main_records[2]["request_wire"]["state"]
+        suffix_offset = 0
+        if "update_consistency" in expected_semantic_probes:
+            consistency = semantic_suffix[:10]
+            consistency_evidence = validate_update_consistency_suffix(
+                consistency, absolute_offset=main_length
+            )
+            if not (
+                consistency_evidence["incremental_equals_replay"]
+                and consistency_evidence["duplicate_event_is_idempotent"]
+            ):
+                raise ProtocolViolation(
+                    "passed update-consistency transcript contains actual scored "
+                    "semantic divergence"
+                )
+            suffix_offset = 10
+        if "warm_future_old_cut" in expected_semantic_probes:
+            warm = semantic_suffix[suffix_offset : suffix_offset + 7]
+            warm_evidence = validate_warm_future_suffix(
+                warm,
+                absolute_offset=main_length + suffix_offset,
+                main_state_wire=main_state_wire,
+            )
+            if not all(
+                warm_evidence[field]
+                for field in (
+                    "initialize_later_stable",
+                    "update_old_delta_stable",
+                    "initialize_later_raw_exact",
+                    "update_old_delta_raw_exact",
+                )
+            ):
+                raise ProtocolViolation(
+                    "passed warm-future transcript contains actual old-cut drift"
+                )
+            suffix_offset += 7
+        warm_cold = semantic_suffix[suffix_offset : suffix_offset + 3]
+        validate_warm_cold_suffix(warm_cold, main_state_wire=main_state_wire)
+        if any(
+            value[main_index]["response_wire"]
+            != warm_cold[warm_index]["response_wire"]
+            for main_index, warm_index in ((0, 0), (2, 1), (4, 2))
+        ):
+            raise ProtocolViolation(
+                "passed warm-cold transcript differs from fresh response wires"
+            )
+        required_successes = {
+            Operation.INITIALIZE: 2,
+            Operation.DIAGNOSE: 2,
+            Operation.ROLLOUT: 2,
+        }
+        if delta is not None:
+            required_successes[Operation.UPDATE] = 2
+        if any(
+            main_successes[operation] < count
+            for operation, count in required_successes.items()
+        ):
+            raise ProtocolViolation(
+                "passed transcript lacks the complete repeated main invocation flow"
+            )
+        required_coverage = {"history", "diagnosis_query", "rollout_query"}
+        if delta is not None:
+            required_coverage.add("delta")
+        if not required_coverage.issubset(sent_coverage):
+            raise ProtocolViolation("passed transcript lacks actual input coverage")
+    elif observation_outcome is ObservationOutcome.KILLED:
+        if "harness_error" in record_statuses:
+            raise ProtocolViolation(
+                "killed transcript cannot contain harness_error records"
+            )
+        worker_error_indices = [
+            index
+            for index, record in enumerate(value)
+            if record["status"] == "worker_error"
+        ]
+        if worker_error_indices:
+            terminal_index = worker_error_indices[0]
+            if (
+                len(worker_error_indices) != 1
+                or terminal_index != len(value) - 1
+                or value[terminal_index]["failure_code"] != expected_failure_code
+            ):
+                raise ProtocolViolation(
+                    "killed transcript worker_error must be one terminal record "
+                    "with the code-owned decisive failure code"
+                )
+        comparison_failure = (
+            expected_failure_code == "UCM-F006-HIDDEN_PATIENT_CACHE"
+            or (
+                expected_failure_code == "UCM-F001-FUTURE_LEAK"
+                and "warm_future_old_cut" in expected_semantic_probes
+            )
+            or expected_failure_code == "UCM-F019-UPDATE_INCONSISTENT"
+            or expected_failure_code == "UCM-F020-NONREPRODUCIBLE"
+        )
+        if expected_head_record_shape == "replay_ddrr":
+            if fresh_main_sequence != expected_fresh_main_sequence:
+                raise ProtocolViolation(
+                    "replay killed transcript lacks the exact complete fresh main flow"
+                )
+            required_coverage = {"history", "diagnosis_query", "rollout_query"}
+            if "update_consistency" in expected_semantic_probes and delta is not None:
+                required_coverage.add("delta")
+            if not required_coverage.issubset(sent_coverage):
+                raise ProtocolViolation(
+                    "replay killed transcript lacks actual input coverage"
+                )
+        elif not value:
+            raise ProtocolViolation("empty-head killed transcript has no attempted request")
+
+        allowed_response_drift_positions: set[int] = set()
+        if comparison_failure:
+            require_successful_records(
+                value, "code-owned comparison killed transcript"
+            )
+            if fresh_main_sequence != expected_fresh_main_sequence:
+                raise ProtocolViolation(
+                    "code-owned comparison killed transcript lacks the exact "
+                    "complete fresh main flow"
+                )
+            main_state_wire = fresh_main_records[2]["request_wire"]["state"]
+            killed_suffix = value[main_length:]
+            if expected_failure_code == "UCM-F020-NONREPRODUCIBLE":
+                require_exact_shape(
+                    killed_suffix,
+                    [],
+                    "UCM-F020 killed suffix",
+                )
+                # Only the second replay response in each exact main head pair
+                # may differ.  Initialize/update replay drift is never F020
+                # evidence for this code-owned subject.
+                allowed_response_drift_positions.update({3, 5})
+                if not any(
+                    value[left]["response_wire"]
+                    != value[right]["response_wire"]
+                    for left, right in ((2, 3), (4, 5))
+                ):
+                    raise ProtocolViolation(
+                        "UCM-F020 killed transcript lacks actual main head replay drift"
+                    )
+            elif expected_failure_code == "UCM-F006-HIDDEN_PATIENT_CACHE":
+                validate_warm_cold_suffix(
+                    killed_suffix, main_state_wire=main_state_wire
+                )
+                if len(killed_suffix) != 3:
+                    # validate_warm_cold_suffix diagnoses short records; this
+                    # explicit length also prevents a valid prefix plus tails.
+                    raise ProtocolViolation(
+                        "UCM-F006 killed suffix differs from exact warm-cold shape"
+                    )
+                warm_offset = main_length
+                allowed_response_drift_positions.update(
+                    {warm_offset, warm_offset + 1, warm_offset + 2}
+                )
+                if not any(
+                    value[main_index]["response_wire"]
+                    != value[warm_offset + warm_index]["response_wire"]
+                    for main_index, warm_index in ((0, 0), (2, 1), (4, 2))
+                ):
+                    raise ProtocolViolation(
+                        "UCM-F006 killed transcript lacks actual warm/fresh raw drift"
+                    )
+            elif expected_failure_code == "UCM-F001-FUTURE_LEAK":
+                require_exact_shape(
+                    killed_suffix,
+                    [
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.UPDATE.value, execution_seed + 3),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                    ],
+                    "UCM-F001 killed semantic/warm suffix",
+                )
+                warm_evidence = validate_warm_future_suffix(
+                    killed_suffix[:7],
+                    absolute_offset=main_length,
+                    main_state_wire=main_state_wire,
+                )
+                validate_warm_cold_suffix(
+                    killed_suffix[7:], main_state_wire=main_state_wire
+                )
+                if (
+                    warm_evidence["initialize_later_stable"]
+                    and warm_evidence["update_old_delta_stable"]
+                ):
+                    raise ProtocolViolation(
+                        "UCM-F001 killed transcript lacks actual scored old-cut drift"
+                    )
+                actual_probe_evidence["warm_future_old_cut"] = warm_evidence
+                # Only the four old-head responses compared by C23 may drift.
+                # The two initialize responses, the update response, and the
+                # final warm-cold sequence remain subject to exact replay.
+                allowed_response_drift_positions.update(
+                    {
+                        main_length + 1,
+                        main_length + 2,
+                        main_length + 5,
+                        main_length + 6,
+                    }
+                )
+            else:
+                require_exact_shape(
+                    killed_suffix,
+                    [
+                        ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                        ("fresh", Operation.UPDATE.value, lineage_seed),
+                        ("fresh", Operation.INITIALIZE.value, lineage_seed),
+                        ("fresh", Operation.UPDATE.value, lineage_seed),
+                        ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                        ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                        ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                        ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                        ("fresh", Operation.DIAGNOSE.value, lineage_seed + 1),
+                        ("fresh", Operation.ROLLOUT.value, lineage_seed + 2),
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                    ],
+                    "UCM-F019 killed consistency/warm suffix",
+                )
+                consistency_evidence = validate_update_consistency_suffix(
+                    killed_suffix[:10], absolute_offset=main_length
+                )
+                validate_warm_cold_suffix(
+                    killed_suffix[10:], main_state_wire=main_state_wire
+                )
+                if (
+                    consistency_evidence["incremental_equals_replay"]
+                    and consistency_evidence["duplicate_event_is_idempotent"]
+                ):
+                    raise ProtocolViolation(
+                        "UCM-F019 killed transcript lacks actual scored consistency drift"
+                    )
+                actual_probe_evidence["update_consistency"] = consistency_evidence
+        else:
+            allowed_response_drift_positions = set()
+
+        # Repeated exact requests are deterministic unless the differing
+        # response occupies a comparison position fixed above.  This replaces
+        # the former failure-code-wide F020 escape hatch with a positional one.
+        baseline_response_by_request: dict[str, str] = {}
+        for index, record in enumerate(value):
+            if record["status"] != "success":
+                continue
+            request_digest = record["request_digest"]
+            baseline = baseline_response_by_request.setdefault(
+                request_digest, record["response_digest"]
+            )
+            if (
+                record["response_digest"] != baseline
+                and index not in allowed_response_drift_positions
+            ):
+                raise ProtocolViolation(
+                    "repeated successful request response drift is outside the "
+                    "code-owned comparison position"
+                )
+
+    else:
+        allowed_response_drift_positions = set()
+
+    if observation_outcome is not ObservationOutcome.KILLED:
+        # PASSED and partial/non-decisive retained reports never have a
+        # response-drift exception.  Same request bytes must mean same response
+        # bytes everywhere in their retained transcript.
+        baseline_response_by_request: dict[str, str] = {}
+        for record in value:
+            if record["status"] != "success":
+                continue
+            request_digest = record["request_digest"]
+            baseline = baseline_response_by_request.setdefault(
+                request_digest, record["response_digest"]
+            )
+            if record["response_digest"] != baseline:
+                raise ProtocolViolation(
+                    "repeated successful request response drift lacks a "
+                    "code-owned decisive comparison"
+                )
+
+    # A head record is derived only from one successful request/response pair.
+    # The candidate-visible state wire has already been checked against the
+    # ordered StateResponse lineage above.  Recomputing the separate harness
+    # ``consumed_state_hash`` seal is intentionally still part of fixed E003;
+    # it cannot be promoted from a caller-supplied digest in this bundle.
+    consumed_success_indices: set[int] = set()
+    previous_success_index = -1
+    for head_index, head in enumerate(head_records):
+        matches = [
+            success_index
+            for success_index, request_record in enumerate(success_records)
+            if success_index not in consumed_success_indices
+            and success_index > previous_success_index
+            and request_record["execution_mode"] == "fresh"
+            and request_record["operation"] == head["operation"]
+            and request_record["seed"] == head["seed"]
+            and request_record["request_digest"] == head["request_digest"]
+            and request_record["response_digest"] == head["response_digest"]
+        ]
+        if not matches:
+            raise ProtocolViolation(
+                f"report head record {head_index} is not bound one-to-one to a "
+                "distinct ordered fresh success request record"
+            )
+        selected = matches[0]
+        consumed_success_indices.add(selected)
+        previous_success_index = selected
+
+    transcript_digest = _json_digest(value, "closed request_records transcript")
+    return transcript_digest, frozenset(sent_coverage), actual_probe_evidence
+
+
 def _validate_paired_semantic_evidence(
     value: object,
     *,
@@ -1060,6 +2156,11 @@ def _validate_record_semantics(
     expected_runner_protocol: str,
     expected_base_seed: int,
     expected_paired_phases: tuple[str, ...],
+    input_preimage_digest: str,
+    input_history: VisibleHistory,
+    input_diagnosis_query: DiagnosisQuery,
+    input_rollout_query: RolloutQuery,
+    input_delta: VisibleDelta | None,
     execution_context_payload: dict[str, Any],
     pre_body: dict[str, Any],
     post_body: dict[str, Any],
@@ -1184,6 +2285,12 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 f"decision record {field_name} must be an exact bool"
             )
+    if decision["input_preimage_digest"] != input_preimage_digest:
+        raise ProtocolViolation("decision input_preimage_digest binding mismatch")
+    _digest(
+        decision["invocation_transcript_digest"],
+        "decision invocation_transcript_digest",
+    )
     if decision["report_available"] is not (report_body is not None):
         raise ProtocolViolation(
             "decision report_available differs from raw report presence"
@@ -1241,6 +2348,52 @@ def _validate_record_semantics(
             "source preparation failure must produce a crashed observation"
         )
 
+    # Any retained report, including a partial CRASHED/REJECTED report, must
+    # still carry a closed, typed invocation transcript.  Completeness is
+    # outcome-sensitive inside the validator; raw partial evidence is not
+    # discarded merely because it cannot support a matrix decision.
+    if report_body is None:
+        if decision["invocation_transcript_digest"] != _json_digest(
+            [], "empty invocation transcript"
+        ):
+            raise ProtocolViolation(
+                "decision without a report must bind the empty invocation transcript"
+            )
+    else:
+        retained_report = _payload_object(report_body, "report transcript")
+        missing_report_fields = _REPORT_REQUIRED_FIELDS.difference(retained_report)
+        extra_report_fields = set(retained_report).difference(_REPORT_REQUIRED_FIELDS)
+        if missing_report_fields or extra_report_fields:
+            raise ProtocolViolation(
+                "report does not have the exact required execution fields; "
+                f"missing={sorted(missing_report_fields)!r}, "
+                f"extra={sorted(extra_report_fields)!r}"
+            )
+        if retained_report["runner_protocol"] != expected_runner_protocol:
+            raise ProtocolViolation("report runner_protocol differs from bundle runner")
+        if retained_report["input_preimage_digest"] != input_preimage_digest:
+            raise ProtocolViolation("report input_preimage_digest binding mismatch")
+        retained_invocation_digest, _, _ = _validate_request_records(
+            retained_report["request_records"],
+            input_preimage_digest=input_preimage_digest,
+            history=input_history,
+            diagnosis_query=input_diagnosis_query,
+            rollout_query=input_rollout_query,
+            delta=input_delta,
+            execution_seed=observation.execution_seed,
+            expected_failure_code=expected_failure_code,
+            expected_semantic_probes=expected_semantic_probes,
+            expected_head_record_shape=expected_head_record_shape,
+            observation_outcome=observation.outcome,
+            head_records=[],
+        )
+        if retained_report["invocation_transcript_digest"] != retained_invocation_digest:
+            raise ProtocolViolation("report invocation_transcript_digest mismatch")
+        if decision["invocation_transcript_digest"] != retained_invocation_digest:
+            raise ProtocolViolation(
+                "decision invocation_transcript_digest binding mismatch"
+            )
+
     if observation.outcome not in {
         ObservationOutcome.KILLED,
         ObservationOutcome.PASSED,
@@ -1294,6 +2447,8 @@ def _validate_record_semantics(
         )
     if report["runner_protocol"] != expected_runner_protocol:
         raise ProtocolViolation("report runner_protocol differs from bundle runner")
+    if report["input_preimage_digest"] != input_preimage_digest:
+        raise ProtocolViolation("report input_preimage_digest binding mismatch")
     if (
         observation.subject_kind is SubjectKind.MUTANT
         and report["paired_semantic_equivalence"] is not None
@@ -1560,6 +2715,34 @@ def _validate_record_semantics(
                 "report replay response drift lacks the code-owned canonical "
                 "UCM-F020-NONREPRODUCIBLE failure"
             )
+        if (
+            expected_failure_code == "UCM-F020-NONREPRODUCIBLE"
+            and observation.outcome is ObservationOutcome.KILLED
+            and not response_pair_drift
+        ):
+            raise ProtocolViolation(
+                "UCM-F020 decisive report lacks actual DDRR head-pair response drift"
+            )
+    (
+        invocation_transcript_digest,
+        _actual_input_coverage,
+        actual_probe_evidence,
+    ) = _validate_request_records(
+        report["request_records"],
+        input_preimage_digest=input_preimage_digest,
+        history=input_history,
+        diagnosis_query=input_diagnosis_query,
+        rollout_query=input_rollout_query,
+        delta=input_delta,
+        execution_seed=observation.execution_seed,
+        expected_failure_code=expected_failure_code,
+        expected_semantic_probes=expected_semantic_probes,
+        expected_head_record_shape=expected_head_record_shape,
+        observation_outcome=observation.outcome,
+        head_records=head_records,
+    )
+    if report["invocation_transcript_digest"] != invocation_transcript_digest:
+        raise ProtocolViolation("report invocation_transcript_digest mismatch")
     if report["harness_stable_during_execution"] is not True:
         raise ProtocolViolation("killed/passed report does not prove stable harness")
     if report["post_source_witness_error"] is not None:
@@ -1614,6 +2797,10 @@ def _validate_record_semantics(
 
     if decision.get("runner_protocol") != expected_runner_protocol:
         raise ProtocolViolation("decision runner_protocol differs from bundle runner")
+    if decision.get("input_preimage_digest") != input_preimage_digest:
+        raise ProtocolViolation("decision input_preimage_digest binding mismatch")
+    if decision.get("invocation_transcript_digest") != invocation_transcript_digest:
+        raise ProtocolViolation("decision invocation_transcript_digest binding mismatch")
     if decision.get("report_available") is not True:
         raise ProtocolViolation("decisive decision does not bind an available report")
     if decision.get("harness_stable_during_execution") is not True:
@@ -1621,6 +2808,10 @@ def _validate_record_semantics(
     if decision.get("execution_binding_complete") is not True:
         raise ProtocolViolation("decisive decision lacks complete execution binding")
     decisive = _payload_object(decisive_body, "decisive record")
+    if decisive.get("input_preimage_digest") != input_preimage_digest:
+        raise ProtocolViolation("decisive input_preimage_digest binding mismatch")
+    if decisive.get("invocation_transcript_digest") != invocation_transcript_digest:
+        raise ProtocolViolation("decisive invocation_transcript_digest binding mismatch")
     expected_payload_digests = {
         "source_record_payload_digest": _json_digest(source, "source record"),
         "report_transcript_payload_digest": _json_digest(report, "report transcript"),
@@ -1652,6 +2843,8 @@ def _validate_record_semantics(
                     "report_transcript_payload_digest",
                     "decision_record_payload_digest",
                     "runtime_metadata",
+                    "input_preimage_digest",
+                    "invocation_transcript_digest",
                 }
             ),
             "mutant decisive record",
@@ -1680,6 +2873,58 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 "killed observation is not derived from one matching report finding"
             )
+        finding_evidence = matches[0]["evidence"]
+        if observation.actual_failure_code == "UCM-F019-UPDATE_INCONSISTENT":
+            actual_consistency = actual_probe_evidence.get("update_consistency")
+            if type(actual_consistency) is not dict:
+                raise ProtocolViolation(
+                    "UCM-F019 finding lacks an actual update-consistency transcript"
+                )
+            evidence_fields = (
+                "incremental_behavior_digest",
+                "replay_behavior_digest",
+                "duplicate_behavior_digest",
+                "incremental_equals_replay",
+                "duplicate_event_is_idempotent",
+            )
+            if any(
+                finding_evidence.get(field_name)
+                != actual_consistency[field_name]
+                for field_name in evidence_fields
+            ):
+                raise ProtocolViolation(
+                    "UCM-F019 finding evidence differs from actual scored "
+                    "incremental/replay/duplicate responses"
+                )
+        if (
+            observation.actual_failure_code == "UCM-F001-FUTURE_LEAK"
+            and "warm_future_old_cut" in expected_semantic_probes
+        ):
+            actual_warm = actual_probe_evidence.get("warm_future_old_cut")
+            if type(actual_warm) is not dict:
+                raise ProtocolViolation(
+                    "UCM-F001 finding lacks an actual warm-future transcript"
+                )
+            evidence_fields = (
+                "before_behavior_digest",
+                "before_raw_wire_digest",
+                "after_initialize_later_digest",
+                "after_initialize_later_raw_wire_digest",
+                "after_update_old_delta_digest",
+                "after_update_old_delta_raw_wire_digest",
+                "initialize_later_stable",
+                "update_old_delta_stable",
+                "initialize_later_raw_exact",
+                "update_old_delta_raw_exact",
+            )
+            if any(
+                finding_evidence.get(field_name) != actual_warm[field_name]
+                for field_name in evidence_fields
+            ):
+                raise ProtocolViolation(
+                    "UCM-F001 finding evidence differs from actual old-cut "
+                    "semantic/raw responses"
+                )
         if observation.actual_failure_code not in failure_codes:
             raise ProtocolViolation(
                 "killed observation failure code is absent from report failure_codes"
@@ -1724,6 +2969,8 @@ def _validate_record_semantics(
                     "report_transcript_payload_digest",
                     "decision_record_payload_digest",
                     "runtime_metadata",
+                    "input_preimage_digest",
+                    "invocation_transcript_digest",
                 }
             ),
             "specificity decisive record",
@@ -1962,20 +3209,15 @@ class MutationEvidenceBundle:
             _INPUT_PREIMAGE_KEYS,
             "input preimage payload",
         )
-        for field_name in ("history", "diagnosis_query", "rollout_query"):
-            if type(input_preimage[field_name]) is not dict:
-                raise ProtocolViolation(
-                    f"input preimage {field_name} must be an exact object"
-                )
-        if input_preimage["delta"] is not None and type(
-            input_preimage["delta"]
-        ) is not dict:
-            raise ProtocolViolation(
-                "input preimage delta must be an exact object or null"
-            )
+        (
+            input_history,
+            input_diagnosis_query,
+            input_rollout_query,
+            input_delta,
+        ) = _typed_input_preimage(input_preimage)
         expected_paired_phases = (
             ("initialize", "update")
-            if input_preimage["delta"] is not None
+            if input_delta is not None
             else ("initialize",)
         )
 
@@ -2028,6 +3270,7 @@ class MutationEvidenceBundle:
                         "source_record_digest": record.source_record_digest,
                         "report_transcript_digest": record.report_transcript_digest,
                         "error_transcript_digest": record.error_transcript_digest,
+                        "input_preimage_digest": input_digest,
                     },
                 ),
             )
@@ -2054,7 +3297,8 @@ class MutationEvidenceBundle:
                     protocol=MUTATION_REPORT_TRANSCRIPT_PROTOCOL,
                     record=record,
                     expected_references={
-                        "source_record_digest": record.source_record_digest
+                        "source_record_digest": record.source_record_digest,
+                        "input_preimage_digest": input_digest,
                     },
                     label="report_transcript_digest",
                 )
@@ -2073,6 +3317,10 @@ class MutationEvidenceBundle:
                         "source_record_digest": record.source_record_digest,
                         "report_transcript_digest": record.report_transcript_digest,
                         "decision_record_digest": record.decision_record_digest,
+                        "input_preimage_digest": input_digest,
+                        "invocation_transcript_digest": _payload_object(
+                            report_body, "report transcript"
+                        ).get("invocation_transcript_digest"),
                     },
                     label="decisive_record_digest",
                 )
@@ -2082,6 +3330,11 @@ class MutationEvidenceBundle:
                 expected_runner_protocol=self.runner_protocol,
                 expected_base_seed=self.base_seed,
                 expected_paired_phases=expected_paired_phases,
+                input_preimage_digest=input_digest,
+                input_history=input_history,
+                input_diagnosis_query=input_diagnosis_query,
+                input_rollout_query=input_rollout_query,
+                input_delta=input_delta,
                 execution_context_payload=execution_context_payload,
                 pre_body=subject_blobs["pre_source_witness_digest"],
                 post_body=subject_blobs["post_source_witness_digest"],
@@ -2225,6 +3478,7 @@ class MutationEvidenceBuilder:
             "payload": input_preimage,
         }
         input_digest = self._add_json_blob(input_body)
+        self._input_preimage_digest = input_digest
         context_body = {
             "protocol": MUTATION_EXECUTION_CONTEXT_PROTOCOL,
             "run_id": self.run_id,
@@ -2236,6 +3490,12 @@ class MutationEvidenceBuilder:
             "payload": execution_context,
         }
         self.execution_context_digest = self._add_json_blob(context_body)
+
+    @property
+    def input_preimage_digest(self) -> str:
+        """Content digest of the exact four-input preimage (read-only)."""
+
+        return self._input_preimage_digest
 
     def _ensure_open(self) -> None:
         if self._sealed:
@@ -2344,7 +3604,10 @@ class MutationEvidenceBuilder:
         report_digest = (
             self._add_subject_blob(
                 protocol=MUTATION_REPORT_TRANSCRIPT_PROTOCOL,
-                references={"source_record_digest": source_digest},
+                references={
+                    "source_record_digest": source_digest,
+                    "input_preimage_digest": self.input_preimage_digest,
+                },
                 payload=report_transcript,
                 **identity,
             )
@@ -2368,6 +3631,7 @@ class MutationEvidenceBuilder:
                 "source_record_digest": source_digest,
                 "report_transcript_digest": report_digest,
                 "error_transcript_digest": error_digest,
+                "input_preimage_digest": self.input_preimage_digest,
             },
             payload=decision_record,
             **identity,
@@ -2379,6 +3643,12 @@ class MutationEvidenceBuilder:
                     "source_record_digest": source_digest,
                     "report_transcript_digest": report_digest,
                     "decision_record_digest": decision_digest,
+                    "input_preimage_digest": self.input_preimage_digest,
+                    "invocation_transcript_digest": (
+                        report_transcript.get("invocation_transcript_digest")
+                        if type(report_transcript) is dict
+                        else None
+                    ),
                 },
                 payload=decisive_record,
                 **identity,

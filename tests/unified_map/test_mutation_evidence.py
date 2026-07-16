@@ -57,15 +57,531 @@ REPLAY_HEAD_CONTROLS = frozenset(
         "DeclaredFullHistoryBaselineControl",
     }
 )
+_DEFAULT_PASS_DELTA = object()
 
 
 def _input_preimage(*, delta: dict[str, object] | None = None) -> dict[str, object]:
-    return {
-        "history": {"events": [{"event_uid": "event-a", "value": 0.4}]},
-        "diagnosis_query": {"labels": ["a", "b"]},
-        "rollout_query": {"horizon": 2},
-        "delta": delta,
+    catalog_digest = "sha256:" + "a" * 64
+    utility_digest = "sha256:" + "b" * 64
+    history = {
+        "protocol": "ucm-visible-history/1",
+        "as_of_available_at": 10,
+        "catalog_digest": catalog_digest,
+        "events": [
+            {
+                "kind": "observation_available",
+                "occurred_at": 1,
+                "collected_at": 1,
+                "available_at": 2,
+                "event_uid": "event-a",
+                "payload": {"value": 0.4},
+            }
+        ],
     }
+    delta_wire = None
+    if delta is not None:
+        delta_wire = {
+            "protocol": "ucm-visible-delta/1",
+            "advance_to": 20,
+            "events": [
+                {
+                    "kind": "observation_available",
+                    "occurred_at": 11,
+                    "collected_at": 11,
+                    "available_at": 12,
+                    "event_uid": "event-b",
+                    "payload": {"value": 0.8},
+                }
+            ],
+        }
+    return {
+        "history": history,
+        "diagnosis_query": {
+            "protocol": "ucm-diagnosis-query/1",
+            "label_catalog": ["a", "b"],
+        },
+        "rollout_query": {
+            "protocol": "ucm-rollout-query/1",
+            "horizon": 2,
+            "plan": {
+                "kind": "no_new_action",
+                "actions": [],
+                "policy_digest": None,
+            },
+            "requested_observables": ["observable-a"],
+            "utility_digest": utility_digest,
+        },
+        "delta": delta_wire,
+    }
+
+
+def _input_digest(*, delta: bool = False, run_id: str = "mutation-unit-run") -> str:
+    return digest_json(
+        {
+            "protocol": mutation_evidence.MUTATION_INPUT_PREIMAGE_PROTOCOL,
+            "run_id": run_id,
+            "payload": _input_preimage(delta={} if delta else None),
+        }
+    )
+
+
+def _state_wire(marker: str) -> dict[str, object]:
+    return {
+        "codec": "canonical-json-v1",
+        "schema_version": "unit-test/1",
+        "state_class": "compressed_shared_state",
+        "payload_b64": base64.b64encode(
+            canonical_json_bytes({"marker": marker})
+        ).decode("ascii"),
+    }
+
+
+def _request_record(
+    request_wire: dict[str, object],
+    response_wire: dict[str, object],
+    *,
+    execution_mode: str = "fresh",
+) -> dict[str, object]:
+    return {
+        "operation": request_wire["operation"],
+        "seed": request_wire["seed"],
+        "execution_mode": execution_mode,
+        "status": "success",
+        "request_wire": request_wire,
+        "request_digest": digest_json(request_wire),
+        "request_fully_sent": True,
+        "received_request_digest": digest_json(request_wire),
+        "response_wire": response_wire,
+        "response_digest": digest_json(response_wire),
+        "failure_origin": None,
+        "failure_code": None,
+    }
+
+
+def _refresh_request_record(record: dict[str, object]) -> None:
+    record["request_digest"] = digest_json(record["request_wire"])
+    if record["request_fully_sent"] is True:
+        record["received_request_digest"] = record["request_digest"]
+    response_wire = record["response_wire"]
+    record["response_digest"] = (
+        None if response_wire is None else digest_json(response_wire)
+    )
+
+
+def _request_transcript(
+    *,
+    execution_seed: int,
+    include_delta: bool,
+    full: bool,
+    semantic_probes: tuple[str, ...] = (),
+    include_passed_suffix: bool = False,
+    killed_failure_code: str | None = None,
+    control_class_name: str = "",
+) -> list[dict[str, object]]:
+    inputs = _input_preimage(delta={} if include_delta else None)
+    state = _state_wire("main")
+    next_state = _state_wire("updated")
+    init_request = {
+        "protocol": "ucm-candidate-request/1",
+        "operation": "initialize",
+        "seed": execution_seed,
+        "history": deepcopy(inputs["history"]),
+    }
+    init_response = {
+        "protocol": "ucm-candidate-response/1",
+        "operation": "initialize",
+        "state": state,
+    }
+    rows = [_request_record(init_request, init_response)]
+    if not full:
+        return rows
+    rows.append(_request_record(deepcopy(init_request), deepcopy(init_response)))
+    diagnosis_request = {
+        "protocol": "ucm-candidate-request/1",
+        "operation": "diagnose",
+        "seed": execution_seed + 1,
+        "state": state,
+        "query": deepcopy(inputs["diagnosis_query"]),
+    }
+    diagnosis_response = {
+        "protocol": "ucm-candidate-response/1",
+        "operation": "diagnose",
+        "result": {
+            "status": "ok",
+            "probabilities": {"a": 0.5, "b": 0.5},
+            "metadata": {},
+        },
+    }
+
+    def drifted_diagnosis_response() -> dict[str, object]:
+        response = deepcopy(diagnosis_response)
+        response["result"]["probabilities"] = {"a": 0.75, "b": 0.25}
+        return response
+
+    rollout_request = {
+        "protocol": "ucm-candidate-request/1",
+        "operation": "rollout",
+        "seed": execution_seed + 2,
+        "state": state,
+        "query": deepcopy(inputs["rollout_query"]),
+    }
+    rollout_response = {
+        "protocol": "ucm-candidate-response/1",
+        "operation": "rollout",
+        "result": {
+            "status": "ok",
+            "observable_predictions": {"observable-a": {"mean": 0.5}},
+            "utility_prediction": {},
+            "metadata": {},
+        },
+    }
+    rows.extend(
+        [
+            _request_record(diagnosis_request, diagnosis_response),
+            _request_record(
+                deepcopy(diagnosis_request),
+                (
+                    drifted_diagnosis_response()
+                    if killed_failure_code == "UCM-F020-NONREPRODUCIBLE"
+                    else deepcopy(diagnosis_response)
+                ),
+            ),
+            _request_record(rollout_request, rollout_response),
+            _request_record(deepcopy(rollout_request), deepcopy(rollout_response)),
+        ]
+    )
+    if include_delta:
+        update_request = {
+            "protocol": "ucm-candidate-request/1",
+            "operation": "update",
+            "seed": execution_seed + 3,
+            "state": state,
+            "delta": deepcopy(inputs["delta"]),
+        }
+        update_response = {
+            "protocol": "ucm-candidate-response/1",
+            "operation": "update",
+            "state": next_state,
+        }
+        rows.extend(
+            [
+                _request_record(update_request, update_response),
+                _request_record(deepcopy(update_request), deepcopy(update_response)),
+            ]
+        )
+    emit_update_consistency = (
+        "update_consistency" in semantic_probes
+        and (
+            include_passed_suffix
+            or killed_failure_code == "UCM-F019-UPDATE_INCONSISTENT"
+        )
+    )
+    emit_warm_future = (
+        "warm_future_old_cut" in semantic_probes
+        and (
+            include_passed_suffix
+            or killed_failure_code == "UCM-F001-FUTURE_LEAK"
+        )
+    )
+    emit_warm_cold = include_passed_suffix or killed_failure_code in {
+        "UCM-F006-HIDDEN_PATIENT_CACHE",
+        "UCM-F001-FUTURE_LEAK",
+        "UCM-F019-UPDATE_INCONSISTENT",
+    }
+    if not (emit_update_consistency or emit_warm_future or emit_warm_cold):
+        return rows
+
+    merged_history = None
+    if include_delta:
+        merged_history = deepcopy(inputs["history"])
+        merged_history["as_of_available_at"] = inputs["delta"]["advance_to"]
+        merged_history["events"] = [
+            *deepcopy(inputs["history"]["events"]),
+            *deepcopy(inputs["delta"]["events"]),
+        ]
+
+    def state_response(operation: str, state_wire: dict[str, object]) -> dict[str, object]:
+        return {
+            "protocol": "ucm-candidate-response/1",
+            "operation": operation,
+            "state": state_wire,
+        }
+
+    def initialize(
+        history_wire: dict[str, object],
+        seed: int,
+        marker: str,
+        *,
+        mode: str,
+        produced: dict[str, object] | None = None,
+    ) -> tuple[dict[str, object], dict[str, object]]:
+        produced = _state_wire(marker) if produced is None else deepcopy(produced)
+        return (
+            _request_record(
+                {
+                    "protocol": "ucm-candidate-request/1",
+                    "operation": "initialize",
+                    "seed": seed,
+                    "history": deepcopy(history_wire),
+                },
+                state_response("initialize", produced),
+                execution_mode=mode,
+            ),
+            produced,
+        )
+
+    def update(
+        consumed: dict[str, object],
+        seed: int,
+        marker: str,
+        *,
+        mode: str,
+        produced: dict[str, object] | None = None,
+    ) -> tuple[dict[str, object], dict[str, object]]:
+        produced = _state_wire(marker) if produced is None else deepcopy(produced)
+        return (
+            _request_record(
+                {
+                    "protocol": "ucm-candidate-request/1",
+                    "operation": "update",
+                    "seed": seed,
+                    "state": consumed,
+                    "delta": deepcopy(inputs["delta"]),
+                },
+                state_response("update", produced),
+                execution_mode=mode,
+            ),
+            produced,
+        )
+
+    def heads(
+        consumed: dict[str, object],
+        seed: int,
+        *,
+        mode: str,
+        diagnosis_wire: dict[str, object] | None = None,
+    ) -> list[dict[str, object]]:
+        diagnosis_request = {
+            "protocol": "ucm-candidate-request/1",
+            "operation": "diagnose",
+            "seed": seed + 1,
+            "state": consumed,
+            "query": deepcopy(inputs["diagnosis_query"]),
+        }
+        rollout_request = {
+            "protocol": "ucm-candidate-request/1",
+            "operation": "rollout",
+            "seed": seed + 2,
+            "state": consumed,
+            "query": deepcopy(inputs["rollout_query"]),
+        }
+        return [
+            _request_record(
+                diagnosis_request,
+                deepcopy(
+                    diagnosis_response
+                    if diagnosis_wire is None
+                    else diagnosis_wire
+                ),
+                execution_mode=mode,
+            ),
+            _request_record(
+                rollout_request,
+                deepcopy(rollout_response),
+                execution_mode=mode,
+            ),
+        ]
+
+    if emit_update_consistency and merged_history is not None:
+        lineage_seed = (
+            execution_seed ^ mutation_evidence.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
+        )
+        lineage_init, lineage_state = initialize(
+            inputs["history"], lineage_seed, "lineage-initial", mode="fresh"
+        )
+        incremental, incremental_state = update(
+            lineage_state, lineage_seed, "lineage-incremental", mode="fresh"
+        )
+        replay, replay_state = initialize(
+            merged_history, lineage_seed, "lineage-replay", mode="fresh"
+        )
+        duplicate, duplicate_state = update(
+            incremental_state, lineage_seed, "lineage-duplicate", mode="fresh"
+        )
+        replay_diagnosis = None
+        duplicate_diagnosis = None
+        if killed_failure_code == "UCM-F019-UPDATE_INCONSISTENT":
+            if control_class_name == "DoubleCountEventControl":
+                duplicate_diagnosis = drifted_diagnosis_response()
+            else:
+                replay_diagnosis = drifted_diagnosis_response()
+        rows.extend(
+            [
+                lineage_init,
+                incremental,
+                replay,
+                duplicate,
+                *heads(incremental_state, lineage_seed, mode="fresh"),
+                *heads(
+                    replay_state,
+                    lineage_seed,
+                    mode="fresh",
+                    diagnosis_wire=replay_diagnosis,
+                ),
+                *heads(
+                    duplicate_state,
+                    lineage_seed,
+                    mode="fresh",
+                    diagnosis_wire=duplicate_diagnosis,
+                ),
+            ]
+        )
+    if emit_warm_future and merged_history is not None:
+        warm_later, _ = initialize(
+            merged_history, execution_seed, "warm-later", mode="sequential"
+        )
+        warm_input, _ = initialize(
+            inputs["history"],
+            execution_seed,
+            "warm-input",
+            mode="sequential",
+            produced=state,
+        )
+        warm_update, _ = update(
+            state,
+            execution_seed + 3,
+            "warm-update",
+            mode="sequential",
+            produced=next_state,
+        )
+        rows.extend(
+            [
+                warm_later,
+                *heads(
+                    state,
+                    execution_seed,
+                    mode="sequential",
+                    diagnosis_wire=(
+                        drifted_diagnosis_response()
+                        if killed_failure_code == "UCM-F001-FUTURE_LEAK"
+                        else None
+                    ),
+                ),
+                warm_input,
+                warm_update,
+                *heads(state, execution_seed, mode="sequential"),
+            ]
+        )
+    if emit_warm_cold:
+        warm_init, _ = initialize(
+            inputs["history"],
+            execution_seed,
+            "warm-cold",
+            mode="sequential",
+            produced=(
+                _state_wire("global-second")
+                if killed_failure_code == "UCM-F006-HIDDEN_PATIENT_CACHE"
+                else state
+            ),
+        )
+        rows.extend(
+            [warm_init, *heads(state, execution_seed, mode="sequential")]
+        )
+    return rows
+
+
+def _scored_projection(response_wire: dict[str, object]) -> dict[str, object]:
+    operation = response_wire["operation"]
+    result = response_wire["result"]
+    assert type(result) is dict
+    if operation == "diagnose":
+        return {
+            "operation": "diagnose",
+            "status": result["status"],
+            "probabilities": deepcopy(result["probabilities"]),
+        }
+    assert operation == "rollout"
+    return {
+        "operation": "rollout",
+        "status": result["status"],
+        "observable_predictions": deepcopy(result["observable_predictions"]),
+        "utility_prediction": deepcopy(result["utility_prediction"]),
+    }
+
+
+def _head_behavior_from_records(
+    records: list[dict[str, object]], diagnosis_index: int, rollout_index: int
+) -> dict[str, object]:
+    diagnosis = records[diagnosis_index]["response_wire"]
+    rollout = records[rollout_index]["response_wire"]
+    assert type(diagnosis) is dict and type(rollout) is dict
+    return {
+        "diagnosis": _scored_projection(diagnosis),
+        "rollout": _scored_projection(rollout),
+    }
+
+
+def _actual_probe_finding_evidence(
+    records: list[dict[str, object]],
+    *,
+    include_delta: bool,
+    failure_code: str,
+) -> dict[str, object]:
+    main_length = 8 if include_delta else 6
+    if failure_code == "UCM-F019-UPDATE_INCONSISTENT":
+        incremental = _head_behavior_from_records(
+            records, main_length + 4, main_length + 5
+        )
+        replay = _head_behavior_from_records(
+            records, main_length + 6, main_length + 7
+        )
+        duplicate = _head_behavior_from_records(
+            records, main_length + 8, main_length + 9
+        )
+        return {
+            "incremental_behavior_digest": digest_json(incremental),
+            "replay_behavior_digest": digest_json(replay),
+            "duplicate_behavior_digest": digest_json(duplicate),
+            "incremental_equals_replay": incremental == replay,
+            "duplicate_event_is_idempotent": incremental == duplicate,
+        }
+    if failure_code == "UCM-F001-FUTURE_LEAK":
+        before = _head_behavior_from_records(records, 2, 4)
+        before_raw = {
+            "diagnosis": records[2]["response_wire"],
+            "rollout": records[4]["response_wire"],
+        }
+        after_initialize = _head_behavior_from_records(
+            records, main_length + 1, main_length + 2
+        )
+        after_initialize_raw = {
+            "diagnosis": records[main_length + 1]["response_wire"],
+            "rollout": records[main_length + 2]["response_wire"],
+        }
+        after_update = _head_behavior_from_records(
+            records, main_length + 5, main_length + 6
+        )
+        after_update_raw = {
+            "diagnosis": records[main_length + 5]["response_wire"],
+            "rollout": records[main_length + 6]["response_wire"],
+        }
+        return {
+            "before_behavior_digest": digest_json(before),
+            "before_raw_wire_digest": digest_json(before_raw),
+            "after_initialize_later_digest": digest_json(after_initialize),
+            "after_initialize_later_raw_wire_digest": digest_json(
+                after_initialize_raw
+            ),
+            "after_update_old_delta_digest": digest_json(after_update),
+            "after_update_old_delta_raw_wire_digest": digest_json(
+                after_update_raw
+            ),
+            "initialize_later_stable": before == after_initialize,
+            "update_old_delta_stable": before == after_update,
+            "initialize_later_raw_exact": before_raw == after_initialize_raw,
+            "update_old_delta_raw_exact": before_raw == after_update_raw,
+        }
+    return {}
 
 
 def _execution_context() -> dict[str, object]:
@@ -148,12 +664,17 @@ def _builder(
     *,
     delta: dict[str, object] | None = None,
     execution_context: dict[str, object] | None = None,
+    input_preimage: dict[str, object] | None = None,
 ) -> MutationEvidenceBuilder:
     return MutationEvidenceBuilder(
         run_id="mutation-unit-run",
         runner_protocol=TEST_RUNNER_PROTOCOL,
         base_seed=TEST_BASE_SEED,
-        input_preimage=_input_preimage(delta=delta),
+        input_preimage=(
+            _input_preimage(delta=delta)
+            if input_preimage is None
+            else input_preimage
+        ),
         execution_context=(
             _execution_context()
             if execution_context is None
@@ -217,6 +738,8 @@ def _decisive_raw(
     classification: str = "ordinary_candidate",
     expected_gate: str = "C02",
     expected_failure_code: str = "UCM-F004-HEAD_HISTORY_ACCESS",
+    include_delta: bool = False,
+    input_preimage_digest: str | None = None,
 ) -> tuple[
     dict[str, object],
     dict[str, object],
@@ -225,6 +748,14 @@ def _decisive_raw(
     dict[str, object],
     dict[str, object],
 ]:
+    effective_include_delta = include_delta or (
+        outcome == "passed"
+        and bool(
+            {"update_consistency", "warm_future_old_cut"}.intersection(
+                semantic_probes
+            )
+        )
+    )
     binding = {
         "candidate_bundle_digest": "sha256:" + binding_digit * 64,
         "candidate_model_digest": "sha256:" + binding_digit * 64,
@@ -262,6 +793,55 @@ def _decisive_raw(
         "post_source_witness_digest": digest_json(post),
         "harness_stable_during_execution": True,
     }
+    bound_input_digest = (
+        _input_digest(delta=effective_include_delta)
+        if input_preimage_digest is None
+        else input_preimage_digest
+    )
+    request_records = _request_transcript(
+        execution_seed=execution_seed,
+        include_delta=effective_include_delta,
+        full=control_class_name in REPLAY_HEAD_CONTROLS,
+        semantic_probes=semantic_probes,
+        include_passed_suffix=outcome == "passed",
+        killed_failure_code=(
+            expected_failure_code if outcome == "killed" else None
+        ),
+        control_class_name=control_class_name,
+    )
+    if (
+        outcome == "killed"
+        and effective_include_delta
+        and expected_failure_code
+        in {
+            "UCM-F019-UPDATE_INCONSISTENT",
+            "UCM-F001-FUTURE_LEAK",
+        }
+    ):
+        actual_evidence = _actual_probe_finding_evidence(
+            request_records,
+            include_delta=effective_include_delta,
+            failure_code=expected_failure_code,
+        )
+        for finding in report_findings:
+            if finding.get("failure_code") == expected_failure_code:
+                existing_evidence = finding.get("evidence")
+                finding["evidence"] = {
+                    **(
+                        existing_evidence
+                        if type(existing_evidence) is dict
+                        else {}
+                    ),
+                    **actual_evidence,
+                }
+    invocation_transcript_digest = digest_json(request_records)
+    head_request_records = [
+        row
+        for row in request_records
+        if row["operation"] in {"diagnose", "rollout"}
+        and row["execution_mode"] == "fresh"
+        and row["seed"] in {execution_seed + 1, execution_seed + 2}
+    ]
     report: dict[str, object] = {
         "runner_protocol": TEST_RUNNER_PROTOCOL,
         "control_class_name": control_class_name,
@@ -292,40 +872,17 @@ def _decisive_raw(
                 **binding,
                 "consumed_state_hash": "sha256:" + "a" * 64,
                 "isolation": "fresh-python-process-audit-v2",
-                "operation": "diagnose",
-                "request_digest": "sha256:" + "b" * 64,
-                "response_digest": "sha256:" + "c" * 64,
-                "seed": execution_seed + 1,
-            },
-            {
-                **binding,
-                "consumed_state_hash": "sha256:" + "a" * 64,
-                "isolation": "fresh-python-process-audit-v2",
-                "operation": "rollout",
-                "request_digest": "sha256:" + "e" * 64,
-                "response_digest": "sha256:" + "f" * 64,
-                "seed": execution_seed + 2,
-            },
-            {
-                **binding,
-                "consumed_state_hash": "sha256:" + "a" * 64,
-                "isolation": "fresh-python-process-audit-v2",
-                "operation": "diagnose",
-                "request_digest": "sha256:" + "b" * 64,
-                "response_digest": "sha256:" + "c" * 64,
-                "seed": execution_seed + 1,
-            },
-            {
-                **binding,
-                "consumed_state_hash": "sha256:" + "a" * 64,
-                "isolation": "fresh-python-process-audit-v2",
-                "operation": "rollout",
-                "request_digest": "sha256:" + "e" * 64,
-                "response_digest": "sha256:" + "f" * 64,
-                "seed": execution_seed + 2,
-            },
+                "operation": row["operation"],
+                "request_digest": row["request_digest"],
+                "response_digest": row["response_digest"],
+                "seed": row["seed"],
+            }
+            for row in head_request_records
         ],
         "paired_semantic_equivalence": paired_semantic_equivalence,
+        "input_preimage_digest": bound_input_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
+        "request_records": request_records,
     }
     if control_class_name not in REPLAY_HEAD_CONTROLS:
         report["head_records"] = []
@@ -340,6 +897,8 @@ def _decisive_raw(
         "report_available": True,
         "harness_stable_during_execution": True,
         "execution_binding_complete": True,
+        "input_preimage_digest": bound_input_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
     }
     if outcome == "killed":
         decision.update(
@@ -375,6 +934,8 @@ def _decisive_raw(
         "report_transcript_payload_digest": digest_json(report),
         "decision_record_payload_digest": digest_json(decision),
         "runtime_metadata": deepcopy(TEST_RUNTIME_METADATA),
+        "input_preimage_digest": bound_input_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
     }
     if outcome == "killed":
         decisive["finding"] = report_findings[0]
@@ -384,7 +945,7 @@ def _decisive_raw(
 
 
 def _bundle() -> MutationEvidenceBundle:
-    builder = _builder()
+    builder = _builder(delta={})
     control = _decisive_raw(
         binding_digit="1",
         control_class_name="HonestSeededControl",
@@ -399,6 +960,8 @@ def _bundle() -> MutationEvidenceBundle:
             "update_consistency",
             "warm_future_old_cut",
         ),
+        include_delta=True,
+        input_preimage_digest=builder.input_preimage_digest,
     )
     # Add in reverse lexical order; finalize must canonicalize record order.
     builder.add_record(
@@ -433,6 +996,8 @@ def _bundle() -> MutationEvidenceBundle:
         ],
         failure_codes=["UCM-F004-HEAD_HISTORY_ACCESS"],
         decision_kind="mutant_kill",
+        include_delta=True,
+        input_preimage_digest=builder.input_preimage_digest,
     )
     builder.add_record(
         subject_id="RawHistoryHead",
@@ -688,6 +1253,8 @@ def test_crashed_record_retains_raw_error_without_counting_as_kill() -> None:
             "derived_outcome": "crashed",
             "actual_gate": None,
             "actual_failure_code": None,
+            "input_preimage_digest": builder.input_preimage_digest,
+            "invocation_transcript_digest": digest_json([]),
         },
         decisive_record=None,
     )
@@ -700,6 +1267,62 @@ def test_crashed_record_retains_raw_error_without_counting_as_kill() -> None:
     assert error_wire["payload"]["errors"][0]["stage"] == "candidate-execution"
     assert report.valid_kills == ()
     assert "RawHistoryHead" in report.missing_or_invalid_mutants
+
+
+def test_crashed_record_can_retain_a_strict_partial_request_transcript() -> None:
+    builder = _builder(delta={})
+    pre, post, source, report, decision, _ = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )
+    report["request_records"] = report["request_records"][:1]
+    report["head_records"] = []
+    report["invocation_transcript_digest"] = digest_json(report["request_records"])
+    decision.update(
+        {
+            "derived_outcome": "crashed",
+            "probe_incomplete": True,
+            "report_processing_complete": False,
+            "invocation_transcript_digest": report["invocation_transcript_digest"],
+        }
+    )
+    builder.add_record(
+        subject_id="ExplicitSeedStochasticState",
+        subject_kind=SubjectKind.SPECIFICITY_CONTROL,
+        execution_seed=EXPLICIT_SEED,
+        outcome=ObservationOutcome.CRASHED,
+        actual_gate=None,
+        actual_failure_code=None,
+        classification="ordinary_candidate",
+        pre_source_witness=pre,
+        post_source_witness=post,
+        source_record=source,
+        report_transcript=report,
+        error_transcript=_error_transcript(
+            [
+                {
+                    "stage": "candidate-execution",
+                    "exception_type": "builtins.RuntimeError",
+                    "message": "partial execution retained",
+                }
+            ]
+        ),
+        decision_record=decision,
+        decisive_record=None,
+    )
+    bundle = builder.finalize()
+    assert bundle.observations[0].outcome is ObservationOutcome.CRASHED
 
 
 def test_record_constructor_rejects_source_digest_relabelling() -> None:
@@ -739,8 +1362,15 @@ def _invalid_kill_builder(
     drop_report_fields: tuple[str, ...] = (),
     preserve_fixed_scope: bool = True,
     execution_context: dict[str, object] | None = None,
+    delta: dict[str, object] | None = None,
+    semantic_probes: tuple[str, ...] = (),
+    input_preimage: dict[str, object] | None = None,
 ) -> MutationEvidenceBuilder:
-    builder = _builder(execution_context=execution_context)
+    builder = _builder(
+        delta=delta,
+        execution_context=execution_context,
+        input_preimage=input_preimage,
+    )
     base_pre, base_post, _, base_report, base_decision, _ = _decisive_raw(
         binding_digit="3",
         control_class_name=control_class_name,
@@ -748,17 +1378,20 @@ def _invalid_kill_builder(
         outcome="killed",
         findings=[
             {
-                "gate": "C02-head-history",
+                "gate": f"{actual_gate}-unit-test",
                 "verdict": "fail",
-                "failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+                "failure_code": actual_failure_code,
                 "detail": "unit-test decisive failure",
-                "evidence": {"probe": "head-history"},
+                "evidence": {"probe": "unit-test"},
             }
         ],
-        failure_codes=["UCM-F004-HEAD_HISTORY_ACCESS"],
+        failure_codes=[actual_failure_code],
         decision_kind="mutant_kill",
         expected_gate=actual_gate,
         expected_failure_code=actual_failure_code,
+        include_delta=delta is not None,
+        input_preimage_digest=builder.input_preimage_digest,
+        semantic_probes=semantic_probes,
     )
     pre_payload = (
         base_pre
@@ -836,6 +1469,16 @@ def _invalid_kill_builder(
         "report_transcript_payload_digest": digest_json(report_payload),
         "decision_record_payload_digest": digest_json(decision_payload),
         "runtime_metadata": deepcopy(TEST_RUNTIME_METADATA),
+        "input_preimage_digest": (
+            report_payload.get("input_preimage_digest")
+            if type(report_payload) is dict
+            else None
+        ),
+        "invocation_transcript_digest": (
+            report_payload.get("invocation_transcript_digest")
+            if type(report_payload) is dict
+            else None
+        ),
     }
     if decisive is None:
         decisive_payload: object = generated_decisive
@@ -881,10 +1524,17 @@ def _invalid_pass_builder(
     report: dict[str, object] | None = None,
     decision: dict[str, object] | None = None,
     decisive: dict[str, object] | None = None,
-    delta: dict[str, object] | None = None,
+    delta: dict[str, object] | None | object = _DEFAULT_PASS_DELTA,
     execution_context: dict[str, object] | None = None,
+    input_preimage: dict[str, object] | None = None,
 ) -> MutationEvidenceBuilder:
-    builder = _builder(delta=delta, execution_context=execution_context)
+    effective_delta = {} if delta is _DEFAULT_PASS_DELTA else delta
+    assert effective_delta is None or type(effective_delta) is dict
+    builder = _builder(
+        delta=effective_delta,
+        execution_context=execution_context,
+        input_preimage=input_preimage,
+    )
     pre, post, source, base_report, base_decision, base_decisive = _decisive_raw(
         binding_digit="4",
         control_class_name=control_class_name,
@@ -897,6 +1547,8 @@ def _invalid_pass_builder(
         semantic_probes=semantic_probes,
         paired_semantic_equivalence=paired_semantic_equivalence,
         classification=classification,
+        include_delta=effective_delta is not None,
+        input_preimage_digest=builder.input_preimage_digest,
     )
     report_payload = {**base_report, **({} if report is None else report)}
     report_findings = report_payload.get("findings")
@@ -1230,6 +1882,12 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "detail": "live-witness schema parity fixture",
         "evidence": {"fixture": "live-source-witness"},
     }
+    request_records = _request_transcript(
+        execution_seed=execution_seed,
+        include_delta=False,
+        full=False,
+    )
+    invocation_transcript_digest = digest_json(request_records)
     report = {
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
         "control_class_name": "RawHistoryHeadControl",
@@ -1251,6 +1909,9 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "findings": [decisive_finding, *_fixed_scope_findings()],
         "head_records": [],
         "paired_semantic_equivalence": None,
+        "input_preimage_digest": builder.input_preimage_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
+        "request_records": request_records,
     }
     decision = {
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
@@ -1265,6 +1926,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "derived_outcome": "killed",
         "actual_gate": "C02",
         "actual_failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+        "input_preimage_digest": builder.input_preimage_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
     }
     decisive = {
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
@@ -1275,6 +1938,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "report_transcript_payload_digest": digest_json(report),
         "decision_record_payload_digest": digest_json(decision),
         "runtime_metadata": runtime_metadata,
+        "input_preimage_digest": builder.input_preimage_digest,
+        "invocation_transcript_digest": invocation_transcript_digest,
     }
     builder.add_record(
         subject_id="RawHistoryHead",
@@ -1414,6 +2079,13 @@ def test_builder_and_parser_reject_every_code_owned_seed_overflow_boundary() -> 
     with pytest.raises(ProtocolViolation, match="derived operation seeds"):
         MutationEvidenceBundle.from_canonical_bytes(_resign(forged_wire))
 
+    forged_lineage_wire = _wire(_bundle())
+    forged_lineage_wire["base_seed"] = lineage_overflow_base
+    with pytest.raises(ProtocolViolation, match="update-consistency lineage seeds"):
+        MutationEvidenceBundle.from_canonical_bytes(
+            _resign(forged_lineage_wire)
+        )
+
 
 def test_input_and_execution_context_payloads_are_exact_runner_preimages() -> None:
     hidden_input = MutationEvidenceBuilder(
@@ -1449,6 +2121,1086 @@ def test_input_and_execution_context_payloads_are_exact_runner_preimages() -> No
     )
     with pytest.raises(ProtocolViolation, match="runtime import cache contract digest"):
         malformed_cache.finalize()
+
+
+def test_builder_exposes_a_read_only_input_preimage_digest() -> None:
+    builder = _builder()
+    assert builder.input_preimage_digest == _input_digest()
+    with pytest.raises(AttributeError):
+        builder.input_preimage_digest = "sha256:" + "0" * 64  # type: ignore[misc]
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    ["history", "diagnosis_query", "rollout_query", "delta"],
+)
+def test_input_preimage_requires_exact_typed_wire_round_trips(field_name: str) -> None:
+    input_preimage = _input_preimage(delta={} if field_name == "delta" else None)
+    target = input_preimage[field_name]
+    assert type(target) is dict
+    target["unexpected"] = True
+    invalid = MutationEvidenceBuilder(
+        run_id="mutation-unit-run",
+        runner_protocol=TEST_RUNNER_PROTOCOL,
+        base_seed=TEST_BASE_SEED,
+        input_preimage=input_preimage,
+        execution_context=_execution_context(),
+    )
+    with pytest.raises(ProtocolViolation, match="fields mismatch|typed protocol parsing"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    "changed_field",
+    ["history", "diagnosis_query", "rollout_query", "delta"],
+)
+def test_old_decisive_payload_cannot_be_reenveloped_for_new_inputs(
+    changed_field: str,
+) -> None:
+    changed_input = _input_preimage(delta={})
+    if changed_field == "history":
+        changed_input["history"]["events"][0]["payload"]["value"] = 0.9
+    elif changed_field == "diagnosis_query":
+        changed_input["diagnosis_query"]["label_catalog"] = ["a", "c"]
+    elif changed_field == "rollout_query":
+        changed_input["rollout_query"]["horizon"] = 3
+    else:
+        changed_input["delta"]["events"][0]["payload"]["value"] = 0.95
+    builder = MutationEvidenceBuilder(
+        run_id="mutation-unit-run",
+        runner_protocol=TEST_RUNNER_PROTOCOL,
+        base_seed=TEST_BASE_SEED,
+        input_preimage=changed_input,
+        execution_context=_execution_context(),
+    )
+    pre, post, source, report, decision, decisive = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+        include_delta=True,
+    )
+    # Simulate an attacker updating every visible digest envelope while
+    # retaining the old actual request transcript.
+    for payload in (report, decision, decisive):
+        payload["input_preimage_digest"] = builder.input_preimage_digest
+    decisive["report_transcript_payload_digest"] = digest_json(report)
+    decisive["decision_record_payload_digest"] = digest_json(decision)
+    builder.add_record(
+        subject_id="ExplicitSeedStochasticState",
+        subject_kind=SubjectKind.SPECIFICITY_CONTROL,
+        execution_seed=EXPLICIT_SEED,
+        outcome=ObservationOutcome.PASSED,
+        actual_gate=None,
+        actual_failure_code=None,
+        classification="ordinary_candidate",
+        pre_source_witness=pre,
+        post_source_witness=post,
+        source_record=source,
+        report_transcript=report,
+        error_transcript=_error_transcript([]),
+        decision_record=decision,
+        decisive_record=decisive,
+    )
+    with pytest.raises(
+        ProtocolViolation,
+        match="differs from input|complete repeated main invocation flow|exact complete fresh main",
+    ):
+        builder.finalize()
+
+
+@pytest.mark.parametrize("mutation", ["bad_digest", "extra_wire_key"])
+def test_request_transcript_rejects_forged_wire_or_digest(mutation: str) -> None:
+    report = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )[3]
+    records = deepcopy(report["request_records"])
+    if mutation == "bad_digest":
+        records[0]["request_digest"] = "sha256:" + "9" * 64
+        message = "request_digest mismatch"
+    else:
+        records[0]["request_wire"]["unexpected"] = True
+        message = "not a typed request"
+    invalid = _invalid_pass_builder(report={"request_records": records})
+    with pytest.raises(ProtocolViolation, match=message):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize("mutation", ["missing", "extra"])
+def test_request_transcript_records_are_closed(mutation: str) -> None:
+    report = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )[3]
+    records = deepcopy(report["request_records"])
+    if mutation == "missing":
+        records[0].pop("request_fully_sent")
+    else:
+        records[0]["unexpected"] = True
+    invalid = _invalid_pass_builder(report={"request_records": records})
+    with pytest.raises(ProtocolViolation, match="closed object"):
+        invalid.finalize()
+
+
+def test_request_transcript_rejects_state_and_head_request_splicing() -> None:
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C04-update-purity",
+                "verdict": "fail",
+                "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        decision_kind="mutant_kill",
+        expected_gate="C04",
+        expected_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+    )[3]
+    state_splice = deepcopy(base["request_records"])
+    diagnosis = next(row for row in state_splice if row["operation"] == "diagnose")
+    diagnosis["request_wire"]["state"] = _state_wire("spliced")
+    diagnosis["request_digest"] = digest_json(diagnosis["request_wire"])
+    diagnosis["received_request_digest"] = diagnosis["request_digest"]
+    invalid_state = _invalid_kill_builder(
+        subject_id="GlobalSecondState",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        actual_gate="C04",
+        actual_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+        report={
+            "request_records": state_splice,
+            "findings": [
+                {
+                    "gate": "C04-update-purity",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                }
+            ],
+            "failure_codes": ["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        },
+    )
+    with pytest.raises(ProtocolViolation, match="prior successful StateResponse"):
+        invalid_state.finalize()
+
+    head_splice = deepcopy(base["head_records"])
+    for head in head_splice[:2]:
+        head["request_digest"] = "sha256:" + "9" * 64
+    invalid_head = _invalid_kill_builder(
+        subject_id="GlobalSecondState",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        actual_gate="C04",
+        actual_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+        report={
+            "head_records": head_splice,
+            "findings": [
+                {
+                    "gate": "C04-update-purity",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                }
+            ],
+            "failure_codes": ["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        },
+    )
+    with pytest.raises(ProtocolViolation, match="fresh success request record"):
+        invalid_head.finalize()
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("consumed_state", "one shared consumed state"),
+        ("request", "request/state/binding drifted"),
+        ("response", "response drift lacks"),
+        ("isolation", "isolation protocol mismatch"),
+    ],
+)
+def test_passed_replay_heads_bind_one_state_and_exact_ddrr_pairs(
+    mutation: str, message: str
+) -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+        include_delta=True,
+    )[3]
+    heads = deepcopy(base["head_records"])
+    if mutation == "consumed_state":
+        heads[3]["consumed_state_hash"] = "sha256:" + "9" * 64
+    elif mutation == "request":
+        heads[1]["request_digest"] = "sha256:" + "9" * 64
+    elif mutation == "response":
+        heads[1]["response_digest"] = "sha256:" + "9" * 64
+    else:
+        heads[1]["isolation"] = "fresh-python-process-audit-v3"
+    invalid = _invalid_pass_builder(delta={}, report={"head_records": heads})
+    with pytest.raises(ProtocolViolation, match=message):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    ("status", "patch", "message"),
+    [
+        ("success", {"response_wire": None, "response_digest": None}, "needs a response"),
+        ("worker_error", {"failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "error cannot carry"),
+        ("worker_error", {"request_fully_sent": False, "received_request_digest": None, "response_wire": None, "response_digest": None, "failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "worker_error fields"),
+        ("harness_error", {"request_fully_sent": False, "received_request_digest": None, "response_digest": None, "failure_origin": "harness", "failure_code": "UCM-E003-HARNESS_INCOMPLETE"}, "response is partial"),
+    ],
+)
+def test_request_transcript_status_field_combinations_are_strict(
+    status: str, patch: dict[str, object], message: str
+) -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )[3]
+    records = deepcopy(base["request_records"])
+    records[0]["status"] = status
+    records[0].update(patch)
+    invalid = _invalid_pass_builder(report={"request_records": records})
+    with pytest.raises(ProtocolViolation, match=message):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    ("status", "failure_code", "message"),
+    [
+        ("harness_error", "UCM-E003-HARNESS_INCOMPLETE", "cannot contain harness_error"),
+        ("worker_error", "UCM-F008-STATE_NOT_CLOSED", "code-owned decisive failure code"),
+    ],
+)
+def test_decisive_kill_rejects_harness_or_unrelated_worker_errors(
+    status: str, failure_code: str, message: str
+) -> None:
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="RawHistoryHeadControl",
+        execution_seed=RAW_HISTORY_SEED,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C02-head-history",
+                "verdict": "fail",
+                "failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F004-HEAD_HISTORY_ACCESS"],
+        decision_kind="mutant_kill",
+    )[3]
+    records = deepcopy(base["request_records"])
+    terminal = records[-1]
+    terminal.update(
+        {
+            "status": status,
+            "response_wire": None,
+            "response_digest": None,
+            "failure_origin": "harness" if status == "harness_error" else "candidate",
+            "failure_code": failure_code,
+        }
+    )
+    if status == "harness_error":
+        terminal["request_fully_sent"] = False
+        terminal["received_request_digest"] = None
+    invocation_digest = digest_json(records)
+    invalid = _invalid_kill_builder(
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match=message):
+        invalid.finalize()
+
+
+def test_replay_heads_require_distinct_ordered_fresh_success_records() -> None:
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C04-update-purity",
+                "verdict": "fail",
+                "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        decision_kind="mutant_kill",
+        expected_gate="C04",
+        expected_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+    )[3]
+    records = base["request_records"]
+    reduced = [
+        deepcopy(next(row for row in records if row["operation"] == operation))
+        for operation in ("initialize", "diagnose", "rollout")
+    ]
+    invocation_digest = digest_json(reduced)
+    invalid = _invalid_kill_builder(
+        subject_id="GlobalSecondState",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        actual_gate="C04",
+        actual_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+        report={
+            "request_records": reduced,
+            "invocation_transcript_digest": invocation_digest,
+            "findings": [
+                {
+                    "gate": "C04-update-purity",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                }
+            ],
+            "failure_codes": ["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(
+        ProtocolViolation,
+        match="exact code-owned ordered flow|one-to-one.*distinct ordered fresh",
+    ):
+        invalid.finalize()
+
+
+def test_passed_main_flow_cannot_be_replaced_by_sequential_probe_records() -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )[3]
+    records = deepcopy(base["request_records"])
+    for record in records:
+        record["execution_mode"] = "sequential"
+    invocation_digest = digest_json(records)
+    invalid = _invalid_pass_builder(
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+        decisive={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="attempted main initialize"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["late_second_initialize", "extra_initialize", "updates_before_heads"],
+)
+def test_fresh_main_flow_requires_exact_code_owned_order(mutation: str) -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+        include_delta=True,
+    )[3]
+    main = deepcopy(base["request_records"][:8])
+    if mutation == "late_second_initialize":
+        records = [main[0], *main[2:6], main[1], *main[6:]]
+    elif mutation == "extra_initialize":
+        records = [*main[:2], deepcopy(main[0]), *main[2:]]
+    else:
+        records = [*main[:2], *main[6:], *main[2:6]]
+    invocation_digest = digest_json(records)
+    invalid = _invalid_pass_builder(
+        delta={},
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+        decisive={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="exact code-owned ordered flow"):
+        invalid.finalize()
+
+
+def test_semantic_or_sequential_record_cannot_interleave_the_physical_main_prefix() -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+    )[3]
+    records = deepcopy(base["request_records"])
+    interleaved = deepcopy(records[0])
+    interleaved["execution_mode"] = "sequential"
+    records.insert(1, interleaved)
+    invocation_digest = digest_json(records)
+    invalid = _invalid_pass_builder(
+        delta={},
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+        decisive={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="physical request_records prefix"):
+        invalid.finalize()
+
+
+def test_second_main_update_must_replay_the_exact_first_update_request() -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+        include_delta=True,
+    )[3]
+    records = deepcopy(base["request_records"])
+    # The second main update is a replay of the first request.  Feeding the
+    # first update's response state instead manufactures a different chain.
+    records[7]["request_wire"]["state"] = deepcopy(
+        records[6]["response_wire"]["state"]
+    )
+    _refresh_request_record(records[7])
+    invocation_digest = digest_json(records)
+    invalid = _invalid_pass_builder(
+        delta={},
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+        decisive={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="update replay pair"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize("mutation", ["delete", "insert", "reorder"])
+def test_passed_semantic_suffix_is_exact_and_physically_closed(mutation: str) -> None:
+    base = _decisive_raw(
+        binding_digit="4",
+        control_class_name="HonestSeededControl",
+        execution_seed=EXPLICIT_SEED,
+        outcome="passed",
+        findings=[],
+        failure_codes=[],
+        decision_kind="specificity_pass",
+        operational_state_closure="pass",
+        semantic_probes=(
+            "full_history_disclosure",
+            "update_consistency",
+            "warm_future_old_cut",
+        ),
+        include_delta=True,
+    )[3]
+    records = deepcopy(base["request_records"])
+    suffix_start = 8
+    if mutation == "delete":
+        del records[suffix_start + 4]
+    elif mutation == "insert":
+        records.insert(suffix_start + 4, deepcopy(records[suffix_start + 4]))
+    else:
+        records[suffix_start + 4], records[suffix_start + 5] = (
+            records[suffix_start + 5],
+            records[suffix_start + 4],
+        )
+    invocation_digest = digest_json(records)
+    invalid = _invalid_pass_builder(
+        delta={},
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+        decisive={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="exact invocation shape"):
+        invalid.finalize()
+
+
+def test_replay_kill_cannot_replace_main_updates_with_lineage_delta_coverage() -> None:
+    execution_seed = TEST_BASE_SEED + 12
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="ReplayBatchDivergenceControl",
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C22-update-consistency",
+                "verdict": "fail",
+                "failure_code": "UCM-F019-UPDATE_INCONSISTENT",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F019-UPDATE_INCONSISTENT"],
+        decision_kind="mutant_kill",
+        expected_gate="C22",
+        expected_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        semantic_probes=("update_consistency",),
+        include_delta=True,
+    )[3]
+    records = deepcopy(base["request_records"])
+    # Retain the complete lineage probe (including its two updates), but drop
+    # only the two code-owned main update replays.  Lineage delta coverage is
+    # not a substitute for the main execution flow.
+    records = [*records[:6], *records[8:]]
+    invocation_digest = digest_json(records)
+    invalid = _invalid_kill_builder(
+        subject_id="ReplayBatchDivergence",
+        control_class_name="ReplayBatchDivergenceControl",
+        execution_seed=execution_seed,
+        actual_gate="C22",
+        actual_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        delta={},
+        semantic_probes=("update_consistency",),
+        report={
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+            "findings": [
+                {
+                    "gate": "C22-update-consistency",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F019-UPDATE_INCONSISTENT",
+                }
+            ],
+            "failure_codes": ["UCM-F019-UPDATE_INCONSISTENT"],
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="exact complete fresh main flow"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    (
+        "subject_id",
+        "control_class_name",
+        "row_index",
+        "gate",
+        "failure_code",
+        "semantic_probes",
+        "delta",
+    ),
+    [
+        (
+            "GlobalSecondState",
+            "GlobalSecondStateControl",
+            0,
+            "C04",
+            "UCM-F006-HIDDEN_PATIENT_CACHE",
+            (),
+            None,
+        ),
+        (
+            "WarmFutureCache",
+            "WarmFutureCacheControl",
+            11,
+            "C23",
+            "UCM-F001-FUTURE_LEAK",
+            ("warm_future_old_cut",),
+            {},
+        ),
+        (
+            "ReplayBatchDivergence",
+            "ReplayBatchDivergenceControl",
+            12,
+            "C22",
+            "UCM-F019-UPDATE_INCONSISTENT",
+            ("update_consistency",),
+            {},
+        ),
+        (
+            "DoubleCountEvent",
+            "DoubleCountEventControl",
+            13,
+            "C22",
+            "UCM-F019-UPDATE_INCONSISTENT",
+            ("update_consistency",),
+            {},
+        ),
+    ],
+)
+def test_comparison_kills_bind_the_exact_live_probe_suffix(
+    subject_id: str,
+    control_class_name: str,
+    row_index: int,
+    gate: str,
+    failure_code: str,
+    semantic_probes: tuple[str, ...],
+    delta: dict[str, object] | None,
+) -> None:
+    builder = _invalid_kill_builder(
+        subject_id=subject_id,
+        control_class_name=control_class_name,
+        execution_seed=TEST_BASE_SEED + row_index,
+        actual_gate=gate,
+        actual_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        delta=delta,
+    )
+    assert builder.finalize().observations[0].outcome is ObservationOutcome.KILLED
+
+
+@pytest.mark.parametrize(
+    (
+        "subject_id",
+        "control_class_name",
+        "row_index",
+        "gate",
+        "failure_code",
+        "semantic_probes",
+        "delta",
+    ),
+    [
+        (
+            "GlobalSecondState",
+            "GlobalSecondStateControl",
+            0,
+            "C04",
+            "UCM-F006-HIDDEN_PATIENT_CACHE",
+            (),
+            None,
+        ),
+        (
+            "WarmFutureCache",
+            "WarmFutureCacheControl",
+            11,
+            "C23",
+            "UCM-F001-FUTURE_LEAK",
+            ("warm_future_old_cut",),
+            {},
+        ),
+        (
+            "ReplayBatchDivergence",
+            "ReplayBatchDivergenceControl",
+            12,
+            "C22",
+            "UCM-F019-UPDATE_INCONSISTENT",
+            ("update_consistency",),
+            {},
+        ),
+    ],
+)
+def test_comparison_kill_cannot_be_decisive_from_main_only(
+    subject_id: str,
+    control_class_name: str,
+    row_index: int,
+    gate: str,
+    failure_code: str,
+    semantic_probes: tuple[str, ...],
+    delta: dict[str, object] | None,
+) -> None:
+    execution_seed = TEST_BASE_SEED + row_index
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": f"{gate}-comparison",
+                "verdict": "fail",
+                "failure_code": failure_code,
+                "detail": "unit-test decisive comparison",
+                "evidence": {},
+            }
+        ],
+        failure_codes=[failure_code],
+        decision_kind="mutant_kill",
+        expected_gate=gate,
+        expected_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        include_delta=delta is not None,
+    )[3]
+    main_length = 8 if delta is not None else 6
+    records = deepcopy(base["request_records"][:main_length])
+    invocation_digest = digest_json(records)
+    report = {
+        **base,
+        "request_records": records,
+        "invocation_transcript_digest": invocation_digest,
+    }
+    invalid = _invalid_kill_builder(
+        subject_id=subject_id,
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        actual_gate=gate,
+        actual_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        delta=delta,
+        report=report,
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="exact invocation shape"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    (
+        "subject_id",
+        "control_class_name",
+        "row_index",
+        "gate",
+        "failure_code",
+        "semantic_probes",
+    ),
+    [
+        (
+            "WarmFutureCache",
+            "WarmFutureCacheControl",
+            11,
+            "C23",
+            "UCM-F001-FUTURE_LEAK",
+            ("warm_future_old_cut",),
+        ),
+        (
+            "ReplayBatchDivergence",
+            "ReplayBatchDivergenceControl",
+            12,
+            "C22",
+            "UCM-F019-UPDATE_INCONSISTENT",
+            ("update_consistency",),
+        ),
+    ],
+)
+def test_semantic_kill_suffix_must_retain_final_warm_cold_sequence(
+    subject_id: str,
+    control_class_name: str,
+    row_index: int,
+    gate: str,
+    failure_code: str,
+    semantic_probes: tuple[str, ...],
+) -> None:
+    execution_seed = TEST_BASE_SEED + row_index
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": f"{gate}-comparison",
+                "verdict": "fail",
+                "failure_code": failure_code,
+                "detail": "unit-test decisive comparison",
+                "evidence": {},
+            }
+        ],
+        failure_codes=[failure_code],
+        decision_kind="mutant_kill",
+        expected_gate=gate,
+        expected_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        include_delta=True,
+    )[3]
+    records = deepcopy(base["request_records"][:-3])
+    invocation_digest = digest_json(records)
+    report = {
+        **base,
+        "request_records": records,
+        "invocation_transcript_digest": invocation_digest,
+    }
+    invalid = _invalid_kill_builder(
+        subject_id=subject_id,
+        control_class_name=control_class_name,
+        execution_seed=execution_seed,
+        actual_gate=gate,
+        actual_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        delta={},
+        report=report,
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="exact invocation shape"):
+        invalid.finalize()
+
+
+def test_f006_requires_actual_raw_warm_cold_drift() -> None:
+    execution_seed = TEST_BASE_SEED
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C04-warm-cold",
+                "verdict": "fail",
+                "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                "detail": "unit-test decisive comparison",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        decision_kind="mutant_kill",
+        expected_gate="C04",
+        expected_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+    )[3]
+    records = deepcopy(base["request_records"])
+    main_length = 6
+    records[main_length]["response_wire"] = deepcopy(records[0]["response_wire"])
+    _refresh_request_record(records[main_length])
+    invocation_digest = digest_json(records)
+    report = {
+        **base,
+        "request_records": records,
+        "invocation_transcript_digest": invocation_digest,
+    }
+    invalid = _invalid_kill_builder(
+        subject_id="GlobalSecondState",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=execution_seed,
+        actual_gate="C04",
+        actual_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+        report=report,
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="lacks actual warm/fresh raw drift"):
+        invalid.finalize()
+
+
+def test_f019_requires_actual_scored_drift_and_finding_binding() -> None:
+    execution_seed = TEST_BASE_SEED + 12
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="ReplayBatchDivergenceControl",
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C22-update-consistency",
+                "verdict": "fail",
+                "failure_code": "UCM-F019-UPDATE_INCONSISTENT",
+                "detail": "unit-test decisive comparison",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F019-UPDATE_INCONSISTENT"],
+        decision_kind="mutant_kill",
+        expected_gate="C22",
+        expected_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        semantic_probes=("update_consistency",),
+        include_delta=True,
+    )[3]
+    no_drift_records = deepcopy(base["request_records"])
+    main_length = 8
+    no_drift_records[main_length + 6]["response_wire"] = deepcopy(
+        no_drift_records[main_length + 4]["response_wire"]
+    )
+    _refresh_request_record(no_drift_records[main_length + 6])
+    no_drift_digest = digest_json(no_drift_records)
+    no_drift_report = {
+        **base,
+        "request_records": no_drift_records,
+        "invocation_transcript_digest": no_drift_digest,
+    }
+    no_drift = _invalid_kill_builder(
+        subject_id="ReplayBatchDivergence",
+        control_class_name="ReplayBatchDivergenceControl",
+        execution_seed=execution_seed,
+        actual_gate="C22",
+        actual_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        semantic_probes=("update_consistency",),
+        delta={},
+        report=no_drift_report,
+        decision={"invocation_transcript_digest": no_drift_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="lacks actual scored consistency drift"):
+        no_drift.finalize()
+
+    forged_report = deepcopy(base)
+    decisive_finding = next(
+        finding
+        for finding in forged_report["findings"]
+        if finding["failure_code"] == "UCM-F019-UPDATE_INCONSISTENT"
+    )
+    decisive_finding["evidence"]["incremental_equals_replay"] = True
+    forged = _invalid_kill_builder(
+        subject_id="ReplayBatchDivergence",
+        control_class_name="ReplayBatchDivergenceControl",
+        execution_seed=execution_seed,
+        actual_gate="C22",
+        actual_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        semantic_probes=("update_consistency",),
+        delta={},
+        report=forged_report,
+    )
+    with pytest.raises(ProtocolViolation, match="finding evidence differs"):
+        forged.finalize()
+
+
+def test_f001_requires_actual_scored_old_cut_drift_and_finding_binding() -> None:
+    execution_seed = TEST_BASE_SEED + 11
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="WarmFutureCacheControl",
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C23-old-cut",
+                "verdict": "fail",
+                "failure_code": "UCM-F001-FUTURE_LEAK",
+                "detail": "unit-test decisive comparison",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F001-FUTURE_LEAK"],
+        decision_kind="mutant_kill",
+        expected_gate="C23",
+        expected_failure_code="UCM-F001-FUTURE_LEAK",
+        semantic_probes=("warm_future_old_cut",),
+        include_delta=True,
+    )[3]
+    metadata_only_records = deepcopy(base["request_records"])
+    main_length = 8
+    metadata_only_records[main_length + 1]["response_wire"] = deepcopy(
+        metadata_only_records[2]["response_wire"]
+    )
+    metadata_only_records[main_length + 1]["response_wire"]["result"][
+        "metadata"
+    ] = {"raw-only-drift": True}
+    _refresh_request_record(metadata_only_records[main_length + 1])
+    metadata_only_digest = digest_json(metadata_only_records)
+    metadata_only_report = {
+        **base,
+        "request_records": metadata_only_records,
+        "invocation_transcript_digest": metadata_only_digest,
+    }
+    metadata_only = _invalid_kill_builder(
+        subject_id="WarmFutureCache",
+        control_class_name="WarmFutureCacheControl",
+        execution_seed=execution_seed,
+        actual_gate="C23",
+        actual_failure_code="UCM-F001-FUTURE_LEAK",
+        semantic_probes=("warm_future_old_cut",),
+        delta={},
+        report=metadata_only_report,
+        decision={"invocation_transcript_digest": metadata_only_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="lacks actual scored old-cut drift"):
+        metadata_only.finalize()
+
+    forged_report = deepcopy(base)
+    decisive_finding = next(
+        finding
+        for finding in forged_report["findings"]
+        if finding["failure_code"] == "UCM-F001-FUTURE_LEAK"
+    )
+    decisive_finding["evidence"]["initialize_later_stable"] = True
+    forged = _invalid_kill_builder(
+        subject_id="WarmFutureCache",
+        control_class_name="WarmFutureCacheControl",
+        execution_seed=execution_seed,
+        actual_gate="C23",
+        actual_failure_code="UCM-F001-FUTURE_LEAK",
+        semantic_probes=("warm_future_old_cut",),
+        delta={},
+        report=forged_report,
+    )
+    with pytest.raises(ProtocolViolation, match="finding evidence differs"):
+        forged.finalize()
 
 
 def test_source_preparation_failure_cannot_be_promoted_to_a_decisive_outcome() -> None:
@@ -1609,7 +3361,20 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
     )[3]
     heads = deepcopy(base_report["head_records"])
     assert type(heads) is list and len(heads) == 4
-    heads[1]["response_digest"] = "sha256:" + "9" * 64
+    request_records = deepcopy(base_report["request_records"])
+    diagnosis_rows = [
+        row for row in request_records if row["operation"] == "diagnose"
+    ]
+    assert len(diagnosis_rows) == 2
+    diagnosis_rows[1]["response_wire"]["result"]["probabilities"] = {
+        "a": 0.6,
+        "b": 0.4,
+    }
+    diagnosis_rows[1]["response_digest"] = digest_json(
+        diagnosis_rows[1]["response_wire"]
+    )
+    heads[1]["response_digest"] = diagnosis_rows[1]["response_digest"]
+    invocation_digest = digest_json(request_records)
     allowed = _invalid_kill_builder(
         subject_id="ImplicitRNGState",
         control_class_name="ImplicitRNGControl",
@@ -1618,6 +3383,8 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
         actual_failure_code="UCM-F020-NONREPRODUCIBLE",
         report={
             "head_records": heads,
+            "request_records": request_records,
+            "invocation_transcript_digest": invocation_digest,
             "findings": [
                 {
                     "gate": "C30-reproducibility",
@@ -1627,8 +3394,120 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
             ],
             "failure_codes": ["UCM-F020-NONREPRODUCIBLE"],
         },
+        decision={"invocation_transcript_digest": invocation_digest},
     )
     assert allowed.finalize().observations[0].outcome is ObservationOutcome.KILLED
+
+
+def test_f020_kill_requires_actual_ddrr_head_pair_response_drift() -> None:
+    execution_seed = TEST_BASE_SEED + 9
+    base = _decisive_raw(
+        binding_digit="3",
+        control_class_name="ImplicitRNGControl",
+        execution_seed=execution_seed,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C30-reproducibility",
+                "verdict": "fail",
+                "failure_code": "UCM-F020-NONREPRODUCIBLE",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F020-NONREPRODUCIBLE"],
+        decision_kind="mutant_kill",
+        expected_gate="C30",
+        expected_failure_code="UCM-F020-NONREPRODUCIBLE",
+    )[3]
+    records = deepcopy(base["request_records"])
+    records[3]["response_wire"] = deepcopy(records[2]["response_wire"])
+    records[3]["response_digest"] = records[2]["response_digest"]
+    heads = deepcopy(base["head_records"])
+    heads[1]["response_digest"] = heads[0]["response_digest"]
+    invocation_digest = digest_json(records)
+    invalid = _invalid_kill_builder(
+        subject_id="ImplicitRNGState",
+        control_class_name="ImplicitRNGControl",
+        execution_seed=execution_seed,
+        actual_gate="C30",
+        actual_failure_code="UCM-F020-NONREPRODUCIBLE",
+        report={
+            "head_records": heads,
+            "request_records": records,
+            "invocation_transcript_digest": invocation_digest,
+            "findings": [
+                {
+                    "gate": "C30-reproducibility",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F020-NONREPRODUCIBLE",
+                }
+            ],
+            "failure_codes": ["UCM-F020-NONREPRODUCIBLE"],
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="lacks actual main head replay drift"):
+        invalid.finalize()
+
+
+def test_non_f020_subject_rejects_actual_request_response_drift() -> None:
+    base_report = _decisive_raw(
+        binding_digit="3",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        outcome="killed",
+        findings=[
+            {
+                "gate": "C04-update-purity",
+                "verdict": "fail",
+                "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                "detail": "unit-test decisive failure",
+                "evidence": {},
+            }
+        ],
+        failure_codes=["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        decision_kind="mutant_kill",
+        expected_gate="C04",
+        expected_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+    )[3]
+    request_records = deepcopy(base_report["request_records"])
+    diagnosis_rows = [
+        row for row in request_records if row["operation"] == "diagnose"
+    ]
+    diagnosis_rows[1]["response_wire"]["result"]["probabilities"] = {
+        "a": 0.6,
+        "b": 0.4,
+    }
+    diagnosis_rows[1]["response_digest"] = digest_json(
+        diagnosis_rows[1]["response_wire"]
+    )
+    heads = deepcopy(base_report["head_records"])
+    heads[1]["response_digest"] = diagnosis_rows[1]["response_digest"]
+    invocation_digest = digest_json(request_records)
+    invalid = _invalid_kill_builder(
+        subject_id="GlobalSecondState",
+        control_class_name="GlobalSecondStateControl",
+        execution_seed=TEST_BASE_SEED,
+        actual_gate="C04",
+        actual_failure_code="UCM-F006-HIDDEN_PATIENT_CACHE",
+        report={
+            "head_records": heads,
+            "request_records": request_records,
+            "invocation_transcript_digest": invocation_digest,
+            "findings": [
+                {
+                    "gate": "C04-update-purity",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F006-HIDDEN_PATIENT_CACHE",
+                }
+            ],
+            "failure_codes": ["UCM-F006-HIDDEN_PATIENT_CACHE"],
+        },
+        decision={"invocation_transcript_digest": invocation_digest},
+    )
+    with pytest.raises(ProtocolViolation, match="outside the code-owned comparison"):
+        invalid.finalize()
 
 
 def test_kill_rejects_non_scope_incomplete_and_requires_fixed_boundaries() -> None:
@@ -1825,17 +3704,16 @@ def test_specificity_pass_allows_only_fixed_scope_incomplete_findings() -> None:
 
 
 def test_behavior_equivalent_pass_requires_input_bound_paired_phases() -> None:
-    initialize_only = _invalid_pass_builder(
+    no_delta = _invalid_pass_builder(
         subject_id="BehaviorEquivalentSerialization",
         control_class_name="BehaviorEquivalentSerializationControl",
         execution_seed=BEHAVIOR_SEED,
         semantic_probes=("update_consistency",),
         paired_semantic_equivalence=_paired_semantic_evidence(),
+        delta=None,
     )
-    assert (
-        initialize_only.finalize().observations[0].outcome
-        is ObservationOutcome.PASSED
-    )
+    with pytest.raises(ProtocolViolation, match="mergeable input delta"):
+        no_delta.finalize()
 
     missing = _invalid_pass_builder(
         subject_id="BehaviorEquivalentSerialization",
@@ -1868,6 +3746,92 @@ def test_behavior_equivalent_pass_requires_input_bound_paired_phases() -> None:
         delta={"events": [{"event_uid": "event-b"}]},
     )
     assert full_update.finalize().observations[0].outcome is ObservationOutcome.PASSED
+
+
+@pytest.mark.parametrize(
+    (
+        "subject_id",
+        "control_class_name",
+        "row_index",
+        "gate",
+        "failure_code",
+        "semantic_probes",
+    ),
+    [
+        (
+            "WarmFutureCache",
+            "WarmFutureCacheControl",
+            11,
+            "C23",
+            "UCM-F001-FUTURE_LEAK",
+            ("warm_future_old_cut",),
+        ),
+        (
+            "ReplayBatchDivergence",
+            "ReplayBatchDivergenceControl",
+            12,
+            "C22",
+            "UCM-F019-UPDATE_INCONSISTENT",
+            ("update_consistency",),
+        ),
+    ],
+)
+def test_semantic_comparison_kill_requires_a_non_null_mergeable_delta(
+    subject_id: str,
+    control_class_name: str,
+    row_index: int,
+    gate: str,
+    failure_code: str,
+    semantic_probes: tuple[str, ...],
+) -> None:
+    no_delta = _invalid_kill_builder(
+        subject_id=subject_id,
+        control_class_name=control_class_name,
+        execution_seed=TEST_BASE_SEED + row_index,
+        actual_gate=gate,
+        actual_failure_code=failure_code,
+        semantic_probes=semantic_probes,
+        delta=None,
+    )
+    with pytest.raises(ProtocolViolation, match="mergeable input delta"):
+        no_delta.finalize()
+
+
+@pytest.mark.parametrize("outcome", ["passed", "warm-kill", "update-kill"])
+def test_duplicate_event_uid_is_not_a_formally_mergeable_probe_delta(
+    outcome: str,
+) -> None:
+    duplicate = _input_preimage(delta={})
+    duplicate["delta"]["events"][0]["event_uid"] = "event-a"
+    if outcome == "passed":
+        invalid = _invalid_pass_builder(
+            delta={},
+            input_preimage=duplicate,
+        )
+    elif outcome == "warm-kill":
+        invalid = _invalid_kill_builder(
+            subject_id="WarmFutureCache",
+            control_class_name="WarmFutureCacheControl",
+            execution_seed=TEST_BASE_SEED + 11,
+            actual_gate="C23",
+            actual_failure_code="UCM-F001-FUTURE_LEAK",
+            semantic_probes=("warm_future_old_cut",),
+            delta={},
+            input_preimage=duplicate,
+        )
+    else:
+        invalid = _invalid_kill_builder(
+            subject_id="ReplayBatchDivergence",
+            control_class_name="ReplayBatchDivergenceControl",
+            execution_seed=TEST_BASE_SEED + 12,
+            actual_gate="C22",
+            actual_failure_code="UCM-F019-UPDATE_INCONSISTENT",
+            semantic_probes=("update_consistency",),
+            delta={},
+            input_preimage=duplicate,
+        )
+    with pytest.raises(ProtocolViolation, match="mergeable input delta"):
+        invalid.finalize()
 
 
 @pytest.mark.parametrize(
