@@ -4,6 +4,7 @@ from dataclasses import replace
 
 import pytest
 
+import prototype.unified_map.family_manifest as family_manifest_module
 from prototype.unified_map.canonical import ProtocolViolation, digest_json
 from prototype.unified_map.family_manifest import (
     AtomicLinkDraft,
@@ -11,6 +12,9 @@ from prototype.unified_map.family_manifest import (
     BuilderRandomnessTranscript,
     FamilyScaffoldStatus,
     FamilySplit,
+    MaterializationReceiptLedger,
+    MaterializationRole,
+    MaterializationSlotDraft,
     MemberRefDraft,
     PairConstraintDraft,
     PairSemantic,
@@ -25,8 +29,11 @@ from prototype.unified_map.family_manifest import (
     WeightedAtomicAssignment,
     audit_legacy_post_split_adapter,
     build_pre_split_family_source,
+    build_materialization_receipt_ledger,
     build_weighted_atomic_assignment,
+    compute_row_bundle_commitment,
     issue_materialization_receipt,
+    issue_materialization_receipt_batch,
 )
 
 
@@ -76,6 +83,7 @@ def _source(
     *,
     pairs: tuple[PairConstraintDraft, ...] = (),
     links: tuple[AtomicLinkDraft, ...] = (),
+    slots: tuple[MaterializationSlotDraft, ...] = (),
 ):
     return build_pre_split_family_source(
         benchmark_id="ucm-benchmark-v1",
@@ -93,6 +101,7 @@ def _source(
         ),
         pair_topology=pairs,
         atomic_links=links,
+        materialization_slots=slots,
     )
 
 
@@ -120,6 +129,25 @@ def _producer_wire() -> dict:
 
 def _digest(label: str) -> str:
     return digest_json({"fixture": label})
+
+
+def _row_bundle_fields(label: str) -> dict[str, str]:
+    return {
+        "record_id": f"record-{label}",
+        "public_history_digest": _digest(f"history-{label}"),
+        "hidden_state_at_cut_digest": _digest(f"hidden-{label}"),
+        "oracle_target_digest": _digest(f"oracle-{label}"),
+        "candidate_row_digest": _digest(f"candidate-{label}"),
+        "judge_row_digest": _digest(f"judge-{label}"),
+        "raw_request_digest": _digest(f"request-{label}"),
+        "raw_response_digest": _digest(f"response-{label}"),
+    }
+
+
+def _row_bundle_commitment(label: str, **overrides: str) -> str:
+    fields = _row_bundle_fields(label)
+    fields.update(overrides)
+    return compute_row_bundle_commitment(**fields)
 
 
 SPLIT_POLICY_DIGEST = _digest("split-policy")
@@ -150,6 +178,178 @@ def _evidence(source, split: FamilySplit = FamilySplit.TRAIN):
         judge_row_digest=_digest("judge-row"),
         raw_request_digest=_digest("raw-request"),
         raw_response_digest=_digest("raw-response"),
+    )
+
+
+def _w19_drafts(
+    count: int = 64,
+    *,
+    prefix: str = "w19-family",
+) -> tuple[ProducerSourceUnitDraft, ...]:
+    return tuple(
+        _draft(
+            f"{prefix}-{index:02d}",
+            world="W19",
+            members=(
+                _member(
+                    "assignment-row",
+                    semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
+                ),
+            ),
+            weight=1,
+        )
+        for index in range(count)
+    )
+
+
+def _w19_cluster(
+    drafts: tuple[ProducerSourceUnitDraft, ...],
+    *,
+    alias: str = "w19-quota-cluster",
+) -> AtomicLinkDraft:
+    return AtomicLinkDraft(
+        alias,
+        AtomicLinkSemantic.W19_ASSIGNMENT_CLUSTER,
+        tuple(MemberRefDraft(item.unit_alias, "assignment-row") for item in drafts),
+    )
+
+
+def _w19_slots(
+    drafts: tuple[ProducerSourceUnitDraft, ...],
+) -> tuple[MaterializationSlotDraft, ...]:
+    return tuple(
+        MaterializationSlotDraft(
+            f"w19-slot-{index:02d}",
+            draft.unit_alias,
+            "assignment-row",
+            MaterializationRole.W19_ASSIGNMENT_ROW,
+            "quota-assignment",
+            _digest(f"w19-cut-{index:02d}"),
+            _digest("w19-query-cell"),
+            atomic_link_alias="w19-quota-cluster",
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                f"w19-slot-{index:02d}"
+            ),
+        )
+        for index, draft in enumerate(drafts)
+    )
+
+
+def _closed_slot_source(*, duplicate_followup_record: bool = False):
+    draft = _draft(
+        "family-slots",
+        members=(
+            _member("left"),
+            _member("right"),
+            _member(
+                "unmaterialized",
+                semantic=SourceMemberSemantic.PATIENT_TRAJECTORY,
+            ),
+        ),
+        weight=4,
+    )
+    pair = PairConstraintDraft(
+        "counterfactual-pair",
+        PairSemantic.COUNTERFACTUAL,
+        (
+            PairSideDraft("family-slots", "left", 0),
+            PairSideDraft("family-slots", "right", 1),
+        ),
+    )
+    slots = (
+        # Two rows for one source member make the multiplicity explicit rather
+        # than silently assuming one materialized row per member.
+        MaterializationSlotDraft(
+            "left-baseline",
+            "family-slots",
+            "left",
+            MaterializationRole.STANDARD_ROW,
+            "baseline",
+            _digest("cut-left-baseline"),
+            _digest("query-left-baseline"),
+            row_bundle_commitment_digest=_row_bundle_commitment("left-baseline"),
+        ),
+        MaterializationSlotDraft(
+            "left-followup",
+            "family-slots",
+            "left",
+            MaterializationRole.STANDARD_ROW,
+            "followup",
+            _digest("cut-left-followup"),
+            _digest("query-left-followup"),
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "left-followup",
+                **(
+                    {"record_id": "record-left-baseline"}
+                    if duplicate_followup_record
+                    else {}
+                ),
+            ),
+        ),
+        MaterializationSlotDraft(
+            "pair-side-0",
+            "family-slots",
+            "left",
+            MaterializationRole.PAIR_SIDE,
+            "counterfactual-readout",
+            _digest("cut-pair"),
+            _digest("query-pair"),
+            pair_alias="counterfactual-pair",
+            pair_side=0,
+            row_bundle_commitment_digest=_row_bundle_commitment("pair-side-0"),
+        ),
+        MaterializationSlotDraft(
+            "pair-side-1",
+            "family-slots",
+            "right",
+            MaterializationRole.PAIR_SIDE,
+            "counterfactual-readout",
+            _digest("cut-pair"),
+            _digest("query-pair"),
+            pair_alias="counterfactual-pair",
+            pair_side=1,
+            row_bundle_commitment_digest=_row_bundle_commitment("pair-side-1"),
+        ),
+    )
+    return _source((draft,), pairs=(pair,), slots=slots)
+
+
+def _slot_evidence(source, assignment, slot_index: int) -> RowMaterializationEvidence:
+    slot = source.materialization_slots[slot_index]
+    # ``assignment`` has already crossed its public constructor boundary.
+    # Avoid revalidating the complete 64-family W19 graph once per fixture row;
+    # receipt issuance still performs the authoritative full validation.
+    assigned = next(
+        (
+            item
+            for item in assignment.assignments
+            if item.authority_digest == slot.reference.authority_digest
+        ),
+        None,
+    )
+    assert assigned is not None
+    label = slot.slot_alias
+    row_bundle = _row_bundle_fields(label)
+    return RowMaterializationEvidence(
+        record_id=row_bundle["record_id"],
+        assigned_split=assigned.assigned_split,
+        authority_digest=slot.reference.authority_digest,
+        member_digest=slot.reference.member_digest,
+        public_history_digest=row_bundle["public_history_digest"],
+        hidden_state_at_cut_digest=row_bundle["hidden_state_at_cut_digest"],
+        query_cell_digest=slot.query_cell_digest,
+        oracle_target_digest=row_bundle["oracle_target_digest"],
+        candidate_row_digest=row_bundle["candidate_row_digest"],
+        judge_row_digest=row_bundle["judge_row_digest"],
+        raw_request_digest=row_bundle["raw_request_digest"],
+        raw_response_digest=row_bundle["raw_response_digest"],
+        materialization_slot_digest=slot.slot_digest,
+        cut_digest=slot.cut_digest,
+        stage_label=slot.stage_label,
+        materialization_role=slot.materialization_role,
+        pair_digest=slot.pair_digest,
+        pair_side=slot.pair_side,
+        atomic_link_digest=slot.atomic_link_digest,
     )
 
 
@@ -220,6 +420,19 @@ def test_producer_cannot_forge_or_smuggle_family_digest() -> None:
         "candidate_row_digest",
         "rawResponseDigest",
         "receipt_digest",
+        "materialization_slots",
+        "materializationSlotDigest",
+        "slot_digest",
+        "cutDigest",
+        "stage_label",
+        "materialization_role",
+        "pair_alias",
+        "pairSide",
+        "atomic_link_alias",
+        "atomicLinkDigest",
+        "row_bundle_commitment_digest",
+        "member_coverage",
+        "ledger_digest",
     ],
 )
 def test_pre_split_source_rejects_post_split_or_seed_fields(forbidden_key: str) -> None:
@@ -467,7 +680,37 @@ def test_pair_cannot_cross_family_or_split() -> None:
             PairSideDraft("family-a", "right", 1),
         ),
     )
-    source = _source(drafts, pairs=(pair,))
+    pair_slots = (
+        MaterializationSlotDraft(
+            "family-a-pair-0",
+            "family-a",
+            "left",
+            MaterializationRole.PAIR_SIDE,
+            "pair-readout",
+            _digest("family-a-pair-cut"),
+            _digest("family-a-pair-query"),
+            pair_alias="in-family-pair",
+            pair_side=0,
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "family-a-pair-0"
+            ),
+        ),
+        MaterializationSlotDraft(
+            "family-a-pair-1",
+            "family-a",
+            "right",
+            MaterializationRole.PAIR_SIDE,
+            "pair-readout",
+            _digest("family-a-pair-cut"),
+            _digest("family-a-pair-query"),
+            pair_alias="in-family-pair",
+            pair_side=1,
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "family-a-pair-1"
+            ),
+        ),
+    )
+    source = _source(drafts, pairs=(pair,), slots=pair_slots)
     assignment = _assignment(
         source,
         {
@@ -476,8 +719,7 @@ def test_pair_cannot_cross_family_or_split() -> None:
         },
     )
     side_one = replace(
-        _evidence(source),
-        member_digest=source.units[0].members[1].member_digest,
+        _slot_evidence(source, assignment, 1),
         assigned_split=FamilySplit.SEALED_TEST,
     )
     with pytest.raises(ProtocolViolation, match="does not match"):
@@ -488,7 +730,7 @@ def test_generic_atomic_connected_component_cannot_cross_split() -> None:
     drafts = (_draft("family-a", weight=3), _draft("family-b", weight=5))
     link = AtomicLinkDraft(
         "s0-s1-release",
-        AtomicLinkSemantic.RELEASE_S0_S1,
+        AtomicLinkSemantic.CUT_SET,
         (
             MemberRefDraft("family-a", "left"),
             MemberRefDraft("family-b", "right"),
@@ -555,35 +797,11 @@ def test_assignment_rejects_missing_duplicate_and_reweighted_units() -> None:
 
 
 def test_w19_assignment_cluster_is_not_a_patient_family() -> None:
-    family_a = _draft(
-        "w19-family-a",
-        world="W19",
-        members=(
-            _member(
-                "assignment-row",
-                semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
-            ),
-        ),
-    )
-    family_b = _draft(
-        "w19-family-b",
-        world="W19",
-        members=(
-            _member(
-                "assignment-row",
-                semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
-            ),
-        ),
-    )
-    cluster = AtomicLinkDraft(
-        "w19-quota-cluster",
-        AtomicLinkSemantic.W19_ASSIGNMENT_CLUSTER,
-        (
-            MemberRefDraft("w19-family-a", "assignment-row"),
-            MemberRefDraft("w19-family-b", "assignment-row"),
-        ),
-    )
-    source = _source((family_a, family_b), links=(cluster,))
+    families = _w19_drafts()
+    cluster = _w19_cluster(families)
+    source = _source(families, links=(cluster,), slots=_w19_slots(families))
+    assert len(source.atomic_links[0].members) == 64
+    assert len({item.authority_digest for item in source.units}) == 64
     assert all(
         unit.to_wire()["semantic_type"] == "patient_family" for unit in source.units
     )
@@ -601,43 +819,240 @@ def test_w19_assignment_cluster_is_not_a_patient_family() -> None:
         _assignment(
             source,
             {
-                source.units[0].authority_digest: FamilySplit.TRAIN,
-                source.units[1].authority_digest: FamilySplit.SEALED_TEST,
+                unit.authority_digest: (
+                    FamilySplit.SEALED_TEST if index == 63 else FamilySplit.TRAIN
+                )
+                for index, unit in enumerate(source.units)
             },
         )
     assignment = _assignment(
         source,
         {unit.authority_digest: FamilySplit.TRAIN for unit in source.units},
     )
-    receipt = issue_materialization_receipt(source, assignment, _evidence(source))
+    receipt = issue_materialization_receipt(
+        source, assignment, _slot_evidence(source, assignment, 0)
+    )
     assert receipt.to_wire()["assignment_cluster_digests"] == [
         cluster_wire["link_digest"]
     ]
 
     with pytest.raises(ProtocolViolation, match="topology is incomplete"):
-        _source((family_a, family_b))
+        _source(families)
+
+    short_families = _w19_drafts(63)
+    with pytest.raises(ProtocolViolation, match="exactly 64"):
+        _source(short_families, links=(_w19_cluster(short_families),))
+
+    long_families = _w19_drafts(65)
+    with pytest.raises(ProtocolViolation, match="exactly 64"):
+        _source(long_families, links=(_w19_cluster(long_families),))
+
+    with pytest.raises(ProtocolViolation, match="only one assignment row"):
+        _draft(
+            "w19-family-duplicate",
+            world="W19",
+            members=(
+                _member(
+                    "assignment-row-a",
+                    semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
+                ),
+                _member(
+                    "assignment-row-b",
+                    semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
+                ),
+            ),
+            weight=1,
+        )
+    with pytest.raises(ProtocolViolation, match="weight must be 1"):
+        _draft(
+            "w19-weighted-family",
+            world="W19",
+            members=(
+                _member(
+                    "assignment-row",
+                    semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
+                ),
+            ),
+            weight=99,
+        )
+
+    ordinary = tuple(_draft(f"ordinary-{index:02d}") for index in range(64))
     wrong_cluster = AtomicLinkDraft(
         "wrong-w19-cluster",
         AtomicLinkSemantic.W19_ASSIGNMENT_CLUSTER,
-        (
-            MemberRefDraft("ordinary-a", "left"),
-            MemberRefDraft("ordinary-b", "right"),
-        ),
+        tuple(MemberRefDraft(item.unit_alias, "left") for item in ordinary),
     )
     with pytest.raises(ProtocolViolation, match="typed rows"):
+        _source(ordinary, links=(wrong_cluster,))
+
+    resolved_cluster = source.atomic_links[0]
+    object.__setattr__(resolved_cluster, "members", resolved_cluster.members[:-1])
+    with pytest.raises(ProtocolViolation, match="exactly 64"):
+        source.to_wire()
+
+
+def test_w19_cluster_cannot_be_bridged_to_cluster_or_foreign_world() -> None:
+    cluster_a_families = _w19_drafts(prefix="w19-cluster-a-family")
+    cluster_b_families = _w19_drafts(prefix="w19-cluster-b-family")
+    cluster_a = _w19_cluster(cluster_a_families, alias="w19-cluster-a")
+    cluster_b = _w19_cluster(cluster_b_families, alias="w19-cluster-b")
+    cross_cluster_bridge = AtomicLinkDraft(
+        "cross-cluster-bridge",
+        AtomicLinkSemantic.CUT_SET,
+        (
+            MemberRefDraft(cluster_a_families[0].unit_alias, "assignment-row"),
+            MemberRefDraft(cluster_b_families[0].unit_alias, "assignment-row"),
+        ),
+    )
+    with pytest.raises(ProtocolViolation, match="cannot be bridged"):
         _source(
-            (_draft("ordinary-a"), _draft("ordinary-b")),
-            links=(wrong_cluster,),
+            (*cluster_a_families, *cluster_b_families),
+            links=(cluster_a, cluster_b, cross_cluster_bridge),
+        )
+
+    foreign = _draft("w18-foreign-family", world="W18")
+    cross_world_bridge = AtomicLinkDraft(
+        "cross-world-bridge",
+        AtomicLinkSemantic.CUT_SET,
+        (
+            MemberRefDraft(cluster_a_families[0].unit_alias, "assignment-row"),
+            MemberRefDraft(foreign.unit_alias, "left"),
+        ),
+    )
+    with pytest.raises(ProtocolViolation, match="cannot be bridged"):
+        _source(
+            (*cluster_a_families, foreign),
+            links=(cluster_a, cross_world_bridge),
         )
 
 
-def test_receipt_exactly_joins_source_assignment_state_query_oracle_and_raw() -> None:
-    source = _source((_draft("family-a"),))
+def test_closed_w19_inventory_requires_exactly_one_slot_per_each_of_64_rows() -> None:
+    families = _w19_drafts()
+    cluster = _w19_cluster(families)
+    slots = _w19_slots(families)
+    with pytest.raises(ProtocolViolation, match="exactly one slot"):
+        _source(families, links=(cluster,), slots=slots[:-1])
+    duplicate_first = replace(
+        slots[0],
+        slot_alias="w19-slot-duplicate-first",
+        stage_label="quota-assignment-duplicate",
+        cut_digest=_digest("w19-cut-duplicate-first"),
+    )
+    with pytest.raises(ProtocolViolation, match="exactly one slot"):
+        _source(
+            families,
+            links=(cluster,),
+            slots=(*slots, duplicate_first),
+        )
+
+    source = _source(families, links=(cluster,), slots=slots)
+    assert len(source.materialization_slots) == 64
+    counts: dict[tuple[str, str], int] = {}
+    for slot in source.materialization_slots:
+        reference = (
+            slot.reference.authority_digest,
+            slot.reference.member_digest,
+        )
+        counts[reference] = counts.get(reference, 0) + 1
+    assert len(counts) == 64
+    assert set(counts.values()) == {1}
+
+
+def test_w19_batch_receipts_exactly_cover_all_64_typed_assignment_rows() -> None:
+    families = _w19_drafts()
+    source = _source(
+        families,
+        links=(_w19_cluster(families),),
+        slots=_w19_slots(families),
+    )
+    assignment = _assignment(
+        source,
+        {
+            unit.authority_digest: FamilySplit.SEALED_TEST
+            for unit in source.units
+        },
+    )
+    evidences = tuple(
+        _slot_evidence(source, assignment, index)
+        for index in range(len(source.materialization_slots))
+    )
+    receipts = issue_materialization_receipt_batch(
+        source,
+        assignment,
+        evidences,
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+    wire = ledger.to_wire()
+
+    assert len(receipts) == 64
+    assert wire["declared_slot_count"] == 64
+    assert wire["receipt_count"] == 64
+    assert len(wire["member_coverage"]) == 64
+    assert {len(item["entries"]) for item in wire["member_coverage"]} == {1}
+    assert {
+        item["row_join"]["materialization_role"] for item in wire["receipts"]
+    } == {"w19_assignment_row"}
+
+    swapped_cut = replace(evidences[1], cut_digest=evidences[0].cut_digest)
+    with pytest.raises(ProtocolViolation, match="cut does not match"):
+        issue_materialization_receipt_batch(
+            source,
+            assignment,
+            (evidences[0], swapped_cut, *evidences[2:]),
+        )
+
+    # Batch construction is only a parent-validation optimization; each child
+    # retains its own sealed evidence and receipt integrity boundary.
+    rewritten_evidence = replace(
+        receipts[0].evidence,
+        public_history_digest=_digest("batch-post-construction-rewrite"),
+    )
+    object.__setattr__(receipts[0], "evidence", rewritten_evidence)
+    with pytest.raises(ProtocolViolation, match="row bundle commitment"):
+        receipts[0].to_wire()
+
+
+def test_batch_receipts_match_individual_api_and_revalidate_parent_authority() -> None:
+    source = _closed_slot_source()
     assignment = _assignment(
         source,
         {source.units[0].authority_digest: FamilySplit.TRAIN},
     )
-    evidence = _evidence(source)
+    evidences = tuple(
+        _slot_evidence(source, assignment, index)
+        for index in range(len(source.materialization_slots))
+    )
+    individual = tuple(
+        issue_materialization_receipt(source, assignment, evidence)
+        for evidence in evidences
+    )
+    batched = issue_materialization_receipt_batch(source, assignment, evidences)
+
+    assert [item.receipt_digest for item in batched] == [
+        item.receipt_digest for item in individual
+    ]
+    assert [item.to_wire() for item in batched] == [
+        item.to_wire() for item in individual
+    ]
+
+    ledger = build_materialization_receipt_ledger(source, assignment, batched)
+    # The validation context is operation-local, never a cache.  Mutating
+    # nested parent authority after issuance must therefore fail on the next
+    # receipt/ledger boundary.
+    source.units[0].recipe_payload["cohort"] = "post-batch-rewrite"
+    with pytest.raises(ProtocolViolation, match="not builder-derived"):
+        batched[0].to_wire()
+    with pytest.raises(ProtocolViolation, match="not builder-derived"):
+        ledger.to_wire()
+
+
+def test_receipt_exactly_joins_source_assignment_state_query_oracle_and_raw() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    evidence = _slot_evidence(source, assignment, 0)
     receipt = issue_materialization_receipt(source, assignment, evidence)
     wire = receipt.to_wire()
 
@@ -650,24 +1065,457 @@ def test_receipt_exactly_joins_source_assignment_state_query_oracle_and_raw() ->
     assert wire["status"] == "pre_freeze_scaffold"
     assert wire["freeze_grade_evidence"] is False
     assert wire["benchmark_freeze_eligible"] is False
+    assert wire["receipt_digest"] == digest_json(
+        {key: value for key, value in wire.items() if key != "receipt_digest"}
+    )
 
 
-def test_row_receipt_cannot_define_or_reassign_authority() -> None:
+def test_closed_materialization_ledger_exactly_covers_declared_slots() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.SEALED_TEST},
+    )
+    receipts = tuple(
+        issue_materialization_receipt(
+            source,
+            assignment,
+            _slot_evidence(source, assignment, index),
+        )
+        for index in range(len(source.materialization_slots))
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+    assert isinstance(ledger, MaterializationReceiptLedger)
+    wire = ledger.to_wire()
+    assert wire["declared_slot_count"] == 4
+    assert wire["receipt_count"] == 4
+    assert wire["status"] == "pre_freeze_scaffold"
+    assert wire["freeze_grade_evidence"] is False
+    assert wire["benchmark_freeze_eligible"] is False
+    assert wire["ledger_digest"] == digest_json(
+        {key: value for key, value in wire.items() if key != "ledger_digest"}
+    )
+
+    coverage = {
+        (item["authority_digest"], item["member_digest"]): item["entries"]
+        for item in wire["member_coverage"]
+    }
+    unit = source.units[0]
+    assert len(coverage[(unit.authority_digest, unit.members[0].member_digest)]) == 3
+    assert len(coverage[(unit.authority_digest, unit.members[1].member_digest)]) == 1
+    # Zero rows is explicit coverage, not an implicit one-row-per-member rule.
+    assert coverage[(unit.authority_digest, unit.members[2].member_digest)] == []
+    assert {
+        item["materialization_role"]
+        for item in source.to_wire()["materialization_slots"]
+    } == {"standard_row", "pair_side"}
+
+
+def test_materialization_ledger_rejects_missing_duplicate_and_undeclared_slots() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    receipts = tuple(
+        issue_materialization_receipt(
+            source,
+            assignment,
+            _slot_evidence(source, assignment, index),
+        )
+        for index in range(len(source.materialization_slots))
+    )
+    with pytest.raises(ProtocolViolation, match="exactly cover declared slots"):
+        build_materialization_receipt_ledger(source, assignment, receipts[:-1])
+    with pytest.raises(ProtocolViolation, match="duplicate slot receipt"):
+        build_materialization_receipt_ledger(
+            source,
+            assignment,
+            (*receipts, receipts[0]),
+        )
+
+    undeclared = replace(
+        _slot_evidence(source, assignment, 0),
+        materialization_slot_digest=_digest("undeclared-slot"),
+    )
+    with pytest.raises(ProtocolViolation, match="unknown materialization slot"):
+        issue_materialization_receipt(source, assignment, undeclared)
+
+    duplicate_source = _closed_slot_source(duplicate_followup_record=True)
+    duplicate_assignment = _assignment(
+        duplicate_source,
+        {duplicate_source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    duplicate_evidences = [
+        _slot_evidence(duplicate_source, duplicate_assignment, index)
+        for index in range(len(duplicate_source.materialization_slots))
+    ]
+    duplicate_evidences[1] = replace(
+        duplicate_evidences[1],
+        record_id=duplicate_evidences[0].record_id,
+    )
+    duplicate_receipts = issue_materialization_receipt_batch(
+        duplicate_source,
+        duplicate_assignment,
+        tuple(duplicate_evidences),
+    )
+    with pytest.raises(ProtocolViolation, match="record ids must be unique"):
+        build_materialization_receipt_ledger(
+            duplicate_source,
+            duplicate_assignment,
+            duplicate_receipts,
+        )
+
+
+def test_materialization_receipt_rejects_cross_split_cut_query_and_pair_side_joins() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    evidence = _slot_evidence(source, assignment, 2)
+
+    with pytest.raises(ProtocolViolation, match="split does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, assigned_split=FamilySplit.SEALED_TEST),
+        )
+    with pytest.raises(ProtocolViolation, match="cut does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, cut_digest=_digest("wrong-cut")),
+        )
+    with pytest.raises(ProtocolViolation, match="query cell does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, query_cell_digest=_digest("wrong-query")),
+        )
+    with pytest.raises(ProtocolViolation, match="stage does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, stage_label="swapped-stage"),
+        )
+    with pytest.raises(ProtocolViolation, match="role does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(
+                evidence,
+                materialization_role=MaterializationRole.STANDARD_ROW,
+                pair_digest=None,
+                pair_side=None,
+            ),
+        )
+    with pytest.raises(ProtocolViolation, match="pair side does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, pair_side=1),
+        )
+    with pytest.raises(ProtocolViolation, match="member does not match"):
+        issue_materialization_receipt(
+            source,
+            assignment,
+            replace(evidence, member_digest=source.units[0].members[1].member_digest),
+        )
+
+
+def test_pair_slot_inventory_requires_both_exact_sides_and_existing_pair() -> None:
+    draft = _draft("pair-family")
+    pair = PairConstraintDraft(
+        "pair",
+        PairSemantic.BEHAVIORAL,
+        (
+            PairSideDraft("pair-family", "left", 0),
+            PairSideDraft("pair-family", "right", 1),
+        ),
+    )
+    only_side_zero = MaterializationSlotDraft(
+        "only-side-zero",
+        "pair-family",
+        "left",
+        MaterializationRole.PAIR_SIDE,
+        "paired-readout",
+        _digest("pair-cut"),
+        _digest("pair-query"),
+        pair_alias="pair",
+        pair_side=0,
+        row_bundle_commitment_digest=_row_bundle_commitment("only-side-zero"),
+    )
+    with pytest.raises(ProtocolViolation, match="exactly sides 0 and 1"):
+        _source((draft,), pairs=(pair,), slots=(only_side_zero,))
+    with pytest.raises(ProtocolViolation, match="missing pair alias"):
+        _source((draft,), slots=(only_side_zero,))
+
+    downgraded_pair_slots = tuple(
+        MaterializationSlotDraft(
+            f"standard-{side}",
+            "pair-family",
+            member,
+            MaterializationRole.STANDARD_ROW,
+            "paired-readout",
+            _digest(f"standard-cut-{side}"),
+            _digest(f"standard-query-{side}"),
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                f"standard-{side}"
+            ),
+        )
+        for side, member in enumerate(("left", "right"))
+    )
+    with pytest.raises(ProtocolViolation, match="omits declared pair topology"):
+        _source((draft,), pairs=(pair,), slots=downgraded_pair_slots)
+
+
+@pytest.mark.parametrize(
+    ("semantic", "role"),
+    [
+        (SourceMemberSemantic.PROBE_VARIANT, MaterializationRole.STANDARD_ROW),
+        (SourceMemberSemantic.RELEASE_STAGE, MaterializationRole.STANDARD_ROW),
+    ],
+)
+def test_typed_member_role_cannot_be_downgraded(
+    semantic: SourceMemberSemantic,
+    role: MaterializationRole,
+) -> None:
+    draft = _draft(
+        "typed-family",
+        members=(_member("typed-member", semantic=semantic),),
+    )
+    slot = MaterializationSlotDraft(
+        "downgraded-slot",
+        "typed-family",
+        "typed-member",
+        role,
+        "typed-stage",
+        _digest("typed-cut"),
+        _digest("typed-query"),
+        row_bundle_commitment_digest=_row_bundle_commitment("downgraded-slot"),
+    )
+    with pytest.raises(ProtocolViolation, match="typed materialization role"):
+        _source((draft,), slots=(slot,))
+
+
+def test_foreign_or_mutated_slot_inventory_cannot_join_source_authority() -> None:
+    source = _closed_slot_source()
+    foreign_draft = _draft(
+        "foreign-family",
+        members=(
+            SourceMemberDraft(
+                "foreign-member",
+                SourceMemberSemantic.PATIENT_TRAJECTORY,
+                {"foreign_clinical_value": 9},
+            ),
+        ),
+    )
+    foreign_source = _source(
+        (foreign_draft,),
+        slots=(
+            MaterializationSlotDraft(
+                "foreign-slot",
+                "foreign-family",
+                "foreign-member",
+                MaterializationRole.STANDARD_ROW,
+                "foreign-stage",
+                _digest("foreign-cut"),
+                _digest("foreign-query"),
+                row_bundle_commitment_digest=_row_bundle_commitment("foreign-slot"),
+            ),
+        ),
+    )
+    with pytest.raises(ProtocolViolation, match="unknown source member"):
+        replace(
+            source,
+            materialization_slots=(foreign_source.materialization_slots[0],),
+        )
+
+    # A frozen dataclass can still be attacked with object.__setattr__; every
+    # wire/ledger boundary re-derives the slot digest and fails closed.
+    slot = source.materialization_slots[0]
+    object.__setattr__(slot, "cut_digest", _digest("post-build-cut-mutation"))
+    with pytest.raises(ProtocolViolation, match="not builder-derived"):
+        source.to_wire()
+
+
+def test_exact_ledger_requires_pre_split_closed_inventory() -> None:
     source = _source((_draft("family-a"),))
     assignment = _assignment(
         source,
         {source.units[0].authority_digest: FamilySplit.TRAIN},
     )
-    wire = _evidence(source).to_wire()
+    with pytest.raises(ProtocolViolation, match="closed pre-split slot"):
+        issue_materialization_receipt(source, assignment, _evidence(source))
+
+
+def test_slot_role_and_ledger_status_wires_ignore_enum_value_mutation() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    receipts = tuple(
+        issue_materialization_receipt(
+            source,
+            assignment,
+            _slot_evidence(source, assignment, index),
+        )
+        for index in range(len(source.materialization_slots))
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+    original = MaterializationRole.PAIR_SIDE.value
+    try:
+        object.__setattr__(MaterializationRole.PAIR_SIDE, "_value_", "forged-role")
+        assert {
+            item["materialization_role"]
+            for item in source.to_wire()["materialization_slots"]
+        } == {"standard_row", "pair_side"}
+        assert ledger.to_wire()["status"] == "pre_freeze_scaffold"
+        assert ledger.to_wire()["benchmark_freeze_eligible"] is False
+    finally:
+        object.__setattr__(MaterializationRole.PAIR_SIDE, "_value_", original)
+
+    object.__setattr__(ledger, "receipts", ())
+    with pytest.raises(ProtocolViolation, match="must not be empty"):
+        ledger.to_wire()
+
+
+def test_evidence_receipt_and_ledger_detect_post_construction_object_rewrites() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    receipts = tuple(
+        issue_materialization_receipt(
+            source,
+            assignment,
+            _slot_evidence(source, assignment, index),
+        )
+        for index in range(len(source.materialization_slots))
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+
+    evidence = receipts[0].evidence
+    object.__setattr__(
+        evidence,
+        "public_history_digest",
+        _digest("post-construction-history-rewrite"),
+    )
+    with pytest.raises(ProtocolViolation, match="evidence changed after construction"):
+        receipts[0].to_wire()
+
+    # Use a fresh graph to distinguish the child evidence seal from the receipt
+    # and exact-ledger seals.
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    receipts = tuple(
+        issue_materialization_receipt(
+            source,
+            assignment,
+            _slot_evidence(source, assignment, index),
+        )
+        for index in range(len(source.materialization_slots))
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+    original_receipt_seal = receipts[0].receipt_digest
+    object.__setattr__(
+        receipts[0],
+        "_sealed_receipt_digest",
+        _digest("forged-receipt-seal"),
+    )
+    with pytest.raises(ProtocolViolation, match="receipt changed after construction"):
+        receipts[0].to_wire()
+    object.__setattr__(receipts[0], "_sealed_receipt_digest", original_receipt_seal)
+
+    object.__setattr__(
+        ledger,
+        "_sealed_ledger_digest",
+        _digest("forged-ledger-seal"),
+    )
+    with pytest.raises(ProtocolViolation, match="ledger changed after construction"):
+        ledger.to_wire()
+
+
+def test_public_wire_boundaries_never_reinitialize_missing_seals() -> None:
+    def fresh_graph():
+        source = _closed_slot_source()
+        assignment = _assignment(
+            source,
+            {source.units[0].authority_digest: FamilySplit.TRAIN},
+        )
+        evidences = tuple(
+            _slot_evidence(source, assignment, index)
+            for index in range(len(source.materialization_slots))
+        )
+        receipts = issue_materialization_receipt_batch(
+            source, assignment, evidences
+        )
+        ledger = build_materialization_receipt_ledger(
+            source, assignment, receipts
+        )
+        return source, assignment, evidences, receipts, ledger
+
+    source, _, _, _, _ = fresh_graph()
+    object.__delattr__(source, "_sealed_source_digest")
+    with pytest.raises(ProtocolViolation, match="source seal is missing"):
+        source.__post_init__()
+    with pytest.raises(ProtocolViolation, match="source seal is missing"):
+        source.to_wire()
+
+    _, assignment, _, _, _ = fresh_graph()
+    object.__delattr__(assignment, "_sealed_assignment_digest")
+    with pytest.raises(ProtocolViolation, match="assignment seal is missing"):
+        assignment.__post_init__()
+    with pytest.raises(ProtocolViolation, match="assignment seal is missing"):
+        assignment.to_wire()
+
+    _, _, evidences, _, _ = fresh_graph()
+    object.__delattr__(evidences[0], "evidence_digest")
+    with pytest.raises(ProtocolViolation, match="evidence seal is missing"):
+        evidences[0].__post_init__()
+    with pytest.raises(ProtocolViolation, match="evidence seal is missing"):
+        evidences[0].to_wire()
+
+    _, _, _, receipts, _ = fresh_graph()
+    object.__delattr__(receipts[0], "_sealed_receipt_digest")
+    with pytest.raises(ProtocolViolation, match="receipt seal is missing"):
+        receipts[0].__post_init__()
+    with pytest.raises(ProtocolViolation, match="receipt seal is missing"):
+        receipts[0].to_wire()
+    with pytest.raises(ProtocolViolation, match="receipt seal is missing"):
+        receipts[0].receipt_digest
+
+    _, _, _, _, ledger = fresh_graph()
+    object.__delattr__(ledger, "_sealed_ledger_digest")
+    with pytest.raises(ProtocolViolation, match="ledger seal is missing"):
+        ledger.__post_init__()
+    with pytest.raises(ProtocolViolation, match="ledger seal is missing"):
+        ledger.to_wire()
+
+
+def test_row_receipt_cannot_define_or_reassign_authority() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    wire = _slot_evidence(source, assignment, 0).to_wire()
     wire["family_digest"] = _digest("row-defined-family")
     with pytest.raises(ProtocolViolation, match="judge-private field"):
         RowMaterializationEvidence.from_wire(wire)
 
-    unknown = replace(_evidence(source), authority_digest=_digest("unknown-authority"))
+    evidence = _slot_evidence(source, assignment, 0)
+    unknown = replace(evidence, authority_digest=_digest("unknown-authority"))
     with pytest.raises(ProtocolViolation, match="unknown source authority"):
         issue_materialization_receipt(source, assignment, unknown)
 
-    wrong_split = replace(_evidence(source), assigned_split=FamilySplit.SEALED_TEST)
+    wrong_split = replace(evidence, assigned_split=FamilySplit.SEALED_TEST)
     with pytest.raises(ProtocolViolation, match="does not match"):
         issue_materialization_receipt(source, assignment, wrong_split)
 
@@ -694,7 +1542,7 @@ def test_legacy_or_post_split_adapter_is_permanently_incomplete() -> None:
 
 
 def test_wire_artifacts_have_no_status_or_freeze_eligibility_override() -> None:
-    source = _source((_draft("family-a"),))
+    source = _closed_slot_source()
     assignment = _assignment(
         source,
         {source.units[0].authority_digest: FamilySplit.VALIDATION},
@@ -702,9 +1550,14 @@ def test_wire_artifacts_have_no_status_or_freeze_eligibility_override() -> None:
     receipt = issue_materialization_receipt(
         source,
         assignment,
-        _evidence(source, FamilySplit.VALIDATION),
+        _slot_evidence(source, assignment, 0),
     )
-    for artifact in (source.to_wire(), assignment.to_wire(), receipt.to_wire()):
+    for artifact in (
+        source.to_wire(),
+        assignment.to_wire(),
+        receipt.evidence.to_wire(),
+        receipt.to_wire(),
+    ):
         assert artifact["status"] == "pre_freeze_scaffold"
         assert artifact["freeze_grade_evidence"] is False
         assert artifact["benchmark_freeze_eligible"] is False
@@ -716,12 +1569,14 @@ def test_wire_artifacts_have_no_status_or_freeze_eligibility_override() -> None:
 
 
 def test_wire_protocol_literals_ignore_mutated_enum_values() -> None:
-    source = _source((_draft("family-a"),))
+    source = _closed_slot_source()
     assignment = _assignment(
         source,
         {source.units[0].authority_digest: FamilySplit.TRAIN},
     )
-    receipt = issue_materialization_receipt(source, assignment, _evidence(source))
+    receipt = issue_materialization_receipt(
+        source, assignment, _slot_evidence(source, assignment, 0)
+    )
 
     mutations = (
         (FamilyScaffoldStatus.PRE_FREEZE_SCAFFOLD, "complete"),
@@ -740,11 +1595,21 @@ def test_wire_protocol_literals_ignore_mutated_enum_values() -> None:
         assert {
             item["semantic_type"]
             for item in source.to_wire()["units"][0]["members"]
-        } == {"counterfactual_variant"}
+        } == {"counterfactual_variant", "patient_trajectory"}
         assert assignment.to_wire()["status"] == "pre_freeze_scaffold"
         assert assignment.to_wire()["assignments"][0]["split"] == "train"
         assert receipt.to_wire()["status"] == "pre_freeze_scaffold"
         assert receipt.to_wire()["row_join"]["split"] == "train"
+        parsed_producer = ProducerSourceUnitDraft.from_wire(_producer_wire())
+        assert parsed_producer.semantic_type is SourceUnitSemantic.PATIENT_FAMILY
+        assert (
+            parsed_producer.members[0].semantic_type
+            is SourceMemberSemantic.COUNTERFACTUAL_VARIANT
+        )
+        parsed_evidence = RowMaterializationEvidence.from_wire(
+            receipt.evidence.to_wire()
+        )
+        assert parsed_evidence.assigned_split is FamilySplit.TRAIN
         assert audit_legacy_post_split_adapter([]).to_wire()["status"] == "incomplete"
     finally:
         for member, original in originals:
@@ -808,3 +1673,452 @@ def test_source_wire_contains_no_post_split_identity_or_generator_seed() -> None
         "master_seed",
         "population_index",
     }.isdisjoint(seen)
+
+
+def test_digest_fields_reject_noncanonical_lexical_aliases() -> None:
+    canonical = _digest("strict-digest-lexeme")
+    hex_part = list(canonical[7:])
+    alpha_index = next(
+        index for index, character in enumerate(hex_part) if character in "abcdef"
+    )
+    uppercase = hex_part.copy()
+    uppercase[alpha_index] = uppercase[alpha_index].upper()
+    aliases = (
+        "sha256:" + "".join(uppercase),
+        "sha256:+" + canonical[8:],
+        "sha256:-" + canonical[8:],
+        "sha256: " + canonical[8:],
+        "sha256:_" + canonical[8:],
+    )
+
+    for alias in aliases:
+        fields = _row_bundle_fields("strict-digest-row")
+        fields["public_history_digest"] = alias
+        with pytest.raises(ProtocolViolation, match="sha256-prefixed digest"):
+            compute_row_bundle_commitment(**fields)
+
+
+@pytest.mark.parametrize(
+    "payload_fields",
+    [
+        (
+            "public_history_digest",
+            "hidden_state_at_cut_digest",
+            "oracle_target_digest",
+            "candidate_row_digest",
+            "judge_row_digest",
+        ),
+        ("raw_request_digest", "raw_response_digest"),
+        (
+            "record_id",
+            "public_history_digest",
+            "hidden_state_at_cut_digest",
+            "oracle_target_digest",
+            "candidate_row_digest",
+            "judge_row_digest",
+            "raw_request_digest",
+            "raw_response_digest",
+        ),
+    ],
+    ids=("semantic_bundle", "raw_bundle", "complete_bundle"),
+)
+def test_same_split_row_bundle_swaps_cannot_reuse_receiving_slot_metadata(
+    payload_fields: tuple[str, ...],
+) -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    receiver = _slot_evidence(source, assignment, 0)
+    donor = _slot_evidence(source, assignment, 1)
+    swapped = replace(
+        receiver,
+        **{field: getattr(donor, field) for field in payload_fields},
+    )
+
+    with pytest.raises(ProtocolViolation, match="row bundle commitment"):
+        issue_materialization_receipt(source, assignment, swapped)
+
+
+@pytest.mark.parametrize(
+    "payload_fields",
+    [
+        (
+            "public_history_digest",
+            "hidden_state_at_cut_digest",
+            "oracle_target_digest",
+            "candidate_row_digest",
+            "judge_row_digest",
+        ),
+        ("raw_request_digest", "raw_response_digest"),
+    ],
+    ids=("semantic_bundle", "raw_bundle"),
+)
+def test_train_and_sealed_test_row_bundles_cannot_be_cross_split_swapped(
+    payload_fields: tuple[str, ...],
+) -> None:
+    drafts = (
+        _draft("train-family", members=(_member("row"),)),
+        _draft("sealed-family", members=(_member("row"),)),
+    )
+    slots = tuple(
+        MaterializationSlotDraft(
+            f"{label}-slot",
+            f"{label}-family",
+            "row",
+            MaterializationRole.STANDARD_ROW,
+            "evaluation",
+            _digest(f"{label}-cut"),
+            _digest(f"{label}-query"),
+            row_bundle_commitment_digest=_row_bundle_commitment(f"{label}-slot"),
+        )
+        for label in ("train", "sealed")
+    )
+    source = _source(drafts, slots=slots)
+    unit_by_alias = {unit.unit_alias: unit for unit in source.units}
+    assignment = _assignment(
+        source,
+        {
+            unit_by_alias["train-family"].authority_digest: FamilySplit.TRAIN,
+            unit_by_alias["sealed-family"].authority_digest: FamilySplit.SEALED_TEST,
+        },
+    )
+    evidence_by_slot = {
+        slot.slot_alias: _slot_evidence(source, assignment, index)
+        for index, slot in enumerate(source.materialization_slots)
+    }
+    receiver = evidence_by_slot["train-slot"]
+    donor = evidence_by_slot["sealed-slot"]
+    swapped = replace(
+        receiver,
+        **{field: getattr(donor, field) for field in payload_fields},
+    )
+
+    with pytest.raises(ProtocolViolation, match="row bundle commitment"):
+        issue_materialization_receipt(source, assignment, swapped)
+
+
+def test_post_assignment_materialization_slot_injection_breaks_source_seal() -> None:
+    draft = _draft("late-inventory", members=(_member("row"),))
+    baseline_slot = MaterializationSlotDraft(
+        "baseline-slot",
+        "late-inventory",
+        "row",
+        MaterializationRole.STANDARD_ROW,
+        "baseline",
+        _digest("late-baseline-cut"),
+        _digest("late-baseline-query"),
+        row_bundle_commitment_digest=_row_bundle_commitment("baseline-slot"),
+    )
+    late_slot = MaterializationSlotDraft(
+        "late-slot",
+        "late-inventory",
+        "row",
+        MaterializationRole.STANDARD_ROW,
+        "late",
+        _digest("late-injected-cut"),
+        _digest("late-injected-query"),
+        row_bundle_commitment_digest=_row_bundle_commitment("late-slot"),
+    )
+    source = _source((draft,), slots=(baseline_slot,))
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    evidence = _slot_evidence(source, assignment, 0)
+    expanded_source = _source((draft,), slots=(baseline_slot, late_slot))
+    assert (
+        expanded_source.units[0].authority_digest
+        == source.units[0].authority_digest
+    )
+
+    object.__setattr__(
+        source,
+        "materialization_slots",
+        expanded_source.materialization_slots,
+    )
+    for boundary in (
+        source.to_wire,
+        assignment.to_wire,
+        lambda: issue_materialization_receipt(source, assignment, evidence),
+    ):
+        with pytest.raises(ProtocolViolation, match="source changed after construction"):
+            boundary()
+
+
+def test_w19_typed_row_cannot_gain_a_second_pair_bound_physical_slot() -> None:
+    drafts = list(_w19_drafts())
+    first_alias = drafts[0].unit_alias
+    drafts[0] = _draft(
+        first_alias,
+        world="W19",
+        members=(
+            _member(
+                "assignment-row",
+                semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
+            ),
+            _member("pair-companion"),
+        ),
+        weight=1,
+    )
+    drafts_tuple = tuple(drafts)
+    pair = PairConstraintDraft(
+        "w19-extra-pair",
+        PairSemantic.BEHAVIORAL,
+        (
+            PairSideDraft(first_alias, "assignment-row", 0),
+            PairSideDraft(first_alias, "pair-companion", 1),
+        ),
+    )
+    pair_cut = _digest("w19-extra-pair-cut")
+    pair_query = _digest("w19-extra-pair-query")
+    slots = _w19_slots(drafts_tuple) + (
+        MaterializationSlotDraft(
+            "w19-extra-pair-side",
+            first_alias,
+            "assignment-row",
+            MaterializationRole.W19_ASSIGNMENT_ROW,
+            "pair-readout",
+            pair_cut,
+            pair_query,
+            pair_alias="w19-extra-pair",
+            pair_side=0,
+            atomic_link_alias="w19-quota-cluster",
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "w19-extra-pair-side"
+            ),
+        ),
+        MaterializationSlotDraft(
+            "w19-pair-companion",
+            first_alias,
+            "pair-companion",
+            MaterializationRole.PAIR_SIDE,
+            "pair-readout",
+            pair_cut,
+            pair_query,
+            pair_alias="w19-extra-pair",
+            pair_side=1,
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "w19-pair-companion"
+            ),
+        ),
+    )
+
+    with pytest.raises(ProtocolViolation, match="exactly one slot"):
+        _source(
+            drafts_tuple,
+            pairs=(pair,),
+            links=(_w19_cluster(drafts_tuple),),
+            slots=slots,
+        )
+
+
+def _typed_atomic_fixture(
+    link_semantic: AtomicLinkSemantic,
+    member_semantic: SourceMemberSemantic,
+    materialization_role: MaterializationRole,
+) -> tuple[
+    tuple[ProducerSourceUnitDraft, ...],
+    AtomicLinkDraft,
+    tuple[MaterializationSlotDraft, ...],
+]:
+    drafts = tuple(
+        _draft(
+            f"typed-atomic-{side}",
+            members=(_member("typed-row", semantic=member_semantic),),
+        )
+        for side in ("left", "right")
+    )
+    link = AtomicLinkDraft(
+        "typed-atomic-link",
+        link_semantic,
+        tuple(MemberRefDraft(draft.unit_alias, "typed-row") for draft in drafts),
+    )
+    slots = tuple(
+        MaterializationSlotDraft(
+            f"typed-atomic-{side}-slot",
+            draft.unit_alias,
+            "typed-row",
+            materialization_role,
+            "typed-atomic-stage",
+            _digest(f"typed-atomic-{side}-cut"),
+            _digest(f"typed-atomic-{side}-query"),
+            atomic_link_alias="typed-atomic-link",
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                f"typed-atomic-{side}-slot"
+            ),
+        )
+        for side, draft in zip(("left", "right"), drafts, strict=True)
+    )
+    return drafts, link, slots
+
+
+@pytest.mark.parametrize(
+    ("link_semantic", "member_semantic", "materialization_role"),
+    [
+        (
+            AtomicLinkSemantic.RELEASE_S0_S1,
+            SourceMemberSemantic.RELEASE_STAGE,
+            MaterializationRole.RELEASE_STAGE_ROW,
+        ),
+        (
+            AtomicLinkSemantic.SHARED_PROBE_BASE,
+            SourceMemberSemantic.PROBE_VARIANT,
+            MaterializationRole.PROBE_ROW,
+        ),
+    ],
+    ids=("release_s0_s1", "shared_probe_base"),
+)
+def test_closed_atomic_link_inventory_rejects_one_sided_materialization(
+    link_semantic: AtomicLinkSemantic,
+    member_semantic: SourceMemberSemantic,
+    materialization_role: MaterializationRole,
+) -> None:
+    drafts, link, slots = _typed_atomic_fixture(
+        link_semantic,
+        member_semantic,
+        materialization_role,
+    )
+    with pytest.raises(ProtocolViolation, match="exactly cover atomic link"):
+        _source(drafts, links=(link,), slots=slots[:1])
+
+
+def test_atomic_link_join_cannot_be_dropped_or_replaced_at_receipt_time() -> None:
+    drafts, link, slots = _typed_atomic_fixture(
+        AtomicLinkSemantic.RELEASE_S0_S1,
+        SourceMemberSemantic.RELEASE_STAGE,
+        MaterializationRole.RELEASE_STAGE_ROW,
+    )
+    source = _source(drafts, links=(link,), slots=slots)
+    assignment = _assignment(
+        source,
+        {unit.authority_digest: FamilySplit.VALIDATION for unit in source.units},
+    )
+    evidence = _slot_evidence(source, assignment, 0)
+
+    for forged_link in (None, _digest("foreign-atomic-link")):
+        forged = replace(evidence, atomic_link_digest=forged_link)
+        with pytest.raises(ProtocolViolation, match="atomic link"):
+            issue_materialization_receipt(source, assignment, forged)
+
+
+def test_physical_cell_cannot_be_duplicated_by_stage_and_role_aliases() -> None:
+    draft = _draft(
+        "physical-cell-family",
+        members=(_member("left"), _member("right")),
+    )
+    pair = PairConstraintDraft(
+        "physical-cell-pair",
+        PairSemantic.RESPONSE_REVERSAL,
+        (
+            PairSideDraft("physical-cell-family", "left", 0),
+            PairSideDraft("physical-cell-family", "right", 1),
+        ),
+    )
+    shared_cut = _digest("physical-cell-cut")
+    shared_query = _digest("physical-cell-query")
+    slots = (
+        MaterializationSlotDraft(
+            "left-standard-alias",
+            "physical-cell-family",
+            "left",
+            MaterializationRole.STANDARD_ROW,
+            "standard-stage-alias",
+            shared_cut,
+            shared_query,
+            row_bundle_commitment_digest=_row_bundle_commitment(
+                "left-standard-alias"
+            ),
+        ),
+        MaterializationSlotDraft(
+            "left-pair-alias",
+            "physical-cell-family",
+            "left",
+            MaterializationRole.PAIR_SIDE,
+            "pair-stage-alias",
+            shared_cut,
+            shared_query,
+            pair_alias="physical-cell-pair",
+            pair_side=0,
+            row_bundle_commitment_digest=_row_bundle_commitment("left-pair-alias"),
+        ),
+        MaterializationSlotDraft(
+            "right-pair-side",
+            "physical-cell-family",
+            "right",
+            MaterializationRole.PAIR_SIDE,
+            "pair-stage-alias",
+            shared_cut,
+            shared_query,
+            pair_alias="physical-cell-pair",
+            pair_side=1,
+            row_bundle_commitment_digest=_row_bundle_commitment("right-pair-side"),
+        ),
+    )
+
+    with pytest.raises(ProtocolViolation, match="duplicate physical cells"):
+        _source((draft,), pairs=(pair,), slots=slots)
+
+
+@pytest.mark.parametrize(
+    ("field_name", "forged_value"),
+    [
+        ("schema_version", "ucm-row-materialization-evidence/999"),
+        ("status", "complete"),
+        ("freeze_grade_evidence", True),
+        ("benchmark_freeze_eligible", True),
+        ("blockers", []),
+    ],
+)
+def test_standalone_evidence_wire_cannot_forge_protocol_or_freeze_markers(
+    field_name: str,
+    forged_value: object,
+) -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    wire = _slot_evidence(source, assignment, 0).to_wire()
+    assert wire["schema_version"] == "ucm-row-materialization-evidence/2"
+    assert wire["status"] == "pre_freeze_scaffold"
+    assert wire["freeze_grade_evidence"] is False
+    assert wire["benchmark_freeze_eligible"] is False
+    assert wire["blockers"]
+    forged = {**wire, field_name: forged_value}
+
+    with pytest.raises(ProtocolViolation, match="non-canonical or stale"):
+        RowMaterializationEvidence.from_wire(forged)
+
+
+def test_rewritten_global_blocker_is_ignored_before_wire_emission() -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    evidence = _slot_evidence(source, assignment, 0)
+    blocker = family_manifest_module._EVIDENCE_BLOCKER
+    original = (blocker.code, blocker.artifact, blocker.detail)
+    try:
+        object.__setattr__(blocker, "code", "UCM-OK")
+        object.__setattr__(blocker, "artifact", "freeze_certificate")
+        object.__setattr__(blocker, "detail", "complete")
+        emitted = evidence.to_wire()["blockers"]
+        assert emitted == [
+            {
+                "code": "UCM-E003-HARNESS_INCOMPLETE",
+                "artifact": "row_materialization_evidence",
+                "detail": (
+                    "row evidence is structurally bound but builder custody and "
+                    "the raw ledger are not independently sealed"
+                ),
+            }
+        ]
+    finally:
+        object.__setattr__(blocker, "code", original[0])
+        object.__setattr__(blocker, "artifact", original[1])
+        object.__setattr__(blocker, "detail", original[2])
+
+    assert evidence.to_wire()["blockers"]
