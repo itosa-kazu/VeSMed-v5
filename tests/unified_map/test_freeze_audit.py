@@ -163,6 +163,66 @@ def test_default_audit_covers_exact_axes_and_missing_artifacts_are_typed_incompl
     assert all(type(row) is FreezeAxisEvidence for row in audit.evidence)
 
 
+def test_four_freeze_contracts_bind_authority_corpus_bridge_but_stay_incomplete(
+    tmp_path: Path,
+) -> None:
+    for axis in (
+        "world_generators",
+        "projection_boundary",
+        "split_isolation",
+        "expected_cells",
+    ):
+        bound = _contract(axis)
+        assert "prototype/unified_map/corpus_authority.py" in (
+            bound.producer_source_paths
+        )
+        requirement = next(
+            item
+            for item in bound.requirements
+            if item.check_id == "authority-bound-corpus-audit-digest"
+        )
+        assert requirement.predicate.value == "verified_artifact_digest"
+        assert requirement.false_status is FreezeEvidenceStatus.INCOMPLETE
+
+    contract = _contract("split_isolation")
+    assert {
+        "prototype/unified_map/family_manifest.py",
+        "prototype/unified_map/strata_manifest.py",
+    } <= set(contract.producer_source_paths)
+
+    # Merely adding the source/condition cannot create freeze evidence.  The
+    # structured execution artifact and a collector-owned typed extractor are
+    # both still absent.
+    result = _collect(tmp_path, contract)
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert result.blockers[0].code == "artifact-missing"
+
+    # Even a canonical raw corpus-audit-shaped witness plus an execution
+    # envelope cannot self-certify this new check.  Freeze remains incomplete
+    # until a collector-owned typed extractor is implemented and registered.
+    root = tmp_path / "with-self-report"
+    _materialize_producer_sources(root, contract)
+    raw_path = "results/unified_map/unit-corpus-authority/audit.json"
+    _write(
+        root,
+        raw_path,
+        canonical_json_bytes(
+            {
+                "protocol": "ucm-authority-bound-corpus-audit/1",
+                "status": "pre_freeze_scaffold",
+                "freeze_grade_evidence": False,
+                "benchmark_freeze_eligible": False,
+                "audit_digest": digest_json({"fixture": "corpus-audit"}),
+            }
+        ),
+    )
+    _persist(root, contract, _axis_wire(root, contract, (raw_path,)))
+    result = _collect(root, contract)
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert result.blockers[0].code == "measurement-invalid"
+    assert "collector-owned typed extractor" in result.blockers[0].detail
+
+
 def test_forged_all_green_generic_artifact_stays_incomplete_without_typed_extractor(
     tmp_path: Path,
 ) -> None:

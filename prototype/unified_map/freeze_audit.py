@@ -1134,10 +1134,15 @@ DEFAULT_AXIS_CONTRACTS = (
     ),
     _contract(
         "world_generators",
-        "W01--W20 machine manifests, support checks, exact split coverage, and replay.",
+        "W01--W20 machine manifests, support checks, exact split coverage, and authority-bound corpus replay.",
         "ucm.world-generator-auditor/v1",
-        _WORLD_SOURCES,
+        _WORLD_SOURCES + ("prototype/unified_map/corpus_authority.py",),
         (
+            _require(
+                "authority-bound-corpus-audit-digest",
+                EvidencePredicate.VERIFIED_ARTIFACT_DIGEST,
+                false_status=FreezeEvidenceStatus.INCOMPLETE,
+            ),
             _require("generator-manifest-count", EvidencePredicate.INTEGER_AT_LEAST, 20),
             _require("materialization-blockers", EvidencePredicate.EMPTY),
             _require("same-seed-replay-failures", EvidencePredicate.EMPTY),
@@ -1193,15 +1198,21 @@ DEFAULT_AXIS_CONTRACTS = (
     ),
     _contract(
         "projection_boundary",
-        "Physical public/target/judge separation with malicious smuggling probes.",
+        "Physical public/target/judge separation, closed public corpus rows, and malicious smuggling probes.",
         "ucm.projection-boundary-auditor/v1",
         (
             "prototype/unified_map/candidate_protocol.py",
             "prototype/unified_map/compliance.py",
+            "prototype/unified_map/corpus_authority.py",
             "prototype/unified_map/schema.py",
             "prototype/unified_map/world_registry.py",
         ),
         (
+            _require(
+                "authority-bound-corpus-audit-digest",
+                EvidencePredicate.VERIFIED_ARTIFACT_DIGEST,
+                false_status=FreezeEvidenceStatus.INCOMPLETE,
+            ),
             _require("candidate-private-field-leaks", EvidencePredicate.EMPTY),
             _require("physical-separation-failures", EvidencePredicate.EMPTY),
             _require("projection-artifact-digest", EvidencePredicate.VERIFIED_ARTIFACT_DIGEST),
@@ -1215,13 +1226,21 @@ DEFAULT_AXIS_CONTRACTS = (
     ),
     _contract(
         "split_isolation",
-        "Family-atomic exact/family/prefix-near-duplicate/pair split isolation.",
+        "Family-atomic exact/family/prefix-near-duplicate/pair split isolation with exact authority-bound corpus joins.",
         "ucm.split-isolation-auditor/v1",
         (
+            "prototype/unified_map/corpus_authority.py",
+            "prototype/unified_map/family_manifest.py",
             "prototype/unified_map/splits.py",
+            "prototype/unified_map/strata_manifest.py",
             "prototype/unified_map/world_registry.py",
         ),
         (
+            _require(
+                "authority-bound-corpus-audit-digest",
+                EvidencePredicate.VERIFIED_ARTIFACT_DIGEST,
+                false_status=FreezeEvidenceStatus.INCOMPLETE,
+            ),
             _require("exact-overlap", EvidencePredicate.EMPTY),
             _require("family-overlap", EvidencePredicate.EMPTY),
             _require("pair-overlap", EvidencePredicate.EMPTY),
@@ -1257,14 +1276,20 @@ DEFAULT_AXIS_CONTRACTS = (
     ),
     _contract(
         "expected_cells",
-        "Exact world/split/replicate/family/cut/horizon/policy/pair required cells.",
+        "Exact world/split/replicate/family/cut/horizon/policy/pair cells joined to authority-bound corpus roots.",
         "ucm.expected-cells-auditor/v1",
         (
+            "prototype/unified_map/corpus_authority.py",
             "prototype/unified_map/evaluation_cells.py",
             "prototype/unified_map/evaluator.py",
             "prototype/unified_map/world_registry.py",
         ),
         (
+            _require(
+                "authority-bound-corpus-audit-digest",
+                EvidencePredicate.VERIFIED_ARTIFACT_DIGEST,
+                false_status=FreezeEvidenceStatus.INCOMPLETE,
+            ),
             _require("duplicate-record-ids", EvidencePredicate.EMPTY),
             _require("evaluation-replicates", EvidencePredicate.EXACT_SET, tuple(f"eval-{i:02d}" for i in range(1, 6))),
             _require("expected-cell-count", EvidencePredicate.INTEGER_AT_LEAST, 1),
