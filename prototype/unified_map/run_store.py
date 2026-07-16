@@ -35,7 +35,9 @@ RUN_MANIFEST_PROTOCOL = "ucm-run-manifest/1"
 INVENTORY_PROTOCOL = "ucm-output-inventory/2"
 FINALIZED_PROTOCOL = "ucm-finalized-run/2"
 LOCAL_SEAL_PROTOCOL = "ucm-local-run-seal/1"
-CRASH_PLACEHOLDER_PROTOCOL = "ucm-run-crash-placeholders/1"
+CRASH_PLACEHOLDER_PROTOCOL = "ucm-run-crash-placeholders/2"
+CRASH_EVIDENCE_PROTOCOL = "ucm-run-crash-evidence/1"
+CRASH_RECORD_PROTOCOL = "ucm-run-crash-record/1"
 VERIFICATION_RECEIPT_PROTOCOL = "ucm-run-verification-receipt/1"
 CHECKSUM_PROTOCOL = "ucm-run-checksums/1"
 TREE_PROTOCOL = "ucm-run-tree/1"
@@ -85,7 +87,7 @@ class IsolationAssurance(str, Enum):
 # The benchmark currently has one exact output contract for every run class.
 # It is intentionally repeated through a code-owned lookup rather than accepted
 # from the run producer.  A later benchmark revision may split these layouts.
-_REQUIRED_PAYLOAD_PATHS = (
+_DEVELOPMENT_REQUIRED_PAYLOAD_PATHS = (
     "candidate/source-manifest.json",
     "candidate/model-manifest.json",
     "candidate/model-artifact.sha256",
@@ -114,7 +116,14 @@ _CONTROL_PATHS = frozenset(
         "INVENTORY.json",
         "FINALIZED.json",
         "CRASH_PLACEHOLDERS.json",
+        "CRASH_EVIDENCE.json",
     }
+)
+
+_MANDATORY_CRASH_EVIDENCE_PATHS = (
+    "logs/stderr.log",
+    "logs/stdout.log",
+    "raw/process-audit.jsonl",
 )
 
 
@@ -123,7 +132,12 @@ def required_payload_paths(run_class: RunClass) -> tuple[str, ...]:
 
     if type(run_class) is not RunClass:
         raise ProtocolViolation("run_class must be typed")
-    return _REQUIRED_PAYLOAD_PATHS
+    if run_class is RunClass.DEVELOPMENT:
+        return _DEVELOPMENT_REQUIRED_PAYLOAD_PATHS
+    raise ProtocolViolation(
+        f"run_class={run_class.value!r} has no code-owned dedicated layout; "
+        "sealed/redteam/reproduction publication is disabled PRE-FREEZE"
+    )
 
 
 def validate_run_id(run_id: str) -> None:
@@ -545,17 +559,24 @@ class RunManifest:
 @dataclass(frozen=True, slots=True)
 class CrashPlaceholder:
     path: str
+    evidence_path: str
     reason_code: str
     evidence_digest: str
 
     def __post_init__(self) -> None:
         _safe_relative(self.path)
+        _safe_relative(self.evidence_path)
+        if self.evidence_path not in _MANDATORY_CRASH_EVIDENCE_PATHS:
+            raise ProtocolViolation(
+                "crash placeholder evidence_path must be a retained mandatory crash artifact"
+            )
         _name(self.reason_code, "crash placeholder reason_code")
         _digest(self.evidence_digest, "crash placeholder evidence_digest")
 
     def to_wire(self) -> dict[str, Any]:
         return {
             "path": self.path,
+            "evidence_path": self.evidence_path,
             "reason_code": self.reason_code,
             "evidence_digest": self.evidence_digest,
         }
@@ -564,14 +585,82 @@ class CrashPlaceholder:
     def from_wire(cls, value: object) -> "CrashPlaceholder":
         body = _exact_keys(
             value,
-            frozenset({"path", "reason_code", "evidence_digest"}),
+            frozenset({"path", "evidence_path", "reason_code", "evidence_digest"}),
             "crash placeholder",
         )
         return cls(
             path=body["path"],
+            evidence_path=body["evidence_path"],
             reason_code=body["reason_code"],
             evidence_digest=body["evidence_digest"],
         )
+
+
+@dataclass(frozen=True, slots=True)
+class CrashEvidenceRecord:
+    reason_code: str
+    failure_type: str
+    detail_digest: str
+    worker_exit: int
+    occurred_at: str
+
+    def __post_init__(self) -> None:
+        _name(self.reason_code, "crash evidence reason_code")
+        _name(self.failure_type, "crash evidence failure_type")
+        _digest(self.detail_digest, "crash evidence detail_digest")
+        if type(self.worker_exit) is not int:
+            raise ProtocolViolation("crash evidence worker_exit must be exact int")
+        _timestamp(self.occurred_at, "crash evidence occurred_at")
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "schema_version": CRASH_RECORD_PROTOCOL,
+            "reason_code": self.reason_code,
+            "failure_type": self.failure_type,
+            "detail_digest": self.detail_digest,
+            "worker_exit": self.worker_exit,
+            "occurred_at": self.occurred_at,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "CrashEvidenceRecord":
+        body = _exact_keys(
+            value,
+            frozenset(
+                {
+                    "schema_version",
+                    "reason_code",
+                    "failure_type",
+                    "detail_digest",
+                    "worker_exit",
+                    "occurred_at",
+                }
+            ),
+            "crash evidence record",
+        )
+        if body["schema_version"] != CRASH_RECORD_PROTOCOL:
+            raise ProtocolViolation("wrong crash evidence record schema")
+        return cls(
+            reason_code=body["reason_code"],
+            failure_type=body["failure_type"],
+            detail_digest=body["detail_digest"],
+            worker_exit=body["worker_exit"],
+            occurred_at=body["occurred_at"],
+        )
+
+
+def _validate_crash_record_context(
+    record: CrashEvidenceRecord, manifest: RunManifest
+) -> None:
+    occurred = _timestamp_value(record.occurred_at)
+    if not (
+        _timestamp_value(manifest.started_at)
+        <= occurred
+        <= _timestamp_value(manifest.finished_at)
+    ):
+        raise ProtocolViolation("crash evidence occurred_at is outside the run interval")
+    if manifest.status is RunStatus.CRASHED and record.worker_exit == 0:
+        raise ProtocolViolation("crashed run evidence cannot report worker_exit=0")
 
 
 @dataclass(frozen=True, slots=True)
@@ -602,6 +691,7 @@ class RunVerificationReceipt:
         _digest(self.results_root_digest, "receipt results_root_digest")
         if type(self.run_class) is not RunClass or type(self.run_status) is not RunStatus:
             raise ProtocolViolation("verification receipt run enums must be typed")
+        required_payload_paths(self.run_class)
         if self.benchmark_id != BENCHMARK_ID:
             raise ProtocolViolation("verification receipt benchmark mismatch")
         for label in (
@@ -639,6 +729,8 @@ class RunVerificationReceipt:
             "custody_assurance": "LOCAL_REHASH_AND_SIBLING_SEAL_ONLY",
             "external_worm_verified": False,
             "race_free_kernel_custody": False,
+            "root_binding_scope": "LOCAL_ABSOLUTE_PATH_ONLY",
+            "absolute_root_binding_portable": False,
             "filesystem_link_checks": "LSTAT_SYMLINK_REPARSE_AND_NLINK",
             "filesystem_link_checks_race_free": False,
             "xattrs_acl_custody_verified": False,
@@ -856,6 +948,9 @@ class AppendOnlyRunWriter:
             raise ProtocolViolation("manifest results_root_digest does not bind this root")
         if manifest.status is RunStatus.RUNNING:
             raise ProtocolViolation("published run manifests cannot retain status=running")
+        # This lookup is also the fail-closed enable gate.  A RunClass enum is
+        # not evidence that its dedicated commit/reveal/custody layout exists.
+        required_payload_paths(manifest.run_class)
         self.manifest = manifest
         self.run_id = run_id
         self.target = self.root / run_id
@@ -916,7 +1011,9 @@ class AppendOnlyRunWriter:
         self.write_bytes(relative, canonical_json_bytes(value))
 
     def _validate_layout_and_placeholders(
-        self, crash_placeholders: tuple[CrashPlaceholder, ...]
+        self,
+        crash_placeholders: tuple[CrashPlaceholder, ...],
+        crash_evidence: CrashEvidenceRecord | None,
     ) -> None:
         snapshot = _scan_tree(self.temporary)
         actual = {path for path, _, _ in snapshot.files}
@@ -938,6 +1035,8 @@ class AppendOnlyRunWriter:
         if self.manifest.status is RunStatus.FINALIZED:
             if crash_placeholders:
                 raise ProtocolViolation("finalized runs cannot declare crash placeholders")
+            if crash_evidence is not None:
+                raise ProtocolViolation("finalized runs cannot declare crash evidence")
             if missing:
                 raise ProtocolViolation(f"finalized run is missing required paths: {sorted(missing)!r}")
         else:
@@ -957,15 +1056,54 @@ class AppendOnlyRunWriter:
             if any(path not in payload_required for path in paths):
                 raise ProtocolViolation("crash placeholder references a non-required path")
 
+        evidence_required = (
+            self.manifest.status is RunStatus.CRASHED or bool(crash_placeholders)
+        )
+        if evidence_required and crash_evidence is None:
+            raise ProtocolViolation(
+                "crashed or placeholder-bearing runs require typed crash evidence"
+            )
+        if crash_evidence is not None:
+            _validate_crash_record_context(crash_evidence, self.manifest)
+            mandatory = set(_MANDATORY_CRASH_EVIDENCE_PATHS)
+            if not mandatory.issubset(actual):
+                raise ProtocolViolation(
+                    "process-audit/stdout/stderr must be retained real crash artifacts"
+                )
+            if mandatory & missing:
+                raise ProtocolViolation("mandatory crash evidence cannot be placeholdered")
+            if not payloads["raw/process-audit.jsonl"]:
+                raise ProtocolViolation("raw/process-audit.jsonl cannot be an empty crash shell")
+            for item in crash_placeholders:
+                evidence_payload = payloads.get(item.evidence_path)
+                if evidence_payload is None:
+                    raise ProtocolViolation(
+                        "crash placeholder evidence_path is not retained in the run"
+                    )
+                if not evidence_payload:
+                    raise ProtocolViolation(
+                        "crash placeholder cannot cite a zero-byte evidence artifact"
+                    )
+                if digest_bytes(evidence_payload) != item.evidence_digest:
+                    raise ProtocolViolation(
+                        "crash placeholder evidence_digest does not match retained bytes"
+                    )
+
     def finalize(
-        self, *, crash_placeholders: Iterable[CrashPlaceholder] = ()
+        self,
+        *,
+        crash_placeholders: Iterable[CrashPlaceholder] = (),
+        crash_evidence: CrashEvidenceRecord | None = None,
     ) -> Path:
         if self._closed:
             raise RuntimeError("run writer is closed")
         placeholders = tuple(crash_placeholders)
         if any(type(item) is not CrashPlaceholder for item in placeholders):
             raise ProtocolViolation("crash placeholders must be typed")
-        self._validate_layout_and_placeholders(placeholders)
+        if crash_evidence is not None and type(crash_evidence) is not CrashEvidenceRecord:
+            raise ProtocolViolation("crash_evidence must be typed CrashEvidenceRecord")
+        self._validate_layout_and_placeholders(placeholders, crash_evidence)
+        placeholder_bytes: bytes | None = None
         if placeholders:
             placeholder_body = {
                 "schema_version": CRASH_PLACEHOLDER_PROTOCOL,
@@ -974,7 +1112,46 @@ class AppendOnlyRunWriter:
                 "placeholders": [item.to_wire() for item in placeholders],
             }
             placeholder_body["placeholder_digest"] = digest_json(placeholder_body)
-            self._write_control("CRASH_PLACEHOLDERS.json", canonical_json_bytes(placeholder_body))
+            placeholder_bytes = canonical_json_bytes(placeholder_body)
+            self._write_control("CRASH_PLACEHOLDERS.json", placeholder_bytes)
+
+        if crash_evidence is not None:
+            evidence_snapshot = _scan_tree(self.temporary)
+            evidence_payloads = {
+                path: payload for path, payload, _ in evidence_snapshot.files
+            }
+            evidence_rows = []
+            for path in _MANDATORY_CRASH_EVIDENCE_PATHS:
+                payload = evidence_payloads[path]
+                evidence_rows.append(
+                    {
+                        "path": path,
+                        "bytes": len(payload),
+                        "sha256": digest_bytes(payload),
+                    }
+                )
+            evidence_body = {
+                "schema_version": CRASH_EVIDENCE_PROTOCOL,
+                "run_id": self.run_id,
+                "run_status": self.manifest.status.value,
+                "record": crash_evidence.to_wire(),
+                "retained_artifacts": evidence_rows,
+                "placeholder_manifest_sha256": (
+                    digest_bytes(placeholder_bytes)
+                    if placeholder_bytes is not None
+                    else None
+                ),
+                "placeholder_bindings_digest": digest_json(
+                    {
+                        "protocol": "ucm-crash-placeholder-bindings/1",
+                        "placeholders": [item.to_wire() for item in placeholders],
+                    }
+                ),
+            }
+            evidence_body["crash_evidence_digest"] = digest_json(evidence_body)
+            self._write_control(
+                "CRASH_EVIDENCE.json", canonical_json_bytes(evidence_body)
+            )
 
         base_snapshot = _scan_tree(self.temporary)
         base_rows = _rows_from_files(base_snapshot.files)
@@ -993,6 +1170,8 @@ class AppendOnlyRunWriter:
         }
         if placeholders:
             expected_inventory_paths.add("CRASH_PLACEHOLDERS.json")
+        if crash_evidence is not None:
+            expected_inventory_paths.add("CRASH_EVIDENCE.json")
         if set(inventory_paths) != expected_inventory_paths:
             raise ProtocolViolation("live pre-publication tree differs from exact run layout")
         expected_dirs = _expected_directories(inventory_paths)
@@ -1239,6 +1418,90 @@ def _parse_placeholders(payload: bytes, manifest: RunManifest) -> tuple[CrashPla
     return result
 
 
+def _parse_crash_evidence(
+    payload: bytes,
+    *,
+    manifest: RunManifest,
+    placeholders: tuple[CrashPlaceholder, ...],
+    retained_payloads: dict[str, bytes],
+    placeholder_manifest_bytes: bytes | None,
+) -> CrashEvidenceRecord:
+    body = _exact_keys(
+        _decode_json(payload, "CRASH_EVIDENCE.json"),
+        frozenset(
+            {
+                "schema_version",
+                "run_id",
+                "run_status",
+                "record",
+                "retained_artifacts",
+                "placeholder_manifest_sha256",
+                "placeholder_bindings_digest",
+                "crash_evidence_digest",
+            }
+        ),
+        "crash evidence control",
+    )
+    if body["schema_version"] != CRASH_EVIDENCE_PROTOCOL:
+        raise ProtocolViolation("wrong crash evidence schema")
+    claimed = _digest(body["crash_evidence_digest"], "crash_evidence_digest")
+    unsigned = {
+        key: value for key, value in body.items() if key != "crash_evidence_digest"
+    }
+    if digest_json(unsigned) != claimed:
+        raise ProtocolViolation("crash evidence self-digest mismatch")
+    if body["run_id"] != manifest.run_id or body["run_status"] != manifest.status.value:
+        raise ProtocolViolation("crash evidence is bound to a different run")
+    record = CrashEvidenceRecord.from_wire(body["record"])
+    _validate_crash_record_context(record, manifest)
+    expected_placeholder_sha256 = (
+        digest_bytes(placeholder_manifest_bytes)
+        if placeholder_manifest_bytes is not None
+        else None
+    )
+    if body["placeholder_manifest_sha256"] != expected_placeholder_sha256:
+        raise ProtocolViolation("crash evidence placeholder manifest binding mismatch")
+    expected_bindings_digest = digest_json(
+        {
+            "protocol": "ucm-crash-placeholder-bindings/1",
+            "placeholders": [item.to_wire() for item in placeholders],
+        }
+    )
+    if body["placeholder_bindings_digest"] != expected_bindings_digest:
+        raise ProtocolViolation("crash evidence placeholder binding digest mismatch")
+    if type(body["retained_artifacts"]) is not list:
+        raise ProtocolViolation("crash evidence retained_artifacts must be a list")
+    expected_rows: list[dict[str, Any]] = []
+    for path in _MANDATORY_CRASH_EVIDENCE_PATHS:
+        if path not in retained_payloads:
+            raise ProtocolViolation(
+                "process-audit/stdout/stderr must be retained real crash artifacts"
+            )
+        artifact_payload = retained_payloads[path]
+        expected_rows.append(
+            {
+                "path": path,
+                "bytes": len(artifact_payload),
+                "sha256": digest_bytes(artifact_payload),
+            }
+        )
+    if body["retained_artifacts"] != expected_rows:
+        raise ProtocolViolation("crash evidence retained artifact rows differ from live bytes")
+    if not retained_payloads["raw/process-audit.jsonl"]:
+        raise ProtocolViolation("raw/process-audit.jsonl cannot be an empty crash shell")
+    for item in placeholders:
+        evidence_payload = retained_payloads.get(item.evidence_path)
+        if evidence_payload is None or not evidence_payload:
+            raise ProtocolViolation(
+                "crash placeholder evidence must resolve to a non-empty retained artifact"
+            )
+        if digest_bytes(evidence_payload) != item.evidence_digest:
+            raise ProtocolViolation(
+                "crash placeholder evidence_digest differs from retained artifact"
+            )
+    return record
+
+
 def verify_run_bundle(
     root_or_bundle: Path,
     run_id: str | None = None,
@@ -1276,6 +1539,7 @@ def verify_run_bundle(
         raise ProtocolViolation("verification root differs from expected manifest")
     if expected_manifest.status is RunStatus.RUNNING:
         raise ProtocolViolation("a finalized bundle cannot bind a running manifest")
+    required_payload_paths(expected_manifest.run_class)
 
     snapshot = _scan_tree(bundle)
     file_map = {path: (payload, info) for path, payload, info in snapshot.files}
@@ -1325,12 +1589,19 @@ def verify_run_bundle(
         "RUN_MANIFEST.json",
         "checksums.sha256",
         "CRASH_PLACEHOLDERS.json",
+        "CRASH_EVIDENCE.json",
     }
     if unexpected_payload:
         raise ProtocolViolation(f"inventory has non-layout files: {sorted(unexpected_payload)!r}")
     missing_payload = required - actual_payload
+    placeholders: tuple[CrashPlaceholder, ...] = ()
+    placeholder_manifest_bytes: bytes | None = None
     if manifest.status is RunStatus.FINALIZED:
-        if missing_payload or "CRASH_PLACEHOLDERS.json" in file_map:
+        if (
+            missing_payload
+            or "CRASH_PLACEHOLDERS.json" in file_map
+            or "CRASH_EVIDENCE.json" in file_map
+        ):
             raise ProtocolViolation("finalized run does not have the exact complete layout")
     else:
         if manifest.status not in {RunStatus.CRASHED, RunStatus.INELIGIBLE}:
@@ -1338,13 +1609,25 @@ def verify_run_bundle(
         if missing_payload:
             if "CRASH_PLACEHOLDERS.json" not in file_map:
                 raise ProtocolViolation("crashed/ineligible run lacks explicit placeholders")
-            placeholders = _parse_placeholders(
-                file_map["CRASH_PLACEHOLDERS.json"][0], manifest
-            )
+            placeholder_manifest_bytes = file_map["CRASH_PLACEHOLDERS.json"][0]
+            placeholders = _parse_placeholders(placeholder_manifest_bytes, manifest)
             if set(item.path for item in placeholders) != missing_payload:
                 raise ProtocolViolation("crash placeholders do not exactly cover missing layout")
         elif "CRASH_PLACEHOLDERS.json" in file_map:
             raise ProtocolViolation("complete crashed/ineligible layout cannot add placeholders")
+        evidence_required = manifest.status is RunStatus.CRASHED or bool(placeholders)
+        if evidence_required and "CRASH_EVIDENCE.json" not in file_map:
+            raise ProtocolViolation("crashed/placeholder run lacks typed crash evidence")
+        if "CRASH_EVIDENCE.json" in file_map:
+            _parse_crash_evidence(
+                file_map["CRASH_EVIDENCE.json"][0],
+                manifest=manifest,
+                placeholders=placeholders,
+                retained_payloads={
+                    path: payload for path, (payload, _) in file_map.items()
+                },
+                placeholder_manifest_bytes=placeholder_manifest_bytes,
+            )
 
     base_rows = [
         row
@@ -1479,6 +1762,8 @@ def verify_run_bundle(
         "custody_assurance": "LOCAL_REHASH_AND_SIBLING_SEAL_ONLY",
         "external_worm_verified": False,
         "race_free_kernel_custody": False,
+        "root_binding_scope": "LOCAL_ABSOLUTE_PATH_ONLY",
+        "absolute_root_binding_portable": False,
         "filesystem_link_checks": "LSTAT_SYMLINK_REPARSE_AND_NLINK",
         "filesystem_link_checks_race_free": False,
         "xattrs_acl_custody_verified": False,

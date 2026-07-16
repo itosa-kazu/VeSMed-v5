@@ -18,6 +18,7 @@ from prototype.unified_map.canonical import (
 )
 from prototype.unified_map.run_store import (
     AppendOnlyRunWriter,
+    CrashEvidenceRecord,
     CrashPlaceholder,
     IsolationAssurance,
     RunClass,
@@ -181,6 +182,8 @@ def test_run_bundle_is_exact_inventoried_rehashed_and_locally_sealed(
     assert receipt.to_wire()["benchmark_freeze_eligible"] is False
     assert receipt.to_wire()["external_worm_verified"] is False
     assert receipt.to_wire()["race_free_kernel_custody"] is False
+    assert receipt.to_wire()["root_binding_scope"] == "LOCAL_ABSOLUTE_PATH_ONLY"
+    assert receipt.to_wire()["absolute_root_binding_portable"] is False
     assert receipt.to_wire()["filesystem_link_checks_race_free"] is False
     assert receipt.to_wire()["xattrs_acl_custody_verified"] is False
     assert receipt.to_wire()["readonly_is_authority"] is False
@@ -257,10 +260,8 @@ def test_finalize_rejects_direct_temporary_tree_injection(tmp_path: Path) -> Non
         writer.abort()
 
 
-@pytest.mark.parametrize("run_class", list(RunClass))
-def test_every_run_class_has_exact_code_owned_layout(
-    tmp_path: Path, run_class: RunClass
-) -> None:
+def test_development_run_class_has_exact_code_owned_layout(tmp_path: Path) -> None:
+    run_class = RunClass.DEVELOPMENT
     assert required_payload_paths(run_class) == EXPECTED_REQUIRED_PAYLOAD_PATHS
     assert digest_json(
         {
@@ -279,6 +280,26 @@ def test_every_run_class_has_exact_code_owned_layout(
     assert receipt.to_wire()["benchmark_freeze_eligible"] is False
 
 
+@pytest.mark.parametrize(
+    "run_class",
+    [
+        RunClass.SEALED_VALIDATION,
+        RunClass.SEALED_TEST,
+        RunClass.POST_TEST_TUNED,
+        RunClass.REDTEAM,
+        RunClass.REPRODUCTION,
+    ],
+)
+def test_run_class_without_dedicated_layout_is_disabled_pre_freeze(
+    tmp_path: Path, run_class: RunClass
+) -> None:
+    expected = manifest(tmp_path, run_id=f"disabled-{run_class.value}", run_class=run_class)
+    with pytest.raises(ProtocolViolation, match="no code-owned dedicated layout"):
+        required_payload_paths(run_class)
+    with pytest.raises(ProtocolViolation, match="publication is disabled PRE-FREEZE"):
+        AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+
+
 def test_crashed_run_requires_typed_placeholders_for_exact_missing_layout(
     tmp_path: Path,
 ) -> None:
@@ -294,14 +315,48 @@ def test_crashed_run_requires_typed_placeholders_for_exact_missing_layout(
     placeholders = tuple(
         CrashPlaceholder(
             path=path,
+            evidence_path="raw/process-audit.jsonl",
             reason_code="WORKER_CRASHED_BEFORE_ARTIFACT",
-            evidence_digest="sha256:" + "a" * 64,
+            evidence_digest=digest_bytes(_payload("raw/process-audit.jsonl")),
         )
         for path in missing
     )
-    target = writer.finalize(crash_placeholders=placeholders)
+    crash_record = CrashEvidenceRecord(
+        reason_code="WORKER_CRASHED",
+        failure_type="WorkerProcessExit",
+        detail_digest="sha256:" + "a" * 64,
+        worker_exit=17,
+        occurred_at="2026-07-15T00:00:00.5Z",
+    )
+    target = writer.finalize(
+        crash_placeholders=placeholders,
+        crash_evidence=crash_record,
+    )
     receipt = verify_run_bundle(target, expected_manifest=expected)
     assert receipt.run_status is RunStatus.CRASHED
+    crash_control = json.loads((target / "CRASH_EVIDENCE.json").read_bytes())
+    assert crash_control["record"] == crash_record.to_wire()
+    assert [row["path"] for row in crash_control["retained_artifacts"]] == [
+        "logs/stderr.log",
+        "logs/stdout.log",
+        "raw/process-audit.jsonl",
+    ]
+    placeholder_rows = json.loads(
+        (target / "CRASH_PLACEHOLDERS.json").read_bytes()
+    )["placeholders"]
+    assert all(
+        item["evidence_path"] == "raw/process-audit.jsonl"
+        for item in placeholder_rows
+    )
+    inventory_rows = {
+        row["path"]: row
+        for row in json.loads((target / "INVENTORY.json").read_bytes())["files"]
+    }
+    assert all(
+        item["evidence_digest"]
+        == inventory_rows[item["evidence_path"]]["sha256"]
+        for item in placeholder_rows
+    )
 
     second = manifest(tmp_path, run_id="run-b", status=RunStatus.CRASHED)
     writer = AppendOnlyRunWriter(tmp_path, "run-b", second)
@@ -314,6 +369,129 @@ def test_crashed_run_requires_typed_placeholders_for_exact_missing_layout(
     _write_complete(writer)
     target = writer.finalize()
     assert verify_run_bundle(target, expected_manifest=complete).run_status is RunStatus.INELIGIBLE
+
+
+def _crash_record() -> CrashEvidenceRecord:
+    return CrashEvidenceRecord(
+        reason_code="WORKER_CRASHED",
+        failure_type="WorkerProcessExit",
+        detail_digest="sha256:" + "b" * 64,
+        worker_exit=23,
+        occurred_at="2026-07-15T00:00:00.75Z",
+    )
+
+
+def _partial_crash_placeholders(
+    present: set[str], *, evidence_payload: bytes, digest_override: str | None = None
+) -> tuple[CrashPlaceholder, ...]:
+    missing = sorted(
+        set(EXPECTED_REQUIRED_PAYLOAD_PATHS) - present,
+        key=lambda item: item.encode(),
+    )
+    return tuple(
+        CrashPlaceholder(
+            path=path,
+            evidence_path="raw/process-audit.jsonl",
+            reason_code="WORKER_CRASHED_BEFORE_ARTIFACT",
+            evidence_digest=(
+                digest_override
+                if digest_override is not None
+                else digest_bytes(evidence_payload)
+            ),
+        )
+        for path in missing
+    )
+
+
+def test_crash_placeholder_digest_must_resolve_to_retained_nonempty_artifact(
+    tmp_path: Path,
+) -> None:
+    mandatory = {
+        "logs/stdout.log",
+        "logs/stderr.log",
+        "raw/process-audit.jsonl",
+    }
+
+    expected = manifest(tmp_path, run_id="arbitrary-digest", status=RunStatus.CRASHED)
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    audit_payload = b'{"event":"worker-exit","exit":23}\n'
+    writer.write_bytes("raw/process-audit.jsonl", audit_payload)
+    writer.write_bytes("logs/stdout.log", b"worker started\n")
+    writer.write_bytes("logs/stderr.log", b"worker failed\n")
+    placeholders = _partial_crash_placeholders(
+        mandatory,
+        evidence_payload=audit_payload,
+        digest_override="sha256:" + "c" * 64,
+    )
+    try:
+        with pytest.raises(ProtocolViolation, match="does not match retained bytes"):
+            writer.finalize(
+                crash_placeholders=placeholders,
+                crash_evidence=_crash_record(),
+            )
+    finally:
+        writer.abort()
+
+    expected = manifest(tmp_path, run_id="zero-shell", status=RunStatus.CRASHED)
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    writer.write_bytes("raw/process-audit.jsonl", b"")
+    writer.write_bytes("logs/stdout.log", b"")
+    writer.write_bytes("logs/stderr.log", b"")
+    placeholders = _partial_crash_placeholders(mandatory, evidence_payload=b"")
+    try:
+        with pytest.raises(ProtocolViolation, match="cannot be an empty crash shell"):
+            writer.finalize(
+                crash_placeholders=placeholders,
+                crash_evidence=_crash_record(),
+            )
+    finally:
+        writer.abort()
+
+
+def test_mandatory_crash_evidence_cannot_be_placeholdered_or_omitted(
+    tmp_path: Path,
+) -> None:
+    present = {"logs/stdout.log", "raw/process-audit.jsonl"}
+    audit_payload = b'{"event":"worker-exit","exit":23}\n'
+    expected = manifest(tmp_path, run_id="missing-stderr", status=RunStatus.CRASHED)
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    writer.write_bytes("raw/process-audit.jsonl", audit_payload)
+    writer.write_bytes("logs/stdout.log", b"worker started\n")
+    placeholders = _partial_crash_placeholders(present, evidence_payload=audit_payload)
+    try:
+        with pytest.raises(ProtocolViolation, match="must be retained real crash artifacts"):
+            writer.finalize(
+                crash_placeholders=placeholders,
+                crash_evidence=_crash_record(),
+            )
+    finally:
+        writer.abort()
+
+    expected = manifest(tmp_path, run_id="complete-crash-no-record", status=RunStatus.CRASHED)
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    _write_complete(writer)
+    try:
+        with pytest.raises(ProtocolViolation, match="require typed crash evidence"):
+            writer.finalize()
+    finally:
+        writer.abort()
+
+    present = {
+        "logs/stdout.log",
+        "logs/stderr.log",
+        "raw/process-audit.jsonl",
+    }
+    expected = manifest(tmp_path, run_id="missing-record", status=RunStatus.CRASHED)
+    writer = AppendOnlyRunWriter(tmp_path, expected.run_id, expected)
+    writer.write_bytes("raw/process-audit.jsonl", audit_payload)
+    writer.write_bytes("logs/stdout.log", b"worker started\n")
+    writer.write_bytes("logs/stderr.log", b"worker failed\n")
+    placeholders = _partial_crash_placeholders(present, evidence_payload=audit_payload)
+    try:
+        with pytest.raises(ProtocolViolation, match="require typed crash evidence"):
+            writer.finalize(crash_placeholders=placeholders)
+    finally:
+        writer.abort()
 
 
 def test_empty_shell_and_wrong_out_of_band_manifest_fail_closed(tmp_path: Path) -> None:
