@@ -1,15 +1,24 @@
 from __future__ import annotations
 
+import json
 from dataclasses import fields, replace
 
 import pytest
 
 import prototype.unified_map.family_manifest as family_manifest_module
-from prototype.unified_map.canonical import ProtocolViolation, digest_json
+from prototype.unified_map.canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+    digest_json,
+    domain_digest,
+)
 from prototype.unified_map.family_manifest import (
+    AUTHORITY_ARTIFACT_SET_PROTOCOL,
     AtomicLinkDraft,
     AtomicLinkSemantic,
     BuilderRandomnessTranscript,
+    FamilyMaterializationAuthorityArtifactSet,
     FamilyScaffoldStatus,
     FamilySplit,
     MaterializationReceiptLedger,
@@ -34,6 +43,11 @@ from prototype.unified_map.family_manifest import (
     compute_row_bundle_commitment,
     issue_materialization_receipt,
     issue_materialization_receipt_batch,
+    parse_family_materialization_authority_artifact_set_bytes,
+    parse_materialization_ledger_bytes,
+    parse_materialization_receipt_bytes,
+    parse_pre_split_family_source_bytes,
+    parse_weighted_atomic_assignment_bytes,
 )
 
 
@@ -84,6 +98,7 @@ def _source(
     pairs: tuple[PairConstraintDraft, ...] = (),
     links: tuple[AtomicLinkDraft, ...] = (),
     slots: tuple[MaterializationSlotDraft, ...] = (),
+    builder_version: str = "fixture-v2",
 ):
     return build_pre_split_family_source(
         benchmark_id="ucm-benchmark-v1",
@@ -93,7 +108,7 @@ def _source(
         topology_contract_digest=_digest("topology-contract"),
         query_contract_digest=_digest("query-contract"),
         builder_id="fixture-authority-builder",
-        builder_version="fixture-v2",
+        builder_version=builder_version,
         drafts=drafts,
         transcripts=tuple(
             _transcript(item.unit_alias, draw=(index + 1) / 10)
@@ -235,7 +250,11 @@ def _w19_slots(
     )
 
 
-def _closed_slot_source(*, duplicate_followup_record: bool = False):
+def _closed_slot_source(
+    *,
+    duplicate_followup_record: bool = False,
+    builder_version: str = "fixture-v2",
+):
     draft = _draft(
         "family-slots",
         members=(
@@ -311,7 +330,9 @@ def _closed_slot_source(*, duplicate_followup_record: bool = False):
             row_bundle_commitment_digest=_row_bundle_commitment("pair-side-1"),
         ),
     )
-    return _source((draft,), pairs=(pair,), slots=slots)
+    return _source(
+        (draft,), pairs=(pair,), slots=slots, builder_version=builder_version
+    )
 
 
 def _slot_evidence(source, assignment, slot_index: int) -> RowMaterializationEvidence:
@@ -350,6 +371,46 @@ def _slot_evidence(source, assignment, slot_index: int) -> RowMaterializationEvi
         pair_digest=slot.pair_digest,
         pair_side=slot.pair_side,
         atomic_link_digest=slot.atomic_link_digest,
+    )
+
+
+def _exact_authority_graph(
+    *,
+    split: FamilySplit = FamilySplit.TRAIN,
+    builder_version: str = "fixture-v2",
+):
+    source = _closed_slot_source(builder_version=builder_version)
+    assignment = _assignment(
+        source, {source.units[0].authority_digest: split}
+    )
+    receipts = issue_materialization_receipt_batch(
+        source,
+        assignment,
+        tuple(
+            _slot_evidence(source, assignment, index)
+            for index in range(len(source.materialization_slots))
+        ),
+    )
+    ledger = build_materialization_receipt_ledger(source, assignment, receipts)
+    return source, assignment, receipts, ledger
+
+
+def _exact_authority_preimages(
+    *,
+    split: FamilySplit = FamilySplit.TRAIN,
+    builder_version: str = "fixture-v2",
+):
+    source, assignment, receipts, ledger = _exact_authority_graph(
+        split=split, builder_version=builder_version
+    )
+    return (
+        source,
+        assignment,
+        receipts,
+        ledger,
+        canonical_json_bytes(source.to_wire()),
+        canonical_json_bytes(assignment.to_wire()),
+        canonical_json_bytes(ledger.to_wire()),
     )
 
 
@@ -2298,3 +2359,454 @@ def test_rewritten_global_blocker_is_ignored_before_wire_emission() -> None:
         object.__setattr__(blocker, "detail", original[2])
 
     assert evidence.to_wire()["blockers"]
+
+
+def _resign_top_level_wire(wire: dict, digest_field: str) -> dict:
+    body = dict(wire)
+    body.pop(digest_field)
+    wire[digest_field] = digest_json(body)
+    return wire
+
+
+def test_exact_authority_byte_parsers_and_artifact_set_roundtrip() -> None:
+    (
+        source,
+        assignment,
+        receipts,
+        ledger,
+        source_bytes,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+
+    parsed_source = parse_pre_split_family_source_bytes(source_bytes)
+    parsed_assignment = parse_weighted_atomic_assignment_bytes(
+        assignment_bytes, parsed_source
+    )
+    parsed_receipts = tuple(
+        parse_materialization_receipt_bytes(
+            canonical_json_bytes(receipt.to_wire()),
+            parsed_source,
+            parsed_assignment,
+        )
+        for receipt in receipts
+    )
+    parsed_ledger = parse_materialization_ledger_bytes(
+        ledger_bytes, parsed_source, parsed_assignment
+    )
+
+    assert parsed_source.source_digest == source.source_digest
+    assert parsed_assignment.assignment_digest == assignment.assignment_digest
+    assert tuple(item.receipt_digest for item in parsed_receipts) == tuple(
+        item.receipt_digest for item in receipts
+    )
+    assert parsed_ledger.ledger_digest == ledger.ledger_digest
+    assert canonical_json_bytes(parsed_source.to_wire()) == source_bytes
+    assert canonical_json_bytes(parsed_assignment.to_wire()) == assignment_bytes
+    assert canonical_json_bytes(parsed_ledger.to_wire()) == ledger_bytes
+
+    artifact_set = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes, assignment_bytes, ledger_bytes
+    )
+    wire = artifact_set.to_wire()
+    assert wire["schema_version"] == AUTHORITY_ARTIFACT_SET_PROTOCOL
+    assert wire["status"] == "pre_freeze_scaffold"
+    assert wire["freeze_grade_evidence"] is False
+    assert wire["benchmark_freeze_eligible"] is False
+    assert wire["blockers"] == [
+        {
+            "code": "UCM-E003-HARNESS_INCOMPLETE",
+            "artifact": "family_materialization_authority_artifact_set",
+            "detail": (
+                "exact authority preimages are locally retained but external "
+                "custody, independent runtime sealing, and atomic publication "
+                "are not yet available"
+            ),
+        }
+    ]
+    expected_preimages = {
+        "source": (source_bytes, source.source_digest),
+        "assignment": (assignment_bytes, assignment.assignment_digest),
+        "ledger": (ledger_bytes, ledger.ledger_digest),
+    }
+    for name, (preimage, authority_body_digest) in expected_preimages.items():
+        entry = wire["preimages"][name]
+        assert entry["artifact_digest"] == digest_bytes(preimage)
+        assert entry["authority_body_digest"] == authority_body_digest
+        assert entry["byte_length"] == len(preimage)
+
+    assert wire["receipt_count"] == len(receipts)
+    assert {
+        entry["receipt_authority_body_digest"]
+        for entry in wire["receipt_entries"]
+    } == {receipt.receipt_digest for receipt in receipts}
+    assert {
+        entry["receipt_artifact_digest"] for entry in wire["receipt_entries"]
+    } == {
+        digest_bytes(canonical_json_bytes(receipt.to_wire()))
+        for receipt in receipts
+    }
+    assert wire["receipt_exact_set_root"] == domain_digest(
+        b"UCM\0FAMILY_MATERIALIZATION_RECEIPT_EXACT_SET_V1\0",
+        (canonical_json_bytes(wire["receipt_entries"]),),
+    )
+    assert wire["artifact_set_digest"] == digest_json(
+        {key: value for key, value in wire.items() if key != "artifact_set_digest"}
+    )
+
+    reparsed = parse_family_materialization_authority_artifact_set_bytes(
+        artifact_set.canonical_bytes
+    )
+    assert reparsed.canonical_bytes == artifact_set.canonical_bytes
+    assert reparsed.artifact_set_digest == artifact_set.artifact_set_digest
+    assert reparsed.receipt_exact_set_root == artifact_set.receipt_exact_set_root
+
+
+def test_exact_authority_parsers_reject_noncanonical_framing_and_nonbytes() -> None:
+    (
+        _,
+        _,
+        receipts,
+        _,
+        source_bytes,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+    source = parse_pre_split_family_source_bytes(source_bytes)
+    assignment = parse_weighted_atomic_assignment_bytes(assignment_bytes, source)
+    receipt_bytes = canonical_json_bytes(receipts[0].to_wire())
+    artifact_set_bytes = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes, assignment_bytes, ledger_bytes
+    ).canonical_bytes
+    parser_cases = (
+        (source_bytes, parse_pre_split_family_source_bytes),
+        (
+            assignment_bytes,
+            lambda payload: parse_weighted_atomic_assignment_bytes(payload, source),
+        ),
+        (
+            receipt_bytes,
+            lambda payload: parse_materialization_receipt_bytes(
+                payload, source, assignment
+            ),
+        ),
+        (
+            ledger_bytes,
+            lambda payload: parse_materialization_ledger_bytes(
+                payload, source, assignment
+            ),
+        ),
+        (
+            artifact_set_bytes,
+            parse_family_materialization_authority_artifact_set_bytes,
+        ),
+    )
+    for canonical_payload, parser in parser_cases:
+        attacks = (
+            canonical_payload[:-1],
+            canonical_payload.replace(b"\n", b"\r\n"),
+            b"\xef\xbb\xbf" + canonical_payload,
+            canonical_payload[:-1] + b" \n",
+            canonical_payload + b"\n",
+            b"\xff" + canonical_payload,
+        )
+        for attack in attacks:
+            with pytest.raises(ProtocolViolation):
+                parser(attack)
+        with pytest.raises(ProtocolViolation, match="exact bytes"):
+            parser(bytearray(canonical_payload))
+
+    duplicate_key_payload = (
+        b'{"schema_version":"duplicate",' + source_bytes[1:]
+    )
+    with pytest.raises(ProtocolViolation, match="duplicate key"):
+        parse_pre_split_family_source_bytes(duplicate_key_payload)
+
+
+def test_exact_authority_parsers_reject_missing_and_extra_fields() -> None:
+    (
+        _,
+        _,
+        receipts,
+        _,
+        source_bytes,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+    source = parse_pre_split_family_source_bytes(source_bytes)
+    assignment = parse_weighted_atomic_assignment_bytes(assignment_bytes, source)
+    receipt_bytes = canonical_json_bytes(receipts[0].to_wire())
+    parser_cases = (
+        (
+            source_bytes,
+            "source_digest",
+            parse_pre_split_family_source_bytes,
+        ),
+        (
+            assignment_bytes,
+            "assignment_digest",
+            lambda payload: parse_weighted_atomic_assignment_bytes(payload, source),
+        ),
+        (
+            receipt_bytes,
+            "receipt_digest",
+            lambda payload: parse_materialization_receipt_bytes(
+                payload, source, assignment
+            ),
+        ),
+        (
+            ledger_bytes,
+            "ledger_digest",
+            lambda payload: parse_materialization_ledger_bytes(
+                payload, source, assignment
+            ),
+        ),
+    )
+    for payload, required_field, parser in parser_cases:
+        extra = json.loads(payload)
+        extra["unexpected"] = "re-signed"
+        with pytest.raises(ProtocolViolation, match="keys do not match schema"):
+            parser(canonical_json_bytes(extra))
+
+        missing = json.loads(payload)
+        del missing[required_field]
+        with pytest.raises(ProtocolViolation, match="keys do not match schema"):
+            parser(canonical_json_bytes(missing))
+
+
+@pytest.mark.parametrize(
+    "flag",
+    ["freeze_grade_evidence", "benchmark_freeze_eligible"],
+)
+def test_row_evidence_from_wire_rejects_bool_int_alias(flag: str) -> None:
+    source = _closed_slot_source()
+    assignment = _assignment(
+        source, {source.units[0].authority_digest: FamilySplit.TRAIN}
+    )
+    wire = _slot_evidence(source, assignment, 0).to_wire()
+    assert wire[flag] is False
+    wire[flag] = 0
+    with pytest.raises(ProtocolViolation, match="non-canonical or stale"):
+        RowMaterializationEvidence.from_wire(wire)
+
+
+def test_exact_authority_parsers_reject_numeric_type_drift_after_resign() -> None:
+    (
+        _,
+        _,
+        receipts,
+        _,
+        source_bytes,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+    source = parse_pre_split_family_source_bytes(source_bytes)
+    assignment = parse_weighted_atomic_assignment_bytes(assignment_bytes, source)
+
+    source_wire = json.loads(source_bytes)
+    source_wire["units"][0]["weight"] = float(source_wire["units"][0]["weight"])
+    _resign_top_level_wire(source_wire, "source_digest")
+    with pytest.raises(ProtocolViolation):
+        parse_pre_split_family_source_bytes(canonical_json_bytes(source_wire))
+
+    assignment_wire = json.loads(assignment_bytes)
+    assignment_wire["assignments"][0]["weight"] = float(
+        assignment_wire["assignments"][0]["weight"]
+    )
+    _resign_top_level_wire(assignment_wire, "assignment_digest")
+    with pytest.raises(ProtocolViolation):
+        parse_weighted_atomic_assignment_bytes(
+            canonical_json_bytes(assignment_wire), source
+        )
+
+    receipt_wire = receipts[0].to_wire()
+    receipt_wire["row_join"]["freeze_grade_evidence"] = 0
+    _resign_top_level_wire(receipt_wire, "receipt_digest")
+    with pytest.raises(ProtocolViolation, match="non-canonical or stale"):
+        parse_materialization_receipt_bytes(
+            canonical_json_bytes(receipt_wire), source, assignment
+        )
+
+    ledger_wire = json.loads(ledger_bytes)
+    ledger_wire["receipt_count"] = float(ledger_wire["receipt_count"])
+    _resign_top_level_wire(ledger_wire, "ledger_digest")
+    with pytest.raises(ProtocolViolation, match="non-canonical, stale, or re-signed"):
+        parse_materialization_ledger_bytes(
+            canonical_json_bytes(ledger_wire), source, assignment
+        )
+
+
+def test_exact_authority_graph_rejects_cross_bundle_a_b_mix() -> None:
+    (
+        _,
+        _,
+        receipts_a,
+        _,
+        source_bytes_a,
+        assignment_bytes_a,
+        ledger_bytes_a,
+    ) = _exact_authority_preimages(
+        split=FamilySplit.TRAIN, builder_version="fixture-a"
+    )
+    (
+        _,
+        _,
+        receipts_b,
+        _,
+        source_bytes_b,
+        assignment_bytes_b,
+        ledger_bytes_b,
+    ) = _exact_authority_preimages(
+        split=FamilySplit.VALIDATION, builder_version="fixture-b"
+    )
+    source_a = parse_pre_split_family_source_bytes(source_bytes_a)
+    assignment_a = parse_weighted_atomic_assignment_bytes(
+        assignment_bytes_a, source_a
+    )
+
+    with pytest.raises(ProtocolViolation):
+        parse_weighted_atomic_assignment_bytes(assignment_bytes_b, source_a)
+    with pytest.raises(ProtocolViolation):
+        parse_materialization_receipt_bytes(
+            canonical_json_bytes(receipts_b[0].to_wire()), source_a, assignment_a
+        )
+    with pytest.raises(ProtocolViolation):
+        parse_materialization_ledger_bytes(
+            ledger_bytes_b, source_a, assignment_a
+        )
+    with pytest.raises(ProtocolViolation):
+        FamilyMaterializationAuthorityArtifactSet.from_preimages(
+            source_bytes_a, assignment_bytes_b, ledger_bytes_b
+        )
+    with pytest.raises(ProtocolViolation):
+        FamilyMaterializationAuthorityArtifactSet.from_preimages(
+            source_bytes_a, assignment_bytes_a, ledger_bytes_b
+        )
+
+    artifact_a = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes_a, assignment_bytes_a, ledger_bytes_a
+    )
+    artifact_b = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes_b, assignment_bytes_b, ledger_bytes_b
+    )
+    assert artifact_a.artifact_set_digest != artifact_b.artifact_set_digest
+    assert receipts_a[0].receipt_digest != receipts_b[0].receipt_digest
+
+
+def test_authority_artifact_set_rejects_resigned_derived_and_fixed_fields() -> None:
+    (
+        _,
+        _,
+        _,
+        _,
+        source_bytes,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+    artifact_set = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes, assignment_bytes, ledger_bytes
+    )
+
+    def assert_rejected(mutator) -> None:
+        wire = json.loads(artifact_set.canonical_bytes)
+        mutator(wire)
+        _resign_top_level_wire(wire, "artifact_set_digest")
+        with pytest.raises(ProtocolViolation):
+            parse_family_materialization_authority_artifact_set_bytes(
+                canonical_json_bytes(wire)
+            )
+
+    assert_rejected(
+        lambda wire: wire.__setitem__(
+            "schema_version", "ucm-family-materialization-authority-artifact-set/2"
+        )
+    )
+    assert_rejected(lambda wire: wire.__setitem__("status", "authorized_frozen"))
+    assert_rejected(
+        lambda wire: wire["blockers"][0].__setitem__("code", "UCM-E000-RESIGNED")
+    )
+    assert_rejected(lambda wire: wire.__setitem__("freeze_grade_evidence", 0))
+    assert_rejected(
+        lambda wire: wire.__setitem__("benchmark_freeze_eligible", 0)
+    )
+    assert_rejected(
+        lambda wire: wire.__setitem__("freeze_manifest_digest", digest_json({}))
+    )
+    assert_rejected(
+        lambda wire: wire["preimages"]["source"].__setitem__(
+            "artifact_digest", wire["preimages"]["assignment"]["artifact_digest"]
+        )
+    )
+    assert_rejected(
+        lambda wire: wire["preimages"]["source"].__setitem__(
+            "authority_body_digest",
+            wire["preimages"]["assignment"]["authority_body_digest"],
+        )
+    )
+
+    def drop_and_resign_receipt_set(wire: dict) -> None:
+        wire["receipt_entries"].pop()
+        wire["receipt_count"] = len(wire["receipt_entries"])
+        wire["receipt_exact_set_root"] = domain_digest(
+            b"UCM\0FAMILY_MATERIALIZATION_RECEIPT_EXACT_SET_V1\0",
+            (canonical_json_bytes(wire["receipt_entries"]),),
+        )
+
+    assert_rejected(drop_and_resign_receipt_set)
+
+
+def test_authority_artifact_set_external_seal_rejects_coherent_mutation() -> None:
+    (
+        _,
+        _,
+        _,
+        _,
+        source_bytes_a,
+        assignment_bytes_a,
+        ledger_bytes_a,
+    ) = _exact_authority_preimages(
+        split=FamilySplit.TRAIN, builder_version="fixture-a"
+    )
+    (
+        _,
+        _,
+        _,
+        _,
+        source_bytes_b,
+        assignment_bytes_b,
+        ledger_bytes_b,
+    ) = _exact_authority_preimages(
+        split=FamilySplit.VALIDATION, builder_version="fixture-b"
+    )
+    artifact_a = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes_a, assignment_bytes_a, ledger_bytes_a
+    )
+    artifact_b = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        source_bytes_b, assignment_bytes_b, ledger_bytes_b
+    )
+    replacement_digest = artifact_b.artifact_set_digest
+
+    object.__setattr__(artifact_a, "source_preimage", source_bytes_b)
+    object.__setattr__(artifact_a, "assignment_preimage", assignment_bytes_b)
+    object.__setattr__(artifact_a, "ledger_preimage", ledger_bytes_b)
+    object.__setattr__(
+        artifact_a, "_sealed_artifact_set_digest", replacement_digest
+    )
+    with pytest.raises(ProtocolViolation, match="changed after construction"):
+        artifact_a.to_wire()
+
+
+def test_authority_artifact_set_constructor_accepts_only_exact_preimage_bytes() -> None:
+    (
+        source,
+        _,
+        _,
+        _,
+        _,
+        assignment_bytes,
+        ledger_bytes,
+    ) = _exact_authority_preimages()
+    with pytest.raises(ProtocolViolation, match="source preimage must be exact bytes"):
+        FamilyMaterializationAuthorityArtifactSet.from_preimages(
+            source, assignment_bytes, ledger_bytes
+        )

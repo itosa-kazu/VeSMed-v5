@@ -27,6 +27,9 @@ publication have not yet been implemented.
 
 from __future__ import annotations
 
+import base64
+import binascii
+import json
 from dataclasses import dataclass, field
 from enum import Enum
 from threading import RLock
@@ -36,6 +39,7 @@ from weakref import ReferenceType, ref
 from .canonical import (
     ProtocolViolation,
     canonical_json_bytes,
+    digest_bytes,
     digest_json,
     domain_digest,
     reject_privileged_keys,
@@ -50,6 +54,9 @@ LEDGER_PROTOCOL = "ucm-family-materialization-ledger/1"
 EVIDENCE_PROTOCOL = "ucm-row-materialization-evidence/2"
 ROW_BUNDLE_PROTOCOL = "ucm-pre-split-row-bundle-commitment/1"
 LEGACY_AUDIT_PROTOCOL = "ucm-legacy-family-adapter-audit/2"
+AUTHORITY_ARTIFACT_SET_PROTOCOL = (
+    "ucm-family-materialization-authority-artifact-set/1"
+)
 
 INCOMPLETE_CODE = "UCM-E003-HARNESS_INCOMPLETE"
 
@@ -420,6 +427,17 @@ def _pair_semantic_wire(value: PairSemantic) -> str:
         raise ProtocolViolation("pair semantic enum identity is invalid") from exc
 
 
+def _pair_semantic_from_wire(value: object) -> PairSemantic:
+    mapping = {
+        "counterfactual_pair": PairSemantic.COUNTERFACTUAL,
+        "behavior_pair": PairSemantic.BEHAVIORAL,
+        "response_reversal_pair": PairSemantic.RESPONSE_REVERSAL,
+    }
+    if type(value) is not str or value not in mapping:
+        raise ProtocolViolation("pair semantic_type is invalid")
+    return mapping[value]
+
+
 def _atomic_link_semantic_wire(value: AtomicLinkSemantic) -> str:
     mapping = {
         AtomicLinkSemantic.CUT_SET: "cut_set",
@@ -432,6 +450,19 @@ def _atomic_link_semantic_wire(value: AtomicLinkSemantic) -> str:
         return mapping[value]
     except KeyError as exc:
         raise ProtocolViolation("atomic link semantic enum identity is invalid") from exc
+
+
+def _atomic_link_semantic_from_wire(value: object) -> AtomicLinkSemantic:
+    mapping = {
+        "cut_set": AtomicLinkSemantic.CUT_SET,
+        "release_s0_s1": AtomicLinkSemantic.RELEASE_S0_S1,
+        "quota_cluster": AtomicLinkSemantic.QUOTA_CLUSTER,
+        "shared_probe_base": AtomicLinkSemantic.SHARED_PROBE_BASE,
+        "w19_assignment_cluster": AtomicLinkSemantic.W19_ASSIGNMENT_CLUSTER,
+    }
+    if type(value) is not str or value not in mapping:
+        raise ProtocolViolation("atomic link semantic_type is invalid")
+    return mapping[value]
 
 
 def _family_split_wire(value: FamilySplit) -> str:
@@ -560,6 +591,12 @@ def _code_owned_blocker_wire(kind: str) -> dict[str, str]:
         detail = (
             "closed slot coverage is structurally checked but builder custody and "
             "the raw ledger are not independently sealed"
+        )
+    elif kind == "authority_artifact_set":
+        artifact = "family_materialization_authority_artifact_set"
+        detail = (
+            "exact authority preimages are locally retained but external custody, "
+            "independent runtime sealing, and atomic publication are not yet available"
         )
     else:  # pragma: no cover - every caller below uses one code-owned literal.
         raise ProtocolViolation("unknown code-owned family scaffold blocker")
@@ -2386,7 +2423,7 @@ class RowMaterializationEvidence:
             value["row_bundle_commitment_digest"],
             "row materialization row_bundle_commitment_digest",
         )
-        if value != evidence.to_wire():
+        if canonical_json_bytes(value) != canonical_json_bytes(evidence.to_wire()):
             raise ProtocolViolation(
                 "row materialization evidence wire is non-canonical or stale"
             )
@@ -2977,6 +3014,762 @@ def build_materialization_receipt_ledger(
     receipts: tuple[MaterializationReceipt, ...],
 ) -> MaterializationReceiptLedger:
     return MaterializationReceiptLedger(source, assignment, receipts)
+
+
+def _decode_exact_canonical_object_bytes(
+    payload: object,
+    label: str,
+) -> dict[str, Any]:
+    """Decode one exact canonical JSON object from its authoritative bytes.
+
+    ``from_wire(dict)`` is not a custody boundary: duplicate keys and original
+    UTF-8/LF framing have already been lost.  Every public persisted-authority
+    parser below therefore starts here and compares the same bytes with the
+    recursively rebuilt typed wire.
+    """
+
+    if type(payload) is not bytes:
+        raise ProtocolViolation(f"{label} must be exact bytes")
+
+    def reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ProtocolViolation(f"{label} contains duplicate key {key!r}")
+            result[key] = value
+        return result
+
+    try:
+        text = payload.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise ProtocolViolation(f"{label} is not strict UTF-8 JSON") from exc
+    try:
+        value = json.loads(text, object_pairs_hook=reject_duplicate_pairs)
+    except ProtocolViolation:
+        raise
+    except (json.JSONDecodeError, RecursionError, ValueError) as exc:
+        raise ProtocolViolation(f"{label} is not valid JSON") from exc
+    if type(value) is not dict:
+        raise ProtocolViolation(f"{label} must encode an exact JSON object")
+    validate_json_like(value, path=label)
+    try:
+        rebuilt_payload = canonical_json_bytes(value)
+    except (UnicodeEncodeError, ValueError) as exc:
+        raise ProtocolViolation(f"{label} is not canonical UTF-8 JSON") from exc
+    if rebuilt_payload != payload:
+        raise ProtocolViolation(
+            f"{label} bytes are not canonical UTF-8 sorted compact JSON plus one LF"
+        )
+    return value
+
+
+def _wire_object(
+    value: object,
+    *,
+    label: str,
+    keys: frozenset[str],
+) -> dict[str, Any]:
+    if type(value) is not dict:
+        raise ProtocolViolation(f"{label} must be an exact object")
+    validate_json_like(value, path=label)
+    _exact_keys(value, keys, label)
+    return value
+
+
+def _exact_rebuilt_wire(
+    original: dict[str, Any], rebuilt: dict[str, Any], label: str
+) -> None:
+    if canonical_json_bytes(original) != canonical_json_bytes(rebuilt):
+        raise ProtocolViolation(f"{label} wire is non-canonical, stale, or re-signed")
+
+
+def _parse_builder_randomness_transcript_wire(
+    value: object,
+) -> BuilderRandomnessTranscript:
+    row = _wire_object(
+        value,
+        label="builder randomness transcript",
+        keys=frozenset(
+            {
+                "owner_role",
+                "unit_alias",
+                "builder_id",
+                "builder_run_id",
+                "latent_transcript",
+                "noise_transcript",
+                "acquisition_transcript",
+            }
+        ),
+    )
+    result = BuilderRandomnessTranscript(
+        unit_alias=row["unit_alias"],
+        builder_id=row["builder_id"],
+        builder_run_id=row["builder_run_id"],
+        latent_transcript=row["latent_transcript"],
+        noise_transcript=row["noise_transcript"],
+        acquisition_transcript=row["acquisition_transcript"],
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "builder randomness transcript")
+    return result
+
+
+def _parse_source_member_wire(value: object) -> SourceMember:
+    row = _wire_object(
+        value,
+        label="pre-split source member",
+        keys=frozenset(
+            {"member_alias", "semantic_type", "semantic_payload", "member_digest"}
+        ),
+    )
+    result = SourceMember(
+        member_alias=row["member_alias"],
+        semantic_type=_source_member_semantic_from_wire(row["semantic_type"]),
+        semantic_payload=row["semantic_payload"],
+        member_digest=row["member_digest"],
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split source member")
+    return result
+
+
+def _parse_pre_split_source_unit_wire(value: object) -> PreSplitSourceUnit:
+    row = _wire_object(
+        value,
+        label="pre-split source unit",
+        keys=frozenset(
+            {
+                "unit_alias",
+                "world_slot",
+                "semantic_type",
+                "recipe_payload",
+                "weight",
+                "authority_scope_digest",
+                "randomness_transcript",
+                "members",
+                "authority_digest",
+                "family_digest",
+            }
+        ),
+    )
+    members = row["members"]
+    if type(members) is not list:
+        raise ProtocolViolation("pre-split source unit members must be a list")
+    result = PreSplitSourceUnit(
+        unit_alias=row["unit_alias"],
+        world_slot=row["world_slot"],
+        semantic_type=_source_unit_semantic_from_wire(row["semantic_type"]),
+        recipe_payload=row["recipe_payload"],
+        weight=row["weight"],
+        authority_scope_digest=row["authority_scope_digest"],
+        randomness_transcript=_parse_builder_randomness_transcript_wire(
+            row["randomness_transcript"]
+        ),
+        members=tuple(_parse_source_member_wire(item) for item in members),
+        authority_digest=row["authority_digest"],
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split source unit")
+    return result
+
+
+def _parse_source_member_ref_wire(value: object) -> SourceMemberRef:
+    row = _wire_object(
+        value,
+        label="source member reference",
+        keys=frozenset({"authority_digest", "member_digest"}),
+    )
+    result = SourceMemberRef(row["authority_digest"], row["member_digest"])
+    _exact_rebuilt_wire(row, result.to_wire(), "source member reference")
+    return result
+
+
+def _parse_pair_side_wire(value: object) -> PairSide:
+    row = _wire_object(
+        value,
+        label="pre-split pair side",
+        keys=frozenset({"side", "reference"}),
+    )
+    result = PairSide(_parse_source_member_ref_wire(row["reference"]), row["side"])
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split pair side")
+    return result
+
+
+def _parse_pair_constraint_wire(value: object) -> PairConstraint:
+    row = _wire_object(
+        value,
+        label="pre-split pair constraint",
+        keys=frozenset({"pair_alias", "semantic_type", "sides", "pair_digest"}),
+    )
+    sides = row["sides"]
+    if type(sides) is not list:
+        raise ProtocolViolation("pre-split pair sides must be a list")
+    result = PairConstraint(
+        pair_alias=row["pair_alias"],
+        semantic_type=_pair_semantic_from_wire(row["semantic_type"]),
+        sides=tuple(_parse_pair_side_wire(item) for item in sides),
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split pair constraint")
+    return result
+
+
+def _parse_materialization_slot_wire(value: object) -> MaterializationSlot:
+    row = _wire_object(
+        value,
+        label="pre-split materialization slot",
+        keys=frozenset(
+            {
+                "slot_alias",
+                "reference",
+                "materialization_role",
+                "stage_label",
+                "cut_digest",
+                "query_cell_digest",
+                "pair_digest",
+                "pair_side",
+                "atomic_link_digest",
+                "row_bundle_commitment_digest",
+                "strata_allocation_commitment_digest",
+                "slot_digest",
+            }
+        ),
+    )
+    result = MaterializationSlot(
+        slot_alias=row["slot_alias"],
+        reference=_parse_source_member_ref_wire(row["reference"]),
+        materialization_role=_materialization_role_from_wire(
+            row["materialization_role"]
+        ),
+        stage_label=row["stage_label"],
+        cut_digest=row["cut_digest"],
+        query_cell_digest=row["query_cell_digest"],
+        pair_digest=row["pair_digest"],
+        pair_side=row["pair_side"],
+        atomic_link_digest=row["atomic_link_digest"],
+        row_bundle_commitment_digest=row["row_bundle_commitment_digest"],
+        strata_allocation_commitment_digest=row[
+            "strata_allocation_commitment_digest"
+        ],
+        slot_digest=row["slot_digest"],
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split materialization slot")
+    return result
+
+
+def _parse_atomic_link_wire(value: object) -> AtomicLink:
+    row = _wire_object(
+        value,
+        label="pre-split atomic link",
+        keys=frozenset(
+            {
+                "link_alias",
+                "semantic_type",
+                "members",
+                "link_digest",
+                "assignment_cluster_digest",
+            }
+        ),
+    )
+    members = row["members"]
+    if type(members) is not list:
+        raise ProtocolViolation("pre-split atomic link members must be a list")
+    result = AtomicLink(
+        link_alias=row["link_alias"],
+        semantic_type=_atomic_link_semantic_from_wire(row["semantic_type"]),
+        members=tuple(_parse_source_member_ref_wire(item) for item in members),
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "pre-split atomic link")
+    return result
+
+
+def parse_pre_split_family_source_bytes(payload: bytes) -> PreSplitFamilySource:
+    """Parse a complete pre-split family source from exact canonical bytes."""
+
+    row = _decode_exact_canonical_object_bytes(payload, "pre-split family source")
+    _exact_keys(
+        row,
+        frozenset(
+            {
+                "schema_version",
+                "status",
+                "freeze_grade_evidence",
+                "benchmark_freeze_eligible",
+                "authority_role",
+                "benchmark_id",
+                "benchmark_revision",
+                "registry_digest",
+                "generator_bundle_digest",
+                "topology_contract_digest",
+                "query_contract_digest",
+                "authority_scope_digest",
+                "builder_id",
+                "builder_version",
+                "units",
+                "pair_topology",
+                "atomic_links",
+                "materialization_slots",
+                "blockers",
+                "source_digest",
+            }
+        ),
+        "pre-split family source",
+    )
+    for key in ("units", "pair_topology", "atomic_links", "materialization_slots"):
+        if type(row[key]) is not list:
+            raise ProtocolViolation(f"pre-split family source {key} must be a list")
+    result = PreSplitFamilySource(
+        benchmark_id=row["benchmark_id"],
+        benchmark_revision=row["benchmark_revision"],
+        registry_digest=row["registry_digest"],
+        generator_bundle_digest=row["generator_bundle_digest"],
+        topology_contract_digest=row["topology_contract_digest"],
+        query_contract_digest=row["query_contract_digest"],
+        builder_id=row["builder_id"],
+        builder_version=row["builder_version"],
+        units=tuple(_parse_pre_split_source_unit_wire(item) for item in row["units"]),
+        pairs=tuple(
+            _parse_pair_constraint_wire(item) for item in row["pair_topology"]
+        ),
+        atomic_links=tuple(
+            _parse_atomic_link_wire(item) for item in row["atomic_links"]
+        ),
+        materialization_slots=tuple(
+            _parse_materialization_slot_wire(item)
+            for item in row["materialization_slots"]
+        ),
+    )
+    if payload != canonical_json_bytes(result.to_wire()):
+        raise ProtocolViolation(
+            "pre-split family source wire is non-canonical, stale, or re-signed"
+        )
+    return result
+
+
+def _parse_unit_split_assignment_wire(value: object) -> UnitSplitAssignment:
+    row = _wire_object(
+        value,
+        label="unit split assignment",
+        keys=frozenset({"authority_digest", "split", "weight"}),
+    )
+    result = UnitSplitAssignment(
+        row["authority_digest"], _family_split_from_wire(row["split"]), row["weight"]
+    )
+    _exact_rebuilt_wire(row, result.to_wire(), "unit split assignment")
+    return result
+
+
+def parse_weighted_atomic_assignment_bytes(
+    payload: bytes,
+    source: PreSplitFamilySource,
+) -> WeightedAtomicAssignment:
+    """Parse an assignment against one already exact-parsed source."""
+
+    if type(source) is not PreSplitFamilySource:
+        raise ProtocolViolation("assignment parser source must be PreSplitFamilySource")
+    source._validate()
+    row = _decode_exact_canonical_object_bytes(payload, "weighted atomic assignment")
+    _exact_keys(
+        row,
+        frozenset(
+            {
+                "schema_version",
+                "status",
+                "freeze_grade_evidence",
+                "benchmark_freeze_eligible",
+                "source_digest",
+                "split_policy_digest",
+                "split_seed_commitment",
+                "assignments",
+                "connected_components",
+                "split_weight_totals",
+                "blockers",
+                "assignment_digest",
+            }
+        ),
+        "weighted atomic assignment",
+    )
+    if type(row["assignments"]) is not list:
+        raise ProtocolViolation("weighted atomic assignments must be a list")
+    result = WeightedAtomicAssignment(
+        source=source,
+        split_policy_digest=row["split_policy_digest"],
+        split_seed_commitment=row["split_seed_commitment"],
+        assignments=tuple(
+            _parse_unit_split_assignment_wire(item) for item in row["assignments"]
+        ),
+    )
+    if payload != canonical_json_bytes(result.to_wire()):
+        raise ProtocolViolation(
+            "weighted atomic assignment wire is non-canonical, stale, or re-signed"
+        )
+    return result
+
+
+def _parse_materialization_receipt_wire(
+    value: object,
+    source: PreSplitFamilySource,
+    assignment: WeightedAtomicAssignment,
+) -> MaterializationReceipt:
+    row = _wire_object(
+        value,
+        label="materialization receipt",
+        keys=frozenset(
+            {
+                "schema_version",
+                "status",
+                "freeze_grade_evidence",
+                "benchmark_freeze_eligible",
+                "authority_origin",
+                "source_digest",
+                "assignment_digest",
+                "family_digest",
+                "assignment_cluster_digests",
+                "row_join",
+                "materialization_slot",
+                "blockers",
+                "receipt_digest",
+            }
+        ),
+    )
+    evidence = RowMaterializationEvidence.from_wire(row["row_join"])
+    result = MaterializationReceipt(source, assignment, evidence)
+    _exact_rebuilt_wire(row, result.to_wire(), "materialization receipt")
+    return result
+
+
+def parse_materialization_receipt_bytes(
+    payload: bytes,
+    source: PreSplitFamilySource,
+    assignment: WeightedAtomicAssignment,
+) -> MaterializationReceipt:
+    """Parse one exact receipt against exact-parsed parent authorities."""
+
+    if type(source) is not PreSplitFamilySource:
+        raise ProtocolViolation("receipt parser source must be PreSplitFamilySource")
+    if type(assignment) is not WeightedAtomicAssignment:
+        raise ProtocolViolation(
+            "receipt parser assignment must be WeightedAtomicAssignment"
+        )
+    row = _decode_exact_canonical_object_bytes(payload, "materialization receipt")
+    result = _parse_materialization_receipt_wire(row, source, assignment)
+    if payload != canonical_json_bytes(result.to_wire()):
+        raise ProtocolViolation(
+            "materialization receipt bytes do not match rebuilt typed authority"
+        )
+    return result
+
+
+def parse_materialization_ledger_bytes(
+    payload: bytes,
+    source: PreSplitFamilySource,
+    assignment: WeightedAtomicAssignment,
+) -> MaterializationReceiptLedger:
+    """Parse a closed exact ledger and recursively rebuild every receipt."""
+
+    if type(source) is not PreSplitFamilySource:
+        raise ProtocolViolation("ledger parser source must be PreSplitFamilySource")
+    if type(assignment) is not WeightedAtomicAssignment:
+        raise ProtocolViolation(
+            "ledger parser assignment must be WeightedAtomicAssignment"
+        )
+    row = _decode_exact_canonical_object_bytes(payload, "materialization ledger")
+    _exact_keys(
+        row,
+        frozenset(
+            {
+                "schema_version",
+                "status",
+                "freeze_grade_evidence",
+                "benchmark_freeze_eligible",
+                "source_digest",
+                "assignment_digest",
+                "declared_slot_count",
+                "receipt_count",
+                "receipts",
+                "member_coverage",
+                "blockers",
+                "ledger_digest",
+            }
+        ),
+        "materialization ledger",
+    )
+    if type(row["receipts"]) is not list:
+        raise ProtocolViolation("materialization ledger receipts must be a list")
+    result = MaterializationReceiptLedger(
+        source,
+        assignment,
+        tuple(
+            _parse_materialization_receipt_wire(item, source, assignment)
+            for item in row["receipts"]
+        ),
+    )
+    if payload != canonical_json_bytes(result.to_wire()):
+        raise ProtocolViolation(
+            "materialization ledger wire is non-canonical, stale, or re-signed"
+        )
+    return result
+
+
+def _authority_preimage_wire(
+    payload: bytes,
+    authority_body_digest: str,
+) -> dict[str, Any]:
+    return {
+        "encoding": "base64",
+        "byte_length": len(payload),
+        "canonical_bytes_base64": base64.b64encode(payload).decode("ascii"),
+        "artifact_digest": digest_bytes(payload),
+        "authority_body_digest": authority_body_digest,
+    }
+
+
+def _decode_authority_preimage_wire(value: object, label: str) -> bytes:
+    row = _wire_object(
+        value,
+        label=label,
+        keys=frozenset(
+            {
+                "encoding",
+                "byte_length",
+                "canonical_bytes_base64",
+                "artifact_digest",
+                "authority_body_digest",
+            }
+        ),
+    )
+    if row["encoding"] != "base64" or type(row["encoding"]) is not str:
+        raise ProtocolViolation(f"{label} encoding must be base64")
+    encoded = row["canonical_bytes_base64"]
+    if type(encoded) is not str or not encoded:
+        raise ProtocolViolation(f"{label} base64 payload must be non-empty string")
+    try:
+        payload = base64.b64decode(encoded.encode("ascii"), validate=True)
+    except (UnicodeEncodeError, ValueError, binascii.Error) as exc:
+        raise ProtocolViolation(f"{label} base64 payload is invalid") from exc
+    if base64.b64encode(payload).decode("ascii") != encoded:
+        raise ProtocolViolation(f"{label} base64 payload is non-canonical")
+    if type(row["byte_length"]) is not int or row["byte_length"] != len(payload):
+        raise ProtocolViolation(f"{label} byte_length is invalid")
+    _digest(row["artifact_digest"], f"{label} artifact_digest")
+    _digest(row["authority_body_digest"], f"{label} authority_body_digest")
+    if digest_bytes(payload) != row["artifact_digest"]:
+        raise ProtocolViolation(f"{label} artifact_digest does not bind exact bytes")
+    return payload
+
+
+@dataclass(frozen=True, slots=True, weakref_slot=True)
+class FamilyMaterializationAuthorityArtifactSet:
+    """Self-contained exact preimages for one family materialization graph.
+
+    Only bytes cross the constructor boundary.  Typed parents are reparsed from
+    those bytes on every validation, so callers cannot inject an object graph
+    which differs from the persisted authority artifacts.
+    """
+
+    source_preimage: bytes
+    assignment_preimage: bytes
+    ledger_preimage: bytes
+    _sealed_artifact_set_digest: str = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._validate(allow_seal_initialization=True)
+
+    @classmethod
+    def from_preimages(
+        cls,
+        source_preimage: bytes,
+        assignment_preimage: bytes,
+        ledger_preimage: bytes,
+    ) -> "FamilyMaterializationAuthorityArtifactSet":
+        return cls(source_preimage, assignment_preimage, ledger_preimage)
+
+    @classmethod
+    def from_canonical_bytes(
+        cls, payload: bytes
+    ) -> "FamilyMaterializationAuthorityArtifactSet":
+        row = _decode_exact_canonical_object_bytes(
+            payload, "family materialization authority artifact set"
+        )
+        _exact_keys(
+            row,
+            frozenset(
+                {
+                    "schema_version",
+                    "status",
+                    "freeze_grade_evidence",
+                    "benchmark_freeze_eligible",
+                    "preimages",
+                    "receipt_count",
+                    "receipt_entries",
+                    "receipt_exact_set_root",
+                    "blockers",
+                    "artifact_set_digest",
+                }
+            ),
+            "family materialization authority artifact set",
+        )
+        preimages = _wire_object(
+            row["preimages"],
+            label="family authority artifact preimages",
+            keys=frozenset({"source", "assignment", "ledger"}),
+        )
+        result = cls(
+            _decode_authority_preimage_wire(
+                preimages["source"], "family source preimage"
+            ),
+            _decode_authority_preimage_wire(
+                preimages["assignment"], "family assignment preimage"
+            ),
+            _decode_authority_preimage_wire(
+                preimages["ledger"], "family ledger preimage"
+            ),
+        )
+        if payload != result.canonical_bytes:
+            raise ProtocolViolation(
+                "family materialization authority artifact set is stale or re-signed"
+            )
+        return result
+
+    def _parsed_graph(
+        self,
+    ) -> tuple[
+        PreSplitFamilySource,
+        WeightedAtomicAssignment,
+        MaterializationReceiptLedger,
+    ]:
+        if type(self.source_preimage) is not bytes:
+            raise ProtocolViolation("artifact-set source preimage must be exact bytes")
+        if type(self.assignment_preimage) is not bytes:
+            raise ProtocolViolation(
+                "artifact-set assignment preimage must be exact bytes"
+            )
+        if type(self.ledger_preimage) is not bytes:
+            raise ProtocolViolation("artifact-set ledger preimage must be exact bytes")
+        source = parse_pre_split_family_source_bytes(self.source_preimage)
+        assignment = parse_weighted_atomic_assignment_bytes(
+            self.assignment_preimage, source
+        )
+        ledger = parse_materialization_ledger_bytes(
+            self.ledger_preimage, source, assignment
+        )
+        return source, assignment, ledger
+
+    @staticmethod
+    def _receipt_entries(
+        ledger: MaterializationReceiptLedger,
+    ) -> list[dict[str, str]]:
+        entries: list[dict[str, str]] = []
+        for receipt in ledger.receipts:
+            slot_digest = receipt.evidence.materialization_slot_digest
+            if type(slot_digest) is not str:
+                raise ProtocolViolation(
+                    "closed ledger receipt is missing materialization slot digest"
+                )
+            receipt_bytes = canonical_json_bytes(receipt.to_wire())
+            entries.append(
+                {
+                    "record_id": receipt.evidence.record_id,
+                    "materialization_slot_digest": slot_digest,
+                    "receipt_artifact_digest": digest_bytes(receipt_bytes),
+                    "receipt_authority_body_digest": receipt.receipt_digest,
+                }
+            )
+        return sorted(entries, key=lambda item: item["record_id"])
+
+    def _body_unchecked(
+        self,
+        source: PreSplitFamilySource,
+        assignment: WeightedAtomicAssignment,
+        ledger: MaterializationReceiptLedger,
+    ) -> dict[str, Any]:
+        receipt_entries = self._receipt_entries(ledger)
+        body = {
+            "schema_version": AUTHORITY_ARTIFACT_SET_PROTOCOL,
+            "status": "pre_freeze_scaffold",
+            "freeze_grade_evidence": False,
+            "benchmark_freeze_eligible": False,
+            "preimages": {
+                "source": _authority_preimage_wire(
+                    self.source_preimage, source.source_digest
+                ),
+                "assignment": _authority_preimage_wire(
+                    self.assignment_preimage, assignment.assignment_digest
+                ),
+                "ledger": _authority_preimage_wire(
+                    self.ledger_preimage, ledger.ledger_digest
+                ),
+            },
+            "receipt_count": len(receipt_entries),
+            "receipt_entries": receipt_entries,
+            "receipt_exact_set_root": domain_digest(
+                b"UCM\0FAMILY_MATERIALIZATION_RECEIPT_EXACT_SET_V1\0",
+                (canonical_json_bytes(receipt_entries),),
+            ),
+            "blockers": [_code_owned_blocker_wire("authority_artifact_set")],
+        }
+        validate_json_like(body)
+        return body
+
+    def _validate(
+        self,
+        *,
+        allow_seal_initialization: bool = False,
+    ) -> tuple[
+        dict[str, Any],
+        PreSplitFamilySource,
+        WeightedAtomicAssignment,
+        MaterializationReceiptLedger,
+    ]:
+        source, assignment, ledger = self._parsed_graph()
+        body = self._body_unchecked(source, assignment, ledger)
+        expected_digest = digest_json(body)
+        _seal_or_validate_once(
+            self,
+            seal_attribute="_sealed_artifact_set_digest",
+            expected_digest=expected_digest,
+            allow_initialization=allow_seal_initialization,
+            missing_message="family authority artifact-set seal is missing",
+            changed_message="family authority artifact set changed after construction",
+        )
+        return body, source, assignment, ledger
+
+    @property
+    def source(self) -> PreSplitFamilySource:
+        return self._validate()[1]
+
+    @property
+    def assignment(self) -> WeightedAtomicAssignment:
+        return self._validate()[2]
+
+    @property
+    def ledger(self) -> MaterializationReceiptLedger:
+        return self._validate()[3]
+
+    @property
+    def receipt_exact_set_root(self) -> str:
+        body, _, _, _ = self._validate()
+        return body["receipt_exact_set_root"]
+
+    @property
+    def artifact_set_digest(self) -> str:
+        self._validate()
+        return self._sealed_artifact_set_digest
+
+    @property
+    def benchmark_freeze_eligible(self) -> bool:
+        self._validate()
+        return False
+
+    def to_wire(self) -> dict[str, Any]:
+        body, _, _, _ = self._validate()
+        return {**body, "artifact_set_digest": self._sealed_artifact_set_digest}
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        return canonical_json_bytes(self.to_wire())
+
+
+def parse_family_materialization_authority_artifact_set_bytes(
+    payload: bytes,
+) -> FamilyMaterializationAuthorityArtifactSet:
+    return FamilyMaterializationAuthorityArtifactSet.from_canonical_bytes(payload)
 
 
 @dataclass(frozen=True, slots=True)
