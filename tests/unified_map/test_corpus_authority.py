@@ -774,6 +774,17 @@ def test_pair_alias_side_and_authority_labels_are_not_self_reported(
     assert "pair_side contradicts" in details
 
 
+def test_boolean_pair_side_cannot_alias_integer_topology(tmp_path: Path) -> None:
+    scope = _build_scope(tmp_path, "W03")
+    # ``True == 1`` in Python.  The judge channel must nevertheless carry the
+    # exact integer topology type, not a boolean that happens to compare equal.
+    _rewrite_row(scope.judge_path, 1, pair_side=True)
+    audit = audit_authority_bound_corpus(scope)
+
+    assert audit.status is CorpusAuthorityStatus.INCOMPLETE
+    assert "pair_side contradicts" in _details(audit)
+
+
 def test_w19_row_replacement_cannot_preserve_a_64_row_quota_block(
     tmp_path: Path,
 ) -> None:

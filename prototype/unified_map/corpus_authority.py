@@ -1767,7 +1767,12 @@ def _audit_row(
         else:
             pair_alias_by_digest[slot.pair_digest] = pair_id
             pair_digest_by_alias[pair_id] = slot.pair_digest
-        if judge_wire.get("pair_side") != slot.pair_side:
+        judge_pair_side = judge_wire.get("pair_side")
+        if (
+            type(judge_pair_side) is not int
+            or judge_pair_side not in {0, 1}
+            or judge_pair_side != slot.pair_side
+        ):
             blockers.append(
                 _block(artifact, "judge pair_side contradicts pre-split pair topology")
             )
