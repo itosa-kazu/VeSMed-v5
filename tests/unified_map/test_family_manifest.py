@@ -1332,6 +1332,66 @@ def test_pair_slot_inventory_requires_both_exact_sides_and_existing_pair() -> No
         _source((draft,), pairs=(pair,), slots=downgraded_pair_slots)
 
 
+def test_pair_authority_and_materialization_role_are_biconditional() -> None:
+    pair_draft = MaterializationSlotDraft(
+        "pair-side-draft",
+        "family-slots",
+        "left",
+        MaterializationRole.PAIR_SIDE,
+        "counterfactual-readout",
+        _digest("pair-role-cut"),
+        _digest("pair-role-query"),
+        pair_alias="counterfactual-pair",
+        pair_side=0,
+        row_bundle_commitment_digest=_row_bundle_commitment("pair-role-draft"),
+    )
+    with pytest.raises(ProtocolViolation, match="reserved for the pair-side"):
+        replace(pair_draft, materialization_role=MaterializationRole.STANDARD_ROW)
+
+    source = _closed_slot_source()
+    pair_slot_index = next(
+        index
+        for index, slot in enumerate(source.materialization_slots)
+        if slot.materialization_role is MaterializationRole.PAIR_SIDE
+    )
+    pair_slot = source.materialization_slots[pair_slot_index]
+    with pytest.raises(ProtocolViolation, match="reserved for the pair-side"):
+        replace(pair_slot, materialization_role=MaterializationRole.STANDARD_ROW)
+
+    assignment = _assignment(
+        source,
+        {source.units[0].authority_digest: FamilySplit.TRAIN},
+    )
+    evidence = _slot_evidence(source, assignment, pair_slot_index)
+    with pytest.raises(ProtocolViolation, match="reserved for the pair-side"):
+        replace(evidence, materialization_role=MaterializationRole.STANDARD_ROW)
+
+
+def test_receipt_and_ledger_revalidate_mutated_pair_role() -> None:
+    _, _, receipts, ledger = _exact_authority_graph()
+    receipt = next(
+        item
+        for item in receipts
+        if item.evidence.materialization_role is MaterializationRole.PAIR_SIDE
+    )
+    evidence = receipt.evidence
+    original_role = evidence.materialization_role
+    object.__setattr__(
+        evidence,
+        "materialization_role",
+        MaterializationRole.STANDARD_ROW,
+    )
+    try:
+        with pytest.raises(ProtocolViolation):
+            receipt.to_wire()
+        with pytest.raises(ProtocolViolation):
+            ledger.to_wire()
+    finally:
+        object.__setattr__(evidence, "materialization_role", original_role)
+
+    assert receipt.to_wire()["row_join"]["materialization_role"] == "pair_side"
+
+
 @pytest.mark.parametrize(
     ("semantic", "role"),
     [
@@ -2084,70 +2144,22 @@ def test_strata_allocation_commitment_binds_slot_source_and_assignment() -> None
     assert baseline_assignment.assignment_digest != changed_assignment.assignment_digest
 
 
-def test_w19_typed_row_cannot_gain_a_second_pair_bound_physical_slot() -> None:
-    drafts = list(_w19_drafts())
-    first_alias = drafts[0].unit_alias
-    drafts[0] = _draft(
-        first_alias,
-        world="W19",
-        members=(
-            _member(
-                "assignment-row",
-                semantic=SourceMemberSemantic.W19_ASSIGNMENT_ROW,
-            ),
-            _member("pair-companion"),
-        ),
-        weight=1,
-    )
-    drafts_tuple = tuple(drafts)
-    pair = PairConstraintDraft(
-        "w19-extra-pair",
-        PairSemantic.BEHAVIORAL,
-        (
-            PairSideDraft(first_alias, "assignment-row", 0),
-            PairSideDraft(first_alias, "pair-companion", 1),
-        ),
-    )
-    pair_cut = _digest("w19-extra-pair-cut")
-    pair_query = _digest("w19-extra-pair-query")
-    slots = _w19_slots(drafts_tuple) + (
+def test_w19_typed_row_cannot_claim_pair_authority() -> None:
+    with pytest.raises(ProtocolViolation, match="reserved for the pair-side"):
         MaterializationSlotDraft(
             "w19-extra-pair-side",
-            first_alias,
+            "w19-family-00",
             "assignment-row",
             MaterializationRole.W19_ASSIGNMENT_ROW,
             "pair-readout",
-            pair_cut,
-            pair_query,
+            _digest("w19-extra-pair-cut"),
+            _digest("w19-extra-pair-query"),
             pair_alias="w19-extra-pair",
             pair_side=0,
             atomic_link_alias="w19-quota-cluster",
             row_bundle_commitment_digest=_row_bundle_commitment(
                 "w19-extra-pair-side"
             ),
-        ),
-        MaterializationSlotDraft(
-            "w19-pair-companion",
-            first_alias,
-            "pair-companion",
-            MaterializationRole.PAIR_SIDE,
-            "pair-readout",
-            pair_cut,
-            pair_query,
-            pair_alias="w19-extra-pair",
-            pair_side=1,
-            row_bundle_commitment_digest=_row_bundle_commitment(
-                "w19-pair-companion"
-            ),
-        ),
-    )
-
-    with pytest.raises(ProtocolViolation, match="exactly one slot"):
-        _source(
-            drafts_tuple,
-            pairs=(pair,),
-            links=(_w19_cluster(drafts_tuple),),
-            slots=slots,
         )
 
 

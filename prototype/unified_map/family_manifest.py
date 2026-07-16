@@ -1128,6 +1128,10 @@ class MaterializationSlotDraft:
                 raise ProtocolViolation(
                     "pair-side materialization requires exact pair_side 0 or 1"
                 )
+            if self.materialization_role is not MaterializationRole.PAIR_SIDE:
+                raise ProtocolViolation(
+                    "pair authority is reserved for the pair-side materialization role"
+                )
         elif self.materialization_role is MaterializationRole.PAIR_SIDE:
             raise ProtocolViolation(
                 "pair-side materialization role requires pair_alias/pair_side"
@@ -1184,6 +1188,10 @@ class MaterializationSlot:
             _digest(self.pair_digest, "resolved pair-side pair_digest")
             if type(self.pair_side) is not int or self.pair_side not in {0, 1}:
                 raise ProtocolViolation("resolved pair-side must be exact 0 or 1")
+            if self.materialization_role is not MaterializationRole.PAIR_SIDE:
+                raise ProtocolViolation(
+                    "resolved pair authority is reserved for the pair-side role"
+                )
         elif self.materialization_role is MaterializationRole.PAIR_SIDE:
             raise ProtocolViolation(
                 "resolved pair-side role requires pair authority"
@@ -2298,6 +2306,10 @@ class RowMaterializationEvidence:
                 _digest(self.pair_digest, "receipt pair_digest")
                 if type(self.pair_side) is not int or self.pair_side not in {0, 1}:
                     raise ProtocolViolation("receipt pair_side must be exact 0 or 1")
+                if self.materialization_role is not MaterializationRole.PAIR_SIDE:
+                    raise ProtocolViolation(
+                        "receipt pair authority is reserved for the pair-side role"
+                    )
             elif self.materialization_role is MaterializationRole.PAIR_SIDE:
                 raise ProtocolViolation(
                     "pair-side receipt role requires pair_digest/pair_side"
