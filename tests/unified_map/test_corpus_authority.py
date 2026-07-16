@@ -15,15 +15,25 @@ from prototype.unified_map.canonical import (
 from prototype.unified_map.corpus_authority import (
     AUDIT_PROTOCOL,
     INCOMPLETE_CODE,
+    UNIFIED_CORPUS_AUTHORITY_PROTOCOL,
     AuthorityBoundCorpusAudit,
     AuthorityBoundCorpusScope,
+    AuthorityBoundCorpusScopeContract,
+    CorpusAuthorityBlocker,
     CorpusAuthorityStatus,
+    UnifiedCorpusAuthorityArtifact,
+    admit_unified_corpus_authority_artifact_bytes,
     audit_authority_bound_corpus,
+    build_unified_corpus_authority_artifact,
+    parse_authority_bound_corpus_audit_bytes,
+    parse_authority_bound_corpus_scope_contract_bytes,
+    parse_unified_corpus_authority_artifact_bytes,
 )
 from prototype.unified_map.family_manifest import (
     AtomicLinkDraft,
     AtomicLinkSemantic,
     BuilderRandomnessTranscript,
+    FamilyMaterializationAuthorityArtifactSet,
     FamilySplit,
     MaterializationRole,
     MaterializationSlotDraft,
@@ -106,11 +116,7 @@ def _fixture_rows(
         elif world == "W03":
             labels = ["iid_support", "behavior_pair"]
         else:
-            labels = (
-                ["iid_support", "boundary_tail"]
-                if index == 0
-                else ["iid_support"]
-            )
+            labels = ["iid_support", "boundary_tail"] if index == 0 else ["iid_support"]
         candidates.append(
             {
                 "schema_version": "ucm-candidate-public-episode/1",
@@ -151,7 +157,9 @@ def _build_scope(tmp_path: Path, world: str = "W01") -> AuthorityBoundCorpusScop
     candidate_rows, judge_rows = _fixture_rows(world, count, history, catalog)
 
     row_bindings: list[dict[str, object]] = []
-    for index, (candidate, judge) in enumerate(zip(candidate_rows, judge_rows, strict=True)):
+    for index, (candidate, judge) in enumerate(
+        zip(candidate_rows, judge_rows, strict=True)
+    ):
         record_id = candidate["record_id"]
         row_bindings.append(
             {
@@ -434,9 +442,7 @@ def _build_scope(tmp_path: Path, world: str = "W01") -> AuthorityBoundCorpusScop
         receipt.join.family_receipt.evidence.record_id: list(receipt.combined_labels)
         for receipt in batch.receipts
     }
-    assert {
-        row["record_id"]: row["strata"] for row in judge_rows
-    } == expected_labels
+    assert {row["record_id"]: row["strata"] for row in judge_rows} == expected_labels
 
     candidate_path = tmp_path / "candidate-public.jsonl"
     judge_path = tmp_path / "judge-private.jsonl"
@@ -463,12 +469,48 @@ def _build_scope(tmp_path: Path, world: str = "W01") -> AuthorityBoundCorpusScop
 
 
 def _rewrite_row(path: Path, index: int, **changes: object) -> None:
-    rows = [
-        __import__("json").loads(line)
-        for line in path.read_bytes().splitlines()
-    ]
+    rows = [__import__("json").loads(line) for line in path.read_bytes().splitlines()]
     rows[index] = {**rows[index], **changes}
     _write_rows(path, rows)
+
+
+def _build_unified(
+    tmp_path: Path,
+    world: str = "W01",
+) -> tuple[
+    UnifiedCorpusAuthorityArtifact,
+    FamilyMaterializationAuthorityArtifactSet,
+    AuthorityBoundCorpusScopeContract,
+    AuthorityBoundCorpusAudit,
+]:
+    scope = _build_scope(tmp_path, world)
+    audit = audit_authority_bound_corpus(scope)
+    assert audit.structural_join_complete
+    family = FamilyMaterializationAuthorityArtifactSet.from_preimages(
+        canonical_json_bytes(scope.family_source.to_wire()),
+        canonical_json_bytes(scope.family_assignment.to_wire()),
+        canonical_json_bytes(scope.family_ledger.to_wire()),
+    )
+    scope_contract = parse_authority_bound_corpus_scope_contract_bytes(
+        canonical_json_bytes(scope.to_wire())
+    )
+    artifact = build_unified_corpus_authority_artifact(
+        family_artifact_set_preimage=family.canonical_bytes,
+        scope_contract_preimage=scope_contract.canonical_bytes,
+        audit_preimage=audit.canonical_bytes,
+    )
+    return artifact, family, scope_contract, audit
+
+
+def _resign_body(wire: dict, digest_field: str) -> bytes:
+    body = dict(wire)
+    body.pop(digest_field, None)
+    return canonical_json_bytes({**body, digest_field: digest_json(body)})
+
+
+@pytest.fixture(scope="module")
+def unified_fixture(tmp_path_factory: pytest.TempPathFactory):
+    return _build_unified(tmp_path_factory.mktemp("unified-authority"), "W01")
 
 
 def _details(audit: AuthorityBoundCorpusAudit) -> str:
@@ -498,7 +540,9 @@ def test_exact_authority_bound_corpus_is_structurally_complete_but_never_freeze_
     assert roots["family_source"] == scope.family_source.source_digest
     assert roots["family_assignment"] == scope.family_assignment.assignment_digest
     assert roots["family_materialization_ledger"] == scope.family_ledger.ledger_digest
-    assert roots["dual_channel_authority"] == scope.strata_batch.authority.authority_digest
+    assert (
+        roots["dual_channel_authority"] == scope.strata_batch.authority.authority_digest
+    )
     assert roots["strata_receipt_batch"] == scope.strata_batch.batch_digest
     assert roots["generator_bundle"] == scope.family_source.generator_bundle_digest
     assert roots["topology_contract"] == scope.family_source.topology_contract_digest
@@ -553,7 +597,11 @@ def test_missing_duplicate_and_extra_rows_fail_closed(
         ("split", "validation", "split contradicts"),
         ("strata", ["iid_support"], "strata labels"),
         ("unverified_declared_strata", ["boundary_tail"], "unverified self-reported"),
-        ("public_history_digest", _digest("foreign-history"), "does not exact-join candidate history"),
+        (
+            "public_history_digest",
+            _digest("foreign-history"),
+            "does not exact-join candidate history",
+        ),
     ],
 )
 def test_cross_scope_history_split_and_labels_fail_closed(
@@ -581,6 +629,21 @@ def test_noncanonical_or_reordered_live_bytes_fail_closed(tmp_path: Path) -> Non
     scope.judge_path.write_bytes(b"".join(reversed(rows)))
     audit = audit_authority_bound_corpus(scope)
     assert "record_id order" in _details(audit)
+
+
+def test_live_corpus_surrogate_escape_is_typed_incomplete_not_uncaught(
+    tmp_path: Path,
+) -> None:
+    scope = _build_scope(tmp_path)
+    payload = scope.candidate_path.read_bytes().replace(
+        b'"record_id":"record-000"',
+        b'"record_id":"\\ud800"',
+        1,
+    )
+    scope.candidate_path.write_bytes(payload)
+    audit = audit_authority_bound_corpus(scope)
+    assert audit.status is CorpusAuthorityStatus.INCOMPLETE
+    assert "not canonical UTF-8 JSON" in _details(audit)
 
 
 def test_candidate_row_is_an_exact_closed_schema_not_only_a_key_blacklist(
@@ -699,7 +762,9 @@ def test_each_foreign_authority_root_fails_the_exact_graph_join(
     assert "foreign" in _details(audit) or "validation failed" in _details(audit)
 
 
-def test_pair_alias_side_and_authority_labels_are_not_self_reported(tmp_path: Path) -> None:
+def test_pair_alias_side_and_authority_labels_are_not_self_reported(
+    tmp_path: Path,
+) -> None:
     scope = _build_scope(tmp_path, "W03")
     assert audit_authority_bound_corpus(scope).structural_join_complete
     _rewrite_row(scope.judge_path, 1, pair_id="replacement-pair", pair_side=0)
@@ -709,7 +774,9 @@ def test_pair_alias_side_and_authority_labels_are_not_self_reported(tmp_path: Pa
     assert "pair_side contradicts" in details
 
 
-def test_w19_row_replacement_cannot_preserve_a_64_row_quota_block(tmp_path: Path) -> None:
+def test_w19_row_replacement_cannot_preserve_a_64_row_quota_block(
+    tmp_path: Path,
+) -> None:
     scope = _build_scope(tmp_path, "W19")
     _rewrite_row(
         scope.judge_path,
@@ -765,6 +832,401 @@ def test_legacy_post_split_materializer_remains_typed_incomplete(
     assert wire["status"] == "incomplete"
     assert wire["blockers"]
     assert all(row["code"] == INCOMPLETE_CODE for row in wire["blockers"])
-    assert {
-        row["interface"] for row in wire["blockers"]
-    } >= {"pre_split_family_authority", "dual_channel_stratum_authority"}
+    assert {row["interface"] for row in wire["blockers"]} >= {
+        "pre_split_family_authority",
+        "dual_channel_stratum_authority",
+    }
+
+
+def test_scope_contract_is_path_independent_exact_canonical_bytes(
+    unified_fixture,
+) -> None:
+    _, _, scope_contract, _ = unified_fixture
+    parsed = parse_authority_bound_corpus_scope_contract_bytes(
+        scope_contract.canonical_bytes
+    )
+    assert parsed.canonical_bytes == scope_contract.canonical_bytes
+    assert parsed.contract_digest == digest_bytes(parsed.canonical_bytes)
+    assert len(parsed.roots) == 13
+    assert all(item.digest is not None for item in parsed.roots)
+    parameters = inspect.signature(AuthorityBoundCorpusScopeContract).parameters
+    assert "candidate_path" not in parameters
+    assert "judge_path" not in parameters
+    assert "family_source" not in parameters
+    assert "family_assignment" not in parameters
+    assert "family_ledger" not in parameters
+    assert "strata_batch" not in parameters
+
+
+def test_audit_exact_parser_distinguishes_body_and_full_artifact_digest(
+    unified_fixture,
+) -> None:
+    _, _, _, audit = unified_fixture
+    parsed = parse_authority_bound_corpus_audit_bytes(audit.canonical_bytes)
+    wire = parsed.to_wire()
+    body = dict(wire)
+    body_digest = body.pop("audit_digest")
+    assert body_digest == digest_json(body)
+    assert parsed.digest == digest_bytes(parsed.canonical_bytes)
+    assert parsed.digest != body_digest
+    assert parsed.canonical_bytes == audit.canonical_bytes
+
+
+def test_scope_and_audit_parsers_reject_noncanonical_bytes_and_blocker_rewrites(
+    unified_fixture,
+) -> None:
+    _, _, scope, audit = unified_fixture
+    for parser in (
+        parse_authority_bound_corpus_scope_contract_bytes,
+        parse_authority_bound_corpus_audit_bytes,
+        parse_unified_corpus_authority_artifact_bytes,
+    ):
+        with pytest.raises(ProtocolViolation):
+            parser(b'{"x":"\\ud800"}\n')
+    for parser, payload in (
+        (
+            parse_authority_bound_corpus_scope_contract_bytes,
+            scope.canonical_bytes,
+        ),
+        (parse_authority_bound_corpus_audit_bytes, audit.canonical_bytes),
+    ):
+        for attacked in (
+            b"\xef\xbb\xbf" + payload,
+            payload.replace(b"\n", b"\r\n", 1),
+            payload + b"\n",
+            b'{"status":"pre_freeze_scaffold",' + payload[1:],
+        ):
+            with pytest.raises(ProtocolViolation):
+                parser(attacked)
+
+    scope_wire = scope.to_wire()
+    scope_wire["blockers"][0]["detail"] = "custody complete"
+    with pytest.raises(ProtocolViolation):
+        parse_authority_bound_corpus_scope_contract_bytes(
+            canonical_json_bytes(scope_wire)
+        )
+
+    audit_wire = audit.to_wire()
+    audit_wire["blockers"][0]["detail"] = "custody complete"
+    with pytest.raises(ProtocolViolation):
+        parse_authority_bound_corpus_audit_bytes(
+            _resign_body(audit_wire, "audit_digest")
+        )
+
+
+def test_unified_authority_exactly_binds_three_preimages_and_thirteen_roots(
+    unified_fixture,
+) -> None:
+    artifact, family, scope, audit = unified_fixture
+    wire = artifact.to_wire()
+    assert wire["schema_version"] == UNIFIED_CORPUS_AUTHORITY_PROTOCOL
+    assert wire["status"] == "pre_freeze_scaffold"
+    assert wire["freeze_grade_evidence"] is False
+    assert wire["benchmark_freeze_eligible"] is False
+    assert wire["authority_role"] == "judge_only"
+    assert artifact.benchmark_freeze_eligible is False
+    assert wire["authority_root_count"] == 13
+    assert wire["authority_roots"] == [item.to_wire() for item in scope.roots]
+    assert wire["corpora"] == {
+        "candidate_corpus_digest": scope.candidate_corpus_digest,
+        "judge_corpus_digest": scope.judge_corpus_digest,
+        "record_count": audit.record_count,
+    }
+    assert wire["family_receipt_exact_set_root"] == family.receipt_exact_set_root
+    assert wire["blockers"] == [
+        {
+            "code": INCOMPLETE_CODE,
+            "artifact": "strata_authority_preimages_and_external_custody",
+            "detail": "five strata authority roots are digest-bound but their canonical preimages, independent custody, and atomic publication are not yet proven",
+        }
+    ]
+    assert artifact.authority_body_digest == wire["unified_authority_digest"]
+    assert artifact.artifact_digest == digest_bytes(artifact.canonical_bytes)
+    parsed = parse_unified_corpus_authority_artifact_bytes(artifact.canonical_bytes)
+    assert parsed.canonical_bytes == artifact.canonical_bytes
+    assert set(inspect.signature(UnifiedCorpusAuthorityArtifact).parameters) == {
+        "family_artifact_set_preimage",
+        "scope_contract_preimage",
+        "audit_preimage",
+    }
+    with pytest.raises(ProtocolViolation, match="exact bytes"):
+        build_unified_corpus_authority_artifact(
+            family_artifact_set_preimage=family,  # type: ignore[arg-type]
+            scope_contract_preimage=scope.canonical_bytes,
+            audit_preimage=audit.canonical_bytes,
+        )
+
+
+@pytest.mark.parametrize(
+    "attack",
+    (
+        lambda payload: b"\xef\xbb\xbf" + payload,
+        lambda payload: payload.replace(b"\n", b"\r\n", 1),
+        lambda payload: payload + b"\n",
+        lambda payload: payload[:-1] + b" ",
+        lambda payload: b'{"status":"pre_freeze_scaffold",' + payload[1:],
+        lambda payload: payload.replace(
+            b'"encoding":"base64"',
+            b'"encoding":"base64","encoding":"base64"',
+            1,
+        ),
+    ),
+)
+def test_unified_parser_rejects_noncanonical_exact_byte_attacks(
+    unified_fixture,
+    attack,
+) -> None:
+    artifact, _, _, _ = unified_fixture
+    with pytest.raises(ProtocolViolation):
+        parse_unified_corpus_authority_artifact_bytes(attack(artifact.canonical_bytes))
+    with pytest.raises(ProtocolViolation, match="exact bytes"):
+        parse_unified_corpus_authority_artifact_bytes(
+            bytearray(artifact.canonical_bytes)  # type: ignore[arg-type]
+        )
+
+
+@pytest.mark.parametrize(
+    ("target", "value"),
+    (
+        ("status", "PASS"),
+        ("freeze_grade_evidence", 0),
+        ("benchmark_freeze_eligible", 0),
+        ("authority_role", "candidate_visible"),
+        ("authority_root_count", 13.0),
+    ),
+)
+def test_unified_fixed_fields_and_recursive_types_cannot_be_resigned(
+    unified_fixture,
+    target: str,
+    value: object,
+) -> None:
+    artifact, _, _, _ = unified_fixture
+    wire = artifact.to_wire()
+    wire[target] = value
+    attacked = _resign_body(wire, "unified_authority_digest")
+    with pytest.raises(ProtocolViolation):
+        parse_unified_corpus_authority_artifact_bytes(attacked)
+
+
+def test_scope_and_audit_parsers_reject_type_root_and_status_resigning(
+    unified_fixture,
+) -> None:
+    _, _, scope, audit = unified_fixture
+    scope_wire = scope.to_wire()
+    scope_wire["freeze_grade_evidence"] = 0
+    with pytest.raises(ProtocolViolation):
+        parse_authority_bound_corpus_scope_contract_bytes(
+            canonical_json_bytes(scope_wire)
+        )
+
+    scope_wire = scope.to_wire()
+    scope_wire["authority_roots"] = list(reversed(scope_wire["authority_roots"]))
+    with pytest.raises(ProtocolViolation, match="roots"):
+        parse_authority_bound_corpus_scope_contract_bytes(
+            canonical_json_bytes(scope_wire)
+        )
+
+    audit_wire = audit.to_wire()
+    audit_wire["record_count"] = float(audit_wire["record_count"])
+    with pytest.raises(ProtocolViolation, match="record_count"):
+        parse_authority_bound_corpus_audit_bytes(
+            _resign_body(audit_wire, "audit_digest")
+        )
+
+    audit_wire = audit.to_wire()
+    audit_wire["status"] = "PASS"
+    with pytest.raises(ProtocolViolation):
+        parse_authority_bound_corpus_audit_bytes(
+            _resign_body(audit_wire, "audit_digest")
+        )
+
+
+def test_corpus_wire_literals_ignore_mutated_enum_values(unified_fixture) -> None:
+    artifact, _, scope, audit = unified_fixture
+    split_member = FamilySplit.SEALED_TEST
+    status_member = CorpusAuthorityStatus.PRE_FREEZE_SCAFFOLD
+    split_value = split_member.value
+    status_value = status_member.value
+    object.__setattr__(split_member, "_value_", "forged-split")
+    object.__setattr__(status_member, "_value_", "PASS")
+    try:
+        assert scope.to_wire()["split"] == "sealed_test"
+        assert audit.to_wire()["status"] == "pre_freeze_scaffold"
+        wire = artifact.to_wire()
+        assert wire["identity"]["split"] == "sealed_test"
+        assert wire["status"] == "pre_freeze_scaffold"
+    finally:
+        object.__setattr__(split_member, "_value_", split_value)
+        object.__setattr__(status_member, "_value_", status_value)
+
+
+def test_unified_rejects_family_scope_and_audit_ab_splicing(tmp_path: Path) -> None:
+    left, left_family, left_scope, left_audit = _build_unified(tmp_path / "left", "W01")
+    right, right_family, right_scope, right_audit = _build_unified(
+        tmp_path / "right", "W03"
+    )
+    assert left.artifact_digest != right.artifact_digest
+    with pytest.raises(
+        ProtocolViolation, match="benchmark identities|world-scoped|roots"
+    ):
+        build_unified_corpus_authority_artifact(
+            family_artifact_set_preimage=left_family.canonical_bytes,
+            scope_contract_preimage=right_scope.canonical_bytes,
+            audit_preimage=right_audit.canonical_bytes,
+        )
+    with pytest.raises(ProtocolViolation, match="identities"):
+        build_unified_corpus_authority_artifact(
+            family_artifact_set_preimage=left_family.canonical_bytes,
+            scope_contract_preimage=left_scope.canonical_bytes,
+            audit_preimage=right_audit.canonical_bytes,
+        )
+    with pytest.raises(
+        ProtocolViolation, match="benchmark identities|world-scoped|roots"
+    ):
+        build_unified_corpus_authority_artifact(
+            family_artifact_set_preimage=right_family.canonical_bytes,
+            scope_contract_preimage=left_scope.canonical_bytes,
+            audit_preimage=left_audit.canonical_bytes,
+        )
+
+
+def test_unified_root_digest_and_blocker_rewrites_cannot_be_resigned(
+    unified_fixture,
+) -> None:
+    artifact, _, _, _ = unified_fixture
+
+    wire = artifact.to_wire()
+    wire["authority_roots"] = wire["authority_roots"][:-1]
+    wire["authority_root_count"] = 12
+    with pytest.raises(ProtocolViolation):
+        parse_unified_corpus_authority_artifact_bytes(
+            _resign_body(wire, "unified_authority_digest")
+        )
+
+    wire = artifact.to_wire()
+    wire["authority_roots"][0]["digest"], wire["authority_roots"][1]["digest"] = (
+        wire["authority_roots"][1]["digest"],
+        wire["authority_roots"][0]["digest"],
+    )
+    with pytest.raises(ProtocolViolation):
+        parse_unified_corpus_authority_artifact_bytes(
+            _resign_body(wire, "unified_authority_digest")
+        )
+
+    wire = artifact.to_wire()
+    wire["blockers"][0]["detail"] = "external custody complete"
+    with pytest.raises(ProtocolViolation):
+        parse_unified_corpus_authority_artifact_bytes(
+            _resign_body(wire, "unified_authority_digest")
+        )
+
+
+def test_unified_refuses_a_canonically_parsed_incomplete_audit(
+    unified_fixture,
+) -> None:
+    _, family, scope, audit = unified_fixture
+    incomplete = replace(
+        audit,
+        structural_blockers=(
+            CorpusAuthorityBlocker(
+                INCOMPLETE_CODE,
+                "candidate_corpus",
+                "fixture structural join failure",
+            ),
+        ),
+    )
+    parsed = parse_authority_bound_corpus_audit_bytes(incomplete.canonical_bytes)
+    assert parsed.status is CorpusAuthorityStatus.INCOMPLETE
+    with pytest.raises(ProtocolViolation, match="structurally complete"):
+        build_unified_corpus_authority_artifact(
+            family_artifact_set_preimage=family.canonical_bytes,
+            scope_contract_preimage=scope.canonical_bytes,
+            audit_preimage=parsed.canonical_bytes,
+        )
+
+
+def test_unified_preimage_body_and_artifact_digests_cannot_be_swapped(
+    unified_fixture,
+) -> None:
+    artifact, _, _, _ = unified_fixture
+    for preimage_id in ("family_artifact_set", "corpus_audit"):
+        wire = artifact.to_wire()
+        entry = wire["preimages"][preimage_id]
+        entry["artifact_digest"], entry["authority_body_digest"] = (
+            entry["authority_body_digest"],
+            entry["artifact_digest"],
+        )
+        with pytest.raises(ProtocolViolation):
+            parse_unified_corpus_authority_artifact_bytes(
+                _resign_body(wire, "unified_authority_digest")
+            )
+
+
+def test_full_coherent_reissue_requires_external_full_byte_pin(tmp_path: Path) -> None:
+    left, _, _, _ = _build_unified(tmp_path / "pin-left", "W01")
+    right, _, _, _ = _build_unified(tmp_path / "pin-right", "W03")
+    assert (
+        parse_unified_corpus_authority_artifact_bytes(
+            right.canonical_bytes
+        ).artifact_digest
+        == right.artifact_digest
+    )
+    with pytest.raises(ProtocolViolation, match="external byte pin"):
+        admit_unified_corpus_authority_artifact_bytes(
+            right.canonical_bytes,
+            expected_artifact_digest=left.artifact_digest,
+        )
+    admitted = admit_unified_corpus_authority_artifact_bytes(
+        right.canonical_bytes,
+        expected_artifact_digest=right.artifact_digest,
+    )
+    assert admitted.canonical_bytes == right.canonical_bytes
+
+
+def test_unified_first_digest_rejects_post_construction_coherent_replacement(
+    tmp_path: Path,
+) -> None:
+    left, _, _, _ = _build_unified(tmp_path / "mutation-left", "W01")
+    right, _, _, _ = _build_unified(tmp_path / "mutation-right", "W03")
+    object.__setattr__(
+        left,
+        "family_artifact_set_preimage",
+        right.family_artifact_set_preimage,
+    )
+    object.__setattr__(left, "scope_contract_preimage", right.scope_contract_preimage)
+    object.__setattr__(left, "audit_preimage", right.audit_preimage)
+    object.__setattr__(
+        left,
+        "_sealed_authority_body_digest",
+        right.authority_body_digest,
+    )
+    with pytest.raises(ProtocolViolation, match="changed after construction"):
+        left.to_wire()
+
+
+def test_unified_schema_has_no_later_stage_back_edges(unified_fixture) -> None:
+    artifact, _, _, _ = unified_fixture
+    forbidden = {
+        "coverage_lock_digest",
+        "expected_cell_root",
+        "expected_receipt_root",
+        "benchmark_manifest_digest",
+        "freeze_manifest_digest",
+        "run_id",
+        "run_manifest_digest",
+        "candidate_response_digest",
+        "result_root",
+    }
+
+    def keys(value: object) -> set[str]:
+        if type(value) is dict:
+            return set(value) | set().union(*(keys(item) for item in value.values()))
+        if type(value) is list:
+            return set().union(*(keys(item) for item in value), set())
+        return set()
+
+    assert not (keys(artifact.to_wire()) & forbidden)
+    wire = artifact.to_wire()
+    wire["freeze_manifest_digest"] = _digest("forbidden-back-edge")
+    with pytest.raises(ProtocolViolation, match="extra"):
+        parse_unified_corpus_authority_artifact_bytes(canonical_json_bytes(wire))
