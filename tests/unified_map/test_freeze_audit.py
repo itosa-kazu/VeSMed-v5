@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import base64
 import json
 from pathlib import Path
 
 import pytest
 
+from prototype.unified_map import mutation_evidence, mutation_runner
 from prototype.unified_map.canonical import (
     ProtocolViolation,
     canonical_json_bytes,
@@ -23,17 +25,18 @@ from prototype.unified_map.freeze_audit import (
     collect_axis_evidence,
     collect_freeze_evidence,
 )
-from prototype.unified_map.mutation_matrix import (
-    MutationObservation,
-    ObservationOutcome,
-    SubjectKind,
-    evaluate_mutation_matrix,
+from prototype.unified_map.mutation_evidence import (
+    BENCHMARK_ID as MUTATION_BENCHMARK_ID,
+    MutationEvidenceBuilder,
+    MutationEvidenceBundle,
 )
 
 
 BENCHMARK = "UCM-BENCHMARK-v1"
 REVISION = "a" * 40
 SCOPE = digest_bytes(b"unit-scope")
+MUTATION_RUN_ID = "unit-structured-run"
+TEST_MUTATION_RUNNER_PROTOCOL = "ucm-portable-mutation-runner/freeze-audit-test"
 
 
 def _contract(axis: str) -> AxisEvidenceContract:
@@ -69,6 +72,7 @@ def _axis_wire(
     benchmark_id: str = BENCHMARK,
     revision: str = REVISION,
     scope_digest: str = SCOPE,
+    run_id: str = MUTATION_RUN_ID,
     exit_code: int = 0,
     check_ids: tuple[str, ...] | None = None,
 ) -> dict[str, object]:
@@ -87,7 +91,7 @@ def _axis_wire(
             _file_row(root, relative) for relative in contract.producer_source_paths
         ],
         "execution": {
-            "run_id": "unit-structured-run",
+            "run_id": run_id,
             "command_digest": digest_json(["python", "axis_producer.py"]),
             "started_at": "2026-07-15T00:00:00Z",
             "finished_at": "2026-07-15T00:00:01Z",
@@ -136,11 +140,50 @@ def _generic_fixture(root: Path) -> tuple[AxisEvidenceContract, str]:
     return contract, raw_path
 
 
-def _mutation_fixture(root: Path, report_bytes: bytes) -> tuple[AxisEvidenceContract, str]:
+def _mutation_bundle(
+    *,
+    run_id: str = MUTATION_RUN_ID,
+    base_seed: int = 100,
+) -> MutationEvidenceBundle:
+    return MutationEvidenceBuilder(
+        run_id=run_id,
+        runner_protocol=TEST_MUTATION_RUNNER_PROTOCOL,
+        base_seed=base_seed,
+        input_preimage={
+            "history": {"events": []},
+            "diagnosis_query": {"labels": []},
+            "rollout_query": {"horizon": 0},
+            "delta": None,
+        },
+        execution_context={
+            "benchmark_id": MUTATION_BENCHMARK_ID,
+            "runtime_metadata": {
+                "python_implementation": "CPython",
+                "python_version": "3.12.0",
+                "platform_system": "unit-test",
+                "platform_release": "unit-test",
+                "platform_machine": "unit-test",
+                "byteorder": "little",
+            },
+            "portable_runner_contract": mutation_evidence.portable_runner_contract(
+                TEST_MUTATION_RUNNER_PROTOCOL
+            ),
+            "runtime_import_cache_contract_digest": digest_json({"entries": []}),
+            "source_preparation_error": None,
+        },
+    ).finalize()
+
+
+def _mutation_fixture(
+    root: Path,
+    bundle_bytes: bytes,
+    *,
+    run_id: str = MUTATION_RUN_ID,
+) -> tuple[AxisEvidenceContract, str]:
     contract = _contract("mutation_matrix")
     _materialize_producer_sources(root, contract)
-    raw_path = "results/unified_map/mutation-run/mutation-kill-matrix.json"
-    _write(root, raw_path, report_bytes)
+    raw_path = f"results/unified_map/{run_id}/raw/mutation-evidence.json"
+    _write(root, raw_path, bundle_bytes)
     return contract, raw_path
 
 
@@ -300,20 +343,15 @@ def test_raw_artifacts_are_parsed_from_the_single_verified_byte_snapshot(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    report = evaluate_mutation_matrix(())
-    contract, report_path = _mutation_fixture(tmp_path, report.canonical_bytes())
-    source_path = "results/unified_map/mutation-run/source-witness.bin"
-    _write(tmp_path, source_path, b"source witness bytes\n")
+    bundle = _mutation_bundle()
+    contract, bundle_path = _mutation_fixture(tmp_path, bundle.canonical_bytes())
     _persist(
         tmp_path,
         contract,
-        _axis_wire(tmp_path, contract, (report_path, source_path)),
+        _axis_wire(tmp_path, contract, (bundle_path,)),
     )
 
-    watched = {
-        (tmp_path / Path(report_path)).resolve(),
-        (tmp_path / Path(source_path)).resolve(),
-    }
+    watched = {(tmp_path / Path(bundle_path)).resolve()}
     read_counts = {path: 0 for path in watched}
     original_read_bytes = Path.read_bytes
 
@@ -332,7 +370,7 @@ def test_raw_artifacts_are_parsed_from_the_single_verified_byte_snapshot(
     assert result.status is FreezeEvidenceStatus.INCOMPLETE
     assert result.blockers
     assert all(blocker.code == "predicate-incomplete" for blocker in result.blockers)
-    assert any("target-mutant-count" in blocker.detail for blocker in result.blockers)
+    assert any("killed-mutant-count" in blocker.detail for blocker in result.blockers)
 
 
 def test_missing_required_measurement_is_incomplete_not_pass(tmp_path: Path) -> None:
@@ -360,11 +398,21 @@ def test_nonzero_structured_execution_is_typed_fail(tmp_path: Path) -> None:
     assert result.blockers[0].code == "execution-failed"
 
 
-def test_real_mutation_report_is_recomputed_and_partial_matrix_is_incomplete(
+def test_typed_stored_bundle_is_recomputed_and_complete_raw_custody_stays_incomplete(
     tmp_path: Path,
 ) -> None:
-    report = evaluate_mutation_matrix(())
-    contract, raw_path = _mutation_fixture(tmp_path, report.canonical_bytes())
+    bundle = _mutation_bundle()
+    assert MutationEvidenceBundle.from_canonical_bytes(bundle.canonical_bytes()) == bundle
+    assert bundle.to_wire()["blockers"] == [
+        "UCM-E002-ISOLATION_INCOMPLETE",
+        "UCM-E003-HARNESS_INCOMPLETE",
+    ]
+    contract, raw_path = _mutation_fixture(tmp_path, bundle.canonical_bytes())
+    assert {
+        "prototype/unified_map/mutation_evidence.py",
+        "prototype/unified_map/mutation_runner.py",
+        "prototype/unified_map/run_store.py",
+    } <= set(contract.producer_source_paths)
     target = _persist(
         tmp_path,
         contract,
@@ -373,21 +421,62 @@ def test_real_mutation_report_is_recomputed_and_partial_matrix_is_incomplete(
     result = _collect(tmp_path, contract)
     assert result.status is FreezeEvidenceStatus.INCOMPLETE
     assert result.artifact_digest == digest_bytes(target.read_bytes())
-    assert any("gates" in blocker.detail for blocker in result.blockers)
+    failed = {blocker.detail.rsplit(": ", 1)[-1] for blocker in result.blockers}
+    assert {
+        "bundle-blockers",
+        "covered-gate-count",
+        "failed-specificity-controls",
+        "gates",
+        "killed-mutant-count",
+        "missing-or-invalid-mutants",
+        "passed-specificity-count",
+    } <= failed
     assert result.to_freeze_evidence().status is FreezeEvidenceStatus.INCOMPLETE
+
+    requirements = {item.check_id: item for item in contract.requirements}
+    assert requirements["target-mutant-count"].expected == 26
+    assert requirements["target-specificity-count"].expected == 4
+    assert requirements["target-gate-count"].expected == 33
+    assert requirements["killed-mutant-count"].expected == 26
+    assert requirements["passed-specificity-count"].expected == 4
+    assert requirements["covered-gate-count"].expected == 33
+
+
+def _forge_embedded_matrix_summary(bundle: MutationEvidenceBundle) -> bytes:
+    wire = json.loads(bundle.canonical_bytes().decode("utf-8"))
+    blobs = wire["blobs"]
+    assert type(blobs) is list
+    matrix_digest = wire["matrix_blob_digest"]
+    matrix_blob = next(
+        row for row in blobs if type(row) is dict and row["sha256"] == matrix_digest
+    )
+    matrix_payload = base64.b64decode(matrix_blob["payload_b64"])
+    matrix = json.loads(matrix_payload.decode("utf-8"))
+    matrix["benchmark_status"] = "MUTATION-GATES-PASS"
+    matrix["freeze_ready"] = True
+    matrix["covered_gates"] = [f"C{index:02d}" for index in range(1, 34)]
+    matrix["uncovered_gates"] = []
+    unsigned_matrix = {key: value for key, value in matrix.items() if key != "matrix_digest"}
+    matrix["matrix_digest"] = digest_json(unsigned_matrix)
+    forged_payload = canonical_json_bytes(matrix)
+    forged_digest = digest_bytes(forged_payload)
+    matrix_blob.update(
+        {
+            "bytes": len(forged_payload),
+            "payload_b64": base64.b64encode(forged_payload).decode("ascii"),
+            "sha256": forged_digest,
+        }
+    )
+    wire["matrix_blob_digest"] = forged_digest
+    blobs.sort(key=lambda row: row["sha256"])
+    unsigned_bundle = {key: value for key, value in wire.items() if key != "bundle_digest"}
+    wire["bundle_digest"] = digest_json(unsigned_bundle)
+    return canonical_json_bytes(wire)
 
 
 def test_forged_green_mutation_summary_is_not_trusted(tmp_path: Path) -> None:
-    report = evaluate_mutation_matrix(())
-    wire = report.to_wire()
-    wire["benchmark_status"] = "MUTATION-GATES-PASS"
-    wire["freeze_ready"] = True
-    wire["covered_gates"] = [f"C{index:02d}" for index in range(1, 34)]
-    wire["uncovered_gates"] = []
-    body = dict(wire)
-    body.pop("matrix_digest")
-    wire["matrix_digest"] = digest_json(body)
-    contract, raw_path = _mutation_fixture(tmp_path, canonical_json_bytes(wire))
+    forged = _forge_embedded_matrix_summary(_mutation_bundle())
+    contract, raw_path = _mutation_fixture(tmp_path, forged)
     _persist(tmp_path, contract, _axis_wire(tmp_path, contract, (raw_path,)))
     result = _collect(tmp_path, contract)
     assert result.status is FreezeEvidenceStatus.INCOMPLETE
@@ -395,27 +484,74 @@ def test_forged_green_mutation_summary_is_not_trusted(tmp_path: Path) -> None:
     assert "recomputation" in result.blockers[0].detail
 
 
-def test_mutation_source_and_decisive_digests_must_resolve_to_raw_bytes(
+def test_legacy_loose_matrix_and_arbitrary_digest_witnesses_are_rejected(
     tmp_path: Path,
 ) -> None:
-    row = MutationObservation(
-        subject_id="RawHistoryHead",
-        subject_kind=SubjectKind.MUTANT,
-        source_digest=digest_bytes(b"unwitnessed source"),
-        execution_seed=17,
-        outcome=ObservationOutcome.KILLED,
-        actual_gate="C02",
-        actual_failure_code="UCM-F004-HEAD_HISTORY_ACCESS",
-        decisive_record_digest=digest_bytes(b"unwitnessed decisive record"),
+    from prototype.unified_map.mutation_matrix import evaluate_mutation_matrix
+
+    contract = _contract("mutation_matrix")
+    _materialize_producer_sources(tmp_path, contract)
+    loose_path = "results/unified_map/unit-structured-run/mutation-kill-matrix.json"
+    source_path = "results/unified_map/unit-structured-run/source-witness.bin"
+    decisive_path = "results/unified_map/unit-structured-run/decisive-witness.bin"
+    _write(tmp_path, loose_path, evaluate_mutation_matrix(()).canonical_bytes())
+    _write(tmp_path, source_path, b"arbitrary source digest witness\n")
+    _write(tmp_path, decisive_path, b"arbitrary decisive digest witness\n")
+    raw_paths = tuple(sorted((loose_path, source_path, decisive_path)))
+    _persist(
+        tmp_path,
+        contract,
+        _axis_wire(tmp_path, contract, raw_paths),
     )
-    report = evaluate_mutation_matrix((row,))
-    contract, raw_path = _mutation_fixture(tmp_path, report.canonical_bytes())
+    result = _collect(tmp_path, contract)
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert result.blockers[0].code == "measurement-invalid"
+    assert "exactly one raw artifact" in result.blockers[0].detail
+
+
+def test_legacy_loose_matrix_cannot_pass_when_renamed_as_typed_bundle(
+    tmp_path: Path,
+) -> None:
+    from prototype.unified_map.mutation_matrix import evaluate_mutation_matrix
+
+    loose = evaluate_mutation_matrix(()).canonical_bytes()
+    contract, raw_path = _mutation_fixture(tmp_path, loose)
     _persist(tmp_path, contract, _axis_wire(tmp_path, contract, (raw_path,)))
     result = _collect(tmp_path, contract)
     assert result.status is FreezeEvidenceStatus.INCOMPLETE
-    failed_details = {item.detail for item in result.blockers}
-    assert any("decisive-record-digest-missing" in item for item in failed_details)
-    assert any("source-record-digest-missing" in item for item in failed_details)
+    assert result.blockers[0].code == "measurement-invalid"
+    assert "mutation evidence bundle" in result.blockers[0].detail
+
+
+def test_mutation_bundle_is_bound_to_axis_execution_run(tmp_path: Path) -> None:
+    cross_run = _mutation_bundle(run_id="other-run")
+    contract, raw_path = _mutation_fixture(tmp_path, cross_run.canonical_bytes())
+    _persist(tmp_path, contract, _axis_wire(tmp_path, contract, (raw_path,)))
+    result = _collect(tmp_path, contract)
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert result.blockers[0].code == "measurement-invalid"
+    assert "run_id binding mismatch" in result.blockers[0].detail
+
+
+def test_collector_never_reruns_portable_mutation_runner(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bundle = _mutation_bundle()
+    contract, raw_path = _mutation_fixture(tmp_path, bundle.canonical_bytes())
+    _persist(tmp_path, contract, _axis_wire(tmp_path, contract, (raw_path,)))
+
+    def forbidden_runner(*args: object, **kwargs: object) -> object:
+        raise AssertionError("freeze collector must not rerun a candidate or runner")
+
+    monkeypatch.setattr(
+        mutation_runner,
+        "run_portable_mutation_evidence",
+        forbidden_runner,
+    )
+    result = _collect(tmp_path, contract)
+    assert result.status is FreezeEvidenceStatus.INCOMPLETE
+    assert all(blocker.code == "predicate-incomplete" for blocker in result.blockers)
 
 
 def test_caller_cannot_weaken_an_official_axis_contract(tmp_path: Path) -> None:

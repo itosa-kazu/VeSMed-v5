@@ -546,118 +546,63 @@ def _evaluate(
     raise AssertionError(f"unhandled evidence predicate: {predicate}")
 
 
-def _mutation_matrix_observations(
-    witness_payloads: dict[str, bytes],
-) -> dict[str, Any]:
-    """Recompute matrix facts from the typed registry and witnessed raw bytes.
+def _mutation_evidence_observations(
+    verified_raw_files: tuple[_VerifiedFile, ...],
+    *,
+    expected_run_id: str,
+    expected_benchmark_id: str,
+) -> tuple[str, dict[str, Any]]:
+    """Derive matrix facts from one already-verified same-run evidence bundle.
 
-    The report's own ``freeze_ready``/``benchmark_status`` strings are ignored
-    as claims: the collector reconstructs every ``MutationObservation``, calls
-    the registry evaluator, and requires the complete canonical report to
-    equal the recomputed bytes.  Source and decisive-record digests must also
-    resolve to separate witnessed artifacts.
+    This function deliberately accepts immutable byte snapshots rather than a
+    repository path.  ``_verify_file_row`` is therefore the only path read.
+    The typed bundle parser revalidates its canonical/content-addressed closure
+    and recomputes the embedded matrix from its records.  A legacy loose matrix
+    plus separately asserted source/decisive digests is not an admissible
+    substitute.
     """
 
+    from .mutation_evidence import MutationEvidenceBundle
     from .mutation_matrix import (
-        MATRIX_PROTOCOL,
+        GATE_SPECS,
         MUTANT_SPECS,
-        MutationObservation,
+        SPECIFICITY_CONTROLS,
         ObservationOutcome,
         SubjectKind,
         evaluate_mutation_matrix,
     )
+    from .run_store import MUTATION_EVIDENCE_PATH, validate_run_id
 
-    candidates: list[tuple[str, bytes, dict[str, Any]]] = []
-    for artifact_digest, payload in witness_payloads.items():
-        try:
-            wire = json.loads(payload.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError):
-            continue
-        if type(wire) is dict and wire.get("protocol") == MATRIX_PROTOCOL:
-            if canonical_json_bytes(wire) != payload:
-                raise ProtocolViolation("mutation matrix witness is not canonical JSON")
-            candidates.append((artifact_digest, payload, wire))
-    if len(candidates) != 1:
-        raise ProtocolViolation("exactly one typed mutation matrix witness is required")
-    matrix_artifact_digest, matrix_payload, wire = candidates[0]
-    expected_top = frozenset(
-        {
-            "protocol",
-            "benchmark_status",
-            "freeze_ready",
-            "registry_digest",
-            "observations",
-            "valid_kills",
-            "missing_or_invalid_mutants",
-            "covered_gates",
-            "uncovered_gates",
-            "passed_specificity_controls",
-            "failed_specificity_controls",
-            "matrix_digest",
-        }
+    validate_run_id(expected_run_id)
+    expected_path = (
+        f"results/unified_map/{expected_run_id}/{MUTATION_EVIDENCE_PATH}"
     )
-    _closed_object(wire, expected_top, "mutation matrix witness")
-    raw_observations = wire["observations"]
-    if type(raw_observations) is not list:
-        raise ProtocolViolation("mutation matrix observations must be a list")
-    observations: list[MutationObservation] = []
-    row_keys = frozenset(
-        {
-            "subject_id",
-            "subject_kind",
-            "source_digest",
-            "execution_seed",
-            "outcome",
-            "actual_gate",
-            "actual_failure_code",
-            "decisive_record_digest",
-            "classification",
-        }
-    )
-    try:
-        for index, raw in enumerate(raw_observations):
-            row = _closed_object(raw, row_keys, f"mutation observation {index}")
-            observations.append(
-                MutationObservation(
-                    subject_id=row["subject_id"],
-                    subject_kind=SubjectKind(row["subject_kind"]),
-                    source_digest=row["source_digest"],
-                    execution_seed=row["execution_seed"],
-                    outcome=ObservationOutcome(row["outcome"]),
-                    actual_gate=row["actual_gate"],
-                    actual_failure_code=row["actual_failure_code"],
-                    decisive_record_digest=row["decisive_record_digest"],
-                    classification=row["classification"],
-                )
-            )
-    except (KeyError, TypeError, ValueError) as exc:
-        raise ProtocolViolation("mutation matrix contains malformed observations") from exc
-
-    recomputed = evaluate_mutation_matrix(observations)
-    if recomputed.canonical_bytes() != matrix_payload:
+    if len(verified_raw_files) != 1:
         raise ProtocolViolation(
-            "mutation matrix summaries/digest do not equal collector recomputation"
+            "mutation evidence must contain exactly one raw artifact: "
+            f"{expected_path}"
+        )
+    witnessed = verified_raw_files[0]
+    if witnessed.path != expected_path:
+        raise ProtocolViolation(
+            "mutation evidence path differs from the bound run path: "
+            f"expected {expected_path!r}, got {witnessed.path!r}"
         )
 
-    witnessed = set(witness_payloads)
-    unresolved_sources = sorted(
-        {
-            row.subject_id
-            for row in observations
-            if row.source_digest not in witnessed
-        }
-    )
-    unresolved_records = sorted(
-        {
-            row.subject_id
-            for row in observations
-            if row.decisive_record_digest is None
-            or row.decisive_record_digest not in witnessed
-        }
-    )
+    bundle = MutationEvidenceBundle.from_canonical_bytes(witnessed.payload)
+    if bundle.run_id != expected_run_id:
+        raise ProtocolViolation("mutation evidence bundle run_id binding mismatch")
+    if bundle.benchmark_id != expected_benchmark_id:
+        raise ProtocolViolation("mutation evidence bundle benchmark_id binding mismatch")
+
+    # The bundle parser has already compared the embedded matrix blob to this
+    # recomputation.  Recompute once more here rather than accepting any
+    # producer-supplied summary fields as freeze observations.
+    report = evaluate_mutation_matrix(bundle.observations)
+    bundle_wire = bundle.to_wire()
     mutant_specs = {row.mutant_id: row for row in MUTANT_SPECS}
     wrong_gate_kills: list[str] = []
-    for row in observations:
+    for row in bundle.observations:
         if row.subject_kind is not SubjectKind.MUTANT:
             continue
         spec = mutant_specs[row.subject_id]
@@ -668,15 +613,18 @@ def _mutation_matrix_observations(
         ):
             wrong_gate_kills.append(f"{row.subject_id}:{row.execution_seed}")
 
-    return {
-        "decisive-record-digest-missing": unresolved_records,
-        "gates": list(recomputed.covered_gates),
-        "matrix-artifact-digest": matrix_artifact_digest,
-        "source-record-digest-missing": unresolved_sources,
-        "specificity-control-count": len(recomputed.passed_specificity_controls),
-        "specificity-false-positives": list(recomputed.failed_specificity_controls),
-        "surviving-mutants": list(recomputed.missing_or_invalid_mutants),
-        "target-mutant-count": len(recomputed.valid_kills),
+    return witnessed.digest, {
+        "bundle-artifact-digest": witnessed.digest,
+        "bundle-blockers": bundle_wire["blockers"],
+        "covered-gate-count": len(report.covered_gates),
+        "failed-specificity-controls": list(report.failed_specificity_controls),
+        "gates": list(report.covered_gates),
+        "killed-mutant-count": len(report.valid_kills),
+        "missing-or-invalid-mutants": list(report.missing_or_invalid_mutants),
+        "passed-specificity-count": len(report.passed_specificity_controls),
+        "target-gate-count": len(GATE_SPECS),
+        "target-mutant-count": len(MUTANT_SPECS),
+        "target-specificity-count": len(SPECIFICITY_CONTROLS),
         "wrong-gate-kills": sorted(wrong_gate_kills),
     }
 
@@ -685,18 +633,32 @@ def _extract_observation(
     extractor_id: str | None,
     *,
     witness_digests: tuple[str, ...],
-    raw_payloads: dict[str, bytes],
+    verified_raw_files: tuple[_VerifiedFile, ...],
+    expected_run_id: str,
+    expected_benchmark_id: str,
+    extraction_cache: dict[str, tuple[str, dict[str, Any]]],
 ) -> Any:
     if extractor_id is None:
         raise ProtocolViolation(
             "no collector-owned typed extractor is registered for this check"
         )
-    if extractor_id.startswith("mutation-matrix/"):
-        field = extractor_id.removeprefix("mutation-matrix/")
-        witnessed = {digest: raw_payloads[digest] for digest in witness_digests}
-        derived = _mutation_matrix_observations(witnessed)
+    if extractor_id.startswith("mutation-evidence/"):
+        field = extractor_id.removeprefix("mutation-evidence/")
+        cache_key = "mutation-evidence"
+        if cache_key not in extraction_cache:
+            extraction_cache[cache_key] = _mutation_evidence_observations(
+                verified_raw_files,
+                expected_run_id=expected_run_id,
+                expected_benchmark_id=expected_benchmark_id,
+            )
+        artifact_digest, derived = extraction_cache[cache_key]
+        if witness_digests != (artifact_digest,):
+            raise ProtocolViolation(
+                "each mutation measurement must witness exactly the bound "
+                "mutation evidence bundle"
+            )
         if field not in derived:
-            raise ProtocolViolation("unknown mutation matrix extractor field")
+            raise ProtocolViolation("unknown mutation evidence extractor field")
         return derived[field]
     raise ProtocolViolation(f"unknown collector-owned extractor: {extractor_id}")
 
@@ -845,10 +807,6 @@ def collect_axis_evidence(
         raw_digests = frozenset(item.digest for item in verified_raw_files)
         if len(raw_digests) != len(verified_raw_files):
             raise ProtocolViolation("raw_artifacts contain duplicate byte digests")
-        raw_payloads = {
-            item.digest: item.payload for item in verified_raw_files
-        }
-
         execution = _closed_object(
             top["execution"],
             frozenset(
@@ -945,12 +903,16 @@ def collect_axis_evidence(
         )
 
     failed: list[tuple[CheckRequirement, AuditBlocker]] = []
+    extraction_cache: dict[str, tuple[str, dict[str, Any]]] = {}
     for requirement in contract.requirements:
         try:
             observed = _extract_observation(
                 requirement.extractor_id,
                 witness_digests=parsed_measurements[requirement.check_id],
-                raw_payloads=raw_payloads,
+                verified_raw_files=verified_raw_files,
+                expected_run_id=execution["run_id"],
+                expected_benchmark_id=benchmark_id,
+                extraction_cache=extraction_cache,
             )
             passed = _evaluate(
                 requirement,
@@ -1087,7 +1049,7 @@ def _mutation_requirement(
         check_id,
         predicate,
         expected,
-        extractor_id=f"mutation-matrix/{check_id}",
+        extractor_id=f"mutation-evidence/{check_id}",
         false_status=FreezeEvidenceStatus.INCOMPLETE,
     )
 
@@ -1367,29 +1329,38 @@ DEFAULT_AXIS_CONTRACTS = (
         "ucm.mutation-matrix-auditor/v1",
         (
             "prototype/unified_map/compliance.py",
+            "prototype/unified_map/mutation_evidence.py",
             "prototype/unified_map/mutation_matrix.py",
             "prototype/unified_map/mutation_runner.py",
+            "prototype/unified_map/run_store.py",
         ),
         (
             _mutation_requirement(
-                "decisive-record-digest-missing", EvidencePredicate.EMPTY
+                "bundle-artifact-digest", EvidencePredicate.VERIFIED_ARTIFACT_DIGEST
+            ),
+            _mutation_requirement("bundle-blockers", EvidencePredicate.EMPTY),
+            _mutation_requirement(
+                "covered-gate-count", EvidencePredicate.INTEGER_AT_LEAST, 33
+            ),
+            _mutation_requirement(
+                "failed-specificity-controls", EvidencePredicate.EMPTY
             ),
             _mutation_requirement("gates", EvidencePredicate.EXACT_SET, _GATES),
             _mutation_requirement(
-                "matrix-artifact-digest", EvidencePredicate.VERIFIED_ARTIFACT_DIGEST
+                "killed-mutant-count", EvidencePredicate.INTEGER_AT_LEAST, 26
             ),
             _mutation_requirement(
-                "source-record-digest-missing", EvidencePredicate.EMPTY
+                "missing-or-invalid-mutants", EvidencePredicate.EMPTY
             ),
             _mutation_requirement(
-                "specificity-control-count", EvidencePredicate.INTEGER_AT_LEAST, 4
+                "passed-specificity-count", EvidencePredicate.INTEGER_AT_LEAST, 4
+            ),
+            _mutation_requirement("target-gate-count", EvidencePredicate.EXACT, 33),
+            _mutation_requirement(
+                "target-mutant-count", EvidencePredicate.EXACT, 26
             ),
             _mutation_requirement(
-                "specificity-false-positives", EvidencePredicate.EMPTY
-            ),
-            _mutation_requirement("surviving-mutants", EvidencePredicate.EMPTY),
-            _mutation_requirement(
-                "target-mutant-count", EvidencePredicate.INTEGER_AT_LEAST, 26
+                "target-specificity-count", EvidencePredicate.EXACT, 4
             ),
             _mutation_requirement("wrong-gate-kills", EvidencePredicate.EMPTY),
         ),
