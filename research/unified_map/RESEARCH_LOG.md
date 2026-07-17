@@ -832,5 +832,62 @@ remains 0/30.
 
 `KEEP`: rejection is a state property induced by attributable public evidence,
 not by private atlas membership and not by a generic tail threshold.  Continue
-with W19 to test policy-coverage uncertainty and unsafe off-policy extrapolation
-through the same state contract.
+with W19 to test whether a rare catastrophic contraindication remains explicit
+instead of being erased by prevalence-weighted mean compression.
+
+## 2026-07-17 — W19 rare catastrophic contraindication vertical slice
+
+### Outcome
+
+- Added a compact W19 shared public belief state containing sufficient
+  statistics for the latent physiology plus posterior rare-tail mass from the
+  public marker kernel.  The realized private tail bit is excluded.
+- A common patient and a private tail patient with identical public history
+  produce the same state hash and begin with the frozen population tail
+  probability `1/64 = 0.015625`; no private truth leaks into diagnosis or
+  treatment heads.
+- Diagnosis and no-action/A1/A2 counterfactuals consume one state.  A factual
+  safe A2 response plus a positive marker recursively creates a new state and
+  raises tail probability to `0.4375`.
+- From that same updated state, A1 exposes tail-only regret
+  `44.9973503221698` and catastrophic-action probability `0.4375`, so its head
+  returns `contraindicated`.  A2 has zero catastrophic-action probability and
+  remains eligible.  The rare tail cannot be averaged away by expected utility.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w19-rare-contraindication-probe/vertical-slice.json
+artifact sha256: 508e839c216403893ae9b97166cca8eaf9ece59d69624aa816c3a562b369c2b8
+unidentified common/tail shared state: sha256:a80e8e289175cf2be989b28929afc68fd51f9998208c16a05eab3d99880a6e78
+marker/response updated state: sha256:f24de228c002e8e152983c39aea22344a89ef15adf0b0b193dde081449736ddf
+tail probability: 0.015625 -> 0.4375
+A1 tail-only regret: 44.9973503221698
+A1 catastrophic-action probability: 0.4375
+```
+
+All eight artifact assertions are true, including private-alias quotienting,
+prevalence preservation, shared-head state use, parent-linked response update,
+positive-marker posterior movement, A1 hard-gate exposure and A2 specificity.
+
+### Verification
+
+```text
+W19 probe focused: 4 passed
+W19 plus W16-W20/public-prior/semantic/research-contract regression: 78 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+This state is public-evidence-derived, but the posterior kernel, catastrophic
+margin and conditional tail utility are frozen benchmark oracle knowledge.  It
+therefore remains an upper-bound probe, not a trained candidate or formal B01
+run; `freeze_grade=false` and the experiment ledger remains 0/30.
+
+### Decision
+
+`KEEP`: a sufficiently informative patient state must retain small posterior
+mass when that mass changes treatment safety, and treatment heads must expose
+conditional tail risk rather than compress it into the population mean.
+Continue with W20, the final priority vertical slice.

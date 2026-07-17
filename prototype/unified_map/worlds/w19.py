@@ -27,7 +27,6 @@ from .randomness import normal01, uniform01
 from .w01 import (
     _case_key,
     _check_event,
-    _check_plan,
     _json_float,
     _observation_event,
     _standard_policy_set,
@@ -572,9 +571,31 @@ class W19World(MicroWorld):
         oracle_seed: int,
     ) -> CounterfactualOracle:
         del oracle_seed
+        return self.public_belief_counterfactual(
+            self.public_posterior(episode), policy, horizon
+        )
+
+    def public_belief_counterfactual(
+        self,
+        belief: dict[str, float],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Roll out from the compact public tail/x belief state."""
+
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W19 horizon")
-        belief = self.public_posterior(episode)
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W19 policy set")
+        if set(belief) != {"C0", "C1", "x_mean", "x_variance", "x_evidence"}:
+            raise ValueError("W19 public belief is not closed")
+        if any(
+            type(value) not in {int, float} or not math.isfinite(float(value))
+            for value in belief.values()
+        ):
+            raise ValueError("W19 public belief contains a non-finite value")
+        if abs(float(belief["C0"]) + float(belief["C1"]) - 1.0) > 1e-12:
+            raise ValueError("W19 public class belief must sum to one")
         p_tail = belief["C1"]
         schedule = _schedule(policy, horizon)
         check_cost = 0.08 if (
@@ -617,7 +638,7 @@ class W19World(MicroWorld):
         if remaining > 0.0:
             tail_sum += remaining * ordered[-1][0]
         cvar05 = tail_sum / 0.05
-        truth = self.tail_truth(episode, policy, horizon)
+        truth = self._tail_truth_from_belief(belief, policy, horizon)
         return CounterfactualOracle(
             policy=policy,
             horizon=horizon,
@@ -664,7 +685,18 @@ class W19World(MicroWorld):
         *,
         tail: bool,
     ) -> tuple[float, bool]:
-        belief = self.public_posterior(episode)
+        return self._conditional_policy_utility_from_belief(
+            self.public_posterior(episode), policy, horizon, tail=tail
+        )
+
+    def _conditional_policy_utility_from_belief(
+        self,
+        belief: dict[str, float],
+        policy: ActionPlan,
+        horizon: int,
+        *,
+        tail: bool,
+    ) -> tuple[float, bool]:
         schedule = _schedule(policy, horizon)
         check_cost = 0.08 if (
             policy.kind is PlanKind.ACTION_SEQUENCE
@@ -682,18 +714,27 @@ class W19World(MicroWorld):
     def tail_truth(
         self, episode: PrivateEpisode, policy: ActionPlan, horizon: int
     ) -> W19TailTruth:
+        return self._tail_truth_from_belief(
+            self.public_posterior(episode), policy, horizon
+        )
+
+    def _tail_truth_from_belief(
+        self,
+        posterior: dict[str, float],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> W19TailTruth:
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W19 horizon")
-        posterior = self.public_posterior(episode)
-        common_utility, _ = self._conditional_policy_utility(
-            episode, policy, horizon, tail=False
+        common_utility, _ = self._conditional_policy_utility_from_belief(
+            posterior, policy, horizon, tail=False
         )
-        tail_utility, tail_catastrophe = self._conditional_policy_utility(
-            episode, policy, horizon, tail=True
+        tail_utility, tail_catastrophe = self._conditional_policy_utility_from_belief(
+            posterior, policy, horizon, tail=True
         )
         tail_best = max(
-            self._conditional_policy_utility(
-                episode, candidate, horizon, tail=True
+            self._conditional_policy_utility_from_belief(
+                posterior, candidate, horizon, tail=True
             )[0]
             for candidate in self.policy_set(horizon)
         )
