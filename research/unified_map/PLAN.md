@@ -229,8 +229,8 @@ collector-owned extractors、external custody 和 clean freeze replay 尚未齐�
 ## 9. 当前下一批动作
 
 1. 先闭合 Phase 2 的患者世界模型 vertical slice，而不是继续无限扩张
-   evidence machinery。W01/W02/W04 的 judge-only true-state upper-bound probe 已完成；
-   下一步按 W08/W15/W18/W19/W20 顺序证明同一 state 能同时支持
+   evidence machinery。W01/W02/W04/W08 的 judge-only true-state upper-bound probe 已完成；
+   下一步按 W15/W18/W19/W20 顺序证明同一 state 能同时支持
    diagnosis、no-op、A/B intervention 和 response update。
 2. 用这些 vertical slice 生成真实 evaluator cells 和 oracle/metric upper-bound
    sanity evidence；authority-bound expected-cell receipts 只围绕实际 W01–W20

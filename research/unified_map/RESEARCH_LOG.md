@@ -656,5 +656,65 @@ therefore remains 0/30.
 
 `KEEP`: a treatment-response modifier is a required patient-state coordinate
 whenever untreated history cannot identify opposing treatment effects.  Move
-next to W08 to test whether delayed intervention effects remain representable
-through the same state and recursive update contract.
+next to W08 to test asynchronous availability, out-of-sequence evidence and
+active-course typestate through the same state and recursive update contract.
+
+## 2026-07-17 — W08 asynchronous-availability vertical slice
+
+### Outcome
+
+- Added a W08 judge-only shared state containing the two-dimensional latent
+  physiology, invariant mechanism class, current signed treatment exposure and
+  remaining course microticks.  The rollout heads cannot reread public history.
+- Diagnosis, no-new-action, A1 and A2 counterfactuals consume one sealed state
+  hash and project both observable channels from the same patient map.
+- A factual A1 course plus an out-of-sequence result collected at `-1` and only
+  available at `+1` recursively creates a new state with an exact parent/delta
+  link.  Updated diagnosis and rollout consume only that new state.
+- The updated no-new-action rollout continues the already performed A1 course;
+  it does not misread `NoNewAction` as stopping a treatment with three
+  microticks remaining.
+- A private fixture with identical public prefix and two differently ordered
+  pending report values produces the same pre-availability state hash.  The
+  pending-value digests differ, proving the equality is not a vacuous swap.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w08-asynchronous-availability-probe/vertical-slice.json
+artifact sha256: fe0ae3376994898db16fa7487c99697bebb91c44f62a4995f4163f4110b448ce
+initial state: sha256:503252e92ac5875013b0469254dd5edfd912a1d3f729403325a2562419942bbc
+updated state: sha256:8cf97e6f54c9fda0b50d5e0661b92509b6edb29a2405648c5c78b8efeebbc8d5
+pending left: sha256:82d3eea019adbd66d58c27fff4755301a8398c415071acc9f7086d66626696c0
+pending right: sha256:e2565cc3317e9749b098a0d60ded3fd9ebef76506339d18e4a874afbc2c9c6ef
+```
+
+All seven artifact assertions are true, including pre-availability exclusion,
+collection/availability timestamp preservation, shared-head consumption,
+parent-linked recursive update and active-course typestate retention.
+
+### Verification
+
+```text
+W08 probe focused: 4 passed
+W08 plus W06-W10 world/oracle/research-contract regression: 63 passed
+W01/W02/W04/W08 plus W01-W10 combined regression: 143 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+This is a privileged true-state upper bound.  Its recursive update may receive
+judge-only next physiology, but the serialized state deliberately excludes a
+collected report value until its `available_at` cut.  It is not a learned
+filter, a formal B01 experiment or freeze-grade evidence.  The manifest remains
+`privileged=true`, `eligibility=upper_bound_only`, `freeze_grade=false`; the
+experiment ledger remains 0/30.
+
+### Decision
+
+`KEEP`: W08 proves that asynchronous evidence and treatment-course typestate
+can remain inside one recursively updated patient map without leaking pending
+results or inventing a task-private rollout state.  Continue with W15, where
+observational association and interventional effect must be separated without
+splitting the patient representation by task.

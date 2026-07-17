@@ -468,6 +468,73 @@ class World08(MicroWorld):
             raise ProtocolViolation("oracle_seed must be non-negative")
         components = self._posterior(episode)
         current_exposure, current_remaining = self._exposure_at_cut(episode.public_history)
+        return self._counterfactual_from_components(
+            components,
+            current_exposure,
+            current_remaining,
+            policy,
+            horizon,
+        )
+
+    def judge_true_state_counterfactual(
+        self,
+        hidden_state_at_cut: dict[str, Any],
+        invariant_parameters: dict[str, Any],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Evaluate W08 from judge-known physiology and active-course state."""
+
+        if set(hidden_state_at_cut) != {"x", "exposure", "remaining"}:
+            raise ProtocolViolation(
+                "W08 private state must contain x, exposure and remaining"
+            )
+        if set(invariant_parameters) != {"c"}:
+            raise ProtocolViolation("W08 private parameters must contain c")
+        state = hidden_state_at_cut["x"]
+        exposure = hidden_state_at_cut["exposure"]
+        remaining = hidden_state_at_cut["remaining"]
+        class_index = invariant_parameters["c"]
+        if (
+            type(state) is not list
+            or len(state) != 2
+            or any(type(value) not in {int, float} for value in state)
+            or any(not math.isfinite(float(value)) for value in state)
+        ):
+            raise ProtocolViolation("W08 private x must contain two finite numbers")
+        if type(exposure) is not int or exposure not in {-1, 0, 1}:
+            raise ProtocolViolation("W08 private exposure must be -1, zero or one")
+        if type(remaining) is not int or remaining not in range(5):
+            raise ProtocolViolation("W08 private remaining must be in [0, 4]")
+        if (remaining == 0) != (exposure == 0):
+            raise ProtocolViolation("W08 private course typestate is inconsistent")
+        if type(class_index) is not int or class_index not in {0, 1}:
+            raise ProtocolViolation("W08 private class must be zero or one")
+        return self._counterfactual_from_components(
+            [
+                {
+                    "class": class_index,
+                    "mean": np.asarray([float(value) for value in state]),
+                    "covariance": np.zeros((2, 2)),
+                    "weight": 1.0,
+                }
+            ],
+            exposure,
+            remaining,
+            policy,
+            horizon,
+        )
+
+    def _counterfactual_from_components(
+        self,
+        components: list[dict[str, Any]],
+        current_exposure: int,
+        current_remaining: int,
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the W08 frozen policy set")
         starts = {
             action.offset: (1 if action.action_id == "A1" else -1)
             for action in policy.actions
