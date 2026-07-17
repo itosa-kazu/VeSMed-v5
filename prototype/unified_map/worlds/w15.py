@@ -302,7 +302,41 @@ class World15A(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
-        particles = self._public_posterior(episode)
+        return self._counterfactual_from_particles(
+            self._public_posterior(episode), policy, horizon
+        )
+
+    def judge_true_state_counterfactual(
+        self,
+        hidden_state_at_cut: dict[str, Any],
+        invariant_parameters: dict[str, Any],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Evaluate the identifiable panel from judge-known patient state."""
+
+        if set(hidden_state_at_cut) != {"severity"}:
+            raise ProtocolViolation("W15A private state must contain severity")
+        if set(invariant_parameters) != {"confounder"}:
+            raise ProtocolViolation("W15A private parameters must contain confounder")
+        severity = hidden_state_at_cut["severity"]
+        confounder = invariant_parameters["confounder"]
+        if type(severity) not in {int, float} or not math.isfinite(float(severity)):
+            raise ProtocolViolation("W15A private severity must be finite")
+        if type(confounder) is not int or confounder not in {0, 1}:
+            raise ProtocolViolation("W15A private confounder must be zero or one")
+        return self._counterfactual_from_particles(
+            ((confounder, float(severity), 1.0),), policy, horizon
+        )
+
+    def _counterfactual_from_particles(
+        self,
+        particles: tuple[tuple[int, float, float], ...],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W15A policy set")
         variance = 0.0
         utility = 0.0
         steps: list[dict[str, Any]] = []
@@ -730,6 +764,15 @@ class World15B(MicroWorld):
         if type(oracle_seed) is not int or oracle_seed < 0:
             raise ProtocolViolation("oracle_seed must be non-negative")
         del oracle_seed
+        return self.identified_set_counterfactual(policy, horizon)
+
+    def identified_set_counterfactual(
+        self, policy: ActionPlan, horizon: int
+    ) -> CounterfactualOracle:
+        """Return only the public-evidence equivalence-class effect set."""
+
+        if policy not in self.policy_set(horizon):
+            raise ProtocolViolation("policy is not in the finite W15B policy set")
         treated = any("A1" in ids for ids in _plan_ids(policy, 1))
         outcomes = []
         utilities = []

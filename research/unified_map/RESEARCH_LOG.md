@@ -718,3 +718,62 @@ can remain inside one recursively updated patient map without leaking pending
 results or inventing a task-private rollout state.  Continue with W15, where
 observational association and interventional effect must be separated without
 splitting the patient representation by task.
+
+## 2026-07-17 — W15 condition/do and nonidentification vertical slice
+
+### Outcome
+
+- Added one W15 causal-state contract with two explicitly different evidence
+  regimes.  W15A stores judge-known severity/confounder for an upper-bound
+  dynamic state and binds the structural treatment effect identified by the
+  public randomized anchor.  W15B stores only the public SCM equivalence class
+  and deliberately excludes the realized private SCM.
+- W15A diagnosis, no-new-action and `do(A1)` consume one state hash.  The
+  first-step `do(A1)` severity effect is exactly `-0.35`; a separate estimate
+  from 400 public randomized-anchor episodes is `-0.26012181044303`, preserving
+  the beneficial sign without reading the private confounder.
+- A factual A1/outcome panel recursively updates W15A state with an exact
+  parent/delta link.  Updated diagnosis and rollout consume only the new state.
+- W15B's exact public twins have judge-only structural effects `+1` and `-1`
+  but produce the same state hash.  Both no-action and `do(A1)` heads return
+  the full ATE identified set `[-1,+1]` and `recommendation=abstain`, rather
+  than leaking private SCM identity into a confident point estimate.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w15-causal-separation-probe/vertical-slice.json
+artifact sha256: bc42d240464d58dbc5933bec7763416b3cfc238ca5dc150f9ed310f90369f588
+W15A initial: sha256:13527dd926795b2562c2c2acb3492c532a1983ca7cf3fc5e973c6d4f4643909d
+W15A updated: sha256:597bae77e53ab9808faf321798db48cb0f46d838cca6f3a7ceec1410e7b657ff
+W15B Mplus/Mminus shared state: sha256:871903e346efa11897bb2aeeec4e4d5bf58592c7c1778768b4cea3a14163bb25
+identified do effect: -0.35
+public randomized-anchor estimate: -0.26012181044303
+```
+
+All nine artifact assertions are true, including shared-head state use,
+identified-effect sign, recursive update closure, private-SCM twin quotienting,
+opposite red-team effects and honest nonidentified abstention.
+
+### Verification
+
+```text
+W15 probe focused: 4 passed
+W15 plus W11-W15 world/oracle/strata/research-contract regression: 111 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+W15A remains a privileged true-state upper bound, while W15B is an honest
+public-equivalence-class state precisely because a true private-SCM point state
+would be an invalid causal answer.  This slice does not train a causal model or
+open formal B01.  Its manifest remains `eligibility=upper_bound_only` and
+`freeze_grade=false`; the experiment ledger remains 0/30.
+
+### Decision
+
+`KEEP`: the shared patient representation may contain an identified causal
+effect or an identified set, depending on evidence, but it must never collapse
+the latter to a private realized mechanism unavailable to the observer.
+Continue with W18 to test OOD/rejection behavior through the same state API.
