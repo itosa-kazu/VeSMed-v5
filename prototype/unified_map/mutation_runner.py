@@ -3,9 +3,9 @@
 Only observed detector outcomes are converted to kill records.  The static
 mapping below selects which already-executed gate is decisive; it never turns
 a crash, timeout, missing failure code, or unrelated rejection into a kill.
-The resulting content-addressed raw bundle contains the recomputed partial
-matrix and remains intentionally HARNESS_INCOMPLETE until all public benchmark
-mutants and specificity controls have real executions.
+The resulting content-addressed raw bundle contains the complete code-owned
+execution-case inventory and remains intentionally HARNESS_INCOMPLETE until all
+public benchmark mutants and specificity controls have decisive executions.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ import dis
 import inspect
 import platform
 import sys
-from dataclasses import dataclass, fields, is_dataclass
+from dataclasses import fields, is_dataclass
 from enum import Enum
 from functools import lru_cache
 from pathlib import PurePosixPath
@@ -42,21 +42,28 @@ from .compliance import (
     evaluate_candidate_compliance,
 )
 from .mutation_matrix import (
+    EXECUTION_CASE_MAIN_OFFSETS,
+    EXECUTION_CASE_SEED_STRIDE,
+    PORTABLE_EXECUTION_CASES,
     MutationObservation,
     ObservationOutcome,
+    PortableExecutionCaseSpec,
     SubjectKind,
+    UPDATE_CONSISTENCY_LINEAGE_OFFSETS,
+    _validate_base_seed_execution_domain,
     evaluate_mutation_matrix,
+    execution_seed_for_case,
+    portable_runner_contract,
 )
 from .mutation_evidence import (
     BENCHMARK_ID,
     MutationEvidenceBuilder,
     MutationEvidenceBundle,
-    portable_runner_contract,
 )
 from .schema import DiagnosisQuery, RolloutQuery, VisibleDelta, VisibleHistory
 
 
-RUNNER_PROTOCOL = "ucm-portable-mutation-runner/18"
+RUNNER_PROTOCOL = "ucm-portable-mutation-runner/19"
 
 
 def _runtime_metadata() -> dict[str, Any]:
@@ -1257,7 +1264,15 @@ def _nested_external_dispatch_roots(candidate_protocol: Any) -> dict[str, Any]:
 
 
 def _adjudicator_external_attributes(
-    *, compliance: Any, evaluator: Any, metrics: Any, w04: Any, w15: Any, w18: Any
+    *,
+    compliance: Any,
+    evaluator: Any,
+    metrics: Any,
+    randomness: Any,
+    w04: Any,
+    w06: Any,
+    w15: Any,
+    w18: Any,
 ) -> dict[str, Any]:
     """Resolve dynamic module attributes used by the live adjudicator path.
 
@@ -1265,7 +1280,7 @@ def _adjudicator_external_attributes(
     Python resolves ``np.max``/``math.fsum`` at each call, so replacing one
     attribute leaves the consumer function's code object and module alias
     unchanged.  This inventory is intentionally code-owned and exhaustive for
-    the evaluator, metric classifier, and W04/W15/W18 fixture paths currently
+    the evaluator, metric classifier, and W04/W06/W15/W18 fixture paths currently
     used by portable semantic adjudication.
     """
 
@@ -1328,6 +1343,24 @@ def _adjudicator_external_attributes(
             w04.math,
             ("exp", "fsum", "inf", "log", "pi"),
         ),
+        ("worlds_w06.hashlib", w06.hashlib, ("sha256",)),
+        (
+            "worlds_w06.math",
+            w06.math,
+            ("erf", "exp", "fsum", "log", "pi", "sqrt"),
+        ),
+        ("worlds_w06.np", w06.np, ("asarray", "diag", "eye", "zeros")),
+        (
+            "worlds_w06.np.linalg",
+            w06.np.linalg,
+            ("cholesky", "inv", "slogdet", "solve"),
+        ),
+        ("worlds_randomness.hashlib", randomness.hashlib, ("sha256",)),
+        (
+            "worlds_randomness.math",
+            randomness.math,
+            ("cos", "fsum", "isfinite", "log", "pi", "sqrt"),
+        ),
         ("worlds_w15.math", w15.math, ("exp", "fsum")),
         ("worlds_w18.math", w18.math, ("exp", "fsum", "sqrt")),
     )
@@ -1369,7 +1402,8 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         schema,
         state,
     )
-    from .worlds import w04, w15, w18
+    from .worlds import base as worlds_base
+    from .worlds import randomness, w04, w06, w15, w18
 
     # ``tempfile`` resolves its default directory and creates its process-wide
     # candidate-name sequence lazily.
@@ -1395,7 +1429,10 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_base": worlds_base,
+        "worlds_randomness": randomness,
         "worlds_w04": w04,
+        "worlds_w06": w06,
         "worlds_w15": w15,
         "worlds_w18": w18,
         "mutation_runner": runner_module,
@@ -1595,7 +1632,9 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
             compliance=compliance,
             evaluator=evaluator,
             metrics=metrics,
+            randomness=randomness,
             w04=w04,
+            w06=w06,
             w15=w15,
             w18=w18,
         )
@@ -1921,7 +1960,9 @@ def _external_attribute_identity_contract(
     compliance: Any,
     evaluator: Any,
     metrics: Any,
+    randomness: Any,
     w04: Any,
+    w06: Any,
     w15: Any,
     w18: Any,
 ) -> list[dict[str, Any]]:
@@ -2085,7 +2126,9 @@ def _external_attribute_identity_contract(
             compliance=compliance,
             evaluator=evaluator,
             metrics=metrics,
+            randomness=randomness,
             w04=w04,
+            w06=w06,
             w15=w15,
             w18=w18,
         )
@@ -2460,7 +2503,8 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         schema,
         state,
     )
-    from .worlds import w04, w15, w18
+    from .worlds import base as worlds_base
+    from .worlds import randomness, w04, w06, w15, w18
 
     runner_module = sys.modules.get(__name__)
     if runner_module is None:
@@ -2475,7 +2519,10 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_base": worlds_base,
+        "worlds_randomness": randomness,
         "worlds_w04": w04,
+        "worlds_w06": w06,
         "worlds_w15": w15,
         "worlds_w18": w18,
         "mutation_runner": runner_module,
@@ -2494,7 +2541,9 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         compliance=compliance,
         evaluator=evaluator,
         metrics=metrics,
+        randomness=randomness,
         w04=w04,
+        w06=w06,
         w15=w15,
         w18=w18,
     )
@@ -2783,161 +2832,25 @@ def _expected_live_execution_binding(control_class_name: str) -> dict[str, str]:
     return binding
 
 
-@dataclass(frozen=True, slots=True)
-class PortableMutationCase:
-    matrix_subject_id: str
-    control_class_name: str
-    decisive_gate: str
-    expected_failure_code: str
-    semantic_probes: frozenset[str] = frozenset()
-
-
-PORTABLE_MUTATION_CASES: tuple[PortableMutationCase, ...] = (
-    PortableMutationCase(
-        "GlobalSecondState",
-        "GlobalSecondStateControl",
-        "C04",
-        "UCM-F006-HIDDEN_PATIENT_CACHE",
-    ),
-    PortableMutationCase(
-        "FileHandleState",
-        "FileHandleStateControl",
-        "C07",
-        "UCM-F008-STATE_NOT_CLOSED",
-    ),
-    PortableMutationCase(
-        "RawHistoryHead",
-        "RawHistoryHeadControl",
-        "C02",
-        "UCM-F004-HEAD_HISTORY_ACCESS",
-    ),
-    PortableMutationCase(
-        "TrainerTargetSmuggler",
-        "TrainerTargetSmugglerControl",
-        "C08",
-        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
-    ),
-    PortableMutationCase(
-        "QueryReencoder",
-        "QueryReencoderControl",
-        "C02",
-        "UCM-F004-HEAD_HISTORY_ACCESS",
-    ),
-    PortableMutationCase(
-        "MutableCheckpoint",
-        "MutableCheckpointControl",
-        "C06",
-        "UCM-F009-MODEL_MUTATION",
-    ),
-    PortableMutationCase(
-        "TrueStateReader",
-        "TrueStateReaderControl",
-        "C08",
-        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
-    ),
-    PortableMutationCase(
-        "FutureReader",
-        "FutureReaderControl",
-        "C08",
-        "UCM-F001-FUTURE_LEAK",
-    ),
-    PortableMutationCase(
-        "CounterfactualMutator",
-        "QueryMutatorControl",
-        "C16",
-        "UCM-F012-QUERY_MUTATES_FACT",
-    ),
-    PortableMutationCase(
-        "ImplicitRNGState",
-        "ImplicitRNGControl",
-        "C30",
-        "UCM-F020-NONREPRODUCIBLE",
-    ),
-    PortableMutationCase(
-        "HistoryInBlob",
-        "HistoryInBlobControl",
-        "C27",
-        "UCM-F018-FULL_HISTORY_MISCLAIM",
-        frozenset({"full_history_disclosure"}),
-    ),
-    PortableMutationCase(
-        "WarmFutureCache",
-        "WarmFutureCacheControl",
-        "C23",
-        "UCM-F001-FUTURE_LEAK",
-        frozenset({"warm_future_old_cut"}),
-    ),
-    PortableMutationCase(
-        "ReplayBatchDivergence",
-        "ReplayBatchDivergenceControl",
-        "C22",
-        "UCM-F019-UPDATE_INCONSISTENT",
-        frozenset({"update_consistency"}),
-    ),
-    PortableMutationCase(
-        "DoubleCountEvent",
-        "DoubleCountEventControl",
-        "C22",
-        "UCM-F019-UPDATE_INCONSISTENT",
-        frozenset({"update_consistency"}),
-    ),
-    PortableMutationCase(
-        "NonIdPointEstimate",
-        "NonIdPointEstimateControl",
-        "C19",
-        "UCM-F015-CONDITIONING_AS_INTERVENTION",
-        frozenset({"nonidentified_set"}),
-    ),
-    PortableMutationCase(
-        "DangerousMeanCompressor",
-        "DangerousMeanCompressorControl",
-        "C24",
-        "UCM-F016-DANGEROUS_COLLISION",
-        frozenset({"dangerous_collision"}),
-    ),
-    PortableMutationCase(
-        "UnsafeClosedWorld",
-        "UnsafeClosedWorldControl",
-        "C25",
-        "UCM-F017-OOD_FORCED_MATCH",
-        frozenset({"unsafe_closed_world"}),
-    ),
+# Read-only compatibility views derived from the sole registry in
+# mutation_matrix.py.  Tests may narrow these active views, but every selected
+# row is rejoined to its exact code-owned execution-case preimage before use.
+PortableMutationCase = PortableExecutionCaseSpec
+PORTABLE_MUTATION_CASES: tuple[PortableExecutionCaseSpec, ...] = tuple(
+    case for case in PORTABLE_EXECUTION_CASES
+    if case.subject_kind is SubjectKind.MUTANT
 )
-
-
 PORTABLE_SPECIFICITY_CASES: tuple[
     tuple[str, str, str, frozenset[str]], ...
-] = (
+] = tuple(
     (
-        "ExplicitSeedStochasticState",
-        "HonestSeededControl",
-        "ordinary_candidate",
-        frozenset(
-            {
-                "full_history_disclosure",
-                "update_consistency",
-                "warm_future_old_cut",
-            }
-        ),
-    ),
-    (
-        "BehaviorEquivalentSerialization",
-        "BehaviorEquivalentSerializationControl",
-        "ordinary_candidate",
-        frozenset({"update_consistency"}),
-    ),
-    (
-        "DeclaredFullHistoryBaseline",
-        "DeclaredFullHistoryBaselineControl",
-        "baseline_only",
-        frozenset({"full_history_disclosure"}),
-    ),
-    (
-        "CorrectNonidentifiedSet",
-        "CorrectNonidentifiedSetControl",
-        "ordinary_candidate",
-        frozenset({"nonidentified_set"}),
-    ),
+        case.subject_id,
+        case.control_class_name,
+        str(case.classification),
+        frozenset(case.semantic_probes),
+    )
+    for case in PORTABLE_EXECUTION_CASES
+    if case.subject_kind is SubjectKind.SPECIFICITY_CONTROL
 )
 
 
@@ -3201,140 +3114,86 @@ def paired_serialization_equivalence_evidence(
 
 
 def _portable_runner_contract() -> dict[str, Any]:
-    if type(RUNNER_PROTOCOL) is not str or not RUNNER_PROTOCOL:
-        raise ProtocolViolation("runner protocol must be a non-empty string")
-    if type(PORTABLE_MUTATION_CASES) is not tuple:
-        raise ProtocolViolation("portable mutation cases must be an exact tuple")
-    mutation_cases: list[dict[str, Any]] = []
-    for index, case in enumerate(PORTABLE_MUTATION_CASES):
-        if type(case) is not PortableMutationCase:
-            raise ProtocolViolation(f"portable mutation case {index} is malformed")
-        mutation_cases.append(
-            {
-                "matrix_subject_id": case.matrix_subject_id,
-                "control_class_name": case.control_class_name,
-                "decisive_gate": case.decisive_gate,
-                "expected_failure_code": case.expected_failure_code,
-                "semantic_probes": sorted(case.semantic_probes),
-            }
-        )
-    if type(PORTABLE_SPECIFICITY_CASES) is not tuple:
-        raise ProtocolViolation("portable specificity cases must be an exact tuple")
-    specificity_cases: list[dict[str, Any]] = []
-    for index, row in enumerate(PORTABLE_SPECIFICITY_CASES):
-        if type(row) is not tuple or len(row) != 4:
-            raise ProtocolViolation(
-                f"portable specificity case {index} is malformed"
-            )
-        subject_id, control_class_name, classification, probes = row
-        if (
-            type(subject_id) is not str
-            or type(control_class_name) is not str
-            or type(classification) is not str
-            or type(probes) is not frozenset
-            or any(type(probe) is not str for probe in probes)
-        ):
-            raise ProtocolViolation(
-                f"portable specificity case {index} fields are malformed"
-            )
-        specificity_cases.append(
-            {
-                "subject_id": subject_id,
-                "control_class_name": control_class_name,
-                "classification": classification,
-                "semantic_probes": sorted(probes),
-            }
-        )
-    return {
-        "runner_protocol": RUNNER_PROTOCOL,
-        "runner_semantic_probe_protocol_alias": PORTABLE_SEMANTIC_PROBE_PROTOCOL,
-        "mutation_cases": mutation_cases,
-        "specificity_cases": specificity_cases,
-    }
+    """Compatibility wrapper around the sole evidence execution registry."""
+
+    return portable_runner_contract(RUNNER_PROTOCOL)
 
 
 def _active_portable_execution_rows(
     code_owned_contract: dict[str, Any],
 ) -> tuple[
-    tuple[tuple[int, PortableMutationCase, str], ...],
-    tuple[tuple[int, tuple[str, str, str, frozenset[str]], str], ...],
+    tuple[tuple[int, PortableExecutionCaseSpec, str], ...],
+    tuple[tuple[int, PortableExecutionCaseSpec, str], ...],
 ]:
-    """Bind an active subset to immutable full-registry row indices."""
+    """Join narrowed test views back to exact code-owned execution cases."""
 
-    if type(code_owned_contract) is not dict or set(code_owned_contract) != {
-        "runner_protocol",
-        "runner_semantic_probe_protocol_alias",
-        "update_consistency_lineage_xor_mask",
-        "mutation_cases",
-        "specificity_cases",
-    }:
-        raise ProtocolViolation("code-owned portable runner contract is malformed")
-    from . import compliance
-
-    active_contract = _portable_runner_contract()
+    expected_contract = portable_runner_contract(RUNNER_PROTOCOL)
+    if code_owned_contract != expected_contract:
+        raise ProtocolViolation("code-owned portable runner contract drifted")
     if (
-        code_owned_contract["runner_protocol"] != RUNNER_PROTOCOL
-        or code_owned_contract["runner_semantic_probe_protocol_alias"]
+        code_owned_contract.get("runner_semantic_probe_protocol_alias")
         != PORTABLE_SEMANTIC_PROBE_PROTOCOL
-        or code_owned_contract["update_consistency_lineage_xor_mask"]
-        != compliance.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
     ):
-        raise ProtocolViolation("code-owned portable runner protocol aliases drifted")
-    code_owned_mutants = code_owned_contract["mutation_cases"]
-    code_owned_controls = code_owned_contract["specificity_cases"]
-    if type(code_owned_mutants) is not list or type(code_owned_controls) is not list:
-        raise ProtocolViolation("code-owned portable runner rows must be exact lists")
+        raise ProtocolViolation("portable semantic probe protocol alias drifted")
+    if (
+        code_owned_contract.get("execution_case_seed_stride")
+        != EXECUTION_CASE_SEED_STRIDE
+    ):
+        raise ProtocolViolation("portable execution-case seed stride drifted")
+    if code_owned_contract.get("execution_case_main_offsets") != list(
+        EXECUTION_CASE_MAIN_OFFSETS
+    ):
+        raise ProtocolViolation("portable execution-case main offsets drifted")
+    if code_owned_contract.get("update_consistency_lineage_offsets") != list(
+        UPDATE_CONSISTENCY_LINEAGE_OFFSETS
+    ):
+        raise ProtocolViolation(
+            "portable update-consistency lineage offsets drifted"
+        )
 
-    mutant_rows: list[tuple[int, PortableMutationCase, str]] = []
-    seen_indices: set[int] = set()
-    for case, payload in zip(
-        PORTABLE_MUTATION_CASES,
-        active_contract["mutation_cases"],
-        strict=True,
-    ):
+    by_id = {case.execution_case_id: case for case in PORTABLE_EXECUTION_CASES}
+    mutant_rows: list[tuple[int, PortableExecutionCaseSpec, str]] = []
+    control_rows: list[tuple[int, PortableExecutionCaseSpec, str]] = []
+    selected_ids: set[str] = set()
+
+    for active in PORTABLE_MUTATION_CASES:
+        if type(active) is not PortableExecutionCaseSpec:
+            raise ProtocolViolation("active portable mutant case has wrong type")
+        case = by_id.get(active.execution_case_id)
+        if (
+            case is None
+            or case.subject_kind is not SubjectKind.MUTANT
+            or case.to_wire() != active.to_wire()
+            or case.execution_case_id in selected_ids
+        ):
+            raise ProtocolViolation("active portable mutant case is not code-owned")
+        selected_ids.add(case.execution_case_id)
+        mutant_rows.append((case.execution_ordinal, case, case.head_record_shape))
+
+    for active in PORTABLE_SPECIFICITY_CASES:
+        if type(active) is not tuple or len(active) != 4:
+            raise ProtocolViolation("active portable specificity case is malformed")
+        subject_id, control_class_name, classification, semantic_probes = active
         matches = [
-            (index, expected.get("head_record_shape"))
-            for index, expected in enumerate(code_owned_mutants)
-            if type(expected) is dict
-            and set(expected) == set(payload) | {"head_record_shape"}
-            and all(expected[key] == value for key, value in payload.items())
-            and expected.get("head_record_shape") in {"empty", "replay_ddrr"}
+            case
+            for case in PORTABLE_EXECUTION_CASES
+            if case.subject_kind is SubjectKind.SPECIFICITY_CONTROL
+            and case.subject_id == subject_id
+            and case.control_class_name == control_class_name
+            and case.classification == classification
+            and frozenset(case.semantic_probes) == semantic_probes
         ]
-        if len(matches) != 1 or matches[0][0] in seen_indices:
+        if (
+            len(matches) != 1
+            or matches[0].execution_case_id in selected_ids
+        ):
             raise ProtocolViolation(
-                f"active mutant {case.matrix_subject_id!r} is not one unique "
-                "code-owned portable row"
+                "active portable specificity case is not one code-owned case"
             )
-        row_index, head_record_shape = matches[0]
-        seen_indices.add(row_index)
-        mutant_rows.append((row_index, case, head_record_shape))
+        case = matches[0]
+        selected_ids.add(case.execution_case_id)
+        control_rows.append((case.execution_ordinal, case, case.head_record_shape))
 
-    control_rows: list[
-        tuple[int, tuple[str, str, str, frozenset[str]], str]
-    ] = []
-    for row, payload in zip(
-        PORTABLE_SPECIFICITY_CASES,
-        active_contract["specificity_cases"],
-        strict=True,
-    ):
-        matches = [
-            (index, expected.get("head_record_shape"))
-            for index, expected in enumerate(code_owned_controls)
-            if type(expected) is dict
-            and set(expected) == set(payload) | {"head_record_shape"}
-            and all(expected[key] == value for key, value in payload.items())
-            and expected.get("head_record_shape") in {"empty", "replay_ddrr"}
-        ]
-        full_row_index = (
-            len(code_owned_mutants) + matches[0][0] if len(matches) == 1 else -1
-        )
-        if len(matches) != 1 or full_row_index in seen_indices:
-            raise ProtocolViolation(
-                f"active specificity control {row[0]!r} is not one unique "
-                "code-owned portable row"
-        )
-        seen_indices.add(full_row_index)
-        control_rows.append((full_row_index, row, matches[0][1]))
     return tuple(mutant_rows), tuple(control_rows)
 
 
@@ -3448,6 +3307,13 @@ def _freeze_critical_runtime_contract(
                 "GATE_SPECS",
                 "MUTANT_SPECS",
                 "SPECIFICITY_CONTROLS",
+                "PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL",
+                "PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS",
+                "EXECUTION_CASE_MAIN_OFFSETS",
+                "EXECUTION_CASE_SEED_STRIDE",
+                "UPDATE_CONSISTENCY_LINEAGE_OFFSETS",
+                "UPDATE_CONSISTENCY_LINEAGE_XOR_MASK",
+                "PORTABLE_EXECUTION_CASES",
                 "REGISTRY_DIGEST",
             ),
         ),
@@ -3507,6 +3373,7 @@ def _freeze_critical_runtime_contract(
                 "EvaluationSplit",
                 "EvaluationTask",
                 "EvidenceStatus",
+                "FixtureSemantic",
                 "IdentificationKind",
                 "OODAttribution",
             ),
@@ -3554,6 +3421,34 @@ def _critical_alias_identity_contract(
     if evaluate_mutation_matrix is not mutation_matrix.evaluate_mutation_matrix:
         raise ProtocolViolation(
             "critical alias identity mismatch: mutation_runner.evaluate_mutation_matrix"
+        )
+    if PORTABLE_EXECUTION_CASES is not mutation_matrix.PORTABLE_EXECUTION_CASES:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.PORTABLE_EXECUTION_CASES"
+        )
+    if PortableExecutionCaseSpec is not mutation_matrix.PortableExecutionCaseSpec:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.PortableExecutionCaseSpec"
+        )
+    if execution_seed_for_case is not mutation_matrix.execution_seed_for_case:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.execution_seed_for_case"
+        )
+    if EXECUTION_CASE_MAIN_OFFSETS is not mutation_matrix.EXECUTION_CASE_MAIN_OFFSETS:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.EXECUTION_CASE_MAIN_OFFSETS"
+        )
+    if (
+        UPDATE_CONSISTENCY_LINEAGE_OFFSETS
+        is not mutation_matrix.UPDATE_CONSISTENCY_LINEAGE_OFFSETS
+    ):
+        raise ProtocolViolation(
+            "critical alias identity mismatch: "
+            "mutation_runner.UPDATE_CONSISTENCY_LINEAGE_OFFSETS"
+        )
+    if portable_runner_contract is not mutation_matrix.portable_runner_contract:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.portable_runner_contract"
         )
     modules = {
         "candidate_protocol": candidate_protocol,
@@ -3767,6 +3662,8 @@ def _source_binding_witness(
     control_class_name: str,
     semantic_probes: frozenset[str],
     *,
+    execution_case_id: str | None = None,
+    probe_id: str | None = None,
     execution_seed: int | None = None,
     expected_runtime_import_cache_contract_digest: str | None = None,
 ) -> dict[str, Any]:
@@ -3776,6 +3673,15 @@ def _source_binding_witness(
         type(execution_seed) is not int or not 0 <= execution_seed < 2**64
     ):
         raise ProtocolViolation("source witness execution_seed must be uint64 or null")
+    if (execution_case_id is None) is not (probe_id is None):
+        raise ProtocolViolation("source witness case/probe identity must be paired")
+    if execution_case_id is not None and (
+        type(execution_case_id) is not str
+        or not execution_case_id
+        or type(probe_id) is not str
+        or not probe_id
+    ):
+        raise ProtocolViolation("source witness case/probe identity is invalid")
 
     from . import (
         candidate_protocol,
@@ -3788,7 +3694,8 @@ def _source_binding_witness(
         schema,
         state,
     )
-    from .worlds import w04, w15, w18
+    from .worlds import base as worlds_base
+    from .worlds import randomness, w04, w06, w15, w18
 
     # Direct callers of the source witness receive the same prewarm protection
     # as the batch runner.  The returned summary is committed below, so a cache
@@ -3814,7 +3721,10 @@ def _source_binding_witness(
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_base": worlds_base,
+        "worlds_randomness": randomness,
         "worlds_w04": w04,
+        "worlds_w06": w06,
         "worlds_w15": w15,
         "worlds_w18": w18,
         "mutation_runner": runner_module,
@@ -3829,7 +3739,9 @@ def _source_binding_witness(
         compliance=compliance,
         evaluator=evaluator,
         metrics=metrics,
+        randomness=randomness,
         w04=w04,
+        w06=w06,
         w15=w15,
         w18=w18,
     )
@@ -3881,6 +3793,7 @@ def _source_binding_witness(
         "_semantic_behavior_equal",
         "_rebuild_evaluator_probe_artifact",
         "_rebuild_nonidentified_artifact",
+        "_rebuild_observation_channel_separation_artifact",
         "_rebuild_dangerous_collision_artifact",
         "_rebuild_unsafe_closed_world_artifact",
         "_execute_evaluator_probe",
@@ -3917,6 +3830,10 @@ def _source_binding_witness(
             evaluator._derive_fixture_pair_probe,
             "evaluator._derive_fixture_pair_probe",
         ),
+        "evaluator._w06_observation_channel_projection": _live_callable_digest(
+            evaluator._w06_observation_channel_projection,
+            "evaluator._w06_observation_channel_projection",
+        ),
         "metrics.classify_pair": _live_callable_digest(
             metrics.classify_pair, "metrics.classify_pair"
         ),
@@ -3932,6 +3849,33 @@ def _source_binding_witness(
         ),
         "W04World.counterfactual": _live_callable_digest(
             w04.W04World.counterfactual, "W04World.counterfactual"
+        ),
+        "World06.generate_episode": _live_callable_digest(
+            w06.World06.generate_episode, "World06.generate_episode"
+        ),
+        "World06.policy_set": _live_callable_digest(
+            w06.World06.policy_set, "World06.policy_set"
+        ),
+        "World06._posterior": _live_callable_digest(
+            w06.World06._posterior, "World06._posterior"
+        ),
+        "World06.counterfactual": _live_callable_digest(
+            w06.World06.counterfactual, "World06.counterfactual"
+        ),
+        "randomness._key_bytes": _live_callable_digest(
+            randomness._key_bytes, "randomness._key_bytes"
+        ),
+        "randomness.uniform01": _live_callable_digest(
+            randomness.uniform01, "randomness.uniform01"
+        ),
+        "randomness.normal01": _live_callable_digest(
+            randomness.normal01, "randomness.normal01"
+        ),
+        "randomness.bernoulli": _live_callable_digest(
+            randomness.bernoulli, "randomness.bernoulli"
+        ),
+        "randomness.categorical": _live_callable_digest(
+            randomness.categorical, "randomness.categorical"
         ),
         "W18World.attributable_ood_fixture": _live_callable_digest(
             w18.W18World.attributable_ood_fixture,
@@ -3970,6 +3914,12 @@ def _source_binding_witness(
         ),
         "history_max_total_expanded_bytes": (
             compliance._HISTORY_MAX_TOTAL_EXPANDED_BYTES
+        ),
+        "world06_rho": _runtime_value_binding(
+            w06.World06._RHO, "World06._RHO"
+        ),
+        "world06_bias": _runtime_value_binding(
+            w06.World06._BIAS, "World06._BIAS"
         ),
         "request_protocol": candidate_protocol.REQUEST_PROTOCOL,
         "response_protocol": candidate_protocol.RESPONSE_PROTOCOL,
@@ -4017,8 +3967,10 @@ def _source_binding_witness(
         f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
     )
     return {
-        "protocol": "ucm-portable-control-source-binding/18",
+        "protocol": "ucm-portable-control-source-binding/20",
         "control": control_class_name,
+        "execution_case_id": execution_case_id,
+        "probe_id": probe_id,
         "execution_seed": execution_seed,
         "control_mro": mro_sources,
         "source_identity_anchors": source_identity_anchors,
@@ -4057,6 +4009,7 @@ def _decisive_finding(
     expected_failure_code: str,
     *,
     expected_gate: str,
+    expected_probe_id: str,
 ) -> ComplianceFinding | None:
     if not _direct_gate_allows_failure_code(expected_gate, expected_failure_code):
         return None
@@ -4075,15 +4028,7 @@ def _decisive_finding(
     if not matches:
         return None
     finding = matches[0]
-    return finding if expected_gate in _finding_gate_tokens(finding) else None
-
-
-def _finding_gate_tokens(finding: ComplianceFinding) -> frozenset[str]:
-    return frozenset(
-        token
-        for token in finding.gate.replace("/", " ").replace("-", " ").split()
-        if len(token) == 3 and token.startswith("C") and token[1:].isdigit()
-    )
+    return finding if finding.gate == expected_probe_id else None
 
 
 def _direct_gate_allows_failure_code(gate: object, failure_code: object) -> bool:
@@ -4233,6 +4178,8 @@ def _attempt_source_witness(
     semantic_probes: frozenset[str],
     *,
     stage: str,
+    execution_case_id: str,
+    probe_id: str,
     execution_seed: int,
     runtime_import_cache_contract_digest: str | None,
 ) -> tuple[dict[str, Any], dict[str, str] | None]:
@@ -4243,12 +4190,16 @@ def _attempt_source_witness(
             witness = _source_binding_witness(
                 control_class_name,
                 semantic_probes,
+                execution_case_id=execution_case_id,
+                probe_id=probe_id,
                 execution_seed=execution_seed,
             )
         else:
             witness = _source_binding_witness(
                 control_class_name,
                 semantic_probes,
+                execution_case_id=execution_case_id,
+                probe_id=probe_id,
                 execution_seed=execution_seed,
                 expected_runtime_import_cache_contract_digest=(
                     runtime_import_cache_contract_digest
@@ -4260,6 +4211,11 @@ def _attempt_source_witness(
         )
         if witness.get("control") != control_class_name:
             raise ProtocolViolation("source witness control identity drifted")
+        if (
+            witness.get("execution_case_id") != execution_case_id
+            or witness.get("probe_id") != probe_id
+        ):
+            raise ProtocolViolation("source witness execution-case/probe drifted")
         if witness.get("execution_seed") != execution_seed:
             raise ProtocolViolation("source witness execution seed drifted")
         if witness.get("expected_candidate") != expected_candidate:
@@ -4273,6 +4229,8 @@ def _attempt_source_witness(
             {
                 **_unavailable_source_witness(stage, error),
                 "control": control_class_name,
+                "execution_case_id": execution_case_id,
+                "probe_id": probe_id,
                 "execution_seed": execution_seed,
                 "enabled_semantic_probes": sorted(semantic_probes),
             },
@@ -4293,6 +4251,8 @@ def _validate_complete_report_transcript(
         "runner_protocol",
         "control_class_name",
         "expected_candidate",
+        "execution_case_id",
+        "probe_id",
         "execution_seed",
         "candidate",
         "operational_state_closure",
@@ -4319,7 +4279,7 @@ def _validate_complete_report_transcript(
         "request_records",
     }
     if set(transcript) != required_fields:
-        raise ProtocolViolation("report transcript does not have its exact 27 fields")
+        raise ProtocolViolation("report transcript does not have its exact 29 fields")
     if transcript["runner_protocol"] != RUNNER_PROTOCOL:
         raise ProtocolViolation("report transcript runner protocol drifted")
     for label in ("control_class_name", "expected_candidate", "isolation_assurance"):
@@ -4328,6 +4288,12 @@ def _validate_complete_report_transcript(
             raise ProtocolViolation(f"report transcript {label} is not canonical")
     if transcript["candidate"] != transcript["expected_candidate"]:
         raise ProtocolViolation("report candidate differs from expected candidate")
+    if (
+        pre_source_witness.get("execution_case_id")
+        != transcript["execution_case_id"]
+        or pre_source_witness.get("probe_id") != transcript["probe_id"]
+    ):
+        raise ProtocolViolation("report execution-case/probe differs from pre witness")
     execution_seed = transcript["execution_seed"]
     if type(execution_seed) is not int or not 0 <= execution_seed < 2**64:
         raise ProtocolViolation("report execution seed must be uint64")
@@ -4348,6 +4314,15 @@ def _validate_complete_report_transcript(
         "operation",
         "seed",
         "execution_mode",
+        "executor_protocol",
+        "parent_pid",
+        "worker_pid",
+        "isolation",
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "module_origin",
         "status",
         "request_wire",
         "request_digest",
@@ -4357,6 +4332,8 @@ def _validate_complete_report_transcript(
         "response_digest",
         "failure_origin",
         "failure_code",
+        "invocation_nonce",
+        "executor_receipt",
     }
     if type(request_records) is not list:
         raise ProtocolViolation("report request_records must be an exact list")
@@ -4367,7 +4344,7 @@ def _validate_complete_report_transcript(
     for index, request_record in enumerate(request_records):
         if type(request_record) is not dict or set(request_record) != request_record_fields:
             raise ProtocolViolation(
-                f"report request record {index} is not one exact 12-field record"
+                f"report request record {index} is not one exact 23-field record"
             )
         canonical_json_bytes(request_record)
     invocation_transcript_digest = digest_json(request_records)
@@ -4532,6 +4509,8 @@ def _complete_report_transcript(
     *,
     control_class_name: str,
     expected_candidate: str,
+    execution_case_id: str,
+    probe_id: str,
     execution_seed: int,
     execution_binding: dict[str, str],
     execution_binding_error: str | None,
@@ -4558,6 +4537,8 @@ def _complete_report_transcript(
         "runner_protocol": RUNNER_PROTOCOL,
         "control_class_name": control_class_name,
         "expected_candidate": expected_candidate,
+        "execution_case_id": execution_case_id,
+        "probe_id": probe_id,
         "execution_seed": execution_seed,
         "candidate": report.candidate,
         "operational_state_closure": report.operational_state_closure.value,
@@ -4631,6 +4612,7 @@ def _preflight_decisive_record(
         base_seed=base_seed,
         input_preimage=input_preimage,
         execution_context=execution_context,
+        require_complete_registry=False,
     )
     preflight.add_record(**record_kwargs)
     preflight.finalize()
@@ -4647,10 +4629,9 @@ def run_portable_mutation_evidence(
 ) -> MutationEvidenceBundle:
     """Execute the portable matrix once and retain every canonical preimage."""
 
-    # MutationObservation uses a uint128 storage field, but the executable
-    # candidate protocol is deliberately uint64.  Every compliance execution
-    # derives up to three additional operation seeds, so reject a base seed
-    # that this producer could not actually send on its last row.
+    # MutationObservation and the executable candidate protocol both use
+    # uint64 seeds. Every case reserves a disjoint code-owned seed block, so
+    # reject any base seed whose complete derived domain would overflow.
     if type(run_id) is not str or not run_id or run_id.strip() != run_id:
         raise ProtocolViolation("run_id must be a canonical non-empty string")
     if type(seed) is not int or seed < 0:
@@ -4658,34 +4639,10 @@ def run_portable_mutation_evidence(
             "seed and all derived operation seeds must fit unsigned 64-bit integer"
         )
     code_owned_contract = portable_runner_contract(RUNNER_PROTOCOL)
+    _validate_base_seed_execution_domain(seed, "runner base_seed")
     active_mutant_rows, active_control_rows = _active_portable_execution_rows(
         code_owned_contract
     )
-    code_owned_rows = (
-        code_owned_contract["mutation_cases"]
-        + code_owned_contract["specificity_cases"]
-    )
-    for row_index, row in enumerate(code_owned_rows):
-        if type(row) is not dict or type(row.get("semantic_probes")) is not list:
-            raise ProtocolViolation("code-owned portable semantic probes are malformed")
-        semantic_probes = row["semantic_probes"]
-        execution_seed = seed + row_index
-        if execution_seed + 3 >= 2**64:
-            raise ProtocolViolation(
-                "seed and all derived operation seeds must fit unsigned 64-bit integer"
-            )
-        if (
-            "update_consistency" in semantic_probes
-            and (
-                execution_seed
-                ^ code_owned_contract["update_consistency_lineage_xor_mask"]
-            )
-            + 2
-            >= 2**64
-        ):
-            raise ProtocolViolation(
-                "update-consistency lineage seeds must fit unsigned 64-bit integer"
-            )
 
     try:
         runtime_import_cache_baseline = _prepare_runtime_import_cache()
@@ -4734,8 +4691,9 @@ def run_portable_mutation_evidence(
     )
     input_preimage_digest = builder.input_preimage_digest
 
-    for row_index, case, expected_head_record_shape in active_mutant_rows:
-        execution_seed = seed + row_index
+    for _row_index, case, expected_head_record_shape in active_mutant_rows:
+        execution_seed = execution_seed_for_case(seed, case)
+        semantic_probes = frozenset(case.semantic_probes)
         errors: list[dict[str, str]] = []
         if source_preparation_record is not None:
             errors.append(source_preparation_record)
@@ -4744,8 +4702,10 @@ def run_portable_mutation_evidence(
                     "pre-execution", source_preparation_error
                 ),
                 "control": case.control_class_name,
+                "execution_case_id": case.execution_case_id,
+                "probe_id": case.probe_id,
                 "execution_seed": execution_seed,
-                "enabled_semantic_probes": sorted(case.semantic_probes),
+                "enabled_semantic_probes": sorted(semantic_probes),
             }
             pre_source_error = _typed_execution_error(
                 "pre-execution", source_preparation_error
@@ -4754,8 +4714,10 @@ def run_portable_mutation_evidence(
         else:
             pre_source_witness, pre_source_error = _attempt_source_witness(
                 case.control_class_name,
-                case.semantic_probes,
+                semantic_probes,
                 stage="pre-execution",
+                execution_case_id=case.execution_case_id,
+                probe_id=case.probe_id,
                 execution_seed=execution_seed,
                 runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
@@ -4791,7 +4753,7 @@ def run_portable_mutation_evidence(
                             rollout_query=execution_inputs[2],
                             delta=execution_inputs[3],
                             seed=execution_seed,
-                            semantic_probes=case.semantic_probes,
+                            semantic_probes=semantic_probes,
                         )
                         if report is None:
                             raise ProtocolViolation(
@@ -4816,8 +4778,10 @@ def run_portable_mutation_evidence(
         finally:
             post_source_witness, post_source_error = _attempt_source_witness(
                 case.control_class_name,
-                case.semantic_probes,
+                semantic_probes,
                 stage="post-execution",
+                execution_case_id=case.execution_case_id,
+                probe_id=case.probe_id,
                 execution_seed=execution_seed,
                 runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
@@ -4873,6 +4837,7 @@ def run_portable_mutation_evidence(
                     report.findings,
                     case.expected_failure_code,
                     expected_gate=case.decisive_gate,
+                    expected_probe_id=case.probe_id,
                 )
                 harness_incomplete = harness_incomplete or any(
                     finding.verdict is ComplianceVerdict.INCOMPLETE
@@ -4896,6 +4861,8 @@ def run_portable_mutation_evidence(
                     report,
                     control_class_name=case.control_class_name,
                     expected_candidate=expected_candidate,
+                    execution_case_id=case.execution_case_id,
+                    probe_id=case.probe_id,
                     execution_seed=execution_seed,
                     execution_binding=execution_binding,
                     execution_binding_error=binding_error,
@@ -4975,6 +4942,8 @@ def run_portable_mutation_evidence(
         decision_record = {
             "runner_protocol": RUNNER_PROTOCOL,
             "decision_kind": "mutant-observation",
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
             "expected_gate": case.decisive_gate,
             "expected_failure_code": case.expected_failure_code,
             "report_available": report_transcript is not None,
@@ -4992,6 +4961,8 @@ def run_portable_mutation_evidence(
             {
                 "runner_protocol": RUNNER_PROTOCOL,
                 "decision_kind": "mutant_kill",
+                "execution_case_id": case.execution_case_id,
+                "probe_id": case.probe_id,
                 "candidate": report_transcript["candidate"],
                 "finding": _finding_wire(decisive),
                 "source_record_payload_digest": digest_json(source_record),
@@ -5014,6 +4985,8 @@ def run_portable_mutation_evidence(
         record_kwargs = {
             "subject_id": case.matrix_subject_id,
             "subject_kind": SubjectKind.MUTANT,
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
             "execution_seed": execution_seed,
             "outcome": outcome,
             "actual_gate": actual_gate,
@@ -5070,13 +5043,12 @@ def run_portable_mutation_evidence(
                 )
         builder.add_record(**record_kwargs)
 
-    for row_index, (
-        subject_id,
-        control_class_name,
-        classification,
-        semantic_probes,
-    ), expected_head_record_shape in active_control_rows:
-        execution_seed = seed + row_index
+    for _row_index, case, expected_head_record_shape in active_control_rows:
+        subject_id = case.subject_id
+        control_class_name = case.control_class_name
+        classification = str(case.classification)
+        semantic_probes = frozenset(case.semantic_probes)
+        execution_seed = execution_seed_for_case(seed, case)
         errors: list[dict[str, str]] = []
         if source_preparation_record is not None:
             errors.append(source_preparation_record)
@@ -5085,6 +5057,8 @@ def run_portable_mutation_evidence(
                     "pre-execution", source_preparation_error
                 ),
                 "control": control_class_name,
+                "execution_case_id": case.execution_case_id,
+                "probe_id": case.probe_id,
                 "execution_seed": execution_seed,
                 "enabled_semantic_probes": sorted(semantic_probes),
             }
@@ -5097,6 +5071,8 @@ def run_portable_mutation_evidence(
                 control_class_name,
                 semantic_probes,
                 stage="pre-execution",
+                execution_case_id=case.execution_case_id,
+                probe_id=case.probe_id,
                 execution_seed=execution_seed,
                 runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
@@ -5220,6 +5196,8 @@ def run_portable_mutation_evidence(
                 control_class_name,
                 semantic_probes,
                 stage="post-execution",
+                execution_case_id=case.execution_case_id,
+                probe_id=case.probe_id,
                 execution_seed=execution_seed,
                 runtime_import_cache_contract_digest=(
                     runtime_import_cache_baseline_digest
@@ -5300,6 +5278,8 @@ def run_portable_mutation_evidence(
                     control_report,
                     control_class_name=control_class_name,
                     expected_candidate=expected_candidate,
+                    execution_case_id=case.execution_case_id,
+                    probe_id=case.probe_id,
                     execution_seed=execution_seed,
                     execution_binding=execution_binding,
                     execution_binding_error=binding_error,
@@ -5377,6 +5357,8 @@ def run_portable_mutation_evidence(
         decision_record = {
             "runner_protocol": RUNNER_PROTOCOL,
             "decision_kind": "specificity-observation",
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
             "classification": classification,
             "report_available": report_transcript is not None,
             "harness_stable_during_execution": harness_stable,
@@ -5396,6 +5378,8 @@ def run_portable_mutation_evidence(
             {
                 "runner_protocol": RUNNER_PROTOCOL,
                 "decision_kind": "specificity_pass",
+                "execution_case_id": case.execution_case_id,
+                "probe_id": case.probe_id,
                 "candidate": report_transcript["candidate"],
                 "classification": classification,
                 "source_record_payload_digest": digest_json(source_record),
@@ -5418,6 +5402,8 @@ def run_portable_mutation_evidence(
         record_kwargs = {
             "subject_id": subject_id,
             "subject_kind": SubjectKind.SPECIFICITY_CONTROL,
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
             "execution_seed": execution_seed,
             "outcome": outcome,
             "actual_gate": None,
@@ -5468,7 +5454,7 @@ def run_portable_mutation_evidence(
                 )
         builder.add_record(**record_kwargs)
 
-    # The builder recomputes the partial matrix and closes every raw digest.
+    # The builder recomputes the complete execution-case matrix and closes every raw digest.
     # Its protocol deliberately retains fixed E002/E003 PRE-FREEZE blockers.
     return builder.finalize()
 

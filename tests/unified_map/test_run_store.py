@@ -22,6 +22,12 @@ from prototype.unified_map.mutation_evidence import (
     MutationEvidenceBuilder,
     MutationEvidenceBundle,
 )
+from prototype.unified_map.mutation_matrix import (
+    PORTABLE_EXECUTION_CASES,
+    ObservationOutcome,
+    SubjectKind,
+    execution_seed_for_case,
+)
 from prototype.unified_map.run_store import (
     AppendOnlyRunWriter,
     CrashEvidenceRecord,
@@ -94,7 +100,7 @@ def _mutation_bundle(run_id: str, *, base_seed: int = 100) -> MutationEvidenceBu
         utility_digest=digest_bytes(b"run-store-mutation-utility"),
     )
     delta = VisibleDelta(advance_to=1)
-    return MutationEvidenceBuilder(
+    builder = MutationEvidenceBuilder(
         run_id=run_id,
         runner_protocol=TEST_MUTATION_RUNNER_PROTOCOL,
         base_seed=base_seed,
@@ -122,7 +128,85 @@ def _mutation_bundle(run_id: str, *, base_seed: int = 100) -> MutationEvidenceBu
             ),
             "source_preparation_error": None,
         },
-    ).finalize()
+    )
+    for case in PORTABLE_EXECUTION_CASES:
+        execution_seed = execution_seed_for_case(base_seed, case)
+        unavailable = {
+            "protocol": "ucm-portable-source-witness-unavailable/1",
+            "stage": "pre-execution",
+            "exception_type": "builtins.LookupError",
+            "control": case.control_class_name,
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
+            "execution_seed": execution_seed,
+            "enabled_semantic_probes": list(case.semantic_probes),
+        }
+        invocation_digest = digest_json([])
+        decision = {
+            "runner_protocol": TEST_MUTATION_RUNNER_PROTOCOL,
+            "decision_kind": (
+                "mutant-observation"
+                if case.subject_kind is SubjectKind.MUTANT
+                else "specificity-observation"
+            ),
+            "execution_case_id": case.execution_case_id,
+            "probe_id": case.probe_id,
+            "report_available": False,
+            "harness_stable_during_execution": False,
+            "execution_binding_complete": False,
+            "derived_outcome": "crashed",
+            "input_preimage_digest": builder.input_preimage_digest,
+            "invocation_transcript_digest": invocation_digest,
+        }
+        if case.subject_kind is SubjectKind.MUTANT:
+            decision.update(
+                {
+                    "expected_gate": case.expected_gate,
+                    "expected_failure_code": case.expected_failure_code,
+                    "harness_incomplete": True,
+                    "decision_processing_complete": False,
+                    "actual_gate": None,
+                    "actual_failure_code": None,
+                }
+            )
+        else:
+            decision.update(
+                {
+                    "classification": case.classification,
+                    "probe_incomplete": True,
+                    "report_processing_complete": False,
+                    "semantic_equivalence_passed": None,
+                }
+            )
+        builder.add_record(
+            subject_id=case.subject_id,
+            subject_kind=case.subject_kind,
+            execution_case_id=case.execution_case_id,
+            probe_id=case.probe_id,
+            execution_seed=execution_seed,
+            outcome=ObservationOutcome.CRASHED,
+            actual_gate=None,
+            actual_failure_code=None,
+            classification=case.classification,
+            pre_source_witness=unavailable,
+            post_source_witness={**unavailable, "stage": "post-execution"},
+            source_record={},
+            report_transcript=None,
+            error_transcript={
+                "runner_protocol": TEST_MUTATION_RUNNER_PROTOCOL,
+                "status": "error",
+                "errors": [
+                    {
+                        "stage": "candidate-evaluation",
+                        "exception_type": "builtins.LookupError",
+                        "message": "unit-test unavailable execution case",
+                    }
+                ],
+            },
+            decision_record=decision,
+            decisive_record=None,
+        )
+    return builder.finalize()
 
 
 def manifest(

@@ -570,6 +570,7 @@ def _mutation_evidence_observations(
         ObservationOutcome,
         SubjectKind,
         evaluate_mutation_matrix,
+        portable_execution_case,
     )
     from .run_store import MUTATION_EVIDENCE_PATH, validate_run_id
 
@@ -600,18 +601,17 @@ def _mutation_evidence_observations(
     # producer-supplied summary fields as freeze observations.
     report = evaluate_mutation_matrix(bundle.observations)
     bundle_wire = bundle.to_wire()
-    mutant_specs = {row.mutant_id: row for row in MUTANT_SPECS}
     wrong_gate_kills: list[str] = []
     for row in bundle.observations:
         if row.subject_kind is not SubjectKind.MUTANT:
             continue
-        spec = mutant_specs[row.subject_id]
+        case = portable_execution_case(row.execution_case_id)
         if row.outcome is ObservationOutcome.KILLED and not (
-            row.actual_gate in spec.expected_gates
-            and row.actual_failure_code in spec.expected_failure_codes
+            row.actual_gate == case.expected_gate
+            and row.actual_failure_code == case.expected_failure_code
             and row.decisive_record_digest is not None
         ):
-            wrong_gate_kills.append(f"{row.subject_id}:{row.execution_seed}")
+            wrong_gate_kills.append(row.execution_case_id)
 
     return witnessed.digest, {
         "bundle-artifact-digest": witnessed.digest,
@@ -1326,7 +1326,7 @@ DEFAULT_AXIS_CONTRACTS = (
     _contract(
         "mutation_matrix",
         "Real C01--C33 mutant kills and four specificity controls with decisive records.",
-        "ucm.mutation-matrix-auditor/v1",
+        "ucm.mutation-matrix-auditor/v2",
         (
             "prototype/unified_map/compliance.py",
             "prototype/unified_map/mutation_evidence.py",

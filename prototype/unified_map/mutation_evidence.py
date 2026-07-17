@@ -7,7 +7,7 @@ canonicalizes those preimages, stores them in a content-addressed blob table,
 and emits a closed bundle whose mutation matrix is recomputed from the typed
 observations.
 
-Protocol version 2 is intentionally PRE-FREEZE.  Portable Python isolation and
+Protocol version 3 is intentionally PRE-FREEZE.  Portable Python isolation and
 external evidence custody are not complete, so every bundle carries fixed
 ``UCM-E002`` and ``UCM-E003`` blockers.  Those fields are code-owned and cannot
 be cleared by a caller.
@@ -18,7 +18,7 @@ from __future__ import annotations
 import base64
 import json
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from .canonical import (
@@ -41,12 +41,19 @@ from .candidate_protocol import (
     response_from_wire,
 )
 from .mutation_matrix import (
+    EXECUTION_CASE_SEED_STRIDE,
     GATE_SPECS,
+    PORTABLE_EXECUTION_CASES,
+    PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS as _PORTABLE_SEMANTIC_PROBE_PROTOCOL,
     REGISTRY_DIGEST,
+    UPDATE_CONSISTENCY_LINEAGE_XOR_MASK,
     MutationObservation,
     ObservationOutcome,
     SubjectKind,
+    _validate_base_seed_execution_domain,
     evaluate_mutation_matrix,
+    portable_execution_case,
+    portable_runner_contract,
 )
 from .schema import (
     DiagnosisQuery,
@@ -57,16 +64,16 @@ from .schema import (
 )
 
 
-MUTATION_EVIDENCE_PROTOCOL = "ucm-mutation-evidence-bundle/2"
-MUTATION_EXECUTION_CONTEXT_PROTOCOL = "ucm-mutation-execution-context/2"
+MUTATION_EVIDENCE_PROTOCOL = "ucm-mutation-evidence-bundle/3"
+MUTATION_EXECUTION_CONTEXT_PROTOCOL = "ucm-mutation-execution-context/3"
 MUTATION_INPUT_PREIMAGE_PROTOCOL = "ucm-mutation-input-preimage/2"
-MUTATION_PRE_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-pre-source-witness/1"
-MUTATION_POST_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-post-source-witness/1"
-MUTATION_SOURCE_RECORD_PROTOCOL = "ucm-mutation-source-record/1"
-MUTATION_REPORT_TRANSCRIPT_PROTOCOL = "ucm-mutation-report-transcript/2"
-MUTATION_ERROR_TRANSCRIPT_PROTOCOL = "ucm-mutation-error-transcript/1"
-MUTATION_DECISION_RECORD_PROTOCOL = "ucm-mutation-decision-record/2"
-MUTATION_DECISIVE_RECORD_PROTOCOL = "ucm-mutation-decisive-record/2"
+MUTATION_PRE_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-pre-source-witness/2"
+MUTATION_POST_SOURCE_WITNESS_PROTOCOL = "ucm-mutation-post-source-witness/2"
+MUTATION_SOURCE_RECORD_PROTOCOL = "ucm-mutation-source-record/2"
+MUTATION_REPORT_TRANSCRIPT_PROTOCOL = "ucm-mutation-report-transcript/3"
+MUTATION_ERROR_TRANSCRIPT_PROTOCOL = "ucm-mutation-error-transcript/2"
+MUTATION_DECISION_RECORD_PROTOCOL = "ucm-mutation-decision-record/3"
+MUTATION_DECISIVE_RECORD_PROTOCOL = "ucm-mutation-decisive-record/3"
 
 BENCHMARK_ID = "UCM-BENCHMARK-v1"
 PRE_FREEZE_STATUS = "PRE-FREEZE"
@@ -107,6 +114,8 @@ _REPORT_REQUIRED_FIELDS = frozenset(
         "runner_protocol",
         "control_class_name",
         "expected_candidate",
+        "execution_case_id",
+        "probe_id",
         "execution_seed",
         "candidate",
         "operational_state_closure",
@@ -214,6 +223,8 @@ _SOURCE_WITNESS_KEYS = frozenset(
     {
         "protocol",
         "control",
+        "execution_case_id",
+        "probe_id",
         "execution_seed",
         "control_mro",
         "source_identity_anchors",
@@ -276,6 +287,8 @@ _MUTANT_DECISION_KEYS = frozenset(
     {
         "runner_protocol",
         "decision_kind",
+        "execution_case_id",
+        "probe_id",
         "expected_gate",
         "expected_failure_code",
         "report_available",
@@ -294,6 +307,8 @@ _SPECIFICITY_DECISION_KEYS = frozenset(
     {
         "runner_protocol",
         "decision_kind",
+        "execution_case_id",
+        "probe_id",
         "classification",
         "report_available",
         "harness_stable_during_execution",
@@ -326,28 +341,7 @@ _FIXED_SCOPE_FINDINGS = frozenset(
         ),
     }
 )
-# This is the code-owned portable execution registry, not caller metadata.  The
-# full matrix registry remains bound separately by REGISTRY_DIGEST; these are
-# the rows for which mutation_runner has an executable compliance control.
-_PORTABLE_MUTATION_CONTRACTS = (
-    ("GlobalSecondState", "GlobalSecondStateControl", "C04", "UCM-F006-HIDDEN_PATIENT_CACHE", (), "replay_ddrr"),
-    ("FileHandleState", "FileHandleStateControl", "C07", "UCM-F008-STATE_NOT_CLOSED", (), "empty"),
-    ("RawHistoryHead", "RawHistoryHeadControl", "C02", "UCM-F004-HEAD_HISTORY_ACCESS", (), "empty"),
-    ("TrainerTargetSmuggler", "TrainerTargetSmugglerControl", "C08", "UCM-F002-ORACLE_TRUE_STATE_ACCESS", (), "empty"),
-    ("QueryReencoder", "QueryReencoderControl", "C02", "UCM-F004-HEAD_HISTORY_ACCESS", (), "empty"),
-    ("MutableCheckpoint", "MutableCheckpointControl", "C06", "UCM-F009-MODEL_MUTATION", (), "empty"),
-    ("TrueStateReader", "TrueStateReaderControl", "C08", "UCM-F002-ORACLE_TRUE_STATE_ACCESS", (), "empty"),
-    ("FutureReader", "FutureReaderControl", "C08", "UCM-F001-FUTURE_LEAK", (), "empty"),
-    ("CounterfactualMutator", "QueryMutatorControl", "C16", "UCM-F012-QUERY_MUTATES_FACT", (), "empty"),
-    ("ImplicitRNGState", "ImplicitRNGControl", "C30", "UCM-F020-NONREPRODUCIBLE", (), "replay_ddrr"),
-    ("HistoryInBlob", "HistoryInBlobControl", "C27", "UCM-F018-FULL_HISTORY_MISCLAIM", ("full_history_disclosure",), "replay_ddrr"),
-    ("WarmFutureCache", "WarmFutureCacheControl", "C23", "UCM-F001-FUTURE_LEAK", ("warm_future_old_cut",), "replay_ddrr"),
-    ("ReplayBatchDivergence", "ReplayBatchDivergenceControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
-    ("DoubleCountEvent", "DoubleCountEventControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
-    ("NonIdPointEstimate", "NonIdPointEstimateControl", "C19", "UCM-F015-CONDITIONING_AS_INTERVENTION", ("nonidentified_set",), "replay_ddrr"),
-    ("DangerousMeanCompressor", "DangerousMeanCompressorControl", "C24", "UCM-F016-DANGEROUS_COLLISION", ("dangerous_collision",), "replay_ddrr"),
-    ("UnsafeClosedWorld", "UnsafeClosedWorldControl", "C25", "UCM-F017-OOD_FORCED_MATCH", ("unsafe_closed_world",), "replay_ddrr"),
-)
+# Execution-case authority is defined below, after the canonical scalar helpers.
 # Empty head records mean that the candidate failed before a successful head
 # response could be materialized; they do not mean that an arbitrary prefix is
 # decisive evidence.  These are the exact live request stages reached by each
@@ -387,38 +381,6 @@ _EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES = {
         ("rollout", 2, "worker_error"),
     ),
 }
-_PORTABLE_SPECIFICITY_CONTRACTS = (
-    (
-        "ExplicitSeedStochasticState",
-        "HonestSeededControl",
-        "ordinary_candidate",
-        ("full_history_disclosure", "update_consistency", "warm_future_old_cut"),
-        "replay_ddrr",
-    ),
-    (
-        "BehaviorEquivalentSerialization",
-        "BehaviorEquivalentSerializationControl",
-        "ordinary_candidate",
-        ("update_consistency",),
-        "replay_ddrr",
-    ),
-    (
-        "DeclaredFullHistoryBaseline",
-        "DeclaredFullHistoryBaselineControl",
-        "baseline_only",
-        ("full_history_disclosure",),
-        "replay_ddrr",
-    ),
-    (
-        "CorrectNonidentifiedSet",
-        "CorrectNonidentifiedSetControl",
-        "ordinary_candidate",
-        ("nonidentified_set",),
-        "replay_ddrr",
-    ),
-)
-_PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/5"
-UPDATE_CONSISTENCY_LINEAGE_XOR_MASK = 0x6A09E667F3BCC909
 _SUBJECT_ENVELOPE_KEYS = frozenset(
     {
         "protocol",
@@ -426,6 +388,8 @@ _SUBJECT_ENVELOPE_KEYS = frozenset(
         "execution_context_digest",
         "subject_id",
         "subject_kind",
+        "execution_case_id",
+        "probe_id",
         "execution_seed",
         "references",
         "payload",
@@ -536,195 +500,28 @@ def _portable_subject_identity(
     tuple[str, ...],
     str,
 ]:
-    rows: list[
-        tuple[
-            str,
-            str,
-            str,
-            int,
-            str | None,
-            str | None,
-            str | None,
-            tuple[str, ...],
-            str,
-        ]
-    ] = []
-    rows.extend(
-        (
-            "mutant",
-            subject_id,
-            control,
-            index,
-            None,
-            gate,
-            code,
-            probes,
-            head_record_shape,
-        )
-        for index, (
-            subject_id,
-            control,
-            gate,
-            code,
-            probes,
-            head_record_shape,
-        ) in enumerate(
-            _PORTABLE_MUTATION_CONTRACTS
-        )
-    )
-    rows.extend(
-        (
-            "specificity_control",
-            subject_id,
-            control,
-            len(_PORTABLE_MUTATION_CONTRACTS) + index,
-            classification,
-            None,
-            None,
-            probes,
-            head_record_shape,
-        )
-        for index, (
-            subject_id,
-            control,
-            classification,
-            probes,
-            head_record_shape,
-        ) in enumerate(
-            _PORTABLE_SPECIFICITY_CONTRACTS
-        )
-    )
-    matches = [
-        (
-            control,
-            row_index,
-            classification,
-            gate,
-            code,
-            probes,
-            head_record_shape,
-        )
-        for (
-            subject_kind,
-            subject_id,
-            control,
-            row_index,
-            classification,
-            gate,
-            code,
-            probes,
-            head_record_shape,
-        ) in rows
-        if (subject_kind, subject_id)
-        == (observation.subject_kind.value, observation.subject_id)
-    ]
-    if len(matches) != 1:
+    """Resolve an observation exclusively through the matrix-owned registry."""
+
+    case = portable_execution_case(observation.execution_case_id)
+    if (
+        observation.probe_id != case.probe_id
+        or observation.subject_kind is not case.subject_kind
+        or observation.subject_id != case.subject_id
+    ):
         raise ProtocolViolation(
-            "mutation evidence subject is not in the code-owned portable registry"
+            "mutation observation differs from its code-owned execution case"
         )
-    (
-        control,
-        row_index,
-        classification,
-        gate,
-        code,
-        probes,
-        head_record_shape,
-    ) = matches[0]
+    control = case.control_class_name
     return (
         control,
         f"prototype.unified_map.compliance:{control}",
-        row_index,
-        classification,
-        gate,
-        code,
-        probes,
-        head_record_shape,
+        case.execution_ordinal,
+        case.classification,
+        case.expected_gate,
+        case.expected_failure_code,
+        case.semantic_probes,
+        case.head_record_shape,
     )
-
-
-def portable_runner_contract(runner_protocol: str) -> dict[str, Any]:
-    """Return the code-owned full portable registry for execution context binding."""
-
-    _name(runner_protocol, "portable runner contract runner_protocol")
-    return {
-        "runner_protocol": runner_protocol,
-        "runner_semantic_probe_protocol_alias": _PORTABLE_SEMANTIC_PROBE_PROTOCOL,
-        "update_consistency_lineage_xor_mask": (
-            UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
-        ),
-        "mutation_cases": [
-            {
-                "matrix_subject_id": subject_id,
-                "control_class_name": control,
-                "decisive_gate": gate,
-                "expected_failure_code": failure_code,
-                "semantic_probes": list(probes),
-                "head_record_shape": head_record_shape,
-            }
-            for (
-                subject_id,
-                control,
-                gate,
-                failure_code,
-                probes,
-                head_record_shape,
-            ) in _PORTABLE_MUTATION_CONTRACTS
-        ],
-        "specificity_cases": [
-            {
-                "subject_id": subject_id,
-                "control_class_name": control,
-                "classification": classification,
-                "semantic_probes": list(probes),
-                "head_record_shape": head_record_shape,
-            }
-            for (
-                subject_id,
-                control,
-                classification,
-                probes,
-                head_record_shape,
-            ) in _PORTABLE_SPECIFICITY_CONTRACTS
-        ],
-    }
-
-
-def _validate_base_seed_execution_domain(base_seed: object, label: str) -> int:
-    """Mirror every code-owned portable row's uint64 seed preconditions."""
-
-    checked_base_seed = _seed(base_seed, label)
-    row_profiles = tuple(
-        (index, probes)
-        for index, (*_identity, probes, _head_record_shape) in enumerate(
-            _PORTABLE_MUTATION_CONTRACTS
-        )
-    ) + tuple(
-        (len(_PORTABLE_MUTATION_CONTRACTS) + index, probes)
-        for index, (*_identity, probes, _head_record_shape) in enumerate(
-            _PORTABLE_SPECIFICITY_CONTRACTS
-        )
-    )
-    for row_index, semantic_probes in row_profiles:
-        execution_seed = checked_base_seed + row_index
-        if execution_seed + 3 >= 2**64:
-            raise ProtocolViolation(
-                f"{label} and all code-owned derived operation seeds must fit "
-                "unsigned 64-bit integer"
-            )
-        if (
-            "update_consistency" in semantic_probes
-            and (
-                execution_seed ^ UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
-            )
-            + 2
-            >= 2**64
-        ):
-            raise ProtocolViolation(
-                f"{label} code-owned update-consistency lineage seeds must fit "
-                "unsigned 64-bit integer"
-            )
-    return checked_base_seed
 
 
 def _decode_canonical_json(payload: bytes, label: str) -> dict[str, Any]:
@@ -807,6 +604,8 @@ def _observation_from_wire(value: object) -> MutationObservation:
             {
                 "subject_id",
                 "subject_kind",
+                "execution_case_id",
+                "probe_id",
                 "source_digest",
                 "execution_seed",
                 "outcome",
@@ -826,6 +625,8 @@ def _observation_from_wire(value: object) -> MutationObservation:
     return MutationObservation(
         subject_id=body["subject_id"],
         subject_kind=subject_kind,
+        execution_case_id=body["execution_case_id"],
+        probe_id=body["probe_id"],
         source_digest=body["source_digest"],
         execution_seed=body["execution_seed"],
         outcome=outcome,
@@ -964,14 +765,10 @@ class MutationEvidenceRecord:
         )
 
 
-def _record_sort_key(record: MutationEvidenceRecord) -> tuple[str, str, int, str]:
+def _record_sort_key(record: MutationEvidenceRecord) -> tuple[int, str]:
     row = record.observation
-    return (
-        row.subject_kind.value,
-        row.subject_id,
-        row.execution_seed,
-        row.source_digest,
-    )
+    case = portable_execution_case(row.execution_case_id)
+    return (case.execution_ordinal, row.execution_case_id)
 
 
 def _subject_envelope(
@@ -981,6 +778,8 @@ def _subject_envelope(
     execution_context_digest: str,
     subject_id: str,
     subject_kind: SubjectKind,
+    execution_case_id: str,
+    probe_id: str,
     execution_seed: int,
     references: dict[str, Any],
     payload: Any,
@@ -995,6 +794,8 @@ def _subject_envelope(
         "execution_context_digest": execution_context_digest,
         "subject_id": subject_id,
         "subject_kind": subject_kind.value,
+        "execution_case_id": execution_case_id,
+        "probe_id": probe_id,
         "execution_seed": execution_seed,
         "references": references,
         "payload": payload,
@@ -1020,6 +821,8 @@ def _validate_subject_blob(
         "execution_context_digest": record.execution_context_digest,
         "subject_id": record.observation.subject_id,
         "subject_kind": record.observation.subject_kind.value,
+        "execution_case_id": record.observation.execution_case_id,
+        "probe_id": record.observation.probe_id,
         "execution_seed": record.observation.execution_seed,
     }
     for key, value in expected.items():
@@ -1175,6 +978,7 @@ def _validate_request_records(
     delta: VisibleDelta | None,
     execution_seed: int,
     expected_subject_id: str,
+    expected_execution_case_id: str,
     expected_failure_code: str | None,
     expected_semantic_probes: tuple[str, ...],
     expected_head_record_shape: str,
@@ -1219,14 +1023,12 @@ def _validate_request_records(
         for start, end in evaluator_ranges.values()
         for index in range(start, end)
     )
-    matching_control_names = [
-        row[1]
-        for row in (*_PORTABLE_MUTATION_CONTRACTS, *_PORTABLE_SPECIFICITY_CONTRACTS)
-        if row[0] == expected_subject_id
-    ]
-    if len(matching_control_names) != 1:
-        raise ProtocolViolation("request transcript subject has no unique control")
-    expected_control_class_name = matching_control_names[0]
+    expected_case = portable_execution_case(expected_execution_case_id)
+    if expected_case.subject_id != expected_subject_id:
+        raise ProtocolViolation(
+            "request transcript execution case differs from its subject"
+        )
+    expected_control_class_name = expected_case.control_class_name
     decisive = observation_outcome in {
         ObservationOutcome.KILLED,
         ObservationOutcome.PASSED,
@@ -1915,7 +1717,10 @@ def _validate_request_records(
             )
 
     def evaluator_probe_shape(probe: str) -> list[tuple[str, str, int]]:
-        if probe == "nonidentified_set":
+        if probe in {
+            "nonidentified_set",
+            "observation_channel_separation",
+        }:
             return [
                 ("fresh", Operation.INITIALIZE.value, execution_seed),
                 ("fresh", Operation.INITIALIZE.value, execution_seed),
@@ -2121,6 +1926,13 @@ def _validate_request_records(
                     "killed transcript worker_error must be one terminal record "
                     "with the code-owned decisive failure code"
                 )
+        if len(evaluator_probe_order) > 1:
+            raise ProtocolViolation(
+                "one killed execution case cannot own multiple evaluator probes"
+            )
+        evaluator_kill_probe = (
+            evaluator_probe_order[0] if evaluator_probe_order else None
+        )
         comparison_failure = (
             expected_failure_code == "UCM-F006-HIDDEN_PATIENT_CACHE"
             or (
@@ -2129,12 +1941,7 @@ def _validate_request_records(
             )
             or expected_failure_code == "UCM-F019-UPDATE_INCONSISTENT"
             or expected_failure_code == "UCM-F020-NONREPRODUCIBLE"
-            or expected_failure_code
-            in {
-                "UCM-F015-CONDITIONING_AS_INTERVENTION",
-                "UCM-F016-DANGEROUS_COLLISION",
-                "UCM-F017-OOD_FORCED_MATCH",
-            }
+            or evaluator_kill_probe is not None
         )
         if expected_head_record_shape == "replay_ddrr":
             if fresh_main_sequence != expected_fresh_main_sequence:
@@ -2194,16 +2001,8 @@ def _validate_request_records(
                 )
             main_state_wire = fresh_main_records[2]["request_wire"]["state"]
             killed_suffix = value[main_length:]
-            if expected_failure_code in {
-                "UCM-F015-CONDITIONING_AS_INTERVENTION",
-                "UCM-F016-DANGEROUS_COLLISION",
-                "UCM-F017-OOD_FORCED_MATCH",
-            }:
-                probe = {
-                    "UCM-F015-CONDITIONING_AS_INTERVENTION": "nonidentified_set",
-                    "UCM-F016-DANGEROUS_COLLISION": "dangerous_collision",
-                    "UCM-F017-OOD_FORCED_MATCH": "unsafe_closed_world",
-                }[expected_failure_code]
+            if evaluator_kill_probe is not None:
+                probe = evaluator_kill_probe
                 require_exact_shape(
                     killed_suffix,
                     evaluator_probe_shape(probe)
@@ -2521,7 +2320,7 @@ def _validate_decisive_source_witness(
     execution_context_payload: dict[str, Any],
 ) -> None:
     witness = _closed_object(witness, _SOURCE_WITNESS_KEYS, label)
-    if witness["protocol"] != "ucm-portable-control-source-binding/18":
+    if witness["protocol"] != "ucm-portable-control-source-binding/20":
         raise ProtocolViolation(f"{label} protocol mismatch")
     if witness["control"] != expected_control:
         raise ProtocolViolation(f"{label} control identity mismatch")
@@ -2592,11 +2391,13 @@ def _validate_record_semantics(
         expected_semantic_probes,
         expected_head_record_shape,
     ) = _portable_subject_identity(observation)
-    expected_execution_seed = expected_base_seed + row_index
+    expected_execution_seed = (
+        expected_base_seed + row_index * EXECUTION_CASE_SEED_STRIDE
+    )
     _seed(expected_execution_seed, "code-owned subject execution_seed")
     if observation.execution_seed != expected_execution_seed:
         raise ProtocolViolation(
-            "observation execution_seed differs from base_seed plus code-owned row index"
+            "observation execution_seed differs from its code-owned execution-case slot"
         )
     if observation.classification != expected_classification:
         raise ProtocolViolation(
@@ -2621,6 +2422,13 @@ def _validate_record_semantics(
         ("pre-source witness", pre),
         ("post-source witness", post),
     ):
+        if (
+            witness.get("execution_case_id") != observation.execution_case_id
+            or witness.get("probe_id") != observation.probe_id
+        ):
+            raise ProtocolViolation(
+                f"{label} execution-case/probe identity mismatch"
+            )
         if witness.get("control") != expected_control:
             raise ProtocolViolation(
                 f"{label} control differs from the code-owned subject mapping"
@@ -2638,6 +2446,11 @@ def _validate_record_semantics(
                 f"{label} candidate differs from the code-owned subject mapping"
             )
     decision = _payload_object(decision_body, "decision record")
+    if (
+        decision.get("execution_case_id") != observation.execution_case_id
+        or decision.get("probe_id") != observation.probe_id
+    ):
+        raise ProtocolViolation("decision record execution-case/probe mismatch")
     if decision.get("derived_outcome") != observation.outcome.value:
         raise ProtocolViolation(
             "decision record derived_outcome differs from typed observation"
@@ -2802,6 +2615,11 @@ def _validate_record_semantics(
             )
         if retained_report["runner_protocol"] != expected_runner_protocol:
             raise ProtocolViolation("report runner_protocol differs from bundle runner")
+        if (
+            retained_report["execution_case_id"] != observation.execution_case_id
+            or retained_report["probe_id"] != observation.probe_id
+        ):
+            raise ProtocolViolation("report execution-case/probe identity mismatch")
         if retained_report["input_preimage_digest"] != input_preimage_digest:
             raise ProtocolViolation("report input_preimage_digest binding mismatch")
         retained_invocation_digest, _, _ = _validate_request_records(
@@ -2813,6 +2631,7 @@ def _validate_record_semantics(
             delta=input_delta,
             execution_seed=observation.execution_seed,
             expected_subject_id=observation.subject_id,
+            expected_execution_case_id=observation.execution_case_id,
             expected_failure_code=expected_failure_code,
             expected_semantic_probes=expected_semantic_probes,
             expected_head_record_shape=expected_head_record_shape,
@@ -2879,6 +2698,11 @@ def _validate_record_semantics(
         )
     if report["runner_protocol"] != expected_runner_protocol:
         raise ProtocolViolation("report runner_protocol differs from bundle runner")
+    if (
+        report["execution_case_id"] != observation.execution_case_id
+        or report["probe_id"] != observation.probe_id
+    ):
+        raise ProtocolViolation("report execution-case/probe identity mismatch")
     if report["input_preimage_digest"] != input_preimage_digest:
         raise ProtocolViolation("report input_preimage_digest binding mismatch")
     if (
@@ -3168,6 +2992,7 @@ def _validate_record_semantics(
         delta=input_delta,
         execution_seed=observation.execution_seed,
         expected_subject_id=observation.subject_id,
+        expected_execution_case_id=observation.execution_case_id,
         expected_failure_code=expected_failure_code,
         expected_semantic_probes=expected_semantic_probes,
         expected_head_record_shape=expected_head_record_shape,
@@ -3242,6 +3067,11 @@ def _validate_record_semantics(
     if decision.get("execution_binding_complete") is not True:
         raise ProtocolViolation("decisive decision lacks complete execution binding")
     decisive = _payload_object(decisive_body, "decisive record")
+    if (
+        decisive.get("execution_case_id") != observation.execution_case_id
+        or decisive.get("probe_id") != observation.probe_id
+    ):
+        raise ProtocolViolation("decisive record execution-case/probe mismatch")
     if decisive.get("input_preimage_digest") != input_preimage_digest:
         raise ProtocolViolation("decisive input_preimage_digest binding mismatch")
     if decisive.get("invocation_transcript_digest") != invocation_transcript_digest:
@@ -3271,6 +3101,8 @@ def _validate_record_semantics(
                 {
                     "runner_protocol",
                     "decision_kind",
+                    "execution_case_id",
+                    "probe_id",
                     "candidate",
                     "finding",
                     "source_record_payload_digest",
@@ -3307,11 +3139,11 @@ def _validate_record_semantics(
         matches = [
             item
             for item in code_matches
-            if observation.actual_gate in _finding_gate_tokens(item.get("gate"))
+            if item.get("gate") == observation.probe_id
         ]
         if len(matches) != 1:
             raise ProtocolViolation(
-                "killed observation is not derived from one matching report finding"
+                "killed observation is not derived from its exact probe finding"
             )
         finding_evidence = matches[0]["evidence"]
         if observation.actual_failure_code == "UCM-F019-UPDATE_INCONSISTENT":
@@ -3365,14 +3197,18 @@ def _validate_record_semantics(
                     "UCM-F001 finding evidence differs from actual old-cut "
                     "semantic/raw responses"
                 )
-        evaluator_probe_by_code = {
-            "UCM-F015-CONDITIONING_AS_INTERVENTION": "nonidentified_set",
-            "UCM-F016-DANGEROUS_COLLISION": "dangerous_collision",
-            "UCM-F017-OOD_FORCED_MATCH": "unsafe_closed_world",
-        }
-        evaluator_probe = evaluator_probe_by_code.get(
-            observation.actual_failure_code
+        from . import compliance as compliance_module
+
+        evaluator_probes = tuple(
+            probe
+            for probe in expected_semantic_probes
+            if probe in compliance_module.EVALUATOR_PROBE_REQUEST_COUNTS
         )
+        if len(evaluator_probes) > 1:
+            raise ProtocolViolation(
+                "one killed execution case cannot own multiple evaluator artifacts"
+            )
+        evaluator_probe = evaluator_probes[0] if evaluator_probes else None
         if evaluator_probe is not None:
             actual_artifact = actual_probe_evidence.get(evaluator_probe)
             if type(actual_artifact) is not dict or _canonical_bytes(
@@ -3422,6 +3258,8 @@ def _validate_record_semantics(
                 {
                     "runner_protocol",
                     "decision_kind",
+                    "execution_case_id",
+                    "probe_id",
                     "candidate",
                     "classification",
                     "source_record_payload_digest",
@@ -3534,6 +3372,11 @@ class MutationEvidenceBundle:
     matrix_blob_digest: str
     records: tuple[MutationEvidenceRecord, ...]
     blobs: tuple[ContentAddressedBlob, ...]
+    _require_complete_registry: bool = field(
+        default=True,
+        repr=False,
+        compare=False,
+    )
 
     def __post_init__(self) -> None:
         _name(self.run_id, "bundle run_id")
@@ -3553,18 +3396,32 @@ class MutationEvidenceBundle:
             type(blob) is not ContentAddressedBlob for blob in self.blobs
         ):
             raise ProtocolViolation("bundle blobs must be an exact typed tuple")
+        if type(self._require_complete_registry) is not bool:
+            raise ProtocolViolation(
+                "bundle complete-registry policy must be an exact bool"
+            )
         if self.records != tuple(sorted(self.records, key=_record_sort_key)):
             raise ProtocolViolation("bundle records are not canonically sorted")
         record_identities = tuple(
-            (
-                record.observation.subject_kind.value,
-                record.observation.subject_id,
-                record.observation.execution_seed,
-            )
+            record.observation.execution_case_id
             for record in self.records
         )
         if len(record_identities) != len(set(record_identities)):
-            raise ProtocolViolation("bundle contains duplicate subject execution identity")
+            raise ProtocolViolation("bundle contains duplicate execution_case_id")
+        expected_case_ids = {
+            case.execution_case_id for case in PORTABLE_EXECUTION_CASES
+        }
+        actual_case_ids = set(record_identities)
+        unknown_case_ids = actual_case_ids - expected_case_ids
+        if unknown_case_ids:
+            raise ProtocolViolation(
+                f"bundle contains unknown execution cases: {sorted(unknown_case_ids)!r}"
+            )
+        if self._require_complete_registry and actual_case_ids != expected_case_ids:
+            raise ProtocolViolation(
+                "bundle execution-case inventory is incomplete; "
+                f"missing={sorted(expected_case_ids - actual_case_ids)!r}"
+            )
         if self.blobs != tuple(sorted(self.blobs, key=lambda blob: blob.digest)):
             raise ProtocolViolation("bundle blobs are not canonically digest-sorted")
         blob_digests = tuple(blob.digest for blob in self.blobs)
@@ -3710,6 +3567,24 @@ class MutationEvidenceBundle:
             input_digest,
             self.matrix_blob_digest,
         }
+        cross_case_invocation_nonces: dict[str, str] = {}
+        cross_case_executor_receipts: dict[str, str] = {}
+        cross_case_transcript_digests: dict[str, str] = {}
+
+        def claim_cross_case_identity(
+            owners: dict[str, str],
+            value: object,
+            *,
+            execution_case_id: str,
+            label: str,
+        ) -> None:
+            identity = _name(value, label)
+            previous = owners.setdefault(identity, execution_case_id)
+            if previous != execution_case_id:
+                raise ProtocolViolation(
+                    f"bundle reuses {label} across execution cases"
+                )
+
         for record in self.records:
             if record.run_id != self.run_id:
                 raise ProtocolViolation("record run_id differs from bundle run_id")
@@ -3828,6 +3703,42 @@ class MutationEvidenceBundle:
                 decision_body=subject_blobs["decision_record_digest"],
                 decisive_body=decisive_body,
             )
+            if report_body is not None:
+                report_payload = _payload_object(
+                    report_body, "cross-case report transcript"
+                )
+                request_records = report_payload.get("request_records")
+                if type(request_records) is not list:
+                    raise ProtocolViolation(
+                        "cross-case report request_records must be a list"
+                    )
+                # The canonical empty transcript is a shared value, not an
+                # executed resource identity.  Only a non-empty invocation
+                # transcript can prove (or improperly reuse) actual dispatch.
+                if request_records:
+                    claim_cross_case_identity(
+                        cross_case_transcript_digests,
+                        report_payload.get("invocation_transcript_digest"),
+                        execution_case_id=record.observation.execution_case_id,
+                        label="invocation transcript digest",
+                    )
+                for request_record in request_records:
+                    if type(request_record) is not dict:
+                        raise ProtocolViolation(
+                            "cross-case request record must be an object"
+                        )
+                    claim_cross_case_identity(
+                        cross_case_invocation_nonces,
+                        request_record.get("invocation_nonce"),
+                        execution_case_id=record.observation.execution_case_id,
+                        label="invocation nonce",
+                    )
+                    claim_cross_case_identity(
+                        cross_case_executor_receipts,
+                        request_record.get("executor_receipt"),
+                        execution_case_id=record.observation.execution_case_id,
+                        label="executor receipt",
+                    )
 
         matrix_payload = blob_map.get(self.matrix_blob_digest)
         if matrix_payload is None:
@@ -3846,6 +3757,10 @@ class MutationEvidenceBundle:
             )
 
     def _body(self) -> dict[str, Any]:
+        if not self._require_complete_registry:
+            raise ProtocolViolation(
+                "incomplete validation fragment cannot be serialized as a mutation evidence bundle"
+            )
         return {
             "protocol": MUTATION_EVIDENCE_PROTOCOL,
             "status": PRE_FREEZE_STATUS,
@@ -3947,12 +3862,18 @@ class MutationEvidenceBuilder:
         base_seed: int,
         input_preimage: Any,
         execution_context: Any,
+        require_complete_registry: bool = True,
     ) -> None:
         self.run_id = _name(run_id, "builder run_id")
         self.runner_protocol = _name(runner_protocol, "builder runner_protocol")
         self.base_seed = _validate_base_seed_execution_domain(
             base_seed, "builder base_seed"
         )
+        if type(require_complete_registry) is not bool:
+            raise ProtocolViolation(
+                "builder require_complete_registry must be an exact bool"
+            )
+        self._require_complete_registry = require_complete_registry
         self._blobs: dict[str, ContentAddressedBlob] = {}
         self._records: list[MutationEvidenceRecord] = []
         self._sealed = False
@@ -4009,6 +3930,8 @@ class MutationEvidenceBuilder:
         protocol: str,
         subject_id: str,
         subject_kind: SubjectKind,
+        execution_case_id: str,
+        probe_id: str,
         execution_seed: int,
         references: dict[str, Any],
         payload: Any,
@@ -4020,6 +3943,8 @@ class MutationEvidenceBuilder:
                 execution_context_digest=self.execution_context_digest,
                 subject_id=subject_id,
                 subject_kind=subject_kind,
+                execution_case_id=execution_case_id,
+                probe_id=probe_id,
                 execution_seed=execution_seed,
                 references=references,
                 payload=payload,
@@ -4031,6 +3956,8 @@ class MutationEvidenceBuilder:
         *,
         subject_id: str,
         subject_kind: SubjectKind,
+        execution_case_id: str,
+        probe_id: str,
         execution_seed: int,
         outcome: ObservationOutcome,
         actual_gate: str | None,
@@ -4046,6 +3973,8 @@ class MutationEvidenceBuilder:
     ) -> MutationEvidenceRecord:
         self._ensure_open()
         _name(subject_id, "builder subject_id")
+        _name(execution_case_id, "builder execution_case_id")
+        _name(probe_id, "builder probe_id")
         if type(subject_kind) is not SubjectKind:
             raise ProtocolViolation("builder subject_kind must be SubjectKind")
         _seed(execution_seed, "builder execution_seed")
@@ -4062,6 +3991,8 @@ class MutationEvidenceBuilder:
         identity = {
             "subject_id": subject_id,
             "subject_kind": subject_kind,
+            "execution_case_id": execution_case_id,
+            "probe_id": probe_id,
             "execution_seed": execution_seed,
         }
         pre_digest = self._add_subject_blob(
@@ -4143,6 +4074,8 @@ class MutationEvidenceBuilder:
         observation = MutationObservation(
             subject_id=subject_id,
             subject_kind=subject_kind,
+            execution_case_id=execution_case_id,
+            probe_id=probe_id,
             source_digest=source_digest,
             execution_seed=execution_seed,
             outcome=outcome,
@@ -4162,17 +4095,12 @@ class MutationEvidenceBuilder:
             error_transcript_digest=error_digest,
             decision_record_digest=decision_digest,
         )
-        identity_key = (subject_kind.value, subject_id, execution_seed)
+        identity_key = execution_case_id
         if any(
-            (
-                existing.observation.subject_kind.value,
-                existing.observation.subject_id,
-                existing.observation.execution_seed,
-            )
-            == identity_key
+            existing.observation.execution_case_id == identity_key
             for existing in self._records
         ):
-            raise ProtocolViolation("builder contains duplicate subject execution identity")
+            raise ProtocolViolation("builder contains duplicate execution_case_id")
         self._records.append(record)
         return record
 
@@ -4194,6 +4122,7 @@ class MutationEvidenceBuilder:
             matrix_blob_digest=matrix_digest,
             records=records,
             blobs=tuple(sorted(self._blobs.values(), key=lambda blob: blob.digest)),
+            _require_complete_registry=self._require_complete_registry,
         )
 
 

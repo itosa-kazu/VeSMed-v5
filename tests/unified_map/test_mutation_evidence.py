@@ -31,19 +31,48 @@ from prototype.unified_map.mutation_evidence import (
     MutationEvidenceBundle,
 )
 from prototype.unified_map.mutation_matrix import (
+    EXECUTION_CASE_SEED_STRIDE,
+    PORTABLE_EXECUTION_CASES,
     MutationObservation,
     ObservationOutcome,
     SubjectKind,
     evaluate_mutation_matrix,
+    execution_seed_for_case,
 )
 from prototype.unified_map.state import CandidateStateInput
 
 
 TEST_RUNNER_PROTOCOL = "ucm-portable-mutation-runner/unit-test"
 TEST_BASE_SEED = 100
-RAW_HISTORY_SEED = TEST_BASE_SEED + 2
-EXPLICIT_SEED = TEST_BASE_SEED + 17
-BEHAVIOR_SEED = TEST_BASE_SEED + 18
+
+
+def _case_for_subject(subject_id: str):
+    matches = [
+        case for case in PORTABLE_EXECUTION_CASES if case.subject_id == subject_id
+    ]
+    assert len(matches) == 1
+    return matches[0]
+
+
+def _case_for_control(control_class_name: str):
+    matches = [
+        case
+        for case in PORTABLE_EXECUTION_CASES
+        if case.control_class_name == control_class_name
+    ]
+    assert len(matches) == 1
+    return matches[0]
+
+
+RAW_HISTORY_SEED = execution_seed_for_case(
+    TEST_BASE_SEED, _case_for_subject("RawHistoryHead")
+)
+EXPLICIT_SEED = execution_seed_for_case(
+    TEST_BASE_SEED, _case_for_subject("ExplicitSeedStochasticState")
+)
+BEHAVIOR_SEED = execution_seed_for_case(
+    TEST_BASE_SEED, _case_for_subject("BehaviorEquivalentSerialization")
+)
 TEST_RUNTIME_METADATA = {
     "python_implementation": "CPython",
     "python_version": "3.12.0",
@@ -843,7 +872,7 @@ def _paired_semantic_evidence(
             }
         )
     return {
-        "protocol": "ucm-portable-semantic-probes/5",
+        "protocol": "ucm-portable-semantic-probes/6",
         "comparison": "paired-honest-vs-affine-scored-semantics",
         "absolute_tolerance": 1e-9,
         "relative_tolerance": 0.0,
@@ -857,6 +886,7 @@ def _builder(
     delta: dict[str, object] | None = None,
     execution_context: dict[str, object] | None = None,
     input_preimage: dict[str, object] | None = None,
+    require_complete_registry: bool = False,
 ) -> MutationEvidenceBuilder:
     return MutationEvidenceBuilder(
         run_id="mutation-unit-run",
@@ -872,6 +902,7 @@ def _builder(
             if execution_context is None
             else execution_context
         ),
+        require_complete_registry=require_complete_registry,
     )
 
 
@@ -882,12 +913,15 @@ def _source_witness(
     execution_seed: int,
     semantic_probes: tuple[str, ...],
 ) -> dict[str, object]:
+    case = _case_for_control(control_class_name)
     expected_candidate = (
         "prototype.unified_map.compliance:" + control_class_name
     )
     return {
-        "protocol": "ucm-portable-control-source-binding/18",
+        "protocol": "ucm-portable-control-source-binding/20",
         "control": control_class_name,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "execution_seed": execution_seed,
         "control_mro": [],
         "source_identity_anchors": [],
@@ -909,7 +943,7 @@ def _source_witness(
         "portable_runner_contract": mutation_evidence.portable_runner_contract(
             TEST_RUNNER_PROTOCOL
         ),
-        "semantic_probe_contract": "ucm-portable-semantic-probes/5",
+        "semantic_probe_contract": "ucm-portable-semantic-probes/6",
         "enabled_semantic_probes": list(semantic_probes),
         "runtime_metadata": deepcopy(TEST_RUNTIME_METADATA),
     }
@@ -940,6 +974,7 @@ def _decisive_raw(
     dict[str, object],
     dict[str, object],
 ]:
+    case = _case_for_control(control_class_name)
     effective_include_delta = include_delta or (
         outcome == "passed"
         and bool(
@@ -959,6 +994,9 @@ def _decisive_raw(
         "prototype.unified_map.compliance:" + control_class_name
     )
     report_findings = deepcopy(findings)
+    for finding in report_findings:
+        if finding.get("failure_code") == expected_failure_code:
+            finding["gate"] = case.probe_id
     existing_codes = {row.get("failure_code") for row in report_findings}
     report_findings.extend(
         row
@@ -1038,6 +1076,8 @@ def _decisive_raw(
         "runner_protocol": TEST_RUNNER_PROTOCOL,
         "control_class_name": control_class_name,
         "expected_candidate": expected_candidate,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "execution_seed": execution_seed,
         "candidate": expected_candidate,
         "operational_state_closure": (
@@ -1085,6 +1125,8 @@ def _decisive_raw(
     )
     decision: dict[str, object] = {
         "runner_protocol": TEST_RUNNER_PROTOCOL,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "derived_outcome": outcome,
         "report_available": True,
         "harness_stable_during_execution": True,
@@ -1121,6 +1163,8 @@ def _decisive_raw(
     decisive = {
         "runner_protocol": TEST_RUNNER_PROTOCOL,
         "decision_kind": decision_kind,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "candidate": expected_candidate,
         "source_record_payload_digest": digest_json(source),
         "report_transcript_payload_digest": digest_json(report),
@@ -1136,8 +1180,86 @@ def _decisive_raw(
     return pre, post, source, report, decision, decisive
 
 
+def _add_crashed_case(
+    builder: MutationEvidenceBuilder,
+    case: object,
+) -> None:
+    execution_seed = execution_seed_for_case(TEST_BASE_SEED, case)
+    unavailable = {
+        "protocol": "ucm-portable-source-witness-unavailable/1",
+        "stage": "pre-execution",
+        "exception_type": "builtins.LookupError",
+        "control": case.control_class_name,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
+        "execution_seed": execution_seed,
+        "enabled_semantic_probes": list(case.semantic_probes),
+    }
+    error = {
+        "stage": "candidate-evaluation",
+        "exception_type": "builtins.LookupError",
+        "message": "unit-test unavailable execution case",
+    }
+    invocation_digest = digest_json([])
+    decision = {
+        "runner_protocol": TEST_RUNNER_PROTOCOL,
+        "decision_kind": (
+            "mutant-observation"
+            if case.subject_kind is SubjectKind.MUTANT
+            else "specificity-observation"
+        ),
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
+        "report_available": False,
+        "harness_stable_during_execution": False,
+        "execution_binding_complete": False,
+        "derived_outcome": "crashed",
+        "input_preimage_digest": builder.input_preimage_digest,
+        "invocation_transcript_digest": invocation_digest,
+    }
+    if case.subject_kind is SubjectKind.MUTANT:
+        decision.update(
+            {
+                "expected_gate": case.expected_gate,
+                "expected_failure_code": case.expected_failure_code,
+                "harness_incomplete": True,
+                "decision_processing_complete": False,
+                "actual_gate": None,
+                "actual_failure_code": None,
+            }
+        )
+    else:
+        decision.update(
+            {
+                "classification": case.classification,
+                "probe_incomplete": True,
+                "report_processing_complete": False,
+                "semantic_equivalence_passed": None,
+            }
+        )
+    builder.add_record(
+        subject_id=case.subject_id,
+        subject_kind=case.subject_kind,
+        execution_case_id=case.execution_case_id,
+        probe_id=case.probe_id,
+        execution_seed=execution_seed,
+        outcome=ObservationOutcome.CRASHED,
+        actual_gate=None,
+        actual_failure_code=None,
+        classification=case.classification,
+        pre_source_witness=unavailable,
+        post_source_witness={**unavailable, "stage": "post-execution"},
+        source_record={},
+        report_transcript=None,
+        error_transcript=_error_transcript([error]),
+        decision_record=decision,
+        decisive_record=None,
+    )
+
+
 def _bundle() -> MutationEvidenceBundle:
-    builder = _builder(delta={})
+    builder = _builder(delta={}, require_complete_registry=True)
+    explicit_case = _case_for_subject("ExplicitSeedStochasticState")
     control = _decisive_raw(
         binding_digit="1",
         control_class_name="HonestSeededControl",
@@ -1159,6 +1281,8 @@ def _bundle() -> MutationEvidenceBundle:
     builder.add_record(
         subject_id="ExplicitSeedStochasticState",
         subject_kind=SubjectKind.SPECIFICITY_CONTROL,
+        execution_case_id=explicit_case.execution_case_id,
+        probe_id=explicit_case.probe_id,
         execution_seed=EXPLICIT_SEED,
         outcome=ObservationOutcome.PASSED,
         actual_gate=None,
@@ -1172,6 +1296,7 @@ def _bundle() -> MutationEvidenceBundle:
         decision_record=control[4],
         decisive_record=control[5],
     )
+    raw_case = _case_for_subject("RawHistoryHead")
     mutant = _decisive_raw(
         binding_digit="2",
         control_class_name="RawHistoryHeadControl",
@@ -1194,6 +1319,8 @@ def _bundle() -> MutationEvidenceBundle:
     builder.add_record(
         subject_id="RawHistoryHead",
         subject_kind=SubjectKind.MUTANT,
+        execution_case_id=raw_case.execution_case_id,
+        probe_id=raw_case.probe_id,
         execution_seed=RAW_HISTORY_SEED,
         outcome=ObservationOutcome.KILLED,
         actual_gate="C02",
@@ -1207,6 +1334,12 @@ def _bundle() -> MutationEvidenceBundle:
         decision_record=mutant[4],
         decisive_record=mutant[5],
     )
+    for case in PORTABLE_EXECUTION_CASES:
+        if case.execution_case_id not in {
+            explicit_case.execution_case_id,
+            raw_case.execution_case_id,
+        }:
+            _add_crashed_case(builder, case)
     return builder.finalize()
 
 
@@ -1241,10 +1374,10 @@ def test_mutation_evidence_bundle_is_canonical_closed_and_content_addressed() ->
     assert parsed.canonical_bytes() == payload
     assert parsed.digest == bundle.digest
     assert parsed.benchmark_id == BENCHMARK_ID
-    assert [row.subject_id for row in parsed.observations] == [
-        "RawHistoryHead",
-        "ExplicitSeedStochasticState",
-    ]
+    assert len(parsed.observations) == len(PORTABLE_EXECUTION_CASES)
+    assert {row.subject_id for row in parsed.observations} == {
+        case.subject_id for case in PORTABLE_EXECUTION_CASES
+    }
     assert tuple(blob.digest for blob in parsed.blobs) == tuple(
         sorted(blob.digest for blob in parsed.blobs)
     )
@@ -1364,11 +1497,128 @@ def test_bundle_matrix_bytes_must_equal_registry_recomputation() -> None:
         MutationEvidenceBundle.from_canonical_bytes(_resign(wire))
 
 
+def test_bundle_rejects_missing_swapped_and_duplicate_execution_cases() -> None:
+    wire = _wire(_bundle())
+    records = wire["records"]
+    assert type(records) is list
+
+    missing = deepcopy(wire)
+    missing["records"] = missing["records"][:-1]
+    with pytest.raises(ProtocolViolation, match="inventory is incomplete"):
+        MutationEvidenceBundle.from_canonical_bytes(_resign(missing))
+
+    swapped = deepcopy(wire)
+    raw = _record(swapped, "RawHistoryHead")
+    raw_observation = raw["observation"]
+    assert type(raw_observation) is dict
+    raw_observation["probe_id"] = _case_for_subject("WarmFutureCache").probe_id
+    with pytest.raises(ProtocolViolation, match="probe_id binding mismatch"):
+        MutationEvidenceBundle.from_canonical_bytes(_resign(swapped))
+
+    duplicate = deepcopy(wire)
+    duplicate_records = duplicate["records"]
+    assert type(duplicate_records) is list
+    duplicate_row = deepcopy(_record(duplicate, "RawHistoryHead"))
+    duplicate_observation = duplicate_row["observation"]
+    assert type(duplicate_observation) is dict
+    duplicate_observation["execution_seed"] += 1
+    original_index = next(
+        index
+        for index, row in enumerate(duplicate_records)
+        if row["observation"]["subject_id"] == "RawHistoryHead"
+    )
+    duplicate_records.insert(original_index + 1, duplicate_row)
+    with pytest.raises(ProtocolViolation, match="duplicate execution_case_id"):
+        MutationEvidenceBundle.from_canonical_bytes(_resign(duplicate))
+
+
+def test_incomplete_validation_fragment_has_no_bundle_serialization_exit() -> None:
+    builder = _builder(require_complete_registry=False)
+    _add_crashed_case(builder, _case_for_subject("RawHistoryHead"))
+    fragment = builder.finalize()
+    assert len(fragment.observations) == 1
+    with pytest.raises(ProtocolViolation, match="cannot be serialized"):
+        fragment.canonical_bytes()
+    with pytest.raises(ProtocolViolation, match="cannot be serialized"):
+        _ = fragment.digest
+
+
+def test_bundle_rejects_cross_case_invocation_nonce_reuse() -> None:
+    builder = _builder()
+
+    def decisive_raw(subject_id: str, digit: str):
+        case = _case_for_subject(subject_id)
+        raw = list(
+            _decisive_raw(
+                binding_digit=digit,
+                control_class_name=case.control_class_name,
+                execution_seed=execution_seed_for_case(TEST_BASE_SEED, case),
+                outcome="killed",
+                findings=[
+                    {
+                        "gate": case.probe_id,
+                        "verdict": "fail",
+                        "failure_code": case.expected_failure_code,
+                        "detail": "unit-test decisive failure",
+                        "evidence": {},
+                    }
+                ],
+                failure_codes=[case.expected_failure_code],
+                decision_kind="mutant_kill",
+                expected_gate=case.expected_gate,
+                expected_failure_code=case.expected_failure_code,
+                input_preimage_digest=builder.input_preimage_digest,
+            )
+        )
+        return case, raw
+
+    first_case, first = decisive_raw("RawHistoryHead", "7")
+    second_case, second = decisive_raw("QueryReencoder", "8")
+    first_report = first[3]
+    second_report = second[3]
+    second_decision = second[4]
+    second_decisive = second[5]
+    second_report["request_records"][0]["invocation_nonce"] = (
+        first_report["request_records"][0]["invocation_nonce"]
+    )
+    _refresh_executor_receipt(second_report["request_records"][0])
+    transcript_digest = digest_json(second_report["request_records"])
+    second_report["invocation_transcript_digest"] = transcript_digest
+    second_decision["invocation_transcript_digest"] = transcript_digest
+    second_decisive["invocation_transcript_digest"] = transcript_digest
+    second_decisive["report_transcript_payload_digest"] = digest_json(second_report)
+    second_decisive["decision_record_payload_digest"] = digest_json(second_decision)
+
+    for case, raw in ((first_case, first), (second_case, second)):
+        builder.add_record(
+            subject_id=case.subject_id,
+            subject_kind=case.subject_kind,
+            execution_case_id=case.execution_case_id,
+            probe_id=case.probe_id,
+            execution_seed=execution_seed_for_case(TEST_BASE_SEED, case),
+            outcome=ObservationOutcome.KILLED,
+            actual_gate=case.expected_gate,
+            actual_failure_code=case.expected_failure_code,
+            classification=None,
+            pre_source_witness=raw[0],
+            post_source_witness=raw[1],
+            source_record=raw[2],
+            report_transcript=raw[3],
+            error_transcript=_error_transcript([]),
+            decision_record=raw[4],
+            decisive_record=raw[5],
+        )
+    with pytest.raises(ProtocolViolation, match="invocation nonce across"):
+        builder.finalize()
+
+
 def test_builder_rejects_false_decisive_records_and_is_single_use() -> None:
     builder = _builder()
     kwargs = {
         "subject_id": "RawHistoryHead",
         "subject_kind": SubjectKind.MUTANT,
+        "execution_case_id": _case_for_subject("RawHistoryHead").execution_case_id,
+        "probe_id": _case_for_subject("RawHistoryHead").probe_id,
         "execution_seed": RAW_HISTORY_SEED,
         "actual_gate": "C02",
         "actual_failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
@@ -1404,20 +1654,30 @@ def test_crashed_record_retains_raw_error_without_counting_as_kill() -> None:
     record = builder.add_record(
         subject_id="RawHistoryHead",
         subject_kind=SubjectKind.MUTANT,
+        execution_case_id=_case_for_subject("RawHistoryHead").execution_case_id,
+        probe_id=_case_for_subject("RawHistoryHead").probe_id,
         execution_seed=RAW_HISTORY_SEED,
         outcome=ObservationOutcome.CRASHED,
         actual_gate=None,
         actual_failure_code=None,
         classification=None,
-        pre_source_witness={
-            "control": "RawHistoryHeadControl",
-            "execution_seed": RAW_HISTORY_SEED,
+            pre_source_witness={
+                "control": "RawHistoryHeadControl",
+                "execution_case_id": _case_for_subject(
+                    "RawHistoryHead"
+                ).execution_case_id,
+                "probe_id": _case_for_subject("RawHistoryHead").probe_id,
+                "execution_seed": RAW_HISTORY_SEED,
             "enabled_semantic_probes": [],
             "available": True,
         },
-        post_source_witness={
-            "control": "RawHistoryHeadControl",
-            "execution_seed": RAW_HISTORY_SEED,
+            post_source_witness={
+                "control": "RawHistoryHeadControl",
+                "execution_case_id": _case_for_subject(
+                    "RawHistoryHead"
+                ).execution_case_id,
+                "probe_id": _case_for_subject("RawHistoryHead").probe_id,
+                "execution_seed": RAW_HISTORY_SEED,
             "enabled_semantic_probes": [],
             "available": False,
         },
@@ -1435,6 +1695,8 @@ def test_crashed_record_retains_raw_error_without_counting_as_kill() -> None:
         decision_record={
             "runner_protocol": TEST_RUNNER_PROTOCOL,
             "decision_kind": "mutant-observation",
+            "execution_case_id": _case_for_subject("RawHistoryHead").execution_case_id,
+            "probe_id": _case_for_subject("RawHistoryHead").probe_id,
             "expected_gate": "C02",
             "expected_failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
             "report_available": False,
@@ -1492,6 +1754,10 @@ def test_crashed_record_can_retain_a_strict_partial_request_transcript() -> None
     builder.add_record(
         subject_id="ExplicitSeedStochasticState",
         subject_kind=SubjectKind.SPECIFICITY_CONTROL,
+        execution_case_id=_case_for_subject(
+            "ExplicitSeedStochasticState"
+        ).execution_case_id,
+        probe_id=_case_for_subject("ExplicitSeedStochasticState").probe_id,
         execution_seed=EXPLICIT_SEED,
         outcome=ObservationOutcome.CRASHED,
         actual_gate=None,
@@ -1521,6 +1787,8 @@ def test_record_constructor_rejects_source_digest_relabelling() -> None:
     bundle = _bundle()
     record = bundle.records[0]
     observation = MutationObservation(
+        execution_case_id=record.observation.execution_case_id,
+        probe_id=record.observation.probe_id,
         subject_id=record.observation.subject_id,
         subject_kind=record.observation.subject_kind,
         source_digest="sha256:" + "f" * 64,
@@ -1558,6 +1826,7 @@ def _invalid_kill_builder(
     semantic_probes: tuple[str, ...] = (),
     input_preimage: dict[str, object] | None = None,
 ) -> MutationEvidenceBuilder:
+    case = _case_for_subject(subject_id)
     builder = _builder(
         delta=delta,
         execution_context=execution_context,
@@ -1649,6 +1918,8 @@ def _invalid_kill_builder(
     generated_decisive: dict[str, object] = {
         "runner_protocol": TEST_RUNNER_PROTOCOL,
         "decision_kind": "mutant_kill",
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "candidate": report_payload.get("candidate") if type(report_payload) is dict else "unavailable",
         "finding": (
             report_payload["findings"][0]
@@ -1681,6 +1952,8 @@ def _invalid_kill_builder(
     builder.add_record(
         subject_id=subject_id,
         subject_kind=SubjectKind.MUTANT,
+        execution_case_id=case.execution_case_id,
+        probe_id=case.probe_id,
         execution_seed=execution_seed,
         outcome=ObservationOutcome.KILLED,
         actual_gate=actual_gate,
@@ -1720,6 +1993,7 @@ def _invalid_pass_builder(
     execution_context: dict[str, object] | None = None,
     input_preimage: dict[str, object] | None = None,
 ) -> MutationEvidenceBuilder:
+    case = _case_for_subject(subject_id)
     effective_delta = {} if delta is _DEFAULT_PASS_DELTA else delta
     assert effective_delta is None or type(effective_delta) is dict
     builder = _builder(
@@ -1760,6 +2034,8 @@ def _invalid_pass_builder(
     builder.add_record(
         subject_id=subject_id,
         subject_kind=SubjectKind.SPECIFICITY_CONTROL,
+        execution_case_id=case.execution_case_id,
+        probe_id=case.probe_id,
         execution_seed=execution_seed,
         outcome=ObservationOutcome.PASSED,
         actual_gate=None,
@@ -1810,9 +2086,13 @@ def test_same_row_kill_must_be_derived_from_stable_witness_and_raw_report() -> N
 def test_killed_or_passed_builder_record_requires_raw_report() -> None:
     builder = _builder()
     with pytest.raises(ProtocolViolation, match="raw report transcript"):
-        builder.add_record(
-            subject_id="RawHistoryHead",
-            subject_kind=SubjectKind.MUTANT,
+            builder.add_record(
+                subject_id="RawHistoryHead",
+                subject_kind=SubjectKind.MUTANT,
+                execution_case_id=_case_for_subject(
+                    "RawHistoryHead"
+                ).execution_case_id,
+                probe_id=_case_for_subject("RawHistoryHead").probe_id,
             execution_seed=RAW_HISTORY_SEED,
             outcome=ObservationOutcome.KILLED,
             actual_gate="C02",
@@ -1968,17 +2248,17 @@ def test_code_owned_subject_control_candidate_seed_gate_and_probe_mapping() -> N
     specificity_as_mutant = _invalid_kill_builder(
         control_class_name="HonestSeededControl"
     )
-    with pytest.raises(ProtocolViolation, match="code-owned subject mapping"):
+    with pytest.raises(ProtocolViolation, match="execution-case/probe identity"):
         specificity_as_mutant.finalize()
 
     swapped_specificity = _invalid_pass_builder(
         control_class_name="BehaviorEquivalentSerializationControl"
     )
-    with pytest.raises(ProtocolViolation, match="code-owned subject mapping"):
+    with pytest.raises(ProtocolViolation, match="execution-case/probe identity"):
         swapped_specificity.finalize()
 
     forged_seed = _invalid_kill_builder(execution_seed=777)
-    with pytest.raises(ProtocolViolation, match="base_seed plus code-owned row index"):
+    with pytest.raises(ProtocolViolation, match="code-owned execution-case slot"):
         forged_seed.finalize()
 
     forged_gate = _invalid_kill_builder(
@@ -2009,11 +2289,14 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
     from prototype.unified_map import mutation_runner
 
     execution_seed = RAW_HISTORY_SEED
+    case = _case_for_subject("RawHistoryHead")
     runtime_import_cache = mutation_runner._prepare_runtime_import_cache()
     runtime_cache_digest = digest_json(runtime_import_cache)
     witness = mutation_runner._source_binding_witness(
         "RawHistoryHeadControl",
         frozenset(),
+        execution_case_id=case.execution_case_id,
+        probe_id=case.probe_id,
         execution_seed=execution_seed,
         expected_runtime_import_cache_contract_digest=runtime_cache_digest,
     )
@@ -2051,6 +2334,7 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         base_seed=TEST_BASE_SEED,
         input_preimage=_input_preimage(),
         execution_context=execution_context,
+        require_complete_registry=False,
     )
     binding = witness["expected_live_execution_binding"]
     expected_candidate = witness["expected_candidate"]
@@ -2068,7 +2352,7 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "harness_stable_during_execution": True,
     }
     decisive_finding = {
-        "gate": "C02-head-history",
+        "gate": case.probe_id,
         "verdict": "fail",
         "failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
         "detail": "live-witness schema parity fixture",
@@ -2086,6 +2370,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
         "control_class_name": "RawHistoryHeadControl",
         "expected_candidate": expected_candidate,
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "execution_seed": execution_seed,
         "candidate": expected_candidate,
         "operational_state_closure": "fail",
@@ -2110,6 +2396,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
     decision = {
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
         "decision_kind": "mutant-observation",
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "expected_gate": "C02",
         "expected_failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
         "report_available": True,
@@ -2126,6 +2414,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
     decisive = {
         "runner_protocol": mutation_runner.RUNNER_PROTOCOL,
         "decision_kind": "mutant_kill",
+        "execution_case_id": case.execution_case_id,
+        "probe_id": case.probe_id,
         "candidate": expected_candidate,
         "finding": decisive_finding,
         "source_record_payload_digest": digest_json(source),
@@ -2138,6 +2428,8 @@ def test_live_runner_source_witness_can_support_one_decisive_empty_head_row() ->
     builder.add_record(
         subject_id="RawHistoryHead",
         subject_kind=SubjectKind.MUTANT,
+        execution_case_id=case.execution_case_id,
+        probe_id=case.probe_id,
         execution_seed=execution_seed,
         outcome=ObservationOutcome.KILLED,
         actual_gate="C02",
@@ -2167,11 +2459,12 @@ def test_execution_context_runner_contract_is_code_owned_not_caller_selected() -
         base_seed=TEST_BASE_SEED,
         input_preimage=_input_preimage(),
         execution_context=_execution_context(),
+        require_complete_registry=False,
     ).finalize()
     assert valid.observations == ()
 
     forged_contract = deepcopy(exact_contract)
-    forged_contract["mutation_cases"][2]["control_class_name"] = (
+    forged_contract["execution_cases"][2]["control_class_name"] = (
         "HonestSeededControl"
     )
     forged = MutationEvidenceBuilder(
@@ -2183,6 +2476,7 @@ def test_execution_context_runner_contract_is_code_owned_not_caller_selected() -
             **_execution_context(),
             "portable_runner_contract": forged_contract,
         },
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="code-owned registry"):
         forged.finalize()
@@ -2194,29 +2488,20 @@ def test_portable_registry_binds_exact_head_shapes_and_lineage_mask() -> None:
         mutation_evidence.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
     )
     mutant_shapes = {
-        row["matrix_subject_id"]: row["head_record_shape"]
-        for row in contract["mutation_cases"]
+        row["subject_id"]: row["head_record_shape"]
+        for row in contract["execution_cases"]
+        if row["subject_kind"] == SubjectKind.MUTANT.value
     }
     assert mutant_shapes == {
-        "GlobalSecondState": "replay_ddrr",
-        "FileHandleState": "empty",
-        "RawHistoryHead": "empty",
-        "TrainerTargetSmuggler": "empty",
-        "QueryReencoder": "empty",
-        "MutableCheckpoint": "empty",
-        "TrueStateReader": "empty",
-        "FutureReader": "empty",
-        "CounterfactualMutator": "empty",
-        "ImplicitRNGState": "replay_ddrr",
-        "HistoryInBlob": "replay_ddrr",
-        "WarmFutureCache": "replay_ddrr",
-        "ReplayBatchDivergence": "replay_ddrr",
-        "DoubleCountEvent": "replay_ddrr",
-        "NonIdPointEstimate": "replay_ddrr",
-        "DangerousMeanCompressor": "replay_ddrr",
-        "UnsafeClosedWorld": "replay_ddrr",
+        case.subject_id: case.head_record_shape
+        for case in PORTABLE_EXECUTION_CASES
+        if case.subject_kind is SubjectKind.MUTANT
     }
-    assert [row["head_record_shape"] for row in contract["specificity_cases"]] == [
+    assert [
+        row["head_record_shape"]
+        for row in contract["execution_cases"]
+        if row["subject_kind"] == SubjectKind.SPECIFICITY_CONTROL.value
+    ] == [
         "replay_ddrr",
         "replay_ddrr",
         "replay_ddrr",
@@ -2234,6 +2519,7 @@ def test_portable_registry_binds_exact_head_shapes_and_lineage_mask() -> None:
             **_execution_context(),
             "portable_runner_contract": forged_contract,
         },
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="code-owned registry"):
         forged.finalize()
@@ -2329,6 +2615,9 @@ def test_evaluator_request_suffix_rebuilds_actual_c19_and_rejects_resigned_respo
         delta=delta,
         execution_seed=191,
         expected_subject_id="NonIdPointEstimate",
+        expected_execution_case_id=_case_for_subject(
+            "NonIdPointEstimate"
+        ).execution_case_id,
         expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
         expected_semantic_probes=("nonidentified_set",),
         expected_head_record_shape="replay_ddrr",
@@ -2362,8 +2651,125 @@ def test_evaluator_request_suffix_rebuilds_actual_c19_and_rejects_resigned_respo
             delta=delta,
             execution_seed=191,
             expected_subject_id="NonIdPointEstimate",
+            expected_execution_case_id=_case_for_subject(
+                "NonIdPointEstimate"
+            ).execution_case_id,
             expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
             expected_semantic_probes=("nonidentified_set",),
+            expected_head_record_shape="replay_ddrr",
+            observation_outcome=ObservationOutcome.KILLED,
+            head_records=[],
+        )
+
+
+def test_evaluator_request_suffix_rebuilds_actual_c20_w06_channel_separation() -> None:
+    seed = 203
+    (
+        records,
+        history,
+        diagnosis,
+        rollout,
+        delta,
+        failure_code,
+        verdict,
+    ) = _actual_evaluator_request_transcript(
+        "ObservationEqualsMechanismControl",
+        "observation_channel_separation",
+        seed,
+    )
+    assert failure_code == "UCM-F014-ACTION_SEMANTICS_CONFLATED"
+    assert verdict == "fail"
+
+    _, _, evidence = mutation_evidence._validate_request_records(
+        records,
+        input_preimage_digest=digest_json({"input": "m1-c20-w06"}),
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        execution_seed=seed,
+        expected_subject_id="ObservationEqualsMechanism",
+        expected_execution_case_id=_case_for_subject(
+            "ObservationEqualsMechanism"
+        ).execution_case_id,
+        expected_failure_code="UCM-F014-ACTION_SEMANTICS_CONFLATED",
+        expected_semantic_probes=("observation_channel_separation",),
+        expected_head_record_shape="replay_ddrr",
+        observation_outcome=ObservationOutcome.KILLED,
+        head_records=[],
+    )
+    artifact = evidence["observation_channel_separation"]
+    assert artifact["fixture"]["world_slot"] == "W06"
+    assert artifact["fixture"]["latent_distributions_exact"] is True
+    assert artifact["oracle_records"][0]["oracle_mechanism_effect"] == [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ]
+    assert artifact["evaluation_report"]["failures"] == [
+        {
+            "code": "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+            "record_id": "m1-c20-w06-channel-separation",
+            "detail": artifact["evaluation_report"]["failures"][0]["detail"],
+        }
+    ]
+
+
+def test_shared_failure_code_and_six_receipts_cannot_relabel_c20() -> None:
+    seed = 203
+    w06_records, history, diagnosis, rollout, delta, _, _ = (
+        _actual_evaluator_request_transcript(
+            "ObservationEqualsMechanismControl",
+            "observation_channel_separation",
+            seed,
+        )
+    )
+    with pytest.raises(ProtocolViolation):
+        mutation_evidence._validate_request_records(
+            w06_records,
+            input_preimage_digest=digest_json({"input": "c20-as-c17"}),
+            history=history,
+            diagnosis_query=diagnosis,
+            rollout_query=rollout,
+            delta=delta,
+            execution_seed=seed,
+            expected_subject_id="NoOpMeansStop",
+            expected_execution_case_id=_case_for_subject(
+                "NoOpMeansStop"
+            ).execution_case_id,
+            expected_failure_code="UCM-F014-ACTION_SEMANTICS_CONFLATED",
+            expected_semantic_probes=(),
+            expected_head_record_shape="empty",
+            observation_outcome=ObservationOutcome.KILLED,
+            head_records=[],
+        )
+
+    c19_records, history, diagnosis, rollout, delta, _, _ = (
+        _actual_evaluator_request_transcript(
+            "NonIdPointEstimateControl",
+            "nonidentified_set",
+            seed,
+        )
+    )
+    with pytest.raises(
+        ProtocolViolation,
+        match="control replay|control mismatch|W06|observation-channel",
+    ):
+        mutation_evidence._validate_request_records(
+            c19_records,
+            input_preimage_digest=digest_json({"input": "c19-as-c20"}),
+            history=history,
+            diagnosis_query=diagnosis,
+            rollout_query=rollout,
+            delta=delta,
+            execution_seed=seed,
+            expected_subject_id="ObservationEqualsMechanism",
+            expected_execution_case_id=_case_for_subject(
+                "ObservationEqualsMechanism"
+            ).execution_case_id,
+            expected_failure_code="UCM-F014-ACTION_SEMANTICS_CONFLATED",
+            expected_semantic_probes=("observation_channel_separation",),
             expected_head_record_shape="replay_ddrr",
             observation_outcome=ObservationOutcome.KILLED,
             head_records=[],
@@ -2385,6 +2791,9 @@ def _validate_live_c19_records(records: list[dict[str, object]]) -> None:
         delta=mutation_evidence._delta_from_wire(wire["delta"]),
         execution_seed=191,
         expected_subject_id="NonIdPointEstimate",
+        expected_execution_case_id=_case_for_subject(
+            "NonIdPointEstimate"
+        ).execution_case_id,
         expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
         expected_semantic_probes=("nonidentified_set",),
         expected_head_record_shape="replay_ddrr",
@@ -2520,6 +2929,7 @@ def test_evaluator_request_suffix_rebuilds_full_pair_and_attributable_ood(
         delta=delta,
         execution_seed=seed,
         expected_subject_id=subject_id,
+        expected_execution_case_id=_case_for_subject(subject_id).execution_case_id,
         expected_failure_code=failure_code,
         expected_semantic_probes=(probe,),
         expected_head_record_shape="replay_ddrr",
@@ -2571,6 +2981,9 @@ def test_correct_nonidentified_set_pass_suffix_is_exact_and_not_bare_abstain() -
         delta=delta,
         execution_seed=seed,
         expected_subject_id="CorrectNonidentifiedSet",
+        expected_execution_case_id=_case_for_subject(
+            "CorrectNonidentifiedSet"
+        ).execution_case_id,
         expected_failure_code=None,
         expected_semantic_probes=("nonidentified_set",),
         expected_head_record_shape="replay_ddrr",
@@ -2590,15 +3003,17 @@ def test_correct_nonidentified_set_pass_suffix_is_exact_and_not_bare_abstain() -
 
 
 def test_empty_head_terminal_topology_registry_covers_every_empty_subject() -> None:
-    empty_subjects = {
-        row[0]
-        for row in mutation_evidence._PORTABLE_MUTATION_CONTRACTS
-        if row[-1] == "empty"
-    }
+    empty_subjects = {row[0] for row in EMPTY_HEAD_CASES}
     assert set(mutation_evidence._EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES) == (
         empty_subjects
     )
-    assert {row[0] for row in EMPTY_HEAD_CASES} == empty_subjects
+    assert empty_subjects.issubset(
+        {
+            case.subject_id
+            for case in PORTABLE_EXECUTION_CASES
+            if case.head_record_shape == "empty"
+        }
+    )
     for topology in mutation_evidence._EMPTY_HEAD_TERMINAL_REQUEST_TOPOLOGIES.values():
         assert topology
         assert topology[-1][2] == "worker_error"
@@ -2609,7 +3024,7 @@ def test_empty_head_terminal_topology_registry_covers_every_empty_subject() -> N
     (
         "subject_id",
         "control_class_name",
-        "row_index",
+        "_row_index",
         "gate",
         "failure_code",
         "terminal_operation",
@@ -2619,12 +3034,14 @@ def test_empty_head_terminal_topology_registry_covers_every_empty_subject() -> N
 def test_every_empty_head_kill_binds_its_exact_live_terminal_topology(
     subject_id: str,
     control_class_name: str,
-    row_index: int,
+    _row_index: int,
     gate: str,
     failure_code: str,
     terminal_operation: str,
 ) -> None:
-    execution_seed = TEST_BASE_SEED + row_index
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject(subject_id)
+    )
     report = _decisive_raw(
         binding_digit="3",
         control_class_name=control_class_name,
@@ -2792,9 +3209,11 @@ def test_empty_head_kill_rejects_nonexact_terminal_topology(mutation: str) -> No
 
 
 def test_builder_and_parser_reject_every_code_owned_seed_overflow_boundary() -> None:
-    row_count = 17
-    operation_overflow_base = 2**64 - ((row_count - 1) + 3)
-    with pytest.raises(ProtocolViolation, match="derived operation seeds"):
+    last_ordinal = PORTABLE_EXECUTION_CASES[-1].execution_ordinal
+    operation_overflow_base = 2**64 - (
+        last_ordinal * EXECUTION_CASE_SEED_STRIDE + 3
+    )
+    with pytest.raises(ProtocolViolation, match="operation seeds"):
         MutationEvidenceBuilder(
             run_id="operation-seed-overflow",
             runner_protocol=TEST_RUNNER_PROTOCOL,
@@ -2804,17 +3223,19 @@ def test_builder_and_parser_reject_every_code_owned_seed_overflow_boundary() -> 
         )
 
     contract = mutation_evidence.portable_runner_contract(TEST_RUNNER_PROTOCOL)
-    all_rows = contract["mutation_cases"] + contract["specificity_cases"]
-    update_index = next(
-        index
-        for index, row in enumerate(all_rows)
+    update_ordinal = next(
+        row["execution_ordinal"]
+        for row in contract["execution_cases"]
         if "update_consistency" in row["semantic_probes"]
     )
     lineage_execution_seed = (
         (2**64 - 1)
         ^ mutation_evidence.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
     )
-    lineage_overflow_base = lineage_execution_seed - update_index
+    lineage_overflow_base = (
+        lineage_execution_seed
+        - update_ordinal * EXECUTION_CASE_SEED_STRIDE
+    )
     with pytest.raises(ProtocolViolation, match="update-consistency lineage seeds"):
         MutationEvidenceBuilder(
             run_id="lineage-seed-overflow",
@@ -2826,7 +3247,7 @@ def test_builder_and_parser_reject_every_code_owned_seed_overflow_boundary() -> 
 
     forged_wire = _wire(_bundle())
     forged_wire["base_seed"] = operation_overflow_base
-    with pytest.raises(ProtocolViolation, match="derived operation seeds"):
+    with pytest.raises(ProtocolViolation, match="operation seeds"):
         MutationEvidenceBundle.from_canonical_bytes(_resign(forged_wire))
 
     forged_lineage_wire = _wire(_bundle())
@@ -2844,6 +3265,7 @@ def test_input_and_execution_context_payloads_are_exact_runner_preimages() -> No
         base_seed=TEST_BASE_SEED,
         input_preimage={**_input_preimage(), "hidden": True},
         execution_context=_execution_context(),
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="input preimage payload.*closed"):
         hidden_input.finalize()
@@ -2856,6 +3278,7 @@ def test_input_and_execution_context_payloads_are_exact_runner_preimages() -> No
         base_seed=TEST_BASE_SEED,
         input_preimage=_input_preimage(),
         execution_context=missing_context_contract,
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="execution context payload.*closed"):
         hidden_context.finalize()
@@ -2868,6 +3291,7 @@ def test_input_and_execution_context_payloads_are_exact_runner_preimages() -> No
         base_seed=TEST_BASE_SEED,
         input_preimage=_input_preimage(),
         execution_context=malformed_cache_context,
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="runtime import cache contract digest"):
         malformed_cache.finalize()
@@ -2895,6 +3319,7 @@ def test_input_preimage_requires_exact_typed_wire_round_trips(field_name: str) -
         base_seed=TEST_BASE_SEED,
         input_preimage=input_preimage,
         execution_context=_execution_context(),
+        require_complete_registry=False,
     )
     with pytest.raises(ProtocolViolation, match="fields mismatch|typed protocol parsing"):
         invalid.finalize()
@@ -2922,6 +3347,7 @@ def test_old_decisive_payload_cannot_be_reenveloped_for_new_inputs(
         base_seed=TEST_BASE_SEED,
         input_preimage=changed_input,
         execution_context=_execution_context(),
+        require_complete_registry=False,
     )
     pre, post, source, report, decision, decisive = _decisive_raw(
         binding_digit="4",
@@ -2945,7 +3371,10 @@ def test_old_decisive_payload_cannot_be_reenveloped_for_new_inputs(
         payload["input_preimage_digest"] = builder.input_preimage_digest
     decisive["report_transcript_payload_digest"] = digest_json(report)
     decisive["decision_record_payload_digest"] = digest_json(decision)
+    explicit_case = _case_for_subject("ExplicitSeedStochasticState")
     builder.add_record(
+        execution_case_id=explicit_case.execution_case_id,
+        probe_id=explicit_case.probe_id,
         subject_id="ExplicitSeedStochasticState",
         subject_kind=SubjectKind.SPECIFICITY_CONTROL,
         execution_seed=EXPLICIT_SEED,
@@ -3473,7 +3902,9 @@ def test_passed_semantic_suffix_is_exact_and_physically_closed(mutation: str) ->
 
 
 def test_replay_kill_cannot_replace_main_updates_with_lineage_delta_coverage() -> None:
-    execution_seed = TEST_BASE_SEED + 12
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject("ReplayBatchDivergence")
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name="ReplayBatchDivergenceControl",
@@ -3588,7 +4019,9 @@ def test_comparison_kills_bind_the_exact_live_probe_suffix(
     builder = _invalid_kill_builder(
         subject_id=subject_id,
         control_class_name=control_class_name,
-        execution_seed=TEST_BASE_SEED + row_index,
+        execution_seed=execution_seed_for_case(
+            TEST_BASE_SEED, _case_for_subject(subject_id)
+        ),
         actual_gate=gate,
         actual_failure_code=failure_code,
         semantic_probes=semantic_probes,
@@ -3646,7 +4079,9 @@ def test_comparison_kill_cannot_be_decisive_from_main_only(
     semantic_probes: tuple[str, ...],
     delta: dict[str, object] | None,
 ) -> None:
-    execution_seed = TEST_BASE_SEED + row_index
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject(subject_id)
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name=control_class_name,
@@ -3727,7 +4162,9 @@ def test_semantic_kill_suffix_must_retain_final_warm_cold_sequence(
     failure_code: str,
     semantic_probes: tuple[str, ...],
 ) -> None:
-    execution_seed = TEST_BASE_SEED + row_index
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject(subject_id)
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name=control_class_name,
@@ -3816,7 +4253,9 @@ def test_f006_requires_actual_raw_warm_cold_drift() -> None:
 
 
 def test_f019_requires_actual_scored_drift_and_finding_binding() -> None:
-    execution_seed = TEST_BASE_SEED + 12
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject("ReplayBatchDivergence")
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name="ReplayBatchDivergenceControl",
@@ -3886,7 +4325,9 @@ def test_f019_requires_actual_scored_drift_and_finding_binding() -> None:
 
 
 def test_f001_requires_actual_scored_old_cut_drift_and_finding_binding() -> None:
-    execution_seed = TEST_BASE_SEED + 11
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject("WarmFutureCache")
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name="WarmFutureCacheControl",
@@ -3972,6 +4413,7 @@ def test_source_preparation_failure_cannot_be_promoted_to_a_decisive_outcome() -
         base_seed=TEST_BASE_SEED,
         input_preimage=_input_preimage(),
         execution_context=failed_context,
+        require_complete_registry=False,
     ).finalize()
     assert empty.observations == ()
 
@@ -4094,7 +4536,9 @@ def test_non_f020_replay_kill_rejects_pair_request_or_response_drift(
 
 
 def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> None:
-    execution_seed = TEST_BASE_SEED + 9
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject("ImplicitRNGState")
+    )
     base_report = _decisive_raw(
         binding_digit="3",
         control_class_name="ImplicitRNGControl",
@@ -4102,7 +4546,7 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
         outcome="killed",
         findings=[
             {
-                "gate": "C30-reproducibility",
+                "gate": "C28/C30-explicit-head-replay",
                 "verdict": "fail",
                 "failure_code": "UCM-F020-NONREPRODUCIBLE",
                 "detail": "unit-test decisive failure",
@@ -4143,7 +4587,7 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
             "invocation_transcript_digest": invocation_digest,
             "findings": [
                 {
-                    "gate": "C30-reproducibility",
+                    "gate": "C28/C30-explicit-head-replay",
                     "verdict": "fail",
                     "failure_code": "UCM-F020-NONREPRODUCIBLE",
                 }
@@ -4156,7 +4600,9 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
 
 
 def test_f020_kill_requires_actual_ddrr_head_pair_response_drift() -> None:
-    execution_seed = TEST_BASE_SEED + 9
+    execution_seed = execution_seed_for_case(
+        TEST_BASE_SEED, _case_for_subject("ImplicitRNGState")
+    )
     base = _decisive_raw(
         binding_digit="3",
         control_class_name="ImplicitRNGControl",
@@ -4164,7 +4610,7 @@ def test_f020_kill_requires_actual_ddrr_head_pair_response_drift() -> None:
         outcome="killed",
         findings=[
             {
-                "gate": "C30-reproducibility",
+                "gate": "C28/C30-explicit-head-replay",
                 "verdict": "fail",
                 "failure_code": "UCM-F020-NONREPRODUCIBLE",
                 "detail": "unit-test decisive failure",
@@ -4195,7 +4641,7 @@ def test_f020_kill_requires_actual_ddrr_head_pair_response_drift() -> None:
             "invocation_transcript_digest": invocation_digest,
             "findings": [
                 {
-                    "gate": "C30-reproducibility",
+                    "gate": "C28/C30-explicit-head-replay",
                     "verdict": "fail",
                     "failure_code": "UCM-F020-NONREPRODUCIBLE",
                 }
@@ -4427,24 +4873,10 @@ def test_failure_codes_decision_and_decisive_payloads_are_semantically_closed() 
         duplicate_decisive_code.finalize()
 
 
-def test_composite_finding_cannot_lend_failure_code_to_actual_gate(
-    monkeypatch,
-) -> None:
-    contracts = list(mutation_evidence._PORTABLE_MUTATION_CONTRACTS)
-    row_index = next(
-        index
-        for index, row in enumerate(contracts)
-        if row[0] == "RawHistoryHead"
-    )
-    row = contracts[row_index]
-    # C01 owns only F007.  Mentioning valid lender C02 in the same finding
-    # label must not make the code-owned C01/F004 observation decisive.
-    contracts[row_index] = (*row[:2], "C01", *row[3:])
-    monkeypatch.setattr(
-        mutation_evidence, "_PORTABLE_MUTATION_CONTRACTS", tuple(contracts)
-    )
+def test_composite_finding_cannot_replace_the_exact_probe_identity() -> None:
+    # Token membership is not decisive: the finding gate must equal the
+    # execution case's complete probe_id byte-for-byte.
     invalid = _invalid_kill_builder(
-        actual_gate="C01",
         report={
             "findings": [
                 {
@@ -4456,7 +4888,7 @@ def test_composite_finding_cannot_lend_failure_code_to_actual_gate(
             "failure_codes": ["UCM-F004-HEAD_HISTORY_ACCESS"],
         },
     )
-    with pytest.raises(ProtocolViolation, match="directly allow"):
+    with pytest.raises(ProtocolViolation, match="exact probe finding"):
         invalid.finalize()
 
 
@@ -4595,7 +5027,9 @@ def test_semantic_comparison_kill_requires_a_non_null_mergeable_delta(
     no_delta = _invalid_kill_builder(
         subject_id=subject_id,
         control_class_name=control_class_name,
-        execution_seed=TEST_BASE_SEED + row_index,
+        execution_seed=execution_seed_for_case(
+            TEST_BASE_SEED, _case_for_subject(subject_id)
+        ),
         actual_gate=gate,
         actual_failure_code=failure_code,
         semantic_probes=semantic_probes,
@@ -4620,7 +5054,9 @@ def test_duplicate_event_uid_is_not_a_formally_mergeable_probe_delta(
         invalid = _invalid_kill_builder(
             subject_id="WarmFutureCache",
             control_class_name="WarmFutureCacheControl",
-            execution_seed=TEST_BASE_SEED + 11,
+            execution_seed=execution_seed_for_case(
+                TEST_BASE_SEED, _case_for_subject("WarmFutureCache")
+            ),
             actual_gate="C23",
             actual_failure_code="UCM-F001-FUTURE_LEAK",
             semantic_probes=("warm_future_old_cut",),
@@ -4631,7 +5067,9 @@ def test_duplicate_event_uid_is_not_a_formally_mergeable_probe_delta(
         invalid = _invalid_kill_builder(
             subject_id="ReplayBatchDivergence",
             control_class_name="ReplayBatchDivergenceControl",
-            execution_seed=TEST_BASE_SEED + 12,
+            execution_seed=execution_seed_for_case(
+                TEST_BASE_SEED, _case_for_subject("ReplayBatchDivergence")
+            ),
             actual_gate="C22",
             actual_failure_code="UCM-F019-UPDATE_INCONSISTENT",
             semantic_probes=("update_consistency",),
