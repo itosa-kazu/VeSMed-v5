@@ -821,9 +821,40 @@ class W20World(MicroWorld):
         oracle_seed: int,
     ) -> CounterfactualOracle:
         del oracle_seed
+        mean, variance, exposure, evidence_count = self._production_posterior(episode)
+        return self.public_belief_counterfactual(
+            mean,
+            variance,
+            exposure,
+            evidence_count,
+            policy,
+            horizon,
+        )
+
+    def public_belief_counterfactual(
+        self,
+        mean: float,
+        variance: float,
+        exposure: float,
+        evidence_count: int,
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Roll out from the finite public Bayesian state ``(x belief, r)``."""
+
         if horizon not in (1, 4, 8):
             raise ValueError("unsupported W20 horizon")
-        mean, variance, exposure, evidence_count = self._production_posterior(episode)
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W20 policy set")
+        if any(
+            type(value) not in {int, float} or not math.isfinite(float(value))
+            for value in (mean, variance, exposure)
+        ):
+            raise ValueError("W20 public belief must be finite")
+        if variance < 0.0 or exposure < 0.0:
+            raise ValueError("W20 public variance/exposure cannot be negative")
+        if type(evidence_count) is not int or evidence_count <= 0:
+            raise ValueError("W20 evidence count must be positive")
         branch_specs, check_cost = self._production_branches(policy, horizon, exposure)
         components: list[dict[str, Any]] = []
         outcome_components: list[dict[str, Any]] = []

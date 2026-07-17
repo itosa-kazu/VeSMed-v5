@@ -891,3 +891,65 @@ run; `freeze_grade=false` and the experiment ledger remains 0/30.
 mass when that mass changes treatment safety, and treatment heads must expose
 conditional tail risk rather than compress it into the population mean.
 Continue with W20, the final priority vertical slice.
+
+## 2026-07-17 — W20 feedback-memory and Markov-closure vertical slice
+
+### Outcome
+
+- Added a compact W20 shared public Bayesian state containing posterior mean
+  and variance for physiology plus exact public exposure memory `r`.  All query
+  heads read this state and cannot rescan full history.
+- Constructed two patients with the same posterior physiology (`mean=0.70`)
+  but different public exposure memory.  Their state hashes differ.  A1 moves
+  the low-exposure patient to first-step mean `0.33` but the high-exposure
+  patient to `1.08`, proving that omitting `r` creates a dangerous treatment
+  collision.
+- Constructed two different full histories with the same complete
+  `(posterior_mean, posterior_variance, r, evidence_count)`; they produce the
+  same state hash, proving that raw history is not required once sufficient
+  statistics close.
+- A factual A1 plus response observation incrementally updates the low-exposure
+  state with an exact parent/delta link.  The new `r` crosses the response
+  threshold, so the next A1 direction reverses while updated diagnosis and
+  rollout heads consume only the new state.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w20-feedback-memory-probe/vertical-slice.json
+artifact sha256: 28399f26c0bd050236f181fec1caceae49bb3fa08747e31864d67f35579323e4
+low-exposure state: sha256:f3e367b577fbaa2b59211bb8cc33cead498a8d8ea54b38c493b730ae79931995
+high-exposure state: sha256:95e25ad9323e58bd35fb6bc8381c31969cb9c2dd69423ede281f295cba5cce3b
+false-split shared state: sha256:51f2e2d52d8f37a04be431994c571f0fb7ebd81a973abe1a1e50a2932f30efc2
+response-updated state: sha256:93cd0a96ab186027a83d0e146a14c53d3fa579e82807d371188393f85e21c76d
+low/high A1 first-step means: 0.33 / 1.08
+```
+
+All eight artifact assertions are true, including dangerous-collision
+separation, sufficient-history quotienting, shared-head state use,
+parent-linked incremental update and post-update response reversal.
+
+### Verification
+
+```text
+W20 probe focused: 4 passed
+W20 plus Bayesian/W16-W20/research-contract regression: 68 passed
+all eight priority probes plus W01-W20 relevant world/oracle regression: 320 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+The state is public-evidence-derived, but the transition/filter constants are
+frozen benchmark oracle knowledge.  This remains an upper-bound Phase-2 probe,
+not a trained candidate, formal B01 run or architecture experiment.  The
+manifest remains `eligibility=upper_bound_only`, `freeze_grade=false`, and the
+experiment ledger remains 0/30.
+
+### Decision
+
+`KEEP AND CLOSE PRIORITY VERTICAL-SLICE SET`: W01/W02/W04/W08/W15/W18/W19/W20
+now provide executable shared-state, multi-head and recursive-update evidence.
+The next highest-information step is to turn these exact executions into real
+evaluator cells and oracle/metric upper-bound sanity rows; do not return to
+detached control-plane hardening unless such a cell exposes a concrete blocker.
