@@ -1041,6 +1041,27 @@ def _finding_gate_tokens(value: object) -> frozenset[str]:
     )
 
 
+def _direct_gate_allows_failure_code(gate: object, failure_code: object) -> bool:
+    """Return whether one exact public gate directly owns a failure code.
+
+    Finding labels may mention multiple gates for human-readable detector
+    provenance.  They must not turn that composite label into a cross-product
+    authority where one token supplies the gate and another supplies the
+    failure-code permission.
+    """
+
+    from . import mutation_matrix
+
+    return (
+        type(gate) is str
+        and type(failure_code) is str
+        and any(
+            spec.gate_id == gate and failure_code in spec.allowed_failure_codes
+            for spec in mutation_matrix.GATE_SPECS
+        )
+    )
+
+
 def _payload_object(body: dict[str, Any], label: str) -> dict[str, Any]:
     payload = body["payload"]
     if type(payload) is not dict:
@@ -2581,6 +2602,12 @@ def _validate_record_semantics(
         raise ProtocolViolation(
             "observation classification differs from the code-owned subject mapping"
         )
+    if observation.subject_kind is SubjectKind.MUTANT and not (
+        _direct_gate_allows_failure_code(expected_gate, expected_failure_code)
+    ):
+        raise ProtocolViolation(
+            "code-owned mutant gate does not directly allow its failure code"
+        )
     if observation.outcome is ObservationOutcome.KILLED and (
         observation.actual_gate != expected_gate
         or observation.actual_failure_code != expected_failure_code
@@ -2626,6 +2653,12 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 "mutant decision differs from the code-owned gate/failure mapping"
             )
+        if not _direct_gate_allows_failure_code(
+            decision["expected_gate"], decision["expected_failure_code"]
+        ):
+            raise ProtocolViolation(
+                "mutant decision gate does not directly allow its failure code"
+            )
         if decision["actual_gate"] != observation.actual_gate:
             raise ProtocolViolation("mutant decision actual_gate mismatch")
         if (
@@ -2634,6 +2667,14 @@ def _validate_record_semantics(
         ):
             raise ProtocolViolation(
                 "mutant decision actual_failure_code mismatch"
+            )
+        if observation.outcome is ObservationOutcome.KILLED and not (
+            _direct_gate_allows_failure_code(
+                decision["actual_gate"], decision["actual_failure_code"]
+            )
+        ):
+            raise ProtocolViolation(
+                "mutant decision actual gate does not directly allow its failure code"
             )
         decision_boolean_fields = (
             "report_available",
@@ -3256,6 +3297,12 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 "killed observation is not derived from exactly one matching "
                 "report finding for its failure code"
+            )
+        if not _direct_gate_allows_failure_code(
+            observation.actual_gate, observation.actual_failure_code
+        ):
+            raise ProtocolViolation(
+                "killed observation gate does not directly allow its failure code"
             )
         matches = [
             item

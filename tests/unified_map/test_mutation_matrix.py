@@ -23,6 +23,7 @@ RECORD = "sha256:" + "b" * 64
 def kill(mutant_id: str, gate: str | None = None) -> MutationObservation:
     spec = next(row for row in MUTANT_SPECS if row.mutant_id == mutant_id)
     selected = gate or spec.expected_gates[0]
+    gate_spec = next(row for row in GATE_SPECS if row.gate_id == selected)
     return MutationObservation(
         mutant_id,
         SubjectKind.MUTANT,
@@ -30,7 +31,11 @@ def kill(mutant_id: str, gate: str | None = None) -> MutationObservation:
         17,
         ObservationOutcome.KILLED,
         selected,
-        spec.expected_failure_codes[0],
+        next(
+            code
+            for code in spec.expected_failure_codes
+            if code in gate_spec.allowed_failure_codes
+        ),
         RECORD,
     )
 
@@ -89,6 +94,49 @@ def test_crash_or_unrelated_failure_is_not_a_valid_kill() -> None:
     assert "C02" in report.uncovered_gates
 
 
+def test_mutant_gate_and_failure_code_are_not_independent_cross_products() -> None:
+    # ReplayBatchDivergence declares both C21/C22 and F010/F019, but only the
+    # direct C21->F010 and C22->F019 edges are legal.
+    crossed = MutationObservation(
+        "ReplayBatchDivergence",
+        SubjectKind.MUTANT,
+        SOURCE,
+        37,
+        ObservationOutcome.KILLED,
+        "C21",
+        "UCM-F019-UPDATE_INCONSISTENT",
+        RECORD,
+    )
+    report = evaluate_mutation_matrix((crossed,))
+    assert "ReplayBatchDivergence" in report.missing_or_invalid_mutants
+    assert "C21" in report.uncovered_gates
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("actual_gate", True, "actual_gate"),
+        ("actual_failure_code", 1, "actual_failure_code"),
+    ],
+)
+def test_observation_gate_failure_pair_is_type_strict(
+    field: str, value: object, message: str
+) -> None:
+    kwargs = {
+        "subject_id": "RawHistoryHead",
+        "subject_kind": SubjectKind.MUTANT,
+        "source_digest": SOURCE,
+        "execution_seed": 41,
+        "outcome": ObservationOutcome.KILLED,
+        "actual_gate": "C02",
+        "actual_failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+        "decisive_record_digest": RECORD,
+    }
+    kwargs[field] = value
+    with pytest.raises(ProtocolViolation, match=message):
+        MutationObservation(**kwargs)
+
+
 def test_specificity_rejection_prevents_freeze_even_when_classified_baseline() -> None:
     row = MutationObservation(
         "DeclaredFullHistoryBaseline",
@@ -106,7 +154,7 @@ def test_specificity_rejection_prevents_freeze_even_when_classified_baseline() -
     assert not report.freeze_ready
 
 
-def test_every_gate_requires_an_actual_decisive_record() -> None:
+def test_every_registry_coverable_gate_requires_an_actual_decisive_record() -> None:
     # Produce at least one valid kill per mutant, then add targeted executions
     # until every gate has a decisive record.  This is registry mechanics only;
     # real freeze evidence must come from actual detector transcripts.
@@ -115,9 +163,18 @@ def test_every_gate_requires_an_actual_decisive_record() -> None:
     for gate_spec in GATE_SPECS:
         if gate_spec.gate_id in covered:
             continue
-        mutant = next(
-            spec for spec in MUTANT_SPECS if gate_spec.gate_id in spec.expected_gates
-        )
+        candidates = [
+            spec
+            for spec in MUTANT_SPECS
+            if gate_spec.gate_id in spec.expected_gates
+            and any(
+                code in gate_spec.allowed_failure_codes
+                for code in spec.expected_failure_codes
+            )
+        ]
+        if not candidates:
+            continue
+        mutant = candidates[0]
         rows.append(
             MutationObservation(
                 mutant.mutant_id,
@@ -136,10 +193,11 @@ def test_every_gate_requires_an_actual_decisive_record() -> None:
         )
     rows.extend(pass_control(spec.control_id) for spec in SPECIFICITY_CONTROLS)
     report = evaluate_mutation_matrix(rows)
-    assert report.freeze_ready
-    assert report.uncovered_gates == ()
+    assert not report.freeze_ready
+    assert report.benchmark_status == "HARNESS_INCOMPLETE"
+    assert report.uncovered_gates == ("C01",)
     wire = report.to_wire()
-    assert wire["benchmark_status"] == "MUTATION-GATES-PASS"
+    assert wire["benchmark_status"] == "HARNESS_INCOMPLETE"
     assert json.loads(report.canonical_bytes()) == wire
 
 
@@ -154,6 +212,12 @@ def test_registry_has_exact_c01_c33_and_declared_contract_subjects() -> None:
         f"C{index:02d}" for index in range(1, 34)
     )
     assert len(MUTANT_SPECS) == 26
+    assert sum(len(row.expected_gates) for row in MUTANT_SPECS) == 56
+    by_id = {row.mutant_id: row for row in MUTANT_SPECS}
+    assert "C01" not in by_id["QueryReencoder"].expected_gates
+    assert "C11" not in by_id["TrainerTargetSmuggler"].expected_gates
+    assert "C11" not in by_id["FutureReader"].expected_gates
+    assert all("C01" not in row.expected_gates for row in MUTANT_SPECS)
     assert {row.control_id for row in SPECIFICITY_CONTROLS} == {
         "ExplicitSeedStochasticState",
         "BehaviorEquivalentSerialization",

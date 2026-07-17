@@ -252,18 +252,18 @@ MUTANT_SPECS: tuple[MutantSpec, ...] = (
     MutantSpec("GlobalSecondState", _gates("C04 C05 C15"), ("UCM-F006-HIDDEN_PATIENT_CACHE",)),
     MutantSpec("FileHandleState", _gates("C04 C07 C09"), ("UCM-F008-STATE_NOT_CLOSED",)),
     MutantSpec("RawHistoryHead", _gates("C02 C09"), ("UCM-F004-HEAD_HISTORY_ACCESS",)),
-    MutantSpec("TrainerTargetSmuggler", _gates("C07 C08 C10 C11 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
+    MutantSpec("TrainerTargetSmuggler", _gates("C07 C08 C10 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
     MutantSpec("HistoryInBlob", _gates("C27 C31"), ("UCM-F018-FULL_HISTORY_MISCLAIM",)),
     MutantSpec("MutableCheckpoint", _gates("C06"), ("UCM-F009-MODEL_MUTATION",)),
     MutantSpec("WarmFutureCache", _gates("C05 C10 C12 C23"), ("UCM-F001-FUTURE_LEAK", "UCM-F011-TIME_VISIBILITY_VIOLATION")),
     MutantSpec("AvailabilityOffByOne", _gates("C11"), ("UCM-F011-TIME_VISIBILITY_VIOLATION",)),
     MutantSpec("TrueStateReader", _gates("C08 C09"), ("UCM-F002-ORACLE_TRUE_STATE_ACCESS",)),
-    MutantSpec("FutureReader", _gates("C08 C09 C10 C11 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
+    MutantSpec("FutureReader", _gates("C08 C09 C10 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
     MutantSpec("TestIdSwitch", _gates("C13 C14"), ("UCM-F003-TEST_ID_BRANCH",)),
     MutantSpec("WorldNameSwitch", _gates("C13 C14"), ("UCM-F003-TEST_ID_BRANCH",)),
     MutantSpec("ImplicitRNGState", _gates("C04 C05 C28 C30"), ("UCM-F020-NONREPRODUCIBLE",)),
     MutantSpec("QuerySmuggler", _gates("C03 C29"), ("UCM-F005-TASK_SPECIFIC_STATE",)),
-    MutantSpec("QueryReencoder", _gates("C01 C02 C03 C26 C29 C32"), ("UCM-F004-HEAD_HISTORY_ACCESS", "UCM-F005-TASK_SPECIFIC_STATE", "UCM-F013-SPLIT_TRANSITION_CORE")),
+    MutantSpec("QueryReencoder", _gates("C02 C03 C26 C29 C32"), ("UCM-F004-HEAD_HISTORY_ACCESS", "UCM-F005-TASK_SPECIFIC_STATE", "UCM-F013-SPLIT_TRANSITION_CORE")),
     MutantSpec("CounterfactualMutator", _gates("C16"), ("UCM-F012-QUERY_MUTATES_FACT",)),
     MutantSpec("NoOpMeansStop", _gates("C17"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
     MutantSpec("PlanMeansPerformed", _gates("C18"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
@@ -310,6 +310,7 @@ def evaluate_mutation_matrix(
         raise ProtocolViolation("duplicate mutation observation identity")
 
     mutant_by_id = {row.mutant_id: row for row in MUTANT_SPECS}
+    gate_by_id = {row.gate_id: row for row in GATE_SPECS}
     control_by_id = {row.control_id: row for row in SPECIFICITY_CONTROLS}
     valid_kills: set[str] = set()
     covered_gates: set[str] = set()
@@ -321,10 +322,13 @@ def evaluate_mutation_matrix(
             spec = mutant_by_id.get(row.subject_id)
             if spec is None:
                 raise ProtocolViolation(f"unknown mutant observation {row.subject_id!r}")
+            gate_spec = gate_by_id.get(row.actual_gate)
             valid = (
                 row.outcome is ObservationOutcome.KILLED
                 and row.actual_gate in spec.expected_gates
                 and row.actual_failure_code in spec.expected_failure_codes
+                and gate_spec is not None
+                and row.actual_failure_code in gate_spec.allowed_failure_codes
                 and row.decisive_record_digest is not None
             )
             if valid:

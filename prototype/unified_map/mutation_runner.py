@@ -4053,8 +4053,13 @@ def _source_digest(
 
 
 def _decisive_finding(
-    findings: tuple[ComplianceFinding, ...], expected_failure_code: str
+    findings: tuple[ComplianceFinding, ...],
+    expected_failure_code: str,
+    *,
+    expected_gate: str,
 ) -> ComplianceFinding | None:
+    if not _direct_gate_allows_failure_code(expected_gate, expected_failure_code):
+        return None
     matches = [
         finding
         for finding in findings
@@ -4067,7 +4072,10 @@ def _decisive_finding(
         raise ProtocolViolation(
             f"multiple decisive findings for {expected_failure_code}"
         )
-    return matches[0] if matches else None
+    if not matches:
+        return None
+    finding = matches[0]
+    return finding if expected_gate in _finding_gate_tokens(finding) else None
 
 
 def _finding_gate_tokens(finding: ComplianceFinding) -> frozenset[str]:
@@ -4075,6 +4083,19 @@ def _finding_gate_tokens(finding: ComplianceFinding) -> frozenset[str]:
         token
         for token in finding.gate.replace("/", " ").replace("-", " ").split()
         if len(token) == 3 and token.startswith("C") and token[1:].isdigit()
+    )
+
+
+def _direct_gate_allows_failure_code(gate: object, failure_code: object) -> bool:
+    from . import mutation_matrix
+
+    return (
+        type(gate) is str
+        and type(failure_code) is str
+        and any(
+            spec.gate_id == gate and failure_code in spec.allowed_failure_codes
+            for spec in mutation_matrix.GATE_SPECS
+        )
     )
 
 
@@ -4849,13 +4870,10 @@ def run_portable_mutation_evidence(
                 errors.append(typed_error)
             try:
                 decisive = _decisive_finding(
-                    report.findings, case.expected_failure_code
+                    report.findings,
+                    case.expected_failure_code,
+                    expected_gate=case.decisive_gate,
                 )
-                if (
-                    decisive is not None
-                    and case.decisive_gate not in _finding_gate_tokens(decisive)
-                ):
-                    decisive = None
                 harness_incomplete = harness_incomplete or any(
                     finding.verdict is ComplianceVerdict.INCOMPLETE
                     and finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"

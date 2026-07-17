@@ -619,8 +619,12 @@ def test_source_binding_tracks_live_adjudicator_and_wire_parser(
 
     original_decisive = mutation_runner._decisive_finding
 
-    def patched_decisive(findings, expected_failure_code):
-        return original_decisive(findings, expected_failure_code)
+    def patched_decisive(findings, expected_failure_code, *, expected_gate):
+        return original_decisive(
+            findings,
+            expected_failure_code,
+            expected_gate=expected_gate,
+        )
 
     monkeypatch.setattr(
         mutation_runner, "_decisive_finding", patched_decisive
@@ -641,6 +645,48 @@ def test_source_binding_tracks_live_adjudicator_and_wire_parser(
     )
     parser_patched = _source_digest("HonestSeededControl", probes)
     assert parser_patched != baseline
+
+
+def test_decisive_finding_requires_direct_gate_failure_membership() -> None:
+    finding = compliance.ComplianceFinding(
+        gate="C21/C22-update-consistency",
+        verdict=ComplianceVerdict.FAIL,
+        failure_code="UCM-F019-UPDATE_INCONSISTENT",
+        detail="composite detector label",
+    )
+    assert (
+        mutation_runner._decisive_finding(
+            (finding,),
+            "UCM-F019-UPDATE_INCONSISTENT",
+            expected_gate="C21",
+        )
+        is None
+    )
+    assert (
+        mutation_runner._decisive_finding(
+            (finding,),
+            "UCM-F019-UPDATE_INCONSISTENT",
+            expected_gate="C22",
+        )
+        is finding
+    )
+
+
+@pytest.mark.parametrize(
+    ("gate", "failure_code"),
+    [
+        (True, "UCM-F019-UPDATE_INCONSISTENT"),
+        (1, "UCM-F019-UPDATE_INCONSISTENT"),
+        ("C22", True),
+        ("C22", 1),
+    ],
+)
+def test_runner_direct_gate_failure_membership_is_type_strict(
+    gate: object, failure_code: object
+) -> None:
+    assert not mutation_runner._direct_gate_allows_failure_code(
+        gate, failure_code
+    )
 
 
 def test_callable_reference_rejects_truly_orphaned_function() -> None:

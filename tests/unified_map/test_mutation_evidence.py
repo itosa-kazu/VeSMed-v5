@@ -4427,6 +4427,56 @@ def test_failure_codes_decision_and_decisive_payloads_are_semantically_closed() 
         duplicate_decisive_code.finalize()
 
 
+def test_composite_finding_cannot_lend_failure_code_to_actual_gate(
+    monkeypatch,
+) -> None:
+    contracts = list(mutation_evidence._PORTABLE_MUTATION_CONTRACTS)
+    row_index = next(
+        index
+        for index, row in enumerate(contracts)
+        if row[0] == "RawHistoryHead"
+    )
+    row = contracts[row_index]
+    # C01 owns only F007.  Mentioning valid lender C02 in the same finding
+    # label must not make the code-owned C01/F004 observation decisive.
+    contracts[row_index] = (*row[:2], "C01", *row[3:])
+    monkeypatch.setattr(
+        mutation_evidence, "_PORTABLE_MUTATION_CONTRACTS", tuple(contracts)
+    )
+    invalid = _invalid_kill_builder(
+        actual_gate="C01",
+        report={
+            "findings": [
+                {
+                    "gate": "C01/C02-composite-alias",
+                    "verdict": "fail",
+                    "failure_code": "UCM-F004-HEAD_HISTORY_ACCESS",
+                }
+            ],
+            "failure_codes": ["UCM-F004-HEAD_HISTORY_ACCESS"],
+        },
+    )
+    with pytest.raises(ProtocolViolation, match="directly allow"):
+        invalid.finalize()
+
+
+@pytest.mark.parametrize(
+    ("gate", "failure_code"),
+    [
+        (True, "UCM-F004-HEAD_HISTORY_ACCESS"),
+        (1, "UCM-F004-HEAD_HISTORY_ACCESS"),
+        ("C02", True),
+        ("C02", 1),
+    ],
+)
+def test_direct_gate_failure_membership_is_type_strict(
+    gate: object, failure_code: object
+) -> None:
+    assert not mutation_evidence._direct_gate_allows_failure_code(
+        gate, failure_code
+    )
+
+
 def test_specificity_pass_allows_only_fixed_scope_incomplete_findings() -> None:
     fixed_scope = _invalid_pass_builder(
         report={
