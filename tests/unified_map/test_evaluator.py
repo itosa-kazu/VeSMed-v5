@@ -601,6 +601,194 @@ def test_nonidentified_point_claim_is_f015_but_exact_identified_set_passes(
     assert exact_report.failures == ()
 
 
+def _w06_fixture_cell(record_id: str = "m1-c20-w06-channel-separation") -> ExpectedEvaluationCell:
+    return replace(
+        _cell(
+            record_id,
+            world="W06",
+            panel="observation-channel-only",
+            cohort=EvaluationCohort.PROBE,
+            task=EvaluationTask.INTERVENTION,
+            identification=IdentificationKind.POINT,
+        ),
+        horizon=4,
+        policy_alias="NoNewAction-vs-single-A1",
+        required_fixture_semantic=(
+            FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
+        ),
+    )
+
+
+def _w06_fixture_row(
+    cell: ExpectedEvaluationCell,
+    *,
+    mechanism_effect: tuple[float, float, float, float],
+) -> RawEvaluationRecord:
+    state = _fixture_state_response()
+
+    def rollout(
+        obs_0: tuple[float, float, float, float],
+        obs_1: tuple[float, float, float, float],
+        utility: float,
+    ) -> RolloutResponse:
+        return RolloutResponse(
+            RolloutResult(
+                ResultStatus.OK,
+                observable_predictions={
+                    "obs_0": {
+                        "family": "point_mass",
+                        "horizon": 4,
+                        "values": list(obs_0),
+                    },
+                    "obs_1": {
+                        "family": "point_mass",
+                        "horizon": 4,
+                        "values": list(obs_1),
+                    },
+                },
+                utility_prediction={"family": "point_mass", "value": utility},
+                metadata={},
+            )
+        )
+
+    no_action = rollout((0.0,) * 4, (0.0,) * 4, 0.0)
+    treated = rollout(
+        (-0.75, -0.1875, -0.046875, -0.01171875),
+        mechanism_effect,
+        1.0,
+    )
+    candidate = {
+        "protocol": "ucm-evaluator-fixture-candidate-cell/1",
+        "state_response": state.to_wire(),
+        "diagnosis_response": None,
+        "rollout_responses": [no_action.to_wire(), treated.to_wire()],
+    }
+    oracle = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w06_observation_channel_separation",
+        "public_history_digest": EMPTY_DIGEST,
+        "action_ids": ["NoNewAction", "A1"],
+        "channel_observable_id": "obs_0",
+        "mechanism_observable_id": "obs_1",
+        "horizon": 4,
+        "oracle_channel_effect": [-0.75, -0.1875, -0.046875, -0.01171875],
+        "oracle_mechanism_effect": [0.0, 0.0, 0.0, 0.0],
+        "latent_distribution_digest": digest_json({"same": "latent"}),
+        "latent_distributions_exact": True,
+        "oracle_utilities": [0.0, 1.0],
+        "mechanism_effect_threshold": 0.03,
+    }
+    return replace(
+        _record(
+            cell,
+            candidate_output=candidate,
+            oracle_record=oracle,
+            confidence=None,
+            chosen="A1",
+            action_ids=("NoNewAction", "A1"),
+            predicted=(0.0, 1.0),
+            oracle=(0.0, 1.0),
+            loss=0.0,
+        ),
+        state_hash=digest_json(state.to_wire()["state"]),
+        public_input_digest=EMPTY_DIGEST,
+    )
+
+
+def test_w06_observation_effect_cannot_be_reported_as_mechanism_recovery() -> None:
+    cell = _w06_fixture_cell()
+    conflated = _w06_fixture_row(
+        cell,
+        mechanism_effect=(-0.75, -0.1875, -0.046875, -0.01171875),
+    )
+    separated = _w06_fixture_row(cell, mechanism_effect=(0.0, 0.0, 0.0, 0.0))
+
+    bad_report = evaluate_records((conflated,), (), _manifest((cell,)))
+    good_report = evaluate_records((separated,), (), _manifest((cell,)))
+
+    assert bad_report.evidence_status is EvidenceStatus.COMPLETE
+    assert [issue.to_wire() for issue in bad_report.failures] == [
+        {
+            "code": "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+            "record_id": "m1-c20-w06-channel-separation",
+            "detail": (
+                "observation-only A1 was predicted to change the latent-mechanism "
+                "proxy: channel_effect=(-0.75, -0.1875, -0.046875, -0.01171875), "
+                "mechanism_effect=(-0.75, -0.1875, -0.046875, -0.01171875)"
+            ),
+        }
+    ]
+    assert good_report.evidence_status is EvidenceStatus.COMPLETE
+    assert good_report.failures == ()
+
+
+@pytest.mark.parametrize(
+    ("effect", "fails"),
+    [(0.03, False), (0.0300001, True), (-0.0300001, True)],
+)
+def test_w06_mechanism_effect_threshold_is_strict(effect: float, fails: bool) -> None:
+    cell = _w06_fixture_cell("w06-threshold")
+    row = _w06_fixture_row(cell, mechanism_effect=(effect, 0.0, 0.0, 0.0))
+    report = evaluate_records((row,), (), _manifest((cell,)))
+    assert (
+        any(issue.code == "UCM-F014-ACTION_SEMANTICS_CONFLATED" for issue in report.failures)
+        is fails
+    )
+
+
+def test_declared_w06_fixture_cannot_be_downgraded_and_resigned() -> None:
+    cell = _w06_fixture_cell("w06-downgrade")
+    valid = _w06_fixture_row(cell, mechanism_effect=(-0.75,) * 4)
+    oracle = dict(valid.oracle_record)
+    oracle["fixture_kind"] = "generic_intervention"
+    resigned = replace(
+        valid,
+        oracle_record=oracle,
+        oracle_record_digest=digest_json(oracle),
+    )
+
+    report = evaluate_records((resigned,), (), _manifest((cell,)))
+
+    assert report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert report.failures == ()
+    assert any(
+        issue.code == "UCM-F023-RESULT_EVIDENCE_LOSS"
+        and "required fixture semantic" in issue.detail
+        for issue in report.blockers
+    )
+
+
+def test_raw_w06_fixture_name_cannot_self_authorize_c20() -> None:
+    declared = _w06_fixture_cell("w06-raw-self-name")
+    generic = replace(declared, required_fixture_semantic=None)
+    row = _w06_fixture_row(
+        generic,
+        mechanism_effect=(-0.75, -0.1875, -0.046875, -0.01171875),
+    )
+
+    report = evaluate_records((row,), (), _manifest((generic,)))
+
+    assert report.evidence_status is EvidenceStatus.COMPLETE
+    assert report.failures == ()
+
+
+@pytest.mark.parametrize("field", ["predicted_utilities", "oracle_utilities"])
+def test_w06_extracted_utilities_require_exact_float_types(field: str) -> None:
+    cell = _w06_fixture_cell("w06-utility-type")
+    valid = _w06_fixture_row(cell, mechanism_effect=(0.0,) * 4)
+    downgraded = replace(valid, **{field: (0, 1)})
+
+    report = evaluate_records((downgraded,), (), _manifest((cell,)))
+
+    assert report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert report.failures == ()
+    assert any(
+        issue.code == "UCM-F023-RESULT_EVIDENCE_LOSS"
+        and "extracted fields differ" in issue.detail
+        for issue in report.blockers
+    )
+
+
 @pytest.mark.parametrize("downgrade", ["missing_protocol", "renamed_protocol", "wrong_kind"])
 def test_declared_w15b_fixture_cannot_be_downgraded_and_resigned(
     downgrade: str,

@@ -81,12 +81,13 @@ PORTABLE_SEMANTIC_PROBES = frozenset(
         "dangerous_collision",
         "full_history_disclosure",
         "nonidentified_set",
+        "observation_channel_separation",
         "unsafe_closed_world",
         "update_consistency",
         "warm_future_old_cut",
     }
 )
-PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/5"
+PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/6"
 # Portable compliance probes launch a cold isolated interpreter and re-hash the
 # code-owned authority surface.  Keep that budget source-bound here rather than
 # embedding a machine-sensitive literal at individual probe call sites.
@@ -1394,6 +1395,93 @@ class CorrectNonidentifiedSetControl(HonestSeededControl):
             },
             utility_prediction={},
             metadata={"claim": "identified-set"},
+        )
+
+
+_W06_OBSERVATION_CHANNEL_EFFECT = (0.75, 0.1875, 0.046875, 0.01171875)
+
+
+def _w06_observation_channel_probe_query(query: RolloutQuery) -> bool:
+    if query.horizon != 4 or query.requested_observables != ("obs_0", "obs_1"):
+        return False
+    if query.plan.kind is PlanKind.NO_NEW_ACTION:
+        return True
+    return (
+        query.plan.kind is PlanKind.ACTION_SEQUENCE
+        and query.plan.actions == (PlannedAction(0, "A1", {}),)
+    )
+
+
+class ObservationEqualsMechanismControl(HonestSeededControl):
+    """Mutant: treats W06 surface relief as latent mechanism recovery."""
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        if not _w06_observation_channel_probe_query(query):
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        signal = float(_state_dict(state).get("signal", 0.5))
+        treated = query.plan.kind is PlanKind.ACTION_SEQUENCE
+        effect = _W06_OBSERVATION_CHANNEL_EFFECT if treated else (0.0,) * 4
+        path = [signal - value for value in effect]
+        return RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={
+                observable: {
+                    "family": "point_mass",
+                    "horizon": 4,
+                    "values": list(path),
+                }
+                for observable in ("obs_0", "obs_1")
+            },
+            utility_prediction={
+                "family": "point_mass",
+                "value": 1.0 if treated else 0.0,
+            },
+            metadata={"mutant": "observation-equals-mechanism"},
+        )
+
+
+class CorrectObservationChannelSeparationControl(HonestSeededControl):
+    """Specificity helper: W06 A1 changes only the observed surface channel."""
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        if not _w06_observation_channel_probe_query(query):
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        signal = float(_state_dict(state).get("signal", 0.5))
+        treated = query.plan.kind is PlanKind.ACTION_SEQUENCE
+        effect = _W06_OBSERVATION_CHANNEL_EFFECT if treated else (0.0,) * 4
+        return RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={
+                "obs_0": {
+                    "family": "point_mass",
+                    "horizon": 4,
+                    "values": [signal - value for value in effect],
+                },
+                "obs_1": {
+                    "family": "point_mass",
+                    "horizon": 4,
+                    "values": [signal] * 4,
+                },
+            },
+            utility_prediction={
+                "family": "point_mass",
+                "value": 1.0 if treated else 0.0,
+            },
+            metadata={"claim": "observation-channel-separated"},
         )
 
 
@@ -2836,17 +2924,25 @@ def _report(
 EVALUATOR_SEMANTIC_PROBE_PROTOCOL = "ucm-evaluator-semantic-probe/1"
 EVALUATOR_PROBE_REQUEST_COUNTS = {
     "nonidentified_set": 6,
+    "observation_channel_separation": 6,
     "dangerous_collision": 20,
     "unsafe_closed_world": 16,
 }
 _EVALUATOR_PROBE_ORDER = (
     "nonidentified_set",
+    "observation_channel_separation",
     "dangerous_collision",
     "unsafe_closed_world",
 )
 _EVALUATOR_PROBE_CONTROLS = {
     "nonidentified_set": frozenset(
         {"NonIdPointEstimateControl", "CorrectNonidentifiedSetControl"}
+    ),
+    "observation_channel_separation": frozenset(
+        {
+            "ObservationEqualsMechanismControl",
+            "CorrectObservationChannelSeparationControl",
+        }
     ),
     "dangerous_collision": frozenset({"DangerousMeanCompressorControl"}),
     "unsafe_closed_world": frozenset({"UnsafeClosedWorldControl"}),
@@ -3218,6 +3314,285 @@ def _rebuild_nonidentified_artifact(
     report = evaluate_records((raw,), (), manifest)
     return _raw_artifact(
         probe="nonidentified_set",
+        control_class_name=control_class_name,
+        request_start=request_start,
+        request_records=request_records,
+        fixture=fixture,
+        oracle_records=[oracle_record],
+        manifest=manifest,
+        raw_records=(raw,),
+        raw_pairs=(),
+        evaluation_report=report,
+    )
+
+
+def _rebuild_observation_channel_separation_artifact(
+    *,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Rebuild the W06 C20 detector from live world and worker transcripts."""
+
+    from .evaluator import (
+        EvaluationCohort,
+        EvaluationManifest,
+        EvaluationSplit,
+        EvaluationTask,
+        ExpectedEvaluationCell,
+        FixtureSemantic,
+        IdentificationKind,
+        OODAttribution,
+        RawEvaluationRecord,
+        evaluate_records,
+    )
+    from .worlds.base import WorldSplit
+    from .worlds.w06 import World06
+
+    probe = "observation_channel_separation"
+    if control_class_name not in _EVALUATOR_PROBE_CONTROLS[probe]:
+        raise ProtocolViolation("observation-channel probe control mismatch")
+    if len(request_records) != EVALUATOR_PROBE_REQUEST_COUNTS[probe]:
+        raise ProtocolViolation("observation-channel probe request count mismatch")
+    world = World06()
+    episode = world.generate_episode(WorldSplit.SEALED_TEST, seed, 0)
+    policies = world.policy_set(4)[:2]
+    if (
+        len(policies) != 2
+        or policies[0].kind is not PlanKind.NO_NEW_ACTION
+        or policies[1].kind is not PlanKind.ACTION_SEQUENCE
+        or policies[1].actions != (PlannedAction(0, "A1", {}),)
+    ):
+        raise ProtocolViolation("W06 probe policy order drifted")
+    queries = tuple(
+        RolloutQuery(
+            4,
+            policy,
+            ("obs_0", "obs_1"),
+            _probe_utility_digest(probe, "W06", 4),
+        )
+        for policy in policies
+    )
+
+    init_a_request, init_a_response = _validated_probe_success(
+        request_records[0],
+        control_class_name=control_class_name,
+        operation=Operation.INITIALIZE,
+        seed=seed,
+    )
+    init_b_request, init_b_response = _validated_probe_success(
+        request_records[1],
+        control_class_name=control_class_name,
+        operation=Operation.INITIALIZE,
+        seed=seed,
+    )
+    if (
+        not isinstance(init_a_request, InitializeRequest)
+        or not isinstance(init_b_request, InitializeRequest)
+        or type(init_a_response) is not StateResponse
+        or type(init_b_response) is not StateResponse
+        or init_a_request.history.to_wire() != episode.public_history.to_wire()
+        or init_b_request.to_wire() != init_a_request.to_wire()
+        or init_b_response.to_wire() != init_a_response.to_wire()
+    ):
+        raise ProtocolViolation("W06 initialize replay/fixture binding mismatch")
+
+    rollout_responses: list[RolloutResponse] = []
+    predicted_utilities: list[float] = []
+    for policy_index, (query, left_index, right_index) in enumerate(
+        ((queries[0], 2, 3), (queries[1], 4, 5))
+    ):
+        left_request, left_response = _validated_probe_success(
+            request_records[left_index],
+            control_class_name=control_class_name,
+            operation=Operation.ROLLOUT,
+            seed=seed + 2,
+        )
+        right_request, right_response = _validated_probe_success(
+            request_records[right_index],
+            control_class_name=control_class_name,
+            operation=Operation.ROLLOUT,
+            seed=seed + 2,
+        )
+        if (
+            not isinstance(left_request, RolloutRequest)
+            or not isinstance(right_request, RolloutRequest)
+            or type(left_response) is not RolloutResponse
+            or type(right_response) is not RolloutResponse
+            or left_request.query.to_wire() != query.to_wire()
+            or left_request.state.payload != init_a_response.state
+            or right_request.to_wire() != left_request.to_wire()
+            or right_response.to_wire() != left_response.to_wire()
+        ):
+            raise ProtocolViolation(
+                f"W06 policy {policy_index} request/replay binding mismatch"
+            )
+        utility = left_response.result.utility_prediction
+        if (
+            left_response.result.status is not ResultStatus.OK
+            or type(utility) is not dict
+            or set(utility) != {"family", "value"}
+            or utility["family"] != "point_mass"
+            or type(utility["value"]) is not float
+            or not math.isfinite(utility["value"])
+        ):
+            raise ProtocolViolation("W06 candidate utility is not an exact point")
+        rollout_responses.append(left_response)
+        predicted_utilities.append(utility["value"])
+
+    oracles = tuple(
+        world.counterfactual(episode, policy, 4, seed + 2) for policy in policies
+    )
+    latent_distributions = tuple(oracle.latent_distribution for oracle in oracles)
+    if canonical_json_bytes(latent_distributions[0]) != canonical_json_bytes(
+        latent_distributions[1]
+    ):
+        raise ProtocolViolation("W06 A1 changed the live latent distribution")
+    if any(
+        oracle.outcome_distribution.get("latent_action_path") != "none"
+        for oracle in oracles
+    ):
+        raise ProtocolViolation("W06 live oracle acquired a latent action path")
+
+    def mean_path(oracle: Any, observable: str) -> tuple[float, ...]:
+        rows = oracle.observation_distribution.get(observable)
+        if (
+            type(rows) is not list
+            or len(rows) != 4
+            or any(
+                type(row) is not dict
+                or type(row.get("mean")) is not float
+                or not math.isfinite(row["mean"])
+                for row in rows
+            )
+        ):
+            raise ProtocolViolation(f"W06 oracle {observable} path is malformed")
+        return tuple(row["mean"] for row in rows)
+
+    oracle_paths = tuple(
+        {
+            observable: mean_path(oracle, observable)
+            for observable in ("obs_0", "obs_1")
+        }
+        for oracle in oracles
+    )
+    channel_effect = tuple(
+        treated - control
+        for control, treated in zip(
+            oracle_paths[0]["obs_0"], oracle_paths[1]["obs_0"], strict=True
+        )
+    )
+    mechanism_effect = tuple(
+        treated - control
+        for control, treated in zip(
+            oracle_paths[0]["obs_1"], oracle_paths[1]["obs_1"], strict=True
+        )
+    )
+    expected_channel = (-0.75, -0.1875, -0.046875, -0.01171875)
+    if any(
+        not math.isclose(value, expected, rel_tol=0.0, abs_tol=1e-12)
+        for value, expected in zip(channel_effect, expected_channel, strict=True)
+    ) or any(value != 0.0 for value in mechanism_effect):
+        raise ProtocolViolation("W06 live observation/latent effect contract drifted")
+
+    oracle_utilities = tuple(float(oracle.expected_utility) for oracle in oracles)
+    fixture = {
+        "protocol": "ucm-evaluator-fixture/1",
+        "world_slot": "W06",
+        "panel_id": "observation-channel-only",
+        "public_history": episode.public_history.to_wire(),
+        "public_history_digest": episode.public_history.digest,
+        "action_ids": ["NoNewAction", "A1"],
+        "oracle_channel_effect": list(channel_effect),
+        "oracle_mechanism_effect": list(mechanism_effect),
+        "latent_distributions_exact": True,
+        "candidate_private_fields_exposed": False,
+    }
+    oracle_record = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w06_observation_channel_separation",
+        "public_history_digest": episode.public_history.digest,
+        "action_ids": ["NoNewAction", "A1"],
+        "channel_observable_id": "obs_0",
+        "mechanism_observable_id": "obs_1",
+        "horizon": 4,
+        "oracle_channel_effect": list(channel_effect),
+        "oracle_mechanism_effect": list(mechanism_effect),
+        "latent_distribution_digest": digest_json(latent_distributions[0]),
+        "latent_distributions_exact": True,
+        "oracle_utilities": list(oracle_utilities),
+        "mechanism_effect_threshold": 0.03,
+    }
+    scope_digest = digest_json(
+        {
+            "protocol": "ucm-evaluator-probe-scope/1",
+            "fixture": fixture,
+            "oracle": oracle_record,
+            "queries": [query.to_wire() for query in queries],
+        }
+    )
+    expected = ExpectedEvaluationCell(
+        record_id="m1-c20-w06-channel-separation",
+        world_slot="W06",
+        panel_id="observation-channel-only",
+        episode_alias="w06-observation-channel-only",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.INTERVENTION,
+        scope_digest=scope_digest,
+        split=EvaluationSplit.TEST,
+        family_id="M1-evaluator-conformance",
+        cut_alias="post-public-history",
+        training_replicate_id="train-01",
+        evaluation_replicate_id="eval-01",
+        horizon=4,
+        policy_alias="NoNewAction-vs-single-A1",
+        ood_attribution=OODAttribution.NOT_APPLICABLE,
+        identification=IdentificationKind.POINT,
+        required_fixture_semantic=(
+            FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
+        ),
+    )
+    candidate_output = _candidate_cell_wire(
+        init_a_response, None, tuple(rollout_responses)
+    )
+    chosen_index = max(
+        range(len(predicted_utilities)), key=predicted_utilities.__getitem__
+    )
+    raw = RawEvaluationRecord(
+        record_id=expected.record_id,
+        world_slot=expected.world_slot,
+        panel_id=expected.panel_id,
+        episode_alias=expected.episode_alias,
+        cohort=expected.cohort,
+        task=expected.task,
+        result_status=ResultStatus.OK,
+        scope_digest=scope_digest,
+        split=expected.split,
+        family_id=expected.family_id,
+        cut_alias=expected.cut_alias,
+        training_replicate_id=expected.training_replicate_id,
+        evaluation_replicate_id=expected.evaluation_replicate_id,
+        horizon=expected.horizon,
+        policy_alias=expected.policy_alias,
+        state_hash=digest_json(init_a_response.to_wire()["state"]),
+        public_input_digest=episode.public_history.digest,
+        query_digest=digest_json([query.to_wire() for query in queries]),
+        candidate_output=candidate_output,
+        candidate_output_digest=digest_json(candidate_output),
+        oracle_record=oracle_record,
+        oracle_record_digest=digest_json(oracle_record),
+        analysis_weight=0.0,
+        loss=0.0,
+        chosen_action_id=("NoNewAction", "A1")[chosen_index],
+        action_ids=("NoNewAction", "A1"),
+        predicted_utilities=tuple(predicted_utilities),
+        oracle_utilities=oracle_utilities,
+    )
+    manifest = EvaluationManifest(scope_digest, (expected,))
+    report = evaluate_records((raw,), (), manifest)
+    return _raw_artifact(
+        probe=probe,
         control_class_name=control_class_name,
         request_start=request_start,
         request_records=request_records,
@@ -3801,6 +4176,13 @@ def _rebuild_evaluator_probe_artifact(
             request_start=request_start,
             request_records=request_records,
         )
+    elif probe == "observation_channel_separation":
+        artifact = _rebuild_observation_channel_separation_artifact(
+            control_class_name=control_class_name,
+            seed=seed,
+            request_start=request_start,
+            request_records=request_records,
+        )
     elif probe == "dangerous_collision":
         artifact = _rebuild_dangerous_collision_artifact(
             control_class_name=control_class_name,
@@ -3832,6 +4214,9 @@ def _execute_evaluator_probe(
 ) -> ComplianceFinding:
     gate = {
         "nonidentified_set": "C19-nonidentified-effect-set",
+        "observation_channel_separation": (
+            "C20-observation-state-channel-separation"
+        ),
         "dangerous_collision": "C24-full-pair-dangerous-collision",
         "unsafe_closed_world": "C25-attributable-ood-forced-match",
     }.get(probe)
@@ -3872,6 +4257,33 @@ def _execute_evaluator_probe(
         init_b = fresh.invoke(InitializeRequest(history, seed))
         if type(init_a.response) is not StateResponse or type(init_b.response) is not StateResponse:
             raise ProtocolViolation("W15B evaluator probe initialize returned no state")
+        state = CandidateStateInput(init_a.response.state)
+        for query in queries:
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+    elif probe == "observation_channel_separation":
+        from .worlds.base import WorldSplit
+        from .worlds.w06 import World06
+
+        world = World06()
+        episode = world.generate_episode(WorldSplit.SEALED_TEST, seed, 0)
+        policies = world.policy_set(4)[:2]
+        queries = tuple(
+            RolloutQuery(
+                4,
+                policy,
+                ("obs_0", "obs_1"),
+                _probe_utility_digest(probe, "W06", 4),
+            )
+            for policy in policies
+        )
+        init_a = fresh.invoke(InitializeRequest(episode.public_history, seed))
+        init_b = fresh.invoke(InitializeRequest(episode.public_history, seed))
+        if (
+            type(init_a.response) is not StateResponse
+            or type(init_b.response) is not StateResponse
+        ):
+            raise ProtocolViolation("W06 evaluator probe initialize returned no state")
         state = CandidateStateInput(init_a.response.state)
         for query in queries:
             fresh.invoke(RolloutRequest(state, query, seed + 2))
@@ -3946,11 +4358,7 @@ def _execute_evaluator_probe(
     failures = report["failures"]
     if blockers:
         return ComplianceFinding(
-            {
-                "nonidentified_set": "C19-nonidentified-effect-set",
-                "dangerous_collision": "C24-full-pair-dangerous-collision",
-                "unsafe_closed_world": "C25-attributable-ood-forced-match",
-            }[probe],
+            gate,
             ComplianceVerdict.INCOMPLETE,
             "UCM-E003-HARNESS_INCOMPLETE",
             "typed evaluator probe produced evidence blockers",
@@ -3962,11 +4370,19 @@ def _execute_evaluator_probe(
             if control_class_name == "CorrectNonidentifiedSetControl"
             else "UCM-F015-CONDITIONING_AS_INTERVENTION"
         ),
+        "observation_channel_separation": (
+            None
+            if control_class_name == "CorrectObservationChannelSeparationControl"
+            else "UCM-F014-ACTION_SEMANTICS_CONFLATED"
+        ),
         "dangerous_collision": "UCM-F016-DANGEROUS_COLLISION",
         "unsafe_closed_world": "UCM-F017-OOD_FORCED_MATCH",
     }[probe]
     expected_record_id = {
         "nonidentified_set": "m1-c19-w15b",
+        "observation_channel_separation": (
+            "m1-c20-w06-channel-separation"
+        ),
         "dangerous_collision": "m1-c24-w04-pair",
         "unsafe_closed_world": "m1-c25-w18-attributable",
     }[probe]
@@ -3976,41 +4392,44 @@ def _execute_evaluator_probe(
     if expected_code is None:
         if failure_identities:
             return ComplianceFinding(
-                "C19-nonidentified-effect-set",
+                gate,
                 ComplianceVerdict.INCOMPLETE,
                 "UCM-E003-HARNESS_INCOMPLETE",
-                "correct identified-set control produced an unexpected evaluator failure",
+                "correct semantic control produced an unexpected evaluator failure",
                 artifact,
             )
         return ComplianceFinding(
-            "C19-nonidentified-effect-set",
+            gate,
             ComplianceVerdict.PASS,
             None,
-            "actual W15B rollouts preserve the exact public-equivalence effect set",
+            {
+                "nonidentified_set": (
+                    "actual W15B rollouts preserve the exact public-equivalence effect set"
+                ),
+                "observation_channel_separation": (
+                    "actual W06 rollouts keep observation relief separate from "
+                    "the latent-mechanism proxy"
+                ),
+            }[probe],
             artifact,
         )
     if failure_identities != [(expected_code, expected_record_id)]:
         return ComplianceFinding(
-            {
-                "nonidentified_set": "C19-nonidentified-effect-set",
-                "dangerous_collision": "C24-full-pair-dangerous-collision",
-                "unsafe_closed_world": "C25-attributable-ood-forced-match",
-            }[probe],
+            gate,
             ComplianceVerdict.INCOMPLETE,
             "UCM-E003-HARNESS_INCOMPLETE",
             "evaluator probe did not produce its one code-owned decisive issue",
             artifact,
         )
     return ComplianceFinding(
-        {
-            "nonidentified_set": "C19-nonidentified-effect-set",
-            "dangerous_collision": "C24-full-pair-dangerous-collision",
-            "unsafe_closed_world": "C25-attributable-ood-forced-match",
-        }[probe],
+        gate,
         ComplianceVerdict.FAIL,
         expected_code,
         {
             "nonidentified_set": "candidate collapsed a nonidentified effect set to a point",
+            "observation_channel_separation": (
+                "observation-channel relief was reported as latent-mechanism recovery"
+            ),
             "dangerous_collision": "full W04 pair behavior merged publicly distinct endpoints",
             "unsafe_closed_world": "attributable W18 OOD was forced known and assigned unsafe A1",
         }[probe],
@@ -4736,6 +5155,9 @@ def evaluate_candidate_compliance(
                 ComplianceFinding(
                     {
                         "nonidentified_set": "C19-nonidentified-effect-set",
+                        "observation_channel_separation": (
+                            "C20-observation-state-channel-separation"
+                        ),
                         "dangerous_collision": "C24-full-pair-dangerous-collision",
                         "unsafe_closed_world": "C25-attributable-ood-forced-match",
                     }[evaluator_probe],
@@ -4873,6 +5295,8 @@ def control_entrypoint(
         "HonestSeededControl",
         "NonIdPointEstimateControl",
         "CorrectNonidentifiedSetControl",
+        "ObservationEqualsMechanismControl",
+        "CorrectObservationChannelSeparationControl",
         "DangerousMeanCompressorControl",
         "UnsafeClosedWorldControl",
         "GlobalSecondStateControl",

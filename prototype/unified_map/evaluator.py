@@ -116,9 +116,17 @@ class FixtureSemantic(str, Enum):
     W15B_NONIDENTIFIED_SET = "w15b_nonidentified_set"
     W18_OOD = "w18_ood"
     W04_DANGEROUS_COLLISION = "w04_dangerous_collision"
+    W06_OBSERVATION_CHANNEL_SEPARATION = "w06_observation_channel_separation"
 
 
 _CELL_FIXTURE_SEMANTICS = frozenset(
+    {
+        FixtureSemantic.W15B_NONIDENTIFIED_SET,
+        FixtureSemantic.W18_OOD,
+        FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION,
+    }
+)
+_LEGACY_RAW_SELF_IDENTIFYING_CELL_FIXTURES = frozenset(
     {FixtureSemantic.W15B_NONIDENTIFIED_SET, FixtureSemantic.W18_OOD}
 )
 
@@ -235,6 +243,22 @@ class ExpectedEvaluationCell:
                 )
             ):
                 raise ProtocolViolation("W18 fixture semantic requires an OOD probe")
+            if (
+                self.required_fixture_semantic
+                is FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
+                and (
+                    self.world_slot != "W06"
+                    or self.panel_id != "observation-channel-only"
+                    or self.task is not EvaluationTask.INTERVENTION
+                    or self.cohort is not EvaluationCohort.PROBE
+                    or self.identification is not IdentificationKind.POINT
+                    or self.horizon != 4
+                )
+            ):
+                raise ProtocolViolation(
+                    "W06 fixture semantic requires the point-identified "
+                    "observation-channel intervention probe"
+                )
 
     def to_wire(self) -> dict[str, Any]:
         body = {
@@ -1087,6 +1111,9 @@ _FIXTURE_ORACLE_PROTOCOL = "ucm-evaluator-fixture-oracle/1"
 _FIXTURE_PAIR_CANDIDATE_PROTOCOL = "ucm-evaluator-fixture-pair-candidate/1"
 _FIXTURE_PAIR_ORACLE_PROTOCOL = "ucm-evaluator-fixture-pair-oracle/1"
 _IDENTIFIED_INTERVAL_PROTOCOL = "ucm-identified-mean-interval/1"
+_W06_MECHANISM_EFFECT_THRESHOLD = 0.03
+_W06_ORACLE_CHANNEL_EFFECT = (-0.75, -0.1875, -0.046875, -0.01171875)
+_W06_ORACLE_MECHANISM_EFFECT = (0.0, 0.0, 0.0, 0.0)
 
 
 def _closed_fixture_object(
@@ -1143,6 +1170,156 @@ def _point_utility(response: RolloutResponse, label: str) -> float:
     if not math.isfinite(value["value"]):
         raise ProtocolViolation(f"{label} utility must be finite")
     return value["value"]
+
+
+def _point_trajectories(
+    response: RolloutResponse,
+    *,
+    label: str,
+    observables: tuple[str, ...],
+    horizon: int,
+) -> dict[str, tuple[float, ...]]:
+    """Parse exact point trajectories used by one manifest-declared fixture."""
+
+    if response.result.status is not ResultStatus.OK:
+        raise ProtocolViolation(f"{label} is not an ok rollout")
+    predictions = response.result.observable_predictions
+    if type(predictions) is not dict or set(predictions) != set(observables):
+        raise ProtocolViolation(f"{label} observable set mismatch")
+    parsed: dict[str, tuple[float, ...]] = {}
+    for observable in observables:
+        value = _closed_fixture_object(
+            predictions[observable],
+            frozenset({"family", "horizon", "values"}),
+            f"{label} {observable} point trajectory",
+        )
+        values = value["values"]
+        if (
+            value["family"] != "point_mass"
+            or type(value["horizon"]) is not int
+            or value["horizon"] != horizon
+            or type(values) is not list
+            or len(values) != horizon
+            or any(type(item) is not float or not math.isfinite(item) for item in values)
+        ):
+            raise ProtocolViolation(
+                f"{label} {observable} must be an exact finite horizon-{horizon} point path"
+            )
+        parsed[observable] = tuple(values)
+    return parsed
+
+
+def _w06_observation_channel_projection(
+    row: RawEvaluationRecord,
+) -> tuple[
+    tuple[str, ...],
+    tuple[float, ...],
+    str,
+    tuple[float, ...],
+    tuple[float, ...],
+]:
+    """Rebuild W06 candidate effects from raw responses, not extracted fields."""
+
+    oracle = _closed_fixture_object(
+        row.oracle_record,
+        frozenset(
+            {
+                "protocol",
+                "fixture_kind",
+                "public_history_digest",
+                "action_ids",
+                "channel_observable_id",
+                "mechanism_observable_id",
+                "horizon",
+                "oracle_channel_effect",
+                "oracle_mechanism_effect",
+                "latent_distribution_digest",
+                "latent_distributions_exact",
+                "oracle_utilities",
+                "mechanism_effect_threshold",
+            }
+        ),
+        "W06 fixture oracle",
+    )
+    if (
+        oracle["protocol"] != _FIXTURE_ORACLE_PROTOCOL
+        or oracle["fixture_kind"]
+        != FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION.value
+        or oracle["action_ids"] != ["NoNewAction", "A1"]
+        or oracle["channel_observable_id"] != "obs_0"
+        or oracle["mechanism_observable_id"] != "obs_1"
+        or type(oracle["horizon"]) is not int
+        or oracle["horizon"] != 4
+        or oracle["latent_distributions_exact"] is not True
+        or type(oracle["mechanism_effect_threshold"]) is not float
+        or oracle["mechanism_effect_threshold"] != _W06_MECHANISM_EFFECT_THRESHOLD
+    ):
+        raise ProtocolViolation("W06 fixture oracle contract mismatch")
+    _digest(oracle["public_history_digest"], "W06 public history digest")
+    _digest(oracle["latent_distribution_digest"], "W06 latent distribution digest")
+    for field_name, expected in (
+        ("oracle_channel_effect", _W06_ORACLE_CHANNEL_EFFECT),
+        ("oracle_mechanism_effect", _W06_ORACLE_MECHANISM_EFFECT),
+    ):
+        values = oracle[field_name]
+        if (
+            type(values) is not list
+            or len(values) != 4
+            or any(type(item) is not float or not math.isfinite(item) for item in values)
+            or any(
+                not math.isclose(item, target, rel_tol=0.0, abs_tol=1e-12)
+                for item, target in zip(values, expected, strict=True)
+            )
+        ):
+            raise ProtocolViolation(f"W06 {field_name} contradicts live fixture geometry")
+    oracle_utilities = oracle["oracle_utilities"]
+    if (
+        type(oracle_utilities) is not list
+        or len(oracle_utilities) != 2
+        or any(
+            type(item) is not float or not math.isfinite(item)
+            for item in oracle_utilities
+        )
+    ):
+        raise ProtocolViolation("W06 oracle utilities are malformed")
+
+    candidate = _fixture_candidate_cell(row.candidate_output)
+    if candidate["diagnosis_response"] is not None:
+        raise ProtocolViolation("W06 candidate cell unexpectedly contains diagnosis")
+    rollouts = tuple(response_from_wire(item) for item in candidate["rollout_responses"])
+    if len(rollouts) != 2 or any(type(item) is not RolloutResponse for item in rollouts):
+        raise ProtocolViolation("W06 candidate cell must contain no-op and A1 rollouts")
+    paths = tuple(
+        _point_trajectories(
+            response,
+            label=f"W06 action {action}",
+            observables=("obs_0", "obs_1"),
+            horizon=4,
+        )
+        for action, response in zip(("NoNewAction", "A1"), rollouts, strict=True)
+    )
+    predicted_utilities = tuple(
+        _point_utility(response, f"W06 action {action}")
+        for action, response in zip(("NoNewAction", "A1"), rollouts, strict=True)
+    )
+    chosen = ("NoNewAction", "A1")[
+        int(np.argmax(np.asarray(predicted_utilities, dtype=float)))
+    ]
+    channel_effect = tuple(
+        treated - control
+        for control, treated in zip(paths[0]["obs_0"], paths[1]["obs_0"], strict=True)
+    )
+    mechanism_effect = tuple(
+        treated - control
+        for control, treated in zip(paths[0]["obs_1"], paths[1]["obs_1"], strict=True)
+    )
+    return (
+        ("NoNewAction", "A1"),
+        predicted_utilities,
+        chosen,
+        channel_effect,
+        mechanism_effect,
+    )
 
 
 def _identified_mean_interval(response: RolloutResponse) -> tuple[float, float]:
@@ -1622,7 +1799,7 @@ def evaluate_records(
                 observed_semantic = FixtureSemantic(observed_fixture_kind)
             except (TypeError, ValueError):
                 observed_semantic = None
-            if observed_semantic in _CELL_FIXTURE_SEMANTICS:
+            if observed_semantic in _LEGACY_RAW_SELF_IDENTIFYING_CELL_FIXTURES:
                 fixture_semantic = observed_semantic
         if trusted and fixture_semantic in _CELL_FIXTURE_SEMANTICS:
             try:
@@ -1656,6 +1833,35 @@ def evaluate_records(
                         == row.oracle_record["unsafe_action_ids"]
                         and cell.ood_attribution.value
                         == row.oracle_record["ood_attribution"]
+                    )
+                elif (
+                    fixture_semantic
+                    is FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
+                ):
+                    (
+                        derived_actions,
+                        derived_utilities,
+                        derived_chosen,
+                        _derived_channel_effect,
+                        _derived_mechanism_effect,
+                    ) = _w06_observation_channel_projection(row)
+                    derived_oracle = tuple(row.oracle_record["oracle_utilities"])
+                    exact_projection = (
+                        row.result_status is ResultStatus.OK
+                        and row.state_hash == derived_state_hash
+                        and row.public_input_digest == public_digest
+                        and cell.identification is IdentificationKind.POINT
+                        and row.action_ids == derived_actions
+                        and all(
+                            type(value) is float
+                            for value in row.predicted_utilities
+                        )
+                        and row.predicted_utilities == derived_utilities
+                        and all(
+                            type(value) is float for value in row.oracle_utilities
+                        )
+                        and row.oracle_utilities == derived_oracle
+                        and row.chosen_action_id == derived_chosen
                     )
                 else:
                     rollout_statuses = tuple(
@@ -1761,6 +1967,44 @@ def evaluate_records(
                             (
                                 "candidate pointified/narrowed a public-equivalence "
                                 f"effect set: claimed={claimed_set!r}, oracle={oracle_set!r}"
+                            ),
+                        )
+                    )
+
+        if (
+            row.task is EvaluationTask.INTERVENTION
+            and fixture_semantic
+            is FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
+        ):
+            try:
+                (
+                    _actions,
+                    _utilities,
+                    _chosen,
+                    channel_effect,
+                    mechanism_effect,
+                ) = _w06_observation_channel_projection(row)
+            except ProtocolViolation as exc:
+                blockers.append(
+                    EvaluationIssue(
+                        "UCM-F023-RESULT_EVIDENCE_LOSS",
+                        record_id,
+                        f"W06 fixture projection became unavailable: {exc}",
+                    )
+                )
+            else:
+                if max(abs(value) for value in mechanism_effect) > (
+                    _W06_MECHANISM_EFFECT_THRESHOLD
+                ):
+                    failures.append(
+                        EvaluationIssue(
+                            "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+                            record_id,
+                            (
+                                "observation-only A1 was predicted to change the "
+                                "latent-mechanism proxy: "
+                                f"channel_effect={channel_effect!r}, "
+                                f"mechanism_effect={mechanism_effect!r}"
                             ),
                         )
                     )

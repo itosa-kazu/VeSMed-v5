@@ -626,6 +626,11 @@ def test_live_compliance_report_retains_actual_fresh_and_sequential_transcript()
             "UCM-F015-CONDITIONING_AS_INTERVENTION",
         ),
         (
+            "ObservationEqualsMechanismControl",
+            "observation_channel_separation",
+            "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+        ),
+        (
             "DangerousMeanCompressorControl",
             "dangerous_collision",
             "UCM-F016-DANGEROUS_COLLISION",
@@ -661,6 +666,9 @@ def test_evaluator_probe_artifact_is_rebuilt_from_actual_candidate_calls(
     assert collector.complete
     expected_record_id = {
         "nonidentified_set": "m1-c19-w15b",
+        "observation_channel_separation": (
+            "m1-c20-w06-channel-separation"
+        ),
         "dangerous_collision": "m1-c24-w04-pair",
         "unsafe_closed_world": "m1-c25-w18-attributable",
     }[probe]
@@ -714,6 +722,36 @@ def test_correct_nonidentified_set_is_exact_specificity_pass() -> None:
         -1.0,
         1.0,
     ]
+
+
+def test_correct_w06_observation_channel_separation_is_specificity_pass() -> None:
+    collector = compliance._ExecutionBindingCollector()
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(),
+        "prototype.unified_map.compliance",
+        "CorrectObservationChannelSeparationControl",
+    )
+    executor = compliance._BindingObservedExecutor(
+        FreshProcessExecutor(entrypoint), collector
+    )
+    finding = compliance._execute_evaluator_probe(
+        probe="observation_channel_separation",
+        entrypoint=entrypoint,
+        fresh=executor,
+        bindings=collector,
+        seed=103,
+    )
+
+    assert finding.verdict is compliance.ComplianceVerdict.PASS
+    assert finding.failure_code is None
+    assert finding.evidence["evaluation_report"]["failures"] == []
+    assert finding.evidence["oracle_records"][0]["oracle_mechanism_effect"] == [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ]
+    assert len(collector.request_records) == 6
 
 
 def test_in_process_executor_cannot_produce_decisive_evaluator_artifact() -> None:
