@@ -20,7 +20,13 @@ from typing import Any, Iterable
 
 import numpy as np
 
-from .candidate_protocol import ResultStatus
+from .candidate_protocol import (
+    DiagnoseResponse,
+    ResultStatus,
+    RolloutResponse,
+    StateResponse,
+    response_from_wire,
+)
 from .canonical import (
     ProtocolViolation,
     canonical_json_bytes,
@@ -99,6 +105,24 @@ class IdentificationKind(str, Enum):
     NONE = "none"
 
 
+class FixtureSemantic(str, Enum):
+    """Code-owned meaning of a raw evaluator fixture declared by the manifest.
+
+    The raw oracle still carries its protocol and ``fixture_kind`` for exact
+    replay, but it cannot opt itself out of semantic validation.  Generic rows
+    may leave the declaration unset during the PRE-FREEZE migration.
+    """
+
+    W15B_NONIDENTIFIED_SET = "w15b_nonidentified_set"
+    W18_OOD = "w18_ood"
+    W04_DANGEROUS_COLLISION = "w04_dangerous_collision"
+
+
+_CELL_FIXTURE_SEMANTICS = frozenset(
+    {FixtureSemantic.W15B_NONIDENTIFIED_SET, FixtureSemantic.W18_OOD}
+)
+
+
 @dataclass(frozen=True, slots=True)
 class EvaluationIssue:
     code: str
@@ -141,6 +165,7 @@ class ExpectedEvaluationCell:
     ood_attribution: OODAttribution = OODAttribution.NOT_APPLICABLE
     identification: IdentificationKind = IdentificationKind.POINT
     unsafe_action_ids: tuple[str, ...] = ()
+    required_fixture_semantic: FixtureSemantic | None = None
 
     def __post_init__(self) -> None:
         for value, label in (
@@ -179,9 +204,40 @@ class ExpectedEvaluationCell:
             raise ProtocolViolation("unsafe_action_ids must be tuple[str, ...]")
         if len(set(self.unsafe_action_ids)) != len(self.unsafe_action_ids):
             raise ProtocolViolation("unsafe_action_ids must be unique")
+        if self.required_fixture_semantic is not None:
+            if (
+                type(self.required_fixture_semantic) is not FixtureSemantic
+                or self.required_fixture_semantic not in _CELL_FIXTURE_SEMANTICS
+            ):
+                raise ProtocolViolation(
+                    "evaluation cell required_fixture_semantic is not a cell fixture"
+                )
+            if (
+                self.required_fixture_semantic
+                is FixtureSemantic.W15B_NONIDENTIFIED_SET
+                and (
+                    self.world_slot != "W15B"
+                    or self.task is not EvaluationTask.INTERVENTION
+                    or self.cohort is not EvaluationCohort.PROBE
+                    or self.identification
+                    not in {IdentificationKind.PARTIAL, IdentificationKind.NONE}
+                )
+            ):
+                raise ProtocolViolation(
+                    "W15B fixture semantic requires a nonidentified intervention probe"
+                )
+            if (
+                self.required_fixture_semantic is FixtureSemantic.W18_OOD
+                and (
+                    self.world_slot != "W18"
+                    or self.task is not EvaluationTask.OOD
+                    or self.cohort is not EvaluationCohort.PROBE
+                )
+            ):
+                raise ProtocolViolation("W18 fixture semantic requires an OOD probe")
 
     def to_wire(self) -> dict[str, Any]:
-        return {
+        body = {
             "record_id": self.record_id,
             "world_slot": self.world_slot,
             "panel_id": self.panel_id,
@@ -201,6 +257,9 @@ class ExpectedEvaluationCell:
             "identification": self.identification.value,
             "unsafe_action_ids": list(self.unsafe_action_ids),
         }
+        if self.required_fixture_semantic is not None:
+            body["required_fixture_semantic"] = self.required_fixture_semantic.value
+        return body
 
 
 @dataclass(frozen=True, slots=True)
@@ -318,6 +377,53 @@ class RawEvaluationRecord:
         if type(self.all_compatible_catastrophic) is not bool:
             raise ProtocolViolation("all_compatible_catastrophic must be boolean")
 
+    def to_wire(self) -> dict[str, Any]:
+        """Losslessly serialize the judge-linked raw row.
+
+        The evaluator historically consumed typed rows only.  Mutation
+        evidence also needs a canonical preimage for the *entire* row so that
+        extracted OOD/action/set fields cannot be replaced and re-signed
+        independently of the candidate response that produced them.
+        """
+
+        body = {
+            "schema_version": "ucm-raw-evaluation-record/1",
+            "record_id": self.record_id,
+            "world_slot": self.world_slot,
+            "panel_id": self.panel_id,
+            "episode_alias": self.episode_alias,
+            "cohort": self.cohort.value,
+            "task": self.task.value,
+            "result_status": self.result_status.value,
+            "scope_digest": self.scope_digest,
+            "split": self.split.value,
+            "family_id": self.family_id,
+            "cut_alias": self.cut_alias,
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+            "horizon": self.horizon,
+            "policy_alias": self.policy_alias,
+            "state_hash": self.state_hash,
+            "public_input_digest": self.public_input_digest,
+            "query_digest": self.query_digest,
+            "candidate_output": self.candidate_output,
+            "candidate_output_digest": self.candidate_output_digest,
+            "oracle_record": self.oracle_record,
+            "oracle_record_digest": self.oracle_record_digest,
+            "analysis_weight": self.analysis_weight,
+            "loss": self.loss,
+            "selection_confidence": self.selection_confidence,
+            "unknown_probability": self.unknown_probability,
+            "max_known_probability": self.max_known_probability,
+            "chosen_action_id": self.chosen_action_id,
+            "action_ids": list(self.action_ids),
+            "predicted_utilities": list(self.predicted_utilities),
+            "oracle_utilities": list(self.oracle_utilities),
+            "all_compatible_catastrophic": self.all_compatible_catastrophic,
+        }
+        validate_json_like(body)
+        return body
+
 
 @dataclass(frozen=True, slots=True)
 class PairThresholds:
@@ -358,6 +464,7 @@ class ExpectedPairCell:
     family_id: str
     training_replicate_id: str
     evaluation_replicate_id: str
+    required_fixture_semantic: FixtureSemantic | None = None
 
     def __post_init__(self) -> None:
         _name(self.pair_id, "pair_id")
@@ -374,9 +481,19 @@ class ExpectedPairCell:
             (self.evaluation_replicate_id, "pair evaluation_replicate_id"),
         ):
             _name(value, label)
+        if self.required_fixture_semantic is not None:
+            if (
+                type(self.required_fixture_semantic) is not FixtureSemantic
+                or self.required_fixture_semantic
+                is not FixtureSemantic.W04_DANGEROUS_COLLISION
+                or self.world_slot != "W04"
+            ):
+                raise ProtocolViolation(
+                    "pair required_fixture_semantic must be the W04 collision contract"
+                )
 
     def to_wire(self) -> dict[str, Any]:
-        return {
+        body = {
             "pair_id": self.pair_id,
             "world_slot": self.world_slot,
             "panel_id": self.panel_id,
@@ -387,6 +504,9 @@ class ExpectedPairCell:
             "training_replicate_id": self.training_replicate_id,
             "evaluation_replicate_id": self.evaluation_replicate_id,
         }
+        if self.required_fixture_semantic is not None:
+            body["required_fixture_semantic"] = self.required_fixture_semantic.value
+        return body
 
 
 @dataclass(frozen=True, slots=True)
@@ -431,6 +551,39 @@ class RawPairRecord:
         validate_json_like(self.oracle_record)
         _digest(self.candidate_record_digest, "candidate_record_digest")
         _digest(self.oracle_record_digest, "oracle_record_digest")
+
+    def to_wire(self) -> dict[str, Any]:
+        body = {
+            "schema_version": "ucm-raw-pair-record/1",
+            "pair_id": self.pair_id,
+            "world_slot": self.world_slot,
+            "panel_id": self.panel_id,
+            "probe": {
+                "pair_id": self.probe.pair_id,
+                "state_hash_a": self.probe.state_hash_a,
+                "state_hash_b": self.probe.state_hash_b,
+                "candidate_signature_a": list(self.probe.candidate_signature_a),
+                "candidate_signature_b": list(self.probe.candidate_signature_b),
+                "oracle_signature_a": list(self.probe.oracle_signature_a),
+                "oracle_signature_b": list(self.probe.oracle_signature_b),
+                "oracle_action_values_a": list(self.probe.oracle_action_values_a),
+                "oracle_action_values_b": list(self.probe.oracle_action_values_b),
+                "information_relation": self.probe.information_relation,
+                "intervention_identifiable": self.probe.intervention_identifiable,
+            },
+            "scope_digest": self.scope_digest,
+            "split": self.split.value,
+            "family_id": self.family_id,
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+            "analysis_weight": self.analysis_weight,
+            "candidate_record": self.candidate_record,
+            "candidate_record_digest": self.candidate_record_digest,
+            "oracle_record": self.oracle_record,
+            "oracle_record_digest": self.oracle_record_digest,
+        }
+        validate_json_like(body)
+        return body
 
 
 @dataclass(frozen=True, slots=True)
@@ -929,6 +1082,406 @@ def _ood_summary(
     )
 
 
+_FIXTURE_CANDIDATE_CELL_PROTOCOL = "ucm-evaluator-fixture-candidate-cell/1"
+_FIXTURE_ORACLE_PROTOCOL = "ucm-evaluator-fixture-oracle/1"
+_FIXTURE_PAIR_CANDIDATE_PROTOCOL = "ucm-evaluator-fixture-pair-candidate/1"
+_FIXTURE_PAIR_ORACLE_PROTOCOL = "ucm-evaluator-fixture-pair-oracle/1"
+_IDENTIFIED_INTERVAL_PROTOCOL = "ucm-identified-mean-interval/1"
+
+
+def _closed_fixture_object(
+    value: object, keys: frozenset[str], label: str
+) -> dict[str, Any]:
+    if type(value) is not dict or set(value) != keys:
+        raise ProtocolViolation(
+            f"{label} must be a closed object with keys {sorted(keys)!r}"
+        )
+    return value
+
+
+def _fixture_candidate_cell(value: object) -> dict[str, Any]:
+    cell = _closed_fixture_object(
+        value,
+        frozenset(
+            {
+                "protocol",
+                "state_response",
+                "diagnosis_response",
+                "rollout_responses",
+            }
+        ),
+        "fixture candidate cell",
+    )
+    if cell["protocol"] != _FIXTURE_CANDIDATE_CELL_PROTOCOL:
+        raise ProtocolViolation("fixture candidate cell protocol mismatch")
+    state = response_from_wire(cell["state_response"])
+    if type(state) is not StateResponse:
+        raise ProtocolViolation("fixture candidate cell lacks initialize state")
+    diagnosis_wire = cell["diagnosis_response"]
+    if diagnosis_wire is not None:
+        diagnosis = response_from_wire(diagnosis_wire)
+        if type(diagnosis) is not DiagnoseResponse:
+            raise ProtocolViolation("fixture candidate diagnosis response has wrong type")
+    rollouts = cell["rollout_responses"]
+    if type(rollouts) is not list or not rollouts:
+        raise ProtocolViolation("fixture candidate rollouts must be non-empty")
+    if any(type(response_from_wire(item)) is not RolloutResponse for item in rollouts):
+        raise ProtocolViolation("fixture candidate rollout response has wrong type")
+    return cell
+
+
+def _point_utility(response: RolloutResponse, label: str) -> float:
+    if response.result.status is not ResultStatus.OK:
+        raise ProtocolViolation(f"{label} is not an ok rollout")
+    value = _closed_fixture_object(
+        response.result.utility_prediction,
+        frozenset({"family", "value"}),
+        f"{label} utility prediction",
+    )
+    if value["family"] != "point_mass" or type(value["value"]) is not float:
+        raise ProtocolViolation(f"{label} utility must be an exact float point_mass")
+    if not math.isfinite(value["value"]):
+        raise ProtocolViolation(f"{label} utility must be finite")
+    return value["value"]
+
+
+def _identified_mean_interval(response: RolloutResponse) -> tuple[float, float]:
+    """Parse one exact W15B marginal interval (or a point mutant claim)."""
+
+    if response.result.status is not ResultStatus.OK:
+        raise ProtocolViolation("identified-set rollout is not ok")
+    predictions = response.result.observable_predictions
+    if type(predictions) is not dict or set(predictions) != {"obs_1"}:
+        raise ProtocolViolation("identified-set rollout must predict exactly obs_1")
+    value = predictions["obs_1"]
+    if type(value) is not dict:
+        raise ProtocolViolation("identified-set prediction must be an exact object")
+    if value.get("protocol") == _IDENTIFIED_INTERVAL_PROTOCOL:
+        value = _closed_fixture_object(
+            value,
+            frozenset({"protocol", "lower", "upper"}),
+            "identified mean interval",
+        )
+        lower = value["lower"]
+        upper = value["upper"]
+        if type(lower) is not float or type(upper) is not float:
+            raise ProtocolViolation("identified interval bounds must be exact floats")
+    elif value.get("family") == "point_mass":
+        # A point estimate is a legitimate parseable mutant output, not a
+        # harness gap.  Convert it to its degenerate claimed set so C19 can
+        # compare the actual claim to the public equivalence-class oracle.
+        value = _closed_fixture_object(
+            value,
+            frozenset({"family", "horizon", "values"}),
+            "point identified-mean claim",
+        )
+        if type(value["horizon"]) is not int or value["horizon"] != 1:
+            raise ProtocolViolation("point identified-mean claim horizon mismatch")
+        values = value["values"]
+        if (
+            type(values) is not list
+            or len(values) != 1
+            or type(values[0]) is not float
+        ):
+            raise ProtocolViolation("point identified-mean claim must contain one float")
+        lower = upper = values[0]
+    else:
+        raise ProtocolViolation("unknown identified-mean prediction family")
+    if not math.isfinite(lower) or not math.isfinite(upper) or lower > upper:
+        raise ProtocolViolation("identified interval is non-finite or reversed")
+    return lower, upper
+
+
+def _nonidentified_effect_claim(
+    row: RawEvaluationRecord,
+) -> tuple[tuple[float, float], tuple[float, float]]:
+    oracle = _closed_fixture_object(
+        row.oracle_record,
+        frozenset(
+            {
+                "protocol",
+                "fixture_kind",
+                "public_history_digest",
+                "action_ids",
+                "identified_effect_set",
+            }
+        ),
+        "W15B fixture oracle",
+    )
+    if (
+        oracle["protocol"] != _FIXTURE_ORACLE_PROTOCOL
+        or oracle["fixture_kind"] != "w15b_nonidentified_set"
+        or oracle["action_ids"] != ["NoNewAction", "A1"]
+    ):
+        raise ProtocolViolation("W15B fixture oracle contract mismatch")
+    _digest(oracle["public_history_digest"], "W15B public history digest")
+    expected = oracle["identified_effect_set"]
+    if (
+        type(expected) is not list
+        or len(expected) != 2
+        or any(type(item) is not float or not math.isfinite(item) for item in expected)
+        or expected[0] > expected[1]
+    ):
+        raise ProtocolViolation("W15B oracle identified set is malformed")
+    candidate = _fixture_candidate_cell(row.candidate_output)
+    if candidate["diagnosis_response"] is not None:
+        raise ProtocolViolation("W15B candidate cell unexpectedly contains diagnosis")
+    rollouts = tuple(response_from_wire(item) for item in candidate["rollout_responses"])
+    if len(rollouts) != 2 or any(type(item) is not RolloutResponse for item in rollouts):
+        raise ProtocolViolation("W15B candidate cell must contain both intervention rows")
+    control = _identified_mean_interval(rollouts[0])
+    treated = _identified_mean_interval(rollouts[1])
+    claimed = (treated[0] - control[1], treated[1] - control[0])
+    return claimed, (expected[0], expected[1])
+
+
+def _fixture_ood_projection(
+    row: RawEvaluationRecord,
+) -> tuple[float, float, tuple[str, ...], tuple[float, ...], str]:
+    oracle = _closed_fixture_object(
+        row.oracle_record,
+        frozenset(
+            {
+                "protocol",
+                "fixture_kind",
+                "public_history_digest",
+                "label_order",
+                "action_ids",
+                "oracle_utilities",
+                "unsafe_action_ids",
+                "ood_attribution",
+            }
+        ),
+        "W18 fixture oracle",
+    )
+    if (
+        oracle["protocol"] != _FIXTURE_ORACLE_PROTOCOL
+        or oracle["fixture_kind"] != "w18_ood"
+    ):
+        raise ProtocolViolation("W18 fixture oracle contract mismatch")
+    _digest(oracle["public_history_digest"], "W18 public history digest")
+    labels = oracle["label_order"]
+    actions = oracle["action_ids"]
+    utilities = oracle["oracle_utilities"]
+    if (
+        labels != ["C0", "C1", "unknown"]
+        or actions != ["NoNewAction", "A1"]
+        or type(utilities) is not list
+        or len(utilities) != 2
+        or any(type(item) is not float or not math.isfinite(item) for item in utilities)
+        or type(oracle["unsafe_action_ids"]) is not list
+        or any(type(item) is not str for item in oracle["unsafe_action_ids"])
+        or type(oracle["ood_attribution"]) is not str
+    ):
+        raise ProtocolViolation("W18 fixture oracle fields are malformed")
+    candidate = _fixture_candidate_cell(row.candidate_output)
+    diagnosis_wire = candidate["diagnosis_response"]
+    if diagnosis_wire is None:
+        raise ProtocolViolation("W18 candidate cell lacks diagnosis")
+    diagnosis = response_from_wire(diagnosis_wire)
+    if type(diagnosis) is not DiagnoseResponse or diagnosis.result.status is not ResultStatus.OK:
+        raise ProtocolViolation("W18 candidate diagnosis is not ok")
+    if list(diagnosis.result.probabilities) != labels:
+        raise ProtocolViolation("W18 candidate diagnosis labels/order mismatch")
+    rollouts = tuple(response_from_wire(item) for item in candidate["rollout_responses"])
+    if len(rollouts) != len(actions) or any(type(item) is not RolloutResponse for item in rollouts):
+        raise ProtocolViolation("W18 candidate action rollouts are incomplete")
+    predicted = tuple(
+        _point_utility(item, f"W18 action {action}")
+        for action, item in zip(actions, rollouts, strict=True)
+    )
+    chosen = actions[int(np.argmax(np.asarray(predicted, dtype=float)))]
+    probabilities = diagnosis.result.probabilities
+    return (
+        probabilities["unknown"],
+        max(probabilities["C0"], probabilities["C1"]),
+        tuple(actions),
+        predicted,
+        chosen,
+    )
+
+
+def _candidate_pair_signature(
+    endpoint: object,
+    *,
+    label_order: list[str],
+    requested_observables: list[str],
+) -> tuple[str, tuple[float, ...]]:
+    cell = _fixture_candidate_cell(endpoint)
+    diagnosis_wire = cell["diagnosis_response"]
+    if diagnosis_wire is None:
+        raise ProtocolViolation("pair endpoint lacks diagnosis response")
+    diagnosis = response_from_wire(diagnosis_wire)
+    if type(diagnosis) is not DiagnoseResponse or diagnosis.result.status is not ResultStatus.OK:
+        raise ProtocolViolation("pair diagnosis response is not ok")
+    if (
+        len(diagnosis.result.probabilities) != 2
+        or list(diagnosis.result.probabilities) != label_order
+    ):
+        raise ProtocolViolation("pair diagnosis labels/order mismatch")
+    signature = [diagnosis.result.probabilities[label] for label in label_order]
+    for index, wire in enumerate(cell["rollout_responses"]):
+        response = response_from_wire(wire)
+        if type(response) is not RolloutResponse:
+            raise ProtocolViolation("pair rollout response has wrong type")
+        signature.append(_point_utility(response, f"pair rollout {index}"))
+        if list(response.result.observable_predictions) != requested_observables:
+            raise ProtocolViolation("pair rollout observable order mismatch")
+        for observable in requested_observables:
+            prediction = _closed_fixture_object(
+                response.result.observable_predictions[observable],
+                frozenset({"family", "horizon", "values"}),
+                "pair point trajectory",
+            )
+            values = prediction["values"]
+            if (
+                prediction["family"] != "point_mass"
+                or type(prediction["horizon"]) is not int
+                or prediction["horizon"] != 4
+                or type(values) is not list
+                or len(values) != 4
+                or any(type(item) is not float or not math.isfinite(item) for item in values)
+            ):
+                raise ProtocolViolation("pair point trajectory must have exact horizon four")
+            signature.extend(values)
+    state_hash = digest_json(cell["state_response"]["state"])
+    return state_hash, tuple(signature)
+
+
+def _oracle_pair_signature(endpoint: object) -> tuple[tuple[float, ...], tuple[float, ...]]:
+    value = _closed_fixture_object(
+        endpoint,
+        frozenset({"diagnosis", "rollouts"}),
+        "pair oracle endpoint",
+    )
+    diagnosis = value["diagnosis"]
+    rollouts = value["rollouts"]
+    if (
+        type(diagnosis) is not list
+        or len(diagnosis) != 2
+        or any(type(item) is not float or not math.isfinite(item) for item in diagnosis)
+        or type(rollouts) is not list
+        or len(rollouts) != 8
+    ):
+        raise ProtocolViolation("pair oracle endpoint is malformed")
+    signature = list(diagnosis)
+    utilities = []
+    for rollout in rollouts:
+        rollout = _closed_fixture_object(
+            rollout,
+            frozenset({"expected_utility", "observation_means"}),
+            "pair oracle rollout",
+        )
+        utility = rollout["expected_utility"]
+        means = rollout["observation_means"]
+        if (
+            type(utility) is not float
+            or not math.isfinite(utility)
+            or type(means) is not list
+            or len(means) != 4
+            or any(type(item) is not float or not math.isfinite(item) for item in means)
+        ):
+            raise ProtocolViolation("pair oracle rollout is malformed")
+        utilities.append(utility)
+        signature.append(utility)
+        signature.extend(means)
+    return tuple(signature), tuple(utilities)
+
+
+def _derive_fixture_pair_probe(
+    pair_id: str,
+    candidate_record: dict[str, Any],
+    oracle_record: dict[str, Any],
+) -> PairProbe | None:
+    if oracle_record.get("protocol") != _FIXTURE_PAIR_ORACLE_PROTOCOL:
+        return None
+    candidate = _closed_fixture_object(
+        candidate_record,
+        frozenset({"protocol", "endpoints"}),
+        "fixture pair candidate record",
+    )
+    oracle = _closed_fixture_object(
+        oracle_record,
+        frozenset(
+            {
+                "protocol",
+                "fixture_kind",
+                "public_history_digests",
+                "label_order",
+                "action_ids",
+                "requested_observables",
+                "endpoints",
+                "information_relation",
+                "intervention_identifiable",
+            }
+        ),
+        "fixture pair oracle record",
+    )
+    if (
+        candidate["protocol"] != _FIXTURE_PAIR_CANDIDATE_PROTOCOL
+        or oracle["fixture_kind"] != "w04_dangerous_collision"
+        or candidate["endpoints"] is None
+    ):
+        raise ProtocolViolation("fixture pair protocol/kind mismatch")
+    endpoints = candidate["endpoints"]
+    oracle_endpoints = oracle["endpoints"]
+    public_digests = oracle["public_history_digests"]
+    label_order = oracle["label_order"]
+    action_ids = oracle["action_ids"]
+    observables = oracle["requested_observables"]
+    if (
+        type(endpoints) is not list
+        or len(endpoints) != 2
+        or type(oracle_endpoints) is not list
+        or len(oracle_endpoints) != 2
+        or type(public_digests) is not list
+        or len(public_digests) != 2
+        or any(_digest(item, "pair public history digest") != item for item in public_digests)
+        or len(set(public_digests)) != 2
+        or label_order != ["C0", "C1"]
+        or type(action_ids) is not list
+        or len(action_ids) != 8
+        or any(type(item) is not str or not item or item.strip() != item for item in action_ids)
+        or len(set(action_ids)) != 8
+        or observables != ["obs_0", "obs_1"]
+        or oracle["information_relation"] != "distinguishable_from_public_history"
+        or oracle["intervention_identifiable"] is not True
+    ):
+        raise ProtocolViolation("fixture pair authority fields are malformed")
+    left_state, left_candidate = _candidate_pair_signature(
+        endpoints[0], label_order=label_order, requested_observables=observables
+    )
+    right_state, right_candidate = _candidate_pair_signature(
+        endpoints[1], label_order=label_order, requested_observables=observables
+    )
+    if any(
+        len(_fixture_candidate_cell(endpoint)["rollout_responses"]) != len(action_ids)
+        for endpoint in endpoints
+    ):
+        raise ProtocolViolation("fixture pair did not execute the full policy set")
+    left_oracle, left_actions = _oracle_pair_signature(oracle_endpoints[0])
+    right_oracle, right_actions = _oracle_pair_signature(oracle_endpoints[1])
+    return PairProbe(
+        pair_id,
+        left_state,
+        right_state,
+        left_candidate,
+        right_candidate,
+        left_oracle,
+        right_oracle,
+        left_actions,
+        right_actions,
+        oracle["information_relation"],
+        oracle["intervention_identifiable"],
+    )
+
+
+def _fixture_pair_probe(row: RawPairRecord) -> PairProbe | None:
+    return _derive_fixture_pair_probe(
+        row.pair_id, row.candidate_record, row.oracle_record
+    )
+
+
 def evaluate_records(
     records: Iterable[RawEvaluationRecord],
     pair_records: Iterable[RawPairRecord],
@@ -1046,6 +1599,94 @@ def evaluate_records(
                     "oracle raw record digest mismatch",
                 )
             )
+        declared_fixture = cell.required_fixture_semantic
+        observed_fixture_protocol = row.oracle_record.get("protocol")
+        observed_fixture_kind = row.oracle_record.get("fixture_kind")
+        if declared_fixture is not None and (
+            observed_fixture_protocol != _FIXTURE_ORACLE_PROTOCOL
+            or observed_fixture_kind != declared_fixture.value
+        ):
+            trusted = False
+            blockers.append(
+                EvaluationIssue(
+                    "UCM-F023-RESULT_EVIDENCE_LOSS",
+                    record_id,
+                    "raw oracle protocol/kind contradicts the required fixture semantic",
+                )
+            )
+        fixture_semantic: FixtureSemantic | None = None
+        if declared_fixture is not None:
+            fixture_semantic = declared_fixture
+        elif observed_fixture_protocol == _FIXTURE_ORACLE_PROTOCOL:
+            try:
+                observed_semantic = FixtureSemantic(observed_fixture_kind)
+            except (TypeError, ValueError):
+                observed_semantic = None
+            if observed_semantic in _CELL_FIXTURE_SEMANTICS:
+                fixture_semantic = observed_semantic
+        if trusted and fixture_semantic in _CELL_FIXTURE_SEMANTICS:
+            try:
+                candidate_cell = _fixture_candidate_cell(row.candidate_output)
+                derived_state_hash = digest_json(
+                    candidate_cell["state_response"]["state"]
+                )
+                public_digest = row.oracle_record["public_history_digest"]
+                _digest(public_digest, "fixture public history digest")
+                if fixture_semantic is FixtureSemantic.W18_OOD:
+                    (
+                        derived_unknown,
+                        derived_max_known,
+                        derived_actions,
+                        derived_utilities,
+                        derived_chosen,
+                    ) = _fixture_ood_projection(row)
+                    derived_oracle = tuple(row.oracle_record["oracle_utilities"])
+                    derived_status = ResultStatus.OK
+                    exact_projection = (
+                        row.result_status is derived_status
+                        and row.state_hash == derived_state_hash
+                        and row.public_input_digest == public_digest
+                        and row.unknown_probability == derived_unknown
+                        and row.max_known_probability == derived_max_known
+                        and row.action_ids == derived_actions
+                        and row.predicted_utilities == derived_utilities
+                        and row.oracle_utilities == derived_oracle
+                        and row.chosen_action_id == derived_chosen
+                        and list(cell.unsafe_action_ids)
+                        == row.oracle_record["unsafe_action_ids"]
+                        and cell.ood_attribution.value
+                        == row.oracle_record["ood_attribution"]
+                    )
+                else:
+                    rollout_statuses = tuple(
+                        response_from_wire(item).result.status
+                        for item in candidate_cell["rollout_responses"]
+                    )
+                    exact_projection = (
+                        row.result_status is ResultStatus.OK
+                        and rollout_statuses == (ResultStatus.OK, ResultStatus.OK)
+                        and row.state_hash == derived_state_hash
+                        and row.public_input_digest == public_digest
+                        and cell.identification
+                        in {IdentificationKind.PARTIAL, IdentificationKind.NONE}
+                        and not row.action_ids
+                        and not row.predicted_utilities
+                        and not row.oracle_utilities
+                        and row.chosen_action_id is None
+                    )
+                if not exact_projection:
+                    raise ProtocolViolation(
+                        "fixture extracted fields differ from actual candidate/oracle bytes"
+                    )
+            except (KeyError, ProtocolViolation, TypeError, ValueError) as exc:
+                trusted = False
+                blockers.append(
+                    EvaluationIssue(
+                        "UCM-F023-RESULT_EVIDENCE_LOSS",
+                        record_id,
+                        f"fixture response projection is not exact: {exc}",
+                    )
+                )
         if not trusted:
             continue
         trusted_actual[record_id] = row
@@ -1073,7 +1714,11 @@ def evaluate_records(
                     f"required query returned {row.result_status.value}",
                 )
             )
-        if row.task is EvaluationTask.INTERVENTION and row.result_status is ResultStatus.OK:
+        if (
+            row.task is EvaluationTask.INTERVENTION
+            and row.result_status is ResultStatus.OK
+            and declared_fixture is not FixtureSemantic.W15B_NONIDENTIFIED_SET
+        ):
             try:
                 action = _action_regret(row)
             except ProtocolViolation as exc:
@@ -1089,6 +1734,34 @@ def evaluate_records(
                             "UCM-F022-INVALID_DISTRIBUTION",
                             record_id,
                             "ok intervention row lacks aligned action utilities",
+                        )
+                    )
+
+        if (
+            row.task is EvaluationTask.INTERVENTION
+            and cell.identification in {IdentificationKind.PARTIAL, IdentificationKind.NONE}
+            and fixture_semantic is FixtureSemantic.W15B_NONIDENTIFIED_SET
+        ):
+            try:
+                claimed_set, oracle_set = _nonidentified_effect_claim(row)
+            except ProtocolViolation as exc:
+                failures.append(
+                    EvaluationIssue(
+                        "UCM-F015-CONDITIONING_AS_INTERVENTION",
+                        record_id,
+                        f"nonidentified effect was not returned as an exact set: {exc}",
+                    )
+                )
+            else:
+                if claimed_set != oracle_set:
+                    failures.append(
+                        EvaluationIssue(
+                            "UCM-F015-CONDITIONING_AS_INTERVENTION",
+                            record_id,
+                            (
+                                "candidate pointified/narrowed a public-equivalence "
+                                f"effect set: claimed={claimed_set!r}, oracle={oracle_set!r}"
+                            ),
                         )
                     )
 
@@ -1204,6 +1877,43 @@ def evaluate_records(
                     "pair oracle record digest mismatch",
                 )
             )
+        declared_fixture = cell.required_fixture_semantic
+        if declared_fixture is not None and (
+            row.oracle_record.get("protocol") != _FIXTURE_PAIR_ORACLE_PROTOCOL
+            or row.oracle_record.get("fixture_kind") != declared_fixture.value
+        ):
+            trusted = False
+            blockers.append(
+                EvaluationIssue(
+                    "UCM-F023-RESULT_EVIDENCE_LOSS",
+                    pair_id,
+                    "raw pair oracle protocol/kind contradicts the required fixture semantic",
+                )
+            )
+        if trusted:
+            try:
+                fixture_probe = _fixture_pair_probe(row)
+                if declared_fixture is not None and fixture_probe is None:
+                    raise ProtocolViolation("required fixture pair was not derived")
+            except (KeyError, ProtocolViolation, TypeError, ValueError) as exc:
+                trusted = False
+                blockers.append(
+                    EvaluationIssue(
+                        "UCM-F023-RESULT_EVIDENCE_LOSS",
+                        pair_id,
+                        f"fixture pair projection is not exact: {exc}",
+                    )
+                )
+            else:
+                if fixture_probe is not None and fixture_probe != row.probe:
+                    trusted = False
+                    blockers.append(
+                        EvaluationIssue(
+                            "UCM-F023-RESULT_EVIDENCE_LOSS",
+                            pair_id,
+                            "pair probe differs from actual endpoint/oracle bytes",
+                        )
+                    )
         if not trusted:
             continue
         trusted_pairs[pair_id] = row

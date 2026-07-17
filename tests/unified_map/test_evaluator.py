@@ -1,10 +1,19 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import replace
 
 import pytest
 
-from prototype.unified_map.candidate_protocol import ResultStatus
+from prototype.unified_map.candidate_protocol import (
+    DiagnoseResponse,
+    DiagnosisResult,
+    Operation,
+    ResultStatus,
+    RolloutResponse,
+    RolloutResult,
+    StateResponse,
+)
 from prototype.unified_map.canonical import (
     ProtocolViolation,
     canonical_json_bytes,
@@ -19,15 +28,18 @@ from prototype.unified_map.evaluator import (
     EvidenceStatus,
     ExpectedEvaluationCell,
     ExpectedPairCell,
+    FixtureSemantic,
     IdentificationKind,
     OODAttribution,
     PairThresholds,
     RawEvaluationRecord,
     RawPairRecord,
     W19SafetyDeclaration,
+    _derive_fixture_pair_probe,
     evaluate_records,
 )
 from prototype.unified_map.metrics import InformationRelation, PairProbe
+from prototype.unified_map.state import StateClass, StatePayload
 
 
 EMPTY_DIGEST = digest_json({})
@@ -52,6 +64,7 @@ def _cell(
     ood: OODAttribution = OODAttribution.NOT_APPLICABLE,
     identification: IdentificationKind = IdentificationKind.POINT,
     unsafe: tuple[str, ...] = (),
+    fixture_semantic: FixtureSemantic | None = None,
 ) -> ExpectedEvaluationCell:
     return ExpectedEvaluationCell(
         record_id=record_id,
@@ -72,6 +85,7 @@ def _cell(
         ood_attribution=ood,
         identification=identification,
         unsafe_action_ids=unsafe,
+        required_fixture_semantic=fixture_semantic,
     )
 
 
@@ -176,7 +190,12 @@ def _pair_record(
     )
 
 
-def _pair_cell(pair_id: str, thresholds: PairThresholds) -> ExpectedPairCell:
+def _pair_cell(
+    pair_id: str,
+    thresholds: PairThresholds,
+    *,
+    fixture_semantic: FixtureSemantic | None = None,
+) -> ExpectedPairCell:
     return ExpectedPairCell(
         pair_id=pair_id,
         world_slot="W04",
@@ -187,6 +206,7 @@ def _pair_cell(pair_id: str, thresholds: PairThresholds) -> ExpectedPairCell:
         family_id=FAMILY,
         training_replicate_id=TRAIN_REPLICATE,
         evaluation_replicate_id=EVAL_REPLICATE,
+        required_fixture_semantic=fixture_semantic,
     )
 
 
@@ -246,6 +266,51 @@ def test_pre_freeze_cell_contract_binding_forces_top_level_incomplete() -> None:
         and "PRE_FREEZE_SCAFFOLD" in issue.detail
         for issue in report.blockers
     )
+
+
+def test_required_fixture_semantic_is_bound_into_expected_manifest() -> None:
+    generic = _cell("generic-fixture-compatible")
+    declared = _cell(
+        "declared-w15b",
+        world="W15B",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.INTERVENTION,
+        identification=IdentificationKind.PARTIAL,
+        fixture_semantic=FixtureSemantic.W15B_NONIDENTIFIED_SET,
+    )
+    manifest = _manifest((generic, declared))
+    wire = manifest.to_wire()["expected_cells"]
+
+    assert "required_fixture_semantic" not in wire[0]
+    assert wire[1]["required_fixture_semantic"] == "w15b_nonidentified_set"
+    assert manifest.digest != _manifest((generic, replace(declared, required_fixture_semantic=None))).digest
+
+
+@pytest.mark.parametrize(
+    "identification", (IdentificationKind.PARTIAL, IdentificationKind.NONE)
+)
+def test_generic_nonpoint_intervention_still_requires_aligned_action_utilities(
+    identification: IdentificationKind,
+) -> None:
+    cell = _cell(
+        "generic-nonpoint-intervention",
+        task=EvaluationTask.INTERVENTION,
+        identification=identification,
+    )
+
+    report = evaluate_records((_record(cell),), (), _manifest((cell,)))
+
+    assert report.evidence_status is EvidenceStatus.COMPLETE
+    assert report.candidate_gate_status is CandidateGateStatus.HARD_FAILURE
+    assert [
+        (issue.code, issue.record_id, issue.detail) for issue in report.failures
+    ] == [
+        (
+            "UCM-F022-INVALID_DISTRIBUTION",
+            cell.record_id,
+            "ok intervention row lacks aligned action utilities",
+        )
+    ]
 
 
 def test_benchmark_freeze_fields_cannot_be_forged_or_serialized() -> None:
@@ -442,6 +507,430 @@ def test_publicly_attributable_forced_known_unsafe_action_is_hard_failure() -> N
     )
     assert report.candidate_gate_status is CandidateGateStatus.HARD_FAILURE
     assert any(issue.code == "UCM-F017-OOD_FORCED_MATCH" for issue in report.failures)
+
+
+def _w15b_candidate_output(prediction: dict) -> tuple[dict, str]:
+    state = StateResponse(
+        Operation.INITIALIZE,
+        StatePayload.from_json(
+            {"public": "only"},
+            schema_version="evaluator-test/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        ),
+    )
+    rollout = RolloutResponse(
+        RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={"obs_1": prediction},
+            utility_prediction={},
+            metadata={},
+        )
+    )
+    output = {
+        "protocol": "ucm-evaluator-fixture-candidate-cell/1",
+        "state_response": state.to_wire(),
+        "diagnosis_response": None,
+        "rollout_responses": [rollout.to_wire(), rollout.to_wire()],
+    }
+    return output, digest_json(state.to_wire()["state"])
+
+
+@pytest.mark.parametrize(
+    "identification", (IdentificationKind.PARTIAL, IdentificationKind.NONE)
+)
+def test_nonidentified_point_claim_is_f015_but_exact_identified_set_passes(
+    identification: IdentificationKind,
+) -> None:
+    cell = _cell(
+        "w15b-set",
+        world="W15B",
+        panel="observational-nonidentified",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.INTERVENTION,
+        identification=identification,
+        fixture_semantic=FixtureSemantic.W15B_NONIDENTIFIED_SET,
+    )
+    oracle = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w15b_nonidentified_set",
+        "public_history_digest": EMPTY_DIGEST,
+        "action_ids": ["NoNewAction", "A1"],
+        "identified_effect_set": [-1.0, 1.0],
+    }
+    point_output, state_hash = _w15b_candidate_output(
+        {"family": "point_mass", "horizon": 1, "values": [0.5]}
+    )
+    exact_output, exact_state_hash = _w15b_candidate_output(
+        {
+            "protocol": "ucm-identified-mean-interval/1",
+            "lower": 0.0,
+            "upper": 1.0,
+        }
+    )
+    point = replace(
+        _record(
+            cell,
+            candidate_output=point_output,
+            oracle_record=oracle,
+            confidence=None,
+        ),
+        state_hash=state_hash,
+        public_input_digest=EMPTY_DIGEST,
+    )
+    exact = replace(
+        _record(
+            cell,
+            candidate_output=exact_output,
+            oracle_record=oracle,
+            confidence=None,
+        ),
+        state_hash=exact_state_hash,
+        public_input_digest=EMPTY_DIGEST,
+    )
+
+    point_report = evaluate_records((point,), (), _manifest((cell,)))
+    exact_report = evaluate_records((exact,), (), _manifest((cell,)))
+
+    assert point_report.evidence_status is EvidenceStatus.COMPLETE
+    assert point_report.candidate_gate_status is CandidateGateStatus.HARD_FAILURE
+    assert [issue.code for issue in point_report.failures] == [
+        "UCM-F015-CONDITIONING_AS_INTERVENTION"
+    ]
+    assert exact_report.evidence_status is EvidenceStatus.COMPLETE
+    assert exact_report.candidate_gate_status is CandidateGateStatus.NO_HARD_FAILURE_OBSERVED
+    assert exact_report.failures == ()
+
+
+@pytest.mark.parametrize("downgrade", ["missing_protocol", "renamed_protocol", "wrong_kind"])
+def test_declared_w15b_fixture_cannot_be_downgraded_and_resigned(
+    downgrade: str,
+) -> None:
+    cell = _cell(
+        "w15b-downgrade",
+        world="W15B",
+        panel="observational-nonidentified",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.INTERVENTION,
+        identification=IdentificationKind.PARTIAL,
+        fixture_semantic=FixtureSemantic.W15B_NONIDENTIFIED_SET,
+    )
+    oracle = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w15b_nonidentified_set",
+        "public_history_digest": EMPTY_DIGEST,
+        "action_ids": ["NoNewAction", "A1"],
+        "identified_effect_set": [-1.0, 1.0],
+    }
+    if downgrade == "missing_protocol":
+        oracle.pop("protocol")
+    elif downgrade == "renamed_protocol":
+        oracle["protocol"] = "ucm-evaluator-fixture-oracle-renamed/1"
+    else:
+        oracle["fixture_kind"] = "w15b_point_contract"
+    candidate_output, state_hash = _w15b_candidate_output(
+        {"family": "point_mass", "horizon": 1, "values": [0.5]}
+    )
+    resigned = replace(
+        _record(
+            cell,
+            candidate_output=candidate_output,
+            oracle_record=oracle,
+            confidence=None,
+        ),
+        state_hash=state_hash,
+        public_input_digest=EMPTY_DIGEST,
+    )
+
+    report = evaluate_records((resigned,), (), _manifest((cell,)))
+
+    assert report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert report.candidate_gate_status is CandidateGateStatus.NO_HARD_FAILURE_OBSERVED
+    assert report.failures == ()
+    assert any(
+        issue.code == "UCM-F023-RESULT_EVIDENCE_LOSS"
+        and "required fixture semantic" in issue.detail
+        for issue in report.blockers
+    )
+
+
+def _fixture_state_response() -> StateResponse:
+    return StateResponse(
+        Operation.INITIALIZE,
+        StatePayload.from_json(
+            {"public": "fixture"},
+            schema_version="evaluator-test/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        ),
+    )
+
+
+def _w18_fixture_row(cell: ExpectedEvaluationCell) -> RawEvaluationRecord:
+    state = _fixture_state_response()
+    diagnosis = DiagnoseResponse(
+        DiagnosisResult(
+            ResultStatus.OK,
+            {"C0": 0.6, "C1": 0.3, "unknown": 0.1},
+            {},
+        )
+    )
+    rollouts = tuple(
+        RolloutResponse(
+            RolloutResult(
+                ResultStatus.OK,
+                observable_predictions={
+                    "obs_0": {
+                        "family": "point_mass",
+                        "horizon": 4,
+                        "values": [0.0, 0.0, 0.0, 0.0],
+                    }
+                },
+                utility_prediction={"family": "point_mass", "value": utility},
+                metadata={},
+            )
+        )
+        for utility in (1.0, 0.0)
+    )
+    candidate = {
+        "protocol": "ucm-evaluator-fixture-candidate-cell/1",
+        "state_response": state.to_wire(),
+        "diagnosis_response": diagnosis.to_wire(),
+        "rollout_responses": [item.to_wire() for item in rollouts],
+    }
+    oracle = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w18_ood",
+        "public_history_digest": EMPTY_DIGEST,
+        "label_order": ["C0", "C1", "unknown"],
+        "action_ids": ["NoNewAction", "A1"],
+        "oracle_utilities": [1.0, 0.0],
+        "unsafe_action_ids": list(cell.unsafe_action_ids),
+        "ood_attribution": cell.ood_attribution.value,
+    }
+    return replace(
+        _record(
+            cell,
+            candidate_output=candidate,
+            oracle_record=oracle,
+            unknown=0.1,
+            max_known=0.6,
+            chosen="NoNewAction",
+            action_ids=("NoNewAction", "A1"),
+            predicted=(1.0, 0.0),
+            oracle=(1.0, 0.0),
+        ),
+        state_hash=digest_json(state.to_wire()["state"]),
+        public_input_digest=EMPTY_DIGEST,
+    )
+
+
+def test_declared_w18_fixture_kind_cannot_be_renamed_and_resigned() -> None:
+    cell = _cell(
+        "w18-downgrade",
+        world="W18",
+        panel="open-set-attribution",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.OOD,
+        ood=OODAttribution.KNOWN,
+        fixture_semantic=FixtureSemantic.W18_OOD,
+    )
+    attributable = _cell(
+        "w18-attributable-companion",
+        world="W18",
+        panel="open-set-attribution",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.OOD,
+        ood=OODAttribution.ATTRIBUTABLE,
+        unsafe=("A1",),
+        fixture_semantic=FixtureSemantic.W18_OOD,
+    )
+    valid = _w18_fixture_row(cell)
+    attributable_row = _w18_fixture_row(attributable)
+    oracle = dict(valid.oracle_record)
+    oracle["fixture_kind"] = "w18_closed_world"
+    resigned = replace(
+        valid,
+        oracle_record=oracle,
+        oracle_record_digest=digest_json(oracle),
+    )
+
+    manifest = _manifest((cell, attributable))
+    valid_report = evaluate_records((valid, attributable_row), (), manifest)
+    downgraded_report = evaluate_records((resigned, attributable_row), (), manifest)
+
+    assert valid_report.evidence_status is EvidenceStatus.COMPLETE
+    assert downgraded_report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert any(
+        issue.code == "UCM-F023-RESULT_EVIDENCE_LOSS"
+        and "required fixture semantic" in issue.detail
+        for issue in downgraded_report.blockers
+    )
+
+
+def _w04_fixture_records(
+    pair_id: str,
+) -> tuple[dict, dict, PairProbe]:
+    state = _fixture_state_response()
+    diagnosis = DiagnoseResponse(
+        DiagnosisResult(ResultStatus.OK, {"C0": 0.5, "C1": 0.5}, {})
+    )
+    rollouts = tuple(
+        RolloutResponse(
+            RolloutResult(
+                ResultStatus.OK,
+                observable_predictions={
+                    observable: {
+                        "family": "point_mass",
+                        "horizon": 4,
+                        "values": [0.0, 0.0, 0.0, 0.0],
+                    }
+                    for observable in ("obs_0", "obs_1")
+                },
+                utility_prediction={"family": "point_mass", "value": 0.0},
+                metadata={},
+            )
+        )
+        for _ in range(8)
+    )
+    endpoint = {
+        "protocol": "ucm-evaluator-fixture-candidate-cell/1",
+        "state_response": state.to_wire(),
+        "diagnosis_response": diagnosis.to_wire(),
+        "rollout_responses": [item.to_wire() for item in rollouts],
+    }
+    candidate = {
+        "protocol": "ucm-evaluator-fixture-pair-candidate/1",
+        "endpoints": [endpoint, deepcopy(endpoint)],
+    }
+    left_utilities = [2.0] + [0.0] * 7
+    right_utilities = [0.0, 2.0] + [0.0] * 6
+
+    def oracle_endpoint(diagnosis_values: list[float], utilities: list[float]) -> dict:
+        return {
+            "diagnosis": diagnosis_values,
+            "rollouts": [
+                {
+                    "expected_utility": utility,
+                    "observation_means": [0.0, 0.0, 0.0, 0.0],
+                }
+                for utility in utilities
+            ],
+        }
+
+    oracle = {
+        "protocol": "ucm-evaluator-fixture-pair-oracle/1",
+        "fixture_kind": "w04_dangerous_collision",
+        "public_history_digests": [
+            digest_json({"history": "left"}),
+            digest_json({"history": "right"}),
+        ],
+        "label_order": ["C0", "C1"],
+        "action_ids": [f"P{index:02d}" for index in range(8)],
+        "requested_observables": ["obs_0", "obs_1"],
+        "endpoints": [
+            oracle_endpoint([1.0, 0.0], left_utilities),
+            oracle_endpoint([0.0, 1.0], right_utilities),
+        ],
+        "information_relation": "distinguishable_from_public_history",
+        "intervention_identifiable": True,
+    }
+    probe = _derive_fixture_pair_probe(pair_id, candidate, oracle)
+    assert probe is not None
+    return candidate, oracle, probe
+
+
+def _w04_raw_pair(pair_id: str) -> RawPairRecord:
+    candidate, oracle, probe = _w04_fixture_records(pair_id)
+    return RawPairRecord(
+        pair_id=pair_id,
+        world_slot="W04",
+        panel_id="primary",
+        probe=probe,
+        scope_digest=SCOPE,
+        split=SPLIT,
+        family_id=FAMILY,
+        training_replicate_id=TRAIN_REPLICATE,
+        evaluation_replicate_id=EVAL_REPLICATE,
+        analysis_weight=0.0,
+        candidate_record=candidate,
+        candidate_record_digest=digest_json(candidate),
+        oracle_record=oracle,
+        oracle_record_digest=digest_json(oracle),
+    )
+
+
+def test_declared_w04_pair_protocol_cannot_be_renamed_and_resigned() -> None:
+    base = _cell("w04-base")
+    thresholds = PairThresholds(0.0, 0.1, 0.1, 0.0, 1.0)
+    expected = _pair_cell(
+        "w04-downgrade",
+        thresholds,
+        fixture_semantic=FixtureSemantic.W04_DANGEROUS_COLLISION,
+    )
+    valid = _w04_raw_pair(expected.pair_id)
+    oracle = dict(valid.oracle_record)
+    oracle["protocol"] = "ucm-evaluator-fixture-pair-oracle-renamed/1"
+    resigned = replace(
+        valid,
+        oracle_record=oracle,
+        oracle_record_digest=digest_json(oracle),
+    )
+
+    valid_report = evaluate_records(
+        (_record(base),), (valid,), _manifest((base,), (expected,))
+    )
+    downgraded_report = evaluate_records(
+        (_record(base),), (resigned,), _manifest((base,), (expected,))
+    )
+
+    assert valid_report.pairs.attributable_collision_count == 1
+    assert downgraded_report.evidence_status is EvidenceStatus.INCOMPLETE
+    assert downgraded_report.pairs.classifications == ()
+    assert downgraded_report.candidate_gate_status is CandidateGateStatus.NO_HARD_FAILURE_OBSERVED
+    assert any(
+        issue.code == "UCM-F023-RESULT_EVIDENCE_LOSS"
+        and "required fixture semantic" in issue.detail
+        for issue in downgraded_report.blockers
+    )
+
+
+@pytest.mark.parametrize(
+    "malformation",
+    [
+        "same_public_digest",
+        "duplicate_action_id",
+        "short_diagnosis",
+        "short_oracle_rollouts",
+        "short_candidate_horizon",
+        "short_oracle_horizon",
+    ],
+)
+def test_w04_fixture_shape_is_exact(malformation: str) -> None:
+    candidate, oracle, _probe = _w04_fixture_records("w04-shape")
+    candidate = deepcopy(candidate)
+    oracle = deepcopy(oracle)
+    if malformation == "same_public_digest":
+        oracle["public_history_digests"][1] = oracle["public_history_digests"][0]
+    elif malformation == "duplicate_action_id":
+        oracle["action_ids"][1] = oracle["action_ids"][0]
+    elif malformation == "short_diagnosis":
+        oracle["endpoints"][0]["diagnosis"] = [1.0]
+    elif malformation == "short_oracle_rollouts":
+        oracle["endpoints"][0]["rollouts"].pop()
+    elif malformation == "short_candidate_horizon":
+        trajectory = candidate["endpoints"][0]["rollout_responses"][0]["result"][
+            "observable_predictions"
+        ]["obs_0"]
+        trajectory["horizon"] = 3
+        trajectory["values"] = [0.0, 0.0, 0.0]
+    else:
+        oracle["endpoints"][0]["rollouts"][0]["observation_means"] = [
+            0.0,
+            0.0,
+            0.0,
+        ]
+
+    with pytest.raises(ProtocolViolation):
+        _derive_fixture_pair_probe("w04-shape", candidate, oracle)
 
 
 def _w19_manifest(*cells: ExpectedEvaluationCell) -> EvaluationManifest:

@@ -175,6 +175,17 @@ _REQUEST_RECORD_KEYS = frozenset(
         "operation",
         "seed",
         "execution_mode",
+        "executor_protocol",
+        "parent_pid",
+        "worker_pid",
+        "isolation",
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "module_origin",
+        "invocation_nonce",
+        "executor_receipt",
         "status",
         "request_wire",
         "request_digest",
@@ -333,6 +344,9 @@ _PORTABLE_MUTATION_CONTRACTS = (
     ("WarmFutureCache", "WarmFutureCacheControl", "C23", "UCM-F001-FUTURE_LEAK", ("warm_future_old_cut",), "replay_ddrr"),
     ("ReplayBatchDivergence", "ReplayBatchDivergenceControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
     ("DoubleCountEvent", "DoubleCountEventControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
+    ("NonIdPointEstimate", "NonIdPointEstimateControl", "C19", "UCM-F015-CONDITIONING_AS_INTERVENTION", ("nonidentified_set",), "replay_ddrr"),
+    ("DangerousMeanCompressor", "DangerousMeanCompressorControl", "C24", "UCM-F016-DANGEROUS_COLLISION", ("dangerous_collision",), "replay_ddrr"),
+    ("UnsafeClosedWorld", "UnsafeClosedWorldControl", "C25", "UCM-F017-OOD_FORCED_MATCH", ("unsafe_closed_world",), "replay_ddrr"),
 )
 # Empty head records mean that the candidate failed before a successful head
 # response could be materialized; they do not mean that an arbitrary prefix is
@@ -395,8 +409,15 @@ _PORTABLE_SPECIFICITY_CONTRACTS = (
         ("full_history_disclosure",),
         "replay_ddrr",
     ),
+    (
+        "CorrectNonidentifiedSet",
+        "CorrectNonidentifiedSetControl",
+        "ordinary_candidate",
+        ("nonidentified_set",),
+        "replay_ddrr",
+    ),
 )
-_PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/4"
+_PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/5"
 UPDATE_CONSISTENCY_LINEAGE_XOR_MASK = 0x6A09E667F3BCC909
 _SUBJECT_ENVELOPE_KEYS = frozenset(
     {
@@ -1138,6 +1159,7 @@ def _validate_request_records(
     expected_head_record_shape: str,
     observation_outcome: ObservationOutcome,
     head_records: list[dict[str, Any]],
+    expected_execution_binding: dict[str, str] | None = None,
 ) -> tuple[str, frozenset[str], dict[str, Any]]:
     """Validate an ordered, exact invocation transcript and its state lineage."""
 
@@ -1151,6 +1173,39 @@ def _validate_request_records(
     delta_wire = None if delta is None else delta.to_wire()
     merged = _merged_input_history(history, delta)
     merged_wire = None if merged is None else merged.to_wire()
+    from . import compliance as compliance_module
+
+    evaluator_probe_counts = compliance_module.EVALUATOR_PROBE_REQUEST_COUNTS
+    evaluator_probe_order = tuple(
+        probe
+        for probe in compliance_module._EVALUATOR_PROBE_ORDER
+        if probe in expected_semantic_probes
+    )
+    main_length = 8 if delta is not None else 6
+    evaluator_start = main_length
+    if "update_consistency" in expected_semantic_probes:
+        evaluator_start += 10
+    if "warm_future_old_cut" in expected_semantic_probes:
+        evaluator_start += 7
+    evaluator_ranges: dict[str, tuple[int, int]] = {}
+    cursor = evaluator_start
+    for probe in evaluator_probe_order:
+        count = evaluator_probe_counts[probe]
+        evaluator_ranges[probe] = (cursor, cursor + count)
+        cursor += count
+    evaluator_indices = frozenset(
+        index
+        for start, end in evaluator_ranges.values()
+        for index in range(start, end)
+    )
+    matching_control_names = [
+        row[1]
+        for row in (*_PORTABLE_MUTATION_CONTRACTS, *_PORTABLE_SPECIFICITY_CONTRACTS)
+        if row[0] == expected_subject_id
+    ]
+    if len(matching_control_names) != 1:
+        raise ProtocolViolation("request transcript subject has no unique control")
+    expected_control_class_name = matching_control_names[0]
     decisive = observation_outcome in {
         ObservationOutcome.KILLED,
         ObservationOutcome.PASSED,
@@ -1186,6 +1241,9 @@ def _validate_request_records(
     fresh_main_records: list[dict[str, Any]] = []
     typed_responses: list[object | None] = []
     actual_probe_evidence: dict[str, Any] = {}
+    invocation_nonces: list[str] = []
+    executor_receipts: list[str] = []
+    observed_code_owned_bindings: list[dict[str, str]] = []
 
     for index, record_value in enumerate(value):
         record = _closed_object(
@@ -1193,6 +1251,64 @@ def _validate_request_records(
             _REQUEST_RECORD_KEYS,
             f"request record {index}",
         )
+        validated_record_bytes = compliance_module._validated_request_record_bytes(
+            record
+        )
+        if validated_record_bytes != _canonical_bytes(
+            record, f"request record {index}"
+        ):
+            raise ProtocolViolation(
+                f"request record {index} differs from the code-owned canonical "
+                "executor receipt"
+            )
+        invocation_nonces.append(record["invocation_nonce"])
+        executor_receipts.append(record["executor_receipt"])
+        executor_binding_fields = (
+            "candidate_bundle_digest",
+            "candidate_model_digest",
+            "harness_bundle_digest",
+            "import_inventory_digest",
+            "module_origin",
+        )
+        if record["executor_protocol"] == (
+            compliance_module._UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+        ):
+            if any(record[field] is not None for field in executor_binding_fields):
+                raise ProtocolViolation(
+                    "unverified executor record cannot claim a live source binding"
+                )
+        else:
+            if decisive and any(
+                record[field] is None for field in executor_binding_fields
+            ):
+                raise ProtocolViolation(
+                    "decisive code-owned executor record lacks its live source binding"
+                )
+            if all(record[field] is not None for field in executor_binding_fields):
+                observed_code_owned_bindings.append(
+                    {field: record[field] for field in executor_binding_fields}
+                )
+        if decisive and evaluator_probe_order:
+            expected_executor_protocol = {
+                "fresh": compliance_module._FRESH_EXECUTOR_RECEIPT_PROTOCOL,
+                "sequential": (
+                    compliance_module._SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL
+                ),
+            }.get(record["execution_mode"])
+            expected_isolation = {
+                "fresh": compliance_module._FRESH_ISOLATION_PROTOCOL,
+                "sequential": compliance_module._SEQUENTIAL_ISOLATION_PROTOCOL,
+            }.get(record["execution_mode"])
+            if (
+                record["executor_protocol"] != expected_executor_protocol
+                or record["isolation"] != expected_isolation
+                or type(record["worker_pid"]) is not int
+                or record["worker_pid"] == record["parent_pid"]
+            ):
+                raise ProtocolViolation(
+                    "decisive evaluator transcript requires exact code-owned "
+                    "fresh/sequential process receipts"
+                )
         if record["execution_mode"] not in {"fresh", "sequential"}:
             raise ProtocolViolation(
                 f"request record {index} execution_mode must be fresh or sequential"
@@ -1205,7 +1321,11 @@ def _validate_request_records(
             raise ProtocolViolation(
                 f"request record {index} request_wire is not a typed request"
             ) from exc
-        if request.to_wire() != record["request_wire"]:
+        if _canonical_bytes(
+            request.to_wire(), f"request record {index} typed request"
+        ) != _canonical_bytes(
+            record["request_wire"], f"request record {index} request_wire"
+        ):
             raise ProtocolViolation(
                 f"request record {index} request_wire is not an exact round trip"
             )
@@ -1273,7 +1393,12 @@ def _validate_request_records(
                 raise ProtocolViolation(
                     f"request record {index} response_wire is not a typed response"
                 ) from exc
-            if parsed_response.to_wire() != response_wire:
+            if _canonical_bytes(
+                parsed_response.to_wire(),
+                f"request record {index} typed response",
+            ) != _canonical_bytes(
+                response_wire, f"request record {index} response_wire"
+            ):
                 raise ProtocolViolation(
                     f"request record {index} response_wire is not an exact round trip"
                 )
@@ -1339,7 +1464,14 @@ def _validate_request_records(
                             "is not a typed response"
                         ) from exc
                     if (
-                        parsed_response.to_wire() != response_wire
+                        _canonical_bytes(
+                            parsed_response.to_wire(),
+                            f"request record {index} typed harness response",
+                        )
+                        != _canonical_bytes(
+                            response_wire,
+                            f"request record {index} harness response_wire",
+                        )
                         or parsed_response.operation is not operation
                     ):
                         raise ProtocolViolation(
@@ -1355,9 +1487,14 @@ def _validate_request_records(
                         )
         typed_responses.append(parsed_response)
 
-        # Bind every request payload to the exact runner input, not merely to
-        # a self-consistent request digest.
-        if operation is Operation.INITIALIZE:
+        # Bind every main/legacy semantic payload to the exact runner input,
+        # not merely to a self-consistent request digest.  Evaluator-fixture
+        # suffixes are regenerated from code-owned worlds below; they must not
+        # be mistaken for caller-supplied main inputs.
+        evaluator_fixture_record = index in evaluator_indices
+        if evaluator_fixture_record:
+            pass
+        elif operation is Operation.INITIALIZE:
             request_history = request.history.to_wire()
             if request.seed == execution_seed:
                 allowed_histories = [history_wire]
@@ -1365,34 +1502,75 @@ def _validate_request_records(
                 # they are not a replacement for the main fresh initialize.
                 if record["execution_mode"] == "sequential" and merged_wire is not None:
                     allowed_histories.append(merged_wire)
-                if request_history not in allowed_histories:
+                if not any(
+                    _canonical_bytes(
+                        request_history,
+                        f"request record {index} initialize history",
+                    )
+                    == _canonical_bytes(
+                        allowed,
+                        f"request record {index} allowed initialize history",
+                    )
+                    for allowed in allowed_histories
+                ):
                     raise ProtocolViolation(
                         f"request record {index} main initialize history differs from input"
                     )
-            elif request_history not in [
-                item for item in (history_wire, merged_wire) if item is not None
-            ]:
+            elif not any(
+                _canonical_bytes(
+                    request_history,
+                    f"request record {index} lineage initialize history",
+                )
+                == _canonical_bytes(
+                    item,
+                    f"request record {index} allowed lineage history",
+                )
+                for item in (history_wire, merged_wire)
+                if item is not None
+            ):
                 raise ProtocolViolation(
                     f"request record {index} lineage initialize history is not input/merged"
                 )
-            if request_history == history_wire and fully_sent is True:
+            if (
+                _canonical_bytes(
+                    request_history,
+                    f"request record {index} sent initialize history",
+                )
+                == _canonical_bytes(
+                    history_wire, f"request record {index} input history"
+                )
+                and fully_sent is True
+            ):
                 sent_coverage.add("history")
         elif operation is Operation.DIAGNOSE:
-            if request.query.to_wire() != diagnosis_wire:
+            if _canonical_bytes(
+                request.query.to_wire(),
+                f"request record {index} diagnosis query",
+            ) != _canonical_bytes(
+                diagnosis_wire, f"request record {index} input diagnosis query"
+            ):
                 raise ProtocolViolation(
                     f"request record {index} diagnosis query differs from input"
                 )
             if fully_sent is True:
                 sent_coverage.add("diagnosis_query")
         elif operation is Operation.ROLLOUT:
-            if request.query.to_wire() != rollout_wire:
+            if _canonical_bytes(
+                request.query.to_wire(), f"request record {index} rollout query"
+            ) != _canonical_bytes(
+                rollout_wire, f"request record {index} input rollout query"
+            ):
                 raise ProtocolViolation(
                     f"request record {index} rollout query differs from input"
                 )
             if fully_sent is True:
                 sent_coverage.add("rollout_query")
         else:
-            if delta_wire is None or request.delta.to_wire() != delta_wire:
+            if delta_wire is None or _canonical_bytes(
+                request.delta.to_wire(), f"request record {index} update delta"
+            ) != _canonical_bytes(
+                delta_wire, f"request record {index} input update delta"
+            ):
                 raise ProtocolViolation(
                     f"request record {index} update delta differs from input"
                 )
@@ -1413,7 +1591,11 @@ def _validate_request_records(
             Operation.ROLLOUT: execution_seed + 2,
             Operation.UPDATE: execution_seed + 3,
         }[operation]
-        if request.seed == main_seed and record["execution_mode"] == "fresh":
+        if (
+            index < main_length
+            and request.seed == main_seed
+            and record["execution_mode"] == "fresh"
+        ):
             fresh_main_sequence.append((operation.value, request.seed))
             fresh_main_positions.append(index)
             fresh_main_records.append(record)
@@ -1479,7 +1661,8 @@ def _validate_request_records(
             "initialize state wire"
         )
 
-    main_length = len(expected_fresh_main_sequence)
+    if main_length != len(expected_fresh_main_sequence):
+        raise ProtocolViolation("code-owned main request length drifted")
 
     def require_exact_shape(
         records: list[dict[str, Any]],
@@ -1710,6 +1893,57 @@ def _validate_request_records(
                 "warm-cold sequence does not bind input history and sealed main state"
             )
 
+    def evaluator_probe_shape(probe: str) -> list[tuple[str, str, int]]:
+        if probe == "nonidentified_set":
+            return [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+            ]
+        if probe == "dangerous_collision":
+            endpoint = [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                *[
+                    ("fresh", Operation.ROLLOUT.value, execution_seed + 2)
+                    for _ in range(8)
+                ],
+            ]
+            return endpoint + endpoint
+        if probe == "unsafe_closed_world":
+            endpoint = [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+            ]
+            return endpoint * 4
+        raise ProtocolViolation("unknown evaluator probe shape")
+
+    def validate_evaluator_probe(probe: str) -> dict[str, Any]:
+        start, end = evaluator_ranges[probe]
+        records = value[start:end]
+        require_exact_shape(
+            records,
+            evaluator_probe_shape(probe),
+            f"{probe} evaluator suffix",
+        )
+        require_successful_records(records, f"{probe} evaluator suffix")
+        artifact = compliance_module._rebuild_evaluator_probe_artifact(
+            probe=probe,
+            control_class_name=expected_control_class_name,
+            seed=execution_seed,
+            request_start=start,
+            request_records=records,
+        )
+        if artifact["request_record_count"] != evaluator_probe_counts[probe]:
+            raise ProtocolViolation("evaluator artifact request count mismatch")
+        actual_probe_evidence[probe] = artifact
+        return artifact
+
     if decisive and not main_attempts[Operation.INITIALIZE]:
         raise ProtocolViolation("killed/passed transcript lacks attempted main initialize")
     if observation_outcome is ObservationOutcome.PASSED:
@@ -1750,6 +1984,8 @@ def _validate_request_records(
                     ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
                 ]
             )
+        for probe in evaluator_probe_order:
+            expected_suffix_shape.extend(evaluator_probe_shape(probe))
         # The warm-vs-cold sequence is part of every successful compliance
         # evaluation, independent of optional semantic probes.
         expected_suffix_shape.extend(
@@ -1801,11 +2037,24 @@ def _validate_request_records(
                     "passed warm-future transcript contains actual old-cut drift"
                 )
             suffix_offset += 7
+        for probe in evaluator_probe_order:
+            start, end = evaluator_ranges[probe]
+            expected_relative_start = main_length + suffix_offset
+            if start != expected_relative_start or end - start != evaluator_probe_counts[probe]:
+                raise ProtocolViolation("evaluator probe suffix offset drifted")
+            validate_evaluator_probe(probe)
+            suffix_offset += evaluator_probe_counts[probe]
         warm_cold = semantic_suffix[suffix_offset : suffix_offset + 3]
         validate_warm_cold_suffix(warm_cold, main_state_wire=main_state_wire)
         if any(
-            value[main_index]["response_wire"]
-            != warm_cold[warm_index]["response_wire"]
+            _canonical_bytes(
+                value[main_index]["response_wire"],
+                "passed fresh response wire",
+            )
+            != _canonical_bytes(
+                warm_cold[warm_index]["response_wire"],
+                "passed sequential response wire",
+            )
             for main_index, warm_index in ((0, 0), (2, 1), (4, 2))
         ):
             raise ProtocolViolation(
@@ -1859,6 +2108,12 @@ def _validate_request_records(
             )
             or expected_failure_code == "UCM-F019-UPDATE_INCONSISTENT"
             or expected_failure_code == "UCM-F020-NONREPRODUCIBLE"
+            or expected_failure_code
+            in {
+                "UCM-F015-CONDITIONING_AS_INTERVENTION",
+                "UCM-F016-DANGEROUS_COLLISION",
+                "UCM-F017-OOD_FORCED_MATCH",
+            }
         )
         if expected_head_record_shape == "replay_ddrr":
             if fresh_main_sequence != expected_fresh_main_sequence:
@@ -1918,7 +2173,37 @@ def _validate_request_records(
                 )
             main_state_wire = fresh_main_records[2]["request_wire"]["state"]
             killed_suffix = value[main_length:]
-            if expected_failure_code == "UCM-F020-NONREPRODUCIBLE":
+            if expected_failure_code in {
+                "UCM-F015-CONDITIONING_AS_INTERVENTION",
+                "UCM-F016-DANGEROUS_COLLISION",
+                "UCM-F017-OOD_FORCED_MATCH",
+            }:
+                probe = {
+                    "UCM-F015-CONDITIONING_AS_INTERVENTION": "nonidentified_set",
+                    "UCM-F016-DANGEROUS_COLLISION": "dangerous_collision",
+                    "UCM-F017-OOD_FORCED_MATCH": "unsafe_closed_world",
+                }[expected_failure_code]
+                require_exact_shape(
+                    killed_suffix,
+                    evaluator_probe_shape(probe)
+                    + [
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                    ],
+                    f"{probe} killed evaluator/warm suffix",
+                )
+                artifact = validate_evaluator_probe(probe)
+                report_failures = artifact["evaluation_report"]["failures"]
+                if [item["code"] for item in report_failures] != [expected_failure_code]:
+                    raise ProtocolViolation(
+                        "evaluator killed artifact lacks its one exact decisive issue"
+                    )
+                validate_warm_cold_suffix(
+                    killed_suffix[evaluator_probe_counts[probe] :],
+                    main_state_wire=main_state_wire,
+                )
+            elif expected_failure_code == "UCM-F020-NONREPRODUCIBLE":
                 require_exact_shape(
                     killed_suffix,
                     [],
@@ -1929,8 +2214,14 @@ def _validate_request_records(
                 # evidence for this code-owned subject.
                 allowed_response_drift_positions.update({3, 5})
                 if not any(
-                    value[left]["response_wire"]
-                    != value[right]["response_wire"]
+                    _canonical_bytes(
+                        value[left]["response_wire"],
+                        "F020 first replay response wire",
+                    )
+                    != _canonical_bytes(
+                        value[right]["response_wire"],
+                        "F020 second replay response wire",
+                    )
                     for left, right in ((2, 3), (4, 5))
                 ):
                     raise ProtocolViolation(
@@ -1951,8 +2242,14 @@ def _validate_request_records(
                     {warm_offset, warm_offset + 1, warm_offset + 2}
                 )
                 if not any(
-                    value[main_index]["response_wire"]
-                    != value[warm_offset + warm_index]["response_wire"]
+                    _canonical_bytes(
+                        value[main_index]["response_wire"],
+                        "F006 fresh response wire",
+                    )
+                    != _canonical_bytes(
+                        value[warm_offset + warm_index]["response_wire"],
+                        "F006 sequential response wire",
+                    )
                     for main_index, warm_index in ((0, 0), (2, 1), (4, 2))
                 ):
                     raise ProtocolViolation(
@@ -2080,6 +2377,28 @@ def _validate_request_records(
                     "code-owned decisive comparison"
                 )
 
+    if len(invocation_nonces) != len(set(invocation_nonces)):
+        raise ProtocolViolation(
+            "request transcript reused a code-owned invocation nonce"
+        )
+    if len(executor_receipts) != len(set(executor_receipts)):
+        raise ProtocolViolation(
+            "request transcript reused a code-owned executor receipt"
+        )
+    if observed_code_owned_bindings:
+        first_binding = observed_code_owned_bindings[0]
+        if any(binding != first_binding for binding in observed_code_owned_bindings[1:]):
+            raise ProtocolViolation(
+                "request transcript spliced distinct live execution bindings"
+            )
+        if (
+            expected_execution_binding is not None
+            and first_binding != expected_execution_binding
+        ):
+            raise ProtocolViolation(
+                "request transcript live binding differs from report execution binding"
+            )
+
     # A head record is derived only from one successful request/response pair.
     # The candidate-visible state wire has already been checked against the
     # ordered StateResponse lineage above.  Recomputing the separate harness
@@ -2181,7 +2500,7 @@ def _validate_decisive_source_witness(
     execution_context_payload: dict[str, Any],
 ) -> None:
     witness = _closed_object(witness, _SOURCE_WITNESS_KEYS, label)
-    if witness["protocol"] != "ucm-portable-control-source-binding/17":
+    if witness["protocol"] != "ucm-portable-control-source-binding/18":
         raise ProtocolViolation(f"{label} protocol mismatch")
     if witness["control"] != expected_control:
         raise ProtocolViolation(f"{label} control identity mismatch")
@@ -2813,6 +3132,7 @@ def _validate_record_semantics(
         expected_head_record_shape=expected_head_record_shape,
         observation_outcome=observation.outcome,
         head_records=head_records,
+        expected_execution_binding=execution_binding,
     )
     if report["invocation_transcript_digest"] != invocation_transcript_digest:
         raise ProtocolViolation("report invocation_transcript_digest mismatch")
@@ -2998,6 +3318,25 @@ def _validate_record_semantics(
                     "UCM-F001 finding evidence differs from actual old-cut "
                     "semantic/raw responses"
                 )
+        evaluator_probe_by_code = {
+            "UCM-F015-CONDITIONING_AS_INTERVENTION": "nonidentified_set",
+            "UCM-F016-DANGEROUS_COLLISION": "dangerous_collision",
+            "UCM-F017-OOD_FORCED_MATCH": "unsafe_closed_world",
+        }
+        evaluator_probe = evaluator_probe_by_code.get(
+            observation.actual_failure_code
+        )
+        if evaluator_probe is not None:
+            actual_artifact = actual_probe_evidence.get(evaluator_probe)
+            if type(actual_artifact) is not dict or _canonical_bytes(
+                finding_evidence, "stored evaluator finding evidence"
+            ) != _canonical_bytes(
+                actual_artifact, "rebuilt evaluator finding evidence"
+            ):
+                raise ProtocolViolation(
+                    "evaluator finding evidence differs from the exact rebuilt "
+                    "request/fixture/oracle/manifest/report artifact"
+                )
         if observation.actual_failure_code not in failure_codes:
             raise ProtocolViolation(
                 "killed observation failure code is absent from report failure_codes"
@@ -3082,6 +3421,31 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 "non-paired specificity control cannot carry paired evidence"
             )
+        if observation.subject_id == "CorrectNonidentifiedSet":
+            actual_artifact = actual_probe_evidence.get("nonidentified_set")
+            c19_passes = [
+                item
+                for item in findings
+                if item.get("gate") == "C19-nonidentified-effect-set"
+                and item.get("verdict") == "pass"
+                and item.get("failure_code") is None
+            ]
+            if (
+                type(actual_artifact) is not dict
+                or len(c19_passes) != 1
+                or _canonical_bytes(
+                    c19_passes[0].get("evidence"),
+                    "stored CorrectNonidentifiedSet evidence",
+                )
+                != _canonical_bytes(
+                    actual_artifact,
+                    "rebuilt CorrectNonidentifiedSet evidence",
+                )
+                or actual_artifact["evaluation_report"]["failures"] != []
+            ):
+                raise ProtocolViolation(
+                    "CorrectNonidentifiedSet lacks one exact rebuilt C19 pass artifact"
+                )
         if decisive.get("decision_kind") != "specificity_pass":
             raise ProtocolViolation(
                 "specificity pass has the wrong decisive decision_kind"

@@ -56,7 +56,7 @@ from .mutation_evidence import (
 from .schema import DiagnosisQuery, RolloutQuery, VisibleDelta, VisibleHistory
 
 
-RUNNER_PROTOCOL = "ucm-portable-mutation-runner/17"
+RUNNER_PROTOCOL = "ucm-portable-mutation-runner/18"
 
 
 def _runtime_metadata() -> dict[str, Any]:
@@ -1256,6 +1256,98 @@ def _nested_external_dispatch_roots(candidate_protocol: Any) -> dict[str, Any]:
     return roots
 
 
+def _adjudicator_external_attributes(
+    *, compliance: Any, evaluator: Any, metrics: Any, w04: Any, w15: Any, w18: Any
+) -> dict[str, Any]:
+    """Resolve dynamic module attributes used by the live adjudicator path.
+
+    Binding only the ``numpy`` or ``math`` module object is insufficient:
+    Python resolves ``np.max``/``math.fsum`` at each call, so replacing one
+    attribute leaves the consumer function's code object and module alias
+    unchanged.  This inventory is intentionally code-owned and exhaustive for
+    the evaluator, metric classifier, and W04/W15/W18 fixture paths currently
+    used by portable semantic adjudication.
+    """
+
+    consumers = (
+        ("compliance.math", compliance.math, ("fsum", "isclose", "isfinite")),
+        ("compliance.os", compliance.os, ("getpid",)),
+        ("compliance.random", compliance.random, ("Random",)),
+        (
+            "evaluator.np",
+            evaluator.np,
+            (
+                "arange",
+                "argmax",
+                "argsort",
+                "asarray",
+                "cumsum",
+                "max",
+                "mean",
+                "quantile",
+                "sum",
+            ),
+        ),
+        ("evaluator.math", evaluator.math, ("isclose", "isfinite")),
+        (
+            "metrics.np",
+            metrics.np,
+            (
+                "abs",
+                "all",
+                "allclose",
+                "any",
+                "arange",
+                "argmax",
+                "argsort",
+                "asarray",
+                "broadcast_to",
+                "clip",
+                "empty",
+                "float64",
+                "int64",
+                "integer",
+                "isfinite",
+                "isin",
+                "issubdtype",
+                "linspace",
+                "log",
+                "max",
+                "maximum",
+                "mean",
+                "pi",
+                "quantile",
+                "sqrt",
+                "sum",
+                "zeros_like",
+            ),
+        ),
+        ("worlds_w04.np", w04.np, ("array", "zeros")),
+        (
+            "worlds_w04.math",
+            w04.math,
+            ("exp", "fsum", "inf", "log", "pi"),
+        ),
+        ("worlds_w15.math", w15.math, ("exp", "fsum")),
+        ("worlds_w18.math", w18.math, ("exp", "fsum", "sqrt")),
+    )
+    attributes: dict[str, Any] = {}
+    for consumer, owner, names in consumers:
+        if not inspect.ismodule(owner):
+            raise ProtocolViolation(
+                f"adjudicator external owner is not a module: {consumer}"
+            )
+        namespace = vars(owner)
+        for name in names:
+            label = f"{consumer}.{name}"
+            if name not in namespace:
+                raise ProtocolViolation(
+                    f"adjudicator external attribute is missing: {label}"
+                )
+            attributes[label] = namespace[name]
+    return attributes
+
+
 def _capture_source_identity_anchors() -> dict[str, Any]:
     """Snapshot clean module/class aliases once, during module import.
 
@@ -1270,11 +1362,14 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         candidate_protocol,
         canonical,
         compliance,
+        evaluator,
+        metrics,
         mutation_evidence,
         mutation_matrix,
         schema,
         state,
     )
+    from .worlds import w04, w15, w18
 
     # ``tempfile`` resolves its default directory and creates its process-wide
     # candidate-name sequence lazily.
@@ -1294,10 +1389,15 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "evaluator": evaluator,
+        "metrics": metrics,
         "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_w04": w04,
+        "worlds_w15": w15,
+        "worlds_w18": w18,
         "mutation_runner": runner_module,
     }
     aliases: dict[str, dict[str, tuple[str, Any]]] = {}
@@ -1483,7 +1583,6 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "candidate_protocol.re.fullmatch": candidate_protocol.re.fullmatch,
         "canonical.hashlib.sha256": canonical.hashlib.sha256,
         "canonical.json.dumps": canonical.json.dumps,
-        "compliance.math.isclose": compliance.math.isclose,
         "mutation_runner.dis.get_instructions": dis.get_instructions,
         "mutation_runner.inspect.getsource": inspect.getsource,
         "mutation_runner.inspect.isfunction": inspect.isfunction,
@@ -1491,6 +1590,16 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "mutation_runner.inspect.ismodule": inspect.ismodule,
         "mutation_runner.inspect.isbuiltin": inspect.isbuiltin,
     }
+    external_attributes.update(
+        _adjudicator_external_attributes(
+            compliance=compliance,
+            evaluator=evaluator,
+            metrics=metrics,
+            w04=w04,
+            w15=w15,
+            w18=w18,
+        )
+    )
     for name in (
         "read_bytes",
         "open",
@@ -1777,8 +1886,44 @@ def _external_callable_identity_binding(value: Any, label: str) -> dict[str, Any
     raise ProtocolViolation(f"critical external attribute is not callable: {label}")
 
 
+def _external_attribute_binding(value: Any, label: str) -> Any:
+    """Serialize an already identity-verified external attribute.
+
+    NumPy exposes several runtime call targets as ``ufunc`` or
+    ``_ArrayFunctionDispatcher`` instances rather than Python/builtin
+    functions.  Their exact import-time object identity is the authority; the
+    immutable runtime import inventory binds their implementation bytes.  The
+    generic anchored-reference form also supports scalar constants such as
+    ``np.pi`` and ``math.inf`` without pretending they are callables.
+    """
+
+    if type(value) is float:
+        # The canonical JSON layer deliberately rejects infinities, while
+        # ``math.inf`` is a real W04 runtime dependency.  Hexadecimal float
+        # text is exact, stable, and keeps every scalar finite or non-finite
+        # out of the JSON number domain.
+        return {"kind": "float-constant", "hex": value.hex()}
+    if (
+        type(value) is property
+        or value is object.__new__
+        or inspect.isclass(value)
+        or inspect.isfunction(value)
+        or inspect.isbuiltin(value)
+    ):
+        return _external_callable_identity_binding(value, label)
+    return _runtime_value_binding(value, label)
+
+
 def _external_attribute_identity_contract(
-    *, candidate_protocol: Any, canonical: Any, compliance: Any
+    *,
+    candidate_protocol: Any,
+    canonical: Any,
+    compliance: Any,
+    evaluator: Any,
+    metrics: Any,
+    w04: Any,
+    w15: Any,
+    w18: Any,
 ) -> list[dict[str, Any]]:
     """Bind freeze-critical attributes looked up through external modules."""
 
@@ -1928,7 +2073,6 @@ def _external_attribute_identity_contract(
         "candidate_protocol.re.fullmatch": candidate_protocol.re.fullmatch,
         "canonical.hashlib.sha256": canonical.hashlib.sha256,
         "canonical.json.dumps": canonical.json.dumps,
-        "compliance.math.isclose": compliance.math.isclose,
         "mutation_runner.dis.get_instructions": dis.get_instructions,
         "mutation_runner.inspect.getsource": inspect.getsource,
         "mutation_runner.inspect.isfunction": inspect.isfunction,
@@ -1936,6 +2080,16 @@ def _external_attribute_identity_contract(
         "mutation_runner.inspect.ismodule": inspect.ismodule,
         "mutation_runner.inspect.isbuiltin": inspect.isbuiltin,
     }
+    current.update(
+        _adjudicator_external_attributes(
+            compliance=compliance,
+            evaluator=evaluator,
+            metrics=metrics,
+            w04=w04,
+            w15=w15,
+            w18=w18,
+        )
+    )
     for name in (
         "read_bytes",
         "open",
@@ -1980,7 +2134,7 @@ def _external_attribute_identity_contract(
         rows.append(
             {
                 "attribute": label,
-                "binding": _external_callable_identity_binding(value, label),
+                "binding": _external_attribute_binding(value, label),
                 "identity_verified": True,
             }
         )
@@ -2299,11 +2453,14 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         candidate_protocol,
         canonical,
         compliance,
+        evaluator,
+        metrics,
         mutation_evidence,
         mutation_matrix,
         schema,
         state,
     )
+    from .worlds import w04, w15, w18
 
     runner_module = sys.modules.get(__name__)
     if runner_module is None:
@@ -2312,10 +2469,15 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "evaluator": evaluator,
+        "metrics": metrics,
         "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_w04": w04,
+        "worlds_w15": w15,
+        "worlds_w18": w18,
         "mutation_runner": runner_module,
     }
     # Reject rewritten module/class aliases before dereferencing any of their
@@ -2330,6 +2492,11 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        evaluator=evaluator,
+        metrics=metrics,
+        w04=w04,
+        w15=w15,
+        w18=w18,
     )
     internal_callables = _prewarm_internal_callable_contract(
         candidate_protocol=candidate_protocol
@@ -2350,6 +2517,8 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        evaluator=evaluator,
+        metrics=metrics,
         mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
@@ -2712,6 +2881,27 @@ PORTABLE_MUTATION_CASES: tuple[PortableMutationCase, ...] = (
         "UCM-F019-UPDATE_INCONSISTENT",
         frozenset({"update_consistency"}),
     ),
+    PortableMutationCase(
+        "NonIdPointEstimate",
+        "NonIdPointEstimateControl",
+        "C19",
+        "UCM-F015-CONDITIONING_AS_INTERVENTION",
+        frozenset({"nonidentified_set"}),
+    ),
+    PortableMutationCase(
+        "DangerousMeanCompressor",
+        "DangerousMeanCompressorControl",
+        "C24",
+        "UCM-F016-DANGEROUS_COLLISION",
+        frozenset({"dangerous_collision"}),
+    ),
+    PortableMutationCase(
+        "UnsafeClosedWorld",
+        "UnsafeClosedWorldControl",
+        "C25",
+        "UCM-F017-OOD_FORCED_MATCH",
+        frozenset({"unsafe_closed_world"}),
+    ),
 )
 
 
@@ -2741,6 +2931,12 @@ PORTABLE_SPECIFICITY_CASES: tuple[
         "DeclaredFullHistoryBaselineControl",
         "baseline_only",
         frozenset({"full_history_disclosure"}),
+    ),
+    (
+        "CorrectNonidentifiedSet",
+        "CorrectNonidentifiedSetControl",
+        "ordinary_candidate",
+        frozenset({"nonidentified_set"}),
     ),
 )
 
@@ -2909,14 +3105,7 @@ def paired_serialization_equivalence_evidence(
 ) -> dict[str, Any]:
     """Compare Honest and affine states on the same scored behavior surfaces."""
 
-    from . import (
-        candidate_protocol,
-        canonical,
-        compliance,
-        mutation_matrix,
-        schema,
-        state,
-    )
+    from . import compliance
     from .candidate_protocol import DiagnoseResponse, RolloutResponse
     from .state import CandidateStateInput, StatePayload
 
@@ -3170,6 +3359,8 @@ def _freeze_critical_runtime_contract(
     *,
     candidate_protocol: Any,
     compliance: Any,
+    evaluator: Any,
+    metrics: Any,
     mutation_evidence: Any,
     mutation_matrix: Any,
     runner_module: Any,
@@ -3234,6 +3425,20 @@ def _freeze_critical_runtime_contract(
                 "_HISTORY_MAX_TOTAL_COMPRESSED_BYTES",
                 "_HISTORY_MAX_SINGLE_EXPANDED_BYTES",
                 "_HISTORY_MAX_TOTAL_EXPANDED_BYTES",
+                "EVALUATOR_SEMANTIC_PROBE_PROTOCOL",
+                "EVALUATOR_PROBE_REQUEST_COUNTS",
+                "_EVALUATOR_PROBE_ORDER",
+                "_EVALUATOR_PROBE_CONTROLS",
+            ),
+        ),
+        "evaluator": (
+            evaluator,
+            (
+                "_FIXTURE_CANDIDATE_CELL_PROTOCOL",
+                "_FIXTURE_ORACLE_PROTOCOL",
+                "_FIXTURE_PAIR_CANDIDATE_PROTOCOL",
+                "_FIXTURE_PAIR_ORACLE_PROTOCOL",
+                "_IDENTIFIED_INTERVAL_PROTOCOL",
             ),
         ),
         "mutation_matrix": (
@@ -3294,6 +3499,19 @@ def _freeze_critical_runtime_contract(
             ("Operation", "ResultStatus", "_PipeSignal"),
         ),
         "compliance": (compliance, ("ComplianceVerdict",)),
+        "evaluator": (
+            evaluator,
+            (
+                "CandidateGateStatus",
+                "EvaluationCohort",
+                "EvaluationSplit",
+                "EvaluationTask",
+                "EvidenceStatus",
+                "IdentificationKind",
+                "OODAttribution",
+            ),
+        ),
+        "metrics": (metrics, ("InformationRelation",)),
         "mutation_matrix": (
             mutation_matrix,
             ("SubjectKind", "ObservationOutcome"),
@@ -3318,16 +3536,31 @@ def _critical_alias_identity_contract(
     candidate_protocol: Any,
     canonical: Any,
     compliance: Any,
+    evaluator: Any,
+    metrics: Any,
     mutation_evidence: Any,
     mutation_matrix: Any,
     runner_module: Any,
     schema: Any,
     state: Any,
 ) -> list[dict[str, str]]:
+    # These imports are intentionally retained as live runner aliases used by
+    # the evidence path.  Referencing them directly keeps static lint aligned
+    # with the dynamic alias contract below.
+    if MutationObservation is not mutation_matrix.MutationObservation:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.MutationObservation"
+        )
+    if evaluate_mutation_matrix is not mutation_matrix.evaluate_mutation_matrix:
+        raise ProtocolViolation(
+            "critical alias identity mismatch: mutation_runner.evaluate_mutation_matrix"
+        )
     modules = {
         "candidate_protocol": candidate_protocol,
         "canonical": canonical,
         "compliance": compliance,
+        "evaluator": evaluator,
+        "metrics": metrics,
         "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "mutation_runner": runner_module,
@@ -3407,6 +3640,17 @@ def _critical_alias_identity_contract(
             "StatePayload": ("state", "StatePayload"),
             "StateClass": ("state", "StateClass"),
             "seal_state": ("state", "seal_state"),
+        },
+        "evaluator": {
+            "ProtocolViolation": ("canonical", "ProtocolViolation"),
+            "canonical_json_bytes": ("canonical", "canonical_json_bytes"),
+            "digest_json": ("canonical", "digest_json"),
+            "ResultStatus": ("candidate_protocol", "ResultStatus"),
+            "PairProbe": ("metrics", "PairProbe"),
+            "classify_pair": ("metrics", "classify_pair"),
+        },
+        "metrics": {
+            "ProtocolViolation": ("canonical", "ProtocolViolation"),
         },
         "mutation_matrix": {
             "ProtocolViolation": ("canonical", "ProtocolViolation"),
@@ -3537,11 +3781,14 @@ def _source_binding_witness(
         candidate_protocol,
         canonical,
         compliance,
+        evaluator,
+        metrics,
         mutation_evidence,
         mutation_matrix,
         schema,
         state,
     )
+    from .worlds import w04, w15, w18
 
     # Direct callers of the source witness receive the same prewarm protection
     # as the batch runner.  The returned summary is committed below, so a cache
@@ -3561,10 +3808,15 @@ def _source_binding_witness(
         "canonical": canonical,
         "candidate_protocol": candidate_protocol,
         "compliance": compliance,
+        "evaluator": evaluator,
+        "metrics": metrics,
         "mutation_evidence": mutation_evidence,
         "mutation_matrix": mutation_matrix,
         "schema": schema,
         "state": state,
+        "worlds_w04": w04,
+        "worlds_w15": w15,
+        "worlds_w18": w18,
         "mutation_runner": runner_module,
     }
     # Perform identity validation before inspecting the selected class or any
@@ -3575,6 +3827,11 @@ def _source_binding_witness(
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        evaluator=evaluator,
+        metrics=metrics,
+        w04=w04,
+        w15=w15,
+        w18=w18,
     )
     external_global_dispatch = _external_global_dispatch_contract(
         candidate_protocol=candidate_protocol
@@ -3622,6 +3879,11 @@ def _source_binding_witness(
         "_head_behavior",
         "_semantic_behavior_projection",
         "_semantic_behavior_equal",
+        "_rebuild_evaluator_probe_artifact",
+        "_rebuild_nonidentified_artifact",
+        "_rebuild_dangerous_collision_artifact",
+        "_rebuild_unsafe_closed_world_artifact",
+        "_execute_evaluator_probe",
         "_report",
         "evaluate_candidate_compliance",
     )
@@ -3647,6 +3909,44 @@ def _source_binding_witness(
         "_CandidateAuditBoundary.__call__": _live_callable_digest(
             candidate_protocol._CandidateAuditBoundary.__call__,
             "_CandidateAuditBoundary.__call__",
+        ),
+        "evaluator.evaluate_records": _live_callable_digest(
+            evaluator.evaluate_records, "evaluator.evaluate_records"
+        ),
+        "evaluator._derive_fixture_pair_probe": _live_callable_digest(
+            evaluator._derive_fixture_pair_probe,
+            "evaluator._derive_fixture_pair_probe",
+        ),
+        "metrics.classify_pair": _live_callable_digest(
+            metrics.classify_pair, "metrics.classify_pair"
+        ),
+        "World15B.nonidentified_twin_fixture": _live_callable_digest(
+            w15.World15B.nonidentified_twin_fixture,
+            "World15B.nonidentified_twin_fixture",
+        ),
+        "World15B.counterfactual": _live_callable_digest(
+            w15.World15B.counterfactual, "World15B.counterfactual"
+        ),
+        "W04World.collision_fixture": _live_callable_digest(
+            w04.W04World.collision_fixture, "W04World.collision_fixture"
+        ),
+        "W04World.counterfactual": _live_callable_digest(
+            w04.W04World.counterfactual, "W04World.counterfactual"
+        ),
+        "W18World.attributable_ood_fixture": _live_callable_digest(
+            w18.W18World.attributable_ood_fixture,
+            "W18World.attributable_ood_fixture",
+        ),
+        "W18World.irreducible_alias_pair": _live_callable_digest(
+            w18.W18World.irreducible_alias_pair,
+            "W18World.irreducible_alias_pair",
+        ),
+        "W18World.known_extreme_fixture": _live_callable_digest(
+            w18.W18World.known_extreme_fixture,
+            "W18World.known_extreme_fixture",
+        ),
+        "W18World.counterfactual": _live_callable_digest(
+            w18.W18World.counterfactual, "W18World.counterfactual"
         ),
     }
     live_runtime_constants = {
@@ -3689,6 +3989,8 @@ def _source_binding_witness(
     freeze_critical_runtime_contract = _freeze_critical_runtime_contract(
         candidate_protocol=candidate_protocol,
         compliance=compliance,
+        evaluator=evaluator,
+        metrics=metrics,
         mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
@@ -3699,6 +4001,8 @@ def _source_binding_witness(
         candidate_protocol=candidate_protocol,
         canonical=canonical,
         compliance=compliance,
+        evaluator=evaluator,
+        metrics=metrics,
         mutation_evidence=mutation_evidence,
         mutation_matrix=mutation_matrix,
         runner_module=runner_module,
@@ -3713,7 +4017,7 @@ def _source_binding_witness(
         f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
     )
     return {
-        "protocol": "ucm-portable-control-source-binding/17",
+        "protocol": "ucm-portable-control-source-binding/18",
         "control": control_class_name,
         "execution_seed": execution_seed,
         "control_mro": mro_sources,
@@ -4321,8 +4625,6 @@ def run_portable_mutation_evidence(
     seed: int,
 ) -> MutationEvidenceBundle:
     """Execute the portable matrix once and retain every canonical preimage."""
-
-    from . import candidate_protocol, compliance
 
     # MutationObservation uses a uint128 storage field, but the executable
     # candidate protocol is deliberately uint64.  Every compliance execution

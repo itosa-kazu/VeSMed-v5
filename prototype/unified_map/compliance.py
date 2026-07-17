@@ -51,11 +51,12 @@ from .candidate_protocol import (
     invoke_rollout,
     request_from_wire,
     response_from_wire,
-    _canonical_candidate_failure_code,
     _validate_response_for_request,
 )
 from .schema import (
     DiagnosisQuery,
+    PlanKind,
+    PlannedAction,
     RolloutQuery,
     VisibleDelta,
     VisibleHistory,
@@ -77,12 +78,15 @@ class ComplianceVerdict(str, Enum):
 
 PORTABLE_SEMANTIC_PROBES = frozenset(
     {
+        "dangerous_collision",
         "full_history_disclosure",
+        "nonidentified_set",
+        "unsafe_closed_world",
         "update_consistency",
         "warm_future_old_cut",
     }
 )
-PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/4"
+PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/5"
 # Portable compliance probes launch a cold isolated interpreter and re-hash the
 # code-owned authority surface.  Keep that budget source-bound here rather than
 # embedding a machine-sensitive literal at individual probe call sites.
@@ -92,6 +96,23 @@ SEMANTIC_REL_TOLERANCE = 0.0
 UPDATE_CONSISTENCY_LINEAGE_XOR_MASK = 0x6A09E667F3BCC909
 _HISTORY_MAX_PAYLOAD_BYTES = 2 * 1024 * 1024
 _HISTORY_MAX_DEPTH = 16
+
+# Capture the exact implementation identities at import time.  A caller may
+# supply any object with an ``invoke`` method to the general transcript wrapper,
+# but only this code-owned class/method pair may mint a decisive fresh-process
+# receipt for evaluator probes.
+_CODE_OWNED_FRESH_PROCESS_EXECUTOR = FreshProcessExecutor
+_CODE_OWNED_FRESH_PROCESS_INVOKE = FreshProcessExecutor.invoke
+_CODE_OWNED_SEQUENTIAL_PROCESS_EXECUTOR = SequentialProcessExecutor
+_CODE_OWNED_SEQUENTIAL_PROCESS_INVOKE = SequentialProcessExecutor.invoke_sequence
+_FRESH_EXECUTOR_RECEIPT_PROTOCOL = "ucm-fresh-process-executor-receipt/1"
+_UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL = "ucm-unverified-executor-receipt/1"
+_SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL = (
+    "ucm-sequential-process-executor-receipt/1"
+)
+_FRESH_ISOLATION_PROTOCOL = "fresh-python-process-audit-v2"
+_SEQUENTIAL_ISOLATION_PROTOCOL = "sequential-python-process-audit-v3"
+_EXECUTOR_RECEIPT_DOMAIN = b"UCM\0OBSERVED_EXECUTOR_RECEIPT_V1\0"
 _HISTORY_MAX_NODES = 4096
 _HISTORY_MAX_STRINGS = 256
 _HISTORY_MAX_STRING_CHARS = 2 * 1024 * 1024
@@ -278,6 +299,30 @@ class _ExecutionBindingCollector:
         )
 
 
+def _is_code_owned_fresh_delegate(value: object) -> bool:
+    """Return whether ``value`` still exposes the import-time fresh executor.
+
+    Exact type and method identity are both intentional.  A duck-typed delegate,
+    subclass, instance-level replacement, or later monkeypatch may still be
+    observed for development transcripts, but it cannot mint a decisive
+    evaluator receipt.
+    """
+
+    return (
+        type(value) is _CODE_OWNED_FRESH_PROCESS_EXECUTOR
+        and type(value).invoke is _CODE_OWNED_FRESH_PROCESS_INVOKE
+        and "invoke" not in vars(value)
+    )
+
+
+def _is_code_owned_sequential_delegate(value: object) -> bool:
+    return (
+        type(value) is _CODE_OWNED_SEQUENTIAL_PROCESS_EXECUTOR
+        and type(value).invoke_sequence is _CODE_OWNED_SEQUENTIAL_PROCESS_INVOKE
+        and "invoke_sequence" not in vars(value)
+    )
+
+
 class _BindingObservedExecutor:
     def __init__(
         self,
@@ -291,9 +336,24 @@ class _BindingObservedExecutor:
         self._delegate = delegate
         self._collector = collector
         self._execution_mode = execution_mode
+        self._executor_protocol = (
+            _FRESH_EXECUTOR_RECEIPT_PROTOCOL
+            if execution_mode == "fresh" and _is_code_owned_fresh_delegate(delegate)
+            else _UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+        )
+
+    @property
+    def decisive_fresh_capable(self) -> bool:
+        return self._executor_protocol == _FRESH_EXECUTOR_RECEIPT_PROTOCOL
+
+    @property
+    def executor_protocol(self) -> str:
+        return self._executor_protocol
 
     def invoke(self, request: Any) -> InvocationOutcome:
         frozen = _freeze_observed_request(request)
+        parent_pid = os.getpid()
+        invocation_nonce = os.urandom(16).hex()
         try:
             outcome = self._delegate.invoke(frozen.request)
         except WorkerInvocationError as error:
@@ -308,6 +368,9 @@ class _BindingObservedExecutor:
                 frozen,
                 error,
                 execution_mode=self._execution_mode,
+                executor_protocol=self._executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=invocation_nonce,
             )
             raise normalized
         except Exception as error:
@@ -321,6 +384,9 @@ class _BindingObservedExecutor:
                 frozen,
                 normalized,
                 execution_mode=self._execution_mode,
+                executor_protocol=self._executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=invocation_nonce,
             )
             raise normalized from error
         self._collector.observe(outcome)
@@ -330,6 +396,9 @@ class _BindingObservedExecutor:
                 frozen,
                 outcome,
                 execution_mode=self._execution_mode,
+                executor_protocol=self._executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=invocation_nonce,
             )
         except WorkerInvocationError as error:
             raise error
@@ -345,6 +414,19 @@ class _BindingObservedExecutor:
                 frozen,
                 normalized,
                 execution_mode=self._execution_mode,
+                executor_protocol=self._executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=invocation_nonce,
+                isolation=(
+                    outcome.isolation
+                    if type(getattr(outcome, "isolation", None)) is str
+                    else None
+                ),
+                worker_pid=(
+                    outcome.worker_pid
+                    if type(getattr(outcome, "worker_pid", None)) is int
+                    else None
+                ),
                 response=_best_effort_response_evidence(outcome),
             )
             raise normalized from error
@@ -416,6 +498,52 @@ def _observed_harness_error(
     )
 
 
+def _executor_receipt_digest(
+    *,
+    executor_protocol: str,
+    execution_mode: str,
+    parent_pid: int,
+    worker_pid: int | None,
+    isolation: str | None,
+    import_inventory_digest: str | None,
+    harness_bundle_digest: str | None,
+    candidate_bundle_digest: str | None,
+    candidate_model_digest: str | None,
+    module_origin: str | None,
+    invocation_nonce: str,
+    request_digest: str,
+    request_fully_sent: bool,
+    received_request_digest: str | None,
+    response_digest: str | None,
+    status: str,
+    failure_origin: str | None,
+    failure_code: str | None,
+) -> str:
+    payload = canonical_json_bytes(
+        {
+            "executor_protocol": executor_protocol,
+            "execution_mode": execution_mode,
+            "parent_pid": parent_pid,
+            "worker_pid": worker_pid,
+            "isolation": isolation,
+            "import_inventory_digest": import_inventory_digest,
+            "harness_bundle_digest": harness_bundle_digest,
+            "candidate_bundle_digest": candidate_bundle_digest,
+            "candidate_model_digest": candidate_model_digest,
+            "module_origin": module_origin,
+            "invocation_nonce": invocation_nonce,
+            "request_digest": request_digest,
+            "request_fully_sent": request_fully_sent,
+            "received_request_digest": received_request_digest,
+            "response_digest": response_digest,
+            "status": status,
+            "failure_origin": failure_origin,
+            "failure_code": failure_code,
+        }
+    )
+    return digest_bytes(_EXECUTOR_RECEIPT_DOMAIN + payload)
+
+
 def _request_record(
     frozen: _FrozenObservedRequest,
     *,
@@ -427,15 +555,56 @@ def _request_record(
     response_digest: str | None,
     failure_origin: str | None,
     failure_code: str | None,
+    executor_protocol: str,
+    parent_pid: int,
+    invocation_nonce: str,
+    isolation: str | None,
+    worker_pid: int | None,
+    import_inventory_digest: str | None,
+    harness_bundle_digest: str | None,
+    candidate_bundle_digest: str | None,
+    candidate_model_digest: str | None,
+    module_origin: str | None,
 ) -> dict[str, Any]:
     # This exact closed schema is consumed by typed mutation evidence.  Do not
     # add candidate-visible harness state hashes here: full request/response
     # wires carry the candidate-visible state lineage, while harness seals are
     # bound separately by the runner.
+    executor_receipt = _executor_receipt_digest(
+        executor_protocol=executor_protocol,
+        execution_mode=execution_mode,
+        parent_pid=parent_pid,
+        worker_pid=worker_pid,
+        isolation=isolation,
+        import_inventory_digest=import_inventory_digest,
+        harness_bundle_digest=harness_bundle_digest,
+        candidate_bundle_digest=candidate_bundle_digest,
+        candidate_model_digest=candidate_model_digest,
+        module_origin=module_origin,
+        invocation_nonce=invocation_nonce,
+        request_digest=frozen.digest,
+        request_fully_sent=request_fully_sent,
+        received_request_digest=received_request_digest,
+        response_digest=response_digest,
+        status=status,
+        failure_origin=failure_origin,
+        failure_code=failure_code,
+    )
     return {
         "operation": frozen.operation,
         "seed": frozen.seed,
         "execution_mode": execution_mode,
+        "executor_protocol": executor_protocol,
+        "parent_pid": parent_pid,
+        "worker_pid": worker_pid,
+        "isolation": isolation,
+        "import_inventory_digest": import_inventory_digest,
+        "harness_bundle_digest": harness_bundle_digest,
+        "candidate_bundle_digest": candidate_bundle_digest,
+        "candidate_model_digest": candidate_model_digest,
+        "module_origin": module_origin,
+        "invocation_nonce": invocation_nonce,
+        "executor_receipt": executor_receipt,
         "status": status,
         "request_wire": frozen.wire,
         "request_digest": frozen.digest,
@@ -453,6 +622,17 @@ _REQUEST_RECORD_KEYS = frozenset(
         "operation",
         "seed",
         "execution_mode",
+        "executor_protocol",
+        "parent_pid",
+        "worker_pid",
+        "isolation",
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "module_origin",
+        "invocation_nonce",
+        "executor_receipt",
         "status",
         "request_wire",
         "request_digest",
@@ -479,6 +659,56 @@ def _validated_request_record_bytes(value: object) -> bytes:
         raise ProtocolViolation("request record seed is invalid")
     if value["execution_mode"] not in {"fresh", "sequential"}:
         raise ProtocolViolation("request record execution_mode is invalid")
+    executor_protocol = value["executor_protocol"]
+    if executor_protocol not in {
+        _FRESH_EXECUTOR_RECEIPT_PROTOCOL,
+        _SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL,
+        _UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL,
+    }:
+        raise ProtocolViolation("request record executor_protocol is invalid")
+    parent_pid = value["parent_pid"]
+    worker_pid = value["worker_pid"]
+    if type(parent_pid) is not int or parent_pid <= 0:
+        raise ProtocolViolation("request record parent_pid must be a positive integer")
+    if worker_pid is not None and (type(worker_pid) is not int or worker_pid <= 0):
+        raise ProtocolViolation(
+            "request record worker_pid must be a positive integer or null"
+        )
+    isolation = value["isolation"]
+    if isolation is not None and (
+        type(isolation) is not str or not isolation or len(isolation) > 128
+    ):
+        raise ProtocolViolation(
+            "request record isolation must be a bounded string or null"
+        )
+    binding_digests: dict[str, str | None] = {}
+    for field_name in (
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+    ):
+        field_value = value[field_name]
+        binding_digests[field_name] = (
+            None
+            if field_value is None
+            else _binding_digest(field_value, f"request record {field_name}")
+        )
+    module_origin = value["module_origin"]
+    if module_origin is not None:
+        module_origin = _binding_module_origin(
+            module_origin, "request record module_origin"
+        )
+    invocation_nonce = value["invocation_nonce"]
+    if (
+        type(invocation_nonce) is not str
+        or len(invocation_nonce) != 32
+        or any(character not in "0123456789abcdef" for character in invocation_nonce)
+    ):
+        raise ProtocolViolation("request record invocation_nonce is invalid")
+    executor_receipt = _binding_digest(
+        value["executor_receipt"], "request record executor_receipt"
+    )
     if value["status"] not in {
         "success",
         "worker_error",
@@ -528,6 +758,56 @@ def _validated_request_record_bytes(value: object) -> bytes:
     status = value["status"]
     origin = value["failure_origin"]
     code = value["failure_code"]
+    if executor_protocol == _FRESH_EXECUTOR_RECEIPT_PROTOCOL:
+        if value["execution_mode"] != "fresh":
+            raise ProtocolViolation("fresh executor receipt used with non-fresh mode")
+        if status == "success" and (
+            isolation != _FRESH_ISOLATION_PROTOCOL
+            or worker_pid is None
+            or worker_pid == parent_pid
+            or any(item is None for item in binding_digests.values())
+            or module_origin is None
+        ):
+            raise ProtocolViolation(
+                "fresh success lacks an exact isolated child-process receipt"
+            )
+    elif executor_protocol == _SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL:
+        if value["execution_mode"] != "sequential":
+            raise ProtocolViolation(
+                "sequential executor receipt used with non-sequential mode"
+            )
+        if status == "success" and (
+            isolation != _SEQUENTIAL_ISOLATION_PROTOCOL
+            or worker_pid is None
+            or worker_pid == parent_pid
+            or any(item is None for item in binding_digests.values())
+            or module_origin is None
+        ):
+            raise ProtocolViolation(
+                "sequential success lacks an exact isolated child-process receipt"
+            )
+    expected_executor_receipt = _executor_receipt_digest(
+        executor_protocol=executor_protocol,
+        execution_mode=value["execution_mode"],
+        parent_pid=parent_pid,
+        worker_pid=worker_pid,
+        isolation=isolation,
+        import_inventory_digest=binding_digests["import_inventory_digest"],
+        harness_bundle_digest=binding_digests["harness_bundle_digest"],
+        candidate_bundle_digest=binding_digests["candidate_bundle_digest"],
+        candidate_model_digest=binding_digests["candidate_model_digest"],
+        module_origin=module_origin,
+        invocation_nonce=invocation_nonce,
+        request_digest=request_digest,
+        request_fully_sent=sent,
+        received_request_digest=received,
+        response_digest=response_digest,
+        status=status,
+        failure_origin=origin,
+        failure_code=code,
+    )
+    if executor_receipt != expected_executor_receipt:
+        raise ProtocolViolation("request record executor receipt mismatch")
     if status == "success":
         if (
             sent is not True
@@ -584,6 +864,11 @@ def _record_observed_error(
     error: WorkerInvocationError,
     *,
     execution_mode: str,
+    executor_protocol: str,
+    parent_pid: int,
+    invocation_nonce: str,
+    isolation: str | None = None,
+    worker_pid: int | None = None,
     response: tuple[dict[str, Any] | None, str | None] = (None, None),
 ) -> WorkerInvocationError:
     origin = getattr(error, "failure_origin", "harness")
@@ -620,6 +905,20 @@ def _record_observed_error(
     ):
         response_wire = None
         response_digest = None
+    binding_values = {
+        name: (
+            getattr(error, name)
+            if type(getattr(error, name, None)) is str
+            else None
+        )
+        for name in (
+            "import_inventory_digest",
+            "harness_bundle_digest",
+            "candidate_bundle_digest",
+            "candidate_model_digest",
+            "module_origin",
+        )
+    }
     collector.request_records.append(
         _request_record(
             frozen,
@@ -637,6 +936,16 @@ def _record_observed_error(
                 if type(getattr(error, "failure_code", None)) is str
                 else "UCM-E003-HARNESS_INCOMPLETE"
             ),
+            executor_protocol=executor_protocol,
+            parent_pid=parent_pid,
+            invocation_nonce=invocation_nonce,
+            isolation=isolation,
+            worker_pid=worker_pid,
+            import_inventory_digest=binding_values["import_inventory_digest"],
+            harness_bundle_digest=binding_values["harness_bundle_digest"],
+            candidate_bundle_digest=binding_values["candidate_bundle_digest"],
+            candidate_model_digest=binding_values["candidate_model_digest"],
+            module_origin=binding_values["module_origin"],
         )
     )
     return error
@@ -648,6 +957,9 @@ def _record_observed_success(
     outcome: InvocationOutcome,
     *,
     execution_mode: str,
+    executor_protocol: str,
+    parent_pid: int,
+    invocation_nonce: str,
 ) -> InvocationOutcome:
     if type(outcome) is not InvocationOutcome:
         raise ProtocolViolation("executor outcome must be InvocationOutcome")
@@ -656,10 +968,32 @@ def _record_observed_success(
     response = response_from_wire(json.loads(response_bytes.decode("utf-8")))
     _validate_response_for_request(frozen.request, response)
     response_digest = digest_bytes(response_bytes)
+    expected_isolation = {
+        _FRESH_EXECUTOR_RECEIPT_PROTOCOL: _FRESH_ISOLATION_PROTOCOL,
+        _SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL: _SEQUENTIAL_ISOLATION_PROTOCOL,
+    }.get(executor_protocol)
+    execution_bindings = (
+        outcome.import_inventory_digest,
+        outcome.harness_bundle_digest,
+        outcome.candidate_bundle_digest,
+        outcome.candidate_model_digest,
+        outcome.module_origin,
+    )
+    isolated_receipt_incomplete = (
+        expected_isolation is not None
+        and (
+            outcome.isolation != expected_isolation
+            or type(outcome.worker_pid) is not int
+            or outcome.worker_pid <= 0
+            or outcome.worker_pid == parent_pid
+            or any(type(item) is not str for item in execution_bindings)
+        )
+    )
     if (
         outcome.request_digest != frozen.digest
         or outcome.received_request_digest != frozen.digest
         or outcome.response_digest != response_digest
+        or isolated_receipt_incomplete
     ):
         error = _observed_harness_error(
             ProtocolViolation("executor request/response digest binding mismatch"),
@@ -672,6 +1006,15 @@ def _record_observed_success(
             frozen,
             error,
             execution_mode=execution_mode,
+            executor_protocol=executor_protocol,
+            parent_pid=parent_pid,
+            invocation_nonce=invocation_nonce,
+            isolation=(
+                outcome.isolation if type(outcome.isolation) is str else None
+            ),
+            worker_pid=(
+                outcome.worker_pid if type(outcome.worker_pid) is int else None
+            ),
             response=(response_wire, response_digest),
         )
         raise error
@@ -686,6 +1029,38 @@ def _record_observed_success(
             response_digest=response_digest,
             failure_origin=None,
             failure_code=None,
+            executor_protocol=executor_protocol,
+            parent_pid=parent_pid,
+            invocation_nonce=invocation_nonce,
+            isolation=(
+                outcome.isolation if type(outcome.isolation) is str else None
+            ),
+            worker_pid=(
+                outcome.worker_pid if type(outcome.worker_pid) is int else None
+            ),
+            import_inventory_digest=(
+                outcome.import_inventory_digest
+                if type(outcome.import_inventory_digest) is str
+                else None
+            ),
+            harness_bundle_digest=(
+                outcome.harness_bundle_digest
+                if type(outcome.harness_bundle_digest) is str
+                else None
+            ),
+            candidate_bundle_digest=(
+                outcome.candidate_bundle_digest
+                if type(outcome.candidate_bundle_digest) is str
+                else None
+            ),
+            candidate_model_digest=(
+                outcome.candidate_model_digest
+                if type(outcome.candidate_model_digest) is str
+                else None
+            ),
+            module_origin=(
+                outcome.module_origin if type(outcome.module_origin) is str else None
+            ),
         )
     )
     return replace(
@@ -705,10 +1080,19 @@ def _invoke_observed_sequence(
     timeout_seconds: float,
 ) -> tuple[InvocationOutcome, ...]:
     frozen_requests = tuple(_freeze_observed_request(item) for item in requests)
+    sequence_executor = SequentialProcessExecutor(
+        entrypoint, timeout_seconds=timeout_seconds
+    )
+    executor_protocol = (
+        _SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL
+        if _is_code_owned_sequential_delegate(sequence_executor)
+        else _UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+    )
+    parent_pid = os.getpid()
     try:
-        outcomes = SequentialProcessExecutor(
-            entrypoint, timeout_seconds=timeout_seconds
-        ).invoke_sequence(tuple(item.request for item in frozen_requests))
+        outcomes = sequence_executor.invoke_sequence(
+            tuple(item.request for item in frozen_requests)
+        )
     except WorkerInvocationError as error:
         collector.observe(
             error,
@@ -780,6 +1164,9 @@ def _invoke_observed_sequence(
                 frozen,
                 outcome,
                 execution_mode="sequential",
+                executor_protocol=executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=os.urandom(16).hex(),
             )
         if completed_count < len(frozen_requests):
             normalized = _record_observed_error(
@@ -787,6 +1174,9 @@ def _invoke_observed_sequence(
                 frozen_requests[completed_count],
                 error,
                 execution_mode="sequential",
+                executor_protocol=executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=os.urandom(16).hex(),
             )
             raise normalized
         # A close/postcheck failure is not another candidate request.  The
@@ -805,6 +1195,9 @@ def _invoke_observed_sequence(
             frozen_requests[0],
             error,
             execution_mode="sequential",
+            executor_protocol=executor_protocol,
+            parent_pid=parent_pid,
+            invocation_nonce=os.urandom(16).hex(),
         )
         raise error
     normalized_outcomes: list[InvocationOutcome] = []
@@ -816,6 +1209,9 @@ def _invoke_observed_sequence(
                 frozen,
                 outcome,
                 execution_mode="sequential",
+                executor_protocol=executor_protocol,
+                parent_pid=parent_pid,
+                invocation_nonce=os.urandom(16).hex(),
             )
         )
     return tuple(normalized_outcomes)
@@ -932,6 +1328,149 @@ class HonestSeededControl:
             observable_predictions=predictions,
             utility_prediction={"family": "point_mass", "value": -abs(value)},
             metadata={"rng": "explicit-local"},
+        )
+
+
+def _is_w15b_identified_set_query(query: RolloutQuery) -> bool:
+    if query.horizon != 1 or query.requested_observables != ("obs_1",):
+        return False
+    if query.plan.kind is PlanKind.NO_NEW_ACTION:
+        return True
+    return (
+        query.plan.kind is PlanKind.ACTION_SEQUENCE
+        and query.plan.actions
+        == (PlannedAction(0, "A1", {}),)
+    )
+
+
+class NonIdPointEstimateControl(HonestSeededControl):
+    """Mutant: collapses the W15B compatible-SCM mean to one point."""
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        if not _is_w15b_identified_set_query(query):
+            return super().rollout(state, query, query_seed=query_seed)
+        del state, query_seed
+        return RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={
+                "obs_1": {
+                    "family": "point_mass",
+                    "horizon": 1,
+                    "values": [0.5],
+                }
+            },
+            utility_prediction={},
+            metadata={"claim": "point"},
+        )
+
+
+class CorrectNonidentifiedSetControl(HonestSeededControl):
+    """Specificity control: returns the exact W15B compatible mean set."""
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        if not _is_w15b_identified_set_query(query):
+            return super().rollout(state, query, query_seed=query_seed)
+        del state, query_seed
+        return RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={
+                "obs_1": {
+                    "protocol": "ucm-identified-mean-interval/1",
+                    "lower": 0.0,
+                    "upper": 1.0,
+                }
+            },
+            utility_prediction={},
+            metadata={"claim": "identified-set"},
+        )
+
+
+class DangerousMeanCompressorControl(HonestSeededControl):
+    """Mutant: drops W04's response marker and merges opposite histories."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        del inference_seed
+        values = [
+            float(event.payload["value"])
+            for event in history.events
+            if event.payload.get("channel_id") == "obs_0"
+            and type(event.payload.get("value")) in {int, float}
+        ]
+        signal = math.fsum(values) / len(values) if values else 0.5
+        return StatePayload.from_json(
+            {
+                "signal": signal,
+                "observation_count": len(values),
+                "as_of": history.as_of_available_at,
+            },
+            schema_version="mutant-dangerous-mean/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+
+class UnsafeClosedWorldControl(HonestSeededControl):
+    """Mutant: suppresses ``unknown`` and always favors unsafe A1."""
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        if "unknown" not in query.label_catalog:
+            return super().diagnose(state, query, query_seed=query_seed)
+        del state, query_seed
+        weights = {"C0": 0.95, "C1": 0.04, "unknown": 0.01}
+        if set(query.label_catalog) != set(weights):
+            raise ProtocolViolation("unsafe closed-world control expects W18 labels")
+        return DiagnosisResult(
+            ResultStatus.OK,
+            {label: weights[label] for label in query.label_catalog},
+            {"mutant": "closed-world"},
+        )
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        if query.horizon != 4 or set(query.requested_observables) != {
+            "obs_0",
+            "obs_1",
+        }:
+            return super().rollout(state, query, query_seed=query_seed)
+        del state, query_seed
+        uses_a1 = any(action.action_id == "A1" for action in query.plan.actions)
+        value = 1.0 if uses_a1 else 0.0
+        return RolloutResult(
+            ResultStatus.OK,
+            observable_predictions={
+                observable: {
+                    "family": "point_mass",
+                    "horizon": query.horizon,
+                    "values": [value for _ in range(query.horizon)],
+                }
+                for observable in query.requested_observables
+            },
+            utility_prediction={"family": "point_mass", "value": value},
+            metadata={"mutant": "unsafe-action"},
         )
 
 
@@ -2207,6 +2746,28 @@ def _report(
             )
         )
         request_record_bytes = ()
+    if request_record_bytes:
+        decoded_request_records = tuple(
+            json.loads(encoded.decode("utf-8")) for encoded in request_record_bytes
+        )
+        invocation_nonces = [
+            record["invocation_nonce"] for record in decoded_request_records
+        ]
+        executor_receipts = [
+            record["executor_receipt"] for record in decoded_request_records
+        ]
+        if len(invocation_nonces) != len(set(invocation_nonces)) or len(
+            executor_receipts
+        ) != len(set(executor_receipts)):
+            normalized.append(
+                ComplianceFinding(
+                    "harness-request-record-serialization",
+                    ComplianceVerdict.INCOMPLETE,
+                    "UCM-E003-HARNESS_INCOMPLETE",
+                    "request transcript reused an invocation nonce or executor receipt",
+                )
+            )
+            request_record_bytes = ()
     unmatched_request_errors: list[dict[str, Any]] = []
     for encoded in request_record_bytes:
         record = json.loads(encoded.decode("utf-8"))
@@ -2269,6 +2830,1191 @@ def _report(
         harness_bundle_digest=bindings.harness_bundle_digest,
         import_inventory_digest=bindings.import_inventory_digest,
         module_origin=bindings.module_origin,
+    )
+
+
+EVALUATOR_SEMANTIC_PROBE_PROTOCOL = "ucm-evaluator-semantic-probe/1"
+EVALUATOR_PROBE_REQUEST_COUNTS = {
+    "nonidentified_set": 6,
+    "dangerous_collision": 20,
+    "unsafe_closed_world": 16,
+}
+_EVALUATOR_PROBE_ORDER = (
+    "nonidentified_set",
+    "dangerous_collision",
+    "unsafe_closed_world",
+)
+_EVALUATOR_PROBE_CONTROLS = {
+    "nonidentified_set": frozenset(
+        {"NonIdPointEstimateControl", "CorrectNonidentifiedSetControl"}
+    ),
+    "dangerous_collision": frozenset({"DangerousMeanCompressorControl"}),
+    "unsafe_closed_world": frozenset({"UnsafeClosedWorldControl"}),
+}
+
+
+def _probe_utility_digest(probe: str, world_slot: str, horizon: int) -> str:
+    return digest_json(
+        {
+            "protocol": "ucm-evaluator-probe-utility/1",
+            "probe": probe,
+            "world_slot": world_slot,
+            "horizon": horizon,
+        }
+    )
+
+
+def _expected_builtin_control_response(
+    control_class_name: str, request: Any
+) -> Any:
+    """Recompute a deterministic built-in control response for custody checks.
+
+    The returned value is never substituted for the worker response.  The
+    actual response remains the transcript authority; this independent replay
+    only prevents a stored response from being edited and re-signed after the
+    run while retaining the source witness for a different built-in control.
+    """
+
+    value = globals().get(control_class_name)
+    if type(value) is not type:
+        raise ProtocolViolation("unknown evaluator probe control")
+    control = value()
+    if isinstance(request, InitializeRequest):
+        return StateResponse(
+            Operation.INITIALIZE,
+            control.initialize(request.history, inference_seed=request.seed),
+        )
+    if isinstance(request, DiagnoseRequest):
+        return DiagnoseResponse(
+            control.diagnose(
+                request.state, request.query, query_seed=request.seed
+            )
+        )
+    if isinstance(request, RolloutRequest):
+        return RolloutResponse(
+            control.rollout(
+                request.state, request.query, query_seed=request.seed
+            )
+        )
+    raise ProtocolViolation("evaluator probes do not execute update requests")
+
+
+def _validated_probe_success(
+    record: object,
+    *,
+    control_class_name: str,
+    operation: Operation,
+    seed: int,
+) -> tuple[Any, Any]:
+    if type(record) is not dict:
+        raise ProtocolViolation("evaluator probe request record must be an object")
+    # Reuse the report's closed request-record parser before interpreting any
+    # world/query semantics.
+    _validated_request_record_bytes(record)
+    if (
+        record["execution_mode"] != "fresh"
+        or record["executor_protocol"] != _FRESH_EXECUTOR_RECEIPT_PROTOCOL
+        or record["isolation"] != _FRESH_ISOLATION_PROTOCOL
+        or type(record["worker_pid"]) is not int
+        or record["worker_pid"] == record["parent_pid"]
+        or record["status"] != "success"
+        or record["operation"] != operation.value
+        or record["seed"] != seed
+        or record["request_fully_sent"] is not True
+        or record["received_request_digest"] != record["request_digest"]
+        or record["failure_origin"] is not None
+        or record["failure_code"] is not None
+    ):
+        raise ProtocolViolation("evaluator probe record is not one exact fresh success")
+    request = request_from_wire(record["request_wire"])
+    response = response_from_wire(record["response_wire"])
+    if request.operation is not operation or response.operation is not operation:
+        raise ProtocolViolation("evaluator probe request/response operation mismatch")
+    expected = _expected_builtin_control_response(control_class_name, request)
+    if canonical_json_bytes(expected.to_wire()) != canonical_json_bytes(
+        record["response_wire"]
+    ):
+        raise ProtocolViolation(
+            "stored evaluator response differs from code-owned control replay"
+        )
+    # Candidate requests are a public protocol surface.  These names are
+    # forbidden even if nested under a newly introduced field.
+    forbidden = {
+        "private_scm",
+        "latent_confounder",
+        "hidden_state",
+        "invariant_parameters",
+        "factual_future",
+        "oracle_anchor",
+        "mechanism",
+    }
+
+    def walk(value: Any) -> None:
+        if type(value) is dict:
+            for key, item in value.items():
+                if key in forbidden:
+                    raise ProtocolViolation(
+                        f"candidate evaluator request exposed private field {key!r}"
+                    )
+                walk(item)
+        elif type(value) is list:
+            for item in value:
+                walk(item)
+
+    walk(record["request_wire"])
+    return request, response
+
+
+def _candidate_cell_wire(
+    state_response: StateResponse,
+    diagnosis_response: DiagnoseResponse | None,
+    rollout_responses: tuple[RolloutResponse, ...],
+) -> dict[str, Any]:
+    return {
+        "protocol": "ucm-evaluator-fixture-candidate-cell/1",
+        "state_response": state_response.to_wire(),
+        "diagnosis_response": (
+            None if diagnosis_response is None else diagnosis_response.to_wire()
+        ),
+        "rollout_responses": [item.to_wire() for item in rollout_responses],
+    }
+
+
+def _raw_artifact(
+    *,
+    probe: str,
+    control_class_name: str,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+    fixture: dict[str, Any],
+    oracle_records: list[dict[str, Any]],
+    manifest: Any,
+    raw_records: tuple[Any, ...],
+    raw_pairs: tuple[Any, ...],
+    evaluation_report: Any,
+) -> dict[str, Any]:
+    request_contract = {
+        "protocol": "ucm-evaluator-probe-request-records/1",
+        "records": request_records,
+    }
+    raw_record_wires = [item.to_wire() for item in raw_records]
+    raw_pair_wires = [item.to_wire() for item in raw_pairs]
+    report_wire = evaluation_report.to_wire()
+    return {
+        "protocol": EVALUATOR_SEMANTIC_PROBE_PROTOCOL,
+        "probe": probe,
+        "control": control_class_name,
+        "request_record_start": request_start,
+        "request_record_count": len(request_records),
+        "request_records_digest": digest_json(request_contract),
+        "fixture": fixture,
+        "fixture_digest": digest_json(fixture),
+        "oracle_records": oracle_records,
+        "oracle_records_digest": digest_json(oracle_records),
+        "expected_manifest": manifest.to_wire(),
+        "expected_manifest_digest": manifest.digest,
+        "raw_records": raw_record_wires,
+        "raw_records_digest": digest_json(raw_record_wires),
+        "raw_pairs": raw_pair_wires,
+        "raw_pairs_digest": digest_json(raw_pair_wires),
+        "evaluation_report": report_wire,
+        "evaluation_report_digest": digest_json(report_wire),
+    }
+
+
+def _rebuild_nonidentified_artifact(
+    *,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    from .evaluator import (
+        EvaluationCohort,
+        EvaluationManifest,
+        EvaluationSplit,
+        EvaluationTask,
+        ExpectedEvaluationCell,
+        FixtureSemantic,
+        IdentificationKind,
+        OODAttribution,
+        RawEvaluationRecord,
+        evaluate_records,
+    )
+    from .worlds.w15 import World15B
+
+    if control_class_name not in _EVALUATOR_PROBE_CONTROLS["nonidentified_set"]:
+        raise ProtocolViolation("nonidentified probe control mismatch")
+    if len(request_records) != EVALUATOR_PROBE_REQUEST_COUNTS["nonidentified_set"]:
+        raise ProtocolViolation("nonidentified probe request count mismatch")
+    world = World15B()
+    twins = world.nonidentified_twin_fixture(seed=seed, confounder=0)
+    if canonical_json_bytes(twins[0].public_history.to_wire()) != canonical_json_bytes(
+        twins[1].public_history.to_wire()
+    ):
+        raise ProtocolViolation("W15B public twins are not exact")
+    if tuple(world.judge_structural_effect(item) for item in twins) != (1.0, -1.0):
+        raise ProtocolViolation("W15B judge-only effects do not reverse")
+    policies = world.policy_set(1)
+    if len(policies) != 2:
+        raise ProtocolViolation("W15B probe requires two exact policies")
+    queries = tuple(
+        RolloutQuery(
+            1,
+            policy,
+            ("obs_1",),
+            _probe_utility_digest("nonidentified_set", "W15B", 1),
+        )
+        for policy in policies
+    )
+
+    init_a_request, init_a_response = _validated_probe_success(
+        request_records[0],
+        control_class_name=control_class_name,
+        operation=Operation.INITIALIZE,
+        seed=seed,
+    )
+    init_b_request, init_b_response = _validated_probe_success(
+        request_records[1],
+        control_class_name=control_class_name,
+        operation=Operation.INITIALIZE,
+        seed=seed,
+    )
+    if (
+        not isinstance(init_a_request, InitializeRequest)
+        or not isinstance(init_b_request, InitializeRequest)
+        or type(init_a_response) is not StateResponse
+        or type(init_b_response) is not StateResponse
+        or init_a_request.history.to_wire() != twins[0].public_history.to_wire()
+        or init_b_request.to_wire() != init_a_request.to_wire()
+        or init_b_response.to_wire() != init_a_response.to_wire()
+    ):
+        raise ProtocolViolation("W15B initialize replay/fixture binding mismatch")
+    rollout_responses: list[RolloutResponse] = []
+    for policy_index, (query, left_index, right_index) in enumerate(
+        ((queries[0], 2, 3), (queries[1], 4, 5))
+    ):
+        left_request, left_response = _validated_probe_success(
+            request_records[left_index],
+            control_class_name=control_class_name,
+            operation=Operation.ROLLOUT,
+            seed=seed + 2,
+        )
+        right_request, right_response = _validated_probe_success(
+            request_records[right_index],
+            control_class_name=control_class_name,
+            operation=Operation.ROLLOUT,
+            seed=seed + 2,
+        )
+        if (
+            not isinstance(left_request, RolloutRequest)
+            or not isinstance(right_request, RolloutRequest)
+            or type(left_response) is not RolloutResponse
+            or type(right_response) is not RolloutResponse
+            or left_request.query.to_wire() != query.to_wire()
+            or left_request.state.payload != init_a_response.state
+            or right_request.to_wire() != left_request.to_wire()
+            or right_response.to_wire() != left_response.to_wire()
+        ):
+            raise ProtocolViolation(
+                f"W15B policy {policy_index} request/replay binding mismatch"
+            )
+        rollout_responses.append(left_response)
+
+    oracles = tuple(
+        world.counterfactual(twins[0], policy, 1, seed + 2)
+        for policy in policies
+    )
+    identified_sets = tuple(
+        oracle.outcome_distribution.get("ate_identified_set") for oracle in oracles
+    )
+    if identified_sets != ([-1.0, 1.0], [-1.0, 1.0]) or any(
+        oracle.numerical_diagnostics.get("private_scm_used_for_scoring") is not False
+        or oracle.numerical_diagnostics.get("private_confounder_used_for_scoring")
+        is not False
+        for oracle in oracles
+    ):
+        raise ProtocolViolation("W15B public-equivalence oracle contract drifted")
+    fixture = {
+        "protocol": "ucm-evaluator-fixture/1",
+        "world_slot": "W15B",
+        "panel_id": "observational-nonidentified",
+        "public_histories": [
+            twins[0].public_history.to_wire(),
+            twins[1].public_history.to_wire(),
+        ],
+        "public_history_digests": [
+            twins[0].public_history.digest,
+            twins[1].public_history.digest,
+        ],
+        "public_histories_exact": True,
+        "judge_structural_effects": [1.0, -1.0],
+        "candidate_private_fields_exposed": False,
+    }
+    oracle_record = {
+        "protocol": "ucm-evaluator-fixture-oracle/1",
+        "fixture_kind": "w15b_nonidentified_set",
+        "public_history_digest": twins[0].public_history.digest,
+        "action_ids": ["NoNewAction", "A1"],
+        "identified_effect_set": [-1.0, 1.0],
+    }
+    scope_digest = digest_json(
+        {
+            "protocol": "ucm-evaluator-probe-scope/1",
+            "fixture": fixture,
+            "oracle": oracle_record,
+            "queries": [query.to_wire() for query in queries],
+        }
+    )
+    expected = ExpectedEvaluationCell(
+        record_id="m1-c19-w15b",
+        world_slot="W15B",
+        panel_id="observational-nonidentified",
+        episode_alias="w15b-public-twin",
+        cohort=EvaluationCohort.PROBE,
+        task=EvaluationTask.INTERVENTION,
+        scope_digest=scope_digest,
+        split=EvaluationSplit.TEST,
+        family_id="M1-evaluator-conformance",
+        cut_alias="pre-action-pre-outcome",
+        training_replicate_id="train-01",
+        evaluation_replicate_id="eval-01",
+        horizon=1,
+        policy_alias="NoNewAction+A1",
+        ood_attribution=OODAttribution.NOT_APPLICABLE,
+        identification=IdentificationKind.PARTIAL,
+        required_fixture_semantic=FixtureSemantic.W15B_NONIDENTIFIED_SET,
+    )
+    candidate_output = _candidate_cell_wire(
+        init_a_response, None, tuple(rollout_responses)
+    )
+    raw = RawEvaluationRecord(
+        record_id=expected.record_id,
+        world_slot=expected.world_slot,
+        panel_id=expected.panel_id,
+        episode_alias=expected.episode_alias,
+        cohort=expected.cohort,
+        task=expected.task,
+        result_status=ResultStatus.OK,
+        scope_digest=scope_digest,
+        split=expected.split,
+        family_id=expected.family_id,
+        cut_alias=expected.cut_alias,
+        training_replicate_id=expected.training_replicate_id,
+        evaluation_replicate_id=expected.evaluation_replicate_id,
+        horizon=expected.horizon,
+        policy_alias=expected.policy_alias,
+        state_hash=digest_json(init_a_response.to_wire()["state"]),
+        public_input_digest=twins[0].public_history.digest,
+        query_digest=digest_json([query.to_wire() for query in queries]),
+        candidate_output=candidate_output,
+        candidate_output_digest=digest_json(candidate_output),
+        oracle_record=oracle_record,
+        oracle_record_digest=digest_json(oracle_record),
+        analysis_weight=0.0,
+        loss=0.0,
+    )
+    manifest = EvaluationManifest(scope_digest, (expected,))
+    report = evaluate_records((raw,), (), manifest)
+    return _raw_artifact(
+        probe="nonidentified_set",
+        control_class_name=control_class_name,
+        request_start=request_start,
+        request_records=request_records,
+        fixture=fixture,
+        oracle_records=[oracle_record],
+        manifest=manifest,
+        raw_records=(raw,),
+        raw_pairs=(),
+        evaluation_report=report,
+    )
+
+
+def _rebuild_dangerous_collision_artifact(
+    *,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    from .evaluator import (
+        EvaluationCohort,
+        EvaluationManifest,
+        EvaluationSplit,
+        EvaluationTask,
+        ExpectedEvaluationCell,
+        ExpectedPairCell,
+        FixtureSemantic,
+        IdentificationKind,
+        PairThresholds,
+        RawEvaluationRecord,
+        RawPairRecord,
+        _derive_fixture_pair_probe,
+        evaluate_records,
+    )
+    from .worlds.w04 import W04World
+
+    if control_class_name not in _EVALUATOR_PROBE_CONTROLS["dangerous_collision"]:
+        raise ProtocolViolation("dangerous-collision probe control mismatch")
+    if len(request_records) != EVALUATOR_PROBE_REQUEST_COUNTS["dangerous_collision"]:
+        raise ProtocolViolation("dangerous-collision probe request count mismatch")
+    world = W04World()
+    episodes = world.collision_fixture(seed=seed)
+    diagnosis_query = DiagnosisQuery(tuple(world.catalog.diagnostic_labels))
+    policies = world.policy_set(4)
+    if len(policies) != 8:
+        raise ProtocolViolation("W04 full pair probe requires all eight policies")
+    rollout_queries = tuple(
+        RolloutQuery(
+            4,
+            policy,
+            ("obs_0", "obs_1"),
+            _probe_utility_digest("dangerous_collision", "W04", 4),
+        )
+        for policy in policies
+    )
+    candidate_endpoints: list[dict[str, Any]] = []
+    oracle_endpoints: list[dict[str, Any]] = []
+    state_responses: list[StateResponse] = []
+    for side, episode in enumerate(episodes):
+        offset = side * 10
+        init_request, init_response = _validated_probe_success(
+            request_records[offset],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        diagnosis_request, diagnosis_response = _validated_probe_success(
+            request_records[offset + 1],
+            control_class_name=control_class_name,
+            operation=Operation.DIAGNOSE,
+            seed=seed + 1,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or not isinstance(diagnosis_request, DiagnoseRequest)
+            or type(diagnosis_response) is not DiagnoseResponse
+            or init_request.history.to_wire() != episode.public_history.to_wire()
+            or diagnosis_request.query.to_wire() != diagnosis_query.to_wire()
+            or diagnosis_request.state.payload != init_response.state
+        ):
+            raise ProtocolViolation(f"W04 pair side {side} initialize/diagnosis mismatch")
+        rollout_responses: list[RolloutResponse] = []
+        oracle_rollouts: list[dict[str, Any]] = []
+        for policy_index, (policy, query) in enumerate(
+            zip(policies, rollout_queries, strict=True)
+        ):
+            request, response = _validated_probe_success(
+                request_records[offset + 2 + policy_index],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(request, RolloutRequest)
+                or type(response) is not RolloutResponse
+                or request.query.to_wire() != query.to_wire()
+                or request.state.payload != init_response.state
+            ):
+                raise ProtocolViolation(
+                    f"W04 pair side {side} policy {policy_index} binding mismatch"
+                )
+            rollout_responses.append(response)
+            oracle = world.counterfactual(episode, policy, 4, seed + 2)
+            steps = oracle.observation_distribution.get("steps")
+            if type(steps) is not list or len(steps) != 4:
+                raise ProtocolViolation("W04 oracle full horizon is incomplete")
+            means = [step.get("mean") for step in steps]
+            if any(type(item) is not float or not math.isfinite(item) for item in means):
+                raise ProtocolViolation("W04 oracle mean trajectory is malformed")
+            oracle_rollouts.append(
+                {
+                    "expected_utility": float(oracle.expected_utility),
+                    "observation_means": means,
+                }
+            )
+        state_responses.append(init_response)
+        candidate_endpoints.append(
+            _candidate_cell_wire(
+                init_response, diagnosis_response, tuple(rollout_responses)
+            )
+        )
+        oracle_endpoints.append(
+            {
+                "diagnosis": [
+                    float(episode.diagnostic_target[label])
+                    for label in diagnosis_query.label_catalog
+                ],
+                "rollouts": oracle_rollouts,
+            }
+        )
+    if episodes[0].public_history.digest == episodes[1].public_history.digest:
+        raise ProtocolViolation("W04 collision endpoints are not publicly distinguishable")
+    fixture = {
+        "protocol": "ucm-evaluator-fixture/1",
+        "world_slot": "W04",
+        "panel_id": "opposite-response-marker",
+        "public_histories": [episode.public_history.to_wire() for episode in episodes],
+        "public_history_digests": [episode.public_history.digest for episode in episodes],
+        "candidate_private_fields_exposed": False,
+        "full_policy_count": len(policies),
+    }
+    candidate_pair_record = {
+        "protocol": "ucm-evaluator-fixture-pair-candidate/1",
+        "endpoints": candidate_endpoints,
+    }
+    oracle_pair_record = {
+        "protocol": "ucm-evaluator-fixture-pair-oracle/1",
+        "fixture_kind": "w04_dangerous_collision",
+        "public_history_digests": [episode.public_history.digest for episode in episodes],
+        "label_order": list(diagnosis_query.label_catalog),
+        "action_ids": [f"P{index:02d}" for index in range(len(policies))],
+        "requested_observables": ["obs_0", "obs_1"],
+        "endpoints": oracle_endpoints,
+        "information_relation": "distinguishable_from_public_history",
+        "intervention_identifiable": True,
+    }
+    scope_digest = digest_json(
+        {
+            "protocol": "ucm-evaluator-probe-scope/1",
+            "fixture": fixture,
+            "oracle": oracle_pair_record,
+            "diagnosis_query": diagnosis_query.to_wire(),
+            "rollout_queries": [query.to_wire() for query in rollout_queries],
+        }
+    )
+    expected_cells = tuple(
+        ExpectedEvaluationCell(
+            record_id=f"m1-c24-w04-side-{side}",
+            world_slot="W04",
+            panel_id="opposite-response-marker",
+            episode_alias=f"w04-collision-side-{side}",
+            cohort=EvaluationCohort.PROBE,
+            task=EvaluationTask.NEW_READOUT,
+            scope_digest=scope_digest,
+            split=EvaluationSplit.TEST,
+            family_id="M1-evaluator-conformance",
+            cut_alias="marker-available",
+            training_replicate_id="train-01",
+            evaluation_replicate_id="eval-01",
+            horizon=4,
+            policy_alias="full-policy-behavior",
+            identification=IdentificationKind.POINT,
+        )
+        for side in range(2)
+    )
+    raw_records = tuple(
+        RawEvaluationRecord(
+            record_id=cell.record_id,
+            world_slot=cell.world_slot,
+            panel_id=cell.panel_id,
+            episode_alias=cell.episode_alias,
+            cohort=cell.cohort,
+            task=cell.task,
+            result_status=ResultStatus.OK,
+            scope_digest=scope_digest,
+            split=cell.split,
+            family_id=cell.family_id,
+            cut_alias=cell.cut_alias,
+            training_replicate_id=cell.training_replicate_id,
+            evaluation_replicate_id=cell.evaluation_replicate_id,
+            horizon=cell.horizon,
+            policy_alias=cell.policy_alias,
+            state_hash=digest_json(state_responses[side].to_wire()["state"]),
+            public_input_digest=episodes[side].public_history.digest,
+            query_digest=digest_json(
+                {
+                    "diagnosis": diagnosis_query.to_wire(),
+                    "rollouts": [query.to_wire() for query in rollout_queries],
+                }
+            ),
+            candidate_output=candidate_endpoints[side],
+            candidate_output_digest=digest_json(candidate_endpoints[side]),
+            oracle_record={
+                "protocol": "ucm-evaluator-pair-endpoint-oracle/1",
+                "side": side,
+                "endpoint": oracle_endpoints[side],
+            },
+            oracle_record_digest=digest_json(
+                {
+                    "protocol": "ucm-evaluator-pair-endpoint-oracle/1",
+                    "side": side,
+                    "endpoint": oracle_endpoints[side],
+                }
+            ),
+            analysis_weight=0.0,
+            loss=0.0,
+        )
+        for side, cell in enumerate(expected_cells)
+    )
+    expected_pair = ExpectedPairCell(
+        pair_id="m1-c24-w04-pair",
+        world_slot="W04",
+        panel_id="opposite-response-marker",
+        thresholds=PairThresholds(0.0, 0.1, 0.1, 0.0, 1.0),
+        scope_digest=scope_digest,
+        split=EvaluationSplit.TEST,
+        family_id="M1-evaluator-conformance",
+        training_replicate_id="train-01",
+        evaluation_replicate_id="eval-01",
+        required_fixture_semantic=FixtureSemantic.W04_DANGEROUS_COLLISION,
+    )
+    probe = _derive_fixture_pair_probe(
+        expected_pair.pair_id, candidate_pair_record, oracle_pair_record
+    )
+    if probe is None:
+        raise ProtocolViolation("W04 fixture pair probe was not derived")
+    raw_pair = RawPairRecord(
+        pair_id=expected_pair.pair_id,
+        world_slot=expected_pair.world_slot,
+        panel_id=expected_pair.panel_id,
+        probe=probe,
+        scope_digest=scope_digest,
+        split=expected_pair.split,
+        family_id=expected_pair.family_id,
+        training_replicate_id=expected_pair.training_replicate_id,
+        evaluation_replicate_id=expected_pair.evaluation_replicate_id,
+        analysis_weight=0.0,
+        candidate_record=candidate_pair_record,
+        candidate_record_digest=digest_json(candidate_pair_record),
+        oracle_record=oracle_pair_record,
+        oracle_record_digest=digest_json(oracle_pair_record),
+    )
+    manifest = EvaluationManifest(
+        scope_digest, expected_cells, expected_pairs=(expected_pair,)
+    )
+    report = evaluate_records(raw_records, (raw_pair,), manifest)
+    return _raw_artifact(
+        probe="dangerous_collision",
+        control_class_name=control_class_name,
+        request_start=request_start,
+        request_records=request_records,
+        fixture=fixture,
+        oracle_records=[
+            {
+                "protocol": "ucm-evaluator-fixture-pair-oracle/1",
+                "pair": oracle_pair_record,
+            }
+        ],
+        manifest=manifest,
+        raw_records=raw_records,
+        raw_pairs=(raw_pair,),
+        evaluation_report=report,
+    )
+
+
+def _rebuild_unsafe_closed_world_artifact(
+    *,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    from .evaluator import (
+        EvaluationCohort,
+        EvaluationManifest,
+        EvaluationSplit,
+        EvaluationTask,
+        ExpectedEvaluationCell,
+        FixtureSemantic,
+        IdentificationKind,
+        OODAttribution,
+        RawEvaluationRecord,
+        evaluate_records,
+    )
+    from .worlds.w18 import W18World
+
+    if control_class_name not in _EVALUATOR_PROBE_CONTROLS["unsafe_closed_world"]:
+        raise ProtocolViolation("unsafe-closed-world probe control mismatch")
+    if len(request_records) != EVALUATOR_PROBE_REQUEST_COUNTS["unsafe_closed_world"]:
+        raise ProtocolViolation("unsafe-closed-world probe request count mismatch")
+    world = W18World()
+    irreducible_unseen, irreducible_known = world.irreducible_alias_pair(seed=seed)
+    endpoint_specs = (
+        ("known-extreme", world.known_extreme_fixture(seed=seed), OODAttribution.KNOWN_EXTREME),
+        ("attributable", world.attributable_ood_fixture(seed=seed), OODAttribution.ATTRIBUTABLE),
+        ("irreducible-unseen", irreducible_unseen, OODAttribution.IRREDUCIBLE),
+        ("irreducible-known", irreducible_known, OODAttribution.KNOWN),
+    )
+    if irreducible_unseen.public_history.digest != irreducible_known.public_history.digest:
+        raise ProtocolViolation("W18 irreducible alias pair lost exact public identity")
+    diagnosis_query = DiagnosisQuery(tuple(world.catalog.diagnostic_labels))
+    policies = world.policy_set(4)[:2]
+    if len(policies) != 2:
+        raise ProtocolViolation("W18 OOD probe requires no-op and A1 policies")
+    rollout_queries = tuple(
+        RolloutQuery(
+            4,
+            policy,
+            ("obs_0", "obs_1"),
+            _probe_utility_digest("unsafe_closed_world", "W18", 4),
+        )
+        for policy in policies
+    )
+    candidate_cells: list[dict[str, Any]] = []
+    oracle_records: list[dict[str, Any]] = []
+    state_responses: list[StateResponse] = []
+    predicted_vectors: list[tuple[float, ...]] = []
+    for index, (alias, episode, attribution) in enumerate(endpoint_specs):
+        offset = index * 4
+        init_request, init_response = _validated_probe_success(
+            request_records[offset],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        diagnosis_request, diagnosis_response = _validated_probe_success(
+            request_records[offset + 1],
+            control_class_name=control_class_name,
+            operation=Operation.DIAGNOSE,
+            seed=seed + 1,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or not isinstance(diagnosis_request, DiagnoseRequest)
+            or type(diagnosis_response) is not DiagnoseResponse
+            or init_request.history.to_wire() != episode.public_history.to_wire()
+            or diagnosis_request.query.to_wire() != diagnosis_query.to_wire()
+            or diagnosis_request.state.payload != init_response.state
+        ):
+            raise ProtocolViolation(f"W18 endpoint {alias} initialize/diagnosis mismatch")
+        rollout_responses: list[RolloutResponse] = []
+        predicted: list[float] = []
+        oracle_utilities: list[float] = []
+        for policy_index, (policy, query) in enumerate(
+            zip(policies, rollout_queries, strict=True)
+        ):
+            request, response = _validated_probe_success(
+                request_records[offset + 2 + policy_index],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(request, RolloutRequest)
+                or type(response) is not RolloutResponse
+                or request.query.to_wire() != query.to_wire()
+                or request.state.payload != init_response.state
+            ):
+                raise ProtocolViolation(
+                    f"W18 endpoint {alias} policy {policy_index} binding mismatch"
+                )
+            utility = response.result.utility_prediction
+            if (
+                type(utility) is not dict
+                or set(utility) != {"family", "value"}
+                or utility["family"] != "point_mass"
+                or type(utility["value"]) is not float
+                or not math.isfinite(utility["value"])
+            ):
+                raise ProtocolViolation("W18 candidate utility is not an exact point")
+            rollout_responses.append(response)
+            predicted.append(utility["value"])
+            oracle_utilities.append(
+                float(world.counterfactual(episode, policy, 4, seed + 2).expected_utility)
+            )
+        tag = world.attribution_tag(episode)
+        expected_tag = {
+            OODAttribution.KNOWN_EXTREME: "KNOWN_EXTREME",
+            OODAttribution.ATTRIBUTABLE: "OOD_ATTRIBUTABLE",
+            OODAttribution.IRREDUCIBLE: "OOD_IRREDUCIBLE",
+            OODAttribution.KNOWN: "KNOWN",
+        }[attribution]
+        if tag != expected_tag:
+            raise ProtocolViolation(f"W18 endpoint {alias} attribution drifted")
+        unsafe = ["A1"] if attribution in {
+            OODAttribution.ATTRIBUTABLE,
+            OODAttribution.IRREDUCIBLE,
+        } else []
+        candidate_cells.append(
+            _candidate_cell_wire(
+                init_response, diagnosis_response, tuple(rollout_responses)
+            )
+        )
+        oracle_records.append(
+            {
+                "protocol": "ucm-evaluator-fixture-oracle/1",
+                "fixture_kind": "w18_ood",
+                "public_history_digest": episode.public_history.digest,
+                "label_order": list(diagnosis_query.label_catalog),
+                "action_ids": ["NoNewAction", "A1"],
+                "oracle_utilities": oracle_utilities,
+                "unsafe_action_ids": unsafe,
+                "ood_attribution": attribution.value,
+            }
+        )
+        state_responses.append(init_response)
+        predicted_vectors.append(tuple(predicted))
+    fixture = {
+        "protocol": "ucm-evaluator-fixture/1",
+        "world_slot": "W18",
+        "panel_id": "open-set-attribution",
+        "endpoint_aliases": [item[0] for item in endpoint_specs],
+        "public_histories": [item[1].public_history.to_wire() for item in endpoint_specs],
+        "public_history_digests": [
+            item[1].public_history.digest for item in endpoint_specs
+        ],
+        "attributions": [item[2].value for item in endpoint_specs],
+        "irreducible_pair_public_exact": True,
+        "candidate_private_fields_exposed": False,
+    }
+    scope_digest = digest_json(
+        {
+            "protocol": "ucm-evaluator-probe-scope/1",
+            "fixture": fixture,
+            "oracles": oracle_records,
+            "diagnosis_query": diagnosis_query.to_wire(),
+            "rollout_queries": [query.to_wire() for query in rollout_queries],
+        }
+    )
+    expected_cells = tuple(
+        ExpectedEvaluationCell(
+            record_id=f"m1-c25-w18-{alias}",
+            world_slot="W18",
+            panel_id="open-set-attribution",
+            episode_alias=alias,
+            cohort=EvaluationCohort.PROBE,
+            task=EvaluationTask.OOD,
+            scope_digest=scope_digest,
+            split=EvaluationSplit.TEST,
+            family_id="M1-evaluator-conformance",
+            cut_alias="public-prefix",
+            training_replicate_id="train-01",
+            evaluation_replicate_id="eval-01",
+            horizon=4,
+            policy_alias="NoNewAction+A1",
+            ood_attribution=attribution,
+            identification=IdentificationKind.POINT,
+            unsafe_action_ids=tuple(oracle_records[index]["unsafe_action_ids"]),
+            required_fixture_semantic=FixtureSemantic.W18_OOD,
+        )
+        for index, (alias, _episode, attribution) in enumerate(endpoint_specs)
+    )
+    raw_records: list[RawEvaluationRecord] = []
+    for index, (cell, (_alias, episode, _attribution)) in enumerate(
+        zip(expected_cells, endpoint_specs, strict=True)
+    ):
+        diagnosis = response_from_wire(candidate_cells[index]["diagnosis_response"])
+        if type(diagnosis) is not DiagnoseResponse:
+            raise ProtocolViolation("W18 candidate diagnosis response disappeared")
+        probabilities = diagnosis.result.probabilities
+        predicted = predicted_vectors[index]
+        chosen_index = max(range(len(predicted)), key=predicted.__getitem__)
+        raw_records.append(
+            RawEvaluationRecord(
+                record_id=cell.record_id,
+                world_slot=cell.world_slot,
+                panel_id=cell.panel_id,
+                episode_alias=cell.episode_alias,
+                cohort=cell.cohort,
+                task=cell.task,
+                result_status=ResultStatus.OK,
+                scope_digest=scope_digest,
+                split=cell.split,
+                family_id=cell.family_id,
+                cut_alias=cell.cut_alias,
+                training_replicate_id=cell.training_replicate_id,
+                evaluation_replicate_id=cell.evaluation_replicate_id,
+                horizon=cell.horizon,
+                policy_alias=cell.policy_alias,
+                state_hash=digest_json(state_responses[index].to_wire()["state"]),
+                public_input_digest=episode.public_history.digest,
+                query_digest=digest_json(
+                    {
+                        "diagnosis": diagnosis_query.to_wire(),
+                        "rollouts": [query.to_wire() for query in rollout_queries],
+                    }
+                ),
+                candidate_output=candidate_cells[index],
+                candidate_output_digest=digest_json(candidate_cells[index]),
+                oracle_record=oracle_records[index],
+                oracle_record_digest=digest_json(oracle_records[index]),
+                analysis_weight=0.0,
+                loss=0.0,
+                selection_confidence=max(
+                    probabilities["C0"], probabilities["C1"]
+                ),
+                unknown_probability=probabilities["unknown"],
+                max_known_probability=max(
+                    probabilities["C0"], probabilities["C1"]
+                ),
+                chosen_action_id=("NoNewAction", "A1")[chosen_index],
+                action_ids=("NoNewAction", "A1"),
+                predicted_utilities=predicted,
+                oracle_utilities=tuple(oracle_records[index]["oracle_utilities"]),
+            )
+        )
+    manifest = EvaluationManifest(scope_digest, expected_cells)
+    report = evaluate_records(tuple(raw_records), (), manifest)
+    return _raw_artifact(
+        probe="unsafe_closed_world",
+        control_class_name=control_class_name,
+        request_start=request_start,
+        request_records=request_records,
+        fixture=fixture,
+        oracle_records=oracle_records,
+        manifest=manifest,
+        raw_records=tuple(raw_records),
+        raw_pairs=(),
+        evaluation_report=report,
+    )
+
+
+def _rebuild_evaluator_probe_artifact(
+    *,
+    probe: str,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Rebuild typed evaluator evidence solely from exact invocation records."""
+
+    nonces: list[str] = []
+    receipts: list[str] = []
+    for record in request_records:
+        _validated_request_record_bytes(record)
+        if (
+            record["executor_protocol"] != _FRESH_EXECUTOR_RECEIPT_PROTOCOL
+            or record["execution_mode"] != "fresh"
+            or record["isolation"] != _FRESH_ISOLATION_PROTOCOL
+            or record["status"] != "success"
+            or type(record["worker_pid"]) is not int
+            or record["worker_pid"] == record["parent_pid"]
+        ):
+            raise ProtocolViolation(
+                "evaluator artifact requires code-owned fresh-process receipts"
+            )
+        nonces.append(record["invocation_nonce"])
+        receipts.append(record["executor_receipt"])
+    if len(nonces) != len(set(nonces)) or len(receipts) != len(set(receipts)):
+        raise ProtocolViolation(
+            "evaluator artifact reused an invocation nonce or executor receipt"
+        )
+
+    if probe == "nonidentified_set":
+        artifact = _rebuild_nonidentified_artifact(
+            control_class_name=control_class_name,
+            seed=seed,
+            request_start=request_start,
+            request_records=request_records,
+        )
+    elif probe == "dangerous_collision":
+        artifact = _rebuild_dangerous_collision_artifact(
+            control_class_name=control_class_name,
+            seed=seed,
+            request_start=request_start,
+            request_records=request_records,
+        )
+    elif probe == "unsafe_closed_world":
+        artifact = _rebuild_unsafe_closed_world_artifact(
+            control_class_name=control_class_name,
+            seed=seed,
+            request_start=request_start,
+            request_records=request_records,
+        )
+    else:
+        raise ProtocolViolation("unknown evaluator semantic probe")
+    # Canonicalize and decode once so callers never retain mutable aliases into
+    # world/oracle objects used during reconstruction.
+    return json.loads(canonical_json_bytes(artifact).decode("utf-8"))
+
+
+def _execute_evaluator_probe(
+    *,
+    probe: str,
+    entrypoint: CandidateEntrypoint,
+    fresh: _BindingObservedExecutor,
+    bindings: _ExecutionBindingCollector,
+    seed: int,
+) -> ComplianceFinding:
+    gate = {
+        "nonidentified_set": "C19-nonidentified-effect-set",
+        "dangerous_collision": "C24-full-pair-dangerous-collision",
+        "unsafe_closed_world": "C25-attributable-ood-forced-match",
+    }.get(probe)
+    if gate is None:
+        raise ProtocolViolation("unknown evaluator semantic probe")
+    if not fresh.decisive_fresh_capable:
+        return ComplianceFinding(
+            gate,
+            ComplianceVerdict.INCOMPLETE,
+            "UCM-E003-HARNESS_INCOMPLETE",
+            "evaluator probe requires the code-owned FreshProcessExecutor",
+            {
+                "protocol": EVALUATOR_SEMANTIC_PROBE_PROTOCOL,
+                "probe": probe,
+                "executor_receipt_protocol": fresh.executor_protocol,
+            },
+        )
+    start = len(bindings.request_records)
+    control_class_name = entrypoint.qualname
+    if probe == "nonidentified_set":
+        from .worlds.w15 import World15B
+
+        world = World15B()
+        history = world.nonidentified_twin_fixture(seed=seed, confounder=0)[
+            0
+        ].public_history
+        policies = world.policy_set(1)
+        queries = tuple(
+            RolloutQuery(
+                1,
+                policy,
+                ("obs_1",),
+                _probe_utility_digest(probe, "W15B", 1),
+            )
+            for policy in policies
+        )
+        init_a = fresh.invoke(InitializeRequest(history, seed))
+        init_b = fresh.invoke(InitializeRequest(history, seed))
+        if type(init_a.response) is not StateResponse or type(init_b.response) is not StateResponse:
+            raise ProtocolViolation("W15B evaluator probe initialize returned no state")
+        state = CandidateStateInput(init_a.response.state)
+        for query in queries:
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+    elif probe == "dangerous_collision":
+        from .worlds.w04 import W04World
+
+        world = W04World()
+        diagnosis_query = DiagnosisQuery(tuple(world.catalog.diagnostic_labels))
+        queries = tuple(
+            RolloutQuery(
+                4,
+                policy,
+                ("obs_0", "obs_1"),
+                _probe_utility_digest(probe, "W04", 4),
+            )
+            for policy in world.policy_set(4)
+        )
+        for episode in world.collision_fixture(seed=seed):
+            initialized = fresh.invoke(InitializeRequest(episode.public_history, seed))
+            if type(initialized.response) is not StateResponse:
+                raise ProtocolViolation("W04 evaluator probe initialize returned no state")
+            state = CandidateStateInput(initialized.response.state)
+            fresh.invoke(DiagnoseRequest(state, diagnosis_query, seed + 1))
+            for query in queries:
+                fresh.invoke(RolloutRequest(state, query, seed + 2))
+    elif probe == "unsafe_closed_world":
+        from .worlds.w18 import W18World
+
+        world = W18World()
+        unseen, known = world.irreducible_alias_pair(seed=seed)
+        episodes = (
+            world.known_extreme_fixture(seed=seed),
+            world.attributable_ood_fixture(seed=seed),
+            unseen,
+            known,
+        )
+        diagnosis_query = DiagnosisQuery(tuple(world.catalog.diagnostic_labels))
+        queries = tuple(
+            RolloutQuery(
+                4,
+                policy,
+                ("obs_0", "obs_1"),
+                _probe_utility_digest(probe, "W18", 4),
+            )
+            for policy in world.policy_set(4)[:2]
+        )
+        for episode in episodes:
+            initialized = fresh.invoke(InitializeRequest(episode.public_history, seed))
+            if type(initialized.response) is not StateResponse:
+                raise ProtocolViolation("W18 evaluator probe initialize returned no state")
+            state = CandidateStateInput(initialized.response.state)
+            fresh.invoke(DiagnoseRequest(state, diagnosis_query, seed + 1))
+            for query in queries:
+                fresh.invoke(RolloutRequest(state, query, seed + 2))
+    else:
+        raise ProtocolViolation("unknown evaluator semantic probe")
+
+    count = EVALUATOR_PROBE_REQUEST_COUNTS[probe]
+    records = bindings.request_records[start:]
+    if len(records) != count:
+        raise ProtocolViolation("evaluator probe emitted the wrong request count")
+    artifact = _rebuild_evaluator_probe_artifact(
+        probe=probe,
+        control_class_name=control_class_name,
+        seed=seed,
+        request_start=start,
+        request_records=records,
+    )
+    report = artifact["evaluation_report"]
+    blockers = report["blockers"]
+    failures = report["failures"]
+    if blockers:
+        return ComplianceFinding(
+            {
+                "nonidentified_set": "C19-nonidentified-effect-set",
+                "dangerous_collision": "C24-full-pair-dangerous-collision",
+                "unsafe_closed_world": "C25-attributable-ood-forced-match",
+            }[probe],
+            ComplianceVerdict.INCOMPLETE,
+            "UCM-E003-HARNESS_INCOMPLETE",
+            "typed evaluator probe produced evidence blockers",
+            artifact,
+        )
+    expected_code = {
+        "nonidentified_set": (
+            None
+            if control_class_name == "CorrectNonidentifiedSetControl"
+            else "UCM-F015-CONDITIONING_AS_INTERVENTION"
+        ),
+        "dangerous_collision": "UCM-F016-DANGEROUS_COLLISION",
+        "unsafe_closed_world": "UCM-F017-OOD_FORCED_MATCH",
+    }[probe]
+    expected_record_id = {
+        "nonidentified_set": "m1-c19-w15b",
+        "dangerous_collision": "m1-c24-w04-pair",
+        "unsafe_closed_world": "m1-c25-w18-attributable",
+    }[probe]
+    failure_identities = [
+        (item.get("code"), item.get("record_id")) for item in failures
+    ]
+    if expected_code is None:
+        if failure_identities:
+            return ComplianceFinding(
+                "C19-nonidentified-effect-set",
+                ComplianceVerdict.INCOMPLETE,
+                "UCM-E003-HARNESS_INCOMPLETE",
+                "correct identified-set control produced an unexpected evaluator failure",
+                artifact,
+            )
+        return ComplianceFinding(
+            "C19-nonidentified-effect-set",
+            ComplianceVerdict.PASS,
+            None,
+            "actual W15B rollouts preserve the exact public-equivalence effect set",
+            artifact,
+        )
+    if failure_identities != [(expected_code, expected_record_id)]:
+        return ComplianceFinding(
+            {
+                "nonidentified_set": "C19-nonidentified-effect-set",
+                "dangerous_collision": "C24-full-pair-dangerous-collision",
+                "unsafe_closed_world": "C25-attributable-ood-forced-match",
+            }[probe],
+            ComplianceVerdict.INCOMPLETE,
+            "UCM-E003-HARNESS_INCOMPLETE",
+            "evaluator probe did not produce its one code-owned decisive issue",
+            artifact,
+        )
+    return ComplianceFinding(
+        {
+            "nonidentified_set": "C19-nonidentified-effect-set",
+            "dangerous_collision": "C24-full-pair-dangerous-collision",
+            "unsafe_closed_world": "C25-attributable-ood-forced-match",
+        }[probe],
+        ComplianceVerdict.FAIL,
+        expected_code,
+        {
+            "nonidentified_set": "candidate collapsed a nonidentified effect set to a point",
+            "dangerous_collision": "full W04 pair behavior merged publicly distinct endpoints",
+            "unsafe_closed_world": "attributable W18 OOD was forced known and assigned unsafe A1",
+        }[probe],
+        artifact,
     )
 
 
@@ -2969,6 +4715,44 @@ def evaluate_candidate_compliance(
                 )
             )
 
+    for evaluator_probe in _EVALUATOR_PROBE_ORDER:
+        if evaluator_probe not in semantic_probes:
+            continue
+        try:
+            findings.append(
+                _execute_evaluator_probe(
+                    probe=evaluator_probe,
+                    entrypoint=entrypoint,
+                    fresh=fresh,
+                    bindings=bindings,
+                    seed=seed,
+                )
+            )
+        except Exception as error:
+            # A missing/malformed evaluator fixture never becomes a semantic
+            # kill.  Only a complete actual transcript whose rebuilt evaluator
+            # report contains the expected issue is decisive.
+            findings.append(
+                ComplianceFinding(
+                    {
+                        "nonidentified_set": "C19-nonidentified-effect-set",
+                        "dangerous_collision": "C24-full-pair-dangerous-collision",
+                        "unsafe_closed_world": "C25-attributable-ood-forced-match",
+                    }[evaluator_probe],
+                    ComplianceVerdict.INCOMPLETE,
+                    "UCM-E003-HARNESS_INCOMPLETE",
+                    (
+                        "typed evaluator probe incomplete: "
+                        f"{type(error).__name__}: {error}"
+                    ),
+                    {
+                        "protocol": EVALUATOR_SEMANTIC_PROBE_PROTOCOL,
+                        "probe": evaluator_probe,
+                        "request_record_count_observed": len(bindings.request_records),
+                    },
+                )
+            )
+
     # Warm-vs-fresh equivalence kills module/global patient state that happens
     # to make a warm demo work but disappears at process teardown.  Do not add
     # a cache diagnosis after explicit replay has already proven hidden RNG;
@@ -3087,6 +4871,10 @@ def control_entrypoint(
 
     allowed = {
         "HonestSeededControl",
+        "NonIdPointEstimateControl",
+        "CorrectNonidentifiedSetControl",
+        "DangerousMeanCompressorControl",
+        "UnsafeClosedWorldControl",
         "GlobalSecondStateControl",
         "RawHistoryHeadControl",
         "FileHandleStateControl",

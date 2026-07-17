@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import replace
 from pathlib import Path
 
@@ -10,11 +11,11 @@ from prototype.unified_map.canonical import canonical_json_bytes, digest_bytes
 from prototype.unified_map.candidate_protocol import (
     CandidateEntrypoint,
     DiagnoseRequest,
+    FreshProcessExecutor,
     InProcessExecutor,
     InitializeRequest,
     InvocationOutcome,
     RolloutRequest,
-    StateResponse,
     UpdateRequest,
     WorkerInvocationError,
 )
@@ -77,6 +78,29 @@ def _success_requests() -> tuple[object, ...]:
     )
 
 
+def _resign_executor_receipt(record: dict[str, object]) -> None:
+    record["executor_receipt"] = compliance._executor_receipt_digest(
+        executor_protocol=record["executor_protocol"],  # type: ignore[arg-type]
+        execution_mode=record["execution_mode"],  # type: ignore[arg-type]
+        parent_pid=record["parent_pid"],  # type: ignore[arg-type]
+        worker_pid=record["worker_pid"],  # type: ignore[arg-type]
+        isolation=record["isolation"],  # type: ignore[arg-type]
+        import_inventory_digest=record["import_inventory_digest"],  # type: ignore[arg-type]
+        harness_bundle_digest=record["harness_bundle_digest"],  # type: ignore[arg-type]
+        candidate_bundle_digest=record["candidate_bundle_digest"],  # type: ignore[arg-type]
+        candidate_model_digest=record["candidate_model_digest"],  # type: ignore[arg-type]
+        module_origin=record["module_origin"],  # type: ignore[arg-type]
+        invocation_nonce=record["invocation_nonce"],  # type: ignore[arg-type]
+        request_digest=record["request_digest"],  # type: ignore[arg-type]
+        request_fully_sent=record["request_fully_sent"],  # type: ignore[arg-type]
+        received_request_digest=record["received_request_digest"],  # type: ignore[arg-type]
+        response_digest=record["response_digest"],  # type: ignore[arg-type]
+        status=record["status"],  # type: ignore[arg-type]
+        failure_origin=record["failure_origin"],  # type: ignore[arg-type]
+        failure_code=record["failure_code"],  # type: ignore[arg-type]
+    )
+
+
 def test_observed_executor_records_closed_full_wire_lineage_for_all_operations() -> None:
     collector = compliance._ExecutionBindingCollector()
     executor = compliance._BindingObservedExecutor(
@@ -96,6 +120,17 @@ def test_observed_executor_records_closed_full_wire_lineage_for_all_operations()
         "operation",
         "seed",
         "execution_mode",
+        "executor_protocol",
+        "parent_pid",
+        "worker_pid",
+        "isolation",
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "module_origin",
+        "invocation_nonce",
+        "executor_receipt",
         "status",
         "request_wire",
         "request_digest",
@@ -109,6 +144,16 @@ def test_observed_executor_records_closed_full_wire_lineage_for_all_operations()
     for row in collector.request_records:
         assert set(row) == exact_keys
         assert row["status"] == "success"
+        assert row["executor_protocol"] == compliance._UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+        assert row["parent_pid"] == os.getpid()
+        assert row["worker_pid"] is None
+        assert row["isolation"] == "in-process-none"
+        assert row["import_inventory_digest"] is None
+        assert row["harness_bundle_digest"] is None
+        assert row["candidate_bundle_digest"] is None
+        assert row["candidate_model_digest"] is None
+        assert row["module_origin"] is None
+        assert len(row["invocation_nonce"]) == 32
         assert row["request_fully_sent"] is True
         assert row["received_request_digest"] == row["request_digest"]
         assert row["request_digest"] == digest_bytes(
@@ -119,12 +164,106 @@ def test_observed_executor_records_closed_full_wire_lineage_for_all_operations()
         )
         assert row["failure_origin"] is None
         assert row["failure_code"] is None
+        assert compliance._validated_request_record_bytes(row)
     assert collector.request_records[0]["response_wire"]["state"]
     assert collector.request_records[1]["request_wire"]["state"]
     assert collector.request_records[2]["request_wire"]["state"]
     assert collector.request_records[3]["request_wire"]["state"]
     assert collector.request_records[3]["request_wire"]["delta"]
     assert collector.request_records[3]["response_wire"]["state"]
+
+
+def test_fresh_receipt_rejects_parent_process_as_worker_even_if_reissued() -> None:
+    collector = compliance._ExecutionBindingCollector()
+    executor = compliance._BindingObservedExecutor(
+        InProcessExecutor(HonestSeededControl()), collector
+    )
+    executor.invoke(InitializeRequest(_history(), 11))
+    record = dict(collector.request_records[0])
+    record.update(
+        {
+            "executor_protocol": compliance._FRESH_EXECUTOR_RECEIPT_PROTOCOL,
+            "isolation": compliance._FRESH_ISOLATION_PROTOCOL,
+            "worker_pid": record["parent_pid"],
+            "import_inventory_digest": "sha256:" + "1" * 64,
+            "harness_bundle_digest": "sha256:" + "2" * 64,
+            "candidate_bundle_digest": "sha256:" + "3" * 64,
+            "candidate_model_digest": "sha256:" + "4" * 64,
+            "module_origin": "candidate.py",
+        }
+    )
+    _resign_executor_receipt(record)
+
+    with pytest.raises(
+        compliance.ProtocolViolation,
+        match="isolated child-process receipt",
+    ):
+        compliance._validated_request_record_bytes(record)
+
+
+def test_executor_receipt_rejects_field_tampering() -> None:
+    collector = compliance._ExecutionBindingCollector()
+    executor = compliance._BindingObservedExecutor(
+        InProcessExecutor(HonestSeededControl()), collector
+    )
+    executor.invoke(InitializeRequest(_history(), 12))
+    record = dict(collector.request_records[0])
+    record["invocation_nonce"] = "0" * 32
+
+    with pytest.raises(compliance.ProtocolViolation, match="executor receipt mismatch"):
+        compliance._validated_request_record_bytes(record)
+
+
+def test_probe_replay_compares_canonical_response_bytes_not_python_equality() -> None:
+    from prototype.unified_map.worlds.w15 import World15B
+
+    world = World15B()
+    history = world.nonidentified_twin_fixture(seed=13, confounder=0)[
+        0
+    ].public_history
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(),
+        "prototype.unified_map.compliance",
+        "CorrectNonidentifiedSetControl",
+    )
+    collector = compliance._ExecutionBindingCollector()
+    observed = compliance._BindingObservedExecutor(
+        FreshProcessExecutor(entrypoint), collector
+    )
+    initialized = observed.invoke(InitializeRequest(history, 13))
+    query = RolloutQuery(
+        1,
+        world.policy_set(1)[0],
+        ("obs_1",),
+        compliance._probe_utility_digest("nonidentified_set", "W15B", 1),
+    )
+    observed.invoke(
+        RolloutRequest(CandidateStateInput(initialized.response.state), query, 15)
+    )
+    record = dict(collector.request_records[1])
+    compliance._validated_probe_success(
+        record,
+        control_class_name="CorrectNonidentifiedSetControl",
+        operation=compliance.Operation.ROLLOUT,
+        seed=15,
+    )
+
+    response_wire = record["response_wire"]
+    assert type(response_wire) is dict
+    response_wire["result"]["observable_predictions"]["obs_1"]["lower"] = False
+    record["response_digest"] = digest_bytes(canonical_json_bytes(response_wire))
+    _resign_executor_receipt(record)
+
+    with pytest.raises(
+        compliance.ProtocolViolation,
+        match="stored evaluator response differs",
+    ):
+        compliance._validated_probe_success(
+            record,
+            control_class_name="CorrectNonidentifiedSetControl",
+            operation=compliance.Operation.ROLLOUT,
+            seed=15,
+        )
 
 
 def test_candidate_failure_retains_attempted_request_and_survives_early_report() -> None:
@@ -393,6 +532,7 @@ def test_harness_error_record_can_never_yield_operational_pass(
             "failure_code": "UCM-E003-HARNESS_INCOMPLETE",
         }
     )
+    _resign_executor_receipt(row)
     collector.request_records[:] = [row]
     collector.observed = 1
     collector.candidate_bundle_digest = "sha256:" + "a" * 64
@@ -446,3 +586,192 @@ def test_live_compliance_report_retains_actual_fresh_and_sequential_transcript()
         == digest_bytes(canonical_json_bytes(row["response_wire"]))
         for row in report.request_records
     )
+    fresh_records = [
+        row for row in report.request_records if row["execution_mode"] == "fresh"
+    ]
+    assert fresh_records
+    assert all(
+        row["executor_protocol"]
+        == compliance._FRESH_EXECUTOR_RECEIPT_PROTOCOL
+        and row["isolation"] == compliance._FRESH_ISOLATION_PROTOCOL
+        and row["parent_pid"] == os.getpid()
+        and type(row["worker_pid"]) is int
+        and row["worker_pid"] != row["parent_pid"]
+        for row in fresh_records
+    )
+    assert len({row["invocation_nonce"] for row in report.request_records}) == len(
+        report.request_records
+    )
+    assert len({row["executor_receipt"] for row in report.request_records}) == len(
+        report.request_records
+    )
+    for field_name in (
+        "import_inventory_digest",
+        "harness_bundle_digest",
+        "candidate_bundle_digest",
+        "candidate_model_digest",
+        "module_origin",
+    ):
+        assert {row[field_name] for row in report.request_records} == {
+            getattr(report, field_name)
+        }
+
+
+@pytest.mark.parametrize(
+    ("control_name", "probe", "failure_code"),
+    [
+        (
+            "NonIdPointEstimateControl",
+            "nonidentified_set",
+            "UCM-F015-CONDITIONING_AS_INTERVENTION",
+        ),
+        (
+            "DangerousMeanCompressorControl",
+            "dangerous_collision",
+            "UCM-F016-DANGEROUS_COLLISION",
+        ),
+        (
+            "UnsafeClosedWorldControl",
+            "unsafe_closed_world",
+            "UCM-F017-OOD_FORCED_MATCH",
+        ),
+    ],
+)
+def test_evaluator_probe_artifact_is_rebuilt_from_actual_candidate_calls(
+    control_name: str, probe: str, failure_code: str
+) -> None:
+    collector = compliance._ExecutionBindingCollector()
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(), "prototype.unified_map.compliance", control_name
+    )
+    executor = compliance._BindingObservedExecutor(
+        FreshProcessExecutor(entrypoint), collector
+    )
+
+    finding = compliance._execute_evaluator_probe(
+        probe=probe,
+        entrypoint=entrypoint,
+        fresh=executor,
+        bindings=collector,
+        seed=101,
+    )
+
+    assert finding.verdict is compliance.ComplianceVerdict.FAIL
+    assert finding.failure_code == failure_code
+    assert collector.complete
+    expected_record_id = {
+        "nonidentified_set": "m1-c19-w15b",
+        "dangerous_collision": "m1-c24-w04-pair",
+        "unsafe_closed_world": "m1-c25-w18-attributable",
+    }[probe]
+    assert [
+        (item["code"], item["record_id"])
+        for item in finding.evidence["evaluation_report"]["failures"]
+    ] == [(failure_code, expected_record_id)]
+    assert len(collector.request_records) == compliance.EVALUATOR_PROBE_REQUEST_COUNTS[
+        probe
+    ]
+    assert finding.evidence == compliance._rebuild_evaluator_probe_artifact(
+        probe=probe,
+        control_class_name=control_name,
+        seed=101,
+        request_start=0,
+        request_records=collector.request_records,
+    )
+    request_blob = canonical_json_bytes(collector.request_records)
+    for forbidden in (
+        b"private_scm",
+        b"latent_confounder",
+        b"hidden_state",
+        b"factual_future",
+        b"oracle_anchor",
+    ):
+        assert forbidden not in request_blob
+
+
+def test_correct_nonidentified_set_is_exact_specificity_pass() -> None:
+    collector = compliance._ExecutionBindingCollector()
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(),
+        "prototype.unified_map.compliance",
+        "CorrectNonidentifiedSetControl",
+    )
+    executor = compliance._BindingObservedExecutor(
+        FreshProcessExecutor(entrypoint), collector
+    )
+    finding = compliance._execute_evaluator_probe(
+        probe="nonidentified_set",
+        entrypoint=entrypoint,
+        fresh=executor,
+        bindings=collector,
+        seed=103,
+    )
+
+    assert finding.verdict is compliance.ComplianceVerdict.PASS
+    assert finding.failure_code is None
+    assert finding.evidence["evaluation_report"]["failures"] == []
+    assert finding.evidence["oracle_records"][0]["identified_effect_set"] == [
+        -1.0,
+        1.0,
+    ]
+
+
+def test_in_process_executor_cannot_produce_decisive_evaluator_artifact() -> None:
+    collector = compliance._ExecutionBindingCollector()
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(),
+        "prototype.unified_map.compliance",
+        "NonIdPointEstimateControl",
+    )
+    executor = compliance._BindingObservedExecutor(
+        InProcessExecutor(compliance.NonIdPointEstimateControl()), collector
+    )
+
+    finding = compliance._execute_evaluator_probe(
+        probe="nonidentified_set",
+        entrypoint=entrypoint,
+        fresh=executor,
+        bindings=collector,
+        seed=107,
+    )
+
+    assert finding.verdict is compliance.ComplianceVerdict.INCOMPLETE
+    assert finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+    assert collector.request_records == []
+
+
+def test_arbitrary_delegate_cannot_self_report_fresh_process_receipt() -> None:
+    class SelfReportingDelegate:
+        def __init__(self) -> None:
+            self.delegate = InProcessExecutor(compliance.NonIdPointEstimateControl())
+
+        def invoke(self, request: object) -> InvocationOutcome:
+            outcome = self.delegate.invoke(request)  # type: ignore[arg-type]
+            return replace(
+                outcome,
+                isolation=compliance._FRESH_ISOLATION_PROTOCOL,
+                worker_pid=os.getpid() + 1,
+            )
+
+    collector = compliance._ExecutionBindingCollector()
+    entrypoint = CandidateEntrypoint(
+        Path.cwd(),
+        "prototype.unified_map.compliance",
+        "NonIdPointEstimateControl",
+    )
+    executor = compliance._BindingObservedExecutor(SelfReportingDelegate(), collector)
+
+    finding = compliance._execute_evaluator_probe(
+        probe="nonidentified_set",
+        entrypoint=entrypoint,
+        fresh=executor,
+        bindings=collector,
+        seed=109,
+    )
+
+    assert finding.verdict is compliance.ComplianceVerdict.INCOMPLETE
+    assert finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
+    assert finding.evidence["executor_receipt_protocol"] == (
+        compliance._UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+    )
+    assert collector.request_records == []

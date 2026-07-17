@@ -2,11 +2,21 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 from copy import deepcopy
+from functools import lru_cache
 
 import pytest
 
-from prototype.unified_map import mutation_evidence
+from prototype.unified_map import compliance, mutation_evidence
+from prototype.unified_map.candidate_protocol import (
+    DiagnoseRequest,
+    FreshProcessExecutor,
+    InitializeRequest,
+    RolloutRequest,
+    StateResponse,
+    UpdateRequest,
+)
 from prototype.unified_map.canonical import (
     ProtocolViolation,
     canonical_json_bytes,
@@ -26,13 +36,14 @@ from prototype.unified_map.mutation_matrix import (
     SubjectKind,
     evaluate_mutation_matrix,
 )
+from prototype.unified_map.state import CandidateStateInput
 
 
 TEST_RUNNER_PROTOCOL = "ucm-portable-mutation-runner/unit-test"
 TEST_BASE_SEED = 100
 RAW_HISTORY_SEED = TEST_BASE_SEED + 2
-EXPLICIT_SEED = TEST_BASE_SEED + 14
-BEHAVIOR_SEED = TEST_BASE_SEED + 15
+EXPLICIT_SEED = TEST_BASE_SEED + 17
+BEHAVIOR_SEED = TEST_BASE_SEED + 18
 TEST_RUNTIME_METADATA = {
     "python_implementation": "CPython",
     "python_version": "3.12.0",
@@ -212,6 +223,19 @@ def _request_record(
         "operation": request_wire["operation"],
         "seed": request_wire["seed"],
         "execution_mode": execution_mode,
+        "executor_protocol": (
+            compliance._UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+        ),
+        "parent_pid": os.getpid(),
+        "worker_pid": None,
+        "isolation": None,
+        "import_inventory_digest": None,
+        "harness_bundle_digest": None,
+        "candidate_bundle_digest": None,
+        "candidate_model_digest": None,
+        "module_origin": None,
+        "invocation_nonce": "0" * 32,
+        "executor_receipt": "sha256:" + "0" * 64,
         "status": "success",
         "request_wire": request_wire,
         "request_digest": digest_json(request_wire),
@@ -221,7 +245,30 @@ def _request_record(
         "response_digest": digest_json(response_wire),
         "failure_origin": None,
         "failure_code": None,
-    }
+}
+
+
+def _refresh_executor_receipt(record: dict[str, object]) -> None:
+    record["executor_receipt"] = compliance._executor_receipt_digest(
+        executor_protocol=record["executor_protocol"],
+        execution_mode=record["execution_mode"],
+        parent_pid=record["parent_pid"],
+        worker_pid=record["worker_pid"],
+        isolation=record["isolation"],
+        import_inventory_digest=record["import_inventory_digest"],
+        harness_bundle_digest=record["harness_bundle_digest"],
+        candidate_bundle_digest=record["candidate_bundle_digest"],
+        candidate_model_digest=record["candidate_model_digest"],
+        module_origin=record["module_origin"],
+        invocation_nonce=record["invocation_nonce"],
+        request_digest=record["request_digest"],
+        request_fully_sent=record["request_fully_sent"],
+        received_request_digest=record["received_request_digest"],
+        response_digest=record["response_digest"],
+        status=record["status"],
+        failure_origin=record["failure_origin"],
+        failure_code=record["failure_code"],
+    )
 
 
 def _refresh_request_record(record: dict[str, object]) -> None:
@@ -232,6 +279,7 @@ def _refresh_request_record(record: dict[str, object]) -> None:
     record["response_digest"] = (
         None if response_wire is None else digest_json(response_wire)
     )
+    _refresh_executor_receipt(record)
 
 
 def _request_transcript(
@@ -254,6 +302,22 @@ def _request_transcript(
         "FutureReaderControl": "rollout",
         "QueryMutatorControl": "rollout",
     }.get(control_class_name)
+
+    def finalize_unverified_fixture_records(
+        records: list[dict[str, object]],
+    ) -> list[dict[str, object]]:
+        """Mark static schema fixtures honestly as non-runtime evidence."""
+
+        for index, record in enumerate(records):
+            nonce_preimage = {
+                "protocol": "ucm-unit-test-unverified-invocation/1",
+                "control": control_class_name,
+                "execution_seed": execution_seed,
+                "index": index,
+            }
+            record["invocation_nonce"] = digest_json(nonce_preimage)[7:39]
+            _refresh_executor_receipt(record)
+        return records
 
     def candidate_worker_error(
         successful_record: dict[str, object], failure_code: str
@@ -290,9 +354,11 @@ def _request_transcript(
         and empty_head_terminal_operation == "initialize"
         and killed_failure_code is not None
     ):
-        return [candidate_worker_error(rows[0], killed_failure_code)]
+        return finalize_unverified_fixture_records(
+            [candidate_worker_error(rows[0], killed_failure_code)]
+        )
     if not full and empty_head_terminal_operation is None:
-        return rows
+        return finalize_unverified_fixture_records(rows)
     rows.append(_request_record(deepcopy(init_request), deepcopy(init_response)))
     diagnosis_request = {
         "protocol": "ucm-candidate-request/1",
@@ -327,7 +393,7 @@ def _request_transcript(
                 killed_failure_code,
             )
         )
-        return rows
+        return finalize_unverified_fixture_records(rows)
     rows.extend(
         [
             _request_record(diagnosis_request, diagnosis_response),
@@ -369,7 +435,7 @@ def _request_transcript(
                 killed_failure_code,
             )
         )
-        return rows
+        return finalize_unverified_fixture_records(rows)
     rows.extend(
         [
             _request_record(rollout_request, rollout_response),
@@ -415,7 +481,7 @@ def _request_transcript(
         "UCM-F019-UPDATE_INCONSISTENT",
     }
     if not (emit_update_consistency or emit_warm_future or emit_warm_cold):
-        return rows
+        return finalize_unverified_fixture_records(rows)
 
     merged_history = None
     if include_delta:
@@ -613,7 +679,7 @@ def _request_transcript(
         rows.extend(
             [warm_init, *heads(state, execution_seed, mode="sequential")]
         )
-    return rows
+    return finalize_unverified_fixture_records(rows)
 
 
 def _scored_projection(response_wire: dict[str, object]) -> dict[str, object]:
@@ -777,7 +843,7 @@ def _paired_semantic_evidence(
             }
         )
     return {
-        "protocol": "ucm-portable-semantic-probes/4",
+        "protocol": "ucm-portable-semantic-probes/5",
         "comparison": "paired-honest-vs-affine-scored-semantics",
         "absolute_tolerance": 1e-9,
         "relative_tolerance": 0.0,
@@ -820,7 +886,7 @@ def _source_witness(
         "prototype.unified_map.compliance:" + control_class_name
     )
     return {
-        "protocol": "ucm-portable-control-source-binding/17",
+        "protocol": "ucm-portable-control-source-binding/18",
         "control": control_class_name,
         "execution_seed": execution_seed,
         "control_mro": [],
@@ -843,7 +909,7 @@ def _source_witness(
         "portable_runner_contract": mutation_evidence.portable_runner_contract(
             TEST_RUNNER_PROTOCOL
         ),
-        "semantic_probe_contract": "ucm-portable-semantic-probes/4",
+        "semantic_probe_contract": "ucm-portable-semantic-probes/5",
         "enabled_semantic_probes": list(semantic_probes),
         "runtime_metadata": deepcopy(TEST_RUNTIME_METADATA),
     }
@@ -2146,8 +2212,12 @@ def test_portable_registry_binds_exact_head_shapes_and_lineage_mask() -> None:
         "WarmFutureCache": "replay_ddrr",
         "ReplayBatchDivergence": "replay_ddrr",
         "DoubleCountEvent": "replay_ddrr",
+        "NonIdPointEstimate": "replay_ddrr",
+        "DangerousMeanCompressor": "replay_ddrr",
+        "UnsafeClosedWorld": "replay_ddrr",
     }
     assert [row["head_record_shape"] for row in contract["specificity_cases"]] == [
+        "replay_ddrr",
         "replay_ddrr",
         "replay_ddrr",
         "replay_ddrr",
@@ -2167,6 +2237,356 @@ def test_portable_registry_binds_exact_head_shapes_and_lineage_mask() -> None:
     )
     with pytest.raises(ProtocolViolation, match="code-owned registry"):
         forged.finalize()
+
+
+@lru_cache(maxsize=None)
+def _cached_live_evaluator_transcript(
+    control_name: str,
+    probe: str,
+    seed: int,
+) -> tuple[bytes, str | None, str]:
+    """Capture real process receipts once for each evaluator test case."""
+
+    wire = _input_preimage(delta={})
+    history = mutation_evidence._history_from_wire(wire["history"])
+    diagnosis = mutation_evidence._diagnosis_query_from_wire(
+        wire["diagnosis_query"]
+    )
+    rollout = mutation_evidence._rollout_query_from_wire(wire["rollout_query"])
+    delta = mutation_evidence._delta_from_wire(wire["delta"])
+    entrypoint = compliance.control_entrypoint(control_name)
+    collector = compliance._ExecutionBindingCollector()
+    fresh = compliance._BindingObservedExecutor(
+        FreshProcessExecutor(entrypoint), collector
+    )
+    first = fresh.invoke(InitializeRequest(history, seed))
+    second = fresh.invoke(InitializeRequest(history, seed))
+    assert type(first.response) is StateResponse
+    assert type(second.response) is StateResponse
+    state = CandidateStateInput(first.response.state)
+    fresh.invoke(DiagnoseRequest(state, diagnosis, seed + 1))
+    fresh.invoke(DiagnoseRequest(state, diagnosis, seed + 1))
+    fresh.invoke(RolloutRequest(state, rollout, seed + 2))
+    fresh.invoke(RolloutRequest(state, rollout, seed + 2))
+    fresh.invoke(UpdateRequest(state, delta, seed + 3))
+    fresh.invoke(UpdateRequest(state, delta, seed + 3))
+    finding = compliance._execute_evaluator_probe(
+        probe=probe,
+        entrypoint=entrypoint,
+        fresh=fresh,
+        bindings=collector,
+        seed=seed,
+    )
+    compliance._invoke_observed_sequence(
+        entrypoint,
+        (
+            InitializeRequest(history, seed),
+            DiagnoseRequest(state, diagnosis, seed + 1),
+            RolloutRequest(state, rollout, seed + 2),
+        ),
+        collector,
+        timeout_seconds=compliance.PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
+    )
+    encoded = canonical_json_bytes({"request_records": collector.request_records})
+    return encoded, finding.failure_code, finding.verdict.value
+
+
+def _actual_evaluator_request_transcript(
+    control_name: str,
+    probe: str,
+    seed: int,
+) -> tuple[list[dict[str, object]], object, object, object, object, str | None, str]:
+    encoded, failure_code, verdict = _cached_live_evaluator_transcript(
+        control_name, probe, seed
+    )
+    records = json.loads(encoded.decode("utf-8"))["request_records"]
+    wire = _input_preimage(delta={})
+    return (
+        records,
+        mutation_evidence._history_from_wire(wire["history"]),
+        mutation_evidence._diagnosis_query_from_wire(wire["diagnosis_query"]),
+        mutation_evidence._rollout_query_from_wire(wire["rollout_query"]),
+        mutation_evidence._delta_from_wire(wire["delta"]),
+        failure_code,
+        verdict,
+    )
+
+
+def test_evaluator_request_suffix_rebuilds_actual_c19_and_rejects_resigned_response() -> None:
+    records, history, diagnosis, rollout, delta, failure_code, verdict = (
+        _actual_evaluator_request_transcript(
+            "NonIdPointEstimateControl", "nonidentified_set", 191
+        )
+    )
+    assert failure_code == "UCM-F015-CONDITIONING_AS_INTERVENTION"
+    assert verdict == "fail"
+    _, _, evidence = mutation_evidence._validate_request_records(
+        records,
+        input_preimage_digest=digest_json({"input": "m1-c19"}),
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        execution_seed=191,
+        expected_subject_id="NonIdPointEstimate",
+        expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
+        expected_semantic_probes=("nonidentified_set",),
+        expected_head_record_shape="replay_ddrr",
+        observation_outcome=ObservationOutcome.KILLED,
+        head_records=[],
+    )
+    assert evidence["nonidentified_set"]["evaluation_report"]["failures"] == [
+        {
+            "code": "UCM-F015-CONDITIONING_AS_INTERVENTION",
+            "record_id": "m1-c19-w15b",
+            "detail": (
+                "candidate pointified/narrowed a public-equivalence effect set: "
+                "claimed=(0.0, 0.0), oracle=(-1.0, 1.0)"
+            ),
+        }
+    ]
+
+    forged = deepcopy(records)
+    forged[10]["response_wire"]["result"]["observable_predictions"]["obs_1"][
+        "values"
+    ][0] = 0.4
+    forged[10]["response_digest"] = digest_json(forged[10]["response_wire"])
+    _refresh_executor_receipt(forged[10])
+    with pytest.raises(ProtocolViolation, match="code-owned control replay"):
+        mutation_evidence._validate_request_records(
+            forged,
+            input_preimage_digest=digest_json({"input": "m1-c19"}),
+            history=history,
+            diagnosis_query=diagnosis,
+            rollout_query=rollout,
+            delta=delta,
+            execution_seed=191,
+            expected_subject_id="NonIdPointEstimate",
+            expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
+            expected_semantic_probes=("nonidentified_set",),
+            expected_head_record_shape="replay_ddrr",
+            observation_outcome=ObservationOutcome.KILLED,
+            head_records=[],
+        )
+
+
+def _validate_live_c19_records(records: list[dict[str, object]]) -> None:
+    wire = _input_preimage(delta={})
+    mutation_evidence._validate_request_records(
+        records,
+        input_preimage_digest=digest_json({"input": "m1-c19-receipt-attack"}),
+        history=mutation_evidence._history_from_wire(wire["history"]),
+        diagnosis_query=mutation_evidence._diagnosis_query_from_wire(
+            wire["diagnosis_query"]
+        ),
+        rollout_query=mutation_evidence._rollout_query_from_wire(
+            wire["rollout_query"]
+        ),
+        delta=mutation_evidence._delta_from_wire(wire["delta"]),
+        execution_seed=191,
+        expected_subject_id="NonIdPointEstimate",
+        expected_failure_code="UCM-F015-CONDITIONING_AS_INTERVENTION",
+        expected_semantic_probes=("nonidentified_set",),
+        expected_head_record_shape="replay_ddrr",
+        observation_outcome=ObservationOutcome.KILLED,
+        head_records=[],
+    )
+
+
+@pytest.mark.parametrize(
+    ("attack", "message"),
+    [
+        ("unverified_downgrade", "exact code-owned fresh/sequential"),
+        ("sequential_downgrade", "exact code-owned fresh/sequential"),
+        ("wrong_isolation", "fresh success lacks an exact isolated"),
+        ("same_pid", "fresh success lacks an exact isolated"),
+        ("bad_nonce", "invocation_nonce is invalid"),
+        ("bad_receipt", "executor receipt mismatch"),
+        ("bool_parent_pid", "parent_pid must be a positive integer"),
+        ("duplicate_nonce_resigned", "reused a code-owned invocation nonce"),
+        ("binding_splice_resigned", "spliced distinct live execution bindings"),
+        ("canonical_bool_response", "code-owned control replay"),
+    ],
+)
+def test_decisive_evaluator_receipts_reject_downgrade_splice_and_type_aliases(
+    attack: str,
+    message: str,
+) -> None:
+    records = _actual_evaluator_request_transcript(
+        "NonIdPointEstimateControl", "nonidentified_set", 191
+    )[0]
+    target = records[0]
+    if attack in {"unverified_downgrade", "sequential_downgrade"}:
+        if attack == "sequential_downgrade":
+            target = records[-1]
+        target["executor_protocol"] = (
+            compliance._UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL
+        )
+        target["worker_pid"] = None
+        target["isolation"] = None
+        for field_name in (
+            "candidate_bundle_digest",
+            "candidate_model_digest",
+            "harness_bundle_digest",
+            "import_inventory_digest",
+            "module_origin",
+        ):
+            target[field_name] = None
+        _refresh_executor_receipt(target)
+    elif attack == "wrong_isolation":
+        target["isolation"] = "fresh-python-process-audit-v3"
+        _refresh_executor_receipt(target)
+    elif attack == "same_pid":
+        target["worker_pid"] = target["parent_pid"]
+        _refresh_executor_receipt(target)
+    elif attack == "bad_nonce":
+        target["invocation_nonce"] = "A" * 32
+        _refresh_executor_receipt(target)
+    elif attack == "bad_receipt":
+        target["executor_receipt"] = "sha256:" + "0" * 64
+    elif attack == "bool_parent_pid":
+        target["parent_pid"] = False
+        _refresh_executor_receipt(target)
+    elif attack == "duplicate_nonce_resigned":
+        records[1]["invocation_nonce"] = records[0]["invocation_nonce"]
+        _refresh_executor_receipt(records[1])
+    elif attack == "binding_splice_resigned":
+        target["candidate_bundle_digest"] = "sha256:" + "9" * 64
+        _refresh_executor_receipt(target)
+    else:
+        evaluator_response = records[10]
+        evaluator_response["response_wire"]["result"]["observable_predictions"][
+            "obs_1"
+        ]["values"][0] = False
+        _refresh_request_record(evaluator_response)
+    with pytest.raises(ProtocolViolation, match=message):
+        _validate_live_c19_records(records)
+
+
+def test_decisive_evaluator_transcript_rejects_exact_record_splice_and_resign() -> None:
+    records = _actual_evaluator_request_transcript(
+        "NonIdPointEstimateControl", "nonidentified_set", 191
+    )[0]
+    records[1] = deepcopy(records[0])
+    with pytest.raises(ProtocolViolation, match="invocation nonce|executor receipt"):
+        _validate_live_c19_records(records)
+
+
+@pytest.mark.parametrize(
+    ("subject_id", "control_name", "probe", "failure_code", "record_id"),
+    [
+        (
+            "DangerousMeanCompressor",
+            "DangerousMeanCompressorControl",
+            "dangerous_collision",
+            "UCM-F016-DANGEROUS_COLLISION",
+            "m1-c24-w04-pair",
+        ),
+        (
+            "UnsafeClosedWorld",
+            "UnsafeClosedWorldControl",
+            "unsafe_closed_world",
+            "UCM-F017-OOD_FORCED_MATCH",
+            "m1-c25-w18-attributable",
+        ),
+    ],
+)
+def test_evaluator_request_suffix_rebuilds_full_pair_and_attributable_ood(
+    subject_id: str,
+    control_name: str,
+    probe: str,
+    failure_code: str,
+    record_id: str,
+) -> None:
+    seed = 211
+    (
+        records,
+        history,
+        diagnosis,
+        rollout,
+        delta,
+        actual_failure_code,
+        verdict,
+    ) = _actual_evaluator_request_transcript(control_name, probe, seed)
+    assert actual_failure_code == failure_code
+    assert verdict == "fail"
+
+    _, _, evidence = mutation_evidence._validate_request_records(
+        records,
+        input_preimage_digest=digest_json({"input": probe}),
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        execution_seed=seed,
+        expected_subject_id=subject_id,
+        expected_failure_code=failure_code,
+        expected_semantic_probes=(probe,),
+        expected_head_record_shape="replay_ddrr",
+        observation_outcome=ObservationOutcome.KILLED,
+        head_records=[],
+    )
+    artifact = evidence[probe]
+    assert artifact["evaluation_report"]["failures"] == [
+        {
+            "code": failure_code,
+            "record_id": record_id,
+            "detail": artifact["evaluation_report"]["failures"][0]["detail"],
+        }
+    ]
+    if probe == "dangerous_collision":
+        assert artifact["fixture"]["full_policy_count"] == 8
+        assert artifact["evaluation_report"]["pairs"][
+            "attributable_collision_count"
+        ] == 1
+    else:
+        assert artifact["evaluation_report"]["ood"][
+            "irreducible_excluded_count"
+        ] == 1
+        assert artifact["evaluation_report"]["ood"]["known_count"] == 2
+
+
+def test_correct_nonidentified_set_pass_suffix_is_exact_and_not_bare_abstain() -> None:
+    seed = 223
+    (
+        records,
+        history,
+        diagnosis,
+        rollout,
+        delta,
+        failure_code,
+        verdict,
+    ) = _actual_evaluator_request_transcript(
+        "CorrectNonidentifiedSetControl", "nonidentified_set", seed
+    )
+    assert failure_code is None
+    assert verdict == "pass"
+
+    _, _, evidence = mutation_evidence._validate_request_records(
+        records,
+        input_preimage_digest=digest_json({"input": "correct-set"}),
+        history=history,
+        diagnosis_query=diagnosis,
+        rollout_query=rollout,
+        delta=delta,
+        execution_seed=seed,
+        expected_subject_id="CorrectNonidentifiedSet",
+        expected_failure_code=None,
+        expected_semantic_probes=("nonidentified_set",),
+        expected_head_record_shape="replay_ddrr",
+        observation_outcome=ObservationOutcome.PASSED,
+        head_records=[],
+    )
+    artifact = evidence["nonidentified_set"]
+    assert artifact["evaluation_report"]["failures"] == []
+    prediction = artifact["raw_records"][0]["candidate_output"][
+        "rollout_responses"
+    ][0]["result"]["observable_predictions"]["obs_1"]
+    assert prediction == {
+        "protocol": "ucm-identified-mean-interval/1",
+        "lower": 0.0,
+        "upper": 1.0,
+    }
 
 
 def test_empty_head_terminal_topology_registry_covers_every_empty_subject() -> None:
@@ -2568,10 +2988,11 @@ def test_request_transcript_rejects_forged_wire_or_digest(mutation: str) -> None
     records = deepcopy(report["request_records"])
     if mutation == "bad_digest":
         records[0]["request_digest"] = "sha256:" + "9" * 64
-        message = "request_digest mismatch"
+        message = "request digest mismatch"
     else:
         records[0]["request_wire"]["unexpected"] = True
-        message = "not a typed request"
+        _refresh_request_record(records[0])
+        message = "request fields mismatch"
     invalid = _invalid_pass_builder(report={"request_records": records})
     with pytest.raises(ProtocolViolation, match=message):
         invalid.finalize()
@@ -2627,8 +3048,7 @@ def test_request_transcript_rejects_state_and_head_request_splicing() -> None:
     state_splice = deepcopy(base["request_records"])
     diagnosis = next(row for row in state_splice if row["operation"] == "diagnose")
     diagnosis["request_wire"]["state"] = _state_wire("spliced")
-    diagnosis["request_digest"] = digest_json(diagnosis["request_wire"])
-    diagnosis["received_request_digest"] = diagnosis["request_digest"]
+    _refresh_request_record(diagnosis)
     invalid_state = _invalid_kill_builder(
         subject_id="GlobalSecondState",
         control_class_name="GlobalSecondStateControl",
@@ -2720,10 +3140,10 @@ def test_passed_replay_heads_bind_one_state_and_exact_ddrr_pairs(
 @pytest.mark.parametrize(
     ("status", "patch", "message"),
     [
-        ("success", {"response_wire": None, "response_digest": None}, "needs a response"),
-        ("worker_error", {"failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "error cannot carry"),
-        ("worker_error", {"request_fully_sent": False, "received_request_digest": None, "response_wire": None, "response_digest": None, "failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "worker_error fields"),
-        ("harness_error", {"request_fully_sent": False, "received_request_digest": None, "response_digest": None, "failure_origin": "harness", "failure_code": "UCM-E003-HARNESS_INCOMPLETE"}, "response is partial"),
+        ("success", {"response_wire": None, "response_digest": None}, "successful request record is inconsistent"),
+        ("worker_error", {"failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "candidate worker error record is inconsistent"),
+        ("worker_error", {"request_fully_sent": False, "received_request_digest": None, "response_wire": None, "response_digest": None, "failure_origin": "candidate", "failure_code": "UCM-F008-STATE_NOT_CLOSED"}, "candidate worker error record is inconsistent"),
+        ("harness_error", {"request_fully_sent": False, "received_request_digest": None, "response_digest": None, "failure_origin": "harness", "failure_code": "UCM-E003-HARNESS_INCOMPLETE"}, "response wire/digest nullability mismatch"),
     ],
 )
 def test_request_transcript_status_field_combinations_are_strict(
@@ -2747,6 +3167,7 @@ def test_request_transcript_status_field_combinations_are_strict(
     records = deepcopy(base["request_records"])
     records[0]["status"] = status
     records[0].update(patch)
+    _refresh_executor_receipt(records[0])
     invalid = _invalid_pass_builder(report={"request_records": records})
     with pytest.raises(ProtocolViolation, match=message):
         invalid.finalize()
@@ -2793,6 +3214,7 @@ def test_decisive_kill_rejects_harness_or_unrelated_worker_errors(
     if status == "harness_error":
         terminal["request_fully_sent"] = False
         terminal["received_request_digest"] = None
+    _refresh_executor_receipt(terminal)
     invocation_digest = digest_json(records)
     invalid = _invalid_kill_builder(
         report={
@@ -2877,6 +3299,7 @@ def test_passed_main_flow_cannot_be_replaced_by_sequential_probe_records() -> No
     records = deepcopy(base["request_records"])
     for record in records:
         record["execution_mode"] = "sequential"
+        _refresh_executor_receipt(record)
     invocation_digest = digest_json(records)
     invalid = _invalid_pass_builder(
         report={
@@ -2951,6 +3374,8 @@ def test_semantic_or_sequential_record_cannot_interleave_the_physical_main_prefi
     records = deepcopy(base["request_records"])
     interleaved = deepcopy(records[0])
     interleaved["execution_mode"] = "sequential"
+    interleaved["invocation_nonce"] = "f" * 32
+    _refresh_executor_receipt(interleaved)
     records.insert(1, interleaved)
     invocation_digest = digest_json(records)
     invalid = _invalid_pass_builder(
@@ -3703,6 +4128,7 @@ def test_f020_subject_allows_pair_response_drift_with_canonical_failure() -> Non
     diagnosis_rows[1]["response_digest"] = digest_json(
         diagnosis_rows[1]["response_wire"]
     )
+    _refresh_executor_receipt(diagnosis_rows[1])
     heads[1]["response_digest"] = diagnosis_rows[1]["response_digest"]
     invocation_digest = digest_json(request_records)
     allowed = _invalid_kill_builder(
@@ -3753,6 +4179,7 @@ def test_f020_kill_requires_actual_ddrr_head_pair_response_drift() -> None:
     records = deepcopy(base["request_records"])
     records[3]["response_wire"] = deepcopy(records[2]["response_wire"])
     records[3]["response_digest"] = records[2]["response_digest"]
+    _refresh_executor_receipt(records[3])
     heads = deepcopy(base["head_records"])
     heads[1]["response_digest"] = heads[0]["response_digest"]
     invocation_digest = digest_json(records)
@@ -3812,6 +4239,7 @@ def test_non_f020_subject_rejects_actual_request_response_drift() -> None:
     diagnosis_rows[1]["response_digest"] = digest_json(
         diagnosis_rows[1]["response_wire"]
     )
+    _refresh_executor_receipt(diagnosis_rows[1])
     heads = deepcopy(base_report["head_records"])
     heads[1]["response_digest"] = diagnosis_rows[1]["response_digest"]
     invocation_digest = digest_json(request_records)

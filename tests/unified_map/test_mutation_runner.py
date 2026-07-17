@@ -15,6 +15,7 @@ from prototype.unified_map import (
     candidate_protocol,
     canonical,
     compliance,
+    metrics,
     mutation_evidence,
     mutation_matrix,
     mutation_runner,
@@ -293,12 +294,12 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
     )
     assert not report.freeze_ready
     assert report.benchmark_status == "HARNESS_INCOMPLETE"
-    assert len(report.valid_kills) == 14
-    assert len(report.missing_or_invalid_mutants) == 12
-    assert len(report.passed_specificity_controls) == 3
-    assert len(report.failed_specificity_controls) == 1
-    assert len(report.covered_gates) == 10
-    assert len(report.uncovered_gates) == 23
+    assert len(report.valid_kills) == 17
+    assert len(report.missing_or_invalid_mutants) == 9
+    assert len(report.passed_specificity_controls) == 4
+    assert len(report.failed_specificity_controls) == 0
+    assert len(report.covered_gates) == 13
+    assert len(report.uncovered_gates) == 20
     assert set(report.valid_kills) == {
         "GlobalSecondState",
         "FileHandleState",
@@ -314,6 +315,9 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         "WarmFutureCache",
         "ReplayBatchDivergence",
         "DoubleCountEvent",
+        "NonIdPointEstimate",
+        "DangerousMeanCompressor",
+        "UnsafeClosedWorld",
     }
     assert set(report.covered_gates) == {
         "C02",
@@ -326,11 +330,15 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         "C23",
         "C27",
         "C30",
+        "C19",
+        "C24",
+        "C25",
     }
     assert set(report.passed_specificity_controls) == {
         "ExplicitSeedStochasticState",
         "BehaviorEquivalentSerialization",
         "DeclaredFullHistoryBaseline",
+        "CorrectNonidentifiedSet",
     }
 
 
@@ -2124,6 +2132,61 @@ def test_source_binding_rejects_critical_external_attribute_rewrite(
     monkeypatch.setattr(owner, attribute, lambda *args, **kwargs: None)
     with pytest.raises(ProtocolViolation, match="external attribute identity mismatch"):
         _source_digest("HonestSeededControl", frozenset())
+
+
+def test_source_binding_rejects_dynamic_adjudicator_numpy_max_rewrite(
+    monkeypatch,
+) -> None:
+    required_attributes = {
+        "compliance.math.fsum",
+        "compliance.math.isclose",
+        "compliance.math.isfinite",
+        "compliance.os.getpid",
+        "compliance.random.Random",
+        "metrics.np.max",
+        "metrics.np.argmax",
+        "worlds_w04.math.fsum",
+        "worlds_w04.math.log",
+        "worlds_w15.math.exp",
+        "worlds_w15.math.fsum",
+        "worlds_w18.math.exp",
+        "worlds_w18.math.fsum",
+        "worlds_w18.math.sqrt",
+    }
+    assert required_attributes <= set(
+        mutation_runner._SOURCE_IDENTITY_ANCHORS["external_attributes"]
+    )
+    baseline = _source_digest("HonestSeededControl", frozenset())
+    assert baseline.startswith("sha256:")
+
+    monkeypatch.setattr(metrics.np, "max", lambda *args, **kwargs: -1.0)
+    with pytest.raises(
+        ProtocolViolation,
+        match=r"external attribute identity mismatch: (?:evaluator|metrics)\.np\.max",
+    ):
+        _source_digest("HonestSeededControl", frozenset())
+
+
+@pytest.mark.parametrize(
+    ("owner", "attribute", "label"),
+    (
+        (compliance.random, "Random", "compliance.random.Random"),
+        (compliance.os, "getpid", "compliance.os.getpid"),
+        (compliance.math, "fsum", "compliance.math.fsum"),
+    ),
+)
+def test_source_binding_rejects_dynamic_compliance_dependency_rewrite(
+    monkeypatch, owner: object, attribute: str, label: str
+) -> None:
+    baseline = _source_digest("DangerousMeanCompressorControl", frozenset())
+    assert baseline.startswith("sha256:")
+
+    monkeypatch.setattr(owner, attribute, lambda *args, **kwargs: None)
+    with pytest.raises(
+        ProtocolViolation,
+        match=rf"external attribute identity mismatch: {label}",
+    ):
+        _source_digest("DangerousMeanCompressorControl", frozenset())
 
 
 @pytest.mark.parametrize(
