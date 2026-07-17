@@ -14,7 +14,7 @@ from typing import Any
 import numpy as np
 from numpy.polynomial.hermite import hermgauss
 
-from ..schema import ActionPlan, EventKind, PlanKind, PlannedAction
+from ..schema import ActionPlan, EventKind, PlanKind
 from .base import (
     ActionSpec,
     ChannelSpec,
@@ -615,7 +615,63 @@ class W02World(MicroWorld):
         del oracle_seed
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W02 horizon")
-        components = self._posterior(episode)
+        return self._counterfactual_from_components(
+            self._posterior(episode), policy, horizon
+        )
+
+    def judge_true_state_counterfactual(
+        self,
+        hidden_state_at_cut: dict[str, Any],
+        invariant_parameters: dict[str, Any],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Evaluate W02 from one judge-known Markov realization.
+
+        Ordinary scoring deliberately integrates the public posterior.  This
+        separate parent-only path supplies the Phase-2 true-state upper bound
+        and must never cross the candidate information boundary.
+        """
+
+        if horizon not in self.catalog.horizons:
+            raise ValueError("unsupported W02 horizon")
+        if set(hidden_state_at_cut) != {"x"}:
+            raise ValueError("W02 private state must contain exactly x")
+        if set(invariant_parameters) != {"class_index"}:
+            raise ValueError("W02 private parameters must contain class_index")
+        raw_state = hidden_state_at_cut["x"]
+        class_index = invariant_parameters["class_index"]
+        if (
+            type(raw_state) is not list
+            or len(raw_state) != 2
+            or any(type(value) not in {int, float} for value in raw_state)
+            or any(not math.isfinite(float(value)) for value in raw_state)
+        ):
+            raise ValueError("W02 private x must be two finite numbers")
+        if type(class_index) is not int or class_index not in {0, 1}:
+            raise ValueError("W02 private class_index must be zero or one")
+        return self._counterfactual_from_components(
+            [
+                {
+                    "class_index": class_index,
+                    "mean": np.asarray(raw_state, dtype=float),
+                    "covariance": np.zeros((2, 2), dtype=float),
+                    "weight": 1.0,
+                    "log_weight": 0.0,
+                }
+            ],
+            policy,
+            horizon,
+        )
+
+    def _counterfactual_from_components(
+        self,
+        components: list[dict[str, Any]],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W02 policy set")
         adaptive_check = self._adaptive_check(policy)
         if adaptive_check:
             steps, utility = self._adaptive_value(

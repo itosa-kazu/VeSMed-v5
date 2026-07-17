@@ -552,3 +552,54 @@ the formal B01 run remain closed; the experiment ledger therefore remains
 `KEEP AS PATIENT-MODEL VERTICAL SLICE`: use this exact state/query/update shape
 to close W02/W04/W08/W15/W18/W19/W20 before resuming only the freeze work that
 directly blocks real candidate experiments.
+
+## 2026-07-17 — W02 partial-observation upper-bound vertical slice
+
+### Outcome
+
+- Added a W02 judge-only shared state containing the actual two-dimensional
+  latent physiology and invariant mechanism class, while ordinary W02 scoring
+  continues to use only the public two-component Kalman-mixture belief.
+- On the committed TRAIN fixture, the public history supports an almost exactly
+  balanced diagnostic belief (`C0=0.5004869708409363`,
+  `C1=0.49951302915906365`), while the privileged true-state upper bound is
+  correctly one-hot (`C0=1.0`, `C1=0.0`).
+- Diagnosis and no-op/A1/A2 predictions consume one state hash.  A factual
+  treatment plus newly available partial observation advances the same map
+  using the parent-only next latent truth, and updated heads consume the linked
+  new hash.
+- Added an independent one-step numeric check of class-specific transition,
+  treatment push and process covariance so the private oracle path is not
+  accepted only because the probe calls it.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w02-true-state-probe/vertical-slice.json
+artifact sha256: b6202d839c8eb0d5180c22bedd0d348b77cd2f75f803e21c12a5db626c0c57db
+initial state: sha256:7d462b9b02b1a86ee0d56e8337774e838484a75db3f142084d15168e1a7f8f7e
+updated state: sha256:327aaa98b31701454abd36813bc788ea75e3f4f9a25d06d1c8a164ad76ff151a
+```
+
+### Verification
+
+```text
+W02 probe focused: 4 passed
+W01/W02 plus W01-W05 world/oracle/research-contract regression: 84 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+This remains a TRAIN-fixture Phase-2 upper-bound sanity probe.  The update may
+read judge-only next latent truth because W02 is partially observed; an
+ordinary UCM candidate may not.  The manifest remains `privileged=true`,
+`eligibility=upper_bound_only`, and `freeze_grade=false`.  It is not a formal
+B01 run and does not change the 0/30 experiment ledger.
+
+### Decision
+
+`KEEP`: W02 now proves the intended distinction between a hidden patient state
+and the observer's belief over that state.  Continue with W04, where identical
+natural course but opposite treatment response attacks insufficient shared
+states directly.
