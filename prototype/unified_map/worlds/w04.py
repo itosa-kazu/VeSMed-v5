@@ -514,7 +514,53 @@ class W04World(MicroWorld):
         del oracle_seed
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W04 horizon")
-        components = self._posterior(episode)
+        return self._counterfactual_from_components(
+            self._posterior(episode), policy, horizon
+        )
+
+    def judge_true_state_counterfactual(
+        self,
+        hidden_state_at_cut: dict[str, Any],
+        invariant_parameters: dict[str, Any],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Evaluate W04 from a judge-known response modifier and scalar state."""
+
+        if horizon not in self.catalog.horizons:
+            raise ValueError("unsupported W04 horizon")
+        if set(hidden_state_at_cut) != {"x"}:
+            raise ValueError("W04 private state must contain exactly x")
+        if set(invariant_parameters) != {"class_index"}:
+            raise ValueError("W04 private parameters must contain class_index")
+        state = hidden_state_at_cut["x"]
+        class_index = invariant_parameters["class_index"]
+        if type(state) not in {int, float} or not math.isfinite(float(state)):
+            raise ValueError("W04 private x must be finite")
+        if type(class_index) is not int or class_index not in {0, 1}:
+            raise ValueError("W04 private class_index must be zero or one")
+        return self._counterfactual_from_components(
+            [
+                {
+                    "class_index": class_index,
+                    "mean": np.asarray([float(state)]),
+                    "covariance": np.zeros((1, 1)),
+                    "weight": 1.0,
+                    "log_weight": 0.0,
+                }
+            ],
+            policy,
+            horizon,
+        )
+
+    def _counterfactual_from_components(
+        self,
+        components: list[dict[str, Any]],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W04 policy set")
         adaptive = (
             policy.kind is PlanKind.ACTION_SEQUENCE
             and len(policy.actions) == 1

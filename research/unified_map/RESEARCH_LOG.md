@@ -603,3 +603,58 @@ B01 run and does not change the 0/30 experiment ledger.
 and the observer's belief over that state.  Continue with W04, where identical
 natural course but opposite treatment response attacks insufficient shared
 states directly.
+
+## 2026-07-17 — W04 dangerous treatment-collision vertical slice
+
+### Outcome
+
+- Added a W04 judge-only shared state containing the scalar dynamic state plus
+  the invariant treatment-response modifier.  The modifier is part of patient
+  state because it changes counterfactual response even when untreated natural
+  history is identical.
+- Constructed a registered collision pair at the same observed scalar
+  (`x=0.4`).  Both members have exactly the same no-new-action trajectory, but
+  class C0 selects A1 and class C1 selects A2 under the common utility.
+- Diagnosis and no-op/A1/A2 counterfactual heads consume one sealed state hash
+  per patient.  A visible A1 response recursively advances that same map and
+  closes the parent/delta link for both response classes.
+- Added an independent numeric one-step check: from `x=0.4`, A1 moves C0 to
+  mean `0.068` and C1 to mean `0.968`, with variance `0.04^2` in both cases.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w04-dangerous-collision-probe/vertical-slice.json
+artifact sha256: 70918ade781e3318e4ddab205b00d7811d1e548a6888ec541d566f85a2cab84f
+C0 initial state: sha256:11c73e91bfeaca708afb4c31a938790476aa01c38aea18898b84c6cdb225543f
+C1 initial state: sha256:015b76ec9330888a2022bbceaf73ec91ddc1c228556cd8d03b372d8670cb5064
+C0 best action: single_A1
+C1 best action: single_A2
+```
+
+The artifact records all five claims as true: `same_natural_course`,
+`opposite_optimal_treatments`, `modifier_prevents_state_collision`,
+`all_heads_share_patient_state`, and `updates_close_parent_links`.
+
+### Verification
+
+```text
+W04 probe focused: 3 passed
+W01/W02/W04 plus W01-W05 world/oracle/research-contract regression: 95 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+This is still a privileged TRAIN-fixture Phase-2 upper-bound sanity probe, not
+a learned candidate or formal B01 experiment.  Its manifest remains
+`privileged=true`, `eligibility=upper_bound_only`, `freeze_grade=false`, and
+the artifact remains `PRE-FREEZE` / `NOT_COUNT_ELIGIBLE`; the experiment ledger
+therefore remains 0/30.
+
+### Decision
+
+`KEEP`: a treatment-response modifier is a required patient-state coordinate
+whenever untreated history cannot identify opposing treatment effects.  Move
+next to W08 to test whether delayed intervention effects remain representable
+through the same state and recursive update contract.
