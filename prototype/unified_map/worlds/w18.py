@@ -513,12 +513,36 @@ class W18World(MicroWorld):
         oracle_seed: int,
     ) -> CounterfactualOracle:
         del oracle_seed
+        return self.public_state_counterfactual(
+            _latest(episode, "obs_0"),
+            _latest(episode, "obs_1"),
+            policy,
+            horizon,
+        )
+
+    def public_state_counterfactual(
+        self,
+        obs_0: float,
+        obs_1: float,
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Roll out from the sufficient public bounded-support state."""
+
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W18 horizon")
-        support = self.known_support(episode)
-        mechanism_posterior = self._mechanism_posterior_values(
-            _latest(episode, "obs_0"), _latest(episode, "obs_1")
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W18 policy set")
+        if any(
+            type(value) not in {int, float} or not math.isfinite(float(value))
+            for value in (obs_0, obs_1)
+        ):
+            raise ValueError("W18 public state observations must be finite")
+        support = tuple(
+            self._class_likelihood(mechanism, float(obs_0), float(obs_1)) > 0.0
+            for mechanism in ("C0", "C1")
         )
+        mechanism_posterior = self._mechanism_posterior_values(obs_0, obs_1)
         public_components = tuple(mechanism_posterior.items())
         diagnostic = {
             "C0": mechanism_posterior.get("C0", 0.0),
@@ -534,7 +558,7 @@ class W18World(MicroWorld):
         utility = 0.0
         for mechanism, weight in public_components:
             rho, bias, beta, sign = _PARAMETERS[mechanism]
-            mean = _latest(episode, "obs_0")
+            mean = float(obs_0)
             variance = _OBS_SD**2
             steps = []
             component_utility = 0.0

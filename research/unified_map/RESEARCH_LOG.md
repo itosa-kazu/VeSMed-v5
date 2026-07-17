@@ -777,3 +777,60 @@ open formal B01.  Its manifest remains `eligibility=upper_bound_only` and
 effect or an identified set, depending on evidence, but it must never collapse
 the latter to a private realized mechanism unavailable to the observer.
 Continue with W18 to test OOD/rejection behavior through the same state API.
+
+## 2026-07-17 — W18 public-evidence OOD and rejection vertical slice
+
+### Outcome
+
+- Added a W18 shared public belief state containing the latest two-channel
+  observation, the frozen four-component mechanism posterior and known-support
+  feasibility.  It is derived only from candidate-visible evidence; private
+  mechanism identity is excluded.
+- An unseen C2 fixture and a feasible known C0 fixture with byte-identical
+  public evidence produce the same state hash.  Their judge tags differ
+  (`OOD_IRREDUCIBLE` versus `KNOWN`), but the state correctly refuses to split
+  them or force OOD from unavailable truth.
+- Diagnosis and no-action/A1 rollouts consume the same initial state.  A new
+  complete public pair (`obs_0=0.8`, `obs_1=0.0`) recursively updates that state,
+  raises `unknown` from `0.770700636942675` to `1.0`, and makes every updated
+  head return `abstain`.
+- A known-support extreme control (`obs_0=obs_1=1.35`) remains `C0=1.0` and is
+  not rejected, preventing a blanket tail-value abstention rule.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w18-public-ood-probe/vertical-slice.json
+artifact sha256: 81b0951ab27096b4d6f58470e2cbdc2ad066485f523b41370740097c9b230705
+irreducible unseen/known shared state: sha256:9b631e20530a0b4273c9781327569df24201f0f83b3a55a8b9b21681dd5c598d
+public-OOD updated state: sha256:ac8acb21eded375e5bce0777b1a2b6016b9afb253b5028cc33d6ac09aea9c240
+initial unknown probability: 0.770700636942675
+updated unknown probability: 1.0
+```
+
+All nine artifact assertions are true, including irreducible-alias quotienting,
+non-forced initial handling, parent-linked public update, shared-head state use,
+post-evidence abstention and known-extreme specificity.
+
+### Verification
+
+```text
+W18 probe focused: 4 passed
+W18 plus W16-W20/public-prior/semantic/research-contract regression: 78 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+The state itself uses public evidence only, but it is still an upper-bound
+probe because the frozen analytic support model and unknown-reference dynamics
+are benchmark oracle knowledge, not learned candidate parameters.  It is not a
+formal B01 experiment and remains `freeze_grade=false`; the experiment ledger
+remains 0/30.
+
+### Decision
+
+`KEEP`: rejection is a state property induced by attributable public evidence,
+not by private atlas membership and not by a generic tail threshold.  Continue
+with W19 to test policy-coverage uncertainty and unsafe off-policy extrapolation
+through the same state contract.
