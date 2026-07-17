@@ -471,6 +471,58 @@ class W01World(MicroWorld):
         if horizon not in self.catalog.horizons:
             raise ValueError("unsupported W01 horizon")
         c, mean = self._public_cut_state(episode)
+        return self._counterfactual_from_state(c, mean, policy, horizon)
+
+    def judge_true_state_counterfactual(
+        self,
+        hidden_state_at_cut: dict[str, Any],
+        invariant_parameters: dict[str, Any],
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Evaluate W01 from the judge-only Markov state.
+
+        This is the Phase-2 true-state upper-bound path.  It is deliberately
+        separate from :meth:`counterfactual`, whose production scoring path is
+        a function of the candidate-visible cut only.  Ordinary candidates
+        must never receive either private mapping.
+        """
+
+        if horizon not in self.catalog.horizons:
+            raise ValueError("unsupported W01 horizon")
+        if set(hidden_state_at_cut) != {"x"}:
+            raise ValueError("W01 private state must contain exactly x")
+        if set(invariant_parameters) != {"class_index"}:
+            raise ValueError("W01 private parameters must contain class_index")
+        raw_state = hidden_state_at_cut["x"]
+        class_index = invariant_parameters["class_index"]
+        if (
+            type(raw_state) is not list
+            or len(raw_state) != 2
+            or any(type(value) not in {int, float} for value in raw_state)
+            or any(not math.isfinite(float(value)) for value in raw_state)
+        ):
+            raise ValueError("W01 private x must be two finite numbers")
+        if type(class_index) is not int or class_index not in {0, 1}:
+            raise ValueError("W01 private class_index must be zero or one")
+        return self._counterfactual_from_state(
+            class_index,
+            np.asarray(raw_state, dtype=float),
+            policy,
+            horizon,
+        )
+
+    def _counterfactual_from_state(
+        self,
+        c: int,
+        mean: np.ndarray,
+        policy: ActionPlan,
+        horizon: int,
+    ) -> CounterfactualOracle:
+        """Shared analytic transition used by public and judge-only entry paths."""
+
+        if policy not in self.policy_set(horizon):
+            raise ValueError("policy is outside the finite W01 policy set")
         covariance = np.zeros((2, 2), dtype=float)
         schedule = _treatment_schedule(policy, horizon)
         steps: list[dict[str, Any]] = []

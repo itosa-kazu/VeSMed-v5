@@ -228,19 +228,24 @@ collector-owned extractors、external custody 和 clean freeze replay 尚未齐�
 
 ## 9. 当前下一批动作
 
-1. 让 mutation runner 返回 typed raw-evidence bundle，并由 `run_store.py`
-   原子保存同一次执行的 pre/post source witness、raw report、error/decision
-   transcript 和 decisive-record preimage；freeze audit 只读已保存 bytes，
-   不重新执行。
-2. 建立 authority-bound expected-cell receipts，把 world/split/replicate/
-   family/cut/horizon/policy/pair 与 query/oracle/request/response exact
-   preimages 绑定；优先闭合 W09/W10/W18/W19，并淘汰
-   `evaluation_cells.py` 的 legacy family-v1/self-reported strata authority。
-3. 扩至 26/26 malicious mutants、4/4 specificity controls 和 C01–C33 全门
-   decisive evidence；crash、timeout 或错误 gate 不得算 kill。
+1. 先闭合 Phase 2 的患者世界模型 vertical slice，而不是继续无限扩张
+   evidence machinery。W01 的 judge-only true-state upper-bound probe 已完成；
+   下一步按 W02/W04/W08/W15/W18/W19/W20 顺序证明同一 state 能同时支持
+   diagnosis、no-op、A/B intervention 和 response update。
+2. 用这些 vertical slice 生成真实 evaluator cells 和 oracle/metric upper-bound
+   sanity evidence；authority-bound expected-cell receipts 只围绕实际 W01–W20
+   query/response 流扩展，不再脱离患者任务单独堆协议层。
+3. 在真实 vertical slice 已闭合的基础上，补完 26/26 malicious mutants、4/4
+   specificity controls、C01–C33 decisive coverage 与 mutation raw custody；
+   crash、timeout 或错误 gate 不得算 kill。
 4. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 clean
-   checkout replay、external custody 与一次性 atomic publication。
-5. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才打开
-   F01–F12、四类正式 baseline 和候选架构实现。
+   checkout replay、external custody 与一次性 atomic publication；没有直接阻塞
+   semantic freeze 的新 hardening 不进入本轮。
+5. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才把 Phase 2
+   probe 升级为正式 B01 run，并打开 F01–F12、B02–B04 和候选架构实验。
 
 候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。
+同理，Phase 2 的 judge-only true-state upper-bound probe 只校验 world/oracle/
+metric 与共享状态执行链，必须保持 `privileged=true`、
+`eligibility=upper_bound_only`、`experiment_status=NOT_COUNT_ELIGIBLE`；它不能计入
+0/30 实验账本，也不能被称为已开放的正式 B01 候选。

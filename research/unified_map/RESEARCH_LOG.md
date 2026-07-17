@@ -500,3 +500,55 @@ therefore remain `UCM-E003-HARNESS_INCOMPLETE`.
 
 `KEEP AS PRE-FREEZE HARNESS`: benchmark v1 remains unfrozen; UCM candidate
 architectures remain 0 and registered experiments remain 0.
+
+## 2026-07-17 — W01 true-state shared-map vertical slice
+
+### Outcome
+
+- Added a judge-only W01 true-state upper-bound probe whose inert dynamic state
+  contains exactly the Markov coordinates `x`, invariant `class_index` and the
+  current availability cut.
+- Diagnosis, no-new-action prediction, treatment A1 prediction and treatment
+  A2 prediction all consume the same harness-computed state hash.
+- A newly available factual treatment/observation panel recursively updates
+  that state, creates a new hash with an exact parent/delta link, and both
+  updated diagnosis and updated rollout consume only the new hash.
+- The probe quotients W01 alpha-renamed equivalent histories to one state hash
+  while separating the registered behavior-collision pair and its different
+  optimal treatments.
+
+### Key evidence
+
+```text
+artifact: results/unified_map/pre_freeze/20260717-w01-true-state-probe/vertical-slice.json
+artifact sha256: 3703de6d2698524443079323d47ca96a5c6f2598673852c704e81bb9a1329f2e
+initial state: sha256:c4c5aac89fdac16f1aec4c02673b9239a59a3cf4f677de24c60ff968e9078a53
+updated state: sha256:299ca0a762f44a11a3a4f1e9382e62361e4cd5ebef1c18e83751baa1e246169f
+```
+
+The artifact records all four runtime assertions as true:
+`initial_heads_consumed_one_hash`, `update_changed_hash`,
+`update_parent_link_closed`, and `updated_heads_consumed_new_hash`.
+
+### Verification
+
+```text
+true-state probe focused: 5 passed
+W01-W05 world/oracle regression: 72 passed
+Ruff and py_compile: passed
+```
+
+### Evidence boundary
+
+This is a TRAIN-fixture Phase-2 oracle/metric sanity probe, not a deployable
+candidate or completed architecture experiment.  Its manifest is explicitly
+`privileged=true`, `eligibility=upper_bound_only`, `freeze_grade=false`, and
+the artifact is `PRE-FREEZE` / `NOT_COUNT_ELIGIBLE`.  Candidate families and
+the formal B01 run remain closed; the experiment ledger therefore remains
+0/30.
+
+### Decision
+
+`KEEP AS PATIENT-MODEL VERTICAL SLICE`: use this exact state/query/update shape
+to close W02/W04/W08/W15/W18/W19/W20 before resuming only the freeze work that
+directly blocks real candidate experiments.
