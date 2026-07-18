@@ -13,3 +13,11 @@ tests/test_bridge_holdout_runs.py bridge-evidence
 tests/test_bridge_mutation_gate.py bridge-evidence
 tests/test_bridge_public_panels.py bridge-evidence
 results/bridge-holdout/** bridge-evidence
+
+# UCM upper-bound reports bind exact canonical JSON and adapter source bytes.
+# Keep those bytes platform-invariant so a Windows clean checkout can replay
+# the same content-addressed suite roots as POSIX.
+[attr]ucm-upper-bound-evidence -text whitespace=cr-at-eol
+prototype/unified_map/upper_bound_evaluator*.py ucm-upper-bound-evidence
+results/unified_map/pre_freeze/20260717-*/vertical-slice.json ucm-upper-bound-evidence
+results/unified_map/pre_freeze/20260718-eight-world-upper-bound-suite/** ucm-upper-bound-evidence

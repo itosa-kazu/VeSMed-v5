@@ -103,6 +103,18 @@ receipts、mutation raw-preimage custody 与 atomic run-store publication、
 collector-owned extractors、external custody 和 clean freeze replay 尚未齐全。
 `UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 均保持有效。
 
+八个 patient-bound upper-bound evaluator（W01/W02/W04/W08/W15/W18/W19/W20）
+现已汇入一个 live-replay suite：共 58 个 per-world cells、27 个 state bindings。
+它只覆盖 8/20 worlds，且各 world 保留异质 estimand；因此只是 privileged
+upper-bound/evidence machinery，不是 expected-cell corpus、候选、正式 B01 或
+freeze authority。候选/架构信用仍为 0，实验账本仍为 0/30。
+
+最近一次只读 freeze dependency gap map（不是 freeze artifact）仍显示 16/16
+axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus pins
+未建立。W20 evaluator 还保留一个真实负结果：行为无关的 `evidence_count`
+进入 state hash，令 oracle-equivalent histories 发生 false split；在修复并重跑前
+不得声称 minimal behavioral quotient。
+
 交付：
 
 - `MICROWORLDS.md`
@@ -228,30 +240,26 @@ collector-owned extractors、external custody 和 clean freeze replay 尚未齐�
 
 ## 9. 当前下一批动作
 
-1. Phase 2 的八个优先患者世界模型 vertical slice 已闭合：
-   W01/W02/W04/W08/W15/W18/W19/W20 均已有可运行 artifact，证明同一 state
-   能支持 diagnosis、no-op、A/B intervention 和 response update；不得再把
-   这一步回退成外围 evidence machinery 扩张。
-2. W01 已完成第一条真实 upper-bound evaluator 模板：live byte replay 后重新
-   materialize stable state-hash preimage、exact query/head response、judge oracle、
-   source-distinct reference oracle、diagnosis/conditional-mean trajectory/expected-
-   utility regret 指标和 recursive update lineage；调用方篡改 raw bytes 后即使
-   重算 bundle root，也不能保留自报零 loss。该 bundle 固定为
-   `PRE-FREEZE + upper_bound_only + NOT_COUNT_ELIGIBLE + ledger_credit=0`，不进入
-   candidate headline、gate、实验账本或 freeze 结论。
-3. 下一步按同一 patient-execution-bound 合同横向接入 W02/W04/W08/W15/W18/
-   W19/W20，生成八世界 sanity index；不同 response family 必须使用 per-world
-   collector，不能用一个 point-mass extractor 偷换 W15B/W18/W19/W20 语义。
-   authority-bound expected-cell receipts 只围绕实际 W01–W20 query/response 流
-   扩展，不再脱离患者任务单独堆协议层。
-4. 在真实 vertical slice 已闭合的基础上，补完 26/26 malicious mutants、4/4
-   specificity controls、C01–C33 decisive coverage 与 mutation raw custody；
-   crash、timeout 或错误 gate 不得算 kill。
-5. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 clean
-   checkout replay、external custody 与一次性 atomic publication；没有直接阻塞
-   semantic freeze 的新 hardening 不进入本轮。
-6. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才把 Phase 2
-   probe 升级为正式 B01 run，并打开 F01–F12、B02–B04 和候选架构实验。
+1. 八世界 patient-bound upper-bound suite 已闭合：W01/W02/W04/W08/W15/W18/
+   W19/W20 共 58 cells、27 state bindings，全部由各自 collector live replay；
+   其余 12 worlds 未覆盖。该 suite 固定为 `PRE-FREEZE + upper_bound_only +
+   NOT_COUNT_ELIGIBLE + ledger_credit=0`，不得进入 candidate headline、gate、
+   实验账本或 freeze 结论。
+2. 保留并修复 W20 的 `evidence_count` false split：当前合法 Q1 证据把 count 从
+   5 变为 6，却不改变 posterior、exposure 或全部 9 个 horizon-4 policy semantics。
+   在 state quotient 修复并重新验证前，明确保持 `minimal_quotient_claimed=false`。
+3. 从 clean committed revision 物化正式 `SCOPE_MANIFEST.json`，再完成 21 个
+   patient panel 的 pre-split family authority 与 dual-channel stratum authority；
+   随后补 W16/W17 extension authority、corpus pins 和 authority-bound exact
+   expected cells。不得用八世界 suite 代替这些 authority roots。
+4. 补完 26/26 malicious mutants、4/4 specificity controls、C01–C33 decisive
+   coverage 与 mutation raw-preimage custody；crash、timeout 或错误 gate 不得算
+   kill。只读 gap snapshot 的当前实证仅为 18/26、4/4、14/33。
+5. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 runtime/
+   replay locks、clean checkout replay、external custody 与一次性 atomic
+   publication；没有直接阻塞 semantic freeze 的新 hardening 不进入本轮。
+6. 重跑 dependency gap map，只有所有 PRE-FREEZE 阻断项清零并提交 code-owned
+   freeze checkpoint 后，才打开四个正式 baseline、8+ 架构家族与 30+ 登记实验。
 
 候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。
 同理，Phase 2 的 judge-only true-state upper-bound probe 只校验 world/oracle/

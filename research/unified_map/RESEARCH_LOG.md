@@ -1015,3 +1015,103 @@ neither a formal B01 run nor an architecture experiment; the ledger remains
 contract for W02/W04/W08/W15/W18/W19/W20.  Do not force their belief-mixture,
 identified-set, rare-tail or feedback semantics through the W01 point-mean
 extractor.
+
+## 2026-07-18 — Eight-world patient-bound upper-bound evaluator suite
+
+### Outcome
+
+- Generalized the W01 execution-bound evaluator contract with seven
+  world-specific collectors for W02/W04/W08/W15/W18/W19/W20.  Each collector
+  replays its committed vertical-slice bytes and rebuilds state bindings,
+  queries/heads, judge material and metrics from the live world path instead of
+  accepting caller-declared scores.
+- Indexed the eight heterogeneous reports without pretending that their
+  estimands are homogeneous.  The suite contains 58 cells and 27 state
+  bindings across 8/20 worlds.  W03/W05/W06/W07/W09/W10/W11/W12/W13/W14/W16/
+  W17 remain outside this patient-bound suite.
+- Preserved the per-world evidence boundaries: W15B reports an identified set
+  rather than a private point effect; W18's two-point OOD ranking is only a
+  sanity witness; W19 retains panel/tail separation; W20 reports marginal
+  moments and expected utility rather than a joint temporal law.
+- The W20 collector found, rather than hid, a compactness failure.  A legal Q1
+  event triplet changes only `evidence_count` from 5 to 6.  Posterior mean,
+  posterior variance and exposure memory remain equal, and all nine enumerated
+  horizon-4 policy semantics are exact-equal, but the state hashes differ.
+
+### Key evidence
+
+```text
+suite index: results/unified_map/pre_freeze/20260718-eight-world-upper-bound-suite/suite-index.json
+member reports: results/unified_map/pre_freeze/20260718-eight-world-upper-bound-suite/members/W01.json ... W20.json
+suite root: sha256:25d8d2f7cfbfe276268c106b2f58fa6e014638c301e7d2ae05c0561d92b1d68c
+member-set root: sha256:ac3c34dcb12e01c10e612d8fd48d85e8dcfcc264bd69a1177fba0444aae78bb2
+W20 member root: sha256:440af3bf7aee3ca9e1103f4ff921623918f6f41bad4067cf903034f2539fe41d
+status: VALID_PRE_FREEZE_EIGHT_WORLD_SANITY_INDEX
+covered worlds: W01, W02, W04, W08, W15, W18, W19, W20
+coverage: 8/20 worlds; 12 worlds missing
+cells: 58
+state bindings: 27
+all members live replayed: true
+candidate performance claimed: false
+formal freeze authority: false
+ledger credit: 0
+
+W20 false-split pair: W20-evidence-count-false-split
+left/right state hashes:
+  sha256:f3e367b577fbaa2b59211bb8cc33cead498a8d8ea54b38c493b730ae79931995
+  sha256:7a37d7aa7a364072497e8e1d4d83a361cd64545845238bc53b4ef3dbe37297f6
+state distance: 1.0
+oracle behavior distance: 0.0
+cross-applied regret: 0.0
+classification: false_split=true, dangerous_collision=false
+```
+
+### Freeze dependency gap map
+
+The read-only dependency snapshot was taken against source revision `6dbb4d8`;
+it is a planning map, not a scope manifest, collector artifact or freeze
+authorization.
+
+```text
+formal research/unified_map/freeze directory: absent
+freeze axes: 16/16 INCOMPLETE; 16/16 formal axis artifacts missing
+collector checks: 12/123 have a typed extractor; 111/123 remain unextracted
+registry readiness blockers: 52
+  pre_split_family_authority: 21
+  dual_channel_stratum_authority: 21
+  W16/W17 extension authority: 10
+315-shard coverage lock: ready=false; query counts empty; authority pins unset
+mutation execution: 18/26 mutants, 4/4 specificity controls, 14/33 gates
+code-owned freeze issuers I001/I002: disabled
+```
+
+The shortest dependency-respecting route is therefore: clean committed source
+and formal `SCOPE_MANIFEST` -> 21-panel family/stratum authority -> W16/W17
+extension authority -> corpus pins and exact expected cells -> mutation/runtime/
+replay closure -> the remaining collector-owned extractors -> code-owned freeze
+issuer.  This order does not grant credit to the eight-world suite.
+
+### Verification
+
+```text
+suite generation: eight member reports plus one canonical index materialized
+suite verify-only: passed; every member matched a fresh live adapter replay
+W20 false split: 9/9 horizon-4 policy semantics exact-equal
+document whitespace check: git diff --check
+```
+
+### Evidence boundary
+
+The suite is privileged, partial, per-world heterogeneous and not a frozen
+expected-cell corpus.  It remains `PRE-FREEZE`, `upper_bound_only`,
+`NOT_COUNT_ELIGIBLE`, `analysis_weight=0` and `ledger_credit=0`.  It is neither
+a candidate nor a formal B01 run and provides no candidate/freeze/architecture
+credit.  Registered experiments remain 0/30.
+
+### Decision
+
+`KEEP AS EXECUTION-BOUND SANITY MACHINERY`: use the eight reports to drive the
+remaining authority and extractor work, but do not expand sideways into
+candidate families before benchmark freeze.  Keep the W20 false split open and
+`minimal_quotient_claimed=false` until the behavior-inert counter is quotiented
+out and the full policy panel is replayed.

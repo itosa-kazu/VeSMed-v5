@@ -1588,7 +1588,13 @@ Q0=`x+N(0,.05^2)`立即；Q1=`r+N(0,.08^2)`delay1,cost.08。允许A1/A2 single/c
 
 ### 5. Diagnostic truth、counterfactual oracle 与 utility
 
-augmented `[x,r]` threshold nonlinear filter，生产用scrambled-Sobol，reference用r-grid quadrature。
+当前可执行 runtime 的 production oracle 使用 covariance-form Bayesian filter
+加有限 branch enumeration；source-distinct reference 使用 information-form update
+加独立实现的 enumeration。旧稿中的 scrambled-Sobol / r-grid quadrature 描述
+不匹配实际执行路径，现不再作为 W20 实现声明。PRE-FREEZE upper-bound slice
+把 public posterior mean/variance 与 `r` round 到 12 位，只支持当前
+policy-conditioned marginal moments 与 expected-utility sanity；尚未证明 joint
+temporal law、proper calibration 或 minimal quotient。
 
 ```text
 U=-sum gamma^(j-1)*(x_j^2+.06*dose_j^2+.08*Q1); gamma=.97
