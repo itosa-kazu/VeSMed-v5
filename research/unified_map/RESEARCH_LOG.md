@@ -953,3 +953,65 @@ now provide executable shared-state, multi-head and recursive-update evidence.
 The next highest-information step is to turn these exact executions into real
 evaluator cells and oracle/metric upper-bound sanity rows; do not return to
 detached control-plane hardening unless such a cell exposes a concrete blocker.
+
+## 2026-07-18 — W01 patient-bound upper-bound evaluator template
+
+### Outcome
+
+- Added the first typed evaluator for a real privileged patient-world execution
+  rather than projecting caller-declared scalars into the ordinary candidate
+  evaluator.  It byte-replays the committed W01 vertical slice and then
+  rematerializes exact diagnosis/rollout queries, head responses, judge oracle
+  records and a source-distinct scalar-recursion reference oracle.
+- The evaluator stores the complete deterministic preimage of both sealed state
+  hashes (payload, model/scope/catalog bindings and availability cut), excluding
+  only the execution nonce that is not an input to `compute_state_hash`.
+- Six cells now cover initial diagnosis, no-action conditional-mean forecast,
+  A1/A2 expected-utility comparison, recursive update, updated diagnosis and
+  updated no-action forecast.  All heads are bound to the correct initial or
+  updated state and the update has an exact parent/delta join.
+- Diagnosis log loss/Brier, trajectory RMSE/MAE and treatment regret are rebuilt
+  by code from raw candidate/oracle bytes.  Deliberately degraded controls have
+  worse scores, while the true-state row has zero mean error and zero regret.
+  Re-signing an altered response, query, state lineage, status or metric cannot
+  preserve a valid report.
+
+### Key evidence
+
+```text
+implementation: prototype/unified_map/upper_bound_evaluator.py
+tests: tests/unified_map/test_upper_bound_evaluator.py
+artifact: results/unified_map/pre_freeze/20260718-w01-upper-bound-evaluator/sanity-bundle.json
+artifact sha256: 80840d898f542b48451ed38668889d101acc19afa489ced4273d6d1ccde8314b
+bundle root: sha256:448af6d423d78900dbfaad580ea032190ad7c2481fb36a04d79b69137bcdd230
+cells: 6
+stable state bindings: 2
+source-distinct oracle cells: 2
+ledger credit: 0
+```
+
+### Verification
+
+```text
+W01 upper-bound evaluator focused: 9 passed
+W01 evaluator + all eight probes + state/metrics/oracle/candidate-protocol/evaluator regression: 254 passed
+Ruff and py_compile: passed
+source vertical slice: canonical and byte-identical live replay
+```
+
+### Evidence boundary
+
+This is a mean-trajectory and expected-utility **sanity evaluator**, not a
+proper full-distribution score.  The updated cut currently has only the judge
+path, not a source-distinct second oracle.  The bundle therefore hard-codes
+`PRE-FREEZE`, `upper_bound_only`, `NOT_COUNT_ELIGIBLE`, `analysis_weight=0`,
+`candidate_gate=NOT_APPLICABLE` and `benchmark_freeze_evidence=false`.  It is
+neither a formal B01 run nor an architecture experiment; the ledger remains
+0/30.
+
+### Decision
+
+`KEEP AND GENERALIZE PER WORLD`: use this execution-bound, collector-owned
+contract for W02/W04/W08/W15/W18/W19/W20.  Do not force their belief-mixture,
+identified-set, rare-tail or feedback semantics through the W01 point-mean
+extractor.

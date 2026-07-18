@@ -232,17 +232,25 @@ collector-owned extractors、external custody 和 clean freeze replay 尚未齐�
    W01/W02/W04/W08/W15/W18/W19/W20 均已有可运行 artifact，证明同一 state
    能支持 diagnosis、no-op、A/B intervention 和 response update；不得再把
    这一步回退成外围 evidence machinery 扩张。
-2. 下一步直接用这些 vertical slice 生成真实 evaluator cells 和
-   oracle/metric upper-bound
-   sanity evidence；authority-bound expected-cell receipts 只围绕实际 W01–W20
-   query/response 流扩展，不再脱离患者任务单独堆协议层。
-3. 在真实 vertical slice 已闭合的基础上，补完 26/26 malicious mutants、4/4
+2. W01 已完成第一条真实 upper-bound evaluator 模板：live byte replay 后重新
+   materialize stable state-hash preimage、exact query/head response、judge oracle、
+   source-distinct reference oracle、diagnosis/conditional-mean trajectory/expected-
+   utility regret 指标和 recursive update lineage；调用方篡改 raw bytes 后即使
+   重算 bundle root，也不能保留自报零 loss。该 bundle 固定为
+   `PRE-FREEZE + upper_bound_only + NOT_COUNT_ELIGIBLE + ledger_credit=0`，不进入
+   candidate headline、gate、实验账本或 freeze 结论。
+3. 下一步按同一 patient-execution-bound 合同横向接入 W02/W04/W08/W15/W18/
+   W19/W20，生成八世界 sanity index；不同 response family 必须使用 per-world
+   collector，不能用一个 point-mass extractor 偷换 W15B/W18/W19/W20 语义。
+   authority-bound expected-cell receipts 只围绕实际 W01–W20 query/response 流
+   扩展，不再脱离患者任务单独堆协议层。
+4. 在真实 vertical slice 已闭合的基础上，补完 26/26 malicious mutants、4/4
    specificity controls、C01–C33 decisive coverage 与 mutation raw custody；
    crash、timeout 或错误 gate 不得算 kill。
-4. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 clean
+5. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 clean
    checkout replay、external custody 与一次性 atomic publication；没有直接阻塞
    semantic freeze 的新 hardening 不进入本轮。
-5. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才把 Phase 2
+6. 只有上述 PRE-FREEZE 阻断项清零并提交 freeze checkpoint 后，才把 Phase 2
    probe 升级为正式 B01 run，并打开 F01–F12、B02–B04 和候选架构实验。
 
 候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。
