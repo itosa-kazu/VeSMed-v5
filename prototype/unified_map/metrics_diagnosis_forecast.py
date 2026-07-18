@@ -1430,10 +1430,11 @@ def closed_survival_metrics_m02(
 def runtime_contract() -> MetricRuntimeContract:
     """Return the closed code-owned semantic constants without freeze claims."""
 
-    finite = (
-        "real finite non-boolean non-empty arrays; exact declared rank and aligned "
-        "shape; probability values in [0,1]"
+    base_numeric_policy = (
+        "arbitrary real finite non-boolean non-empty arrays; exact declared rank "
+        "and aligned shape"
     )
+    probability_policy = base_numeric_policy + "; probability values in [0,1]"
     formulas = (
         FormulaContract(
             "m01.realized_label_multiclass_nll.clip_1e-12/v1",
@@ -1444,7 +1445,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.LOG_SCORE_CLIPPED,
-            finite + "; probabilities shape N x K, K>=2, rows sum to one",
+            probability_policy + "; probabilities shape N x K, K>=2, rows sum to one",
         ),
         FormulaContract(
             "m01.multiclass_brier.sum_over_classes_then_mean_rows/v1",
@@ -1455,7 +1456,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; probabilities shape N x K and labels shape N",
+            probability_policy + "; probabilities shape N x K and labels shape N",
         ),
         FormulaContract(
             "m01.oracle_posterior_cross_entropy.clip_1e-12/v1",
@@ -1466,7 +1467,8 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.LOG_SCORE_CLIPPED,
-            finite + "; predicted p and oracle q both shape N x K and simplex rows",
+            probability_policy
+            + "; predicted p and oracle q both shape N x K and simplex rows",
         ),
         FormulaContract(
             "m01.oracle_posterior_brier.sum_over_classes_then_mean_rows/v1",
@@ -1477,7 +1479,8 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; predicted p and oracle q both shape N x K and simplex rows",
+            probability_policy
+            + "; predicted p and oracle q both shape N x K and simplex rows",
         ),
         FormulaContract(
             "m01.top1.descending_probability_then_class_index/v1",
@@ -1488,7 +1491,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.ASCENDING_CLASS_INDEX,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; probabilities shape N x K and labels shape N",
+            probability_policy + "; probabilities shape N x K and labels shape N",
         ),
         FormulaContract(
             "m01.topk.descending_probability_then_class_index/v1",
@@ -1499,7 +1502,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.ASCENDING_CLASS_INDEX,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; 2<=k<=K; k values strictly increasing and unique",
+            probability_policy + "; 2<=k<=K; k values strictly increasing and unique",
         ),
         FormulaContract(
             "m01.recall.true_positive_over_true_support/v1",
@@ -1510,7 +1513,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.ASCENDING_CLASS_INDEX,
             UndefinedPolicy.NO_CLASS_SUPPORT_IS_UNDEFINED,
-            finite + "; labels shape N",
+            probability_policy + "; labels shape N",
         ),
         FormulaContract(
             "m01.macro_recall.unweighted_observed_classes_only/v1",
@@ -1521,7 +1524,8 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_OBSERVED_CLASSES,
             TiePolicy.ASCENDING_CLASS_INDEX,
             UndefinedPolicy.NO_CLASS_SUPPORT_IS_UNDEFINED,
-            finite + "; at least one row guarantees at least one supported class",
+            probability_policy
+            + "; at least one row guarantees at least one supported class",
         ),
         FormulaContract(
             "m01.top_label_ece.15_HF_type7_searchsorted_right/v1",
@@ -1532,7 +1536,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.HF_TYPE7_SEARCHSORTED_RIGHT,
             UndefinedPolicy.EMPTY_NOMINAL_BIN_IS_UNDEFINED,
-            finite + "; confidence and correctness shape N",
+            probability_policy + "; confidence and correctness shape N",
         ),
         FormulaContract(
             "m01.one_vs_rest_ece.15_HF_type7_searchsorted_right/v1",
@@ -1543,7 +1547,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.HF_TYPE7_SEARCHSORTED_RIGHT,
             UndefinedPolicy.EMPTY_NOMINAL_BIN_IS_UNDEFINED,
-            finite + "; probabilities shape N x K",
+            probability_policy + "; probabilities shape N x K",
         ),
         FormulaContract(
             "m01.one_hot_probability_interval.closed_endpoints.equal_cells/v1",
@@ -1554,7 +1558,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROW_CLASS_CELLS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; lower/upper shape N x K, 0<=lower<=upper<=1",
+            probability_policy + "; lower/upper shape N x K, 0<=lower<=upper<=1",
         ),
         FormulaContract(
             "m02.empirical_crps.equal_members.biased_pair_denominator/v1",
@@ -1565,7 +1569,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS_ENSEMBLE_MEMBERS_AND_BIASED_PAIRS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; samples shape N x S x D, S>=1; truth shape N x D",
+            base_numeric_policy + "; samples shape N x S x D, S>=1; truth shape N x D",
         ),
         FormulaContract(
             "m02.absolute_ensemble_mean_error_over_positive_oracle_scale/v1",
@@ -1576,7 +1580,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS_AND_ENSEMBLE_MEMBERS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; oracle_scale shape D and strictly positive",
+            base_numeric_policy + "; oracle_scale shape D and strictly positive",
         ),
         FormulaContract(
             "m02.sqrt_mean_squared_ensemble_mean_error_over_oracle_scale/v1",
@@ -1587,7 +1591,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS_AND_ENSEMBLE_MEMBERS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; oracle_scale shape D and strictly positive",
+            base_numeric_policy + "; oracle_scale shape D and strictly positive",
         ),
         FormulaContract(
             "m02.continuous_interval.closed_endpoints.equal_cells/v1",
@@ -1598,7 +1602,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROW_AXIS_CELLS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; lower/upper/truth shape N x D and lower<=upper",
+            base_numeric_policy + "; lower/upper/truth shape N x D and lower<=upper",
         ),
         FormulaContract(
             "m02.bernoulli_nll.clip_1e-12/v1",
@@ -1609,7 +1613,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.LOG_SCORE_CLIPPED,
-            finite + "; probabilities/truth shape N x E; truth integer 0/1",
+            probability_policy + "; probabilities/truth shape N x E; truth integer 0/1",
         ),
         FormulaContract(
             "m02.bernoulli_brier.equal_rows/v1",
@@ -1620,7 +1624,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; probabilities/truth shape N x E; truth integer 0/1",
+            probability_policy + "; probabilities/truth shape N x E; truth integer 0/1",
         ),
         FormulaContract(
             "m02.event_reliability.15_HF_type7_searchsorted_right/v1",
@@ -1631,7 +1635,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.HF_TYPE7_SEARCHSORTED_RIGHT,
             UndefinedPolicy.EMPTY_NOMINAL_BIN_IS_UNDEFINED,
-            finite + "; probabilities/truth shape N x E",
+            probability_policy + "; probabilities/truth shape N x E",
         ),
         FormulaContract(
             "m02.energy.euclidean_after_oracle_scale.equal_members.biased_pairs/v1",
@@ -1642,7 +1646,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS_ENSEMBLE_MEMBERS_AND_BIASED_PAIRS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; samples N x S x D, truth N x D, positive scale D",
+            base_numeric_policy + "; samples N x S x D, truth N x D, positive scale D",
         ),
         FormulaContract(
             "m02.complete_alive_indicator_brier.equal_rows/v1",
@@ -1653,7 +1657,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite + "; complete alive truth N x H; no censoring",
+            probability_policy + "; complete alive truth N x H; no censoring",
         ),
         FormulaContract(
             "m02.complete_alive_indicator_nll.clip_1e-12/v1",
@@ -1664,7 +1668,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROWS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.LOG_SCORE_CLIPPED,
-            finite + "; complete alive truth N x H; no censoring",
+            probability_policy + "; complete alive truth N x H; no censoring",
         ),
         FormulaContract(
             "m02.descriptive_survival_brier.equal_row_horizon_cells/v1",
@@ -1675,7 +1679,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROW_HORIZON_CELLS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.REJECT_INVALID_INPUT,
-            finite
+            probability_policy
             + "; complete alive truth N x H; no censoring; descriptive, not time-integrated",
         ),
         FormulaContract(
@@ -1687,7 +1691,7 @@ def runtime_contract() -> MetricRuntimeContract:
             WeightPolicy.EQUAL_ROW_HORIZON_CELLS,
             TiePolicy.NOT_APPLICABLE,
             UndefinedPolicy.LOG_SCORE_CLIPPED,
-            finite
+            probability_policy
             + "; complete alive truth N x H; no censoring; descriptive, not time-integrated",
         ),
     )

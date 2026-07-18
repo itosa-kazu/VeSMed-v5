@@ -543,3 +543,20 @@ def test_runtime_contract_forbids_aggregate_and_claims_no_freeze_authority() -> 
     assert (
         "calibration_slope_intercept_by_horizon" in contract.unimplemented_m02_outputs
     )
+
+    continuous_formula_ids = {
+        "m02.empirical_crps.equal_members.biased_pair_denominator/v1",
+        "m02.absolute_ensemble_mean_error_over_positive_oracle_scale/v1",
+        "m02.sqrt_mean_squared_ensemble_mean_error_over_oracle_scale/v1",
+        "m02.continuous_interval.closed_endpoints.equal_cells/v1",
+        "m02.energy.euclidean_after_oracle_scale.equal_members.biased_pairs/v1",
+    }
+    by_id = {item.formula_id: item for item in contract.formulas}
+    assert continuous_formula_ids < set(by_id)
+    for formula_id in continuous_formula_ids:
+        policy = by_id[formula_id].finite_shape_policy
+        assert "arbitrary real finite" in policy
+        assert "probability values in [0,1]" not in policy
+    for formula_id, formula in by_id.items():
+        if formula_id not in continuous_formula_ids:
+            assert "probability values in [0,1]" in formula.finite_shape_policy
