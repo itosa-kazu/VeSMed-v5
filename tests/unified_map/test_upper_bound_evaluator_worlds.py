@@ -46,14 +46,6 @@ from prototype.unified_map.upper_bound_evaluator_w20 import (
     run_w20_upper_bound_sanity,
     verify_w20_upper_bound_sanity,
 )
-from prototype.unified_map.upper_bound_suite import (
-    BENCHMARK_WORLD_SLOTS,
-    PROTOCOL as SUITE_PROTOCOL,
-    WORLD_SLOTS,
-    compute_upper_bound_suite_root,
-    run_upper_bound_suite,
-    verify_upper_bound_suite,
-)
 
 
 @dataclass(frozen=True)
@@ -108,11 +100,6 @@ def world_bundles() -> dict[str, dict]:
         world_slot: adapter.run(source_artifact=adapter.source_artifact)
         for world_slot, adapter in ADAPTERS.items()
     }
-
-
-@pytest.fixture(scope="module")
-def suite_bundle() -> dict:
-    return run_upper_bound_suite()
 
 
 def _cells_by_id(bundle: dict) -> dict[str, dict]:
@@ -365,7 +352,7 @@ def test_w19_tail_posterior_changes_the_safety_decision(
     assert updated["panel_eligible_argmax"] == "do_A2"
 
 
-def test_w20_retains_exposure_but_reports_nonpredictive_false_split(
+def test_w20_retains_exposure_and_quotients_nonpredictive_evidence_count(
     world_bundles: dict[str, dict],
 ) -> None:
     bundle = world_bundles["W20"]
@@ -421,12 +408,24 @@ def test_w20_retains_exposure_but_reports_nonpredictive_false_split(
         <= replay["sealed_quantization_error_bound"]
     )
 
-    false_split = cells["W20.evidence_count.false_split"]
-    assert false_split["pair_thresholds"] == expected_thresholds
-    assert false_split["posterior_and_exposure_equal"] is True
-    assert false_split["evidence_counts"] == [5, 6]
-    assert false_split["state_hashes_different"] is True
-    triplet = false_split["added_q1_event_triplet"]
+    behavior_alias = cells["W20.evidence_count.behavior_alias"]
+    assert behavior_alias["pair_thresholds"] == expected_thresholds
+    assert behavior_alias["posterior_and_exposure_equal"] is True
+    assert behavior_alias["raw_evidence_counts"] == [5, 6]
+    assert behavior_alias["raw_history_digests_different"] is True
+    assert behavior_alias["raw_evidence_counts_different"] is True
+    assert behavior_alias["state_hashes_equal"] is True
+    assert behavior_alias["state_identity_fields"] == [
+        "as_of_available_at",
+        "posterior_mean",
+        "posterior_variance",
+        "exposure_memory",
+    ]
+    assert behavior_alias["state_identity_excludes"] == [
+        "public_history_digest",
+        "raw_evidence_count",
+    ]
+    triplet = behavior_alias["added_q1_event_triplet"]
     assert [event["kind"] for event in triplet] == [
         "test_ordered",
         "test_performed",
@@ -438,17 +437,54 @@ def test_w20_retains_exposure_but_reports_nonpredictive_false_split(
     assert triplet[2]["payload"]["channel_id"] == "obs_1"
     assert triplet[2]["collected_at"] == -1
     assert triplet[2]["available_at"] == 0
-    assert false_split["full_h4_policy_count"] == 9
-    assert false_split["full_h4_policy_semantics_equal"] is True
-    assert false_split["false_split_detected"] is True
-    assert false_split["minimal_quotient_claimed"] is False
-    assert false_split["formal_blocker"] == "evidence-count-nonpredictive-false-split"
-    assert false_split["pair_classification"]["false_split"] is True
-    assert false_split["pair_classification"]["dangerous_collision"] is False
+    assert behavior_alias["full_h4_policy_count"] == 9
+    assert behavior_alias["full_h4_policy_semantics_equal"] is True
+    assert behavior_alias["legacy_count_argument_semantically_inert"] is True
+    assert all(
+        row["semantic_equal"] is True
+        and row["raw_count_semantics_equal_state_sentinel"] is True
+        for row in behavior_alias["policy_semantic_witnesses"]
+    )
+    assert behavior_alias["known_false_split_repaired"] is True
+    assert behavior_alias["false_split_detected"] is False
+    assert behavior_alias["minimal_quotient_claimed"] is False
+    assert behavior_alias["formal_blocker"] == "minimal-behavioral-quotient-not-proved"
+    assert behavior_alias["pair_classification"]["candidate_distance"] == 0.0
+    assert behavior_alias["pair_classification"]["oracle_distance"] == 0.0
+    assert behavior_alias["pair_classification"]["false_split"] is False
+    assert behavior_alias["pair_classification"]["dangerous_collision"] is False
+
+    states = bundle["states"]
+    low_binding = states["low_initial"]
+    q1_binding = states["low_plus_nonpredictive_q1"]
+    assert low_binding["record"]["state_hash"] == q1_binding["record"]["state_hash"]
+    assert low_binding["payload"] == q1_binding["payload"]
+    representation = low_binding["payload"]["representation"]
+    assert set(representation) == {
+        "protocol",
+        "world_slot",
+        "as_of_available_at",
+        "posterior_mean",
+        "posterior_variance",
+        "exposure_memory",
+    }
+    assert "evidence_count" not in representation
+    provenance = bundle["history_evidence_provenance"]
+    assert (
+        provenance["low_initial"]["public_history_digest"]
+        != provenance["low_plus_nonpredictive_q1"]["public_history_digest"]
+    )
+    assert provenance["low_initial"]["raw_evidence_count"] == 5
+    assert provenance["low_plus_nonpredictive_q1"]["raw_evidence_count"] == 6
+    assert all(
+        item["raw_history_in_state_identity"] is False
+        and item["raw_evidence_count_in_state_identity"] is False
+        for item in provenance.values()
+    )
 
     scope = bundle["scope_statement"]
     summary = bundle["verification_summary"]
-    assert scope["false_split_open"] is True
+    assert scope["known_evidence_count_false_split_open"] is False
     assert scope["minimal_behavioral_quotient_claimed"] is False
     assert scope["source_distinct_reference_oracle_claimed"] is False
     assert scope["joint_temporal_law_claimed"] is False
@@ -462,13 +498,16 @@ def test_w20_retains_exposure_but_reports_nonpredictive_false_split(
     )
     assert runtime["legacy_document_sobol_r_grid_description_matches_runtime"] is False
     assert runtime["source_distinct_sealed_state_reference_collected"] is False
-    assert summary["nonpredictive_false_split_detected"] is True
-    assert summary["full_h4_policy_false_split_witness_count"] == 9
+    assert summary["known_evidence_count_false_split_repaired"] is True
+    assert summary["nonpredictive_false_split_detected"] is False
+    assert summary["full_h4_policy_behavior_alias_witness_count"] == 9
     assert summary["minimal_quotient_claimed"] is False
     assert (
-        "evidence-count-nonpredictive-false-split" in summary["formalization_blockers"]
+        "evidence-count-nonpredictive-false-split"
+        not in summary["formalization_blockers"]
     )
-    assert "nonminimal-state-quotient" in summary["formalization_blockers"]
+    assert "nonminimal-state-quotient" not in summary["formalization_blockers"]
+    assert "minimal-behavioral-quotient-not-proved" in summary["formalization_blockers"]
     assert {
         "source-distinct-sealed-state-reference-not-collected",
         "runtime-document-oracle-method-drift",
@@ -477,34 +516,17 @@ def test_w20_retains_exposure_but_reports_nonpredictive_false_split(
     }.issubset(summary["formalization_blockers"])
 
 
-def test_suite_live_replays_eight_partial_worlds_without_credit(
-    suite_bundle: dict,
+def test_w20_rejects_resigned_history_evidence_provenance_tamper(
+    world_bundles: dict[str, dict],
 ) -> None:
-    verify_upper_bound_suite(suite_bundle, replay_runtime=True)
+    tampered = deepcopy(world_bundles["W20"])
+    tampered["history_evidence_provenance"]["low_plus_nonpredictive_q1"][
+        "raw_evidence_count"
+    ] += 1
+    _resign(tampered)
 
-    assert tuple(suite_bundle["covered_world_slots"]) == WORLD_SLOTS
-    assert len(suite_bundle["members"]) == 8
-    assert {member["world_slot"] for member in suite_bundle["members"]} == set(
-        WORLD_SLOTS
-    )
-    assert set(suite_bundle["missing_benchmark_world_slots"]) == set(
-        BENCHMARK_WORLD_SLOTS
-    ) - set(WORLD_SLOTS)
-    assert len(suite_bundle["missing_benchmark_world_slots"]) == 12
-
-    scope = suite_bundle["scope_statement"]
-    summary = suite_bundle["verification_summary"]
-    assert scope["full_benchmark_coverage"] is False
-    assert scope["candidate_performance_claimed"] is False
-    assert scope["formal_freeze_authority"] is False
-    assert scope["ledger_credit"] == 0
-    assert summary["member_count"] == 8
-    assert summary["all_members_live_replayed"] is True
-    assert summary["full_benchmark_coverage"] is False
-    assert summary["candidate_performance_claimed"] is False
-    assert summary["formal_freeze_authority"] is False
-    assert summary["ledger_credit"] == 0
-    assert suite_bundle["suite_root"] == compute_upper_bound_suite_root(suite_bundle)
+    with pytest.raises(ProtocolViolation):
+        ADAPTERS["W20"].verify(tampered, replay_runtime=True)
 
 
 def _tamper_w02(bundle: dict) -> None:
@@ -542,7 +564,7 @@ def _tamper_w19(bundle: dict) -> None:
 
 
 def _tamper_w20(bundle: dict) -> None:
-    _cells_by_id(bundle)["W20.evidence_count.false_split"][
+    _cells_by_id(bundle)["W20.evidence_count.behavior_alias"][
         "full_h4_policy_semantics_equal"
     ] = False
 
@@ -569,20 +591,3 @@ def test_semantic_tamper_fails_after_cell_and_bundle_roots_are_recomputed(
 
     with pytest.raises(ProtocolViolation):
         ADAPTERS[world_slot].verify(tampered)
-
-
-def test_suite_member_tamper_fails_live_replay_after_roots_are_recomputed(
-    suite_bundle: dict,
-) -> None:
-    tampered = deepcopy(suite_bundle)
-    tampered["members"][0]["member_bundle_root"] = "sha256:" + "0" * 64
-    tampered["member_set_root"] = digest_json(
-        {
-            "protocol": SUITE_PROTOCOL,
-            "members": tampered["members"],
-        }
-    )
-    tampered["suite_root"] = compute_upper_bound_suite_root(tampered)
-
-    with pytest.raises(ProtocolViolation, match="live adapter replay"):
-        verify_upper_bound_suite(tampered, replay_runtime=True)

@@ -1,9 +1,16 @@
-"""Replay-bound index for the eight PRE-FREEZE patient upper-bound slices.
+"""Replay-bound index for all PRE-FREEZE patient upper-bound slices.
 
 This module deliberately does not turn the privileged probes into a benchmark
-candidate, an experiment, or freeze evidence.  It gives the eight heterogeneous
-world-specific collectors one content-addressed index and verifies every member
-by rerunning its own adapter against the committed source artifact.
+candidate, an experiment, or freeze evidence.  It gives the twenty heterogeneous
+world-specific collectors (twenty-one separately counted panels because W15A
+and W15B have different estimands) one content-addressed index.  Every member is
+run, verified, serialized to exact canonical bytes, and can be reverified live
+against its committed source artifact.
+
+``adapter_source_digest`` is only an exact file binding.  It is not a claim
+that an arbitrary long-lived interpreter executes those bytes.  Final
+publication and verification therefore require a fresh process; imported-code
+attestation remains the responsibility of each member adapter.
 """
 
 from __future__ import annotations
@@ -24,9 +31,26 @@ from .canonical import (
 from .upper_bound_evaluator import STATUS_CHAIN
 
 
-PROTOCOL = "ucm-pre-freeze-upper-bound-suite-index/1"
-WORLD_SLOTS = ("W01", "W02", "W04", "W08", "W15", "W18", "W19", "W20")
+PROTOCOL = "ucm-pre-freeze-upper-bound-suite-index/2"
 BENCHMARK_WORLD_SLOTS = tuple(f"W{index:02d}" for index in range(1, 21))
+WORLD_SLOTS = BENCHMARK_WORLD_SLOTS
+
+# These are benchmark panel identities, not adapter/module identities.  The
+# nineteen ordinary worlds each own one primary panel.  W15 remains one world
+# adapter but its point-identified and nonidentified estimands are counted and
+# bound independently.
+_W15_PANEL_IDS = (
+    "W15A-randomized-identifiable",
+    "W15B-observational-nonidentified",
+)
+_PANEL_IDS_BY_WORLD = {
+    slot: (_W15_PANEL_IDS if slot == "W15" else ("primary",)) for slot in WORLD_SLOTS
+}
+BENCHMARK_PANEL_KEYS = tuple(
+    (world_slot, panel_id)
+    for world_slot in WORLD_SLOTS
+    for panel_id in _PANEL_IDS_BY_WORLD[world_slot]
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,35 +59,54 @@ class _AdapterSpec:
     module_name: str
 
 
-_ADAPTERS = (
-    _AdapterSpec("W01", "prototype.unified_map.upper_bound_evaluator"),
-    *(
-        _AdapterSpec(
-            slot, f"prototype.unified_map.upper_bound_evaluator_{slot.lower()}"
-        )
-        for slot in WORLD_SLOTS[1:]
-    ),
+_ADAPTERS = tuple(
+    _AdapterSpec(
+        slot,
+        (
+            "prototype.unified_map.upper_bound_evaluator"
+            if slot == "W01"
+            else f"prototype.unified_map.upper_bound_evaluator_{slot.lower()}"
+        ),
+    )
+    for slot in WORLD_SLOTS
 )
+
+
+def _panel_key_wire() -> list[dict[str, str]]:
+    return [
+        {"world_slot": world_slot, "panel_id": panel_id}
+        for world_slot, panel_id in BENCHMARK_PANEL_KEYS
+    ]
+
 
 _SCOPE_STATEMENT = {
     "benchmark_status": "PRE-FREEZE",
     "patient_bound_world_slots": list(WORLD_SLOTS),
+    "patient_bound_panel_keys": _panel_key_wire(),
     "benchmark_world_slots": list(BENCHMARK_WORLD_SLOTS),
-    "full_benchmark_coverage": False,
+    "benchmark_panel_keys": _panel_key_wire(),
+    "complete_world_slot_coverage": True,
+    "complete_panel_coverage": True,
+    "formal_benchmark_coverage_claimed": False,
     "privileged": True,
     "upper_bound_only": True,
+    "ucm_eligible": False,
     "candidate_performance_claimed": False,
     "formal_freeze_authority": False,
     "formal_expected_cell_corpus": False,
     "cross_world_metric_homogeneity_claimed": False,
+    "fresh_process_live_replay_required": True,
+    "adapter_source_digest_imported_code_attestation_claimed": False,
+    "member_runtime_attestation_delegated_to_member_verifiers": True,
     "ledger_credit": 0,
 }
 
 _SUITE_BLOCKERS = [
     "not-a-frozen-expected-cell-corpus",
-    "partial-eight-of-twenty-patient-bound-slices",
     "privileged-upper-bound-only",
     "per-world-semantics-not-uniform",
+    "formal-scope-authority-absent",
+    "fresh-process-live-replay-required-for-publication",
     "no-candidate-or-freeze-credit",
 ]
 
@@ -182,9 +225,28 @@ def _member_record(
         raise ProtocolViolation(
             f"{spec.world_slot} summary count does not match its closed report"
         )
+    panel_ids = _PANEL_IDS_BY_WORLD[spec.world_slot]
+    if spec.world_slot == "W15":
+        panel_contract = report.get("panel_contract")
+        if type(panel_contract) is not dict:
+            raise ProtocolViolation("W15 report has no two-panel contract")
+        if (
+            panel_contract.get("outer_world_slot") != "W15"
+            or panel_contract.get("panel_alias_to_panel_id")
+            != {"W15A": panel_ids[0], "W15B": panel_ids[1]}
+            or panel_contract.get("panel_identities") != list(panel_ids)
+            or panel_contract.get("panel_identity_is_world_slot") is not False
+            or summary.get("panel_count") != 2
+            or {cell.get("panel_id") for cell in cells if type(cell) is dict}
+            != set(panel_ids)
+        ):
+            raise ProtocolViolation("W15A/W15B are not independently panel-bound")
     adapter_path, adapter_bytes = _repo_relative_source(module)
+    member_report_bytes = canonical_json_bytes(report)
     return {
         "world_slot": spec.world_slot,
+        "panel_ids": list(panel_ids),
+        "panel_count": len(panel_ids),
         "adapter_module": spec.module_name,
         "adapter_source_path": adapter_path,
         "adapter_source_digest": digest_bytes(adapter_bytes),
@@ -198,7 +260,8 @@ def _member_record(
         "state_binding_count": state_binding_count,
         "formalization_blockers": list(blockers),
         "member_bundle_root": report.get("bundle_root"),
-        "member_report_digest": digest_bytes(canonical_json_bytes(report)),
+        "member_report_bytes": len(member_report_bytes),
+        "member_report_digest": digest_bytes(member_report_bytes),
     }
 
 
@@ -231,25 +294,36 @@ def compute_upper_bound_suite_root(value: dict[str, Any]) -> str:
 
 
 def _assemble_suite(members: list[dict[str, Any]]) -> dict[str, Any]:
-    missing = [slot for slot in BENCHMARK_WORLD_SLOTS if slot not in WORLD_SLOTS]
     report = {
         "protocol": PROTOCOL,
         "bundle_kind": "pre_freeze_patient_bound_upper_bound_suite_index",
         "status_chain": deepcopy(STATUS_CHAIN),
         "scope_statement": deepcopy(_SCOPE_STATEMENT),
         "covered_world_slots": list(WORLD_SLOTS),
-        "missing_benchmark_world_slots": missing,
+        "covered_panel_keys": _panel_key_wire(),
+        "missing_benchmark_world_slots": [],
+        "missing_benchmark_panel_keys": [],
         "members": members,
         "member_set_root": _member_set_root(members),
         "verification_summary": {
-            "status": "VALID_PRE_FREEZE_EIGHT_WORLD_SANITY_INDEX",
+            "status": "VALID_PRE_FREEZE_TWENTY_WORLD_TWENTY_ONE_PANEL_SANITY_INDEX",
             "member_count": len(members),
+            "world_count": len(WORLD_SLOTS),
+            "panel_count": len(BENCHMARK_PANEL_KEYS),
             "total_cell_count": sum(member["cell_count"] for member in members),
             "total_state_binding_count": sum(
                 member["state_binding_count"] for member in members
             ),
-            "all_members_live_replayed": True,
-            "full_benchmark_coverage": False,
+            "all_members_run_then_live_verified": True,
+            "all_member_reports_exact_canonical_bytes_bound": True,
+            "fresh_process_live_replay_required": True,
+            "adapter_source_digest_imported_code_attestation_claimed": False,
+            "member_runtime_attestation_delegated_to_member_verifiers": True,
+            "complete_world_slot_coverage": True,
+            "complete_panel_coverage": True,
+            "formal_benchmark_coverage_claimed": False,
+            "upper_bound_only": True,
+            "ucm_eligible": False,
             "candidate_performance_claimed": False,
             "formal_freeze_authority": False,
             "ledger_credit": 0,
@@ -261,7 +335,7 @@ def _assemble_suite(members: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def run_upper_bound_suite() -> dict[str, Any]:
-    """Run and verify all eight adapters, then return their compact index."""
+    """Run and verify all twenty adapters, then return their compact index."""
 
     members, _ = _collect_members()
     report = _assemble_suite(members)
@@ -269,12 +343,43 @@ def run_upper_bound_suite() -> dict[str, Any]:
     return report
 
 
+def _verify_materialized_member_files(
+    members: list[dict[str, Any]], member_directory: Path
+) -> None:
+    expected_names = {f"{slot}.json" for slot in WORLD_SLOTS}
+    try:
+        entries = list(member_directory.iterdir())
+    except OSError as exc:
+        raise ProtocolViolation("upper-bound member directory is unavailable") from exc
+    if {entry.name for entry in entries} != expected_names or any(
+        not entry.is_file() or entry.is_symlink() for entry in entries
+    ):
+        raise ProtocolViolation("upper-bound member directory is not an exact tree")
+    members_by_slot = {member["world_slot"]: member for member in members}
+    for slot in WORLD_SLOTS:
+        try:
+            raw = (member_directory / f"{slot}.json").read_bytes()
+        except OSError as exc:
+            raise ProtocolViolation(
+                f"materialized upper-bound member {slot} cannot be read"
+            ) from exc
+        member = members_by_slot[slot]
+        if (
+            len(raw) != member["member_report_bytes"]
+            or digest_bytes(raw) != member["member_report_digest"]
+        ):
+            raise ProtocolViolation(
+                f"materialized upper-bound member {slot} is not byte-identical"
+            )
+
+
 def verify_upper_bound_suite(
     report: dict[str, Any],
     *,
     replay_runtime: bool = True,
+    member_directory: Path | None = None,
 ) -> None:
-    """Verify the index and optionally rerun every world-specific adapter."""
+    """Verify the index, exact member files, and live adapters when requested."""
 
     _closed(
         report,
@@ -284,7 +389,9 @@ def verify_upper_bound_suite(
             "status_chain",
             "scope_statement",
             "covered_world_slots",
+            "covered_panel_keys",
             "missing_benchmark_world_slots",
+            "missing_benchmark_panel_keys",
             "members",
             "member_set_root",
             "verification_summary",
@@ -298,8 +405,9 @@ def verify_upper_bound_suite(
         or report["status_chain"] != STATUS_CHAIN
         or report["scope_statement"] != _SCOPE_STATEMENT
         or report["covered_world_slots"] != list(WORLD_SLOTS)
-        or report["missing_benchmark_world_slots"]
-        != [slot for slot in BENCHMARK_WORLD_SLOTS if slot not in WORLD_SLOTS]
+        or report["covered_panel_keys"] != _panel_key_wire()
+        or report["missing_benchmark_world_slots"] != []
+        or report["missing_benchmark_panel_keys"] != []
     ):
         raise ProtocolViolation("upper-bound suite identity or scope mismatch")
     members = report["members"]
@@ -311,6 +419,8 @@ def verify_upper_bound_suite(
         raise ProtocolViolation("upper-bound suite member order/identity mismatch")
     member_keys = {
         "world_slot",
+        "panel_ids",
+        "panel_count",
         "adapter_module",
         "adapter_source_path",
         "adapter_source_digest",
@@ -324,9 +434,10 @@ def verify_upper_bound_suite(
         "state_binding_count",
         "formalization_blockers",
         "member_bundle_root",
+        "member_report_bytes",
         "member_report_digest",
     }
-    for member in members:
+    for spec, member in zip(_ADAPTERS, members, strict=True):
         row = _closed(member, member_keys, "upper-bound suite member")
         for key in (
             "adapter_source_digest",
@@ -337,15 +448,34 @@ def verify_upper_bound_suite(
             "member_report_digest",
         ):
             _digest(row[key], f"upper-bound suite member {key}")
+        expected_source_path = spec.module_name.replace(".", "/") + ".py"
         if (
-            type(row["cell_count"]) is not int
+            row["world_slot"] != spec.world_slot
+            or row["panel_ids"] != list(_PANEL_IDS_BY_WORLD[spec.world_slot])
+            or row["panel_count"] != len(_PANEL_IDS_BY_WORLD[spec.world_slot])
+            or row["adapter_module"] != spec.module_name
+            or row["adapter_source_path"] != expected_source_path
+            or type(row["adapter_protocol"]) is not str
+            or not row["adapter_protocol"]
+            or type(row["source_artifact_relpath"]) is not str
+            or not row["source_artifact_relpath"]
+            or type(row["cell_count"]) is not int
             or row["cell_count"] <= 0
             or type(row["state_binding_count"]) is not int
             or row["state_binding_count"] <= 0
             or type(row["source_artifact_bytes"]) is not int
             or row["source_artifact_bytes"] <= 0
+            or type(row["member_report_bytes"]) is not int
+            or row["member_report_bytes"] <= 0
+            or type(row["formalization_blockers"]) is not list
+            or any(
+                type(blocker) is not str or not blocker
+                for blocker in row["formalization_blockers"]
+            )
+            or len(row["formalization_blockers"])
+            != len(set(row["formalization_blockers"]))
         ):
-            raise ProtocolViolation("upper-bound suite member count is invalid")
+            raise ProtocolViolation("upper-bound suite member shape is invalid")
     if _member_set_root(members) != report["member_set_root"]:
         raise ProtocolViolation("upper-bound suite member-set root mismatch")
     _digest(report["member_set_root"], "upper-bound suite member-set root")
@@ -358,10 +488,20 @@ def verify_upper_bound_suite(
         {
             "status",
             "member_count",
+            "world_count",
+            "panel_count",
             "total_cell_count",
             "total_state_binding_count",
-            "all_members_live_replayed",
-            "full_benchmark_coverage",
+            "all_members_run_then_live_verified",
+            "all_member_reports_exact_canonical_bytes_bound",
+            "fresh_process_live_replay_required",
+            "adapter_source_digest_imported_code_attestation_claimed",
+            "member_runtime_attestation_delegated_to_member_verifiers",
+            "complete_world_slot_coverage",
+            "complete_panel_coverage",
+            "formal_benchmark_coverage_claimed",
+            "upper_bound_only",
+            "ucm_eligible",
             "candidate_performance_claimed",
             "formal_freeze_authority",
             "ledger_credit",
@@ -370,20 +510,35 @@ def verify_upper_bound_suite(
         "upper-bound suite verification summary",
     )
     if summary != {
-        "status": "VALID_PRE_FREEZE_EIGHT_WORLD_SANITY_INDEX",
+        "status": "VALID_PRE_FREEZE_TWENTY_WORLD_TWENTY_ONE_PANEL_SANITY_INDEX",
         "member_count": len(members),
+        "world_count": len(WORLD_SLOTS),
+        "panel_count": len(BENCHMARK_PANEL_KEYS),
         "total_cell_count": sum(member["cell_count"] for member in members),
         "total_state_binding_count": sum(
             member["state_binding_count"] for member in members
         ),
-        "all_members_live_replayed": True,
-        "full_benchmark_coverage": False,
+        "all_members_run_then_live_verified": True,
+        "all_member_reports_exact_canonical_bytes_bound": True,
+        "fresh_process_live_replay_required": True,
+        "adapter_source_digest_imported_code_attestation_claimed": False,
+        "member_runtime_attestation_delegated_to_member_verifiers": True,
+        "complete_world_slot_coverage": True,
+        "complete_panel_coverage": True,
+        "formal_benchmark_coverage_claimed": False,
+        "upper_bound_only": True,
+        "ucm_eligible": False,
         "candidate_performance_claimed": False,
         "formal_freeze_authority": False,
         "ledger_credit": 0,
         "formalization_blockers": _SUITE_BLOCKERS,
     }:
         raise ProtocolViolation("upper-bound suite verification summary was overstated")
+
+    if member_directory is not None:
+        if not isinstance(member_directory, Path):
+            raise ProtocolViolation("upper-bound member directory must be a Path")
+        _verify_materialized_member_files(members, member_directory)
 
     if replay_runtime:
         expected, _ = _collect_members()
@@ -406,13 +561,19 @@ def _main() -> int:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Materialize the eight-world PRE-FREEZE upper-bound suite index."
+        description=(
+            "Materialize the twenty-world/twenty-one-panel PRE-FREEZE "
+            "upper-bound suite index."
+        )
     )
     parser.add_argument("--output", type=Path)
     parser.add_argument(
         "--member-directory",
         type=Path,
-        help="optionally materialize each verified member report as WXX.json",
+        help=(
+            "materialize each verified member report as WXX.json, or verify "
+            "the exact member tree with --verify-only"
+        ),
     )
     parser.add_argument(
         "--verify-only",
@@ -430,7 +591,11 @@ def _main() -> int:
             raise ProtocolViolation("suite index cannot be decoded") from exc
         if canonical_json_bytes(decoded) != raw:
             raise ProtocolViolation("suite index is not canonical JSON")
-        verify_upper_bound_suite(decoded, replay_runtime=True)
+        verify_upper_bound_suite(
+            decoded,
+            replay_runtime=True,
+            member_directory=args.member_directory,
+        )
         return 0
 
     if args.output is None:
@@ -460,6 +625,7 @@ def _main() -> int:
 
 
 __all__ = [
+    "BENCHMARK_PANEL_KEYS",
     "BENCHMARK_WORLD_SLOTS",
     "PROTOCOL",
     "WORLD_SLOTS",

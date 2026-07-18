@@ -4,15 +4,18 @@ The estimand is deliberately narrow: a sealed, rounded public posterior over
 ``x`` plus public exposure memory is used for diagnosis and for policy-indexed
 marginal observation moments / expected utility.  The bundle does not claim a
 joint temporal law, calibration, a minimal quotient, candidate performance, or
-freeze authority.  It also preserves a real negative result: the current probe
-hashes a behavior-inert evidence counter and therefore has a false split.
+freeze authority.  Raw history and evidence-count provenance remain auditable,
+but are excluded from behavioral state identity: an extra nonpredictive Q1 at
+the same cut now aliases to the same state when every frozen horizon-4 policy
+has identical semantics.
 """
 
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import asdict, replace
+from dataclasses import asdict, dataclass, replace
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +34,7 @@ from .schema import (
     RolloutQuery,
     event_sort_key,
 )
+from .state import SealedState, StateClass, StatePayload
 from .true_state_probe_w20 import (
     W20PublicFeedbackProbe,
     _a1_response_delta,
@@ -45,7 +49,7 @@ from .upper_bound_evaluator import (
     compute_upper_bound_bundle_root,
 )
 from .worlds.w01 import _check_event, _observation_event
-from .worlds.w20 import W20World
+from .worlds.w20 import W20World, _rounded
 
 
 PROTOCOL = "ucm-pre-freeze-upper-bound-sanity/1"
@@ -54,13 +58,14 @@ DEFAULT_W20_ARTIFACT = Path(
 )
 _REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 _ALIASES = ("no_new_action", "do_A1", "do_A2")
+_BEHAVIOR_STATE_PROTOCOL = "ucm-phase2-feedback-behavior-state-w20/1"
+_BEHAVIOR_STATE_SCHEMA = "ucm-phase2-feedback-behavior-state-w20-state/1"
 _FORMAL_BLOCKERS = [
     "not-a-frozen-expected-cell-corpus",
     "patient-bound-rounded-state-projection-only",
     "marginal-moments-no-joint-temporal-law",
     "combined-action-response-update-not-action-only",
-    "evidence-count-nonpredictive-false-split",
-    "nonminimal-state-quotient",
+    "minimal-behavioral-quotient-not-proved",
     "source-distinct-sealed-state-reference-not-collected",
     "runtime-document-oracle-method-drift",
     "privileged-upper-bound-only",
@@ -73,6 +78,150 @@ _PAIR_THRESHOLDS = {
     "oracle_equivalent_epsilon": 0.008,
     "catastrophic_margin": 0.80,
 }
+
+
+@dataclass(frozen=True, slots=True)
+class _W20BehavioralProbeManifest:
+    """Evaluator-local manifest for the repaired behavioral state identity."""
+
+    probe_id: str = "phase2-public-feedback-behavior-upper-bound-w20"
+    baseline_id: str = "B01"
+    world_slot: str = "W20"
+    privileged: bool = True
+    eligibility: str = "upper_bound_only"
+    freeze_grade: bool = False
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "protocol": "ucm-true-state-probe-manifest/1",
+            "probe_id": self.probe_id,
+            "baseline_id": self.baseline_id,
+            "world_slot": self.world_slot,
+            "privileged": self.privileged,
+            "eligibility": self.eligibility,
+            "freeze_grade": self.freeze_grade,
+            "state_schema": _BEHAVIOR_STATE_SCHEMA,
+            "state_evidence": "public-bayesian-behavioral-sufficient-statistics",
+            "state_channels": ["posterior_x", "exposure_memory_r"],
+            "audit_provenance_outside_state_identity": [
+                "public_history_digest",
+                "raw_evidence_count",
+            ],
+        }
+
+    @property
+    def digest(self) -> str:
+        return digest_json(self.to_wire())
+
+
+class _W20BehavioralFeedbackProbe(W20PublicFeedbackProbe):
+    """W20 probe whose hash contains only behavior-bearing state fields.
+
+    ``W20World.public_belief_counterfactual`` retains a legacy positive
+    ``evidence_count`` argument but does not consume it after validation.  The
+    inherited heads therefore receive the fixed validation sentinel ``1``
+    from :meth:`_decode`; the raw count is reconstructed independently into
+    report provenance and never enters the sealed payload or state hash.
+    """
+
+    def __init__(self, world: W20World | None = None) -> None:
+        super().__init__(world)
+        self.manifest = _W20BehavioralProbeManifest()
+        self._candidate_bundle_digest = self.manifest.digest
+        self._model_digest = digest_json(
+            {
+                "protocol": "ucm-public-feedback-behavior-model-binding/1",
+                "world_slot": "W20",
+                "filter": "covariance-form-incremental",
+                "rollout": "W20World.public_belief_counterfactual",
+                "behavior_state_closure": [
+                    "as_of_available_at",
+                    "posterior_mean",
+                    "posterior_variance",
+                    "exposure_memory",
+                ],
+                "excluded_audit_provenance": [
+                    "public_history_digest",
+                    "raw_evidence_count",
+                ],
+            }
+        )
+
+    @staticmethod
+    def _representation(
+        *,
+        mean: float,
+        variance: float,
+        exposure: float,
+        evidence_count: int,
+        as_of_available_at: int,
+    ) -> dict[str, Any]:
+        if any(
+            type(value) not in {int, float} or not math.isfinite(float(value))
+            for value in (mean, variance, exposure)
+        ):
+            raise ProtocolViolation("W20 public belief must be finite")
+        if variance < 0.0 or exposure < 0.0:
+            raise ProtocolViolation("W20 variance/exposure cannot be negative")
+        if type(evidence_count) is not int or evidence_count <= 0:
+            raise ProtocolViolation("W20 audit evidence count must be positive")
+        if type(as_of_available_at) is not int:
+            raise ProtocolViolation("W20 public cut must be an integer")
+        return {
+            "protocol": _BEHAVIOR_STATE_PROTOCOL,
+            "world_slot": "W20",
+            "as_of_available_at": as_of_available_at,
+            "posterior_mean": _rounded(mean),
+            "posterior_variance": _rounded(variance),
+            "exposure_memory": _rounded(exposure),
+        }
+
+    @staticmethod
+    def _payload(value: dict[str, Any]) -> StatePayload:
+        return StatePayload.from_json(
+            value,
+            schema_version=_BEHAVIOR_STATE_SCHEMA,
+            state_class=StateClass.DYNAMIC_SHARED,
+        )
+
+    @classmethod
+    def _decode(cls, state: SealedState) -> dict[str, Any]:
+        if type(state) is not SealedState:
+            raise ProtocolViolation("W20 query requires SealedState")
+        payload = state.candidate_input.payload
+        if (
+            payload.codec != "canonical-json-v1"
+            or payload.schema_version != _BEHAVIOR_STATE_SCHEMA
+            or payload.state_class is not StateClass.DYNAMIC_SHARED
+        ):
+            raise ProtocolViolation("W20 behavior payload identity mismatch")
+        try:
+            value = json.loads(payload.payload.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ProtocolViolation("W20 behavior payload is invalid") from exc
+        expected = {
+            "protocol",
+            "world_slot",
+            "as_of_available_at",
+            "posterior_mean",
+            "posterior_variance",
+            "exposure_memory",
+        }
+        if type(value) is not dict or set(value) != expected:
+            raise ProtocolViolation("W20 behavior payload is not closed")
+        normalized = cls._representation(
+            mean=value["posterior_mean"],
+            variance=value["posterior_variance"],
+            exposure=value["exposure_memory"],
+            evidence_count=1,
+            as_of_available_at=value["as_of_available_at"],
+        )
+        if value != normalized:
+            raise ProtocolViolation("W20 behavior state contains noncanonical claims")
+        # Compatibility sentinel for the world's legacy validation-only
+        # argument.  It is not serialized, sealed, hashed, or reported as
+        # patient state.
+        return {**normalized, "evidence_count": 1}
 
 
 def _oracle_wire(value: Any) -> dict[str, Any]:
@@ -103,7 +252,6 @@ def _representation(state: Any) -> dict[str, Any]:
         "posterior_mean",
         "posterior_variance",
         "exposure_memory",
-        "evidence_count",
     }
     if type(value) is not dict or set(value) != expected:
         raise ProtocolViolation("W20 state representation is not closed")
@@ -176,7 +324,7 @@ def _policy_panel(
                 representation["posterior_mean"],
                 representation["posterior_variance"],
                 representation["exposure_memory"],
-                representation["evidence_count"],
+                1,
                 policy,
                 4,
             )
@@ -235,6 +383,49 @@ def _policy_panel(
     }
 
 
+def _history_evidence_provenance(
+    world: W20World,
+    episode: Any,
+) -> dict[str, Any]:
+    """Bind raw public history/evidence without making it state identity."""
+
+    _mean, _variance, _exposure, raw_evidence_count = world._production_posterior(
+        episode
+    )
+    evidence_events = [
+        event
+        for event in episode.public_history.events
+        if (
+            event.kind is EventKind.OBSERVATION_AVAILABLE
+            and event.payload.get("channel_id") in {"obs_0", "obs_1"}
+        )
+        or (
+            event.kind is EventKind.PERFORMED_TREATMENT
+            and event.payload.get("action_id") in {"A1", "A2"}
+        )
+    ]
+    evidence_wires = [event.to_wire() for event in evidence_events]
+    if len(evidence_events) != raw_evidence_count:
+        raise ProtocolViolation("W20 evidence provenance count does not close")
+    return {
+        "protocol": "ucm-w20-history-evidence-provenance/1",
+        "public_history_digest": episode.public_history.digest,
+        "as_of_available_at": episode.public_history.as_of_available_at,
+        "public_event_count": len(episode.public_history.events),
+        "raw_evidence_count": raw_evidence_count,
+        "evidence_event_uids": [event.event_uid for event in evidence_events],
+        "evidence_events_digest": digest_json(evidence_wires),
+        "raw_history_in_state_identity": False,
+        "raw_evidence_count_in_state_identity": False,
+        "behavior_state_identity_fields": [
+            "as_of_available_at",
+            "posterior_mean",
+            "posterior_variance",
+            "exposure_memory",
+        ],
+    }
+
+
 def _q1_augmented_episode(episode: Any) -> Any:
     """Append behavior-inert, already-available Q1 evidence at the same cut."""
 
@@ -264,7 +455,7 @@ def _q1_augmented_episode(episode: Any) -> Any:
     return replace(episode, public_history=history)
 
 
-def _false_split_cell(
+def _behavior_alias_cell(
     world: W20World,
     left_episode: Any,
     left_state: Any,
@@ -273,6 +464,8 @@ def _false_split_cell(
 ) -> dict[str, Any]:
     left = _representation(left_state)
     right = _representation(right_state)
+    left_provenance = _history_evidence_provenance(world, left_episode)
+    right_provenance = _history_evidence_provenance(world, right_episode)
     left_uids = {event.event_uid for event in left_episode.public_history.events}
     added_events = [
         event
@@ -294,27 +487,31 @@ def _false_split_cell(
         or added_events[2].available_at != 0
     ):
         raise ProtocolViolation(
-            "W20 false-split Q1 evidence lacks a legal event triplet"
+            "W20 behavior-alias Q1 evidence lacks a legal event triplet"
         )
     if (
         left["posterior_mean"] != right["posterior_mean"]
         or left["posterior_variance"] != right["posterior_variance"]
         or left["exposure_memory"] != right["exposure_memory"]
-        or right["evidence_count"] != left["evidence_count"] + 1
-        or left_state.record.state_hash == right_state.record.state_hash
+        or right_provenance["raw_evidence_count"]
+        != left_provenance["raw_evidence_count"] + 1
+        or left_provenance["public_history_digest"]
+        == right_provenance["public_history_digest"]
+        or left_state.record.state_hash != right_state.record.state_hash
     ):
-        raise ProtocolViolation("W20 nonpredictive evidence false-split fixture failed")
+        raise ProtocolViolation("W20 nonpredictive evidence behavior alias failed")
     policy_rows: list[dict[str, Any]] = []
     left_utilities: list[float] = []
     right_utilities: list[float] = []
     all_equal = True
+    all_match_state_sentinel = True
     for index, policy in enumerate(world.policy_set(4)):
         left_oracle = _oracle_wire(
             world.public_belief_counterfactual(
                 left["posterior_mean"],
                 left["posterior_variance"],
                 left["exposure_memory"],
-                left["evidence_count"],
+                left_provenance["raw_evidence_count"],
                 policy,
                 4,
             )
@@ -324,13 +521,28 @@ def _false_split_cell(
                 right["posterior_mean"],
                 right["posterior_variance"],
                 right["exposure_memory"],
-                right["evidence_count"],
+                right_provenance["raw_evidence_count"],
+                policy,
+                4,
+            )
+        )
+        state_sentinel_oracle = _oracle_wire(
+            world.public_belief_counterfactual(
+                left["posterior_mean"],
+                left["posterior_variance"],
+                left["exposure_memory"],
+                1,
                 policy,
                 4,
             )
         )
         equal = left_oracle == right_oracle
+        sentinel_equal = (
+            left_oracle == state_sentinel_oracle
+            and right_oracle == state_sentinel_oracle
+        )
         all_equal = all_equal and equal
+        all_match_state_sentinel = all_match_state_sentinel and sentinel_equal
         left_utilities.append(float(left_oracle["expected_utility"]))
         right_utilities.append(float(right_oracle["expected_utility"]))
         policy_rows.append(
@@ -340,27 +552,27 @@ def _false_split_cell(
                 "policy_digest": digest_json(policy.to_wire()),
                 "left_semantic_digest": digest_json(left_oracle),
                 "right_semantic_digest": digest_json(right_oracle),
+                "state_sentinel_semantic_digest": digest_json(state_sentinel_oracle),
                 "semantic_equal": equal,
+                "raw_count_semantics_equal_state_sentinel": sentinel_equal,
             }
         )
-    if not all_equal or len(policy_rows) != 9:
-        raise ProtocolViolation("W20 evidence-count split is behaviorally meaningful")
+    if not all_equal or not all_match_state_sentinel or len(policy_rows) != 9:
+        raise ProtocolViolation("W20 Q1 alias is behaviorally meaningful")
     classification = classify_pair(
         PairProbe(
-            pair_id="W20-evidence-count-false-split",
+            pair_id="W20-evidence-count-behavior-alias",
             state_hash_a=left_state.record.state_hash,
             state_hash_b=right_state.record.state_hash,
             candidate_signature_a=(
                 float(left["posterior_mean"]),
                 float(left["posterior_variance"]),
                 float(left["exposure_memory"]),
-                float(left["evidence_count"]),
             ),
             candidate_signature_b=(
                 float(right["posterior_mean"]),
                 float(right["posterior_variance"]),
                 float(right["exposure_memory"]),
-                float(right["evidence_count"]),
             ),
             oracle_signature_a=tuple(left_utilities),
             oracle_signature_b=tuple(right_utilities),
@@ -373,32 +585,50 @@ def _false_split_cell(
     )
     classification_wire = asdict(classification)
     if (
-        classification.false_split is not True
+        classification.false_split is not False
         or classification.dangerous_collision is not False
+        or classification.candidate_distance != 0.0
         or classification.oracle_distance != 0.0
     ):
-        raise ProtocolViolation("W20 false-split collector classification failed")
+        raise ProtocolViolation("W20 behavior-alias collector classification failed")
     return {
-        "cell_id": "W20.evidence_count.false_split",
+        "cell_id": "W20.evidence_count.behavior_alias",
         "world_slot": "W20",
         "cut_alias": "initial-plus-nonpredictive-q1",
-        "task": "behavioral_false_split_negative",
+        "task": "behavioral_quotient_alias_regression",
         "left_public_history_digest": left_episode.public_history.digest,
         "right_public_history_digest": right_episode.public_history.digest,
         "added_q1_event_triplet": [event.to_wire() for event in added_events],
         "left_state_hash": left_state.record.state_hash,
         "right_state_hash": right_state.record.state_hash,
         "posterior_and_exposure_equal": True,
-        "evidence_counts": [left["evidence_count"], right["evidence_count"]],
-        "state_hashes_different": True,
+        "raw_evidence_counts": [
+            left_provenance["raw_evidence_count"],
+            right_provenance["raw_evidence_count"],
+        ],
+        "raw_history_digests_different": True,
+        "raw_evidence_counts_different": True,
+        "state_hashes_equal": True,
+        "state_identity_fields": [
+            "as_of_available_at",
+            "posterior_mean",
+            "posterior_variance",
+            "exposure_memory",
+        ],
+        "state_identity_excludes": [
+            "public_history_digest",
+            "raw_evidence_count",
+        ],
         "full_h4_policy_count": len(policy_rows),
         "full_h4_policy_semantics_equal": all_equal,
+        "legacy_count_argument_semantically_inert": all_match_state_sentinel,
         "policy_semantic_witnesses": policy_rows,
         "pair_thresholds": dict(_PAIR_THRESHOLDS),
         "pair_classification": classification_wire,
-        "false_split_detected": True,
+        "known_false_split_repaired": True,
+        "false_split_detected": False,
         "minimal_quotient_claimed": False,
-        "formal_blocker": "evidence-count-nonpredictive-false-split",
+        "formal_blocker": "minimal-behavioral-quotient-not-proved",
     }
 
 
@@ -417,7 +647,7 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
         raise ProtocolViolation("W20 committed vertical slice does not byte-replay")
 
     world = W20World()
-    probe = W20PublicFeedbackProbe(world)
+    probe = _W20BehavioralFeedbackProbe(world)
     low_episode, high_episode = world.exposure_collision_pair(seed=2001)
     low_state = probe.initialize_public_episode(low_episode)
     high_state = probe.initialize_public_episode(high_episode)
@@ -517,6 +747,7 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
     batch_episode = replace(low_episode, public_history=batch_history)
     production_batch = world._production_posterior(batch_episode)
     reference_batch = world._reference_posterior(batch_episode)
+    updated_provenance = _history_evidence_provenance(world, batch_episode)
     batch_replay = {
         "production_full_history": [
             round(production_batch[0], 12),
@@ -534,8 +765,8 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             updated_representation["posterior_mean"],
             updated_representation["posterior_variance"],
             updated_representation["exposure_memory"],
-            updated_representation["evidence_count"],
         ],
+        "raw_evidence_count_audit_provenance": updated_provenance["raw_evidence_count"],
     }
     batch_replay["production_reference_exact_at_wire_precision"] = (
         batch_replay["production_full_history"]
@@ -559,14 +790,16 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
         or response_reversal["direction_reversed"] is not True
         or batch_replay["production_reference_exact_at_wire_precision"] is not True
         or batch_replay["sealed_quantization_max_abs_error"] > 2e-12
-        or batch_replay["sealed_rounded_update"][2:]
-        != batch_replay["production_full_history"][2:]
+        or batch_replay["sealed_rounded_update"][2]
+        != batch_replay["production_full_history"][2]
+        or batch_replay["raw_evidence_count_audit_provenance"]
+        != batch_replay["production_full_history"][3]
     ):
         raise ProtocolViolation("W20 combined response update did not close")
 
     q1_episode = _q1_augmented_episode(low_episode)
     q1_state = probe.initialize_public_episode(q1_episode)
-    false_split = _false_split_cell(
+    behavior_alias = _behavior_alias_cell(
         world,
         low_episode,
         low_state,
@@ -637,8 +870,14 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             "task": "updated_diagnosis_and_policy_marginal_moments",
             **updated_panel,
         },
-        false_split,
+        behavior_alias,
     ]
+    history_evidence_provenance = {
+        "low_initial": _history_evidence_provenance(world, low_episode),
+        "high_initial": _history_evidence_provenance(world, high_episode),
+        "low_updated": updated_provenance,
+        "low_plus_nonpredictive_q1": _history_evidence_provenance(world, q1_episode),
+    }
     report = {
         "protocol": PROTOCOL,
         "bundle_kind": "phase2_privileged_probe_evaluator",
@@ -653,7 +892,7 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             "source_distinct_reference_oracle_claimed": False,
             "action_only_update_claimed": False,
             "minimal_behavioral_quotient_claimed": False,
-            "false_split_open": True,
+            "known_evidence_count_false_split_open": False,
             "candidate_performance_claimed": False,
             "formal_b01_claimed": False,
         },
@@ -671,7 +910,7 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             "collision_seed": 2001,
             "horizon": 4,
             "policy_panel_aliases": list(_ALIASES),
-            "full_h4_policy_count_for_false_split": 9,
+            "full_h4_policy_count_for_behavior_alias": 9,
         },
         "states": {
             "low_initial": _state_binding(low_state),
@@ -679,12 +918,13 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             "low_updated": _state_binding(updated_state),
             "low_plus_nonpredictive_q1": _state_binding(q1_state),
         },
+        "history_evidence_provenance": history_evidence_provenance,
         "cells": cells,
         "cell_set_root": _cell_root(cells),
         "collector_metrics": {
             "pair_thresholds": dict(_PAIR_THRESHOLDS),
             "physiology_only_compression": physiology_classification_wire,
-            "evidence_count_false_split": false_split["pair_classification"],
+            "evidence_count_behavior_alias": behavior_alias["pair_classification"],
             "policy_panel_treatment_regret": {
                 "low_initial": low_panel["treatment_regret_metric"],
                 "high_initial": high_panel["treatment_regret_metric"],
@@ -700,14 +940,15 @@ def _collect_w20_upper_bound_sanity(source_artifact: Path) -> dict[str, Any]:
             "source_distinct_sealed_state_reference_collected": False,
         },
         "verification_summary": {
-            "status": "VALID_PRE_FREEZE_SANITY_BUNDLE_WITH_OPEN_FALSE_SPLIT",
+            "status": "VALID_PRE_FREEZE_SANITY_BUNDLE_WITH_BEHAVIOR_ALIAS_REPAIR",
             "cell_count": len(cells),
             "state_binding_count": 4,
             "policy_marginal_panels": 3,
             "source_distinct_oracle_cells": 0,
             "physiology_only_collision_detected": True,
-            "nonpredictive_false_split_detected": True,
-            "full_h4_policy_false_split_witness_count": 9,
+            "known_evidence_count_false_split_repaired": True,
+            "nonpredictive_false_split_detected": False,
+            "full_h4_policy_behavior_alias_witness_count": 9,
             "minimal_quotient_claimed": False,
             "ledger_credit": 0,
             "formalization_blockers": list(_FORMAL_BLOCKERS),
