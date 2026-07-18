@@ -63,6 +63,7 @@ results/unified_map/    append-only run bundle
 - 文献、形式化、治理和接口工作总计不超过约 20%。
 - benchmark v1 冻结前不得实现候选。
 - benchmark v1 冻结后，任何 oracle/生成器/评分修复都必须升 benchmark 版本；旧结果不能冒充新版本结果。
+- semantic freeze 只冻结 TRAIN5/EVAL5 protocol/schema、五-panel、zipped pairing 与时序，不含 raw seed 或 panel digest；code-owned `FROZEN-v1` 后、训练前才发布 `TRAIN5_PRECOMMIT.json`。
 - candidate snapshot 冻结后才物化 red-team 的秘密参数、seed 和 oracle。
 
 ## 5. 阶段与退出门
@@ -120,7 +121,7 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 - `MICROWORLDS.md`
 - 20 个世界生成器、私有 hidden state/oracle 和只读 public history；
 - train/validation/frozen-test split；
-- 统一诊断、自然预测、治疗预测、更新、OOD、碰撞和 regret 评价；
+- 统一诊断、自然预测、治疗预测、更新、parent 从同-state `diagnose+rollout` 精确投影的 OOD、碰撞和 regret 评价；
 - 合规作弊样本与自动杀死测试。
 
 退出门：
@@ -129,14 +130,14 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 2. candidate package 不含 simulator hidden state、未来或 test seed；
 3. true-state 上界和简单错误候选证明评分方向正确；
 4. 状态碰撞、虚假拆分和任务绕过测试具有正/负对照；
-5. freeze manifest 覆盖代码、参数、split、oracle、指标和测试；
+5. freeze manifest 覆盖代码、参数域、split、oracle、指标、测试和 TRAIN5/EVAL5 协议，但不包含 confirmatory raw seed/panel digest；
 6. `FREEZE_MANIFEST.json` 与 sidecar 生成后 append-only，测试能检测静默漂移。
 
 **只有本门通过后才允许开始 Phase 3。**
 
 ### Phase 3 — 基线与 8+ 架构家族
 
-先实现四个规定基线：full-history、separate-task、true-state upper bound、K0-only negative control。随后至少实现八个实质不同家族：
+code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规定基线：full-history、separate-task、true-state upper bound、K0-only negative control。随后至少实现八个实质不同家族；base candidate runtime 始终只有 `initialize/update/diagnose/rollout`，OOD 是 parent projection，new-readout 只能走 candidate seal 后的独立 extension worker：
 
 1. 人工机制状态向量；
 2. latent SSM/DBN/POMDP belief；
@@ -176,7 +177,7 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 - 新检查；
 - 新治疗及相反反应；
 - 新非线性共病组合；
-- 未训练新读出；
+- candidate seal 后的独立 extension-worker 未训练新读出（W04/base 已有 output bundle 不得计 novel）；
 - 历史删除；
 - 1h/24h/7d 时间尺度；
 - 观察通道干预、隐藏混杂、罕见灾难禁忌；
@@ -188,7 +189,7 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 
 先按硬失败淘汰，再报告 Pareto，不设置掩盖失败的单总分。
 
-完整 demo 必须显示同一 `state_id/state_hash` 被诊断、no-op、治疗 A/B/C 读取；真实动作和新观察到达后生成新 state；另展示 OOD/信息不足拒绝。
+完整 demo 必须显示同一 `state_id/state_hash` 被诊断、no-op、治疗 A/B/C 读取；真实动作和新观察到达后生成新 state；另展示 parent 从这些同-state diagnose+rollout rows 投影的 OOD/信息不足结果，不新增 candidate OOD RPC。
 
 最终交付：
 
@@ -207,11 +208,12 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 3. 写候选不可见的真值层与公开历史导出层；
 4. 写统一指标和硬淘汰逻辑；
 5. 写 honest/cheating/degenerate 测试候选验证判别力；
-6. 生成 train/validation/test seed；
+6. 冻结 TRAIN5/EVAL5 的 closed tuple schema、五-panel、zipped pairing、KDF/PRNG domain 和时序；不生成或写入 confirmatory raw seed/panel digest；
 7. 运行重复性、counterfactual consistency、split isolation 测试；
 8. 生成文件清单、SHA-256 和 freeze manifest；
-9. 提交 freeze checkpoint；
-10. 才开始候选实现。
+9. 提交 freeze checkpoint 并由 code-owned issuer 获得 `FROZEN-v1`；
+10. 发布 `TRAIN5_PRECOMMIT.json` 的五个 actual training tuple/digest；
+11. 才开始候选训练；至少三个 family 各五个 artifact seal 后依次做 EVAL5 commit、corpus seal、execution/finalization 与 reveal。
 
 若冻结后发现 benchmark bug：保持 v1 结果，记录 bug，创建 v1.1/v2；不得覆盖 v1 或只改 oracle 不改版本。
 
@@ -225,7 +227,7 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 - 观察条件与干预语义混淆；
 - 方向相反治疗患者发生危险碰撞；
 - 关联冒充干预；
-- OOD 被高置信强塞已知状态；
+- parent 从同-state diagnose+rollout projection 判定 OOD 被高置信强塞已知状态；
 - 新治疗要求按测试重写核心；
 - 无法复现或覆盖旧结果；
 - 完整历史记忆器冒充紧凑状态。
@@ -248,7 +250,7 @@ axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus 
 2. 保留并修复 W20 的 `evidence_count` false split：当前合法 Q1 证据把 count 从
    5 变为 6，却不改变 posterior、exposure 或全部 9 个 horizon-4 policy semantics。
    在 state quotient 修复并重新验证前，明确保持 `minimal_quotient_claimed=false`。
-3. 从 clean committed revision 物化正式 `SCOPE_MANIFEST.json`，再完成 21 个
+3. 从 clean committed revision 物化不含 raw seed/panel digest 的正式 `SCOPE_MANIFEST.json`，再完成 21 个
    patient panel 的 pre-split family authority 与 dual-channel stratum authority；
    随后补 W16/W17 extension authority、corpus pins 和 authority-bound exact
    expected cells。不得用八世界 suite 代替这些 authority roots。

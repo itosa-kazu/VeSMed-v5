@@ -129,7 +129,7 @@ results/unified_map/
 results/unified_map/runs/<run_id>/
   preregistration.json              # experiment card 的冻结副本
   run-manifest.json                 # 身份、scope、expected cells、状态
-  candidate-manifest.json           # family/state/update/readout/能力声明
+  candidate-manifest.json           # family/state/base CandidateMethod 能力声明；无 OOD/readout head 元数据
   config.canonical.json
   provenance.json                   # Git、环境、依赖、隔离、时间
   source-manifest.json              # 逐文件 path/bytes/SHA-256
@@ -160,7 +160,7 @@ results/unified_map/runs/<run_id>/
 原始输出要求：
 
 - 保存诊断分布、自然轨迹分布、每个允许动作/动作序列的反事实分布、真实动作后的更新、utility/regret 组成项，不只保存最后标量。
-- 保存每个时点实际传给三个 head 的同一 `state_id/state_hash`、状态 blob 的内容 hash、canonical byte length 和结构摘要。
+- 保存每个时点实际传给 `diagnose` 与 no-op/A/B/C `rollout` 的同一 `state_id/state_hash`、状态 blob 的内容 hash、canonical byte length 和结构摘要；OOD 仅由 parent 对这些 rows 投影。
 - 保存 timeout、NaN、异常、拒绝、OOM、非收敛和缺失 cell；不能只保存成功样本。
 - “最坏病例”必须由冻结规则从全部 raw 自动选出，不能人工挑选。
 - checkpoint/训练数据索引/预处理器/adapter 都算 candidate artifact；只给 Git commit 而不保存 dirty/untracked 内容不够。
@@ -188,7 +188,8 @@ results/unified_map/runs/<run_id>/
 建议事件类型：
 
 ```text
-benchmark.frozen
+benchmark.semantic_frozen
+train5.precommitted
 experiment.registered
 experiment.frozen
 run.allocated
@@ -198,9 +199,11 @@ analysis.verified
 decision.recorded
 counterexample.frozen
 architecture_review.recorded
-candidate.frozen_for_confirmation
-seed_commitment.recorded
-seed_revealed
+candidate.panel_sealed
+eval5.committed
+corpus.sealed
+confirmation.finalized
+eval5.revealed
 redteam.frozen
 artifact.invalidated
 correction.appended
@@ -229,7 +232,7 @@ correction.appended
   "state_contract": {
     "state_schema_hash": "sha256:...",
     "update_semantics": "recursive",
-    "heads_receive_history": false,
+    "diagnose_rollout_receive_history": false,
     "task_specific_latent": false
   },
   "planned_stages": ["contract", "screen-b1", "full-b1-if-gated"],
@@ -294,14 +297,14 @@ correction.appended
 - `experiment_id` 单调分配且永不复用：`EXP-001`。
 - `run_id` 建议：`UCM-<benchmark>-<experiment>-<stage>-<UTC-microseconds>-<128bit nonce>`。
 - 名字只方便人读；身份由 manifest hash 决定。run_id 不编码结果、赢家或 PASS。
-- state identity 使用候选的 canonical state serialization 生成 `state_hash`；同一次查询的各 head 必须接收完全相同 bytes/hash。
+- state identity 使用候选的 canonical state serialization 生成 `state_hash`；同一 cut 的 base `diagnose` 与所有 `rollout` plan 必须接收完全相同 bytes/hash。
 
 ### 6.2 Hash 覆盖
 
 决定级 run 至少冻结并保存：
 
 1. benchmark spec、W01–W20 generator、oracle、split、metric、hard-gate、collision policy；
-2. candidate core、state serializer/update、三个 heads、训练代码、预处理、adapter；
+2. candidate core、state serializer、`initialize/update/diagnose/rollout`、训练代码、预处理、adapter；post-seal extension worker 的 source/config/artifact 另行封印；
 3. config 的 canonical bytes；
 4. 依赖 lock、Python/平台/CPU/GPU/BLAS/CUDA/线程数和 deterministic flags；
 5. training/validation/test data manifest 与 seed derivation；
@@ -321,27 +324,30 @@ Git commit 只是一个索引。若 worktree dirty，必须保存 exact patch、
 
 ### 7.1 一个 replicate 不是一个含糊的整数
 
-每个 `replicate_id` 冻结为 seed tuple：
+semantic freeze 只冻结两种 closed tuple schema、各五个 replicate、用途域隔离的 KDF/PRNG、zipped one-to-one pairing 与时序；它不包含任何实际 tuple、raw seed 或 panel digest：
 
 ```text
+# TRAIN5-v1 schema
 model_initialization_seed
 training_data_seed
 training_order_seed
+
+# EVAL5-v1 schema
 world_process_noise_seed
 observation_schedule_seed
 evaluation_episode_seed
 analysis_seed  # 只用于 bootstrap，不能影响模型输出
 ```
 
-由 `master_seed + benchmark_id + world_id + replicate_id + purpose` 通过冻结的 PRNG/derivation 函数生成。确定性候选可把不适用项记录为 `not_applicable`，但仍须在五个独立 world/evaluation replicate 上运行。
+code-owned `FROZEN-v1` 后、任何 finalist 训练前，`TRAIN5_PRECOMMIT.json` 才发布五个 actual training tuple/digest。至少三个不同 family 各自五个 source/config/model artifact 全部 seal 后，才允许 commit 隐藏 EVAL5；五个 TRAIN5 artifact 与五个 EVAL5 replicate 按冻结 ID 顺序 zipped 配对，不得展开为 5×5。实际 tuple 由冻结 derivation 函数在各自 authority 阶段生成并进入 post-freeze evidence chain。确定性候选可把不适用训练项记录为 `not_applicable`，但仍须在五个独立 EVAL5 replicate 上运行。
 
 ### 7.2 三套 seed，不混淆证据地位
 
 1. `DEV5-v1`：公开、固定；用于 30+ 搜索，结果是 development evidence。
-2. `CONFIRM5-v1`：在 top-3 candidate code/config **同时冻结后**才 reveal；三个候选使用完全相同的五个 replicate，用于 W01–W20 confirmatory comparison。
+2. `CONFIRM5-v1`：严格执行 `semantic freeze → TRAIN5_PRECOMMIT.json → 至少 3 family × 5 candidate seals → EVAL5 commit → corpus seal → isolated execution/finalization → reveal`；所有候选共享同一五-replicate hidden corpus，用于 W01–W20 confirmatory comparison。
 3. `REPRO5/REDTEAM5-v1`：独立实现和 post-freeze red-team 的新 commitment/reveal；不得回流调参后仍称独立验证。
 
-commit/reveal 不能阻止未来所有研究者看到 seed，但能证明本轮 candidate snapshot 先于 reveal。候选修改后必须新建 experiment；不能继续引用旧 confirmatory 地位。
+commit/reveal 不能阻止未来所有研究者看到 seed，但能证明本轮 candidate snapshot 先于 EVAL5 commit/reveal。TRAIN5 actual values 也只能出现在 `FROZEN-v1` 后的 precommit，不得回填 semantic scope。候选修改后必须新建 experiment；不能继续引用旧 confirmatory 地位。
 
 ### 7.3 禁止 seed cherry-pick
 
@@ -403,7 +409,7 @@ commit/reveal 不能阻止未来所有研究者看到 seed，但能证明本轮 
 | `diagnostic` | 单元/smoke，可 in-process | 否 |
 | `development` | 隔离 screen/full + DEV5 | 只能用于搜索 |
 | `decision_grade` | W01–W20、5 seed、完整 raw、所有合规门 | 是 |
-| `confirmatory` | top-3 同时冻结后跑 CONFIRM5 | 是，优先 |
+| `confirmatory` | FROZEN→`TRAIN5_PRECOMMIT.json`→至少 3 family×5 seals→EVAL5 commit/corpus/finalize/reveal 的 CONFIRM5 | 是，优先 |
 | `reproduction` | source-distinct 独立实现 + 新 seeds | 是，单列 |
 | `redteam` | candidate freeze 后新反例/扩展 | 是，不能回写 v1 |
 
@@ -415,7 +421,7 @@ commit/reveal 不能阻止未来所有研究者看到 seed，但能证明本轮 
 2. 每个 world 等权形成 macro；不能让 episode 多的简单世界淹没 W19 等稀有灾难世界。
 3. 同时保留 episode-weighted 值作敏感性分析，但不替代 world-macro。
 4. utility/regret 同时报告原生单位、冻结的 world-normalized 值、mean/median/p95/max/CVaR；平均 regret 不能掩盖方向相反治疗或罕见灾难。
-5. 所有 raw seed 值都展示；只写均值属于不完整报告。
+5. 所有 raw seed 值在 finalization 后按 reveal protocol 展示并进入 run evidence；它们不得写入 semantic freeze/scope。只写均值属于不完整报告。
 
 ### 9.2 主 CI 与敏感性 CI
 
@@ -484,12 +490,12 @@ failure code 的权威 registry 在 `FORMAL_SPEC.md`。本文件不再创建一�
 
 自动合规的最低执行方式：
 
-- `infer_state(history)` 在 task 未知时只执行一次；三个 head 在 fresh worker 中只收到同一只读 state blob 和 query/action。
-- head worker 禁止文件、网络、全局 cache、raw history、oracle；访问 trace 归档。
+- `initialize(history)` 在 task 未知时只执行一次；base fresh workers 的 `diagnose` 与所有 `rollout` plan 只收到同一只读 state blob 和 query/action。
+- head worker 禁止文件、网络、全局 cache、raw history、oracle；访问 trace 归档。不存在 candidate `ood/readout` RPC 或 heads metadata；OOD 由 parent 从同-state rows 精确投影。
 - update worker 只收到 `previous_state + new_visible_event/action`，不能收到完整历史；full-history baseline 作为 `reference_only` 单列。
-- state serialization 在各 head 前后 hash 不变；若有随机读出，随机源显式传入并记录。
+- state serialization 在 `diagnose/rollout` 前后 hash 不变；若有随机读出，随机源显式传入并记录。
 - treatment A/B/no-op 在互相隔离的 fresh worker 读取同一 pre-action state。
-- 自动扫描只是辅助；“把三套 latent 拼进一个 object”仍需 state schema、field access、novel-readout 和 behavioral-equivalence 审查，接口同名不等于共享语义。
+- 自动扫描只是辅助；“把三套 latent 拼进一个 object”仍需 state schema、field access、post-seal extension-worker novel-readout 和 behavioral-equivalence 审查，接口同名不等于共享语义。W04/base 已有 output bundle 不得改名冒充 novel readout。
 
 ### 11.2 不是 hard fail、但会使 run 无效的情况
 
@@ -523,7 +529,7 @@ OOD/open-world behavior
 sample-efficiency curve/AUC
 new-mechanism/comorbidity composition
 online update consistency
-frozen-state novel-task readout
+post-seal independent-extension novel-task readout
 state bytes/dimension/active structure/MDL
 new-test/new-treatment extension diff + retraining cost
 latency/memory/training compute
@@ -544,7 +550,7 @@ interpretability rubric + native mechanism witness
 benchmark freeze 前为诊断、自然预测、干预预测/治疗 regret 分别写 noninferiority margin。共享候选必须：
 
 1. 三任务的 paired CI 均未越过不可接受退化边界；且
-2. 在样本效率、跨任务一致性、组合泛化、紧凑性或 frozen-state 新任务迁移中，至少一项 paired CI 超过预定义有意义优势。
+2. 在样本效率、跨任务一致性、组合泛化、紧凑性或 candidate-seal 后 independent-extension 新任务迁移中，至少一项 paired CI 超过预定义有意义优势。
 
 否则标记：
 
@@ -651,7 +657,7 @@ CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle
 | EXP-035 | finite-window vs recursive path-state | 哪些历史必须保留可由 W14/W20 行为差异确定 | 窗口外历史改变未来却 state 不变；或递归 state 只是原史缓存 |
 | EXP-036 | fixed schema vs local refinement | 新检查/新治疗应局部 split state，而非重建全核心 | W16/W17 加扩展导致全量重训/旧状态不可迁移 |
 | EXP-037 | private-latent compliance mutant | 验证 shared-state checker 能杀死“一个容器三套 latent” | 若未被 hard gate 杀死，harness incomplete；本项可保守不计重大完成数 |
-| EXP-038 | frozen-state novel-readout transfer | 真共享 state 应支持训练时未见的新读出且不重读历史 | 新任务只能靠 raw history/重训 encoder；表明 state 不充分 |
+| EXP-038 | post-seal extension-worker novel-readout transfer | 真共享 state 应支持独立 extension worker 从 sealed state 学到训练时未见的新读出且不重读历史；W04/base 已有 bundle 不计 novel | 新任务只能靠 raw history/重训 encoder，或只是重命名既有输出；表明 state 不充分或实验无效 |
 | EXP-039 | compositional operator ablation | 结构化 operator 而非容量带来新共病组合泛化 | 打乱/移除 composition law 后不退化，说明组合主张未证实 |
 | EXP-040 | single-scale vs hierarchical multi-timescale state | 同一 state 能稳定支持 1h/24h/7d，而非每 horizon 私有 latent | state 随 horizon 线性膨胀或某尺度出现系统性 collision |
 
@@ -665,7 +671,7 @@ CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle
 
 - 来自至少三个不同 `family_id`；
 - 都通过 shared-state/leakage contract；
-- 同时冻结 candidate/config/code hash，再 reveal `CONFIRM5-v1`；
+- `FROZEN-v1` 后先绑定同一 `TRAIN5_PRECOMMIT.json` 训练；各 family 五个 candidate/config/code/model artifact 全部 seal 后才 EVAL5 commit，并只在 corpus seal、执行和 finalization 后 reveal；
 - 每名都运行 W01–W20 × 5 replicate × 全 task/action/horizon；
 - 不以 baseline、同一家族三个 hidden-size 变体或 invalid mutant 凑数。
 
@@ -688,7 +694,7 @@ winner freeze 后创建 `REPRO-*`：
 - 新检查拆分；
 - 新治疗相反效应；
 - 新非线性共病组合；
-- frozen encoder 新任务读出；
+- candidate seal 后的独立 extension-worker 新任务读出（W04/base 已有 bundle 不得计 novel）；
 - 历史删除；
 - 1h/24h/7d；
 - 新 OOD 机制、罕见灾难禁忌、观察通道干预和隐藏混杂；
@@ -716,14 +722,14 @@ test_summary_and_ci_recompute_from_raw
 test_hard_fail_never_enters_pareto
 test_invalid_harness_does_not_become_candidate_failure
 test_reference_only_baselines_cannot_win_ucm
-test_same_state_hash_reaches_all_heads
-test_heads_and_update_cannot_read_raw_history_or_cache
+test_same_state_hash_reaches_diagnose_and_all_rollout_plans
+test_diagnose_rollout_update_and_extension_cannot_read_raw_history_or_cache
 test_oracle_true_state_future_and_test_id_are_unreadable
 test_counterexample_required_after_each_five_decisions
 test_architecture_review_required_after_each_ten_decisions
 test_fifth_local_no_progress_tweak_is_rejected
 test_top3_are_distinct_families_full_w01_w20_five_seeds
-test_confirm_seed_reveal_follows_candidate_freeze
+test_confirm_authority_chain_freeze_train5_precommit_3x5_seals_eval5_commit_corpus_finalize_reveal
 test_independent_reproduction_is_source_distinct
 test_redteam_artifacts_do_not_rewrite_benchmark_v1
 ```
@@ -733,7 +739,7 @@ test_redteam_artifacts_do_not_rewrite_benchmark_v1
 1. 等 `benchmark_v1` 的 world/oracle/metric/hard-gate schema 定稿，填充本文件中的 policy hash 引用；不得保留可事后解释的 `TBD` 门槛。
 2. 先实现 registry event schema、hash chain、run bundle schema、atomic publisher 和 raw re-aggregation verifier。
 3. 用 honest/cheating/degenerate **harness fixtures** 验证 hard gate，不把它们算候选实验。
-4. 冻结 benchmark v1 manifest 和 DEV5/CONFIRM5 commitment 后，再冻结 EXP-001 卡片。
+4. 先完成 benchmark v1 semantic freeze；该 freeze 只绑定 TRAIN5/EVAL5 protocol/schema/五-panel/zipped/timing，不含 raw seed/panel digest。`FROZEN-v1` 后再发布 `TRAIN5_PRECOMMIT.json` 并启动实验；只有至少三个 family×五 artifact seal 后才建立 EVAL5 commitment、corpus seal、finalization 与 reveal chain。
 5. 所有实验按固定循环运行；先保留失败 raw，再决定，不“清理”历史。
 6. 每五/十次 cadence gate 由 CI 强制，不靠人工记忆。
 

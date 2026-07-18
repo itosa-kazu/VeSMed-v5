@@ -36,7 +36,7 @@
 5. **碰撞/虚假拆分的主度量用冻结 probe 集合上的行为距离，不用候选自报的 latent 欧氏距离。** 这样 vector、graph、belief、program state 才可公平比较。
 6. **未来泄漏、true-state/oracle/test-id 访问、head 读取历史、隐藏缓存、同一 cut 多任务实际消费的 state hash 不同、危险治疗碰撞均为不可被平均分补偿的硬失败。**
 7. **结果永不覆盖。** 每个 run 独占目录，保留 raw state、raw prediction、oracle judge record、进程审计、失败轨迹和 checksum；aggregate 必须可从 raw 重建。
-8. **freeze 分两层。** benchmark 的语义、生成器、oracle、指标和测试种子抽取协议先冻结；同一批 finalist 源码/模型 seal 后才抽取并揭示共同 hidden test seed。冻结前开发不得看到 hidden case/oracle。
+8. **freeze 分两层。** benchmark 的语义、生成器、oracle、指标和 TRAIN5/EVAL5 抽取协议先冻结，但不冻结任何 confirmatory raw seed/panel digest；`FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，同一批 finalist 源码/模型 seal 后才 commit、生成并最终揭示共同 hidden EVAL5 seed。冻结前开发不得看到 hidden case/oracle。
 
 ## 2. “一个共享状态”的可执行定义
 
@@ -192,7 +192,7 @@ UCM 不存在脱离范围的“绝对充分”。v1 MUST 将完整范围
 S = (P, O, A, Q, Pi, Tau, Gamma, Y, U, D, R)
 ```
 
-冻结为 closed-schema `SCOPE_MANIFEST.json`：`P` 是人群/宿主/机制 support，`O` 是观察与缺失/可用过程，`A` 是生理/治疗 action，`Q` 是检查，`Pi` 是有限开环/自适应 policy 集，`Tau` 是 horizons，`Gamma` 是行为相关诊断粒度，`Y` 是必须保留的未来观察/事件/结局闭包，`U` 是 utilities，`D` 是距离/指标，`R` 是数据、资源、隔离和识别假设。
+冻结为 closed-schema `SCOPE_MANIFEST.json`：`P` 是人群/宿主/机制 support，`O` 是观察与缺失/可用过程，`A` 是生理/治疗 action，`Q` 是检查，`Pi` 是有限开环/自适应 policy 集，`Tau` 是 horizons，`Gamma` 是行为相关诊断粒度，`Y` 是必须保留的未来观察/事件/结局闭包，`U` 是 utilities，`D` 是距离/指标，`R` 是数据、资源、隔离和识别假设。`R` 可以引用 TRAIN5/EVAL5 的 schema、五-panel 形状、zipped pairing 与时序协议，但 `SCOPE_MANIFEST.json` MUST NOT 包含 raw seed、实际 TRAIN5/EVAL5 tuple、precommit/commit 值或任何 panel digest；这些是 scope 冻结后的运行证据，不是 `S` 的语义成员。
 
 ```text
 exact_canonical_manifest_bytes = canonical UTF-8 JSON bytes || "\n"
@@ -208,7 +208,7 @@ hash，不得用会对各 part 加长度前缀的 `domain_digest` 或等价 help
 
 `scope_digest` MUST 进入 StateEnvelope 及 state hash domain、CandidateManifest、run manifest、每条 raw prediction/update/state row、`expected-cells.json`、world/split manifest 和最终结论。catalog digest 只是 `O/A/Q` 的部分快照，不能替代 scope digest。
 
-任何新检查、新治疗、更长 horizon、新人群或新 readout 都要先生成 `S'` 和新 digest。novel-readout 卡 MUST 声明 `in_original_Y=true|false` 并引用证明路径：如果在原 `Y` 闭包内却必须重读 history，才证伪原状态范围内充分性；如果原本在范围外，失败只能说明需要 refinement/migration/retraining 或 `scope_insufficient`。
+任何新检查、新治疗、更长 horizon、新人群或新 readout 都要先生成 `S'` 和新 digest。novel-readout 卡 MUST 声明 `in_original_Y=true|false` 并引用证明路径：candidate seal 后由独立 extension worker 只凭 sealed state 训练/执行；如果在原 `Y` 闭包内却必须重读 history，才证伪原状态范围内充分性；如果原本在范围外，失败只能说明需要 refinement/migration/retraining 或 `scope_insufficient`。base candidate 已在 W04 或其他 primary 输出 bundle 中提供的字段、其重命名或确定性重投影，不是 novel readout。
 
 ### 3.3 数据层级与可见性
 
@@ -218,7 +218,7 @@ hash，不得用会对各 part 加长度前缀的 `domain_digest` 或等价 help
 |---|---|---|---|
 | `PUBLIC-SPEC-v1` | 本文、`MICROWORLDS.md`、闭合的 event/action/query schema、单位、合法值域、训练数据预算、定性 world 语义 | 所有候选的共同合同 | private seed、test episode、oracle state/future、pair membership、expected answer |
 | `PUBLIC-TRAIN-v1` | public event histories、performed actions、已发生 outcomes、规范允许的训练 target；可在冻结 budget 内调用 train generator | fit 和固定消融 | simulator 的 hidden Markov state、未实施 action 的 unit-level counterfactual，除非某条训练轨明确预注册允许 |
-| `PUBLIC-VALIDATION-v1` | candidate-view histories/query；judge 可返回预注册的 aggregate/per-world score | model selection、early stopping、OOD threshold、资源选择 | raw hidden state、future random numbers、all-action oracle trajectories、pair type；禁止用 validation 当额外训练数据而不登记 |
+| `PUBLIC-VALIDATION-v1` | candidate-view histories/query；judge 可返回预注册的 aggregate/per-world score | model selection、early stopping、parent OOD projection operating point、资源选择 | raw hidden state、future random numbers、all-action oracle trajectories、pair type；禁止用 validation 当额外训练数据而不登记 |
 | `SEALED-TEST-v1` | 所有 finalist 封印后，运行时仅可见每个 cut 的 public projection 与 typed query | 一次性 confirmatory W01–W20 比较；不得调参 | hidden seed/nonce、split/group ID、world/test/case ID、true state、actual future beyond cut、counterfactual oracle、utility truth、pair/probe label |
 | `REDTEAM-v1-rN` | 只在 benchmark 和 candidate 都封印后投影 candidate view | 单独 red-team 证据，不回写 v1 score | 实例、nonce、反例参数与 oracle 在执行完成前都不可见 |
 
@@ -305,9 +305,9 @@ parent judge 计算 `family_digest` 并用冻结 keyed derivation 分配 `train|
 
 ### 3.7 五 replicate panel：训练 seed 与隐藏评估 seed 分离
 
-CONFIRM 的随机性 MUST 拆成两个不同时间点封印的 tuple，不能在抽到隐藏 test seed 之后再训练或挑模型。
+CONFIRM 的随机性 MUST 拆成两个不同时间点封印的 tuple，不能在抽到隐藏 test seed 之后再训练或挑模型。semantic freeze 只冻结 TRAIN5/EVAL5 的 protocol、closed schema、各五个 replicate、zipped one-to-one pairing、派生域和时序状态机；它不包含实际 TRAIN5 tuple 或 panel digest。
 
-`TRAIN5-v1` 在训练前公开并写入 semantic freeze；每个候选必须按五个 `training_replicate_id` 训练并封印五个 artifact：
+`TRAIN5_PRECOMMIT.json` 只能在 code-owned `FROZEN-v1` 之后、任何 finalist 训练之前发布实际五个 TRAIN5 tuple/digest；每个候选必须按五个 `training_replicate_id` 训练并封印五个 artifact：
 
 ```text
 model_initialization_seed
@@ -324,7 +324,7 @@ evaluation_episode_seed
 analysis_seed
 ```
 
-两类 seed 都由用途域隔离的冻结 KDF/PRNG 派生，并分别保存 tuple digest。`CONFIRM5-v1` 定义为五个预封印 TRAIN5 artifact 与五个 EVAL5 hidden replicate 的冻结一一配对；同一 `evaluation_replicate_id`/corpus 被所有候选共享。不得在五个 artifact 中按 hidden 表现挑一个，也不得扩成事后挑优的 5×5 搜索。确定性候选可将模型随机项标为 `not_applicable`，但仍须在训练前声明 artifact 复用规则，并跑五个独立 EVAL5 replicate。
+两类 seed 都由用途域隔离的冻结 KDF/PRNG 派生，并分别在 post-freeze precommit/commit 证据中保存 tuple digest；raw tuple 和 panel digest 不进入 semantic scope。`CONFIRM5-v1` 定义为五个预封印 TRAIN5 artifact 与五个 EVAL5 hidden replicate 的冻结一一配对；同一 `evaluation_replicate_id`/corpus 被所有候选共享。不得在五个 artifact 中按 hidden 表现挑一个，也不得扩成事后挑优的 5×5 搜索。确定性候选可将模型随机项标为 `not_applicable`，但仍须在训练前声明 artifact 复用规则，并跑五个独立 EVAL5 replicate。
 
 - `DEV5-v1`：训练与评估的完整 tuple 均公开、固定，用于 30+ 搜索实验；只是 development evidence。
 - `CONFIRM5-v1`：使用预公开 TRAIN5 artifact panel + post-artifact-seal 的共同 hidden EVAL5 corpus。
@@ -358,34 +358,29 @@ Primary 比较使用 `compute-matched-v1` 轨：freeze manifest 必须对所有�
 
 1. `trainer`：只能见 train generator/cases 与允许的 validation；产出冻结 `ModelArtifact`。
 2. `state-worker`：只做 `initialize/update`，收到 prior state 和 newly available event batch；不能收到 task kind。
-3. `head-worker`：只做 `diagnose/rollout/ood/readout`，收到只读模型、同一 state、query；不能收到历史。自然与干预未来仅由 `rollout` 的 typed plan 区分。
+3. `head-worker`：只做 `diagnose/rollout`，收到只读模型、同一 state、query；不能收到历史。自然与干预未来仅由 `rollout` 的 typed plan 区分。OOD 由 parent runner 对这两类同-state 输出做冻结的 exact projection，不是 candidate RPC。
 4. `judge`：唯一持有 oracle、true state、未发生未来、utility truth 和 test ID；候选进程不可导入或读其文件。
 
 纯 Python 候选可沿用 `python -I -S`、最小 allow-list package、audit hook。使用 PyTorch/native/GPU 的候选必须放进无网络、只读模型挂载、空临时目录、系统调用/文件访问受限的 OS container/AppContainer；仅靠 CPython audit hook 不足时，结果必须标 `isolation_assurance=python_only`，不得声称已防住 native escape。
 
 ### 4.2 规范接口
 
-下列是语义接口；实际可用 JSONL RPC 实现，避免把 Python 类本身当合同。
+下列是 base runtime 的完整语义接口；实际可用 JSONL RPC 实现，避免把 Python 类本身当合同。训练、manifest 生成和 model seal 属于 bundle 构建/发布流程，不是患者 runtime RPC。
 
 ```python
-class UnifiedMapCandidate(Protocol):
-    def manifest(self) -> CandidateManifest: ...
-
-    # training role only
-    def fit(self, train_stream, validation_stream, train_seed) -> FitReceipt: ...
-    def freeze_model(self) -> ModelArtifact: ...
-
+class UCMCandidateV1(Protocol):
     # state-worker only; request 中没有 task/test/world ID
-    def initialize(self, public_baseline_events, inference_seed) -> StateEnvelope: ...
-    def update(self, prior_state, newly_available_events, inference_seed) -> UpdateResult: ...
+    def initialize(self, history: VisibleHistory, *, inference_seed: int) -> StatePayload: ...
+    def update(self, state: CandidateStateInput, delta: VisibleDelta, *, inference_seed: int) -> StatePayload: ...
 
-    # head-worker only;每次可在 fresh process 中调用
-    def diagnose(self, state, request) -> DiagnosticPrediction: ...
-    def rollout(self, state, plan, request) -> TrajectoryPrediction: ...
-    def ood(self, state, request) -> OODPrediction: ...
+    # head-worker only；plan 已封装在 RolloutQuery；每次可在 fresh process 中调用
+    def diagnose(self, state: CandidateStateInput, query: DiagnosisQuery, *, query_seed: int) -> DiagnosisResult: ...
+    def rollout(self, state: CandidateStateInput, query: RolloutQuery, *, query_seed: int) -> RolloutResult: ...
 ```
 
 `NoNewAction`、`ContinueCurrent`、治疗 A/B/C 都调用同一个 `rollout`；forecast/counterfactual 只是 judge 按 plan 种类给结果加的标签，不能映射到两套候选实现或两套 dynamics。
+
+base API 始终只有 `initialize/update/diagnose/rollout`。OOD evaluator 在 parent 中把同一 exact `Z` 的 `diagnose` posterior/status 与冻结 policy 集的 `rollout` distributions 投影为 OOD/calibration/safety record；候选不得注册 `ood` RPC、OOD head/capability metadata 或 candidate-owned OOD threshold。novel readout 也不是 base API：必须在 candidate seal 后启动 source/config/artifact 独立封印的 extension worker，它只接收 sealed state 与 non-patient query，不得修改或调用 history encoder/updater。
 
 不提供以下接口：
 
@@ -414,7 +409,6 @@ class UnifiedMapCandidate(Protocol):
   "scope_digest": "sha256:...",
   "state_schema_version": "...",
   "declared_state_class": "compressed_shared_state",
-  "heads": ["diagnose", "rollout", "ood"],
   "uses_patient_specific_persistent_storage": false,
   "supports_online_update": true,
   "supports_late_arriving_events": true,
@@ -457,31 +451,38 @@ runner 验证/封存 `new_state` 后在外层 update ledger 附加：
 
 ### 4.5 readout 输出
 
-所有 readout 公共 envelope：
+live base wire 与 `prototype/unified_map/candidate_protocol.py` 一致；不存在另一套通用 prediction envelope。`diagnose` 与 `rollout` 的 exact response shape 分别是：
 
 ```json
 {
-  "protocol": "ucm-prediction/1",
-  "prediction_kind": "diagnosis|forecast|counterfactual|ood|novel_readout",
-  "status": "ok|abstain|scope_insufficient|unsupported|invalid_input|numerical_failure",
-  "distribution": {},
-  "identification": {
-    "kind": "point|partial|none",
-    "effect_set": null,
-    "utility_set": null,
-    "assumptions_digest": "sha256:..."
-  },
-  "support": {
-    "ood_score": 0.0,
-    "unknown_probability": 0.0
-  },
-  "diagnostics": {}
+  "protocol": "ucm-candidate-response/1",
+  "operation": "diagnose",
+  "result": {
+    "status": "ok|abstain|scope_insufficient|unsupported|invalid_input|numerical_failure",
+    "probabilities": {"<label>": 0.0},
+    "metadata": {}
+  }
 }
 ```
 
-上述是 candidate output；runner transcript 在外层增加 `query_digest/input_state_hash/consumed_state_hash/scope_digest`，并验证调用前后 exact state bytes 与 model digest 未变。不要把 evaluator hash 暴露给候选后再相信它回显。
+```json
+{
+  "protocol": "ucm-candidate-response/1",
+  "operation": "rollout",
+  "result": {
+    "status": "ok|abstain|scope_insufficient|unsupported|invalid_input|numerical_failure",
+    "observable_predictions": {"<observable_id>": {}},
+    "utility_prediction": {},
+    "metadata": {}
+  }
+}
+```
 
-诊断必须输出机制/疾病类型 posterior（含 `unknown`）；轨迹必须输出可评分分布而不只是点预测；反事实必须对每个 policy 输出相同 outcome schema。`identification.kind=partial|none` 时，`effect_set/utility_set` 必须是冻结 schema 的集值结果而不是点效应伪精确。`abstain` 表示范围内证据不足；`scope_insufficient` 只能用于 query 超出已声明 `S`；`unsupported` 不是免费跳过；`invalid_input` 只用于输入 schema/值域错误；`numerical_failure` 必须保留 raw diagnostics。在已声明 scope 的 required cell 上，后四类状态中除合法 abstain 外都计入对应 coverage/failure。
+parser 要求 exact top-level/result keys；`ok` diagnosis probabilities 必须非空、有限、位于 `[0,1]` 且和为 1，`ok` rollout 必须有非空 observable predictions；non-`ok` response 不得夹带相应预测。任何 identification set、assumption digest 或 world-specific distribution family 都只能按冻结 world/output schema 放入上述现有 result 字段，不能增造顶层字段或新 protocol。
+
+上述是 candidate output；runner transcript 在外层增加 `query_digest/input_state_hash/consumed_state_hash/scope_digest`，并验证调用前后 exact state bytes 与 model digest 未变。forecast/counterfactual 是 parent 按 typed plan 对 rollout row 的标签；OOD record 是 parent 对 diagnosis+rollout rows 的派生物；extension output 使用独立 extension evidence schema。不要把 evaluator hash 暴露给候选后再相信它回显。
+
+诊断必须输出机制/疾病类型 posterior（含 `unknown`）；rollout 必须输出可评分分布而不只是点预测，且每个 policy 使用相同 outcome schema。partial/none identification 时，冻结 world schema 必须承载集值 effect/utility 而不是点效应伪精确。`abstain` 表示范围内证据不足；`scope_insufficient` 只能用于 query 超出已声明 `S`；`unsupported` 不是免费跳过；`invalid_input` 只用于输入 schema/值域错误；`numerical_failure` 必须保留 raw diagnostics。在已声明 scope 的 required cell 上，后四类状态中除合法 abstain 外都计入对应 coverage/failure。
 
 治疗选择由 judge 使用候选预测分布/识别集和冻结 utility 计算，而不是允许每个候选另写不可审计的 treatment recommender。point-identified cell 使用统一 argmax/tie-break；partial/none cell 使用第 7.4 节冻结的 set-valued/minimax-regret rule。候选自报推荐只是附加信息，不替代 judge 的可比较决策。
 
@@ -557,7 +558,7 @@ Z_t --query Do(C)-------> predicted future only
 
 | ID | 自动测试 | 通过条件 | 主要杀死的作弊/缺陷 | 级别 |
 |---|---|---|---|---|
-| C01 | exact shared-state fan-out | diagnose/no-op/A/B/C/ood 的 runner transcript 均附加同一实际输入 hash | 为不同 head 生成/传入不同 state；不单独证明 blob 内 semantic unity | HARD |
+| C01 | exact shared-state fan-out | diagnose/no-op/A/B/C rollout 的 runner transcript 均附加同一实际输入 hash；OOD 仅从这些 rows 做 parent projection | 为不同 head 生成/传入不同 state；不单独证明 blob 内 semantic unity | HARD |
 | C02 | head history denial | fresh head sandbox 中无 history 文件/对象/环境变量；读取尝试被审计拒绝 | head 偷读原史、query 时重编码 | HARD |
 | C03 | state-worker task blindness | initialize/update 请求中无 task；交换下游 task 顺序不改变 state bytes | task-specific encoder/state | HARD |
 | C04 | clean-process replay | 重启进程后同模型+同 state+同 query 输出相同 | module global/GPU cache 第二状态 | HARD |
@@ -581,8 +582,8 @@ Z_t --query Do(C)-------> predicted future only
 | C22 | incremental/replay/batch | incremental、合法 batch、clean replay 行为等价 | stale update/cache | HARD |
 | C23 | late-event old-cut stability | 未来才 available 的 correction/response 不改变旧 cut | 后见信息倒灌 | HARD |
 | C24 | attributable exact/functional dangerous collision | 仅当 pair 已冻结为 `attributable_collision=true`、区分证据对候选合法可用且 public-posterior oracle 证明相反治疗方向/灾难 regret 时，不得同 hash 或功能不可区分 | 可归因的危险状态合并；不惩罚 private-truth twins | HARD |
-| C25 | OOD fail-closed | W18 中第 7.6 节高置信强配 + 非 abstain + judge 选出 unsafe/catastrophic action 不得发生 | closed-world 强配导致危险 action | HARD |
-| C26 | novel-readout isolation | 冻结 state encoder；新 head 只见 state，不见 history | “迁移”时重新读原史 | HARD |
+| C25 | OOD fail-closed | parent 从同-state diagnose+rollout exact projection 得到 W18 第 7.6 节高置信强配 + 非 abstain，且 judge 选出 unsafe/catastrophic action时不得发生 | closed-world 强配导致危险 action | HARD |
+| C26 | novel-readout isolation | candidate seal 后独立 extension worker 只见 sealed state，不见 history；W04/base 已有 bundle 不算 novel | “迁移”时重新读原史或把既有输出改名冒充新读出 | HARD |
 | C27 | full-history disclosure | raw/history canary 若出现在 state，必须声明 full-history baseline | 伪装压缩状态 | HARD for misclaim |
 | C28 | run reproducibility | seal、seed、环境相同可重放 raw prediction/metric | 不可复现 | HARD |
 | C29 | query preannouncement denial | initialize/update 不知道随后会问 diagnosis/A/B/新任务；改变 future query set 不改 state | 按未来任务造 state | HARD |
@@ -660,7 +661,7 @@ freeze 前 MUST 生成 `mutation-kill-matrix.json`，记录 mutant source digest
 
 ### 6.4 同一个 hash 仍不能单独证明 semantic unity
 
-黑箱候选可以把 `(z_diagnosis, z_natural, z_treatment)` 串成一个 blob，让三个 head 各读一段；它会通过 exact hash 与 fresh-process closure，但仍违反研究目标。v1 必须把结论拆成：
+黑箱候选可以把 `(z_diagnosis, z_natural, z_treatment)` 串成一个 blob，让 `diagnose` 与 `rollout` 内不同 plan 各读一段；它会通过 exact hash 与 fresh-process closure，但仍违反研究目标。v1 必须把结论拆成：
 
 - `operational_state_closure`：运行时只有 sealed payload 能跨调用生存；可由进程隔离硬证。
 - `semantic_unity`：payload 不是三套任务状态的机械拼接；需要 source/计算图与反例证据。
@@ -672,7 +673,7 @@ freeze 前 MUST 生成 `mutation-kill-matrix.json`，记录 mutant source digest
 3. 无 task-exclusive persistent store、checkpoint slot 或独立 update path；
 4. state component/byte-tile occlusion 生成 head-dependency matrix；若恰好呈 diagnosis-only、natural-only、treatment-only 三个互不相交 block，触发 `SUSPECT_MULTIPLEXED_TASK_STATE` 人工/源码审计；
 5. 同一 informative update 对三个任务的改变能由同一 state change 解释；
-6. 冻结 state 后的新任务 head 只读 state 仍可学习，且不重新接触 history；
+6. candidate seal 后的独立 extension worker 只读 sealed state 仍可学习真正的新任务，且不重新接触 history；W04/base 已有 bundle 不计 novel；
 7. collision、false split、history deletion 和 state-size evidence 不支持隐藏完整历史/任务拼接。
 
 不能审计的 opaque blob 最多标 `operationally_closed_shared_state`；其 `semantic_unity` 必须是 `INCOMPLETE`，不得作为“已证明找到 UCM”的最终证据。这里应诚实承认：有限黑箱 I/O 测试无法数学证明内部没有三块 latent。
@@ -776,7 +777,7 @@ D_candidate(i,j) = max over q in Q_w of same_distance(
 
 ### 7.6 OOD/open-world
 
-候选只用 validation 选择 OOD threshold，并在 model seal 中记录；test 后不得调阈值。报告：
+OOD 没有 candidate RPC 或 candidate-owned threshold。parent runner 对同一 exact state 上的 `diagnose` posterior/status 与冻结 policy 集的 `rollout` distributions 使用 semantic freeze 中的唯一 projection 规则；如需 risk-coverage operating point，只能由 parent 在冻结 validation protocol 下选择并随 benchmark evidence 封印，test 后不得调。报告：
 
 - AUROC、AUPRC（OOD 为 positive）；
 - FPR@95TPR、TPR@固定低 FPR；
@@ -785,7 +786,7 @@ D_candidate(i,j) = max over q in Q_w of same_distance(
 - `unknown_probability` Brier/NLL 与 calibration；
 - OOD 上的 treatment regret/unsafe non-abstain rate。
 
-v1 冻结高置信强配指示条件：W18 **已出现冻结 public OOD evidence** 的 designated unseen-mechanism cut 上，`max_known_probability >= 0.90` 且 `unknown_probability <= 0.10`。满足该条件记一次 `forced_known_high_confidence`；如候选不 abstain，且统一 judge 依其预测选出 oracle 定义的 catastrophic/unsafe action，则是不可补偿硬失败。不危险的高置信强配仍是 OOD/calibration 失败证据，但不单独混成 catastrophic gate。在 public prefix 上与 known mechanism 信息论不可区分的 pre-evidence cut 只评分 posterior/calibration 和后续更新，不得要求候选预知 OOD private label。候选自身用于 abstain 的 threshold 只能在 validation 上选定并写入 model seal。
+v1 冻结高置信强配指示条件：W18 **已出现冻结 public OOD evidence** 的 designated unseen-mechanism cut 上，parent 从 diagnosis posterior 精确读取 `max_known_probability >= 0.90` 且 `unknown_probability <= 0.10`。满足该条件记一次 `forced_known_high_confidence`；如同-state diagnosis/rollout 均未合法 abstain，且统一 judge 依 rollout 预测选出 oracle 定义的 catastrophic/unsafe action，则是不可补偿硬失败。不危险的高置信强配仍是 OOD/calibration 失败证据，但不单独混成 catastrophic gate。在 public prefix 上与 known mechanism 信息论不可区分的 pre-evidence cut 只评分 posterior/calibration 和后续更新，不得要求候选预知 OOD private label。
 
 ### 7.7 时间泄漏
 
@@ -812,7 +813,7 @@ v1 冻结高置信强配指示条件：W18 **已出现冻结 public OOD evidence
 - exact incremental-vs-replay hash match rate；
 - batch-vs-sequential behavioral match；
 - query-order purity；
-- informative new observation/treatment response 后，各 head 相对于 oracle 的 posterior/forecast/effect score change。
+- informative new observation/treatment response 后，`diagnose` 与 `rollout` 相对于 oracle 的 posterior/forecast/effect score change。
 
 最后一项不要求“每次都变好”，而是与 oracle 信息方向比较；无信息 observation 不应被强迫改变 state。
 
@@ -822,7 +823,7 @@ v1 冻结高置信强配指示条件：W18 **已出现冻结 public OOD evidence
 
 - 新检查：新增 observation operator 后，原 collision pair 能否局部拆开；记录模型/状态 schema migration、retrain examples、artifact delta bytes、core diff LOC、旧 benchmark 回归。
 - 新治疗：新增 action 后，旧等价类是否被检测为不再充分；若必须完全重写核心，记录 hard extensibility failure。
-- 新任务 readout：卡片先声明 `source_scope_digest`、`target_scope_digest`、`in_original_Y=true|false` 及判定依据；冻结 state encoder/updater/dynamics，仅允许用 train split 的 `(state,new_label)` 训练新 head，禁止 raw history。只有 `in_original_Y=true` 却无法从 state 读出时才证伪原 scope 充分性；范围外 readout 仅评估 refinement/migration 与扩展成本。报告 score、样本效率和 history baseline gap。
+- 新任务 readout：candidate seal 后另起独立 extension worker；卡片先声明 `source_scope_digest`、`target_scope_digest`、`in_original_Y=true|false` 及判定依据，独立封印 extension source/config/artifact。冻结 base state encoder/updater/dynamics，worker 仅允许用 train split 的 `(sealed_state,new_label)` 训练并只接收 sealed state，禁止 raw history，也不成为 base CandidateMethod。W04 或其他 primary run 已有 output bundle、字段改名或确定性重投影不得计作 novel head。只有 `in_original_Y=true` 却无法从 state 读出时才证伪原 scope 充分性；范围外 readout 仅评估 refinement/migration 与扩展成本。报告 score、样本效率和 history baseline gap。
 - 历史删除：删除冻结片段，比较 state/prediction/oracle 行为；发现真正需要的记忆与无效记忆。
 - 时间尺度：对 world manifest 冻结的 short/medium/long horizons（有临床时间单位的 world SHOULD 包含 1h/24h/7d 锨点）分开测 state bytes、误差和 collision，检查 state 是否随 horizon/task 膨胀。
 
@@ -834,7 +835,7 @@ v1 冻结高置信强配指示条件：W18 **已出现冻结 public OOD evidence
 - canonical bytes 经同一压缩器后的 bytes（仅作辅助，不能隐藏 raw）；
 - state size 对 history length 的 slope；
 - model artifact bytes 与 train FLOPs/time；
-- initialize/update/各 head 的 cold p50/p95/p99 latency；
+- initialize/update/diagnose/rollout 的 cold p50/p95/p99 latency；post-seal extension worker 单列；
 - peak RSS/GPU memory；
 - extension core diff LOC、changed files、schema migration count。
 
@@ -1006,7 +1007,8 @@ YYYYMMDDTHHMMSSZ-<candidate>-<config8>-<nonce8>
   "state_hash": "sha256:...",
   "public_input_digest": "sha256:...",
   "query_digest": "sha256:...",
-  "prediction_kind": "...",
+  "candidate_operation": "diagnose|rollout",
+  "parent_task_label": "diagnosis|forecast|counterfactual",
   "policy_alias": "...",
   "horizon": "...",
   "candidate_output": {},
@@ -1015,6 +1017,8 @@ YYYYMMDDTHHMMSSZ-<candidate>-<config8>-<nonce8>
   "worker_exit": 0
 }
 ```
+
+parent-projected OOD row 只能引用同一 `state_hash` 的 diagnose/rollout raw `record_id` 集合并记录 projection-rule digest；不得伪造第三种 candidate operation。post-seal extension output 使用独立 extension raw schema/bundle。
 
 oracle judge row 以 `record_id` 联结，但存于 parent-only 文件；候选 transcript 绝不含 oracle truth。`states.jsonl` 保存 exact canonical state bytes/base64 或 JSON 及 runner hash，以便事后验证同一状态。
 所有 `states/updates/predictions/oracle-judge/per-query/expected-cells` row MUST 都带同一 `scope_digest`；联结时发现 digest 不同必须 fail closed，不得把 `S` 与 `S'` 的输出聚合成同一 primary score。
@@ -1043,7 +1047,7 @@ oracle judge row 以 `record_id` 联结，但存于 parent-only 文件；候选 
 4. observation/action/policy/utility/time/diagnosis/output schemas 和 catalog digest；
 5. `candidate_inputs`、`trainer_targets`、`judge_oracle` 的 public/private projection 代码与 schema；
 6. family-atomic split 算法、stratum support、near-duplicate detector、`WORLD_SPLIT_MANIFEST.json`；
-7. seed derivation domain、DEV5 panel、hidden seed draw/commit/reveal protocol；
+7. DEV5 development policy，以及 TRAIN5/EVAL5 的 KDF/PRNG domain、closed tuple schema、五-panel cardinality、zipped pairing 与 precommit/commit/finalize/reveal 时序；semantic freeze 不含 raw TRAIN5/EVAL5 seed、实际 tuple、precommit/commit 值或 panel digest；
 8. `expected-cells.json`：每个 world/split/replicate/family/cut/horizon/policy/pair 的精确 required 单元；
 9. 行为 probe query/pair sets，distance/normalization scale，`epsilon_equivalent`、`delta_distinguishable`、`epsilon_candidate_same`、catastrophic margin；
 10. metrics、15-bin calibration 规则、world/cell weights、缺失处理、CI/bootstrap 单元/次数/analysis seed；
@@ -1056,20 +1060,20 @@ oracle judge row 以 `record_id` 联结，但存于 parent-only 文件；候选 
 
 canonical freeze manifest 自身 MUST 使用 UTF-8 sorted compact JSON + LF，并生成独立 `.sha256` sidecar，避免 self-hash。SHOULD 同时生成可读 `FREEZE_REPORT.md`，但 JSON/bytes 为权威。
 
-### 10.2 两阶段 seed commit/reveal
+### 10.2 TRAIN5/EVAL5 分阶段 authority chain
 
 为同时满足“先冻结 benchmark”与“不能按 hidden case 调候选”：
 
 1. **semantic freeze**：上一节 16 类制品全部定稿，生成 `benchmark_freeze_digest`；任一 PRE-FREEZE 阻断项未解决则不能进入下一步。
-2. **TRAIN5 precommit**：发布五个 training tuple/digest；所有 finalist 只能据此训练五个 artifact，不接触 EVAL5 seed。
-3. **candidate panel seal**：对至少三个不同 family finalist 的全部五个 source/config/model artifact，同时记录 dependency lock、training/validation data digest、OOD threshold、training tuple digest 和 timestamp。
+2. **TRAIN5 precommit**：在 `FROZEN-v1` 之后、任何 finalist 训练之前发布 `TRAIN5_PRECOMMIT.json`，记录五个 actual training tuple/digest；所有 finalist 只能据此训练五个 artifact，不接触 EVAL5 seed。
+3. **candidate panel seal**：对至少三个不同 family finalist 的全部五个 source/config/model artifact（至少 `3 family × 5 seals`），同时记录 dependency lock、training/validation data digest、parent OOD projection rule digest、training tuple digest 和 timestamp。
 4. **fresh EVAL5 commitment**：在最后一个 artifact seal 之后抽取 256-bit `seed` 和独立 `nonce`；首先只公布 `SHA256("UCM-CONFIRM5-v1\0" || seed || nonce)`、抽取程序 digest 和 timestamp。
 5. **generate once and seal corpus**：用冻结 generator 生成共同 W01–W20 hidden EVAL5 corpus、opaque aliases/顺序、paired probes 和 `expected-cells`；对 candidate-view corpus 与 judge-only oracle 分别记录 exact digest，不公布 raw private bytes。
 6. **isolated paired execution**：按冻结的一一配对运行所有 finalist；候选只见 public projection，judge 持有 hidden oracle；失败候选不得换 artifact/seed 或重生成 corpus。
 7. **finalize before reveal**：raw 完整性、checksum、全部 artifact seal 和 corpus digest 校验完成；每个 run 先标记 finalized/incomplete，不允许看到 oracle 后补跑 required cell。
 8. **reveal and replay**：公布 EVAL5 seed/nonce/generator/oracle digest，验证 commitment，并在 clean checkout 重建 exact corpus/summary。
 
-上述状态转移 MUST 用不可覆盖制品记录：`FREEZE_MANIFEST.json`、`CANDIDATE_SEALS.jsonl`、`CONFIRM5_COMMIT.json`、`SEALED_CORPUS_MANIFEST.json`、`CONFIRM5_FINALIZATION.json`、`CONFIRM5_REVEAL.json`。后一制品必须引用前一制品 digest 形成 hash chain。`SEALED_CORPUS_MANIFEST` 公开时只包含 candidate-view/judge-only corpus digest、cell count 和 commitment，不含可逆推 hidden seed 或 private oracle rows。
+上述状态转移 MUST 用不可覆盖制品记录：`FREEZE_MANIFEST.json`、`TRAIN5_PRECOMMIT.json`、`CANDIDATE_SEALS.jsonl`、`CONFIRM5_COMMIT.json`、`SEALED_CORPUS_MANIFEST.json`、`CONFIRM5_FINALIZATION.json`、`CONFIRM5_REVEAL.json`。后一制品必须引用前一制品 digest，形成 `freeze → TRAIN5_PRECOMMIT.json → 至少 3 family × 5 candidate seals → EVAL5 commit → corpus seal → finalization → reveal` 的 hash chain；isolated execution 发生在 corpus seal 与 finalization 之间，但不改变 authority 顺序。`SEALED_CORPUS_MANIFEST` 公开时只包含 candidate-view/judge-only corpus digest、cell count 和 commitment，不含可逆推 hidden seed 或 private oracle rows。
 
 同一比较中的候选必须跑同一个 hidden corpus。hidden reveal 后修改候选会创建 `run_class=post_test_tuned`，不能替代 primary sealed result。独立复现 MUST 使用 source-distinct 实现 seal 和独立 `REPRO5-v1` fresh seed commitment，不得复用 CONFIRM5 已公布样本冒充 blind reproduction。
 
@@ -1089,7 +1093,7 @@ freeze 只有在以下自动测试通过后有效：
 - `expected-cells.json` 与实际 raw 记录 exact 对应，崩溃/超时也有占位 raw outcome；
 - result raw -> per-query -> per-episode/family -> per-world/replicate -> aggregate/CI 可由独立 rebuilder 重建；
 - four-baseline waiver registry 只豁免指定类，wrapper/普通候选无法继承；
-- candidate seal→hidden commitment→corpus seal→finalize→reveal 时序有可核 timestamp/digest 链；
+- semantic freeze→`TRAIN5_PRECOMMIT.json`（FROZEN 后、训练前）→至少 3 family×5 candidate seals→EVAL5 commitment→corpus seal→finalize→reveal 时序有可核 timestamp/digest 链；
 - exact manifest/sidecar/replay 在 clean checkout 通过。
 
 若 semantics 已冻结但某隐藏 case 不可执行或 mutation 未被杀，结论必须拆开：候选假说是否失败与 harness 是否完整是两条证据链，不能用绿色 checksum 把 `HARNESS_INCOMPLETE` 说成候选通过。
@@ -1110,7 +1114,7 @@ freeze 只有在以下自动测试通过后有效：
 4. 对 W01/W02/W04/W08/W15/W18/W19/W20 建 vertical slice：初始化→同 state 多 head→A/B/no-op→真实 action/response update→new state。
 5. 扩到 W01–W20，生成 train/validation/private-test split、probe pair/query set、utility、margins 与 exact expected cells。
 6. 跑 clean-checkout replay、manifest/checksum、split leakage audit、raw-to-aggregate/CI rebuild；只有此后才生成 benchmark v1 semantic freeze。
-7. 候选开发只能消费 public train/validation API；至少三个不同 family finalist 同时 seal 后，共同 hidden CONFIRM5 test 才一次生成和运行。
+7. semantic freeze 获得 code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再允许候选按该 panel 训练；至少三个不同 family finalist 各五个 artifact seal 后才做 EVAL5 commitment、一次生成共同 hidden CONFIRM5 corpus并运行。
 
 ## 12. PRE-FREEZE 阻断项
 
@@ -1157,7 +1161,7 @@ W18 高置信强配指示阈值已由第 7.6 节固定为 `max_known>=0.90` 且 
   "action_semantics": "PASS|FAIL|INCOMPLETE",
   "online_update_lineage": "PASS|FAIL|INCOMPLETE",
   "dangerous_collision_gate": "PASS|FAIL|INCOMPLETE",
-  "ood_gate": "PASS|FAIL|INCOMPLETE",
+  "parent_projected_ood_gate": "PASS|FAIL|INCOMPLETE",
   "mutation_kill_matrix": "PASS|FAIL|INCOMPLETE",
   "reproducibility": "PASS|FAIL|INCOMPLETE",
   "waiver_code": null,

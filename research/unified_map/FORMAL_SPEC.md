@@ -23,7 +23,7 @@
 候选可以学习一个跨患者只读模型制品：
 
 ```text
-M = 训练后冻结的全局参数、结构、head 参数与 catalog
+M = 训练后冻结的全局参数、结构、diagnose/rollout 参数与 catalog
 ```
 
 单个患者截至 cut 的唯一可持续对象是：
@@ -75,7 +75,7 @@ PublicEvent = ObservationAvailable
 
 1. `initialize` MAY 读取初始 cut 的全部 `H_s^pub`。
 2. 初始化后，`update` 只能读取旧 `Z`、本次新可见 delta、显式 `advance_to` 和显式 seed。
-3. `diagnose`、`rollout`、`ood` 与 novel readout MUST NOT 读取 `H_s^pub`、患者文件、episode cache 或另一份患者表示。
+3. base candidate 的 `diagnose`、`rollout` MUST NOT 读取 `H_s^pub`、患者文件、episode cache 或另一份患者表示。OOD 由 parent 对同一 state 的这两类输出做 exact projection，不存在 `ood` candidate RPC；novel readout 只能由 candidate seal 后的独立 extension worker 读取 sealed state，仍不得读取历史。
 4. query MUST NOT 预先告知 state producer 随后会问哪个任务、世界、动作或读出。
 5. full-history baseline MAY 把 `H_s^pub` 明文保存为状态，但必须声明 `full_history_baseline` 并照常计算长度、内存与时间增长；其他候选不得把 raw history 或其可逆压缩伪装成紧凑状态。
 
@@ -100,6 +100,8 @@ S = (P, O, A, Q, Pi, Tau, Gamma, Y, U, D, R)
 - `U`：固定 benchmark utility/价值函数集合；
 - `D`：比较概率分布与行为的距离；
 - `R`：训练数据、资源、隔离和识别假设。
+
+`S` 只冻结语义闭包和执行协议。`R` 可以绑定 TRAIN5/EVAL5 的 closed schema、各五个 replicate、zipped pairing 和时序，但 MUST NOT 包含 raw seed、实际 tuple、`TRAIN5_PRECOMMIT.json`/EVAL5 commitment 值或 panel digest；这些只能在 code-owned semantic freeze 之后进入运行 authority chain。
 
 所有结果 MUST 引用 `scope_id` 或其 digest。脱离 `S` 的“这是充分/最小/统一状态”是无效声明。
 
@@ -157,7 +159,7 @@ declared_state_class
 
 canonical bytes 与 `state_hash` 由 runner 计算，候选不能自报后要求信任。确切 canonicalization 和 domain separator 将随 benchmark v1 冻结；本草案不宣称其已冻结。
 
-同一 cut 的 diagnosis、no-op、continue、stop、A/B/C rollout、OOD 与 novel readout 必须由 runner 实际传入**同一份 exact state bytes**，并在外层 transcript 记录同一 `consumed_state_hash`。hash 只证明 operational identity，不证明语义充分或最小。
+同一 cut 的 diagnosis、no-op、continue、stop、A/B/C rollout 必须由 runner 实际传入**同一份 exact state bytes**，并在外层 transcript 记录同一 `consumed_state_hash`。OOD 是 parent 对这些同-state diagnose+rollout rows 的冻结 exact projection，不发起额外 candidate call；novel readout 则在 candidate seal 后由独立封印的 extension worker 读取该 sealed state。hash 只证明 operational identity，不证明语义充分或最小。
 
 ### 4.4 operational closure 与 semantic unity
 
@@ -173,7 +175,7 @@ canonical bytes 与 `state_hash` 由 runner 计算，候选不能自报后要求
 3. natural 与 treatment 使用同一 controlled transition core；
 4. 没有 task-exclusive persistent store、checkpoint slot 或 history re-encoder；
 5. 同一 informative update 后，所有读出都从新 `Z` 重新计算；
-6. state component audit、history deletion、novel readout 和 collision evidence 不支持 task multiplexing 或隐藏完整历史。
+6. state component audit、history deletion、post-seal independent extension-worker novel readout 和 collision evidence 不支持 task multiplexing 或隐藏完整历史；W04/base 已有 output bundle 的字段、改名或确定性重投影不计 novel-readout evidence。
 
 有限黑箱 I/O 测试不能证明 opaque payload 内部不存在三块 latent。无法审计时，最高只能标 `operationally_closed_shared_state`，`semantic_unity=INCOMPLETE`。
 
@@ -365,11 +367,12 @@ risk_gap_S(h,h') = sup_(pi in Pi)
 |---|---|---|
 | trainer | public train stream、允许的 validation、catalog、训练 seed | hidden test、oracle truth、future、finalist test seed |
 | state-worker | 只读 `M`、初始 public history或 `Z+delta`、scope、显式 seed | task kind、future query set、history outside cut、judge files |
-| head-worker | 只读 `M`、同一 exact `Z`、非患者 query、显式 seed | raw history、simulator、oracle、patient cache、其他患者 |
+| head-worker | 只读 `M`、同一 exact `Z`、非患者 query、显式 seed；仅执行 `diagnose/rollout` | raw history、simulator、oracle、patient cache、其他患者、`ood/readout` RPC |
+| extension-worker | candidate seal 后只读 sealed `M/Z`、独立 extension artifact、non-patient query、显式 seed | raw history、base encoder/updater mutation、candidate-private cache；不得把 W04/base 已有 bundle 当 novel target |
 | judge | hidden state、oracle、utility、test metadata、candidate output | 不受候选调用或修改 |
-| runner | 调度、sandbox、hash、lineage、audit、append-only result | 不把 private judge data投影给候选 |
+| runner | 调度、sandbox、hash、lineage、audit、append-only result；从同-state diagnose+rollout rows 投影 OOD | 不把 private judge data投影给候选 |
 
-最强结构检查是 cross-process state closure：产生 `Z` 的 worker 销毁后，删除 episode 临时目录；各 readout 与后续 update 在 fresh process 中只凭允许输入完成。
+base patient runtime surface 始终且仅为 `initialize/update/diagnose/rollout`。最强结构检查是 cross-process state closure：产生 `Z` 的 worker 销毁后，删除 episode 临时目录；base `diagnose/rollout`、post-seal extension worker 与后续 update 分别在 fresh process 中只凭允许输入完成。
 
 native/GPU 候选若只经过 CPython audit hook，必须如实记录较低 isolation assurance。隔离证据不足是 `INCOMPLETE`，不是候选自动 PASS。
 
@@ -473,7 +476,7 @@ INCOMPLETE harness、隔离或证据不足，不能据此判 PASS
   "action_semantics": "PASS|FAIL|INCOMPLETE",
   "online_update_lineage": "PASS|FAIL|INCOMPLETE",
   "dangerous_collision_gate": "PASS|FAIL|INCOMPLETE",
-  "ood_gate": "PASS|FAIL|INCOMPLETE",
+  "parent_projected_ood_gate": "PASS|FAIL|INCOMPLETE",
   "reproducibility": "PASS|FAIL|INCOMPLETE",
   "eligible_for_pareto": false,
   "failure_codes": [],
