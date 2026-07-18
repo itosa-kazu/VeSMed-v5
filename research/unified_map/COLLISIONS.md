@@ -65,7 +65,7 @@ decision: keep | refine | abandon | harness_bug
 
 ## Entries
 
-### W20-evidence-count-false-split — PRE-FREEZE upper-bound finding
+### W20-evidence-count-false-split — PRE-FREEZE finding, repaired
 
 ```text
 pair_id: W20-evidence-count-false-split
@@ -94,3 +94,24 @@ decision: refine; quotient/remove the counter and rerun before any minimal-state
 This finding remains `PRE-FREEZE`, `upper_bound_only`, `NOT_COUNT_ELIGIBLE` and
 `ledger_credit=0`. It does not open B01, count as an architecture experiment or
 support candidate performance.
+
+Repair evidence (仍为 PRE-FREEZE、零 credit)：
+
+```text
+run_id: 20260718-twenty-world-upper-bound-suite/W20
+machine_evidence: results/unified_map/pre_freeze/20260718-twenty-world-upper-bound-suite/members/W20.json
+suite_root: sha256:b2dafe80b6464edfb38b1e5369c9fd9381db98ad699f53904c316290e9673834
+W20_member_root: sha256:39405d07bced6378e1b974a73d85af8a76e0c0f0e07def38e2e4f1111a4105fa
+raw evidence_count: 5 versus 6
+state_hash_a = state_hash_b:
+  sha256:8d60f4af66542c5f2e6f94c1dd420776919fdcd67150e12ee319f237a1fe03d9
+full policy witness: 9/9 horizon-4 policy semantics exact-equal
+classification: false_split=false; dangerous_collision=false
+repair: raw history/count retained as audit provenance, excluded from behavior state identity
+minimal_quotient_claimed: false
+remaining blocker: minimal-behavioral-quotient-not-proved
+```
+
+Disposition: the specific counter-induced false split is closed. The historical
+entry above is retained as the falsifier that forced the repair; it must not be
+rewritten into evidence that the whole W20 quotient is minimal.

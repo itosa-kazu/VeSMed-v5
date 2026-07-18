@@ -1115,3 +1115,62 @@ remaining authority and extractor work, but do not expand sideways into
 candidate families before benchmark freeze.  Keep the W20 false split open and
 `minimal_quotient_claimed=false` until the behavior-inert counter is quotiented
 out and the full policy panel is replayed.
+
+## 2026-07-18 — Twenty-world upper-bound execution suite
+
+### Outcome
+
+The patient-bound PRE-FREEZE upper-bound execution layer now covers all W01--W20
+world adapters and all 21 registry panels. W15A and W15B remain separate panel
+identities. This closes executable upper-bound coverage only; it does not close
+the formal scope, expected-cell corpus, split/strata authority or freeze chain.
+
+W20's known behavior-inert `evidence_count` false split was repaired. Raw
+history/count remain in independent provenance, while the sealed behavior state
+contains only the public posterior/exposure statistics used by the frozen
+horizon-4 policy semantics. The repaired pair has different histories and raw
+counts 5/6 but the same state hash and exact-equal semantics for all 9 policies.
+`minimal_quotient_claimed=false` remains mandatory.
+
+### Clean committed evidence
+
+The artifact was generated and then live-verified in an isolated detached
+worktree at committed revision `51a9a95`; unrelated PRE-FREEZE scope/metric
+drafts in the main worktree were not imported.
+
+```text
+artifact: results/unified_map/pre_freeze/20260718-twenty-world-upper-bound-suite/
+suite file sha256: 882ec9455bb7803b5a223136969559e07ac1e21cf77aa103fb649b2c57e83922
+suite root: sha256:b2dafe80b6464edfb38b1e5369c9fd9381db98ad699f53904c316290e9673834
+member-set root: sha256:7f55200ffdb6fd7f8c994a9bf986a573e419e2315bb04cd52e1dc1bc7da4a52a
+members/worlds/panels: 20/20/21
+cells/state bindings: 94/43
+member files: 20 exact canonical WXX.json files
+total artifact files/bytes: 21 / 1,038,791
+status: VALID_PRE_FREEZE_TWENTY_WORLD_TWENTY_ONE_PANEL_SANITY_INDEX
+candidate performance claimed: false
+formal benchmark coverage claimed: false
+formal freeze authority: false
+ucm eligible: false
+ledger credit: 0
+```
+
+### Verification
+
+```text
+W03--W14 focused regression: 75 passed
+W16/W17 + W20 focused regression: 30 passed
+full suite integration: 7 passed in 227.71s
+clean committed materialization: passed
+clean committed verify-only + exact member directory: passed in 159.2s
+W20 repaired pair: raw counts 5/6, same state hash, 9/9 policy semantics equal
+member tree tamper: one extra byte rejected; one extra file rejected
+```
+
+### Evidence boundary and next step
+
+The suite remains privileged, heterogeneous, `upper_bound_only`,
+`NOT_COUNT_ELIGIBLE` and zero-credit. It is not a candidate, formal B01,
+expected-cell corpus or benchmark freeze. The next dependency-respecting work is
+the typed 11-axis scope plus panel/split/strata authority and metric semantics;
+the suite must not be used to bypass those gates or start candidate experiments.

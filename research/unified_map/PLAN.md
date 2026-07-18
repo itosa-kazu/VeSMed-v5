@@ -104,17 +104,18 @@ receipts、mutation raw-preimage custody 与 atomic run-store publication、
 collector-owned extractors、external custody 和 clean freeze replay 尚未齐全。
 `UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 均保持有效。
 
-八个 patient-bound upper-bound evaluator（W01/W02/W04/W08/W15/W18/W19/W20）
-现已汇入一个 live-replay suite：共 58 个 per-world cells、27 个 state bindings。
-它只覆盖 8/20 worlds，且各 world 保留异质 estimand；因此只是 privileged
-upper-bound/evidence machinery，不是 expected-cell corpus、候选、正式 B01 或
-freeze authority。候选/架构信用仍为 0，实验账本仍为 0/30。
+二十个 patient-bound upper-bound evaluator 现已汇入一个 fresh-process
+live-replay suite：20 个 world members、21 个独立 panels（W15A/W15B 分开）、
+94 个 per-world cells、43 个 state bindings。它完成的是 privileged upper-bound
+执行覆盖；各 world 仍保留异质 estimand，因此不是 expected-cell corpus、候选、
+正式 B01 或 freeze authority。候选/架构信用仍为 0，实验账本仍为 0/30。
 
 最近一次只读 freeze dependency gap map（不是 freeze artifact）仍显示 16/16
 axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus pins
-未建立。W20 evaluator 还保留一个真实负结果：行为无关的 `evidence_count`
-进入 state hash，令 oracle-equivalent histories 发生 false split；在修复并重跑前
-不得声称 minimal behavioral quotient。
+未建立。W20 已把行为无关的 raw `evidence_count` 与 history provenance 移出
+sealed state identity：count 为 5/6 的 pair 现在同 state hash，且 9/9 个
+horizon-4 policy semantics exact-equal。该已知 false split 已修复，但完整
+minimal behavioral quotient 仍未证明，`minimal_quotient_claimed=false` 保持不变。
 
 交付：
 
@@ -242,18 +243,18 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 ## 9. 当前下一批动作
 
-1. 八世界 patient-bound upper-bound suite 已闭合：W01/W02/W04/W08/W15/W18/
-   W19/W20 共 58 cells、27 state bindings，全部由各自 collector live replay；
-   其余 12 worlds 未覆盖。该 suite 固定为 `PRE-FREEZE + upper_bound_only +
+1. 二十世界 patient-bound upper-bound suite 已闭合：20 worlds、21 panels、
+   94 cells、43 state bindings，全部由各自 collector fresh-process live replay。
+   该 suite 固定为 `PRE-FREEZE + upper_bound_only +
    NOT_COUNT_ELIGIBLE + ledger_credit=0`，不得进入 candidate headline、gate、
    实验账本或 freeze 结论。
-2. 保留并修复 W20 的 `evidence_count` false split：当前合法 Q1 证据把 count 从
-   5 变为 6，却不改变 posterior、exposure 或全部 9 个 horizon-4 policy semantics。
-   在 state quotient 修复并重新验证前，明确保持 `minimal_quotient_claimed=false`。
+2. W20 已完成已知 `evidence_count` quotient 修复并重放；继续保留
+   `minimal_quotient_claimed=false`，下一步只通过新增行为等价反例扩大证明范围，
+   不把单个 repaired pair 升格为全局 minimality 结论。
 3. 从 clean committed revision 物化不含 raw seed/panel digest 的正式 `SCOPE_MANIFEST.json`，再完成 21 个
    patient panel 的 pre-split family authority 与 dual-channel stratum authority；
    随后补 W16/W17 extension authority、corpus pins 和 authority-bound exact
-   expected cells。不得用八世界 suite 代替这些 authority roots。
+   expected cells。不得用二十世界 upper-bound suite 代替这些 authority roots。
 4. 补完 26/26 malicious mutants、4/4 specificity controls、C01–C33 decisive
    coverage 与 mutation raw-preimage custody；crash、timeout 或错误 gate 不得算
    kill。只读 gap snapshot 的当前实证仅为 18/26、4/4、14/33。

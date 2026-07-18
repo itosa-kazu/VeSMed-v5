@@ -1594,7 +1594,11 @@ Q0=`x+N(0,.05^2)`立即；Q1=`r+N(0,.08^2)`delay1,cost.08。允许A1/A2 single/c
 不匹配实际执行路径，现不再作为 W20 实现声明。PRE-FREEZE upper-bound slice
 把 public posterior mean/variance 与 `r` round 到 12 位，只支持当前
 policy-conditioned marginal moments 与 expected-utility sanity；尚未证明 joint
-temporal law、proper calibration 或 minimal quotient。
+temporal law、proper calibration 或 minimal quotient。当前 evaluator 已将 raw
+history digest 与 `evidence_count` 留在独立 provenance，而不纳入 sealed behavior
+state identity；合法额外 Q1 令 raw count 从 5 变 6 时，posterior、exposure、
+state hash 与全部 9 个 horizon-4 policy semantics 均保持相同。这只关闭已知
+counter false split，不构成完整 minimal quotient 证明。
 
 ```text
 U=-sum gamma^(j-1)*(x_j^2+.06*dose_j^2+.08*Q1); gamma=.97
