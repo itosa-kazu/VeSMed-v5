@@ -14,6 +14,7 @@ from prototype.unified_map.oracle_certification import (
     OracleProbe,
     PathTolerance,
     PrivateSwapProbe,
+    SourceSeparationPolicy,
     certify_oracle_pair,
     compare_canonical_outputs,
 )
@@ -42,6 +43,14 @@ CATALOG = PublicCatalog(
     horizons=(2,),
 )
 PLAN = ActionPlan(PlanKind.NO_NEW_ACTION)
+
+
+def test_default_source_policy_waives_only_the_exact_stdlib_regex_compiler() -> None:
+    policy = SourceSeparationPolicy()
+
+    assert ("re", "_compile") in policy.allowed_shared_frames
+    assert policy.module_is_neutral("re") is False
+    assert ("re", "sub") not in policy.allowed_shared_frames
 
 
 # A malicious benchmark author could otherwise hide one substantive solver in

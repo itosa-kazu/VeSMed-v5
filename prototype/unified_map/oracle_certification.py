@@ -206,6 +206,11 @@ class SourceSeparationPolicy:
         ),
         ("prototype.unified_map.schema", "ActionPlan.__post_init__"),
         ("prototype.unified_map.schema", "ActionPlan.to_wire"),
+        # CPython 3.12 may lazily compile a regular expression while the
+        # runtime observer is active.  This exact stdlib cache/compiler frame
+        # is neutral plumbing; do not waive the whole ``re`` module because a
+        # world-specific regex parser could otherwise hide substantive work.
+        ("re", "_compile"),
     )
     allowed_shared_code_digests: tuple[str, ...] = ()
     require_source_text: bool = True
