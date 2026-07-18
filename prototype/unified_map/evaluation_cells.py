@@ -53,6 +53,7 @@ from .evaluator import (
     RawPairRecord,
     W19SafetyDeclaration,
 )
+from .scope_manifest import parse_scope_manifest_bytes, scope_digest_from_bytes
 from .world_registry import WORLD_REGISTRY, registry_digest
 
 
@@ -1727,26 +1728,40 @@ def _load_authority_roots(
         ),
     ):
         try:
-            actual = digest_bytes(path.read_bytes())
+            payload = path.read_bytes()
         except OSError as exc:
             blockers.append(
                 _block(label, f"artifact is unavailable: {type(exc).__name__}: {exc}")
             )
             continue
+        actual = digest_bytes(payload)
         if actual != expected:
             blockers.append(_block(label, "artifact digest contradicts contract"))
         if locked is None or expected != locked:
             blockers.append(_block(label, "artifact is not bound by the code-owned lock"))
+
+        if label == "authoritative scope manifest":
+            try:
+                manifest = parse_scope_manifest_bytes(payload)
+                live_scope_digest = scope_digest_from_bytes(payload)
+            except ProtocolViolation as exc:
+                blockers.append(_block(label, f"artifact is invalid: {exc}"))
+                continue
+            if manifest.benchmark_id != contract.benchmark_id:
+                blockers.append(
+                    _block(label, "artifact benchmark_id contradicts contract")
+                )
+            if live_scope_digest != contract.scope_digest:
+                blockers.append(
+                    _block(label, "live scope digest contradicts contract")
+                )
+            continue
+
         value, problem = _read_canonical_object(path)
         if problem is not None or value is None:
             blockers.append(_block(label, problem or "artifact is invalid"))
             continue
-        required_schema = (
-            "ucm-scope-manifest/1"
-            if label == "authoritative scope manifest"
-            else "ucm-expected-raw-roots/1"
-        )
-        if value.get("schema_version") != required_schema:
+        if value.get("schema_version") != "ucm-expected-raw-roots/1":
             blockers.append(_block(label, "artifact schema is not freeze-authoritative"))
         if value.get("scope_digest") != contract.scope_digest:
             blockers.append(_block(label, "artifact scope_digest contradicts contract"))
@@ -2155,9 +2170,7 @@ def _load_shard(
         if type(case_key) is not str or not case_key:
             blockers.append(_block(shard.shard_id, "judge row lacks a family case_key"))
         try:
-            source_family_digest = _digest(
-                judge.get("family_digest"), "judge family_digest"
-            )
+            _digest(judge.get("family_digest"), "judge family_digest")
         except ProtocolViolation:
             blockers.append(
                 _block(

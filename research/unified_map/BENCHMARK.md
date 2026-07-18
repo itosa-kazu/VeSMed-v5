@@ -195,10 +195,16 @@ S = (P, O, A, Q, Pi, Tau, Gamma, Y, U, D, R)
 冻结为 closed-schema `SCOPE_MANIFEST.json`：`P` 是人群/宿主/机制 support，`O` 是观察与缺失/可用过程，`A` 是生理/治疗 action，`Q` 是检查，`Pi` 是有限开环/自适应 policy 集，`Tau` 是 horizons，`Gamma` 是行为相关诊断粒度，`Y` 是必须保留的未来观察/事件/结局闭包，`U` 是 utilities，`D` 是距离/指标，`R` 是数据、资源、隔离和识别假设。
 
 ```text
-scope_digest = SHA256(
-  "UCM_SCOPE_V1\0" || canonical_json(SCOPE_MANIFEST.json)
-)
+exact_canonical_manifest_bytes = canonical UTF-8 JSON bytes || "\n"
+scope_manifest_digest = SHA256(exact_canonical_manifest_bytes)
+scope_digest = SHA256(b"UCM_SCOPE_V1\0" || exact_canonical_manifest_bytes)
 ```
+
+`SCOPE_MANIFEST.json` MUST 使用 closed schema，并且 MUST NOT 在文件内嵌入其自身的
+`scope_digest`。`exact_canonical_manifest_bytes` 是该文件的完整 exact bytes：canonical
+UTF-8 JSON 后恰有一个终止 LF，LF 后不得再有其他 bytes。`scope_manifest_digest` 是对这些
+exact bytes 的普通 SHA-256；`scope_digest` 则是 domain bytes 与这些 exact bytes 的直接拼接
+hash，不得用会对各 part 加长度前缀的 `domain_digest` 或等价 helper 代替。
 
 `scope_digest` MUST 进入 StateEnvelope 及 state hash domain、CandidateManifest、run manifest、每条 raw prediction/update/state row、`expected-cells.json`、world/split manifest 和最终结论。catalog digest 只是 `O/A/Q` 的部分快照，不能替代 scope digest。
 

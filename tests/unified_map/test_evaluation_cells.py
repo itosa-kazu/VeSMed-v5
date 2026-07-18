@@ -46,6 +46,7 @@ from prototype.unified_map.evaluator import (
     evaluate_records,
 )
 from prototype.unified_map.metrics import InformationRelation, PairProbe
+from prototype.unified_map.scope_manifest import SCOPE_AXES, scope_digest_from_bytes
 from prototype.unified_map.world_registry import (
     WORLD_REGISTRY,
     materialize_world_split,
@@ -54,7 +55,27 @@ from prototype.unified_map.world_registry import (
 from prototype.unified_map.worlds.base import WorldSplit
 
 
-SCOPE = digest_json({"scope": "expected-cells-local-scaffold"})
+_SCOPE_WIRE = {
+    "schema_version": "ucm-scope-manifest/1",
+    "benchmark_id": "UCM-LOCAL-FIXTURE",
+    "scope_id": "expected-cells-local-scaffold",
+    "axes": {
+        axis: {
+            "declarations": [
+                {
+                    "declaration_id": "fixture",
+                    "value": {
+                        "axis": axis,
+                        "purpose": "expected-cells-local-scaffold",
+                    },
+                }
+            ]
+        }
+        for axis in SCOPE_AXES
+    },
+}
+_SCOPE_PAYLOAD = canonical_json_bytes(_SCOPE_WIRE)
+SCOPE = scope_digest_from_bytes(_SCOPE_PAYLOAD)
 EMPTY = digest_json({})
 THRESHOLDS = PairThresholds(0.01, 0.4, 0.4, 0.01, 10.0)
 DEFAULT_CODE_LOCK = cells_module.BENCHMARK_V1_COVERAGE_LOCK
@@ -382,9 +403,7 @@ def _freeze_fixture_authority(
     )
 
     scope_path = authority_dir / "scope.json"
-    scope_payload = canonical_json_bytes(
-        {"schema_version": "ucm-scope-manifest/1", "scope_digest": SCOPE}
-    )
+    scope_payload = _SCOPE_PAYLOAD
     scope_path.write_bytes(scope_payload)
     scope_manifest_digest = digest_bytes(scope_payload)
     raw_roots_path = authority_dir / "raw-roots.json"
@@ -1107,6 +1126,53 @@ def test_builtin_v1_lock_is_unready_and_single_w01_cannot_claim_complete(
     assert result.manifest is None
     assert any("lock is not frozen" in item.detail for item in result.blockers)
     assert any("required locked shard is missing" in item.detail for item in result.blockers)
+
+
+def test_self_reported_scope_digest_cannot_replace_typed_scope_authority(
+    tmp_path: Path,
+) -> None:
+    shard, rows = _write_shard(
+        tmp_path,
+        "w01-self-reported-scope",
+        "W01",
+        "primary",
+        EvaluationSplit.VALIDATION,
+        (EvaluationTask.DIAGNOSIS,),
+    )
+    queries = _queries(shard, rows, EvaluationTask.DIAGNOSIS)
+    authority = _freeze_fixture_authority(tmp_path, (shard,), queries)
+
+    # Recreate the legacy circular artifact, then update both its ordinary file
+    # digest and the code-owned lock.  All caller-visible digest joins are now
+    # internally consistent; only exact typed parsing can reject the bypass.
+    legacy_payload = canonical_json_bytes(
+        {"schema_version": "ucm-scope-manifest/1", "scope_digest": SCOPE}
+    )
+    authority.roots.scope_manifest_path.write_bytes(legacy_payload)
+    legacy_manifest_digest = digest_bytes(legacy_payload)
+    forged_roots = replace(
+        authority.roots, scope_manifest_digest=legacy_manifest_digest
+    )
+    forged_lock = replace(
+        authority.lock, scope_manifest_digest=legacy_manifest_digest
+    )
+    cells_module.BENCHMARK_V1_COVERAGE_LOCK = forged_lock
+    forged_authority = replace(
+        authority,
+        roots=forged_roots,
+        lock=forged_lock,
+    )
+    contract = _contract(forged_authority, queries)
+    assert contract.coverage_lock_digest == forged_lock.digest
+
+    result = build_expected_cells(contract)
+    assert result.status is CellMaterializationStatus.INCOMPLETE
+    assert result.manifest is None
+    assert any(
+        item.artifact == "authoritative scope manifest"
+        and "artifact is invalid" in item.detail
+        for item in result.blockers
+    )
 
 
 def test_random_per_row_family_and_self_consistent_receipt_cannot_replace_frozen_source(
