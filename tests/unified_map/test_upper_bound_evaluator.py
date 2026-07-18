@@ -21,6 +21,7 @@ from prototype.unified_map.state import (
 )
 from prototype.unified_map.upper_bound_evaluator import (
     STATUS_CHAIN,
+    _oracle_comparison,
     compute_upper_bound_bundle_root,
     run_w01_upper_bound_sanity,
     verify_w01_upper_bound_sanity,
@@ -301,6 +302,102 @@ def test_head_and_update_lineage_tamper_fails_after_roots_are_recomputed(
     _resign(update_tamper, cells_changed=True)
     with pytest.raises(ProtocolViolation, match="state lineage is not closed"):
         verify_w01_upper_bound_sanity(update_tamper)
+
+
+def test_self_consistent_extra_state_representation_field_fails_fresh_rebuild(
+    w01_bundle: dict,
+) -> None:
+    tampered = deepcopy(w01_bundle)
+    states = tampered["states"]
+    initial = states["initial"]
+    initial["payload"]["representation"]["uncommitted_extra_field"] = 0.0
+    initial["record"]["payload_size_bytes"] = len(
+        canonical_json_bytes(initial["payload"]["representation"])
+    )
+    new_hash = _stable_state_hash(initial)
+    initial["record"]["state_hash"] = new_hash
+    initial["record"]["state_id"] = "ucm-state:" + new_hash[7:23]
+    states["updated"]["record"]["parent_state_hash"] = new_hash
+
+    cells = _cells_by_id(tampered)
+    for cell_id in (
+        "W01.initial.diagnosis",
+        "W01.initial.natural_forecast",
+    ):
+        cells[cell_id]["state_hash"] = new_hash
+        cells[cell_id]["candidate_head"]["execution"]["consumed_state_hash"] = (
+            new_hash
+        )
+    intervention = cells["W01.initial.intervention"]
+    intervention["state_hash"] = new_hash
+    for head in intervention["candidate_heads"].values():
+        head["execution"]["consumed_state_hash"] = new_hash
+    update = cells["W01.update"]
+    update["prior_state_hash"] = new_hash
+    update["parent_state_hash"] = new_hash
+    _resign(tampered, cells_changed=True)
+
+    with pytest.raises(ProtocolViolation, match="fresh runtime reconstruction"):
+        verify_w01_upper_bound_sanity(tampered)
+
+
+def test_self_consistent_head_metadata_drift_fails_fresh_rebuild(
+    w01_bundle: dict,
+) -> None:
+    tampered = deepcopy(w01_bundle)
+    diagnosis = _cells_by_id(tampered)["W01.initial.diagnosis"]
+    diagnosis["candidate_head"]["execution"]["response"]["result"]["metadata"][
+        "baseline_id"
+    ] = "B01-rewritten"
+    _resign(tampered, cells_changed=True)
+
+    with pytest.raises(ProtocolViolation, match="fresh runtime reconstruction"):
+        verify_w01_upper_bound_sanity(tampered)
+
+
+def test_self_consistent_factual_delta_drift_fails_fresh_rebuild(
+    w01_bundle: dict,
+) -> None:
+    tampered = deepcopy(w01_bundle)
+    update = _cells_by_id(tampered)["W01.update"]
+    update["delta"]["events"][0]["payload"]["value"] += 0.125
+    rewritten_digest = digest_json(update["delta"])
+    update["delta_digest"] = rewritten_digest
+    tampered["states"]["updated"]["record"]["delta_digest"] = rewritten_digest
+    _resign(tampered, cells_changed=True)
+
+    with pytest.raises(ProtocolViolation, match="fresh runtime reconstruction"):
+        verify_w01_upper_bound_sanity(tampered)
+
+
+def test_synchronized_production_reference_oracle_drift_fails_fresh_rebuild(
+    w01_bundle: dict,
+) -> None:
+    tampered = deepcopy(w01_bundle)
+    cells = _cells_by_id(tampered)
+    forecast = cells["W01.initial.natural_forecast"]
+    for field in ("production_oracle", "reference_oracle"):
+        forecast[field]["latent_distribution"]["steps"][0]["covariance"][0][
+            0
+        ] += 1e-9
+    forecast["oracle_comparison"] = _oracle_comparison(
+        forecast["production_oracle"], forecast["reference_oracle"]
+    )
+
+    intervention = cells["W01.initial.intervention"]
+    intervention["production_oracles"]["no_new_action"] = deepcopy(
+        forecast["production_oracle"]
+    )
+    intervention["reference_oracles"]["no_new_action"] = deepcopy(
+        forecast["reference_oracle"]
+    )
+    intervention["oracle_comparisons"]["no_new_action"] = deepcopy(
+        forecast["oracle_comparison"]
+    )
+    _resign(tampered, cells_changed=True)
+
+    with pytest.raises(ProtocolViolation, match="fresh runtime reconstruction"):
+        verify_w01_upper_bound_sanity(tampered)
 
 
 def test_cli_writes_canonical_bundle_once_and_refuses_overwrite(

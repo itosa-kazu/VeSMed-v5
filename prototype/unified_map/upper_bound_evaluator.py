@@ -66,6 +66,7 @@ STATUS_CHAIN = {
 DEFAULT_W01_ARTIFACT = Path(
     "results/unified_map/pre_freeze/20260717-w01-true-state-probe/vertical-slice.json"
 )
+_REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _closed(value: object, keys: set[str], label: str) -> dict[str, Any]:
@@ -88,6 +89,22 @@ def _finite(value: object, label: str) -> float:
     if type(value) not in {int, float} or not np.isfinite(float(value)):
         raise ProtocolViolation(f"{label} must be finite numeric")
     return float(value)
+
+
+def _read_canonical_json_bytes(path: Path, label: str) -> bytes:
+    """Read one JSON artifact without accepting parser-normalized byte drift."""
+
+    try:
+        raw = path.read_bytes()
+    except OSError as exc:
+        raise ProtocolViolation(f"{label} is unavailable: {path}") from exc
+    try:
+        decoded = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ProtocolViolation(f"{label} is not JSON") from exc
+    if canonical_json_bytes(decoded) != raw:
+        raise ProtocolViolation(f"{label} is not canonical JSON")
+    return raw
 
 
 def _state_binding(state: Any) -> dict[str, Any]:
@@ -455,19 +472,34 @@ def _attach_bundle_root(value: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
-def run_w01_upper_bound_sanity(
+def _collect_w01_upper_bound_sanity(
     *,
     source_artifact: Path | str = DEFAULT_W01_ARTIFACT,
     generator_seed: int = 92011,
     episode_index: int = 13,
 ) -> dict[str, Any]:
-    """Execute and verify the first real upper-bound evaluator slice."""
+    """Collect the deterministic W01 report without trusting a supplied report.
+
+    This private collector is also the verifier's fresh-runtime reference.  It
+    intentionally starts from the fixture identity and reconstructs the
+    episode, privileged probe, both sealed states, every head, every oracle,
+    and the factual update delta.  Keeping collection separate from
+    verification avoids validating a report solely against values copied from
+    that same report.
+    """
 
     source_path = Path(source_artifact)
+    source_read_path = (
+        source_path
+        if source_path.is_absolute()
+        else _REPOSITORY_ROOT / source_path
+    )
     try:
-        source_bytes = source_path.read_bytes()
+        source_bytes = source_read_path.read_bytes()
     except OSError as exc:
-        raise ProtocolViolation(f"W01 source artifact is unavailable: {source_path}") from exc
+        raise ProtocolViolation(
+            f"W01 source artifact is unavailable: {source_read_path}"
+        ) from exc
     try:
         source_wire = json.loads(source_bytes.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -733,7 +765,27 @@ def run_w01_upper_bound_sanity(
         },
     }
     result = _attach_bundle_root(body)
-    verify_w01_upper_bound_sanity(result)
+    return result
+
+
+def run_w01_upper_bound_sanity(
+    *,
+    source_artifact: Path | str = DEFAULT_W01_ARTIFACT,
+    generator_seed: int = 92011,
+    episode_index: int = 13,
+) -> dict[str, Any]:
+    """Execute and verify the first real upper-bound evaluator slice."""
+
+    result = _collect_w01_upper_bound_sanity(
+        source_artifact=source_artifact,
+        generator_seed=generator_seed,
+        episode_index=episode_index,
+    )
+    verify_w01_upper_bound_sanity(
+        result,
+        source_artifact=source_artifact,
+        replay_runtime=True,
+    )
     return result
 
 
@@ -846,29 +898,50 @@ def verify_w01_upper_bound_sanity(
         or source["artifact_bytes"] <= 0
     ):
         raise ProtocolViolation("source artifact replay anchor mismatch")
-    if source_artifact is not None:
-        source_path = Path(source_artifact)
-        try:
-            raw = source_path.read_bytes()
-        except OSError as exc:
-            raise ProtocolViolation("bound source artifact is unavailable") from exc
-        try:
-            decoded = json.loads(raw.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise ProtocolViolation("bound source artifact is not JSON") from exc
-        if canonical_json_bytes(decoded) != raw:
-            raise ProtocolViolation("bound source artifact is not canonical")
-        if digest_bytes(raw) != source["artifact_digest"] or len(raw) != source["artifact_bytes"]:
-            raise ProtocolViolation("bound source artifact bytes do not match the report")
-        if replay_runtime:
-            replay_bytes = canonical_json_bytes(
-                run_w01_vertical_slice(
-                    generator_seed=fixture["generator_seed"],
-                    episode_index=fixture["episode_index"],
-                )
-            )
-            if replay_bytes != raw or digest_bytes(replay_bytes) != source["replay_digest"]:
-                raise ProtocolViolation("bound source artifact does not replay live")
+    if type(source["artifact_relpath"]) is not str or not source["artifact_relpath"]:
+        raise ProtocolViolation("source artifact path is invalid")
+
+    # Verification never trusts the digest recorded by the report as its only
+    # source anchor.  A copied artifact is allowed for isolated tests, but its
+    # bytes must equal the repository's committed W01 artifact exactly.
+    committed_path = _REPOSITORY_ROOT / DEFAULT_W01_ARTIFACT
+    committed_raw = _read_canonical_json_bytes(
+        committed_path, "committed W01 source artifact"
+    )
+    anchor_path = Path(source["artifact_relpath"])
+    if not anchor_path.is_absolute():
+        anchor_path = _REPOSITORY_ROOT / anchor_path
+    anchor_raw = _read_canonical_json_bytes(anchor_path, "anchored W01 source artifact")
+    supplied_path = Path(source_artifact) if source_artifact is not None else anchor_path
+    if not supplied_path.is_absolute():
+        supplied_path = _REPOSITORY_ROOT / supplied_path
+    supplied_raw = _read_canonical_json_bytes(
+        supplied_path, "bound W01 source artifact"
+    )
+    if anchor_raw != committed_raw or supplied_raw != committed_raw:
+        raise ProtocolViolation(
+            "bound W01 source artifact is not byte-identical to the committed artifact"
+        )
+    if (
+        digest_bytes(committed_raw) != source["artifact_digest"]
+        or len(committed_raw) != source["artifact_bytes"]
+    ):
+        raise ProtocolViolation("bound source artifact bytes do not match the report")
+
+    # ``replay_runtime`` is retained for API compatibility.  W01 verification
+    # is now always live: accepting a self-consistent persisted report without
+    # this replay would re-open the exact drift class this verifier closes.
+    replay_bytes = canonical_json_bytes(
+        run_w01_vertical_slice(
+            generator_seed=fixture["generator_seed"],
+            episode_index=fixture["episode_index"],
+        )
+    )
+    if (
+        replay_bytes != committed_raw
+        or digest_bytes(replay_bytes) != source["replay_digest"]
+    ):
+        raise ProtocolViolation("bound source artifact does not replay live")
 
     states = _closed(report["states"], {"initial", "updated"}, "states")
     initial = _verify_state_binding(states["initial"], "initial state")
@@ -1183,6 +1256,32 @@ def verify_w01_upper_bound_sanity(
         ]
     ):
         raise ProtocolViolation("W01 verification summary was overstated")
+
+    # Finally rebuild the complete report from the fixture identity.  The
+    # checks above establish closed wire schemas and metric derivation; this
+    # exact comparison additionally proves that a re-signed, internally
+    # self-consistent alternate representation/head/oracle/delta cannot pass.
+    fresh = _collect_w01_upper_bound_sanity(
+        source_artifact=Path(source["artifact_relpath"]),
+        generator_seed=fixture["generator_seed"],
+        episode_index=fixture["episode_index"],
+    )
+    for key, label in (
+        ("fixture", "fixture and public-history identity"),
+        ("manifest", "probe manifest"),
+        ("manifest_digest", "probe manifest digest"),
+        ("states", "initial/updated state bindings"),
+        ("cells", "heads, oracles, metrics, and factual delta"),
+        ("source_anchor", "committed source anchor"),
+    ):
+        if report[key] != fresh[key]:
+            raise ProtocolViolation(
+                f"W01 {label} differs from fresh runtime reconstruction"
+            )
+    if report != fresh or canonical_json_bytes(report) != canonical_json_bytes(fresh):
+        raise ProtocolViolation(
+            "W01 report differs byte-for-byte from fresh runtime reconstruction"
+        )
 
 
 def _main() -> int:
