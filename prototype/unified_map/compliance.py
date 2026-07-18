@@ -3651,6 +3651,11 @@ def _rebuild_dangerous_collision_artifact(
     candidate_endpoints: list[dict[str, Any]] = []
     oracle_endpoints: list[dict[str, Any]] = []
     state_responses: list[StateResponse] = []
+    action_ids = tuple(f"P{index:02d}" for index in range(len(policies)))
+    predicted_utilities_by_side: list[tuple[float, ...]] = []
+    oracle_utilities_by_side: list[tuple[float, ...]] = []
+    chosen_action_ids: list[str] = []
+    intervention_losses: list[float] = []
     for side, episode in enumerate(episodes):
         offset = side * 10
         init_request, init_response = _validated_probe_success(
@@ -3677,6 +3682,7 @@ def _rebuild_dangerous_collision_artifact(
             raise ProtocolViolation(f"W04 pair side {side} initialize/diagnosis mismatch")
         rollout_responses: list[RolloutResponse] = []
         oracle_rollouts: list[dict[str, Any]] = []
+        predicted_utilities: list[float] = []
         for policy_index, (policy, query) in enumerate(
             zip(policies, rollout_queries, strict=True)
         ):
@@ -3695,7 +3701,18 @@ def _rebuild_dangerous_collision_artifact(
                 raise ProtocolViolation(
                     f"W04 pair side {side} policy {policy_index} binding mismatch"
                 )
+            utility = response.result.utility_prediction
+            if (
+                response.result.status is not ResultStatus.OK
+                or type(utility) is not dict
+                or set(utility) != {"family", "value"}
+                or utility["family"] != "point_mass"
+                or type(utility["value"]) not in {int, float}
+                or not math.isfinite(float(utility["value"]))
+            ):
+                raise ProtocolViolation("W04 candidate utility is not an exact point")
             rollout_responses.append(response)
+            predicted_utilities.append(float(utility["value"]))
             oracle = world.counterfactual(episode, policy, 4, seed + 2)
             steps = oracle.observation_distribution.get("steps")
             if type(steps) is not list or len(steps) != 4:
@@ -3709,6 +3726,19 @@ def _rebuild_dangerous_collision_artifact(
                     "observation_means": means,
                 }
             )
+        predicted_values = tuple(predicted_utilities)
+        oracle_values = tuple(
+            float(rollout["expected_utility"]) for rollout in oracle_rollouts
+        )
+        chosen_index = max(
+            range(len(predicted_values)), key=predicted_values.__getitem__
+        )
+        predicted_utilities_by_side.append(predicted_values)
+        oracle_utilities_by_side.append(oracle_values)
+        chosen_action_ids.append(action_ids[chosen_index])
+        intervention_losses.append(
+            max(max(oracle_values) - oracle_values[chosen_index], 0.0)
+        )
         state_responses.append(init_response)
         candidate_endpoints.append(
             _candidate_cell_wire(
@@ -3744,7 +3774,7 @@ def _rebuild_dangerous_collision_artifact(
         "fixture_kind": "w04_dangerous_collision",
         "public_history_digests": [episode.public_history.digest for episode in episodes],
         "label_order": list(diagnosis_query.label_catalog),
-        "action_ids": [f"P{index:02d}" for index in range(len(policies))],
+        "action_ids": list(action_ids),
         "requested_observables": ["obs_0", "obs_1"],
         "endpoints": oracle_endpoints,
         "information_relation": "distinguishable_from_public_history",
@@ -3766,7 +3796,7 @@ def _rebuild_dangerous_collision_artifact(
             panel_id="opposite-response-marker",
             episode_alias=f"w04-collision-side-{side}",
             cohort=EvaluationCohort.PROBE,
-            task=EvaluationTask.NEW_READOUT,
+            task=EvaluationTask.INTERVENTION,
             scope_digest=scope_digest,
             split=EvaluationSplit.TEST,
             family_id="M1-evaluator-conformance",
@@ -3819,7 +3849,11 @@ def _rebuild_dangerous_collision_artifact(
                 }
             ),
             analysis_weight=0.0,
-            loss=0.0,
+            loss=intervention_losses[side],
+            chosen_action_id=chosen_action_ids[side],
+            action_ids=action_ids,
+            predicted_utilities=predicted_utilities_by_side[side],
+            oracle_utilities=oracle_utilities_by_side[side],
         )
         for side, cell in enumerate(expected_cells)
     )

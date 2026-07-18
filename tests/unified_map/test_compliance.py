@@ -676,6 +676,38 @@ def test_evaluator_probe_artifact_is_rebuilt_from_actual_candidate_calls(
         (item["code"], item["record_id"])
         for item in finding.evidence["evaluation_report"]["failures"]
     ] == [(failure_code, expected_record_id)]
+    if probe == "dangerous_collision":
+        expected_cells = finding.evidence["expected_manifest"]["expected_cells"]
+        raw_records = finding.evidence["raw_records"]
+        assert [cell["task"] for cell in expected_cells] == [
+            "intervention",
+            "intervention",
+        ]
+        assert [row["task"] for row in raw_records] == [
+            "intervention",
+            "intervention",
+        ]
+        assert {cell["task"] for cell in expected_cells} | {
+            row["task"] for row in raw_records
+        } == {"intervention"}
+        assert finding.evidence["evaluation_report"]["headline"] == []
+        for side, row in enumerate(raw_records):
+            assert row["record_id"] == f"m1-c24-w04-side-{side}"
+            predicted = [
+                response["result"]["utility_prediction"]["value"]
+                for response in row["candidate_output"]["rollout_responses"]
+            ]
+            oracle = [
+                rollout["expected_utility"]
+                for rollout in row["oracle_record"]["endpoint"]["rollouts"]
+            ]
+            action_ids = [f"P{index:02d}" for index in range(len(predicted))]
+            chosen_index = max(range(len(predicted)), key=predicted.__getitem__)
+            assert row["action_ids"] == action_ids
+            assert row["predicted_utilities"] == predicted
+            assert row["oracle_utilities"] == oracle
+            assert row["chosen_action_id"] == action_ids[chosen_index]
+            assert row["loss"] == max(max(oracle) - oracle[chosen_index], 0.0)
     assert len(collector.request_records) == compliance.EVALUATOR_PROBE_REQUEST_COUNTS[
         probe
     ]
