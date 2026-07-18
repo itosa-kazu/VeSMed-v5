@@ -7,10 +7,13 @@ when an exact rebuild from current code-owned declarations is byte-identical.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from typing import Any, TypeVar
 
 from .candidate_protocol import Operation, RolloutResult
@@ -28,12 +31,28 @@ from .metric_configuration import (
 )
 from .schema import EventKind, PlanKind
 from .scope_manifest import SCOPE_AXES
+from .scope_transition_protocols import (
+    DISTANCE_DERIVATION_SCHEMA,
+    EXTENSION_TEMPLATE_SET_ARTIFACT_DIGEST,
+    EXTENSION_TEMPLATE_SET_BYTES,
+    EXTENSION_TEMPLATE_SET_SCHEMA,
+    EXTENSION_TEMPLATE_SET_SEMANTIC_DIGEST,
+    SPLIT_DERIVATION_ARTIFACT_DIGEST,
+    SPLIT_DERIVATION_PROTOCOL_BYTES,
+    SPLIT_DERIVATION_PROTOCOL_SCHEMA,
+    SPLIT_DERIVATION_SEMANTIC_DIGEST,
+    distance_derivation_contract_bytes,
+    distance_derivation_contract_digest,
+    parse_extension_template_set_bytes,
+    parse_split_derivation_protocol_bytes,
+)
+from .seed_protocol import ZIPPED_REPLICATE_IDS
 from .task_protocol import TASK_EXECUTION_TRUTH, TaskExecutionKind
 from .world_registry import EXTENSION_WORLD_REGISTRY, WORLD_REGISTRY, PanelDeclaration
 from .worlds.base import CounterfactualOracle, MicroWorld, PublicCatalog, WorldSplit
 
-WORLD_SCOPE_FRAGMENT_SET_SCHEMA = "ucm-world-scope-fragment-set/2"
-WORLD_SCOPE_FRAGMENT_DOMAIN = b"UCM_WORLD_SCOPE_FRAGMENT_SET_V2\0"
+WORLD_SCOPE_FRAGMENT_SET_SCHEMA = "ucm-world-scope-fragment-set/3"
+WORLD_SCOPE_FRAGMENT_DOMAIN = b"UCM_WORLD_SCOPE_FRAGMENT_SET_V3\0"
 WORLD_SCOPE_FRAGMENT_AUTHORITY = "typed_world_semantics_only"
 WORLD_SCOPE_BUILD_STATUS = "PRE-FREEZE"
 
@@ -148,6 +167,40 @@ def _fresh_object(payload: bytes, label: str) -> dict[str, Any]:
     return value
 
 
+def _exact_preimage_payload(value: object, label: str) -> bytes:
+    body = _exact_object(
+        value,
+        frozenset(
+            {
+                "schema_version",
+                "label",
+                "encoding",
+                "byte_count",
+                "digest",
+                "payload_b64",
+            }
+        ),
+        label,
+    )
+    if (
+        body["schema_version"] != "ucm-exact-byte-preimage/1"
+        or body["encoding"] != "base64"
+        or type(body["byte_count"]) is not int
+        or body["byte_count"] < 0
+        or type(body["payload_b64"]) is not str
+    ):
+        raise ProtocolViolation(f"{label} metadata is invalid")
+    _name(body["label"], f"{label} label")
+    _name(body["digest"], f"{label} digest")
+    try:
+        payload = base64.b64decode(body["payload_b64"], validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise ProtocolViolation(f"{label} payload is not strict base64") from exc
+    if len(payload) != body["byte_count"] or digest_bytes(payload) != body["digest"]:
+        raise ProtocolViolation(f"{label} payload length/digest mismatch")
+    return payload
+
+
 class TaskApplicability(str, Enum):
     REQUIRED = "required"
     CONTROL = "control"
@@ -164,8 +217,127 @@ class ApplicabilityBasis(str, Enum):
 
 class ExtensionSemantic(str, Enum):
     NONE = "none"
-    NEW_CHECK_SCOPE_REFINEMENT = "new_check_scope_refinement"
-    NEW_TREATMENT_SCOPE_REFINEMENT = "new_treatment_scope_refinement"
+    OPAQUE_POST_SEAL_SCOPE_SUCCESSOR = "opaque_post_seal_scope_successor"
+
+
+class ExtensionTemplateRole(str, Enum):
+    NEW_CHECK = "new_check_commitment_template"
+    NEW_TREATMENT = "new_treatment_commitment_template"
+
+
+class ProtocolReferenceKind(str, Enum):
+    FAMILY_SPLIT_DERIVATION = "family_split_derivation"
+    EXTENSION_TEMPLATE_SET = "extension_template_set"
+
+
+@lru_cache(maxsize=2)
+def _parsed_protocol_reference_contract(
+    kind: ProtocolReferenceKind,
+    *,
+    split_payload: bytes = SPLIT_DERIVATION_PROTOCOL_BYTES,
+    split_schema: str = SPLIT_DERIVATION_PROTOCOL_SCHEMA,
+    split_artifact_digest: str = SPLIT_DERIVATION_ARTIFACT_DIGEST,
+    split_semantic_digest: str = SPLIT_DERIVATION_SEMANTIC_DIGEST,
+    split_parser: Any = parse_split_derivation_protocol_bytes,
+    extension_payload: bytes = EXTENSION_TEMPLATE_SET_BYTES,
+    extension_schema: str = EXTENSION_TEMPLATE_SET_SCHEMA,
+    extension_artifact_digest: str = EXTENSION_TEMPLATE_SET_ARTIFACT_DIGEST,
+    extension_semantic_digest: str = EXTENSION_TEMPLATE_SET_SEMANTIC_DIGEST,
+    extension_parser: Any = parse_extension_template_set_bytes,
+) -> tuple[str, str, str, str]:
+    """Parse and cache the immutable code-owned predecessor identity."""
+    if type(kind) is not ProtocolReferenceKind:
+        raise ProtocolViolation("scope successor protocol reference kind drifted")
+    if kind is ProtocolReferenceKind.FAMILY_SPLIT_DERIVATION:
+        parsed = split_parser(split_payload)
+        expected = (
+            split_schema,
+            split_artifact_digest,
+            split_semantic_digest,
+            "scope_transition_protocols.SPLIT_DERIVATION_PROTOCOL_BYTES",
+        )
+    else:
+        parsed = extension_parser(extension_payload)
+        expected = (
+            extension_schema,
+            extension_artifact_digest,
+            extension_semantic_digest,
+            "scope_transition_protocols.EXTENSION_TEMPLATE_SET_BYTES",
+        )
+    wire = parsed.to_wire()
+    actual = (
+        _name(wire["schema_version"], "predecessor protocol schema"),
+        parsed.artifact_digest,
+        parsed.semantic_digest,
+        expected[3],
+    )
+    if actual != expected:
+        raise ProtocolViolation("scope successor protocol identity drifted")
+    return actual
+
+
+def _exact_protocol_reference_contract(
+    kind: ProtocolReferenceKind,
+    *,
+    split_payload: bytes = SPLIT_DERIVATION_PROTOCOL_BYTES,
+    split_schema: str = SPLIT_DERIVATION_PROTOCOL_SCHEMA,
+    split_artifact_digest: str = SPLIT_DERIVATION_ARTIFACT_DIGEST,
+    split_semantic_digest: str = SPLIT_DERIVATION_SEMANTIC_DIGEST,
+    split_parser: Any = parse_split_derivation_protocol_bytes,
+    extension_payload: bytes = EXTENSION_TEMPLATE_SET_BYTES,
+    extension_schema: str = EXTENSION_TEMPLATE_SET_SCHEMA,
+    extension_artifact_digest: str = EXTENSION_TEMPLATE_SET_ARTIFACT_DIGEST,
+    extension_semantic_digest: str = EXTENSION_TEMPLATE_SET_SEMANTIC_DIGEST,
+    extension_parser: Any = parse_extension_template_set_bytes,
+    parsed_identity_provider: Any = _parsed_protocol_reference_contract,
+) -> tuple[str, str, str, str]:
+    """Return an identity proven against the exact parsed predecessor bytes.
+
+    Defaults capture the imported code-owned control plane at module load.  The
+    explicit current-binding checks make later rebinding fail closed instead of
+    letting a local alias supply both a claimed digest and its own expectation.
+    """
+
+    if type(kind) is not ProtocolReferenceKind:
+        raise ProtocolViolation("scope successor protocol reference kind drifted")
+    if _parsed_protocol_reference_contract is not parsed_identity_provider:
+        raise ProtocolViolation("parsed predecessor identity provider drifted")
+    if kind is ProtocolReferenceKind.FAMILY_SPLIT_DERIVATION:
+        if (
+            SPLIT_DERIVATION_PROTOCOL_BYTES != split_payload
+            or SPLIT_DERIVATION_PROTOCOL_SCHEMA != split_schema
+            or SPLIT_DERIVATION_ARTIFACT_DIGEST != split_artifact_digest
+            or SPLIT_DERIVATION_SEMANTIC_DIGEST != split_semantic_digest
+            or parse_split_derivation_protocol_bytes is not split_parser
+        ):
+            raise ProtocolViolation("split predecessor binding drifted")
+    elif (
+        EXTENSION_TEMPLATE_SET_BYTES != extension_payload
+        or EXTENSION_TEMPLATE_SET_SCHEMA != extension_schema
+        or EXTENSION_TEMPLATE_SET_ARTIFACT_DIGEST != extension_artifact_digest
+        or EXTENSION_TEMPLATE_SET_SEMANTIC_DIGEST != extension_semantic_digest
+        or parse_extension_template_set_bytes is not extension_parser
+    ):
+        raise ProtocolViolation("extension predecessor binding drifted")
+    return parsed_identity_provider(kind)
+
+
+def _exact_distance_derivation_declaration_schema(
+    expected_schema: str = DISTANCE_DERIVATION_SCHEMA,
+    contract_bytes_provider: Any = distance_derivation_contract_bytes,
+) -> str:
+    """Bind the declaration schema to the predecessor's live control plane."""
+
+    if (
+        DISTANCE_DERIVATION_SCHEMA != expected_schema
+        or distance_derivation_contract_bytes is not contract_bytes_provider
+        or type(expected_schema) is not str
+        or not expected_schema
+    ):
+        raise ProtocolViolation("distance derivation declaration binding drifted")
+    # The provider validates the predecessor executable-control-plane inventory.
+    contract_bytes_provider()
+    return expected_schema
 
 
 class GapScope(str, Enum):
@@ -180,9 +352,7 @@ class ScopeGapCode(str, Enum):
     O_CHANNEL_KERNEL = "O-channel-generation-kernel-not-typed"
     O_MISSINGNESS = "O-missingness-process-not-typed"
     A_EFFECT_KERNEL = "A-physiologic-treatment-effect-kernel-not-typed"
-    A_W17_EXTENSION = "A-W17-extension-scope-not-closed"
     Q_RESULT_KERNEL = "Q-check-result-kernel-not-typed"
-    Q_W16_EXTENSION = "Q-W16-extension-scope-not-closed"
     PI_ADAPTIVE_RULE = "Pi-adaptive-rule-execution-not-typed"
     GAMMA_QUOTIENT = "Gamma-behavioral-granularity-not-typed"
     Y_OBSERVABLE_SCHEMA = "Y-observable-distribution-schema-not-typed"
@@ -198,11 +368,238 @@ class ScopeGapCode(str, Enum):
     D_METRIC_TARGET_GAP = "D-code-owned-metric-target-gap"
     D_BEHAVIOR_DISTANCE_CLOSURE = "D-behavior-distance-source-closure-unbound"
     D_PAIR_CLASSIFIER_CLOSURE = "D-pair-classifier-source-closure-unbound"
-    R_FAMILY_ASSIGNMENT = "R-family-assignment-not-frozen"
     R_DATA_BUDGET = "R-training-data-budget-not-typed"
     R_COMPUTE_BUDGET = "R-resource-budget-not-typed"
     R_ISOLATION = "R-isolation-profile-not-typed"
-    R_EXTENSION_SCOPE = "R-extension-whole-scope-not-closed"
+
+
+@dataclass(frozen=True, slots=True)
+class ExactProtocolReference:
+    kind: ProtocolReferenceKind
+    schema_version: str
+    artifact_digest: str
+    semantic_digest: str
+    canonical_bytes_source: str
+
+    def __post_init__(
+        self, reference_validator: Any = _exact_protocol_reference_contract
+    ) -> None:
+        if _exact_protocol_reference_contract is not reference_validator:
+            raise ProtocolViolation("exact protocol reference validator drifted")
+        expected = reference_validator(self.kind)
+        if (
+            type(self.kind) is not ProtocolReferenceKind
+            or (
+                self.schema_version,
+                self.artifact_digest,
+                self.semantic_digest,
+                self.canonical_bytes_source,
+            )
+            != expected
+        ):
+            raise ProtocolViolation("scope successor protocol reference drifted")
+
+    def to_wire(self) -> dict[str, str]:
+        return {
+            "kind": self.kind.value,
+            "schema_version": self.schema_version,
+            "artifact_digest": self.artifact_digest,
+            "semantic_digest": self.semantic_digest,
+            "canonical_bytes_source": self.canonical_bytes_source,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "ExactProtocolReference":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "kind",
+                    "schema_version",
+                    "artifact_digest",
+                    "semantic_digest",
+                    "canonical_bytes_source",
+                }
+            ),
+            "exact protocol reference",
+        )
+        return cls(
+            _enum(ProtocolReferenceKind, body["kind"], "protocol reference kind"),
+            _name(body["schema_version"], "protocol reference schema"),
+            _name(body["artifact_digest"], "protocol artifact digest"),
+            _name(body["semantic_digest"], "protocol semantic digest"),
+            _name(body["canonical_bytes_source"], "protocol bytes source"),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class PostScopeAuthorityRequirement:
+    """Typed nonblocking work that may only occur after base-scope closure."""
+
+    schema_version: str
+    requirement_id: str
+    stage: str
+    detail: str
+    blocks_base_scope: bool
+
+    def __post_init__(self) -> None:
+        expected_prefix = {
+            "ucm-post-scope-requirement/1": "UCM-SPLIT-POST-SCOPE-R",
+            "ucm-successor-runtime-blocker/1": "UCM-EXTENSION-SUCCESSOR-B",
+        }
+        if (
+            type(self.schema_version) is not str
+            or self.schema_version not in expected_prefix
+            or not self.requirement_id.startswith(expected_prefix[self.schema_version])
+            or any(
+                type(value) is not str or not value or value.strip() != value
+                for value in (self.requirement_id, self.stage, self.detail)
+            )
+            or self.blocks_base_scope is not False
+        ):
+            raise ProtocolViolation(
+                "post-scope authority requirement must be typed and base-S nonblocking"
+            )
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "requirement_id": self.requirement_id,
+            "stage": self.stage,
+            "detail": self.detail,
+            "blocks_base_scope": self.blocks_base_scope,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "PostScopeAuthorityRequirement":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "schema_version",
+                    "requirement_id",
+                    "stage",
+                    "detail",
+                    "blocks_base_scope",
+                }
+            ),
+            "post-scope authority requirement",
+        )
+        if type(body["blocks_base_scope"]) is not bool:
+            raise ProtocolViolation("post-scope blocks_base_scope must be bool")
+        return cls(
+            _name(body["schema_version"], "post-scope requirement schema"),
+            _name(body["requirement_id"], "post-scope requirement id"),
+            _name(body["stage"], "post-scope requirement stage"),
+            _name(body["detail"], "post-scope requirement detail"),
+            body["blocks_base_scope"],
+        )
+
+
+def _typed_post_scope_requirements(
+    rows: object, label: str
+) -> tuple[PostScopeAuthorityRequirement, ...]:
+    if type(rows) is not list or not rows:
+        raise ProtocolViolation(f"{label} must be a non-empty exact list")
+    return tuple(PostScopeAuthorityRequirement.from_wire(row) for row in rows)
+
+
+_SPLIT_POST_SCOPE_AUTHORITY_REQUIREMENTS = _typed_post_scope_requirements(
+    parse_split_derivation_protocol_bytes(SPLIT_DERIVATION_PROTOCOL_BYTES).to_wire()[
+        "post_scope_requirements"
+    ],
+    "split post-scope requirements",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class ExtensionCommitmentTemplate:
+    """Base-scope requirement for an opaque extension, never its payload.
+
+    The actual commitment value and revealed extension declaration are
+    run-specific successors.  This object only states the template and
+    chronology that a later, independently sealed transition must satisfy.
+    """
+
+    template_id: str
+    role: ExtensionTemplateRole
+    protocol_reference: ExactProtocolReference
+    commitment_requirement: str
+    reveal_gate: str
+    source_closure_requirement: str
+    closure_status: str
+    base_scope_payload_rule: str
+    transition_owner: str
+
+    def __post_init__(self) -> None:
+        expected_id = {
+            ExtensionTemplateRole.NEW_CHECK: "W16-new-check-template",
+            ExtensionTemplateRole.NEW_TREATMENT: "W17-new-treatment-template",
+        }
+        if (
+            type(self.role) is not ExtensionTemplateRole
+            or self.template_id != expected_id[self.role]
+            or type(self.protocol_reference) is not ExactProtocolReference
+            or self.protocol_reference.kind
+            is not ProtocolReferenceKind.EXTENSION_TEMPLATE_SET
+            or self.commitment_requirement
+            != "opaque_hiding_commitment_before_candidate_model_state_seals"
+            or self.reveal_gate
+            != "exact_opening_only_after_candidate_model_state_seals"
+            or self.source_closure_requirement
+            != "exact_commit_reveal_schema_algorithm_and_source_preimage"
+            or self.closure_status != "protocol_complete_predecessor"
+            or self.base_scope_payload_rule
+            != "actual_commitment_and_revealed_payload_excluded"
+            or self.transition_owner != "R.extension_transition"
+        ):
+            raise ProtocolViolation(
+                "extension commitment template is not the code-owned base contract"
+            )
+
+    def to_wire(self) -> dict[str, str]:
+        return {
+            "template_id": self.template_id,
+            "role": self.role.value,
+            "protocol_reference": self.protocol_reference.to_wire(),
+            "commitment_requirement": self.commitment_requirement,
+            "reveal_gate": self.reveal_gate,
+            "source_closure_requirement": self.source_closure_requirement,
+            "closure_status": self.closure_status,
+            "base_scope_payload_rule": self.base_scope_payload_rule,
+            "transition_owner": self.transition_owner,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "ExtensionCommitmentTemplate":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "template_id",
+                    "role",
+                    "protocol_reference",
+                    "commitment_requirement",
+                    "reveal_gate",
+                    "source_closure_requirement",
+                    "closure_status",
+                    "base_scope_payload_rule",
+                    "transition_owner",
+                }
+            ),
+            "extension commitment template",
+        )
+        return cls(
+            _name(body["template_id"], "extension template id"),
+            _enum(ExtensionTemplateRole, body["role"], "extension template role"),
+            ExactProtocolReference.from_wire(body["protocol_reference"]),
+            _name(body["commitment_requirement"], "extension commitment rule"),
+            _name(body["reveal_gate"], "extension reveal gate"),
+            _name(body["source_closure_requirement"], "extension source closure"),
+            _name(body["closure_status"], "extension closure status"),
+            _name(body["base_scope_payload_rule"], "extension base payload rule"),
+            _name(body["transition_owner"], "extension transition owner"),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -549,23 +946,52 @@ class ObservationAxis:
 class ActionAxis:
     intervention_semantics: str
     actions: tuple[ActionDeclaration, ...]
+    extension_commitment_template: ExtensionCommitmentTemplate | None
+
+    def __post_init__(self) -> None:
+        if self.extension_commitment_template is not None and (
+            type(self.extension_commitment_template) is not ExtensionCommitmentTemplate
+            or self.extension_commitment_template.role
+            is not ExtensionTemplateRole.NEW_TREATMENT
+        ):
+            raise ProtocolViolation("A extension template must be new-treatment")
 
     def to_wire(self) -> dict[str, Any]:
         return {
             "intervention_semantics": self.intervention_semantics,
             "actions": [x.to_wire() for x in self.actions],
+            "extension_commitment_template": (
+                None
+                if self.extension_commitment_template is None
+                else self.extension_commitment_template.to_wire()
+            ),
         }
 
     @classmethod
     def from_wire(cls, value: object) -> "ActionAxis":
         body = _exact_object(
-            value, frozenset({"intervention_semantics", "actions"}), "A axis"
+            value,
+            frozenset(
+                {
+                    "intervention_semantics",
+                    "actions",
+                    "extension_commitment_template",
+                }
+            ),
+            "A axis",
         )
         if type(body["actions"]) is not list:
             raise ProtocolViolation("A actions must be a list")
         return cls(
             _name(body["intervention_semantics"], "A semantics"),
             tuple(ActionDeclaration.from_wire(x) for x in body["actions"]),
+            (
+                None
+                if body["extension_commitment_template"] is None
+                else ExtensionCommitmentTemplate.from_wire(
+                    body["extension_commitment_template"]
+                )
+            ),
         )
 
 
@@ -573,23 +999,52 @@ class ActionAxis:
 class CheckAxis:
     information_semantics: str
     checks: tuple[CheckDeclaration, ...]
+    extension_commitment_template: ExtensionCommitmentTemplate | None
+
+    def __post_init__(self) -> None:
+        if self.extension_commitment_template is not None and (
+            type(self.extension_commitment_template) is not ExtensionCommitmentTemplate
+            or self.extension_commitment_template.role
+            is not ExtensionTemplateRole.NEW_CHECK
+        ):
+            raise ProtocolViolation("Q extension template must be new-check")
 
     def to_wire(self) -> dict[str, Any]:
         return {
             "information_semantics": self.information_semantics,
             "checks": [x.to_wire() for x in self.checks],
+            "extension_commitment_template": (
+                None
+                if self.extension_commitment_template is None
+                else self.extension_commitment_template.to_wire()
+            ),
         }
 
     @classmethod
     def from_wire(cls, value: object) -> "CheckAxis":
         body = _exact_object(
-            value, frozenset({"information_semantics", "checks"}), "Q axis"
+            value,
+            frozenset(
+                {
+                    "information_semantics",
+                    "checks",
+                    "extension_commitment_template",
+                }
+            ),
+            "Q axis",
         )
         if type(body["checks"]) is not list:
             raise ProtocolViolation("Q checks must be a list")
         return cls(
             _name(body["information_semantics"], "Q semantics"),
             tuple(CheckDeclaration.from_wire(x) for x in body["checks"]),
+            (
+                None
+                if body["extension_commitment_template"] is None
+                else ExtensionCommitmentTemplate.from_wire(
+                    body["extension_commitment_template"]
+                )
+            ),
         )
 
 
@@ -830,15 +1285,821 @@ class DistanceAxis:
 
 
 @dataclass(frozen=True, slots=True)
+class ZippedSlotTiming:
+    training_replicate_id: str
+    evaluation_replicate_id: str
+    training_commitment_stage: str
+    evaluation_commitment_stage: str
+    evaluation_reveal_stage: str
+
+    def __post_init__(self) -> None:
+        pair = (self.training_replicate_id, self.evaluation_replicate_id)
+        if (
+            pair not in ZIPPED_REPLICATE_IDS
+            or self.training_commitment_stage != "post_freeze_pre_training_precommit"
+            or self.evaluation_commitment_stage
+            != "post_candidate_seals_hidden_commitment"
+            or self.evaluation_reveal_stage != "post_corpus_finalization"
+        ):
+            raise ProtocolViolation("zipped slot timing is not code-owned")
+
+    def to_wire(self) -> dict[str, str]:
+        return {
+            "training_replicate_id": self.training_replicate_id,
+            "evaluation_replicate_id": self.evaluation_replicate_id,
+            "training_commitment_stage": self.training_commitment_stage,
+            "evaluation_commitment_stage": self.evaluation_commitment_stage,
+            "evaluation_reveal_stage": self.evaluation_reveal_stage,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "ZippedSlotTiming":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "training_replicate_id",
+                    "evaluation_replicate_id",
+                    "training_commitment_stage",
+                    "evaluation_commitment_stage",
+                    "evaluation_reveal_stage",
+                }
+            ),
+            "zipped slot timing",
+        )
+        return cls(
+            _name(body["training_replicate_id"], "training replicate id"),
+            _name(body["evaluation_replicate_id"], "evaluation replicate id"),
+            _name(body["training_commitment_stage"], "training commitment stage"),
+            _name(
+                body["evaluation_commitment_stage"],
+                "evaluation commitment stage",
+            ),
+            _name(body["evaluation_reveal_stage"], "evaluation reveal stage"),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FamilySplitDerivationRequirement:
+    """Scope-owned protocol requirement, not an assignment/partition result."""
+
+    protocol_reference: ExactProtocolReference
+    closure_status: str
+    panel_count: int
+    task_count: int
+    split_count: int
+    physical_assignment_count: int
+    task_assignment_projection_count: int
+    physical_partition_count: int
+    task_partition_projection_count: int
+    zipped_slots_per_physical_partition: int
+    semantic_zipped_slot_count: int
+    zipped_slots: tuple[ZippedSlotTiming, ...]
+    derivation_chronology: tuple[str, ...]
+    post_scope_derivation_stage: str
+    post_scope_derivation_rule: str
+    post_scope_authority_requirements: tuple[PostScopeAuthorityRequirement, ...]
+    scope_forbidden_inputs: tuple[str, ...]
+
+    _CHRONOLOGY = (
+        "full_semantic_freeze_authorized",
+        "materialize_split_neutral_family_intents",
+        "publish_hidden_split_seed_commitment_before_assignment",
+        "derive_family_atomic_assignments_and_partitions_bound_to_same_S",
+        "reveal_and_verify_split_seed_opening",
+        "exact_keyed_rederivation_comparison",
+    )
+    _FORBIDDEN = (
+        "actual_family_assignment_root",
+        "actual_split_partition_root",
+        "actual_panel_assignment_or_partition_digest",
+        "actual_split_seed_commitment_or_opening",
+        "actual_TRAIN5_or_EVAL5_tuple",
+        "actual_TRAIN5_PRECOMMIT_or_EVAL5_commitment_value",
+        "actual_run_specific_raw_seed_value_or_digest",
+    )
+
+    def __post_init__(self) -> None:
+        expected_slots = tuple(
+            ZippedSlotTiming(
+                training_id,
+                evaluation_id,
+                "post_freeze_pre_training_precommit",
+                "post_candidate_seals_hidden_commitment",
+                "post_corpus_finalization",
+            )
+            for training_id, evaluation_id in ZIPPED_REPLICATE_IDS
+        )
+        if (
+            type(self.protocol_reference) is not ExactProtocolReference
+            or self.protocol_reference.kind
+            is not ProtocolReferenceKind.FAMILY_SPLIT_DERIVATION
+            or self.closure_status != "protocol_complete_predecessor"
+            or (self.panel_count, self.task_count, self.split_count)
+            != (
+                len(EXPECTED_PANEL_IDENTITIES),
+                len(EXPECTED_TASKS),
+                len(EXPECTED_SPLITS),
+            )
+            or self.physical_assignment_count != self.panel_count
+            or self.task_assignment_projection_count
+            != self.panel_count * self.task_count
+            or self.physical_partition_count != self.panel_count * self.split_count
+            or self.task_partition_projection_count
+            != self.panel_count * self.task_count * self.split_count
+            or self.zipped_slots_per_physical_partition != len(ZIPPED_REPLICATE_IDS)
+            or self.semantic_zipped_slot_count
+            != self.panel_count
+            * self.split_count
+            * self.zipped_slots_per_physical_partition
+            or self.zipped_slots != expected_slots
+            or self.derivation_chronology != self._CHRONOLOGY
+            or self.post_scope_derivation_stage != "post_scope_authorization"
+            or self.post_scope_derivation_rule
+            != "actual_authorities_bind_S_one_way_and_never_feed_back_into_S"
+            or self.post_scope_authority_requirements
+            != _SPLIT_POST_SCOPE_AUTHORITY_REQUIREMENTS
+            or self.scope_forbidden_inputs != self._FORBIDDEN
+        ):
+            raise ProtocolViolation(
+                "family/split derivation requirement is not the code-owned base contract"
+            )
+
+    @property
+    def post_scope_authority_requirement_count(self) -> int:
+        return len(self.post_scope_authority_requirements)
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "protocol_reference": self.protocol_reference.to_wire(),
+            "closure_status": self.closure_status,
+            "projection_shape": {
+                "panel_count": self.panel_count,
+                "task_count": self.task_count,
+                "split_count": self.split_count,
+                "physical_assignment_count": self.physical_assignment_count,
+                "task_assignment_projection_count": (
+                    self.task_assignment_projection_count
+                ),
+                "physical_partition_count": self.physical_partition_count,
+                "task_partition_projection_count": (
+                    self.task_partition_projection_count
+                ),
+                "zipped_slots_per_physical_partition": (
+                    self.zipped_slots_per_physical_partition
+                ),
+                "semantic_zipped_slot_count": self.semantic_zipped_slot_count,
+            },
+            "zipped_slots": [x.to_wire() for x in self.zipped_slots],
+            "derivation_chronology": list(self.derivation_chronology),
+            "post_scope_derivation_stage": self.post_scope_derivation_stage,
+            "post_scope_derivation_rule": self.post_scope_derivation_rule,
+            "post_scope_authority_requirement_count": (
+                self.post_scope_authority_requirement_count
+            ),
+            "post_scope_authority_requirements": [
+                x.to_wire() for x in self.post_scope_authority_requirements
+            ],
+            "scope_forbidden_inputs": list(self.scope_forbidden_inputs),
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "FamilySplitDerivationRequirement":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "protocol_reference",
+                    "closure_status",
+                    "projection_shape",
+                    "zipped_slots",
+                    "derivation_chronology",
+                    "post_scope_derivation_stage",
+                    "post_scope_derivation_rule",
+                    "post_scope_authority_requirement_count",
+                    "post_scope_authority_requirements",
+                    "scope_forbidden_inputs",
+                }
+            ),
+            "family/split derivation requirement",
+        )
+        shape = _exact_object(
+            body["projection_shape"],
+            frozenset(
+                {
+                    "panel_count",
+                    "task_count",
+                    "split_count",
+                    "physical_assignment_count",
+                    "task_assignment_projection_count",
+                    "physical_partition_count",
+                    "task_partition_projection_count",
+                    "zipped_slots_per_physical_partition",
+                    "semantic_zipped_slot_count",
+                }
+            ),
+            "family/split projection shape",
+        )
+        if (
+            any(type(shape[key]) is not int for key in shape)
+            or type(body["zipped_slots"]) is not list
+            or type(body["post_scope_authority_requirement_count"]) is not int
+            or type(body["post_scope_authority_requirements"]) is not list
+            or body["post_scope_authority_requirement_count"]
+            != len(body["post_scope_authority_requirements"])
+        ):
+            raise ProtocolViolation("family/split shape or zipped slots are invalid")
+        return cls(
+            ExactProtocolReference.from_wire(body["protocol_reference"]),
+            _name(body["closure_status"], "family/split closure status"),
+            shape["panel_count"],
+            shape["task_count"],
+            shape["split_count"],
+            shape["physical_assignment_count"],
+            shape["task_assignment_projection_count"],
+            shape["physical_partition_count"],
+            shape["task_partition_projection_count"],
+            shape["zipped_slots_per_physical_partition"],
+            shape["semantic_zipped_slot_count"],
+            tuple(ZippedSlotTiming.from_wire(x) for x in body["zipped_slots"]),
+            _strings(body["derivation_chronology"], "family/split chronology"),
+            _name(
+                body["post_scope_derivation_stage"],
+                "family/split post-scope stage",
+            ),
+            _name(
+                body["post_scope_derivation_rule"],
+                "family/split post-scope rule",
+            ),
+            tuple(
+                PostScopeAuthorityRequirement.from_wire(x)
+                for x in body["post_scope_authority_requirements"]
+            ),
+            _strings(
+                body["scope_forbidden_inputs"],
+                "family/split forbidden scope inputs",
+            ),
+        )
+
+
+def _extension_protocol_contract(
+    role: ExtensionTemplateRole,
+    distance_schema_provider: Any = _exact_distance_derivation_declaration_schema,
+) -> dict[str, Any]:
+    if _exact_distance_derivation_declaration_schema is not distance_schema_provider:
+        raise ProtocolViolation("distance derivation schema provider drifted")
+    world_slot = {
+        ExtensionTemplateRole.NEW_CHECK: "W16",
+        ExtensionTemplateRole.NEW_TREATMENT: "W17",
+    }[role]
+    wire = parse_extension_template_set_bytes(EXTENSION_TEMPLATE_SET_BYTES).to_wire()
+    protocol = wire["protocol"]
+    template = next(
+        row for row in protocol["templates"] if row["world_slot"] == world_slot
+    )
+    actual_diff = protocol["external_successor_artifacts"]["actual_scope_diff"]
+    receipt = protocol["external_successor_artifacts"]["successor_receipt"]
+    distance_preimage = protocol["distance_derivation_contract"]
+    distance_contract_bytes = _exact_preimage_payload(
+        distance_preimage, "extension distance derivation contract"
+    )
+    distance_contract = _fresh_object(
+        distance_contract_bytes, "extension distance derivation contract"
+    )
+    distance_declaration_schema = distance_schema_provider()
+    scope_spec_preimage = template["extension_scope_spec_contract"]
+    scope_spec_contract_bytes = _exact_preimage_payload(
+        scope_spec_preimage, f"{world_slot} extension scope spec contract"
+    )
+    scope_spec_contract = _fresh_object(
+        scope_spec_contract_bytes, f"{world_slot} extension scope spec contract"
+    )
+    isolation = protocol["isolation"]
+    chronology = tuple(protocol["chronology"])
+    required_stages = (
+        "authorize_base_S_and_template",
+        "seal_primary_result_root_before_extension_reveal",
+        "reveal_only_after_candidate_model_and_state_seals",
+        "derive_full_expanded_state_space_S_prime",
+        "compute_exact_actual_scope_diff",
+        "run_state_only_first_extension_query",
+        "allow_optional_measured_migration_only_after_scope_insufficient",
+        "emit_extension_only_score_without_rewriting_primary_scores",
+    )
+    if (
+        wire["scope_binding_status"] != "not_bound"
+        or wire["gap_count"] != 0
+        or wire["gaps"] != []
+        or wire["successor_blocker_count"] != len(wire["successor_blockers"])
+        or not wire["successor_blockers"]
+        or any(
+            row["blocks_base_scope"] is not False for row in wire["successor_blockers"]
+        )
+        or template["successor_axis_coverage"] != "all11"
+        or tuple(template["successor_axis_order"]) != SCOPE_AXES
+        or tuple(template["required_changed_axes"])
+        != (
+            {
+                ExtensionTemplateRole.NEW_CHECK: "Q",
+                ExtensionTemplateRole.NEW_TREATMENT: "A",
+            }[role],
+        )
+        or not set(template["required_changed_axes"]).issubset(
+            template["role_specific_allowed_changed_axes"]
+        )
+        or template["actual_expanded_scope"] != "excluded"
+        or template["actual_axis_diff"] != "excluded"
+        or scope_spec_preimage["label"] != f"{world_slot}-extension-scope-spec-contract"
+        or scope_spec_contract["schema_version"]
+        != "ucm-extension-scope-spec-contract/1"
+        or tuple(scope_spec_contract["required_changed_axes"])
+        != tuple(template["required_changed_axes"])
+        or tuple(scope_spec_contract["allowed_non_D_changed_axes"])
+        != tuple(template["role_specific_allowed_changed_axes"])
+        or scope_spec_contract["typed_spec_schema"]
+        != actual_diff["extension_scope_spec_schema"]
+        or scope_spec_contract["parser"] != actual_diff["extension_scope_spec_parser"]
+        or scope_spec_contract["successor_deriver"] != actual_diff["successor_deriver"]
+        or scope_spec_contract["no_op_patch"] != "forbidden"
+        or distance_preimage["schema_version"] != "ucm-exact-byte-preimage/1"
+        or distance_preimage["encoding"] != "base64"
+        or distance_preimage["label"] != "extension-distance-derivation-contract"
+        or distance_contract_bytes != distance_derivation_contract_bytes()
+        or distance_contract["schema_version"]
+        != "ucm-extension-distance-derivation-contract/1"
+        or template["distance_derivation_contract_digest"]
+        != distance_derivation_contract_digest()
+        or distance_contract["metric_registry_schema"] != METRIC_TARGET_SCHEMA
+        or distance_contract["metric_registry_domain_hex"] != METRIC_TARGET_DOMAIN.hex()
+        or actual_diff["storage"] != "external_not_embedded_in_template"
+        or tuple(actual_diff["successor_axis_order"]) != SCOPE_AXES
+        or receipt["storage"] != "external_not_embedded_in_template"
+        or receipt["primary_aggregate_eligible"] is not False
+        or receipt["successor_runtime_eligible"] is not False
+        or receipt["runtime_binding_status"] != "successor_runtime_not_integrated"
+        or receipt["first_query_envelope_schema"]
+        != "ucm-extension-first-query-envelope/1"
+        or receipt["first_result_envelope_schema"]
+        != "ucm-extension-first-result-envelope/1"
+        or isolation["extension_result_namespace"]
+        != "separate_extension_only_namespace"
+        or isolation["mixed_scope_aggregation"] != "forbidden"
+        or isolation["source_target_scope_join"] != "fail_closed_exact_identity_join"
+        or any(stage not in chronology for stage in required_stages)
+        or tuple(chronology.index(stage) for stage in required_stages)
+        != tuple(sorted(chronology.index(stage) for stage in required_stages))
+    ):
+        raise ProtocolViolation(
+            "scope-independent extension protocol contradicts base scope"
+        )
+    return {
+        "role_axis": {
+            ExtensionTemplateRole.NEW_CHECK: "Q",
+            ExtensionTemplateRole.NEW_TREATMENT: "A",
+        }[role],
+        "successor_axis_coverage": tuple(template["successor_axis_order"]),
+        "required_changed_axes": tuple(template["required_changed_axes"]),
+        "allowed_changed_axes": tuple(template["allowed_changed_axes"]),
+        "role_specific_allowed_changed_axes": tuple(
+            template["role_specific_allowed_changed_axes"]
+        ),
+        "chronology": chronology,
+        "extension_scope_spec_contract_preimage_schema": scope_spec_preimage[
+            "schema_version"
+        ],
+        "extension_scope_spec_contract_preimage_label": scope_spec_preimage["label"],
+        "extension_scope_spec_contract_preimage_encoding": scope_spec_preimage[
+            "encoding"
+        ],
+        "extension_scope_spec_contract_schema": scope_spec_contract["schema_version"],
+        "extension_scope_spec_contract_byte_count": scope_spec_preimage["byte_count"],
+        "extension_scope_spec_contract_artifact_digest": scope_spec_preimage["digest"],
+        "extension_scope_spec_schema": actual_diff["extension_scope_spec_schema"],
+        "extension_scope_spec_parser": actual_diff["extension_scope_spec_parser"],
+        "successor_scope_deriver": actual_diff["successor_deriver"],
+        "distance_derivation_declaration_schema": distance_declaration_schema,
+        "distance_derivation_contract_preimage_schema": distance_preimage[
+            "schema_version"
+        ],
+        "distance_derivation_contract_preimage_label": distance_preimage["label"],
+        "distance_derivation_contract_preimage_encoding": distance_preimage["encoding"],
+        "distance_derivation_contract_schema": distance_contract["schema_version"],
+        "distance_derivation_contract_byte_count": distance_preimage["byte_count"],
+        "distance_derivation_contract_artifact_digest": distance_preimage["digest"],
+        "distance_derivation_contract_digest": template[
+            "distance_derivation_contract_digest"
+        ],
+        "distance_axis_rule": template["distance_axis_rule"],
+        "actual_scope_diff_schema": actual_diff["schema_version"],
+        "successor_receipt_schema": receipt["schema_version"],
+        "first_query_envelope_schema": receipt["first_query_envelope_schema"],
+        "first_result_envelope_schema": receipt["first_result_envelope_schema"],
+        "external_artifact_storage": receipt["storage"],
+        "actual_diff_required_verifications": tuple(
+            actual_diff["required_verifications"]
+        ),
+        "successor_receipt_required_verifications": tuple(
+            receipt["required_verifications"]
+        ),
+        "primary_aggregate_eligible": receipt["primary_aggregate_eligible"],
+        "successor_runtime_eligible": receipt["successor_runtime_eligible"],
+        "runtime_binding_status": receipt["runtime_binding_status"],
+        "extension_result_namespace": isolation["extension_result_namespace"],
+        "mixed_scope_aggregation": isolation["mixed_scope_aggregation"],
+        "source_target_scope_join": isolation["source_target_scope_join"],
+        "successor_runtime_requirements": _typed_post_scope_requirements(
+            wire["successor_blockers"], "extension successor runtime requirements"
+        ),
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class ExtensionScopeTransitionDeclaration:
+    """Exact base reference to an external, post-reveal S-prime receipt chain."""
+
+    protocol_reference: ExactProtocolReference
+    semantic: ExtensionSemantic
+    primary_role: ExtensionTemplateRole
+    role_axis: str
+    successor_axis_coverage: tuple[str, ...]
+    required_changed_axes: tuple[str, ...]
+    allowed_changed_axes: tuple[str, ...]
+    role_specific_allowed_changed_axes: tuple[str, ...]
+    chronology: tuple[str, ...]
+    closure_status: str
+    extension_scope_spec_contract_preimage_schema: str
+    extension_scope_spec_contract_preimage_label: str
+    extension_scope_spec_contract_preimage_encoding: str
+    extension_scope_spec_contract_schema: str
+    extension_scope_spec_contract_byte_count: int
+    extension_scope_spec_contract_artifact_digest: str
+    extension_scope_spec_schema: str
+    extension_scope_spec_parser: str
+    successor_scope_deriver: str
+    distance_derivation_declaration_schema: str
+    distance_derivation_contract_preimage_schema: str
+    distance_derivation_contract_preimage_label: str
+    distance_derivation_contract_preimage_encoding: str
+    distance_derivation_contract_schema: str
+    distance_derivation_contract_byte_count: int
+    distance_derivation_contract_artifact_digest: str
+    distance_derivation_contract_digest: str
+    distance_axis_rule: str
+    actual_scope_diff_schema: str
+    successor_receipt_schema: str
+    first_query_envelope_schema: str
+    first_result_envelope_schema: str
+    external_artifact_storage: str
+    actual_diff_required_verifications: tuple[str, ...]
+    successor_receipt_required_verifications: tuple[str, ...]
+    primary_aggregate_eligible: bool
+    successor_runtime_eligible: bool
+    runtime_binding_status: str
+    extension_result_namespace: str
+    mixed_scope_aggregation: str
+    source_target_scope_join: str
+    successor_runtime_requirements: tuple[PostScopeAuthorityRequirement, ...]
+    task_relation: str
+
+    def __post_init__(
+        self, contract_provider: Any = _extension_protocol_contract
+    ) -> None:
+        if _extension_protocol_contract is not contract_provider:
+            raise ProtocolViolation("extension protocol contract provider drifted")
+        contract = contract_provider(self.primary_role)
+        if (
+            type(self.protocol_reference) is not ExactProtocolReference
+            or self.protocol_reference.kind
+            is not ProtocolReferenceKind.EXTENSION_TEMPLATE_SET
+            or self.semantic is not ExtensionSemantic.OPAQUE_POST_SEAL_SCOPE_SUCCESSOR
+            or self.role_axis != contract["role_axis"]
+            or self.successor_axis_coverage != contract["successor_axis_coverage"]
+            or self.required_changed_axes != contract["required_changed_axes"]
+            or self.required_changed_axes != (self.role_axis,)
+            or self.allowed_changed_axes != contract["allowed_changed_axes"]
+            or self.role_specific_allowed_changed_axes
+            != contract["role_specific_allowed_changed_axes"]
+            or not set(self.required_changed_axes).issubset(
+                self.role_specific_allowed_changed_axes
+            )
+            or self.chronology != contract["chronology"]
+            or self.closure_status != "protocol_complete_predecessor"
+            or self.extension_scope_spec_contract_preimage_schema
+            != contract["extension_scope_spec_contract_preimage_schema"]
+            or self.extension_scope_spec_contract_preimage_label
+            != contract["extension_scope_spec_contract_preimage_label"]
+            or self.extension_scope_spec_contract_preimage_encoding
+            != contract["extension_scope_spec_contract_preimage_encoding"]
+            or self.extension_scope_spec_contract_schema
+            != contract["extension_scope_spec_contract_schema"]
+            or self.extension_scope_spec_contract_byte_count
+            != contract["extension_scope_spec_contract_byte_count"]
+            or self.extension_scope_spec_contract_artifact_digest
+            != contract["extension_scope_spec_contract_artifact_digest"]
+            or self.extension_scope_spec_schema
+            != contract["extension_scope_spec_schema"]
+            or self.extension_scope_spec_parser
+            != contract["extension_scope_spec_parser"]
+            or self.successor_scope_deriver != contract["successor_scope_deriver"]
+            or self.distance_derivation_declaration_schema
+            != contract["distance_derivation_declaration_schema"]
+            or self.distance_derivation_contract_preimage_schema
+            != contract["distance_derivation_contract_preimage_schema"]
+            or self.distance_derivation_contract_preimage_label
+            != contract["distance_derivation_contract_preimage_label"]
+            or self.distance_derivation_contract_preimage_encoding
+            != contract["distance_derivation_contract_preimage_encoding"]
+            or self.distance_derivation_contract_schema
+            != contract["distance_derivation_contract_schema"]
+            or self.distance_derivation_contract_byte_count
+            != contract["distance_derivation_contract_byte_count"]
+            or self.distance_derivation_contract_artifact_digest
+            != contract["distance_derivation_contract_artifact_digest"]
+            or self.distance_derivation_contract_digest
+            != contract["distance_derivation_contract_digest"]
+            or self.distance_axis_rule != contract["distance_axis_rule"]
+            or self.actual_scope_diff_schema != contract["actual_scope_diff_schema"]
+            or self.successor_receipt_schema != contract["successor_receipt_schema"]
+            or self.first_query_envelope_schema
+            != contract["first_query_envelope_schema"]
+            or self.first_result_envelope_schema
+            != contract["first_result_envelope_schema"]
+            or self.external_artifact_storage != contract["external_artifact_storage"]
+            or self.actual_diff_required_verifications
+            != contract["actual_diff_required_verifications"]
+            or self.successor_receipt_required_verifications
+            != contract["successor_receipt_required_verifications"]
+            or self.primary_aggregate_eligible
+            is not contract["primary_aggregate_eligible"]
+            or self.successor_runtime_eligible
+            is not contract["successor_runtime_eligible"]
+            or self.runtime_binding_status != contract["runtime_binding_status"]
+            or self.extension_result_namespace != contract["extension_result_namespace"]
+            or self.mixed_scope_aggregation != contract["mixed_scope_aggregation"]
+            or self.source_target_scope_join != contract["source_target_scope_join"]
+            or self.successor_runtime_requirements
+            != contract["successor_runtime_requirements"]
+            or not self.successor_runtime_requirements
+            or any(
+                type(requirement) is not PostScopeAuthorityRequirement
+                or requirement.schema_version != "ucm-successor-runtime-blocker/1"
+                or requirement.blocks_base_scope is not False
+                for requirement in self.successor_runtime_requirements
+            )
+            or self.task_relation != "world_extension_is_distinct_from_new_readout_task"
+        ):
+            raise ProtocolViolation(
+                "extension transition declaration is not the exact base contract"
+            )
+
+    @property
+    def successor_runtime_requirement_count(self) -> int:
+        return len(self.successor_runtime_requirements)
+
+    def to_wire(self) -> dict[str, Any]:
+        return {
+            "protocol_reference": self.protocol_reference.to_wire(),
+            "semantic": self.semantic.value,
+            "primary_role": self.primary_role.value,
+            "role_axis": self.role_axis,
+            "successor_axis_coverage": list(self.successor_axis_coverage),
+            "required_changed_axes": list(self.required_changed_axes),
+            "allowed_changed_axes": list(self.allowed_changed_axes),
+            "role_specific_allowed_changed_axes": list(
+                self.role_specific_allowed_changed_axes
+            ),
+            "chronology": list(self.chronology),
+            "closure_status": self.closure_status,
+            "extension_scope_spec_contract": {
+                "preimage_schema": self.extension_scope_spec_contract_preimage_schema,
+                "preimage_label": self.extension_scope_spec_contract_preimage_label,
+                "preimage_encoding": self.extension_scope_spec_contract_preimage_encoding,
+                "contract_schema": self.extension_scope_spec_contract_schema,
+                "byte_count": self.extension_scope_spec_contract_byte_count,
+                "artifact_digest": self.extension_scope_spec_contract_artifact_digest,
+                "typed_spec_schema": self.extension_scope_spec_schema,
+                "parser": self.extension_scope_spec_parser,
+                "successor_deriver": self.successor_scope_deriver,
+            },
+            "distance_derivation_contract": {
+                "declaration_schema": self.distance_derivation_declaration_schema,
+                "preimage_schema": self.distance_derivation_contract_preimage_schema,
+                "preimage_label": self.distance_derivation_contract_preimage_label,
+                "preimage_encoding": self.distance_derivation_contract_preimage_encoding,
+                "contract_schema": self.distance_derivation_contract_schema,
+                "byte_count": self.distance_derivation_contract_byte_count,
+                "artifact_digest": self.distance_derivation_contract_artifact_digest,
+                "contract_digest": self.distance_derivation_contract_digest,
+                "distance_axis_rule": self.distance_axis_rule,
+            },
+            "external_successor_contract": {
+                "actual_scope_diff_schema": self.actual_scope_diff_schema,
+                "successor_receipt_schema": self.successor_receipt_schema,
+                "first_query_envelope_schema": self.first_query_envelope_schema,
+                "first_result_envelope_schema": self.first_result_envelope_schema,
+                "external_artifact_storage": self.external_artifact_storage,
+                "actual_diff_required_verifications": list(
+                    self.actual_diff_required_verifications
+                ),
+                "successor_receipt_required_verifications": list(
+                    self.successor_receipt_required_verifications
+                ),
+                "primary_aggregate_eligible": self.primary_aggregate_eligible,
+                "successor_runtime_eligible": self.successor_runtime_eligible,
+                "runtime_binding_status": self.runtime_binding_status,
+                "extension_result_namespace": self.extension_result_namespace,
+                "mixed_scope_aggregation": self.mixed_scope_aggregation,
+                "source_target_scope_join": self.source_target_scope_join,
+                "successor_runtime_requirement_count": (
+                    self.successor_runtime_requirement_count
+                ),
+                "successor_runtime_requirements": [
+                    x.to_wire() for x in self.successor_runtime_requirements
+                ],
+            },
+            "task_relation": self.task_relation,
+        }
+
+    @classmethod
+    def from_wire(cls, value: object) -> "ExtensionScopeTransitionDeclaration":
+        body = _exact_object(
+            value,
+            frozenset(
+                {
+                    "protocol_reference",
+                    "semantic",
+                    "primary_role",
+                    "role_axis",
+                    "successor_axis_coverage",
+                    "required_changed_axes",
+                    "allowed_changed_axes",
+                    "role_specific_allowed_changed_axes",
+                    "chronology",
+                    "closure_status",
+                    "extension_scope_spec_contract",
+                    "distance_derivation_contract",
+                    "external_successor_contract",
+                    "task_relation",
+                }
+            ),
+            "extension scope transition",
+        )
+        external = _exact_object(
+            body["external_successor_contract"],
+            frozenset(
+                {
+                    "actual_scope_diff_schema",
+                    "successor_receipt_schema",
+                    "first_query_envelope_schema",
+                    "first_result_envelope_schema",
+                    "external_artifact_storage",
+                    "actual_diff_required_verifications",
+                    "successor_receipt_required_verifications",
+                    "primary_aggregate_eligible",
+                    "successor_runtime_eligible",
+                    "runtime_binding_status",
+                    "extension_result_namespace",
+                    "mixed_scope_aggregation",
+                    "source_target_scope_join",
+                    "successor_runtime_requirement_count",
+                    "successor_runtime_requirements",
+                }
+            ),
+            "external successor contract",
+        )
+        scope_spec = _exact_object(
+            body["extension_scope_spec_contract"],
+            frozenset(
+                {
+                    "preimage_schema",
+                    "preimage_label",
+                    "preimage_encoding",
+                    "contract_schema",
+                    "byte_count",
+                    "artifact_digest",
+                    "typed_spec_schema",
+                    "parser",
+                    "successor_deriver",
+                }
+            ),
+            "extension scope spec contract",
+        )
+        distance = _exact_object(
+            body["distance_derivation_contract"],
+            frozenset(
+                {
+                    "declaration_schema",
+                    "preimage_schema",
+                    "preimage_label",
+                    "preimage_encoding",
+                    "contract_schema",
+                    "byte_count",
+                    "artifact_digest",
+                    "contract_digest",
+                    "distance_axis_rule",
+                }
+            ),
+            "extension distance derivation contract",
+        )
+        if (
+            type(external["primary_aggregate_eligible"]) is not bool
+            or type(external["successor_runtime_eligible"]) is not bool
+            or type(external["successor_runtime_requirement_count"]) is not int
+            or type(external["successor_runtime_requirements"]) is not list
+            or external["successor_runtime_requirement_count"]
+            != len(external["successor_runtime_requirements"])
+            or type(scope_spec["byte_count"]) is not int
+            or type(distance["byte_count"]) is not int
+        ):
+            raise ProtocolViolation(
+                "extension successor contract counts/types are invalid"
+            )
+        return cls(
+            ExactProtocolReference.from_wire(body["protocol_reference"]),
+            _enum(ExtensionSemantic, body["semantic"], "extension semantic"),
+            _enum(ExtensionTemplateRole, body["primary_role"], "extension role"),
+            _name(body["role_axis"], "extension role axis"),
+            _strings(body["successor_axis_coverage"], "successor axis coverage"),
+            _strings(body["required_changed_axes"], "required changed axes"),
+            _strings(body["allowed_changed_axes"], "allowed changed axes"),
+            _strings(
+                body["role_specific_allowed_changed_axes"],
+                "role-specific allowed changed axes",
+            ),
+            _strings(body["chronology"], "extension chronology"),
+            _name(body["closure_status"], "extension closure status"),
+            _name(scope_spec["preimage_schema"], "scope spec preimage schema"),
+            _name(scope_spec["preimage_label"], "scope spec preimage label"),
+            _name(scope_spec["preimage_encoding"], "scope spec preimage encoding"),
+            _name(scope_spec["contract_schema"], "scope spec contract schema"),
+            scope_spec["byte_count"],
+            _name(scope_spec["artifact_digest"], "scope spec contract digest"),
+            _name(scope_spec["typed_spec_schema"], "typed extension spec schema"),
+            _name(scope_spec["parser"], "typed extension spec parser"),
+            _name(scope_spec["successor_deriver"], "successor scope deriver"),
+            _name(distance["declaration_schema"], "distance declaration schema"),
+            _name(distance["preimage_schema"], "distance preimage schema"),
+            _name(distance["preimage_label"], "distance preimage label"),
+            _name(distance["preimage_encoding"], "distance preimage encoding"),
+            _name(distance["contract_schema"], "distance contract schema"),
+            distance["byte_count"],
+            _name(distance["artifact_digest"], "distance contract artifact digest"),
+            _name(distance["contract_digest"], "distance derivation contract digest"),
+            _name(distance["distance_axis_rule"], "distance axis rule"),
+            _name(external["actual_scope_diff_schema"], "actual diff schema"),
+            _name(external["successor_receipt_schema"], "successor receipt schema"),
+            _name(external["first_query_envelope_schema"], "first query schema"),
+            _name(external["first_result_envelope_schema"], "first result schema"),
+            _name(external["external_artifact_storage"], "external storage"),
+            _strings(
+                external["actual_diff_required_verifications"],
+                "actual diff verifications",
+            ),
+            _strings(
+                external["successor_receipt_required_verifications"],
+                "successor receipt verifications",
+            ),
+            external["primary_aggregate_eligible"],
+            external["successor_runtime_eligible"],
+            _name(external["runtime_binding_status"], "successor runtime status"),
+            _name(external["extension_result_namespace"], "extension namespace"),
+            _name(external["mixed_scope_aggregation"], "mixed scope aggregation"),
+            _name(external["source_target_scope_join"], "scope join"),
+            tuple(
+                PostScopeAuthorityRequirement.from_wire(x)
+                for x in external["successor_runtime_requirements"]
+            ),
+            _name(body["task_relation"], "extension task relation"),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class ResourceAxis:
     identification: str
     base_candidate_methods: tuple[str, ...]
     split_roles: tuple[SplitRoleDeclaration, ...]
     projection_layers: tuple[str, ...]
     test_split_alias: str
-    extension_semantics: ExtensionSemantic
+    family_split_derivation: FamilySplitDerivationRequirement
+    extension_transition: ExtensionScopeTransitionDeclaration | None
     worker_contracts: tuple[tuple[str, str], ...]
     training_track: str
+
+    def __post_init__(self) -> None:
+        if type(self.family_split_derivation) is not FamilySplitDerivationRequirement:
+            raise ProtocolViolation("R family/split derivation requirement is untyped")
+        if self.extension_transition is not None and (
+            type(self.extension_transition) is not ExtensionScopeTransitionDeclaration
+        ):
+            raise ProtocolViolation("R extension transition is untyped")
+
+    @property
+    def extension_semantics(self) -> ExtensionSemantic:
+        return (
+            ExtensionSemantic.NONE
+            if self.extension_transition is None
+            else self.extension_transition.semantic
+        )
 
     def to_wire(self) -> dict[str, Any]:
         return {
@@ -847,7 +2108,12 @@ class ResourceAxis:
             "split_roles": [x.to_wire() for x in self.split_roles],
             "projection_layers": list(self.projection_layers),
             "test_split_alias": self.test_split_alias,
-            "extension_semantics": self.extension_semantics.value,
+            "family_split_derivation": self.family_split_derivation.to_wire(),
+            "extension_transition": (
+                None
+                if self.extension_transition is None
+                else self.extension_transition.to_wire()
+            ),
             "worker_contracts": {k: v for k, v in self.worker_contracts},
             "training_track": self.training_track,
         }
@@ -863,7 +2129,8 @@ class ResourceAxis:
                     "split_roles",
                     "projection_layers",
                     "test_split_alias",
-                    "extension_semantics",
+                    "family_split_derivation",
+                    "extension_transition",
                     "worker_contracts",
                     "training_track",
                 }
@@ -881,7 +2148,14 @@ class ResourceAxis:
             tuple(SplitRoleDeclaration.from_wire(x) for x in body["split_roles"]),
             _strings(body["projection_layers"], "R layers"),
             _name(body["test_split_alias"], "R alias"),
-            _enum(ExtensionSemantic, body["extension_semantics"], "R extension"),
+            FamilySplitDerivationRequirement.from_wire(body["family_split_derivation"]),
+            (
+                None
+                if body["extension_transition"] is None
+                else ExtensionScopeTransitionDeclaration.from_wire(
+                    body["extension_transition"]
+                )
+            ),
             tuple(
                 (_name(k, "R worker"), _name(v, "R contract"))
                 for k, v in body["worker_contracts"].items()
@@ -908,6 +2182,37 @@ class ScopeAxes:
         if tuple(self.to_wire()) != SCOPE_AXES:
             raise ProtocolViolation(
                 "fragment axes are not exact formal eleven-axis order"
+            )
+        transition = self.R.extension_transition
+        action_template = self.A.extension_commitment_template
+        check_template = self.Q.extension_commitment_template
+        if transition is None:
+            if action_template is not None or check_template is not None:
+                raise ProtocolViolation(
+                    "extension template cannot exist without R transition"
+                )
+        elif transition.primary_role is ExtensionTemplateRole.NEW_CHECK:
+            if (
+                action_template is not None
+                or check_template is None
+                or check_template.role is not ExtensionTemplateRole.NEW_CHECK
+                or transition.role_axis != "Q"
+                or "Q" not in transition.role_specific_allowed_changed_axes
+                or check_template.protocol_reference != transition.protocol_reference
+            ):
+                raise ProtocolViolation(
+                    "new-check extension must bind Q template and matching R transition"
+                )
+        elif (
+            check_template is not None
+            or action_template is None
+            or action_template.role is not ExtensionTemplateRole.NEW_TREATMENT
+            or transition.role_axis != "A"
+            or "A" not in transition.role_specific_allowed_changed_axes
+            or action_template.protocol_reference != transition.protocol_reference
+        ):
+            raise ProtocolViolation(
+                "new-treatment extension must bind A template and matching R transition"
             )
 
     def to_wire(self) -> dict[str, Any]:
@@ -1029,6 +2334,16 @@ class WorldScopeFragment:
             self.world_slot
         ):
             raise ProtocolViolation("fragment axes/task rows are not code-owned")
+        expected_extension_role = {
+            "W16": ExtensionTemplateRole.NEW_CHECK,
+            "W17": ExtensionTemplateRole.NEW_TREATMENT,
+        }.get(self.world_slot)
+        transition = self.axes.R.extension_transition
+        actual_extension_role = None if transition is None else transition.primary_role
+        if actual_extension_role is not expected_extension_role:
+            raise ProtocolViolation(
+                "fragment world identity contradicts extension transition role"
+            )
 
     @property
     def identity(self) -> tuple[str, str]:
@@ -1248,26 +2563,183 @@ def _metric_target_binding() -> tuple[str, str, int, tuple[tuple[str, str], ...]
     )
 
 
-def _extension(slot: str) -> ExtensionSemantic:
-    if slot == "W16":
-        if (
-            EXTENSION_WORLD_REGISTRY[slot].custody_factory_name
-            != "make_w16_extension_custody"
-        ):
-            raise ProtocolViolation("W16 extension semantic drifted")
-        return ExtensionSemantic.NEW_CHECK_SCOPE_REFINEMENT
-    if slot == "W17":
-        if (
-            EXTENSION_WORLD_REGISTRY[slot].custody_factory_name
-            != "make_w17_extension_custody"
-        ):
-            raise ProtocolViolation("W17 extension semantic drifted")
-        return ExtensionSemantic.NEW_TREATMENT_SCOPE_REFINEMENT
-    return ExtensionSemantic.NONE
+def _family_split_derivation_requirement() -> FamilySplitDerivationRequirement:
+    protocol_wire = parse_split_derivation_protocol_bytes(
+        SPLIT_DERIVATION_PROTOCOL_BYTES
+    ).to_wire()
+    inventory = protocol_wire["protocol"]["inventory_semantics"]
+    pairing = protocol_wire["protocol"]["zipped_seed_semantics"]["pairing"]
+    post_scope_requirements = _typed_post_scope_requirements(
+        protocol_wire["post_scope_requirements"], "split post-scope requirements"
+    )
+    if (
+        protocol_wire["scope_binding_status"] != "not_bound"
+        or protocol_wire["gap_count"] != 0
+        or protocol_wire["gaps"] != []
+        or protocol_wire["post_scope_requirement_count"]
+        != len(protocol_wire["post_scope_requirements"])
+        or not protocol_wire["post_scope_requirements"]
+        or post_scope_requirements != _SPLIT_POST_SCOPE_AUTHORITY_REQUIREMENTS
+        or any(
+            row["blocks_base_scope"] is not False
+            for row in protocol_wire["post_scope_requirements"]
+        )
+        or protocol_wire["protocol"]["deterministic_derivation"][
+            "materialized_assignments"
+        ]
+        != "excluded"
+        or protocol_wire["protocol"]["deterministic_derivation"][
+            "materialized_partitions"
+        ]
+        != "excluded"
+        or tuple(
+            (row["training_replicate_id"], row["evaluation_replicate_id"])
+            for row in pairing
+        )
+        != ZIPPED_REPLICATE_IDS
+    ):
+        raise ProtocolViolation(
+            "scope-independent split derivation protocol contradicts base scope"
+        )
+    reference = _exact_protocol_reference_contract(
+        ProtocolReferenceKind.FAMILY_SPLIT_DERIVATION
+    )
+    return FamilySplitDerivationRequirement(
+        ExactProtocolReference(
+            ProtocolReferenceKind.FAMILY_SPLIT_DERIVATION, *reference
+        ),
+        "protocol_complete_predecessor",
+        inventory["panel_count"],
+        inventory["task_count"],
+        inventory["split_count"],
+        inventory["physical_assignment_count"],
+        inventory["task_projection_count"],
+        inventory["physical_partition_count"],
+        inventory["panel_task_split_projection_count"],
+        inventory["zipped_slot_count_per_panel_split"],
+        inventory["zipped_slot_count"],
+        tuple(
+            ZippedSlotTiming(
+                training_id,
+                evaluation_id,
+                "post_freeze_pre_training_precommit",
+                "post_candidate_seals_hidden_commitment",
+                "post_corpus_finalization",
+            )
+            for training_id, evaluation_id in ZIPPED_REPLICATE_IDS
+        ),
+        FamilySplitDerivationRequirement._CHRONOLOGY,
+        "post_scope_authorization",
+        "actual_authorities_bind_S_one_way_and_never_feed_back_into_S",
+        post_scope_requirements,
+        FamilySplitDerivationRequirement._FORBIDDEN,
+    )
+
+
+def _extension_role(slot: str) -> ExtensionTemplateRole | None:
+    expected = {
+        "W16": (
+            "make_w16_extension_custody",
+            ExtensionTemplateRole.NEW_CHECK,
+        ),
+        "W17": (
+            "make_w17_extension_custody",
+            ExtensionTemplateRole.NEW_TREATMENT,
+        ),
+    }
+    if slot not in expected:
+        return None
+    factory_name, role = expected[slot]
+    if EXTENSION_WORLD_REGISTRY[slot].custody_factory_name != factory_name:
+        raise ProtocolViolation(f"{slot} extension commitment source drifted")
+    return role
+
+
+def _extension_template(role: ExtensionTemplateRole) -> ExtensionCommitmentTemplate:
+    reference = _exact_protocol_reference_contract(
+        ProtocolReferenceKind.EXTENSION_TEMPLATE_SET
+    )
+    return ExtensionCommitmentTemplate(
+        {
+            ExtensionTemplateRole.NEW_CHECK: "W16-new-check-template",
+            ExtensionTemplateRole.NEW_TREATMENT: "W17-new-treatment-template",
+        }[role],
+        role,
+        ExactProtocolReference(
+            ProtocolReferenceKind.EXTENSION_TEMPLATE_SET, *reference
+        ),
+        "opaque_hiding_commitment_before_candidate_model_state_seals",
+        "exact_opening_only_after_candidate_model_state_seals",
+        "exact_commit_reveal_schema_algorithm_and_source_preimage",
+        "protocol_complete_predecessor",
+        "actual_commitment_and_revealed_payload_excluded",
+        "R.extension_transition",
+    )
+
+
+def _extension_transition(
+    role: ExtensionTemplateRole | None,
+) -> ExtensionScopeTransitionDeclaration | None:
+    if role is None:
+        return None
+    contract = _extension_protocol_contract(role)
+    reference = _exact_protocol_reference_contract(
+        ProtocolReferenceKind.EXTENSION_TEMPLATE_SET
+    )
+    return ExtensionScopeTransitionDeclaration(
+        ExactProtocolReference(
+            ProtocolReferenceKind.EXTENSION_TEMPLATE_SET, *reference
+        ),
+        ExtensionSemantic.OPAQUE_POST_SEAL_SCOPE_SUCCESSOR,
+        role,
+        contract["role_axis"],
+        contract["successor_axis_coverage"],
+        contract["required_changed_axes"],
+        contract["allowed_changed_axes"],
+        contract["role_specific_allowed_changed_axes"],
+        contract["chronology"],
+        "protocol_complete_predecessor",
+        contract["extension_scope_spec_contract_preimage_schema"],
+        contract["extension_scope_spec_contract_preimage_label"],
+        contract["extension_scope_spec_contract_preimage_encoding"],
+        contract["extension_scope_spec_contract_schema"],
+        contract["extension_scope_spec_contract_byte_count"],
+        contract["extension_scope_spec_contract_artifact_digest"],
+        contract["extension_scope_spec_schema"],
+        contract["extension_scope_spec_parser"],
+        contract["successor_scope_deriver"],
+        contract["distance_derivation_declaration_schema"],
+        contract["distance_derivation_contract_preimage_schema"],
+        contract["distance_derivation_contract_preimage_label"],
+        contract["distance_derivation_contract_preimage_encoding"],
+        contract["distance_derivation_contract_schema"],
+        contract["distance_derivation_contract_byte_count"],
+        contract["distance_derivation_contract_artifact_digest"],
+        contract["distance_derivation_contract_digest"],
+        contract["distance_axis_rule"],
+        contract["actual_scope_diff_schema"],
+        contract["successor_receipt_schema"],
+        contract["first_query_envelope_schema"],
+        contract["first_result_envelope_schema"],
+        contract["external_artifact_storage"],
+        contract["actual_diff_required_verifications"],
+        contract["successor_receipt_required_verifications"],
+        contract["primary_aggregate_eligible"],
+        contract["successor_runtime_eligible"],
+        contract["runtime_binding_status"],
+        contract["extension_result_namespace"],
+        contract["mixed_scope_aggregation"],
+        contract["source_target_scope_join"],
+        contract["successor_runtime_requirements"],
+        "world_extension_is_distinct_from_new_readout_task",
+    )
 
 
 def _build_panel(
-    slot: str, panel: PanelDeclaration, world: MicroWorld
+    slot: str,
+    panel: PanelDeclaration,
+    world: MicroWorld,
+    family_split_derivation: FamilySplitDerivationRequirement,
 ) -> WorldScopeFragment:
     catalog = world.catalog
     if type(catalog) is not PublicCatalog:
@@ -1291,6 +2763,7 @@ def _build_panel(
     metric_artifact_digest, metric_target_digest, bins, margin_sources = (
         _metric_target_binding()
     )
+    extension_role = _extension_role(slot)
     split_roles = tuple(
         SplitRoleDeclaration(
             split,
@@ -1324,10 +2797,22 @@ def _build_panel(
             channels,
         ),
         A=ActionAxis(
-            "counterfactual_is_do_policy_not_observational_conditioning", actions
+            "counterfactual_is_do_policy_not_observational_conditioning",
+            actions,
+            (
+                _extension_template(extension_role)
+                if extension_role is ExtensionTemplateRole.NEW_TREATMENT
+                else None
+            ),
         ),
         Q=CheckAxis(
-            "check_changes_information_availability_after_declared_delay", checks
+            "check_changes_information_availability_after_declared_delay",
+            checks,
+            (
+                _extension_template(extension_role)
+                if extension_role is ExtensionTemplateRole.NEW_CHECK
+                else None
+            ),
         ),
         Pi=PolicyAxis("MicroWorld.policy_set(horizon)", policies),
         Tau=HorizonAxis(catalog.horizons, catalog.time_unit),
@@ -1367,7 +2852,8 @@ def _build_panel(
             split_roles,
             ("candidate_inputs", "trainer_targets", "judge_oracle"),
             "sealed_test->test",
-            _extension(slot),
+            family_split_derivation,
+            _extension_transition(extension_role),
             (
                 (
                     "extension_worker",
@@ -1390,9 +2876,15 @@ def _build_panel(
 
 def build_code_owned_world_scope_fragments() -> WorldScopeFragmentSet:
     _assert_live_shape()
+    family_split_derivation = _family_split_derivation_requirement()
     return WorldScopeFragmentSet(
         tuple(
-            _build_panel(slot, panel, panel.instantiate())
+            _build_panel(
+                slot,
+                panel,
+                panel.instantiate(),
+                family_split_derivation,
+            )
             for slot, decl in WORLD_REGISTRY.items()
             for panel in decl.panels
         )
@@ -1583,13 +3075,6 @@ def _gap_inventory(fragments: WorldScopeFragmentSet) -> tuple[ScopeClosureGap, .
                 _gap(
                     f,
                     "R",
-                    "family_assignment",
-                    ScopeGapCode.R_FAMILY_ASSIGNMENT,
-                    "family-atomic split assignment is not frozen",
-                ),
-                _gap(
-                    f,
-                    "R",
                     "training_data_budget",
                     ScopeGapCode.R_DATA_BUDGET,
                     "training data budget is not typed",
@@ -1668,36 +3153,6 @@ def _gap_inventory(fragments: WorldScopeFragmentSet) -> tuple[ScopeClosureGap, .
             )
             for x in adaptive
         )
-        if f.world_slot == "W16":
-            gaps.append(
-                _gap(
-                    f,
-                    "Q",
-                    "S-prime-new-check",
-                    ScopeGapCode.Q_W16_EXTENSION,
-                    "W16 target S-prime new-check scope is not closed",
-                )
-            )
-        if f.world_slot == "W17":
-            gaps.append(
-                _gap(
-                    f,
-                    "A",
-                    "S-prime-new-treatment",
-                    ScopeGapCode.A_W17_EXTENSION,
-                    "W17 target S-prime new-treatment scope is not closed",
-                )
-            )
-        if f.world_slot in {"W16", "W17"}:
-            gaps.append(
-                _gap(
-                    f,
-                    "R",
-                    "S-prime-eleven-axis",
-                    ScopeGapCode.R_EXTENSION_SCOPE,
-                    "extension target whole eleven-axis scope is not closed",
-                )
-            )
     return tuple(gaps)
 
 
@@ -1743,8 +3198,10 @@ __all__ = [
     "CODE_OWNED_WORLD_SCOPE_FRAGMENTS",
     "EXPECTED_PANEL_IDENTITIES",
     "ExtensionSemantic",
+    "ExtensionTemplateRole",
     "GapScope",
     "PlannedActionDeclaration",
+    "PostScopeAuthorityRequirement",
     "ScopeGapCode",
     "TaskApplicability",
     "WORLD_SCOPE_FRAGMENT_DOMAIN",
