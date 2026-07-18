@@ -84,6 +84,61 @@ def diagnostic_metrics(
     )
 
 
+def benchmark_v1_diagnostic_metrics(
+    probabilities: Any,
+    true_class: Any,
+) -> DiagnosticMetricVector:
+    """Isolated PRE-FREEZE 15-bin target implementation for later evaluation.
+
+    The current evaluator is intentionally not switched by this function.  A
+    future migration may opt in only after the target registry has been replaced
+    by a closed semantic metric configuration and the evaluator binds that
+    configuration plus this runtime implementation.  Binding the current
+    unresolved ``metric_target_digest`` alone is explicitly insufficient.
+    """
+
+    probs = _probability_matrix(probabilities, "diagnostic probabilities")
+    labels = np.asarray(true_class)
+    if labels.ndim != 1 or labels.shape[0] != probs.shape[0]:
+        raise ProtocolViolation("true_class must align with probability rows")
+    if not np.issubdtype(labels.dtype, np.integer):
+        raise ProtocolViolation("true_class must contain integer indexes")
+    labels = labels.astype(np.int64, copy=False)
+    if np.any(labels < 0) or np.any(labels >= probs.shape[1]):
+        raise ProtocolViolation("true_class contains an out-of-range index")
+
+    rows = np.arange(probs.shape[0])
+    chosen = np.argmax(probs, axis=1)
+    accuracy = float(np.mean(chosen == labels))
+    log_loss = float(-np.mean(np.log(np.clip(probs[rows, labels], 1e-12, 1.0 - 1e-12))))
+    one_hot = np.zeros_like(probs)
+    one_hot[rows, labels] = 1.0
+    brier = float(np.mean(np.sum((probs - one_hot) ** 2, axis=1)))
+
+    confidence = np.max(probs, axis=1)
+    correct = (chosen == labels).astype(np.float64)
+    edges = np.quantile(
+        confidence,
+        np.arange(1, 15, dtype=np.float64) / 15,
+        method="linear",
+    )
+    bin_index = np.searchsorted(edges, confidence, side="right")
+    ece = 0.0
+    for index in range(15):
+        mask = bin_index == index
+        if np.any(mask):
+            ece += float(np.mean(mask)) * abs(
+                float(np.mean(confidence[mask])) - float(np.mean(correct[mask]))
+            )
+    return DiagnosticMetricVector(
+        count=probs.shape[0],
+        accuracy=accuracy,
+        log_loss=log_loss,
+        multiclass_brier=brier,
+        expected_calibration_error=ece,
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class TrajectoryMetricVector:
     count: int
@@ -203,9 +258,7 @@ def binary_roc_auc(scores: Any, labels: Any) -> float:
         ranks[order[start:end]] = average_rank
         start = end
     rank_sum = float(np.sum(ranks[target == 1]))
-    return (rank_sum - positive * (positive + 1) / 2.0) / (
-        positive * negative
-    )
+    return (rank_sum - positive * (positive + 1) / 2.0) / (positive * negative)
 
 
 class InformationRelation(str, Enum):
@@ -243,7 +296,11 @@ class PairClassification:
 
 
 def _max_distance(first: tuple[float, ...], second: tuple[float, ...]) -> float:
-    if type(first) is not tuple or type(second) is not tuple or len(first) != len(second):
+    if (
+        type(first) is not tuple
+        or type(second) is not tuple
+        or len(first) != len(second)
+    ):
         raise ProtocolViolation("pair signatures must be aligned tuples")
     if not first:
         raise ProtocolViolation("pair signatures must be non-empty")
