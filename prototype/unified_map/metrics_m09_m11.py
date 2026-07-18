@@ -47,7 +47,7 @@ M09_POINT_SCHEMA = "ucm-m09-learning-curve-point/1"
 M09_RESULT_SCHEMA = "ucm-m09-sample-efficiency-result/1"
 M10_PAIR_SCHEMA = "ucm-m10-heldout-matched-pair/1"
 M10_RESULT_SCHEMA = "ucm-m10-combination-generalization-result/1"
-M11_OBSERVATION_SCHEMA = "ucm-m11-extension-cost-observation/1"
+M11_OBSERVATION_SCHEMA = "ucm-m11-extension-cost-observation/2"
 M11_RESULT_SCHEMA = "ucm-m11-extension-cost-result/1"
 
 TRAIN_FRACTION_PERCENTS = (1, 5, 10, 25, 50, 100)
@@ -839,10 +839,9 @@ class CoreDiffFile:
             _nonnegative_int(value["added_lines"], "M11 core diff added_lines"),
             _nonnegative_int(value["deleted_lines"], "M11 core diff deleted_lines"),
         )
-        if result.added_lines + result.deleted_lines == 0:
-            raise ProtocolViolation(
-                "M11 changed core file must change at least one line"
-            )
+        # A committed source path can change with zero logical LOC (for example
+        # adding/removing an empty file).  The collector still has to retain the
+        # changed-file axis instead of conflating absence with empty bytes.
         return result
 
     def to_wire(self) -> dict[str, Any]:
