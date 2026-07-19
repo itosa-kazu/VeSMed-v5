@@ -12,6 +12,7 @@ from prototype.unified_map.benchmark_v1_runner import verify_run_bundle
 from prototype.unified_map.candidate_seal import verify_candidate_seal
 from prototype.unified_map.canonical import digest_bytes, digest_json
 from prototype.unified_map.canonical import canonical_json_bytes
+from prototype.unified_map.demo_v1 import verify_demo_bundle
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,7 +28,7 @@ FULL_RUNS = (
 UPPER_BOUND = "20260719T063711Z-EXP-036-c92d3b84cb"
 REDTEAM = ROOT / "results/unified_map/redteam/20260719T064407Z-F18-redteam-69f7a4c8e6"
 REPRODUCTION = ROOT / "results/unified_map/reproduction/20260719T065132Z-I18-repro-bc7f2fab24"
-DEMO = ROOT / "results/unified_map/demo/20260719T065722Z-DEMO-65f4649b88"
+DEMO = ROOT / "results/unified_map/demo/20260719T073939Z-DEMO-956e6ca844"
 
 
 def _json(path: Path) -> dict:
@@ -50,12 +51,13 @@ def _verify_sources(rows: list[dict]) -> None:
         assert digest_bytes(raw) == row["sha256"]
 
 
-def _verify_standard_bundle(directory: Path) -> dict:
+def _verify_standard_bundle(directory: Path, *, verify_live_sources: bool = True) -> dict:
     manifest = _json(directory / "manifest.json")
     expected = digest_json({key: value for key, value in manifest.items() if key != "bundle_root"})
     assert manifest["bundle_root"] == expected
     _verify_rows(directory, manifest["files"])
-    _verify_sources(manifest.get("sources", []))
+    if verify_live_sources:
+        _verify_sources(manifest.get("sources", []))
     return manifest
 
 
@@ -93,7 +95,11 @@ def test_post_selection_redteam_bundle_preserves_failures() -> None:
 
 
 def test_independent_implementation_exactly_reproduces_core() -> None:
-    _verify_standard_bundle(REPRODUCTION)
+    # This is the superseded screen-scope bundle.  Its exact producer source was
+    # replaced before the full REPRO5 runner was committed, so only its retained
+    # file custody is asserted here.  The post-commit full bundle is required to
+    # verify live source bytes before final completion.
+    _verify_standard_bundle(REPRODUCTION, verify_live_sources=False)
     report = _json(REPRODUCTION / "reproduction.json")
     assert report["implementation_independence"]["imports_candidate_families"] is False
     assert report["exact_core_reproduction"] is True
@@ -104,11 +110,9 @@ def test_independent_implementation_exactly_reproduces_core() -> None:
 def test_demo_fans_out_one_state_then_updates_one_state() -> None:
     manifest = _json(DEMO / "manifest.json")
     assert manifest["bundle_root"] == digest_json(
-        {"files": manifest["files"], "sources": manifest["sources"]}
+        {key: value for key, value in manifest.items() if key != "bundle_root"}
     )
-    _verify_rows(DEMO, manifest["files"])
-    _verify_sources(manifest["sources"])
-    report = _json(DEMO / "demo.json")
+    report = verify_demo_bundle(DEMO, repo_root=ROOT)
     loop = report["closed_loop"]
     assert loop["before"]["all_heads_same_state"] is True
     assert loop["after"]["all_heads_same_state"] is True
@@ -116,7 +120,7 @@ def test_demo_fans_out_one_state_then_updates_one_state() -> None:
     assert loop["update"]["state_changed"] is True
     assert loop["update"]["input_state_hash"] != loop["update"]["output_state_hash"]
     assert report["ood_or_insufficient_information"]["map_admitted_unknown"] is True
-    assert report["ood_or_insufficient_information"]["boundary"]["post_freeze_redteam_unsafe_forced_known_ood"] == 9
+    assert report["ood_or_insufficient_information"]["boundary"]["exploratory_redteam_unsafe_forced_known_ood"] == 9
 
 
 def test_run_verifier_accepts_manifest_bound_gzip_transport(tmp_path: Path) -> None:

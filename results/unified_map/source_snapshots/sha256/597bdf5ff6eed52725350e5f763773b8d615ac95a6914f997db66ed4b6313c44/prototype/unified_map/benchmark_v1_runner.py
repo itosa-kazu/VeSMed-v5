@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
-import gzip
 import hashlib
 import json
 import math
@@ -37,21 +36,16 @@ from .benchmark_v1_contract import (
     rollout_scores,
     treatment_regret,
 )
-from .benchmark_v1_authority import load_seed_authority
 from .benchmark_v1_freeze import (
     FREEZE_FILENAME,
     MODEL_SEEDS,
     REPLICATE_IDS,
+    SEED_SECRET_SCHEMA,
     SPLIT_EPISODES_PER_PANEL,
+    build_seed_reveal,
     verify_freeze_manifest_bytes,
 )
-from .baselines_v2 import make_baseline_v2
 from .candidate_families import make_candidate
-from .f22_switching_particle import make_f22_candidate
-from .postseal_confirm5 import (
-    normalize_to_benchmark_v1_execution_secret,
-    verify_commitment_bytes as verify_confirm5_commitment_bytes,
-)
 from .canonical import (
     ProtocolViolation,
     canonical_json_bytes,
@@ -68,17 +62,6 @@ RUN_PROTOCOL = "ucm-benchmark-v1-run/1"
 RUN_MANIFEST_PROTOCOL = "ucm-benchmark-v1-run-manifest/1"
 SEED_DERIVATION_DOMAIN = b"UCM_BENCHMARK_V1_DERIVED_SEED\0"
 DEFAULT_RESULTS_ROOT = Path("results/unified_map/runs")
-BASELINE_ONLY_FAMILIES = frozenset({"B02", "B03", "B04", "B02V2", "B03V2"})
-SEPARATE_TASK_FAMILIES = frozenset({"B03", "B03V2"})
-
-
-def _make_benchmark_candidate(family_code: str, parameters: dict[str, Any]) -> Any:
-    baseline = make_baseline_v2(family_code, **parameters)
-    if baseline is not None:
-        return baseline
-    if family_code == "F22":
-        return make_f22_candidate(family_code, **parameters)
-    return make_candidate(family_code, **parameters)
 
 
 @dataclass(frozen=True, slots=True)
@@ -212,30 +195,14 @@ def _decode_canonical(path: Path, label: str) -> dict[str, Any]:
     return value
 
 
-def _load_authority(
-    freeze_path: Path,
-    secret_path: Path,
-    supplemental_commitment_path: Path | None = None,
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    """Load either the pre-reveal private secret or its public reveal."""
-
-    if supplemental_commitment_path is None:
-        return load_seed_authority(freeze_path, secret_path)
+def _load_authority(freeze_path: Path, secret_path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     freeze = verify_freeze_manifest_bytes(freeze_path.read_bytes())
-    commitment = verify_confirm5_commitment_bytes(
-        supplemental_commitment_path.read_bytes()
-    )
-    if commitment["freeze_root"] != freeze["freeze_root"]:
-        raise ProtocolViolation("supplemental seed commitment freeze mismatch")
-    authority = _decode_canonical(secret_path, "supplemental seed authority")
-    secret, provenance = normalize_to_benchmark_v1_execution_secret(
-        authority, commitment
-    )
-    provenance = {
-        **provenance,
-        "row_commitments": commitment["row_commitments"],
-    }
-    return freeze, secret, provenance
+    secret = _decode_canonical(secret_path, "benchmark seed secret")
+    if secret.get("schema_version") != SEED_SECRET_SCHEMA:
+        raise ProtocolViolation("benchmark seed secret schema mismatch")
+    # Building the reveal verifies every commitment without publishing it.
+    build_seed_reveal(secret, freeze)
+    return freeze, secret
 
 
 def _derived_seed(root_seed: int, *parts: str | int) -> int:
@@ -267,9 +234,7 @@ def _instantiate_panel(slot: str, panel_id: str) -> MicroWorld:
 def _oracle_worker_count(task_count: int) -> int:
     configured = int(os.environ.get("UCM_ORACLE_WORKERS", "0"))
     available = os.cpu_count() or 1
-    # Keep the desktop responsive by default.  High parallelism is opt-in via
-    # UCM_ORACLE_WORKERS for unattended hosts.
-    requested = configured if configured > 0 else min(2, available)
+    requested = configured if configured > 0 else min(10, available)
     return max(1, min(requested, task_count))
 
 
@@ -917,11 +882,7 @@ def _source_binding() -> dict[str, Any]:
     paths = (
         "prototype/unified_map/benchmark_v1_runner.py",
         "prototype/unified_map/benchmark_v1_full_suite.py",
-        "prototype/unified_map/benchmark_v1_authority.py",
-        "prototype/unified_map/postseal_confirm5.py",
         "prototype/unified_map/candidate_families.py",
-        "prototype/unified_map/baselines_v2.py",
-        "prototype/unified_map/f22_switching_particle.py",
     )
     rows = []
     for relative in paths:
@@ -941,14 +902,11 @@ def run_benchmark(
     freeze_path: Path | None = None,
     secret_path: Path,
     results_root: Path | None = None,
-    supplemental_commitment_path: Path | None = None,
 ) -> Path:
     root = _repo_root()
     freeze_path = freeze_path or root / FREEZE_FILENAME
     results_root = results_root or root / DEFAULT_RESULTS_ROOT
-    freeze, secret, authority_provenance = _load_authority(
-        freeze_path, secret_path, supplemental_commitment_path
-    )
+    freeze, secret = _load_authority(freeze_path, secret_path)
     run_id = _run_id(config)
     final = results_root / run_id
     temporary = results_root / f".{run_id}.tmp"
@@ -969,7 +927,7 @@ def run_benchmark(
                     seed_row,
                     config.train_episodes_per_panel,
                 )
-                candidate = _make_benchmark_candidate(config.family_code, config.parameters)
+                candidate = make_candidate(config.family_code, **config.parameters)
                 model_seed = MODEL_SEEDS[REPLICATE_IDS.index(replicate_id)]
                 fit_started = time.perf_counter()
                 candidate.fit(catalogs, training, model_seed=model_seed)
@@ -1024,16 +982,8 @@ def run_benchmark(
                         "model_seed": model_seed,
                         "seed_commitment": next(
                             row["commitment"]
-                            for row in (
-                                authority_provenance["row_commitments"]
-                                if authority_provenance.get(
-                                    "supplemental_postseal_confirm", False
-                                )
-                                else freeze["seed_commitments"]
-                            )
-                            if row.get("replicate_id") == replicate_id
-                            or row.get("confirm_alias")
-                            == f"C{REPLICATE_IDS.index(replicate_id) + 1:02d}"
+                            for row in freeze["seed_commitments"]
+                            if row["replicate_id"] == replicate_id
                         ),
                         "fit_seconds": fit_seconds,
                         "training_record_count": len(training),
@@ -1055,7 +1005,7 @@ def run_benchmark(
                 row["summary"]["unsafe_non_abstain_count"] for row in replicate_results
             ),
         }
-        baseline_only = config.family_code in BASELINE_ONLY_FAMILIES
+        baseline_only = config.family_code in {"B02", "B03", "B04"}
         report = {
             "protocol": RUN_PROTOCOL,
             "run_id": run_id,
@@ -1064,20 +1014,16 @@ def run_benchmark(
             "benchmark_status": freeze["status"],
             "config": config.to_wire(),
             "candidate_eligibility": "baseline_only" if baseline_only else "ucm_candidate",
-            "shared_state_compliant_by_design": config.family_code not in SEPARATE_TASK_FAMILIES,
+            "shared_state_compliant_by_design": config.family_code != "B03",
             "source_binding": _source_binding(),
             "replicates": replicate_results,
             "cross_seed_summary": _cross_seed_summary(replicate_results),
             "hard_failures": hard_failures,
-            "hard_gate_pass": not any(hard_failures.values())
-            and config.family_code not in SEPARATE_TASK_FAMILIES,
+            "hard_gate_pass": not any(hard_failures.values()) and config.family_code != "B03",
             "wall_seconds": time.perf_counter() - started,
             "raw_episode_file": raw_path.name,
             "raw_pair_file": pair_path.name,
-            "seed_preimages_published": authority_provenance[
-                "seed_preimages_published"
-            ],
-            "seed_authority": authority_provenance,
+            "seed_preimages_published": False,
             "claim_boundary": {
                 "synthetic_only": True,
                 "clinical_validity_claimed": False,
@@ -1121,17 +1067,7 @@ def verify_run_bundle(path: Path) -> dict[str, Any]:
         raise ProtocolViolation("run bundle root mismatch")
     for row in manifest["files"]:
         member = path / row["name"]
-        if member.is_file():
-            raw = member.read_bytes()
-        else:
-            compressed = member.with_name(member.name + ".gz")
-            if not compressed.is_file():
-                raise ProtocolViolation("run bundle member is missing")
-            try:
-                with gzip.open(compressed, "rb") as handle:
-                    raw = handle.read(int(row["byte_length"]) + 1)
-            except (OSError, EOFError) as exc:
-                raise ProtocolViolation("run bundle gzip sidecar is invalid") from exc
+        raw = member.read_bytes()
         if len(raw) != row["byte_length"] or digest_bytes(raw) != row["sha256"]:
             raise ProtocolViolation("run bundle member drifted")
     summary = _decode_canonical(path / "summary.json", "run summary")
@@ -1149,7 +1085,6 @@ def _main() -> int:
     parser.add_argument("--complete", action="store_true")
     parser.add_argument("--worlds", default="")
     parser.add_argument("--results-root", type=Path)
-    parser.add_argument("--supplemental-commitment", type=Path)
     args = parser.parse_args()
     parameters = json.loads(args.parameters)
     if type(parameters) is not dict:
@@ -1169,7 +1104,6 @@ def _main() -> int:
         config,
         secret_path=args.secret,
         results_root=args.results_root,
-        supplemental_commitment_path=args.supplemental_commitment,
     )
     summary = verify_run_bundle(path)
     print(
