@@ -4,6 +4,7 @@ import ast
 import gzip
 import io
 import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -14,7 +15,7 @@ from prototype.unified_map.benchmark_v1_freeze import (
     verify_seed_reveal,
 )
 from prototype.unified_map.candidate_families import make_candidate
-from prototype.unified_map.canonical import canonical_json_bytes
+from prototype.unified_map.canonical import canonical_json_bytes, digest_bytes, digest_json
 from prototype.unified_map.independent_f18 import IndependentStructuralEnsemble
 from prototype.unified_map.independent_reproduction import (
     _derived_seed,
@@ -151,3 +152,42 @@ def test_primary_reproduction_does_not_open_extension_world_pairs() -> None:
     assert pair_count == 0
     assert maximum == 0.0
     assert writer.getvalue() == b""
+
+
+def test_failed_full_reproduction_attempt_is_bound_without_result_credit() -> None:
+    path = ROOT / "research/unified_map/REPRO5_FAILED_ATTEMPT_20260719T095421Z.json"
+    raw = path.read_bytes()
+    receipt = json.loads(raw)
+    assert raw == canonical_json_bytes(receipt)
+    preimage = {key: value for key, value in receipt.items() if key != "receipt_root"}
+    assert receipt["receipt_root"] == digest_json(preimage)
+    assert receipt["status"] == "FAILED_UNFINALIZED"
+    assert receipt["failure"]["classification"] == "HARNESS_SCOPE_MISMATCH"
+    assert receipt["claim_boundary"] == {
+        "benchmark_failure": False,
+        "candidate_failure": False,
+        "completed_bundle": False,
+        "completed_replicates": 0,
+        "harness_failure": True,
+        "reproduction_credit": False,
+    }
+    for binding in receipt["source_bindings"] + receipt["authority_bindings"]:
+        blob = subprocess.check_output(
+            [
+                "git",
+                "show",
+                f"{receipt['source_commit']}:{binding['relative_path']}",
+            ],
+            cwd=ROOT,
+        )
+        assert binding == {
+            "relative_path": binding["relative_path"],
+            "byte_length": len(blob),
+            "sha256": digest_bytes(blob),
+        }
+    failed_output = (
+        ROOT
+        / "results/unified_map/reproduction"
+        / receipt["run_id"]
+    )
+    assert not failed_output.exists()
