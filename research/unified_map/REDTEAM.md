@@ -1,6 +1,6 @@
 # UCM benchmark v1 冻结后 Red-Team 反例套件
 
-> **状态：PRE-REGISTERED / NOT EXECUTED / 非 benchmark v1 primary score 组成部分。** 这份文件只定义冻结顺序、攻击族、关系性 oracle 判据和证据合同。它不得被 benchmark v1 的 world、oracle、训练集、验证集或测试生成器 import；也不得在这里写入任何实际攻击实例、机制图、参数、seed、case ID、检查/治疗身份、效应量、患病率、horizon 分配、效用值或判定阈值。实际 red-team pack 只能在 benchmark v1 与候选快照都冻结后由独立流程生成。
+> **状态：SOURCE-DISTINCT RED-TEAM v2 已执行并裁决；没有 L4/global 正向结论。** 第 1--9 节是事前攻击合同；第 10 节保留旧 `20260719T064407Z-F18-redteam-69f7a4c8e6` 的 reused-fixture exploratory 记录；第 11 节是当前 strict v2 authority。旧 run 不得冒充 v2，v2 的局部通过也不得覆盖 primary OOD hard failure。
 
 ## 1. 红队究竟攻击什么
 
@@ -448,3 +448,162 @@ falsifier
 10. 最终结论只声称：在哪个冻结作用域内通过、哪些扩展成功、哪些只能诚实拒绝、哪些硬失败、哪些仍未知。
 
 这轮红队可以证明某候选在**这些 secret 扩展与攻击下**仍操作性闭合，也可以给出有限作用域、危险碰撞或第二状态的反证；它不能单凭有限 pack 证明全临床充分、生产安全、语义最小或全局最优。
+
+## 10. Exploratory post-selection evaluation（不满足完整 red-team 协议）
+
+### 10.1 Recorded chronology and subject
+
+```text
+candidate: F18-causal-operator-ensemble-state-v1
+complete primary run: 20260719T063049Z-EXP-035-c28452cba8
+primary bundle root: sha256:73016e5dd80e6b2d6d22b5e5b20a3ac0f9914bc33739509e5064be716780c911
+candidate seal digest: sha256:f5d21dcd27d9416701937647a4b0de212cd74499f3eeb137780bfbecaafc9d57
+sealed candidate source digest: sha256:55ba9dfada99066691d9c708cf30732e6cfea0a5a86e642e5b0e1ddfb5626fe3
+red-team run: 20260719T064407Z-F18-redteam-69f7a4c8e6
+red-team bundle root: sha256:17499a56765775bdeebc3b1d51c6fb43433fda0ea2fdaec58809bf59c134c13b
+post-selection candidate mutation: false
+```
+
+这些字段证明旧 run 指向哪个候选文件和结果 bundle，但不构成第 3 节要求的完整
+G0--G4 chronology。执行时只有 file-level candidate seal；没有在 pack materialization
+之前形成可独立核验的 durable source commit，也没有 attack commitment/reveal chain。
+因此只能把它称为 post-selection exploratory evaluation。seal 已记录
+`ucm_eligible=false`（complete run 有五个 unsafe forced-known OOD），该旧 run 也不能
+把它变成 winner。
+
+### 10.2 Protocol-gap audit
+
+| Required property | What the old run actually did | Status |
+|---|---|---|
+| Independent, source-distinct secret pack | Imported/reused frozen W01--W20 world code and fixtures rather than generating an independently authored pack | **NOT MET** |
+| RT01--RT10 coverage | Reused a subset of W04/W08/W13/W16--W20 probes; it did not materialize one oracle-valid source-distinct instance for each of the ten attacks | **NOT MET** |
+| G0--G4 commit/reveal | No pre-execution attack generator/seed/oracle/utility commitment and no matching reveal artifact | **NOT MET** |
+| Raw evidence and access trace | No per-attack raw JSONL trajectories, access/taint trace, state hashes, resource trace and replay-complete verdict rows required by section 8 | **NOT MET** |
+| Paired controls | The required source-distinct paired controls were not present consistently across attacks | **NOT MET** |
+| Independent implementation on unopened pack | The independent F18 implementation was not run against this pack | **NOT MET** |
+| Fresh-process state-only battery | No complete head/update fresh-process and second-state battery covering the whole pack | **NOT MET** |
+| New-task attribution | Target was one realized noisy factual utility; no matched conditional-future target, full-history probe, true-state probe or capacity ladder | **INVALID FOR REPRESENTATION ATTRIBUTION** |
+| History-deletion attribution | Deletion changed multiple inputs without an oracle-verified irrelevant/relevant/equivalent trio, so state movement alone does not identify what had to be remembered | **EXPLORATORY ONLY** |
+| Time-scale attribution | Aggregated errors across different rows/worlds/horizon populations instead of querying the same world/state at multiple horizons | **EXPLORATORY ONLY** |
+
+Consequently, none of the section 10 observations may be cited as completion of
+the full post-freeze protocol or as `L4-POSTFREEZE_REDTEAM_SUPPORTED` evidence.
+
+### 10.3 Observed signals from the limited run
+
+| Probe | Observed result | Limited interpretation |
+|---|---|---|
+| New check W16 | Old state/new query abstained; old encoder rejected extension catalog. After new catalog model + 64 examples + full history replay, pair distance 2.621 vs oracle .81; core source changed 0 bytes. | Honest refusal, then global migration; **not local refinement** |
+| New treatment W17 | Same refusal/migration; migrated pair distance 2.014 vs oracle 28.612; no collision. | Honest refusal, then global migration; **not local refinement** |
+| Reused-fixture collision | W04/W08/W19/W20: 27 pairs, 0 dangerous collisions, 2 false splits. | Descriptive result on reused fixtures only; not a fresh source-distinct pass |
+| Reused-world OOD W18 | 128 episodes; 9 unsafe forced-known, 26 false unknown, mean Brier .166263. | Consistent with the primary OOD failure; not an independent red-team verdict |
+| Reused-world nonlinear combination W13 | Train classes C0/C1 only, test 64 C2; top-1 0, mean C2 probability ~1e-12. | Exploratory compositional failure signal, not source-distinct confirmation |
+| Frozen-state new-task probe | Realized factual utility readout: state-only RMSE .838453 vs constant .541733. | Invalid for representation attribution without matched history/true-state/capacity controls |
+| History deletion W20 | Delete treatment: state distance 2.267, utility change 2.205. Delete oldest observation: distance 2.291, utility change 3.110. | Descriptive sensitivity only; causal relevance not established |
+| Aggregate time scale | Natural RMSE h1 .0687, h8 .2510, h16 .4873, h32 .5710; intervention h1 .0762, h8 .2950, h16 .4875, h32 .5731. | Population-mixed trend only; not a same-state multi-horizon sufficiency test |
+
+### 10.4 Limited new check/treatment interpretation
+
+F18 does one important thing correctly: it does not hallucinate support for an
+operator absent from its catalog. The old state returns an abstention and the
+old encoder rejects the extension catalog. But the goal asked whether the map
+can locally refine when a new check or treatment splits an old equivalence
+class. F18 cannot: it requires a new catalog-specific model, new examples and
+replay of the whole visible history. This is `T2 global migration`, not `T1
+local refinement`. Zero core-source changed bytes means the generic code is
+reusable; it does not mean the patient state itself was locally extensible.
+
+### 10.5 Hypotheses raised, not protocol-complete falsifiers
+
+1. **Open world:** 9/128 reused-world unknown mechanisms were still forced into a
+   known class. This is consistent with, but does not independently repeat, the
+   sealed full-run hard failure.
+2. **Composition:** a monolithic class/behavior quotient cannot construct unseen
+   C2 from components seen only as C0/C1. Its posterior for C2 is essentially zero.
+3. **New task:** a constant beats this state-only probe, but the noisy factual
+   target and missing matched controls prevent attributing the gap to discarded
+   state information.
+4. **Extension:** the finite state is tied to the old catalog/action set and is
+   not a once-for-all behavioral quotient under newly allowed experiments.
+
+The open-world and composition results agree with primary-run failures; the
+new-task, history-deletion and time-scale designs are not attribution-valid.
+None of these observations substitutes for a fresh source-distinct pack.
+
+### 10.6 Limited-run conclusion
+
+The old run supplies exploratory diagnostics only. It neither satisfies the
+full red-team exit criteria nor supports global finite sufficiency, clinical
+validity, `L4`, or a claim that no other finite/dynamic architecture could work.
+The primary benchmark already caps F18 at `L2-RUNNABLE`; this limited evaluation
+does not change that level.
+
+## 11. Source-distinct red-team v2（EXECUTED）
+
+### 11.1 Custody、source distinction 与执行范围
+
+```text
+run: 20260719T093209Z-RT2-6337a6ad2d
+bundle root: sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3
+pack digest: sha256:64331b2323cc91449c27da3ff335211326022124674101fce7b28d92ae8e2e35
+verdict digest: sha256:805f5264fb6ffd2308628dbdd312ab7500d1c56a65fb1ec0803fafaa91b17bf5
+sealed F18 source: sha256:d2460edd8d6124c8b05cdb7744fcbecddd58d6f13919318e183d9f1d326052bd
+independent F18 source: sha256:cfebbc6a769b33cd561640f15e61c0e7ae0d7d7a25b2ccceb7e52e446946144f
+evaluator amendment: sha256:912ed8fa4d952da2db6a35fa3e7412a6245561ae73bf63e1f7d7d94536069075
+```
+
+Generator source distinct，sealed 与 independent implementations 均在同 pack 上运行。
+Evaluator amendment 只补 observability/custody/verifier：candidate sources、generator、
+pack digest 均未改变，private reveal 未因 amendment 被读取。Verifier 重验 commitment
+chronology、pre-reveal root、manifest/raw gzip digests、state closure 与 live Git order。
+
+执行材料：10 attack classes、1,152 episode rows、14 pair rows、26 probe rows、
+1,386 access-trace rows、198 state-closure rows。所有 candidate calls 受 Python audit
+hook；所有初始化、更新、replay、deletion、training-probe 与 cold-rehydrated patient
+states 均进入 closure audit。边界：不是 OS sandbox；cold rehydrate 是同 process/static
+model 中的新 state object。
+
+### 11.2 按攻击类裁决
+
+| Attack | Verdict | Decisive observation | Claim ceiling |
+|---|---|---|---|
+| new check | **OPEN_WORLD_SCOPE_FAILURE** | 216 rollout rows 全部 abstain/scope-insufficient；6/6 probes 需 extension fit + visible-history replay；0 row 可直接复用旧 state | 不能称 local refinement |
+| opposite-response new treatment | **OPEN_WORLD_SCOPE_FAILURE** | 216/216 rows 均 scope-insufficient/migration-required；oracle 正负 response 均覆盖 | safe abstention 不是 treatment support |
+| new nonlinear combination | **MIXED** | 48 natural rows在旧 catalog 可调用；48 new-check rows scope-insufficient | 未预登记 accuracy threshold，不给 general pass/fail |
+| new task conditional expected utility | **INCONCLUSIVE** | state/history/true-state × capacity 8/32/128；target 是 conditional expectation，但没有 preregistered decision criterion | 数值排序不能证明 sufficiency/superiority |
+| OOD | **CLOSED-CATALOG LOCAL SUPPORT** | 两实现各 8 rows，16/16 unknown probability=1，unsafe=0 | 只限 committed synthetic pack |
+| dangerous collision | **CLOSED-CATALOG LOCAL SUPPORT** | 两实现各 4 pair rows，8/8 state distinguishable，dangerous=0 | 未关闭未测 collision class |
+| history deletion trio | **NON_MINIMAL_STATE_EVIDENCE** | 2 relevant rows被分开，同时 4 oracle-equivalent controls 全被 false-split | 不支持 minimal quotient |
+| same-state time scales | **MIXED** | 同一旧 state 服务 1/24/168h natural queries；新-check plan 仍 scope-insufficient | closed catalog local only |
+| action semantics | **CLOSED-CATALOG LOCAL SUPPORT** | 432 registered-action rows state-only、query-pure、in-scope | 不外推 unseen actions |
+| query/update/rehydrate | **CLOSED-CATALOG LOCAL SUPPORT** | 两实现 checks 均通过 | 仅该 audit/runtime boundary |
+
+### 11.3 与 primary、旧 v1、reproduction 的关系
+
+1. EXP-035 primary full run已有 5 个 unsafe forced-known OOD，因而 F18
+   `hard_gate_pass=false`。v2 的 16-row local OOD pass 不能覆盖不同 scope 的 primary
+   failure。
+2. 第 10 节旧 v1 reused W04/W08/W13/W16--W20 fixtures，缺 source-distinct pack 与
+   attribution-valid controls；它继续标 `EXPLORATORY ONLY`。旧 v1 的 noisy new-task
+   “worse than constant”不得写成当前 new-task verdict；v2 正式 verdict 是
+   `INCONCLUSIVE`。
+3. Full REPRO5 精确复现 F18 core，证明结果不是单一实现偶然差异；它不重算 oracle
+   metrics、不修复 primary OOD、也不能把 v2 scope failure 改成通过。
+
+### 11.4 最终 red-team 裁决
+
+V2 支持的最强结论是：F18 在 committed **closed catalog** 的若干结构、安全 probe
+上有局部合成支持；它不能不经 extension fit 与 visible-history replay 吸收新检查或
+相反效应新治疗，state 也不是已证明的 minimal quotient。新任务保持未知。
+
+因此：
+
+- `L4-POSTFREEZE_REDTEAM_SUPPORTED`: **NO**；
+- global/open-world UCM: **NOT ESTABLISHED**；
+- clinical validity / production safety / global optimality: **NOT EVALUATED**；
+- primary eligible Pareto: **EMPTY**。
+
+下一轮必须用 fresh preregistration + commitment/reveal 测 native scope-extension
+architecture，并在 reveal 前冻结 new check/new treatment/new task thresholds、pair/OOD
+门；禁止 visible-history replay。只有该设计能正面检验 local-growth UCM，而不是再次
+证明旧 catalog 能安全拒绝未知 operator。

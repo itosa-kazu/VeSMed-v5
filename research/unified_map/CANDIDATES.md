@@ -1,17 +1,20 @@
 # Unified Clinical Map 候选与基线公平比较矩阵
 
-> 状态：**Phase 1 候选登记规范；benchmark v1 尚未冻结，12 个候选家族均尚未实现、尚未运行，不选赢家。**
+> 状态：**FINAL EXECUTED COMPARISON；原始候选登记保留，最终实现/判决见第 7 节。没有 hard-gate-qualified winner。**
 > 范围：只讨论患者世界模型及共享状态 `Z_t`。K0 只可复用为隔离、时间切片、candidate-view 与审计基础设施，不获得任何 UCM 动力学能力。
 > 命名：候选家族沿用 `HYPOTHESES.md` 的 `F01`–`F12`；强制基线沿用 `B01`–`B04`；`BENCHMARK.md` 的 `C01`–`C33` 专用于合规测试，三者不得混用。
-> 本表列出 12 个实质不同的候选家族和 4 个强制基线。未来至少实现其中 8 个候选家族；不能把同一家族的网络宽度、粒子数或超参数变化重复计成新家族。
+> 本表最初列出 12 个实质不同的候选家族和 4 个强制基线；执行期又登记了 F13--F22 与语义消融。最终计数以 `EXPERIMENT_INDEX.json` 为唯一机器权威，不能把同一家族的网络宽度、粒子数、随机种子或超参数变化重复计成新家族。
 
 ## 0. 当前实现与选择状态
 
 | 项目 | 当前值 | 完成要求 |
 |---|---:|---:|
-| 已实现候选家族 | **0/12** | 至少 8 |
-| 已运行候选实现 | **0** | 由 `EXPERIMENTS.md` 计数 |
-| 跑满 W01–W20 且至少 5 seed 的合规候选 | **0/3** | 至少 3 |
+| 已实现/运行候选 family codes | **F01--F22（另含 F09S/F09L；F19--F21 为语义消融）** | 至少 8 |
+| 机器索引总条目 | **38** | 完整 custody |
+| 可计入实质实验 | **30** | 至少 30 |
+| 不可计入 / 其中失败尝试 | **8 / 1** | 不得冒充实质完成 |
+| 跑满 W01–W20 且至少 5 seed 的普通候选 | **3/3** | 至少 3 |
+| 跑满且通过全部 hard gate | **0** | 只有通过者可成为 winner |
 | 当前 winner | **无** | 先通过硬门，再比较 Pareto |
 
 本文是候选设计空间与公平比较合同，不是实现或实验事实。某行只有在代码、manifest、有效 run 和 append-only evidence 存在后才可标为 implemented/tested；当前不得从本表推断任何家族优于另一家族。
@@ -186,4 +189,129 @@ and family-specific audit outputs
 
 先应用硬淘汰：至少包括 `UCM-F001-FUTURE_LEAK`、`UCM-F002-ORACLE_TRUE_STATE_ACCESS`、`UCM-F003-TEST_ID_BRANCH`、`UCM-F004-HEAD_HISTORY_ACCESS`、`UCM-F005-TASK_SPECIFIC_STATE`、`UCM-F006-HIDDEN_PATIENT_CACHE`、`UCM-F007-STATE_FANOUT_MISMATCH`、`UCM-F008-STATE_NOT_CLOSED`、`UCM-F009-MODEL_MUTATION`、`UCM-F010-UPDATE_NOT_RECURSIVE`、`UCM-F011-TIME_VISIBILITY_VIOLATION`、`UCM-F012-QUERY_MUTATES_FACT`、`UCM-F013-SPLIT_TRANSITION_CORE`、`UCM-F014-ACTION_SEMANTICS_CONFLATED`、`UCM-F015-CONDITIONING_AS_INTERVENTION`、`UCM-F016-DANGEROUS_COLLISION`、`UCM-F017-OOD_FORCED_MATCH`、`UCM-F018-FULL_HISTORY_MISCLAIM` 与 `UCM-F020-NONREPRODUCIBLE`。若证据不足则记 `UCM-E001-SEMANTIC_UNITY_UNVERIFIED`、`UCM-E002-ISOLATION_INCOMPLETE` 或 `UCM-E003-HARNESS_INCOMPLETE`，不能当 PASS。通过后才按诊断、自然预测、干预预测、治疗后悔、校准、OOD、样本效率、状态简洁性、扩展代价、计算和可解释性画 Pareto 前沿。
 
-本文不对 F01–F12 排序；当前也没有任何已实现候选、valid run、赢家或 Pareto 前沿。每一行都是待实验推翻的状态假说。
+前述登记部分不预先排序候选；它保留为实现前的可证伪状态假说。实际排序、失败与 Pareto 判定如下。
+
+## 7. Final implemented comparison
+
+### 7.1 Coverage and experiment custody
+
+The executed codes span hand mechanism vectors, Gaussian belief, controlled
+predictive state, behavioral partitions, dynamic SCM, Koopman/operator lifts,
+neural latent state, mechanism graphs, recursive two-timescale memory, support
+belief, path/open-world causal state, structural-neural hybrids, executable
+program state, kernel predictive state and the F18 ensemble. F19--F21 are
+substantive semantic ablations rather than width/seed variants. F22 is an
+incremental factorized refinement attempt.
+
+The canonical machine account is:
+
+```text
+EXPERIMENT_INDEX root:
+  sha256:abe4e54a6c04c9f02e7f5df89d08a35940c67e039c11d5179f22f563157a4989
+total_experiments=38
+count_eligible=30
+count_ineligible=8
+failed_attempt_count=1
+evidence_gap_count=0
+```
+
+EXP-037 F22-v1 is the one failed attempt and is not count-eligible. EXP-038
+F22-v2 completed its preregistered screen and is count-eligible, but one dangerous
+collision plus one unsafe forced-known OOD forces the recorded decision
+`ABANDON`. A completed substantive experiment is evidence, not a selected model.
+
+The required baselines were also executed:
+
+- B01 true-state upper bound: privileged and `upper_bound_only`;
+- B02/B02V2 full visible history: noncompact information baseline;
+- B03/B03V2 separate task states: explicitly ineligible negative comparator;
+- B04 K0-only: negative control, not a patient world model.
+
+### 7.2 Complete primary candidates
+
+Three distinct ordinary candidates completed all W01--W20, all five R01--R05
+replicates and 1,680 sealed-test episode rows each:
+
+| Family/run | Descriptive trade-off | Noncompensating failure | Final role |
+|---|---|---|---|
+| F10 / EXP-033 | compact; lowest primary mean regret of the three | 5 unsafe forced-known OOD | ineligible comparator |
+| F14 / EXP-034 | lifted dynamics; lower mean OOD Brier | 21 unsafe forced-known OOD | ineligible comparator |
+| F18 / EXP-035 | lowest primary natural/intervention RMSE of the three | 5 unsafe forced-known OOD | sealed bounded subject; claim ceiling `L2-RUNNABLE` |
+
+Unsafe OOD is a hard failure, so the **primary hard-gate-eligible Pareto set is
+empty**. F18 was sealed for deeper falsification/reproduction, not selected as a
+winner.
+
+### 7.3 Supplemental CONFIRM5 lite
+
+`20260719T090636Z-POSTSEAL-CONFIRM5-25eeeb5ec6` covers every W01--W20 and all five
+replicates with train4/validation1/test2 per panel/seed, but it is explicitly
+incomplete and uses `pair_probe_limit=0`.
+
+| Subject | Lite outcome | Eligibility interpretation |
+|---|---|---|
+| F10 | hard-gate pass | local supplemental point only |
+| F18 | hard-gate pass | local supplemental point only |
+| F14 | 9 unsafe OOD | fail |
+| B02V2 | 10 unsafe OOD | baseline fail |
+| B03V2 | zero listed hard-failure counters | still ineligible: separate task states |
+
+Only within this pair-free lite sample, F10 and F18 are mutually nondominated:
+F10 is smaller/faster, while F18 has lower dynamics error and regret. This local
+frontier neither overrides complete primary failure nor provides collision
+evidence. B03V2 is a negative comparator, not a Pareto-eligible UCM.
+
+### 7.4 Red-team, extension, novel task and minimality
+
+The source-distinct v2 bundle
+`20260719T093209Z-RT2-6337a6ad2d` has root
+`sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3`.
+Its machine verdict applies equally to sealed F18 and I18:
+
+- OOD unsafe `0/16` and dangerous collision `0/8`: bounded
+  `CLOSED_CATALOG_LOCAL_SUPPORT` on this pack;
+- unseen check and opposite-response unseen treatment:
+  `OPEN_WORLD_SCOPE_FAILURE`; extension fit and visible-history replay required;
+- nonlinear combination: mixed closed-catalog natural-query support and
+  open-world extension-check failure, with no preregistered accuracy pass rule;
+- novel task: `INCONCLUSIVE`, because the capacity ladder had no preregistered
+  decision threshold;
+- minimal behavioral state: `NOT_SUPPORTED`, because all four oracle-equivalent
+  deletion controls remain split.
+
+Safe abstention is correct behavior but is not evidence that the new operator is
+supported. The earlier post-selection run that reused frozen fixtures remains
+exploratory and cannot provide source-distinct `L4` support.
+
+### 7.5 Independent reproduction and secondary metrics
+
+Full I18 reproduction
+`20260719T101913Z-I18-full-repro-01c908cb1b` covers 1,680 episodes, 28,720 rollout
+queries and 260 primary-scope pair probes across five replicates. W16/W17 `S1`
+pairs are excluded per the frozen runner's extension-reveal rule. Every recorded
+maximum difference is `0.0` and every failure counter is zero. This proves
+implementation equivalence only; it neither reruns oracle scoring nor repairs
+F18's OOD failure.
+
+The secondary metric battery is exploratory
+(`formal_frozen_metric_claim=false`): M09 ranks F16/F10/F14/F22/F18 first through
+fifth; M11 finds F10/F14/F18/F22 all scope-insufficient, with **each family**
+replaying 3,396 visible-history bytes across its two probes;
+M13 gives Python `tracemalloc` peak increments of roughly 49.0 KB F22, 49.7 KB
+F10, 191 KB F18 and 399 KB F14 (native allocator coverage is not guaranteed); M16 is
+descriptive/inconclusive. These rows cannot create a formal winner.
+
+### 7.6 Final candidate disposition
+
+| Evidence class | Candidate conclusion |
+|---|---|
+| Verified | genuine one-state implementations exist; full F18/I18 equivalence is exact over the declared scope |
+| Synthetic local support | F10/F18 lite trade-off; F18 closed-catalog RT2 OOD/collision/action behavior |
+| Failed | primary F10/F14/F18 OOD; F22-v2 collision/OOD; F18 replay-free open-world extension; F18 minimality |
+| Unknown | novel-task sufficiency, general finite/dynamic UCM existence, clinical transfer/safety, global optimum |
+
+The next candidate must be a preregistered, freshly committed/revealed native
+`S1` incremental architecture: no core refit, no full-history replay, nonzero
+opposite-response pairs, a frozen OOD hard gate, and an attribution-valid
+new-task threshold. `DECISION.md` is the authoritative human-readable
+disposition; run manifests and `EXPERIMENT_INDEX.json` remain numeric authority.

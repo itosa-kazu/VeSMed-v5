@@ -1311,3 +1311,320 @@ history accumulator means the eight family results do not yet prove eight
 end-to-end sufficient maps. CE-005 and CE-010 redirect the next batch to two
 architecture-level changes: recursive order/availability memory and support-aware
 open-world state. Shallow neural and fixed-ring graph parameter tuning is stopped.
+
+## 2026-07-19 — Architecture expansion, ablations and screen selection
+
+### Outcome
+
+EXP-012--EXP-032 added ordered recursive memory, support belief, path behavioral
+quotients, open-world state, multiscale Koopman observables, structural-neural,
+program-state, kernel predictive and structural-ensemble families plus five
+representation ablations. The W08 collision disappeared once ordered/
+availability memory was retained. F21's point posterior created four fresh
+dangerous collisions, proving that uncertainty mass itself is state information.
+
+The first support implementations still forced W18 OOD cases into known classes.
+The corrected novelty-plus-ambiguity operation allowed F10, F12, F13 and F18 to
+hard-pass the small screen; F18 was selected for complete evaluation because it
+had the best natural/intervention forecast among those survivors. This selection
+did not confer UCM eligibility.
+
+### Verification
+
+```text
+screen runs EXP-012--EXP-032: 21 append-only bundles
+distinct new families/major ablations: 15
+decisive point-collapse collisions: 4
+screen-selected complete candidates: F10, F14, F18
+```
+
+### Decision
+
+`PROMOTE THREE DISTINCT FAMILIES TO COMPLETE BENCHMARK`; stop screen tuning and
+use the five frozen seed panels.
+
+## 2026-07-19 — Three complete candidates and true-state upper bound
+
+### Outcome
+
+EXP-033 F10, EXP-034 F14 and EXP-035 F18 each completed all W01--W20, all 21
+panels and R01--R05. Every ordinary candidate failed the noncompensating OOD
+gate. F18 gave the best natural/intervention RMSE (.1552/.1941); F10 gave the
+lowest regret (.6074) and smallest state (2,657 bytes); F14 had lower mean OOD
+Brier (.1882) but 21 unsafe forced-known outputs and poor NLL/regret. There is no
+eligible winner.
+
+EXP-036 formalized the privileged true-state upper bound across the same scope.
+It achieved exact trajectories/regret/OOD and diagnosis top-1 1.0. This shows
+the frozen finite worlds and oracle are internally reachable; it is not a
+learnable UCM candidate.
+
+### Evidence
+
+```text
+EXP-033 bundle: sha256:9db21dc525b2a779778a5dc226e663899cd4aa6dc23f225936090334a7ddc111
+EXP-034 bundle: sha256:a68a7056fc9623d74fd75a86f63e2fde87bb726a9aa069b6879b83418ef1cf85
+EXP-035 bundle: sha256:73016e5dd80e6b2d6d22b5e5b20a3ac0f9914bc33739509e5064be716780c911
+EXP-036 bundle: sha256:d42ed7c2ed9573c6da2e02fb77752ea4d2cba3b9343402fd5f23e5db97ea4e99
+complete ordinary candidate count: 3/3
+seeds per candidate: 5/5
+hard-gate-qualified ordinary candidate count: 0
+```
+
+### Decision
+
+Seal F18 as an ineligible Pareto-leading red-team subject. Do not repair it
+before the post-selection attack.
+
+## 2026-07-19 — Candidate seal and post-selection red-team
+
+### Outcome
+
+F18 source bytes and EXP-035 were sealed before the red-team pack was run.
+Fresh collision probes found zero dangerous collision in 27 pairs, but W18
+produced 9 unsafe forced-known and 26 false-unknown decisions in 128 episodes.
+The held-out nonlinear C2 combination had 0% diagnostic top-1 and approximately
+zero C2 probability. A new state-only readout was worse than constant. New check
+and treatment operators were handled by honest abstention, then required a new
+catalog model, 64 examples and complete history replay rather than local state
+refinement. Long-horizon errors grew sharply.
+
+### Evidence
+
+```text
+candidate seal: sha256:f5d21dcd27d9416701937647a4b0de212cd74499f3eeb137780bfbecaafc9d57
+red-team run: 20260719T064407Z-F18-redteam-69f7a4c8e6
+red-team bundle: sha256:17499a56765775bdeebc3b1d51c6fb43433fda0ea2fdaec58809bf59c134c13b
+post-selection candidate mutation: false
+```
+
+### Decision
+
+`FALSIFIED AS GENERAL UCM; RETAIN AS LOCAL APPROXIMATION`.
+
+## 2026-07-19 — Independent reproduction, seed reveal and closed-loop demo
+
+### Outcome
+
+A source-distinct F18 implementation was written without importing
+`candidate_families.py`. On fresh data it exactly reproduced state vectors,
+diagnosis probabilities, rollout signatures/utilities and pair distances: all
+maximum absolute differences were zero across 48 episodes, 792 rollout queries
+and 19 pairs. This reproduces the core result and also preserves the sealed OOD
+failure; it does not transform F18 into an eligible candidate.
+
+After candidate sealing, the five seed preimages were published as a separate
+append-only reveal and verified against all frozen commitments. A runnable demo
+then proved one state hash fans out to diagnosis, no-op and A/B/C rollouts, a
+utility-based treatment is selected without oracle/future access, and a
+post-selection public response updates that same map to a new state hash. The
+demo includes an admitted W18 unknown example and explicitly cites the aggregate
+OOD failure so it cannot be misread as validation.
+
+### Evidence
+
+```text
+reproduction: 20260719T065132Z-I18-repro-bc7f2fab24
+reproduction bundle: sha256:9a98569e82f819c295a502651ac1c088b4809ea28303afeb03d3aeb4222e5471
+seed reveal sha256: sha256:7558ed440dadbc21929bc193be99f872c42ed2c78bb79982cd39ff368d4f29cf
+demo: 20260719T065722Z-DEMO-65f4649b88
+demo bundle: sha256:0ca3eec8a06deb5bf99fb465e77d43b246260918fda6fb0aa7bdcc0917af88e8
+before state: sha256:1282d5968795563ce3462df506842ad6a2acc2ad0386abf699c1a7b0f4b3a352
+after state:  sha256:87503e34df85a56b122b53a1d7b2015095f0a28a73a30d2c5622283e3f486b28
+final artifact verification: 5 passed
+```
+
+### Final research disposition
+
+All completion experiments and required falsifiers now exist. The supported
+claim is narrow: fixed finite synthetic scopes possess a sufficient true state,
+and F18 is a reproducible finite approximate shared state with useful local
+forecast behavior. No learned ordinary candidate satisfies the full UCM hard
+gates. Global finite-state existence, real clinical validity, production safety
+and global optimality remain unproved and are not claimed.
+
+
+## 2026-07-19 — Correction: canonical experiment index supersedes manual counts
+
+### Outcome
+
+The append-only machine index now binds every EXP-001--EXP-038 entry to its
+run/failed-attempt evidence. Its authority is **38 total / 30 count-eligible / 8
+ineligible / 1 failed attempt / 0 evidence gaps**, index root
+`sha256:abe4e54a6c04c9f02e7f5df89d08a35940c67e039c11d5179f22f563157a4989`.
+This correction supersedes later human-readable `32+4` reconstructions in this
+log without deleting them. EXP-033--035 are repeat full evaluations, EXP-036 is
+a privileged control, and EXP-037 is a failed attempt; none is double-counted.
+EXP-038 is the thirtieth count-eligible substantive experiment even though its
+scientific decision is negative.
+
+EXP-037 F22 failed before an ordinary run could finalize and receives zero
+credit. EXP-038 F22 v2 completed the preregistered matched screen after fixing
+legal-policy totality, but produced one dangerous collision and one unsafe
+forced-known OOD. The formal decision is `ABANDON / DO_NOT_KEEP_OR_REFINE`.
+
+### Evidence
+
+```text
+freeze root: sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+EXP-037: 20260719T083925Z-EXP-037-FAILED-1a0b76ff8a (FAILED, 0 credit)
+EXP-038: 20260719T085521Z-EXP-038-046568f23d
+EXP-038 bundle: sha256:1f514f77a4aaface0728bf28d65181ad0084f9c88d10b2ac5a4e9d650f27bf84
+EXP-038 decision digest: sha256:ac646d2f0fc693ecfcc8254675fdee702ccab57e26418a3053b709f585bfc6db
+```
+
+### Decision
+
+`30-EXPERIMENT THRESHOLD MET; NO SUCCESS INFERRED FROM COUNT`.
+
+## 2026-07-19 — Supplemental CONFIRM5-lite and secondary metric battery
+
+### Outcome
+
+A committed five-alias, all-world supplemental pack ran F10/F14/F18 plus B02V2
+and B03V2 with train4/validation1/test2 and pair0. F10 and F18 passed the lite
+hard gate and form a scope-local descriptive Pareto; F14 had nine unsafe OOD.
+The scope receipt explicitly marks `complete_benchmark=false` and
+`no_pair_collision_evidence=true`, and discloses that one earlier unfinalized
+attempt had loaded the private seed material. The public reveal verifies the
+commitment preimages. This does not override EXP-033--035 primary failures.
+
+A separate 1,307-row M09/M10/M11/M13/M16 battery ran 24 family labels. It is
+explicitly `SECONDARY_EXPLORATORY_EVIDENCE` with
+`formal_frozen_metric_claim=false`. It may describe learning, memory, extension
+and readout behavior; it cannot create a frozen-metric winner.
+
+### Evidence
+
+```text
+CONFIRM5-lite batch: 20260719T090636Z-POSTSEAL-CONFIRM5-25eeeb5ec6
+batch root: sha256:44f2839d702532018ab51602843f8e48be3d671009cefae94da1d262561aa1cc
+scope receipt root: sha256:cde9098636c7e9186c398bb1b8dd42c0b866580df828aa0f14e4454889a9edc9
+secondary: 20260719T090245Z-SECONDARY-25cd492973
+secondary rows: 1307
+```
+
+### Decision
+
+`KEEP AS SUPPLEMENTAL / EXPLORATORY ONLY`.
+
+## 2026-07-19 — Strict source-distinct red-team v2
+
+### Outcome
+
+The independently authored v2 pack ran both sealed F18 and the source-distinct
+independent F18 through ten attack classes with audited candidate calls and full
+state-closure custody. The two implementations agreed exactly on the recorded
+behavior. OOD and dangerous-collision probes gave only closed-catalog local
+support. New check and opposite-response new treatment were open-world scope
+failures: every affected rollout abstained/scope-failed and required extension
+fit plus visible-history replay. The new-task capacity ladder is formally
+`INCONCLUSIVE` because no decision rule was preregistered. Deletion controls
+showed nonminimal state through four oracle-equivalent false splits.
+
+This entry corrects the prior “post-selection red-team” disposition: the old
+`20260719T064407Z-F18-redteam-69f7a4c8e6` remains reused-fixture exploratory
+v1. Its noisy new-task result and C2 signal are not the strict v2 verdict and do
+not provide L4 evidence.
+
+### Evidence
+
+```text
+v2 run: 20260719T093209Z-RT2-6337a6ad2d
+bundle root: sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3
+pack digest: sha256:64331b2323cc91449c27da3ff335211326022124674101fce7b28d92ae8e2e35
+verdict digest: sha256:805f5264fb6ffd2308628dbdd312ab7500d1c56a65fb1ec0803fafaa91b17bf5
+raw rows: episodes=1152, pairs=14, probes=26, access=1386, closures=198
+```
+
+### Decision
+
+`CLOSED-CATALOG LOCAL SUPPORT; OPEN-WORLD SCOPE FAILURE; NEW TASK INCONCLUSIVE;
+NO L4/GLOBAL CLAIM`.
+
+## 2026-07-19 — Full W01--W20 x R01--R05 independent REPRO5
+
+### Failed attempt custody
+
+The first full attempt,
+`20260719T095421Z-I18-full-repro-f77211903c`, mistakenly opened W16/W17 S1
+extension-only pair declarations before their separate reveal. It failed during
+R01 pair evaluation, finalized no replicate or bundle, retained no partial raw
+rows, and is recorded as `FAILED_UNFINALIZED` with zero reproduction credit.
+The repair aligned pair materialization with the frozen primary runner and left
+a regression test/receipt.
+
+### Formal outcome
+
+The repaired independent implementation completed all 20 worlds / 21 panels /
+R01--R05: 1,680 episode rows, 28,720 rollout queries and 260 primary-scope pair
+rows. All state, diagnosis, rollout, pair and update/replay maximum absolute
+differences were 0.0; all failure counters were zero;
+`exact_core_reproduction=true`. W16/W17 S1 pairs remain correctly excluded as
+extension-only. This supersedes the earlier bounded 48-episode reproduction as
+the formal reproduction scope.
+
+REPRO5 does not recompute oracle metrics and does not repair the sealed F18 OOD
+failure; it proves implementation equivalence, not UCM correctness.
+
+### Evidence
+
+```text
+failed receipt: research/unified_map/REPRO5_FAILED_ATTEMPT_20260719T095421Z.json
+failed receipt root: sha256:edb6dbd8f391609db7c17e524848eca2e69c1e0997b40574b6a89d8a5deb9276
+formal run: 20260719T101913Z-I18-full-repro-01c908cb1b
+formal bundle root: sha256:deee6e6339d88d500a52770052f20a14cfac30ac43b2c839574a377be08257af
+formal scope: episodes=1680, rollouts=28720, pairs=260, R01--R05
+all differences/failures: 0
+```
+
+### Decision
+
+`EXACT CORE REPRODUCTION PASS; PRIMARY OOD FAILURE UNCHANGED`.
+
+## 2026-07-19 — Current final evidence disposition and next experiment
+
+### Evidence-stratified conclusion
+
+- **Verified engineering/synthetic execution:** frozen W01--W20 authority; 30
+  count-eligible substantive experiments; three 1,680-row primary full runs;
+  strict source-distinct v2; full exact independent REPRO5; same shared-state
+  contract for diagnosis, natural course, treatment counterfactual and update.
+- **Synthetic local support only:** finite closed-catalog shared states are useful;
+  F10/F18 form a lite-scope descriptive Pareto; F18 has local v2 OOD/collision
+  support on the committed rows.
+- **Failed:** primary F10/F14/F18 all hard-fail OOD (5/21/5 unsafe); F22 v2 is
+  abandoned; F18 cannot natively absorb new checks/treatments without extension
+  fit and visible-history replay. Primary eligible Pareto is empty.
+- **Unknown:** new-task sufficiency, clinical validity, production safety,
+  open-world finite shared-state existence/nonexistence and global optimality.
+
+The supported result is therefore narrow: **a finite closed synthetic catalog
+has locally useful shared-state approximations; no primary-qualified winner
+exists and an open-world UCM has not been established.** This append supersedes
+any earlier log sentence saying all required falsifiers or final evidence had
+already been completed at the bounded-reproduction/old-v1 stage.
+
+### Next highest-information experiment
+
+Fresh preregistration + commit/reveal for a native scope-extension architecture,
+compared on one unopened pack with sealed F18, F10, true-state, full-history and
+separate-task controls. Visible-history replay is forbidden. New check, opposite-
+response new treatment and new-task thresholds must be fixed before reveal, with
+pair/collision, OOD, false-split, state-growth and regression gates restored.
+
+## 2026-07-19 — Canonical final evidence map
+
+`prototype/unified_map/final_evidence.py` re-verifies the freeze/reveal,
+experiment/source-snapshot indexes, three primary runs, compliance/demo,
+supplemental CONFIRM5-lite, exploratory secondary battery, strict red-team v2,
+and full REPRO5. It publishes the conservative machine claim surface at:
+
+```text
+research/unified_map/FINAL_EVIDENCE.json
+final evidence root: sha256:54106a834a6343574381407a2c080db32349ad722e72a57acc0af95bfc3e8b04
+```
+
+The verifier rejects both receipt drift and a self-consistent but semantically
+strengthened conclusion. This map changes no underlying run and adds no new
+clinical, production, global-optimality or impossibility claim.

@@ -1,6 +1,6 @@
 # 从第一原理理解“一张统一的动态临床地图”
 
-> 本文在 benchmark 和候选实现之前冻结问题语义。它不预选向量、图、POMDP、PSR、SCM、Koopman、神经网络或程序状态，也不把 K0/接口一致性当作患者状态一致性。
+> 前述章节是在 benchmark 和候选实现前冻结的问题语义；第 21 节追加截至完整 benchmark、source-distinct RT2 与 full REPRO5 的经验答案。原始判据未因候选结果而修改。
 
 ## 1. 先问状态要保留什么，而不是它长什么样
 
@@ -280,3 +280,125 @@ OOD 不是强行增加一个万能“其他病”类别。它至少应反映 pre
 - 在真实临床数据上是否仍成立。
 
 这些问题必须由冻结 benchmark、反例、独立实现和最终证据分区回答。
+
+## 21. 执行后的第一原理答案
+
+### 21.1 证据账本先于解释
+
+```text
+freeze root:
+  sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+experiment index:
+  38 total / 30 count-eligible / 8 ineligible / 1 failed attempt
+complete ordinary runs:
+  F10, F14, F18; each W01--W20 x R01--R05 x 1,680 rows
+unsafe forced-known OOD:
+  F10=5, F14=21, F18=5
+```
+
+所以 primary hard-gate-eligible set 和 formal Pareto set 都是空集。EXP-037
+F22-v1 是不计数的失败尝试；EXP-038 F22-v2 虽然是 count-eligible 实质实验，却因
+一个危险碰撞和一个 unsafe OOD 按预注册规则 `ABANDON`。实验数量不能替代证据门。
+
+### 21.2 H-UCM-1：只得到固定目录内局部支持
+
+F18 是有限递推共享状态，诊断、no-op、各治疗未来和 update 的确使用同一对象；
+CONFIRM5 lite 中 F10/F18 也形成一个局部互不支配 trade-off。但三个 complete
+candidate 都有 OOD 硬失败，所以任何普通候选都没有达到
+`L3-BENCHMARK_SUPPORTED`。F18 的 UCM 声明上限是 `L2-RUNNABLE`。
+
+因此得到支持的是：
+
+```text
+在固定合成 catalog 内，可以学习到有用的有限近似共享状态。
+```
+
+没有得到支持的是：
+
+```text
+存在已通过冻结全语义硬门的 learned UCM。
+```
+
+### 21.3 H-UCM-2：治疗索引未来和不确定性是必要信号
+
+F21 把行为 posterior 压成单点后出现四个危险碰撞；CE-005 也说明只保留无序均值、
+斜率和计数会抹掉受控未来所需的顺序/可获得性。平均诊断分或自然轨迹无法补偿这些
+反例。当前合成证据直接支持：若状态身份忽略治疗索引未来、posterior uncertainty
+或路径次序，它不可能满足声明的 controlled-future 范围。
+
+这仍然是对已测试压缩方式的反例，不是“某种特定 posterior 坐标是唯一正确表示”
+的定理。
+
+### 21.4 H-UCM-3：作用域相对性得到正式 RT2 支持
+
+source-distinct RT2 对 sealed F18 和 independent I18 给出：
+
+- committed pack 内 OOD unsafe `0/16`、dangerous collision `0/8`，只属于
+  `CLOSED_CATALOG_LOCAL_SUPPORT`；
+- 新检查和反向反应新治疗全部会安全 abstain，但要真正支持它们，必须 extension fit
+  并回放 visible history，判为 `OPEN_WORLD_SCOPE_FAILURE`；
+- new nonlinear combination 只得到 fixed-catalog natural-query support 与
+  extension-check failure 的 mixed 结果，没有预注册 accuracy pass rule；
+- 四个 oracle-equivalent deletion controls 全被拆开，state minimality
+  `NOT_SUPPORTED`；
+- new-task capacity ladder 没有预注册裁决阈值，只能是 `INCONCLUSIVE`。
+
+因此行为等价确实依赖允许的检查/动作集合；“安全拒答”证明边界诚实，却不证明旧
+state 能局部吸收新 operator。它推翻 F18 的 once-for-all catalog 主张，但不证明所有
+有限或动态增长状态都不可能。
+
+### 21.5 H-UCM-4：只有局部 Pareto，没有等价坐标定理
+
+complete F10/F14/F18 都因 noncompensating OOD 被 Pareto 前置硬门淘汰。一个更小的
+CONFIRM5 lite（all worlds、five seeds、train4/val1/test2、pair0）里，F10 更小/更快，
+F18 dynamics/regret 更好，二者互不支配；这个局部前沿没有 collision evidence，也
+不能覆盖 complete run。
+
+secondary battery 的 M09/M11/M13/M16 明确是 exploratory：它提供样本、扩展、内存
+和 readout 线索，却没有证明候选间是同一最小行为状态的坐标变换，更不能建立 winner。
+
+### 21.6 独立复现回答“实现相同”，不回答“架构正确”
+
+full REPRO5 `20260719T101913Z-I18-full-repro-01c908cb1b` 覆盖 1,680 episodes、
+28,720 rollout queries、260 primary-scope pairs 与五组 seed。W16/W17 `S1` pairs
+按 frozen runner 的 extension-reveal 规则排除；其余记录的 max difference 全为
+`0.0`，failure counters 全为 0。
+
+这证明 I18 与 sealed F18 在声明作用域实现等价。它没有重算 oracle metrics，也没有
+修复 F18 的 5 个 complete OOD hard failures，因此不能把 F18 从 L2 提升到 L3/L4。
+
+### 21.7 最终最小诚实结论
+
+```text
+已验证：
+  frozen finite simulator 的 privileged true state 有限且充分；
+  learned recursive one-state fan-out/update 可以真实运行；
+  I18 完整等价复现 sealed F18。
+
+仅合成局部支持：
+  固定 catalog 内有限近似共享状态有用；
+  RT2 的有限 OOD/collision/known-action pack 无硬失败；
+  pair-free lite 中 F10/F18 是局部互不支配点。
+
+已失败：
+  所有 complete ordinary candidate 的 OOD hard gate；
+  F22-v2 的 collision/OOD；
+  F18 对 unseen check/treatment 的 replay-free local refinement；
+  F18 minimality claim。
+
+尚未知：
+  new-task sufficiency；
+  一般有限或动态增长 UCM 是否存在；
+  真实临床识别、有效性、安全性、迁移和全局最优。
+```
+
+### 21.8 下一项最高信息增益实验
+
+预注册一个新 architecture/version，用 fresh source seal 和 commitment/reveal 打开一
+个 source-distinct pack。它必须原生支持 `S1` 增量扩展：只允许旧 state、公开扩展
+参数和新 visible delta，禁止 core refit 与完整 history replay；同时预先冻结 nonzero
+opposite-response pairs、OOD zero-unsafe hard gate、new-task 数值阈值与同容量
+state/history/true-state 对照，以及 relevant/irrelevant/redundant deletion controls。
+
+这是最高信息增益，因为它直接区分两种仍开放的解释：F18/F22 只是 monolithic catalog
+设计失败，或当前观察制度本身不能支持 replay-free open-world state refinement。

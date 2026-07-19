@@ -202,7 +202,7 @@ z_next = update(z_t, action_taken, new_observation)
 - **可识别性**：给定 joint distribution 可定义最优 tradeoff；有限样本 density/variational bounds、encoder nonuniqueness 和 local optima 不保证恢复最小 causal state。
 - **有限维保证**：codebook/latent dimension 可被预算限制，但 exact finite sufficient representation 没有一般保证；随着预测精度提高，所需维度可发生 phase transition/继续增长。
 - **最根本反例 / 限制**：只把自然 future 或单一 clinical outcome 当 `Y`，会压掉治疗异质性、新检查和新任务信息；IB 高分也可能产生危险 state collision。
-- **UCM 可运行候选 `EXP-025`**：controlled predictive IB：encoder 读合法 history；decoder 随机抽取 action/check sequence，预测完整 multi-horizon observation+outcome distribution；增加 compression sweep 画 state-size—collision—regret Pareto，而不预设单一 beta。
+- **计划假说 `H-CPIB-planned`**：controlled predictive IB：encoder 读合法 history；decoder 随机抽取 action/check sequence，预测完整 multi-horizon observation+outcome distribution；增加 compression sweep 画 state-size—collision—regret Pareto，而不预设单一 beta。它是历史 planned slot，不是实际 `EXP-025`；实际 `EXP-025` 是 F18。
 
 关键一手来源（每条先写“直接支持”，分号后写“不支持/条件边界”）：
 
@@ -255,7 +255,7 @@ z_next = update(z_t, action_taken, new_observation)
 | H-DSCM：机制 posterior + surgical interventions 能统一 observational 与 randomized future | `F05-DSCM` | CAUSAL-01/02/04/07 | dynamic SCM particle filter | W12–W15, W20 | W15 把 confounded association 当 do-effect；latent CRL 多 seed 不可对齐且预测不稳定 |
 | H-KOOP：受控有限 lift 在低非线性世界给高效 shared state，但在多 attractor/交互世界失效 | `F06-KOOPMAN` | KOOP-02/03/04 | DMDc/EDMD + closure residual | W01, W03, W13, W17 | residual 低却反事实错；或需要随 world/task 专属 dictionary 分支 |
 | H-RSSM：单 RSSM 可给强平均近似，但需 red-team 防 task collapse/model exploitation | `F07-RSSM` | WORLD-01/02/03/04 | one RSSM, no per-head RNN | W01–W20 | any head bypasses `Z_t`；W19 tail collision；adversarial planner exploits model |
-| H-CPIB：controlled predictive target 可画出 compression—collision Pareto | `EXP-025`（`F07` 重大消融，不单独冒充家族） | IB-01/02/03/04 | action-sequence-conditioned VIB | W03–W05, W14, W16–W19 | 压缩仅保持训练 readout；新 task/check 不从 frozen `Z_t` 可读 |
+| H-CPIB：controlled predictive target 可画出 compression—collision Pareto | `H-CPIB-planned`（历史计划，未映射到实际 EXP ID） | IB-01/02/03/04 | action-sequence-conditioned VIB | W03–W05, W14, W16–W19 | 压缩仅保持训练 readout；新 task/check 不从 frozen `Z_t` 可读 |
 | H-RXN：局部 mechanism modules 可组合，但 cross-module reactions 决定是否真正闭合 | `F08-RXN` | RXN-01/02/03/04/05 | stochastic reaction network + PF | W10–W13, W18, W20 | 仅端口拼接无法表示 synergy/antagonism；等价 networks 无法区分却输出过度机制确信 |
 
 ### 3.1 其余正式候选的文献声明上限
@@ -273,3 +273,61 @@ z_next = update(z_t, action_taken, new_observation)
 4. **world model/IB/bisimulation**容易对训练任务充分、对新检查/治疗/读出不充分；因此 freeze 后 extension 与 new-task probe 是核心，不是附加测试。
 5. **DTR 是决策规则，不是患者 state**；**compositional wiring 是组装规则，不是 sufficiency**；**Koopman 是 observable evolution，不是有限维保证**。
 6. 若最强候选的 state 数/维度随 horizon、actions、checks 持续增长，或存在任意小压缩都会造成 W19 catastrophic collision 的族，则应报告“仅局部/近似共享状态”或有限 UCM 的最小反例，而不是用完整历史/RNN 隐藏容量掩盖失败。
+
+## 5. 最终 source-to-experiment disposition
+
+文献完成的是“生成互相可证伪的状态假说”，不是用引文替实验回答 UCM。当前机器
+账本是 38 total / 30 eligible；以下所有结论都由合成运行裁决，不能升级为原论文或
+临床结论。
+
+| Source idea | Implemented evidence | Final interpretation |
+|---|---|---|
+| Belief / POMDP | F02, F10 | 分布/不确定性是 state 的一部分；当前 open-world belief 在 primary 仍不稳健 |
+| Controlled PSR / predictive tests | F03, F17 | action-indexed futures 有用；有限 landmark/kernel compression 可产生 collision |
+| Causal states / bisimulation | F04, F11, F13, F18, F21 | controlled quotient 是有效语义核心；point collapse 不安全，minimality 未证明 |
+| Dynamic SCM | F05, F15 | 显式 action/mechanism interactions 有局部价值；识别与 unseen composition 不自动成立 |
+| Koopman / observable operators | F06, F14, F18 | 改善合成 trajectory prediction；不推出 finite closure 或 OOD safety |
+| Neural world state | F07, F15 | 单一 latent 可运行；浅 residual/random encoder 未形成合格前沿 |
+| Reaction/mechanism graph | F08 | fixed graph 未形成合格候选；compositional/open-system 文献只支持下一 native-extension 假说的结构动机 |
+| Catalog-closed switching particle belief | F22 | action-conditioned particle/switching state修复了 legal-policy totality；EXP-038 v2 仍有 1 collision + 1 unsafe OOD，已 `ABANDON` |
+| Program state | F16 | executability/typing 不防止量化丢失 behaviorally relevant distinctions |
+| Full history / K0 | B02 / B04 | history 是 information baseline；K0 是 evidence machinery，二者都不是 UCM 答案 |
+
+### 5.1 当前证据如何限制文献外推
+
+1. **Primary full evaluations**：F10/F14/F18 的 unsafe forced-known OOD 为
+   5/21/5，全部 hard-fail；没有文献先验可以补偿该失败。
+2. **CONFIRM5-lite**：F10/F18 只在 train4/val1/test2/pair0 的 committed lite scope
+   通过。它给局部 descriptive Pareto，不证明 belief/causal-state 理论条件在开放世界
+   成立。
+3. **Strict red-team v2**：closed-catalog OOD/collision 有局部支持；new check 与
+   opposite-response treatment 需要 extension fit + visible-history replay；new task
+   inconclusive；state nonminimal。这与文献中“允许 experiment set 改变会细分等价类”
+   的边界一致，而非对所有 finite states 的不可能性定理。
+4. **Full REPRO5**：独立实现与 sealed F18 在 1,680 episodes、28,720 rollout queries、
+   260 pairs 上精确一致；reproduction 证明 implementation equivalence，不证明正确性，
+   也不修复 primary OOD。
+5. **Secondary M09/M10/M11/M13/M16** 明示
+   `formal_frozen_metric_claim=false`；尤其 novel-readout 数值排序不是 state
+   sufficiency 的正式检验。
+
+### 5.2 最终来源结论上限
+
+没有任何一手来源预测 F18 会成功，也没有任何来源支持把这些 synthetic results 升级
+为 clinical/production/global claim。有限 belief、PSR、causal state、bisimulation 与
+Koopman invariant subspace 只在各自 finite/rank/closure/observability 假设下成立；
+SCM/reaction-network 的机制坐标也可能不可识别。
+
+运行证据只支持：**有限封闭合成目录中的 shared state 有局部价值；当前没有合格
+primary winner，open-world UCM 未建立。** Primary eligible Pareto 为空；lite 局部
+Pareto 为 F10/F18。任意开放世界 finite UCM 的存在或不存在、新任务充分性、临床有效
+性、production safety 和 global optimality 都保持未知。
+
+### 5.3 下一文献驱动实验，不是新引用结论
+
+下一项应将 controlled predictive-state 与 compositional/open-system 思路实现为
+**native scope-extension architecture**，使用 fresh preregistration + commit/reveal；
+同 pack 比较 sealed F18、F10、true-state、full-history、separate-task。禁止
+visible-history replay，预冻结 new check/new treatment/new task thresholds，并强制
+pair/OOD/false-split/state-growth gates。只有运行结果可决定 local-growth hypothesis，
+不能因 compositional 文献存在就预先把它写成成功。

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -59,17 +60,19 @@ def test_microworld_contract_has_exactly_w01_through_w20_and_eight_sections() ->
         assert headings == set(range(1, 9)), match.group(1)
 
 
-def test_candidate_baseline_and_experiment_registries_are_complete_but_unrun() -> None:
+def test_candidate_baseline_and_experiment_registries_are_complete_and_finalized() -> None:
     candidates = text("CANDIDATES.md")
-    families = set(re.findall(r"\| (F\d{2}) \|", candidates))
+    families = set(re.findall(r"\b(F\d{2})\b", candidates))
     baselines = set(re.findall(r"\b(B0[1-4])\b", candidates))
-    assert families == {f"F{index:02d}" for index in range(1, 13)}
+    assert families >= {f"F{index:02d}" for index in range(1, 13)}
+    assert "F01--F22" in candidates
     assert baselines == {f"B{index:02d}" for index in range(1, 5)}
 
     experiments = text("EXPERIMENTS.md")
     experiment_ids = set(re.findall(r"EXP-(\d{3})", experiments))
     assert experiment_ids == {f"{index:03d}" for index in range(1, 41)}
-    assert re.search(r"候选实验完成数为\s*0\s*/\s*30", experiments)
+    assert "38 total / 30 count-eligible / 8 ineligible" in experiments
+    assert "当前没有合格 primary UCM winner" in experiments
 
 
 def test_failure_and_evidence_codes_have_one_formal_registry() -> None:
@@ -93,9 +96,21 @@ def test_documented_state_codecs_equal_executable_inert_codecs() -> None:
     assert "safe-msgpack" not in benchmark
 
 
-def test_no_freeze_claim_exists_before_a_real_manifest() -> None:
-    manifest = RESEARCH / "FREEZE_MANIFEST.json"
-    if not manifest.exists():
-        assert "PRE-FREEZE" in "\n".join(text("BENCHMARK.md").splitlines()[:8])
-        assert "PRE-FREEZE" in "\n".join(text("MICROWORLDS.md").splitlines()[:8])
-        assert "NOT EXECUTED" in "\n".join(text("REDTEAM.md").splitlines()[:8])
+def test_final_freeze_and_redteam_claims_are_bound_to_machine_evidence() -> None:
+    manifest = json.loads((RESEARCH / "BENCHMARK_V1_FREEZE.json").read_text("utf-8"))
+    assert manifest["status"] == "FROZEN-v1"
+    assert manifest["freeze_root"] == (
+        "sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d"
+    )
+    assert "FROZEN-v1" in "\n".join(text("MICROWORLDS.md").splitlines()[:8])
+    assert "SOURCE-DISTINCT RED-TEAM v2 已执行" in "\n".join(
+        text("REDTEAM.md").splitlines()[:8]
+    )
+
+
+def test_final_decision_documents_reference_the_canonical_evidence_root() -> None:
+    evidence = json.loads((RESEARCH / "FINAL_EVIDENCE.json").read_text("utf-8"))
+    root = evidence["final_evidence_root"]
+    for name in ["DECISION.md", "PLAN.md", "PLAIN_CHINESE.md"]:
+        assert "FINAL_EVIDENCE.json" in text(name), name
+        assert root in text(name), name

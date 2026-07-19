@@ -1,8 +1,8 @@
 # Unified Clinical Map 可证伪假说登记册
 
-> 状态：**Phase 1 预登记草案；benchmark v1 尚未冻结，尚无候选运行结果。**
+> 状态：**FINAL VERDICT APPENDED；前述内容保留为候选实现前的可证伪登记。**
 > 用途：在实现候选前写下状态定义、预期优势、失败世界和杀死条件，防止看到结果后改写故事。
-> 解释规则：本文的“预期”是待检验方向，不是已验证事实；W01–W20 的正式参数、阈值、seed、oracle 与 probe 以未来 freeze manifest 为准。
+> 解释规则：本文的“预期”是实现前待检验方向，不是已验证事实；W01–W20 当前权威范围以 executable `BENCHMARK_V1_FREEZE.json` 及其已绑定 source bytes 为准。本文中残留的 future/PRE-FREEZE 措辞均是历史设计语境。
 
 ## 1. 共同判定框架
 
@@ -402,7 +402,7 @@ next highest-information experiment:
 
 以下不算新的重大架构实验：只改 learning rate、层数、hidden dimension、seed、batch size 或同一 loss 的小权重。若它们必要，应记为 subordinate ablation。至少 20/30 个重大实验必须改变状态语义、update、transition factorization、uncertainty representation、intervention identification、scope/refinement 或共享约束中的一项。
 
-同一家族连续四次只有局部参数调整且没有实质进展时，必须停止该方向。每五个实验新增至少一个攻击当前最强候选的反例；每十个实验重新审查主假说、表示/识别/优化失败分类和家族覆盖。
+同一家族连续四次只有局部参数调整且没有实质进展时，必须停止该方向。实现前规则要求每五个实验新增至少一个攻击当前最强候选的反例、每十个实验重新审查主假说。回顾审计发现 CE-010/015/020/025 复用了同一已知 W18 witness；它们是有用的回归攻击，但不是每个 cadence 新生成的反例，因此这项过程要求没有被严格满足。
 
 ## 7. 全 benchmark 与复现前的选择规则
 
@@ -414,7 +414,7 @@ next highest-information experiment:
 4. raw result writer 与 clean replay 已验证；
 5. finalist 之间使用同一 fresh common hidden corpus。
 
-最终至少三个候选、每个至少五个 model seeds 跑完整 W01–W20；最强候选另有独立实现路径和 freeze 后 red-team。本文只登记这一最低要求，**当前并未完成，也不得提前写成已完成。**
+实现前最低要求是至少三个候选、每个至少五个 replicate seeds 跑完整 W01–W20，并给最强候选独立实现路径和 freeze 后 red-team。实际 F10/F14/F18 完成 R01–R05 full evaluation，但 R01 已被 screening/selection 读取且 primary TRAIN5/EVAL5 authority chain 未建立，所以它们是 development full evaluations，不是 blind confirmations；R02–R05 未被该 screen 读取。后来的 CONFIRM5-lite 有独立公开 commitment/reveal，但 train4/val1/test2/pair0、`complete=false`，也不能升级 primary。最终 verdict 见第 9--11 节。
 
 ## 8. 可能的诚实终局
 
@@ -429,3 +429,76 @@ next highest-information experiment:
 7. **HARNESS/IDENTIFICATION INCOMPLETE**：现有世界、oracle 或数据不能判定，保持未知。
 
 无论哪种终局，都必须区分：已验证、仅合成 scope 支持、失败、尚未知。不得因文档完整、接口统一、K0 可路由、LLM 可读历史或单任务分数高而宣布 UCM 成功；也不得声称临床有效、生产安全或全局最优。
+
+## 9. 最终假说裁决
+
+以下裁决以 `EXPERIMENT_INDEX.json` 的 38 个登记项（30 eligible）及绑定 run
+bundles 为准；历史 planned slots 不参与解释。
+
+| Hypothesis family | Verdict | Decisive evidence / boundary |
+|---|---|---|
+| Fixed hand summary is sufficient | **FALSIFIED** | CE-005/W08 order-and-availability collision |
+| Belief/distribution is part of state | **SUPPORTED on measured scope** | F21 point collapse created 4 dangerous collisions |
+| Natural-future state is treatment-sufficient | **FALSIFIED as general claim** | W04 semantics + F19/action-history ablations |
+| Ordered path memory repairs summary alias | **LOCALLY SUPPORTED** | F09/F11/F13/F18 close measured W08 collision; no global quotient theorem |
+| Support/novelty alone gives robust open-world identity | **FALSIFIED for current implementations** | Primary F10/F14/F18 unsafe OOD = 5/21/5; v2 local OOD pass cannot override primary |
+| Koopman/operator lift improves dynamics | **LOCALLY SUPPORTED** | F14/F18 synthetic forecast gains; no finite-closure implication |
+| Program/kernel/point compression is safe | **FALSIFIED for tested candidates** | F16/F17/F21 dangerous collisions |
+| F18 is the best bounded structural compromise | **DESCRIPTIVELY SUPPORTED** | best local dynamics among primary candidates and exact full REPRO5; still ineligible |
+| F18 is a general UCM | **NOT SUPPORTED / PRIMARY HARD-FAIL** | EXP-035 OOD hard failure; v2 open-world extension failure |
+| Fixed state natively absorbs a new check | **FALSIFIED for sealed F18/I18** | v2 requires extension fit + visible-history replay; 0 reusable-without-replay rows; exploratory M11 shows the same scope gap for F10/F14/F22 but is not a frozen verdict |
+| Fixed state natively absorbs opposite-response treatment | **FALSIFIED for F18** | all v2 rows abstain/scope-insufficient and require migration |
+| Safe abstention proves unseen treatment support | **FALSIFIED** | safe refusal is only safety behavior, not counterfactual ability |
+| F18 state is behaviorally minimal | **NOT SUPPORTED** | v2 history-deletion trio false-splits all 4 oracle-equivalent controls |
+| F18 supports an unseen state-only task | **INCONCLUSIVE** | v2 capacity ladder had no preregistered decision rule; secondary M16 is exploratory |
+| One old-catalog state supports multiple horizons | **LOCALLY SUPPORTED** | v2 same-state 1/24/168h natural queries; new operator still out of scope |
+| F22 catalog-closed switching-particle fallback repairs legal-policy totality without new safety failures | **TOTALITY LOCALLY SUPPORTED; OVERALL FALSIFIED FOR V2** | EXP-037 failed with 0 credit; EXP-038 executed every legal policy but still had 1 collision + 1 unsafe OOD, decision `ABANDON` |
+| Source-distinct F18 implementation reproduces the sealed core | **SUPPORTED** | full REPRO5: 1,680 episodes, 28,720 rollouts, 260 pairs, every difference/failure counter 0 |
+| No finite UCM can exist | **NOT PROVED** | B01 finite true state exists in frozen worlds; current learned candidates failing is not a universal impossibility theorem |
+| Local approximate shared state exists | **SUPPORTED only in synthetic closed scope** | shared-state demo, primary/local metrics, lite F10/F18 and exact reproduction |
+| A clinically valid or production-safe UCM exists | **NOT EVALUATED** | benchmark and red-team are synthetic; no clinical/production claim permitted |
+
+## 10. Evidence-stratified end state
+
+### 已验证
+
+- W01--W20/21-panel freeze root
+  `sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d`；
+- 38 total / 30 count-eligible / 8 ineligible / 1 failed attempt；
+- EXP-033--035 各 W01--W20×R01--R05、1,680 rows；
+- strict source-distinct red-team v2 已执行；
+- full independent REPRO5 exact core reproduction。
+
+### 仅合成局部支持
+
+CONFIRM5-lite 的 F10/F18 在 train4/val1/test2/pair0 scope 通过并形成局部
+Pareto；red-team v2 committed pack 的 OOD/collision rows 对 F18 给局部安全支持。
+这两项都不能跨 scope 覆盖 primary failure。
+
+### 失败
+
+Primary eligible Pareto 为空；F10/F14/F18 全部 unsafe OOD hard-fail；F22 v2 被
+collision+OOD 淘汰；F18 new check/new treatment 需要 fit + visible-history replay，
+所以当前 open-world shared-state closure 失败。
+
+### 未知
+
+新任务 sufficiency、任意开放世界有限 UCM 的存在/不存在、clinical validity、
+production safety 与 global optimum 都未建立。旧 red-team v1 的 reused-fixture
+结果只能作探索，不能补这些未知。
+
+综合终局不是一个 winner，而是：**有限封闭目录 shared state 有局部合成支持；当前
+无合格 primary winner，开放世界 UCM 未建立。** Primary eligible Pareto 为空；lite
+局部 Pareto 为 F10/F18。
+
+## 11. 下一项最高信息增益假说
+
+**H-NATIVE-EXTENSION**：如果 shared state 真能在开放目录中局部增长，则一个为
+scope-extension 原生设计的架构，应能仅以旧 state、新 operator declaration 与之后
+到达的公开 delta 生成扩展 state，既不重读 visible history，也不产生第二患者 latent。
+
+必须 fresh preregister + commit/reveal，并同 pack 比较 native extension、sealed F18、
+F10、true-state、full-history、separate-task；new check、opposite-response treatment、
+new task 的 threshold 在 reveal 前冻结，同时强制 pair/collision、OOD、false split、
+state growth、latency 与旧 scope regression。若 native candidate 仍只能 replay history，
+则动态/局部扩展假说在该 pack 上失败；不得用 catalog-specific patch 解释为成功。

@@ -1,6 +1,6 @@
 # UCM benchmark v1 微型临床世界 W01–W20
 
-> **状态：PRE-FREEZE。** 本文是 W01–W20 的正式语义规格，但尚不等于 benchmark v1 已冻结。只有对应生成器、独立 oracle、public/private projection、paired probes、误差界、split audit、expected cells 和合规 mutation tests 全部实现并进入 `FREEZE_MANIFEST.json` 后，状态才可改为 `FROZEN-v1`。
+> **状态：FROZEN-v1。** W01–W20 的 executable generators、oracle、public/private projection、policy/probe/metric contract 及 31 个 source files 已由 `BENCHMARK_V1_FREEZE.json` 固定。Freeze root：`sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d`。本文的早期 PRE-FREEZE 注记保留为历史设计边界，不覆盖实际冻结运行路径。
 >
 > 本文只定义可判定的合成世界，不声称模拟真实临床有效性。候选 API、共享状态隔离、raw result、统一指标和冻结程序以 `BENCHMARK.md` 与 `FORMAL_SPEC.md` 为准。所有 wire 名称保持中性；`Wxx`、split、case/test/pair ID、hidden state、future、oracle 和 seed 永不进入 candidate request。
 
@@ -94,13 +94,21 @@ factual behavior policy不是 oracle baseline policy。它只生成观察性日�
 
 ### 0.6 split、seed 和 freeze 规则
 
-每个世界默认生成：
+以下是早期容量规划，**已被 executable benchmark v1 freeze 的实际运行协议取代**。
+`4096/1024/2048` 只保留为历史设计/生成器可用容量，不是 complete candidate
+run 的实际样本数：
 
 | split | episode 数/环境 seed | 是否 candidate 可见 | 用途 |
 |---|---:|---|---|
 | train | 4096 | 是；含 trainer target stream | fit 与固定 train fractions `1/5/10/25/50/100%` |
 | validation | 1024 | 是；case-level oracle 不直接导出 | config/threshold 选择 |
 | frozen-test | 2048 + private probe pairs | seal 后只运行一次 | primary judge |
+
+当前唯一有运行权威的 split 见
+`research/unified_map/BENCHMARK_V1_FREEZE.json::split_protocol`：每个
+panel、每个 replicate 使用 `train=32`、`validation=8`、`sealed_test=16`，并且
+complete candidate 必须覆盖 `R01--R05`。因此不得用上表的历史大样本数字描述
+EXP-033--EXP-035，亦不得把 generator 的 `split_sizes_available` 当作已执行行数。
 
 至少五个 model seed 使用同一套环境 corpus。episode RNG key 为
 
@@ -1053,7 +1061,9 @@ WorldSpec
 - W01–W10绿色只能证明这些有限world/scope上的证据，不能证明一般临床世界存在有限UCM。
 - 同一public prefix对应不同private truth时，正确共享state是posterior/belief；不能把无法识别的realized truth当碰撞，也不能用泄漏“解决”。
 - 新检查/新治疗改变行为等价关系时，应报告旧scope state不充分或扩展state；不得为测试编号写分支。
-- 本文件没有实现候选，也没有修改正式`MICROWORLDS.md`；正式freeze必须由manifest逐byte覆盖生成器、oracle、schema、pair和margin。
+- 本节是历史上的 freeze 前实现清单，不是当前执行状态。当前正式 freeze 已由
+  `research/unified_map/BENCHMARK_V1_FREEZE.json` 逐 byte 绑定生成器、oracle、schema、
+  pair、metric contract 与 seed commitments；候选实现位于独立 prototype 源码中。
 
 ---
 
@@ -1542,7 +1552,12 @@ U=-sum gamma^(j-1)*(x_j^2+.05*A1+.08*A2+.08*Q1)
 
 ### 6. Train / validation / frozen-test
 
-每4096 train固定64 tail、1024 validation固定16、2048 test固定32，位置由secret permutation；headline population metric按exact `1/64` mixture。另有256 tail/common配对probe但不进入population prevalence/aggregate mean。每split tail内marker true/false与action support按确定配额；任何raw tail不能被丢弃或oversample后冒充总体率。
+本段记录早期 W19 大样本容量设计：每4096 train固定64 tail、1024 validation固定16、
+2048 test固定32，位置由secret permutation；headline population metric按exact
+`1/64` mixture。它已被 executable freeze 的实际 complete-run split supersede：每个
+panel、每个 `R01--R05` replicate 实际运行 `train=32`、`validation=8`、
+`sealed_test=16`。额外 tail/common pair 仍须与 population 分母分开报告；任何 raw tail
+不得被丢弃或 oversample 后冒充总体率。不得将此历史容量段落误报为已执行样本量。
 
 ### 7. 配对反例
 
@@ -1622,7 +1637,7 @@ train覆盖单dose与washout；validation覆盖重复dose；test 25% same-Q0/dif
 
 ---
 
-## W11–W20 freeze 前最低自证
+## W11–W20 freeze gate（已执行）
 
 1. 每world materialize `generator/oracle/public_projection/policy_set/probe_pairs/margins`，production/reference oracle不共享核心计算路径。
 2. W15A randomized anchor与W15B nonidentifiable twin分开出表；W15B不得用private SCM identity评分可归责point effect。
@@ -1631,3 +1646,74 @@ train覆盖单dose与washout；validation覆盖重复dose；test 25% same-Q0/dif
 5. W19 population fixed tail与额外probe分母分开，tail raw records一个不少；headline、tail、CVaR同时报告。
 6. W20自动验证`(x,r)` Markov closure及两组不同history相同充分统计的oracle等价，避免“完整历史总是更安全”的伪结论。
 7. 每个world至少一个恶意negative control被预期失败码杀死；所有private future swap在cut前生成exact相同candidate bytes。
+
+---
+
+## Final executable authority and current use
+
+Freeze binds 20 world slots and 21 panels because W15A randomized-identifiable
+and W15B nonidentifiable-twin remain separate. Candidate-visible data excludes
+`Wxx`, split, case/test/pair identifiers, hidden state, future, oracle and seed.
+The authority root is:
+
+```text
+sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+```
+
+### Primary full-evaluation coverage
+
+EXP-033 F10、EXP-034 F14、EXP-035 F18 each ran all W01--W20 / 21 panels for
+R01--R05 with 32 train、8 validation、16 sealed test rows per panel/replicate；
+that is **1,680 sealed-test episode rows per candidate**；旧稿的另一行数已废止。Their unsafe
+forced-known OOD counts were 5、21、5, so all three hard-failed and no ordinary
+candidate enters the primary Pareto. EXP-036 is privileged true-state only.
+
+### Supplemental and extension use
+
+- CONFIRM5-lite reused the same executable worlds under a separate committed seed
+  pack, but only train4/val1/test2 and pair0. It is
+  `supplemental_all_world_lite`, `complete=false`, with no collision evidence;
+  F10/F18 local passes cannot override the primary failures.
+- EXP-038 F22 v2 ran the registered screen and was abandoned after one dangerous
+  collision and one unsafe OOD. EXP-037 is a failed unfinalized attempt with zero
+  credit.
+- Strict source-distinct red-team v2 is an external attack pack, not a rewrite of
+  W01--W20. It found local OOD/collision safety on committed rows, but new check
+  and opposite-response treatment required extension fit plus visible-history
+  replay; new-task evidence remained inconclusive and deletion controls showed
+  nonminimal state.
+- Old red-team v1 reused W04/W08/W13/W16--W20 fixtures and remains exploratory;
+  its observations must not be presented as source-distinct v2 or primary score.
+
+### Independent reproduction scope
+
+Full REPRO5 run `20260719T101913Z-I18-full-repro-01c908cb1b` covered 1,680
+sealed-test episodes, 28,720 rollout queries and 260 primary-scope pairs across
+R01--R05. Sealed and independent F18 outputs had all max absolute differences 0
+and all failure counters 0. W16/W17 S1 pair declarations are extension-only and
+are excluded exactly as in the frozen primary runner; opening them without the
+extension reveal caused the earlier `20260719T095421Z-I18-full-repro-f77211903c`
+run to fail unfinalized with zero credit. Exact reproduction does not recompute
+oracle metrics or repair primary OOD.
+
+### What the worlds did and did not establish
+
+W01--W20 are bounded synthetic falsification instruments, not clinical
+simulators. Measured evidence supports these narrow uses:
+
+- W08 killed unordered summaries;
+- W04/F21 killed point-posterior collapse on measured pairs;
+- W18 killed current primary open-world states, while a separate v2 pack gave
+  only local OOD support;
+- W16/W17 and v2 showed that admitting new checks/treatments changes the
+  equivalence relation and that current candidates require replay-based migration;
+- W19 guarded rare-harm tails;
+- W20 tested treatment-history memory, purity and deletion;
+- W13/combination evidence raises monolithic-composition concerns, but the strict
+  v2 rows lacked a preregistered accuracy threshold and therefore do not prove a
+  global combination failure by themselves.
+
+The supported conclusion is only a local approximate shared state in a finite
+closed synthetic catalog. Open-world UCM, new-task sufficiency, clinical
+validity, production safety, global finite-state existence/nonexistence and
+optimality remain unestablished.

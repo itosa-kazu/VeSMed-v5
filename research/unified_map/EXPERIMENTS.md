@@ -1,15 +1,15 @@
 # UCM 实验注册、执行、统计与决策
 
-> 状态：**Phase 1 正式研究登记规则；benchmark v1 尚未冻结，候选实验完成数为 0/30。**
+> 状态：**FINAL EXECUTED LEDGER；benchmark v1 已冻结，EXP-001--EXP-038 均已登记；当前没有合格 primary UCM winner。**
 > 边界：只规定 UCM 轨道的 experiment registry、运行循环、统计和选择；不修改 K0 结论，不把 K0 当 UCM 候选。
-> 证据口径：下文 `EXP-001`–`EXP-040` 目前只是 `PLANNED` 预算槽位，不是已冻结 preregistration、不是 run、不是已完成实验，也不能计入完成数。
-> 权威性：实际完成事实将来自未来 append-only registry event 与不可覆盖 run bundle；本 Markdown 是规则和派生的人类可读视图，不能自行把计划升级为证据。
+> 证据口径：第 0–19 节是实现前的 `PRE-FREEZE` 规则/预算档案，已由 executable freeze 与第 20–21 节实际 run ledger **取代为当前事实视图**；其中旧 `EXP-001`–`EXP-040` planned slot 不能拿来重解释同号实际实验。
+> 权威性：机器可重放的 `EXPERIMENT_INDEX.json` 是计数与资格 authority：`38 total / 30 count-eligible / 8 ineligible / 1 failed attempt / 0 evidence gaps`，index root `sha256:abe4e54a6c04c9f02e7f5df89d08a35940c67e039c11d5179f22f563157a4989`。Markdown 只作人类可读解释，不能覆盖 index、manifest 或 raw evidence。
 
-## 0. 当前完成账本
+## 0. 历史初始完成账本
 
-截至本文建立时，权威计数如下：
+初始规则登记时的零值表保留为历史基线；最终权威计数见第 21 节。下表不再代表当前状态：
 
-| 完成门 | 当前值 | 目标 | 说明 |
+| 完成门 | 当时值 | 目标 | 说明 |
 |---|---:|---:|---|
 | benchmark v1 freeze | 0 | 1 | 尚未冻结；因此不得运行普通候选 |
 | `DECIDED` 且 `count_eligible=true` 的重大实验 | **0** | **至少 30** | 计划卡、代码草图和 harness fixture 均不计数 |
@@ -18,10 +18,10 @@
 | 完整候选的五-seed panels | **0** | 至少 3 | 缺任一 required seed/cell 不完整 |
 | 独立实现复现 | **0** | 至少 1 | 必须 source-distinct |
 | candidate-freeze 后 red-team | **0** | 至少 1 轮 | 不得回写 benchmark v1 |
-| cadence counterexample | **0** | 每完成 5 个实验至少 1 个 | 当前 `completion_ordinal=0`，尚未触发 |
-| cadence architecture review | **0** | 每完成 10 个实验 1 次 | 当前尚未触发 |
+| cadence counterexample | **0** | 每完成 5 个实验至少 1 个 | 当时 `completion_ordinal=0`，尚未触发 |
+| cadence architecture review | **0** | 每完成 10 个实验 1 次 | 当时尚未触发 |
 
-计数只能由 registry 重放得出。未来如本表与 registry events 冲突，以通过 integrity check 的 registry 和 raw run evidence 为准，并通过追加 correction 更新本文，不得直接改写历史。
+这是实现前零值快照。当前计数见第 21 节；若后续 canonical experiment index 与本文冲突，以通过 integrity check 的 index、manifest 和 raw run evidence 为准，并以显式 correction 修正文档。
 
 ## 1. 先固定“实验”“运行”和“证据”的含义
 
@@ -607,9 +607,9 @@ registry 维护两个计数：
 
 CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle/hash 或运行记录时，禁止登记下一批。
 
-## 15. 40 项 planned experiment registry（当前完成 0）
+## 15. 历史档案：40 项 planned experiment registry（当时完成 0）
 
-下表是**架构级预算地图**，不是冻结 preregistration，更不是宣称这些实现或结果已存在。所有行当前统一为 `status=PLANNED`、`valid_run_count=0`、`decision=null`、`counts_toward_completed=0`。只有单独生成并在 raw 之前冻结 experiment card、完成要求的有效 run/analysis、记录正式决定后，某行才可进入完成计数。最终卡片必须在运行前进一步写明参数域和量化 falsifier；若届时发现更高信息增益路径，允许通过 append-only registry 记录取消/替代，但不能把未跑计划计数。
+下表是**已被 executable freeze 后实际 ledger supersede 的架构级预算地图**，不是冻结 preregistration，也不是当前 experiment index。表中 `status=PLANNED`、`valid_run_count=0`、`decision=null`、`counts_toward_completed=0` 只描述当时状态；同号实际 run 必须按第 20–21 节的 family、bundle 与决定解释，不能按本表旧含义回填。
 
 ### 15.1 规定 baseline 计划（不用于凑 30 个重大候选/消融）
 
@@ -661,9 +661,11 @@ CI 应有 gate 测试：到达 cadence 边界而缺 CE/AR、leader hash、oracle
 | EXP-039 | compositional operator ablation | 结构化 operator 而非容量带来新共病组合泛化 | 打乱/移除 composition law 后不退化，说明组合主张未证实 |
 | EXP-040 | single-scale vs hierarchical multi-timescale state | 同一 state 能稳定支持 1h/24h/7d，而非每 horizon 私有 latent | state 随 horizon 线性膨胀或某尺度出现系统性 collision |
 
-即便保守排除 EXP-037，预算仍预留 35 个可能 `count_eligible` 的结构候选/消融槽位，超过 30；它们都不是单纯学习率/层数/隐藏维度调整。这里的 `35` 是搜索预算容量，**当前完成数仍是 0**。
+即便保守排除 EXP-037，当时预算仍预留 35 个可能 `count_eligible` 的结构候选/消融槽位。这里的 `35` 只是历史搜索预算容量；“完成数为 0”是当时快照，不代表当前账本。
 
-## 16. Full benchmark、top-3、独立复现和 red-team
+## 16. 历史预注册意图：Full benchmark、top-3、独立复现和 red-team
+
+本节记录的是期望的完整 confirmatory authority chain。Primary EXP-033--EXP-035 没有建立这里规定的 `TRAIN5_PRECOMMIT -> 3 family x 5 seals -> EVAL5 commit/corpus/finalize/reveal` 完整链，因此只能算 development full evaluations。后来的公开 commitment/reveal 只运行 train4/val1/test2/pair0 的 `supplemental_all_world_lite`，同样不能升级为本节定义的 complete confirmation。
 
 ### 16.1 至少三名真正 UCM 候选跑满
 
@@ -734,7 +736,7 @@ test_independent_reproduction_is_source_distinct
 test_redteam_artifacts_do_not_rewrite_benchmark_v1
 ```
 
-## 18. 推荐实现顺序（仍不运行候选）
+## 18. 历史推荐实现顺序（已被 executable freeze 与实际运行 supersede）
 
 1. 等 `benchmark_v1` 的 world/oracle/metric/hard-gate schema 定稿，填充本文件中的 policy hash 引用；不得保留可事后解释的 `TBD` 门槛。
 2. 先实现 registry event schema、hash chain、run bundle schema、atomic publisher 和 raw re-aggregation verifier。
@@ -743,7 +745,9 @@ test_redteam_artifacts_do_not_rewrite_benchmark_v1
 5. 所有实验按固定循环运行；先保留失败 raw，再决定，不“清理”历史。
 6. 每五/十次 cadence gate 由 CI 强制，不靠人工记忆。
 
-## 19. 当前证据状态与禁止声明
+## 19. 历史 PRE-FREEZE 证据状态与禁止声明
+
+下列零值声明只记录候选运行开始前的状态，已经由第 20–21 节 supersede，不是当前结论：
 
 - 没有任何候选已实现或已运行；
 - 重大实验完成账本是 **0/30**；`EXP-001`–`EXP-040` 只是 planned slots，一个都不能计为完成；
@@ -752,7 +756,7 @@ test_redteam_artifacts_do_not_rewrite_benchmark_v1
 - hash 链是仓库内篡改检测，不是外部签名 WORM；
 - K0 的历史结果只提供原子发布/hash/隔离模式经验，不能提供 UCM 动力学证据。
 
-## 20. FROZEN-v1 executable experiment ledger
+## 20. FROZEN-v1 首批 executable screening checkpoint（历史；已由第 21 节扩展）
 
 > 本节从 commit `9d0608f` 的 executable freeze 后开始，覆盖第 15 节未冻结的
 > 计划编号。机器 run bundle 中的 `experiment_id` 是唯一实际编号；第 15 节保留为
@@ -924,7 +928,7 @@ support/epistemic uncertainty 成为同一 patient state 的一部分，而不�
 
 #### AR-010 — first architecture review
 
-1. **当前最强假说**：F04 的 behavior-target quotient 是最低 regret 路线；F06 是
+1. **当时最强假说**：F04 的 behavior-target quotient 是最低 regret 路线；F06 是
    forecast Pareto 路线。
 2. **失败世界**：共同在 W08 顺序/availability pair 危险碰撞，在 W18 强制 known；
    W15/W20 等价 pair 还出现 false split。
@@ -939,5 +943,171 @@ support/epistemic uncertainty 成为同一 patient state 的一部分，而不�
    action-conditioned update、非参数 OOD、history deletion 和 W08/W18 focused gates；
    暂停 shallow neural/fixed ring 局部调参。
 
-当前计数：11 个机器运行完成；其中 8 个是 distinct family screening、3 个 baseline。
-它们都包含实质架构差异，但全部 hard-fail，完整 benchmark 仍为 0/3，不能给 winner。
+该 checkpoint 的当时计数：11 个机器运行完成；其中 8 个是 distinct family screening、
+3 个 baseline。它们全部 hard-fail，当时完整 benchmark 仍为 0/3；当前总账与 full
+results 只看第 21 节和 `EXPERIMENT_INDEX.json`。
+
+## 21. 当前机器权威账本：EXP-001--EXP-038
+
+### 21.1 计数与冻结 authority
+
+当前完成数不再由 Markdown 人工重建，而由
+`research/unified_map/EXPERIMENT_INDEX.json` 重放：
+
+```text
+freeze root: sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+index root:  sha256:abe4e54a6c04c9f02e7f5df89d08a35940c67e039c11d5179f22f563157a4989
+total_experiments: 38
+count_eligible: 30
+count_ineligible: 8
+failed_attempt_count: 1
+evidence_gap_count: 0
+```
+
+因此 **30 个实质实验门槛恰好满足**。不能把数字改写成 `32+4`：
+EXP-033--EXP-035 是对已选架构的 full repeat evaluations，EXP-036 是 privileged
+upper-bound control，EXP-037 是未完成失败尝试，均不计入 30；EXP-038 的架构
+refinement 有完整 bundle、正式决定且 `count_eligible=true`，即使决定为
+`ABANDON` 仍是一个有信用的反证实验。
+
+| 角色 | 数量 | 计数说明 |
+|---|---:|---|
+| architecture / architecture-refinement / ablation | 30 | `count_eligible=true`，满足 30 门槛 |
+| repeat full evaluations | 3 | EXP-033 F10、EXP-034 F14、EXP-035 F18；不重复计架构数 |
+| baseline / negative / privileged controls | 4 | EXP-009--011、EXP-036；不计 30 |
+| failed architecture attempt | 1 | EXP-037；`FAILED`、0 credit |
+| 总登记数 | 38 | 30 eligible + 8 ineligible |
+
+实际候选覆盖远多于八个实质不同家族；family 与每次 run 的唯一 `run_id`、config、
+source、summary、manifest、bundle digest 以 index 每一行为准。第 15 节同号 planned
+slots 只是历史预算，不能覆盖这里的实际含义。
+
+### 21.2 三个完整 primary development evaluations
+
+EXP-033--EXP-035 都在 W01--W20（21 panels）× R01--R05 上运行；每个候选有
+**1,680** sealed-test episode rows。它们满足“至少三个候选、每个全部 worlds、至少
+五个随机种子”的运行覆盖，但三者都触发不可补偿的 OOD hard failure，因此没有
+primary winner，也没有可进入 primary UCM Pareto 的普通候选。
+
+| Experiment | Family | Run / bundle root | unsafe forced-known OOD | hard gate |
+|---|---|---|---:|---|
+| EXP-033 | F10 | `20260719T053350Z-EXP-033-2e4152df0d` / `sha256:9db21dc525b2a779778a5dc226e663899cd4aa6dc23f225936090334a7ddc111` | 5 | **FAIL** |
+| EXP-034 | F14 | `20260719T062956Z-EXP-034-f2409bcf72` / `sha256:a68a7056fc9623d74fd75a86f63e2fde87bb726a9aa069b6879b83418ef1cf85` | 21 | **FAIL** |
+| EXP-035 | F18 | `20260719T063049Z-EXP-035-c28452cba8` / `sha256:73016e5dd80e6b2d6d22b5e5b20a3ac0f9914bc33739509e5064be716780c911` | 5 | **FAIL** |
+
+这些是 primary development evidence，不因后续小样本或局部通过而被覆盖。EXP-036
+B01 true-state upper bound 只证明冻结合成 worlds 在 privileged truth 下可达，不能
+作为可学习候选或 Pareto 点。
+
+### 21.3 F22：一次无信用失败与一次有信用反证
+
+- **EXP-037**：run `20260719T083925Z-EXP-037-FAILED-1a0b76ff8a` 在 ordinary
+  bundle finalization 前失败，required raw cells 缺失；机器账本标
+  `failed_attempt_bundle`、`count_eligible=false`，**0 credit**。
+- **EXP-038 / F22 v2**：预登记后完成 matched screen，run
+  `20260719T085521Z-EXP-038-046568f23d`，bundle
+  `sha256:1f514f77a4aaface0728bf28d65181ad0084f9c88d10b2ac5a4e9d650f27bf84`。
+  它修复了 legal-policy totality，但出现 1 个 dangerous collision 与 1 个 unsafe
+  forced-known OOD；正式决定 `ABANDON / DO_NOT_KEEP_OR_REFINE`。这个失败是第 30
+  个 count-eligible 实质实验，不是成功候选。
+
+### 21.4 Supplemental CONFIRM5-lite（不能覆盖 primary）
+
+公开 commitment/reveal 下完成了一个 `supplemental_all_world_lite` batch：
+
+```text
+batch: 20260719T090636Z-POSTSEAL-CONFIRM5-25eeeb5ec6
+batch root: sha256:44f2839d702532018ab51602843f8e48be3d671009cefae94da1d262561aa1cc
+scope receipt root: sha256:cde9098636c7e9186c398bb1b8dd42c0b866580df828aa0f14e4454889a9edc9
+scope: W01--W20, C01--C05, train=4, validation=1, test=2, pair=0
+complete_benchmark: false
+no_pair_collision_evidence: true
+```
+
+F10 与 F18 在这个 lite pack 上通过局部 hard gate，形成**仅限该 lite scope 的局部
+Pareto**（F10 更小/快，F18 dynamics/regret 更好）；F14 有 9 个 unsafe OOD。
+该 batch 没有 pair evidence、样本量低于 primary，且 receipt 明示一次未 finalization
+的旧 attempt 已读取 seed。它是诚实的补充证据，不能冲销 EXP-033--035 的 primary
+失败，也不能称完整 CONFIRM5。
+
+### 21.5 Secondary metric battery（exploratory only）
+
+`20260719T090245Z-SECONDARY-25cd492973` 对 24 个 family labels 运行 M09/M10/
+M11/M13/M16，共 1,307 rows；artifact 明示
+`formal_frozen_metric_claim=false`。它可描述样本效率、collision profile、scope
+extension cost、memory 与 novel-readout transfer，但不能作为 frozen primary metric
+或新的合格 winner 证据。尤其 M11 对 F10/F14/F18/F22 都显示新 check/treatment 需要
+extension fit + replay；M16 的 state/history/true-state 数字只能作 readout-controlled
+探索，不能据数值排序宣称表示充分。
+
+### 21.6 Source-distinct strict red-team v2
+
+执行 bundle：
+`results/unified_map/redteam_v2/20260719T093209Z-RT2-6337a6ad2d`，bundle root
+`sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3`；
+机器 verdict digest
+`sha256:805f5264fb6ffd2308628dbdd312ab7500d1c56a65fb1ec0803fafaa91b17bf5`。
+sealed F18 与 source-distinct independent F18 均运行。裁决必须逐类保留：
+
+- OOD 与 dangerous-collision：只在 committed synthetic catalog/pack 内有局部支持；
+- new check 与 opposite-response new treatment：**OPEN_WORLD_SCOPE_FAILURE**，需要
+  extension fit 与 visible-history replay；safe abstention 不等于支持；
+- new task：**INCONCLUSIVE**，没有预登记判定阈值，不能从数值排序推出 sufficiency；
+- history-deletion controls：存在 false splits，支持 `NON_MINIMAL_STATE_EVIDENCE`；
+- same-state multi-timescale/action/query-update：旧 catalog 内有局部结构支持，新
+  operator 仍发生 scope failure。
+
+所以 v2 已执行，但没有产生 `L4`、开放世界、全局最优、clinical 或 production 正向
+声明。旧 red-team v1 仍只是一轮 reused-fixture exploratory evaluation。
+
+### 21.7 Full independent REPRO5
+
+正式独立复现 bundle：
+
+```text
+run: 20260719T101913Z-I18-full-repro-01c908cb1b
+bundle root: sha256:deee6e6339d88d500a52770052f20a14cfac30ac43b2c839574a377be08257af
+episodes: 1680
+rollout queries: 28720
+pair probes: 260
+replicates: R01--R05
+all max absolute differences: 0.0
+all failure counters: 0
+exact_core_reproduction: true
+```
+
+W16/W17 的 S1 extension-only pairs 按 frozen primary runner 明确排除；它们需要独立
+extension reveal。此前 `20260719T095421Z-I18-full-repro-f77211903c` 错误打开该 pair
+scope，已作为 `FAILED_UNFINALIZED` receipt 留存、0 credit，修复后才产生上述正式
+bundle。REPRO5 证明 independent implementation 与 sealed F18 core 在完整冻结
+panel/replicate query scope 上精确一致；它**不重算 oracle metrics，也不修复 F18 的
+primary OOD hard failure**。
+
+### 21.8 最终结论、Pareto 与下一项最高信息增益实验
+
+按证据类别分开：
+
+- **已验证（工程/合成）**：freeze 与账本可校验；30 个 count-eligible 实质实验；
+  三个 W01--W20×5 primary full runs；strict source-distinct v2；full REPRO5 exact core；
+  所有任务头和更新在实现合同上读取同一 shared state。
+- **仅合成局部支持**：F10/F18 在 CONFIRM5-lite 的有限旧 catalog 形成局部
+  descriptive Pareto；F18 在 red-team v2 的 committed OOD/collision rows 上局部安全。
+- **失败**：primary F10/F14/F18 Pareto 资格为空；F22 v2 被 collision+OOD 淘汰；
+  F18 新 check/new treatment 需要 fit + visible-history replay，开放世界 UCM 未建立。
+- **未知**：新任务 sufficiency、真实临床有效性、生产安全、任意开放世界下的有限
+  shared state 存在性/不存在性及全局最优性。
+
+因此当前只能说：**有限封闭合成目录中的 shared state 有局部支持；没有合格 primary
+winner，开放世界 UCM 未建立。** Primary eligible Pareto 为空；lite 局部 Pareto 是
+F10/F18，不能跨 scope 升格。
+
+下一项最高信息增益实验不是继续调 F18/F22 超参数，而是 fresh preregistration +
+commit/reveal 的 **native scope-extension architecture**：与 sealed F18、F10、true-state
+upper bound、full-history 及 separate-task baseline 在同一未见 pack 上比较；禁止
+visible-history replay，强制 new check、new treatment、new task 的预登记阈值，并恢复
+pair/collision 与 OOD probes。只有这个实验能直接区分“当前目录拟合失败”与“可局部增长
+的 shared state 架构是否存在”。
+
+上述最终账本与结论已由 `prototype/unified_map/final_evidence.py` 从绑定 artifacts
+重新导出为 `research/unified_map/FINAL_EVIDENCE.json`；其 root 为
+`sha256:54106a834a6343574381407a2c080db32349ad722e72a57acc0af95bfc3e8b04`。

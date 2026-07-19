@@ -1,7 +1,7 @@
 # Unified Clinical Map 研究计划
 
 > 轨道：`UCM`（Unified Clinical Map）
-> 状态：**Phase 3（benchmark v1 已冻结，开始基线与候选）**
+> 状态：**FINAL SYNTHETIC RESEARCH EVIDENCE（30/30 实质实验门槛已满足；无合格 primary UCM winner；开放世界 UCM 未建立）**
 > 起始日期：2026-07-15
 > 研究边界：患者世界模型层；不是 K0/TEL/控制面续作
 > 完成标准：以仓库根目录 goal 附件中的 15 项完成条件为准，本文件不能缩小它们。
@@ -63,7 +63,7 @@ results/unified_map/    append-only run bundle
 - 文献、形式化、治理和接口工作总计不超过约 20%。
 - benchmark v1 冻结前不得实现候选。
 - benchmark v1 冻结后，任何 oracle/生成器/评分修复都必须升 benchmark 版本；旧结果不能冒充新版本结果。
-- semantic freeze 只冻结 TRAIN5/EVAL5 protocol/schema、五-panel、zipped pairing 与时序，不含 raw seed 或 panel digest；code-owned `FROZEN-v1` 后、训练前才发布 `TRAIN5_PRECOMMIT.json`。
+- 实现前协议曾要求 semantic freeze 只冻结 TRAIN5/EVAL5 protocol/schema、五-panel、zipped pairing 与时序，不含 raw seed 或 panel digest，并在 code-owned `FROZEN-v1` 后、训练前发布 `TRAIN5_PRECOMMIT.json`；实际执行未建立这条 TRAIN5/EVAL5 authority chain，因此不能声称 confirmatory。
 - candidate snapshot 冻结后才物化 red-team 的秘密参数、seed 和 oracle。
 
 ## 5. 阶段与退出门
@@ -78,9 +78,9 @@ results/unified_map/    append-only run bundle
 - UCM 目录和 import 隔离检查已定义；
 - 当前 git revision/status 已进入研究日志。
 
-### Phase 1 — 第一原理和可证伪假说
+### Phase 1 — 第一原理和可证伪假说（历史阶段记录）
 
-状态：**规格初版已完成；仍随 PRE-FREEZE 一致性审查修正，不构成运行证据。**
+历史状态：**当时规格初版已完成，仍处于 PRE-FREEZE 一致性审查；不构成运行证据。**
 
 交付：
 
@@ -99,25 +99,27 @@ results/unified_map/    append-only run bundle
 状态：**已完成 executable freeze。** `BENCHMARK_V1_FREEZE.json` 以 exact
 source bytes、live runtime canary、20 worlds / 21 panels、M01–M16 executable
 contract、5 个 seed commitments 和 append-only verifier 发行 `FROZEN-v1`。
-早期正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
+以下第 102–125 行保留的是 executable freeze 之前的 gap snapshot，不是当前
+freeze/experiment 状态。早期正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
 family/strata/corpus 的结构 authority 与 portable compliance/mutation
 harness 已落地，但仍只是 scaffold。authority-bound exact expected-cell
 receipts、external mutation raw-preimage custody 与 atomic run-store
 publication、C01–C33 全覆盖、16/16 collector-owned extractors、external
-custody 和 clean freeze replay 尚未齐全。26/26 malicious mutants 与 4/4
-specificity controls 已有 live decisive records，但只覆盖 21/33 gates，不能
-把 mutant closure 误写成 harness closure。
-`UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 均保持有效。
+custody 和 clean freeze replay 在那个 snapshot 中尚未齐全。26/26 malicious mutants
+与 4/4 specificity controls 当时已有 live decisive records，但只覆盖 21/33 gates；
+这些历史数字不能覆盖后来的 executable freeze/current bundle verifiers。
+`UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 只描述该旧
+snapshot，不是当前 final evidence status。
 
 二十个 patient-bound upper-bound evaluator 现已汇入一个 fresh-process
 live-replay suite：20 个 world members、21 个独立 panels（W15A/W15B 分开）、
 94 个 per-world cells、43 个 state bindings。它完成的是 privileged upper-bound
 执行覆盖；各 world 仍保留异质 estimand，因此不是 expected-cell corpus、候选、
-正式 B01 或 freeze authority。候选/架构信用仍为 0，实验账本仍为 0/30。
+正式 B01 或 freeze authority。**在该历史快照时**候选/架构信用为 0，实验账本为 0/30；当前机器权威是 `38 total / 30 eligible / 8 ineligible / 1 failed attempt`，见第 10 节和 `EXPERIMENTS.md` 第 21 节。
 
-最近一次只读 freeze dependency gap map（不是 freeze artifact）仍显示 16/16
+当时最近一次只读 freeze dependency gap map（不是 freeze artifact）显示 16/16
 axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus pins
-未建立。formal producer 当前精确保留 654 个语义 gap：539 个由 world scope
+未建立。该历史 formal producer 精确保留 654 个语义 gap：539 个由 world scope
 拥有，115 个由 metric registry 拥有；metric runtime inventory 仍是 111 targets、
 `closed_target_count=0`。W20 已把行为无关的 raw `evidence_count` 与 history provenance 移出
 sealed state identity：count 为 5/6 的 pair 现在同 state hash，且 9/9 个
@@ -148,9 +150,9 @@ backlog 保留，但它们要求把可运行 Python 世界再翻译成第二套 
 
 **本门已经通过；允许开始 Phase 3。**
 
-### Phase 3 — 基线与 8+ 架构家族
+### Phase 3 — 基线与 8+ 架构家族（历史执行计划）
 
-code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规定基线：full-history、separate-task、true-state upper bound、K0-only negative control。随后至少实现八个实质不同家族；base candidate runtime 始终只有 `initialize/update/diagnose/rollout`，OOD 是 parent projection，new-readout 只能走 candidate seal 后的独立 extension worker：
+本阶段原计划在 code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规定基线：full-history、separate-task、true-state upper bound、K0-only negative control。实际运行完成了 8+ 家族和基线/控制实验，但 primary 没有建立完整 TRAIN5/EVAL5 authority chain；后来的五-replicate full evaluations 因此只能是 development evidence。再后的 CONFIRM5-lite 有公开 commitment/reveal，但 scope 仅 train4/val1/test2/pair0、`complete=false`。base candidate runtime 始终只有 `initialize/update/diagnose/rollout`，OOD 是 parent projection，new-readout 只能走 candidate seal 后的独立 extension worker：
 
 1. 人工机制状态向量；
 2. latent SSM/DBN/POMDP belief；
@@ -167,7 +169,7 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 每个家族必须提交：共享状态 schema、更新算子、读出、训练可见信息、状态距离、尺寸、可证伪预测和已知反例。
 
-### Phase 4 — 30+ 个登记实验
+### Phase 4 — 30+ 个登记实验（历史最低预算；当前机器计数为 30 eligible / 38 total）
 
 最低预算：
 
@@ -183,7 +185,7 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 连续四次只做同一家族局部参数调整且无实质进展，强制 abandon/refocus。
 
-### Phase 5 — candidate freeze 后 red-team
+### Phase 5 — candidate freeze 后 red-team（历史目标协议）
 
 在最强候选和比较候选的代码/参数 hash 冻结后，才揭示：
 
@@ -198,7 +200,7 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 结果只追加到 `REDTEAM.md` 与新 run bundle，不回写 benchmark v1。
 
-### Phase 6 — 选择、复现与演示
+### Phase 6 — 选择、复现与演示（历史目标协议）
 
 先按硬失败淘汰，再报告 Pareto，不设置掩盖失败的单总分。
 
@@ -212,7 +214,7 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 - `PLAIN_CHINESE.md`：无数学背景可读；
 - 可复现命令、原始输出和独立实现结果。
 
-## 6. benchmark v1 冻结顺序
+## 6. benchmark v1 预定冻结顺序（历史协议；未完整执行 TRAIN5/EVAL5 链）
 
 冻结必须按以下顺序执行，避免候选反向塑造 oracle：
 
@@ -253,7 +255,7 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 预算耗尽或没有可防御的高信息增益实验时不虚构成功。停止报告必须列：全部路径、被反例杀死的假说、当前最强候选、最大未知、有限状态证据、局部范围、最可能改变结论的实验，以及继续所需数据/算力/数学工具/独立实现者。
 
-## 9. 当前下一批动作
+## 9. 历史执行计划（已执行主体运行；仍有证据协议缺口）
 
 1. 保持 `BENCHMARK_V1_FREEZE.json` 及其 31 个 frozen source files 不变；任何
    必要修复升为 v1.1/v2，v1 结果不覆盖。
@@ -272,4 +274,77 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 同理，Phase 2 的 judge-only true-state upper-bound probe 只校验 world/oracle/
 metric 与共享状态执行链，必须保持 `privileged=true`、
 `eligibility=upper_bound_only`、`experiment_status=NOT_COUNT_ELIGIBLE`；它不能计入
-0/30 实验账本，也不能被称为已开放的正式 B01 候选。
+当时的 0/30 实验账本，也不能被称为已开放的正式 B01 候选。
+
+## 10. 当前完成审计与前向计划
+
+### 10.1 已完成且有机器 authority 的项目
+
+| 目标要求 | 当前证据 | 判定 |
+|---|---|---|
+| 隔离轨道 | `research/prototype/tests/results/unified_map`；K0 仅复用 custody/test pattern | **已验证** |
+| W01--W20 benchmark v1 + oracle freeze | 20 worlds / 21 panels；freeze root `sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d` | **已验证** |
+| 至少 8 个不同架构家族 | F01--F22 中多种 hand/belief/PSR/quotient/SCM/Koopman/neural/graph/path/kernel/program/ensemble/switching-particle states | **已验证（合成实现）** |
+| 至少 30 个实质实验 | `EXPERIMENT_INDEX.json`: 38 total / **30 count-eligible** / 8 ineligible / 1 failed attempt / 0 evidence gaps | **已验证** |
+| 三候选全 W01--W20×5 | EXP-033 F10、EXP-034 F14、EXP-035 F18；各 **1,680** rows，R01--R05 | **已验证运行；三者 hard-fail** |
+| freeze 后 red-team | strict source-distinct v2 bundle `sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3` | **已执行；结论混合/失败，不给 L4** |
+| 独立复现 | `20260719T101913Z-I18-full-repro-01c908cb1b`，bundle `sha256:deee6e6339d88d500a52770052f20a14cfac30ac43b2c839574a377be08257af` | **exact core reproduction** |
+| raw/config/source/hash/run IDs | index 与各 manifest/bundle；gzip raw 有逐文件 digest；`FINAL_EVIDENCE.json` root `sha256:54106a834a6343574381407a2c080db32349ad722e72a57acc0af95bfc3e8b04` | **已验证 custody** |
+
+机器计数绝不能再写成 `32+4`。EXP-033--035 是 repeat full evaluations、EXP-036
+是 privileged control、EXP-037 是 `FAILED_UNFINALIZED` architecture attempt，均不重复
+计入 30；EXP-038 F22 v2 是第 30 个 eligible 实质实验，但因 1 collision + 1 unsafe
+OOD 正式 `ABANDON`。
+
+### 10.2 Primary、supplemental 与 exploratory 证据不得混合
+
+1. **Primary development full runs**：F10/F14/F18 的 unsafe forced-known OOD 分别为
+   **5 / 21 / 5**；三者 hard gate 全部失败。Primary eligible Pareto 因而为空。
+2. **Supplemental CONFIRM5-lite**：batch
+   `20260719T090636Z-POSTSEAL-CONFIRM5-25eeeb5ec6`，scope receipt
+   `sha256:cde9098636c7e9186c398bb1b8dd42c0b866580df828aa0f14e4454889a9edc9`；
+   W01--W20、C01--C05、train4/val1/test2、pair0，`complete=false` 且没有 collision
+   evidence。F10/F18 在这个 lite scope 上通过并形成局部 Pareto，但不能覆盖 primary
+   失败。公开 reveal 存在；receipt 同时披露一个未 finalization attempt 曾读取 seed。
+3. **Secondary battery**：M09/M10/M11/M13/M16、1,307 rows，明确
+   `formal_frozen_metric_claim=false`；只作探索，不能制造正式 winner。
+4. **Red-team v1**：reused-fixture exploratory only。**Red-team v2** 才是 strict
+   source-distinct bundle；其 OOD/collision 只有 local support，新 check/treatment 是
+   open-world scope failure，新 task inconclusive，history deletion 显示 nonminimal state。
+5. **REPRO5**：1,680 episodes、28,720 rollout queries、260 pairs、全部差异 0、failure
+   counters 0。它不重算 oracle metric，也不修复 F18 primary OOD。此前
+   `20260719T095421Z-I18-full-repro-f77211903c` 因误开 W16/W17 S1 extension pairs 而
+   `FAILED_UNFINALIZED`、0 credit；正式 run 按 frozen runner 排除这些 pairs。
+
+### 10.3 最终研究裁决
+
+- **已验证**：完整工程执行链、同一 shared-state contract、冻结合成 benchmark、30 个
+  eligible 实质实验、三次 full primary、strict v2、full source-distinct exact reproduction。
+- **仅合成局部支持**：有限封闭 catalog 内，F10/F18 有可用 shared-state 行为；F18 在
+  v2 committed collision/OOD probes 上局部安全。
+- **失败**：没有普通候选通过 primary hard gate；F22 v2 被淘汰；strict v2 证明 F18
+  不能在不 extension-fit 且不重放 visible history 的条件下原生吸收新 check/new
+  treatment；exploratory M11 对 F10/F14/F22 也显示同一 scope gap，但不是冻结 verdict。
+- **尚未知**：新任务 sufficiency、任意开放世界有限状态的存在或不存在、临床有效性、
+  production safety、global optimality。
+
+因此结论不是“找到 UCM winner”，而是：**有限封闭合成目录的 shared state 有局部
+支持；当前无合格 primary winner，开放世界 UCM 未建立。** Primary eligible Pareto
+为空；CONFIRM5-lite 的局部 descriptive Pareto 为 F10/F18，不能跨 scope 外推。
+
+### 10.4 唯一最高信息增益下一实验
+
+新实验必须 fresh preregister 并使用新的 commitment/reveal，研究 **native
+scope-extension architecture**，而非继续调 F18/F22 超参数：
+
+- 同一 unopened pack 比较 native extension candidate、sealed F18、F10、true-state
+  upper bound、full-history 与 separate-task baseline；
+- 禁止用 visible-history replay 迁移旧患者；extension 必须从旧 state + 新公开 delta
+  原生、局部、可审计地生成新 state；
+- 对 new check、opposite-response new treatment、new task 事先冻结 pass/fail threshold；
+- 恢复 pair probes，强制 collision、OOD、false split、cost/state growth 与旧 scope
+  regression 门；
+- 若无法同时通过，就报告动态增长/无压缩/开放世界失败，而不是添加第二患者状态。
+
+这项实验最直接区分：失败究竟来自当前 monolithic catalog architecture，还是公开历史
+下根本没有可原生扩展的有限 shared state。

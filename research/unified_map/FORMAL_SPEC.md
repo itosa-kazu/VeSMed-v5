@@ -1,7 +1,7 @@
-# Unified Clinical Map 形式规格（研究轨道草案）
+# Unified Clinical Map 形式规格与最终合规判定
 
-> 状态：**Phase 1 语义规格草案；benchmark v1 尚未冻结。**
-> 本文只规定 UCM 患者世界模型必须表达什么、允许看到什么以及什么证据可以支持什么声明。具体数值阈值、wire schema、W01–W20 生成器、oracle、probe 集合和 freeze digest 仍须在 benchmark v1 冻结时确定。
+> 状态：**FROZEN-v1 semantics + executed final conformance verdict。**
+> 本文规定 UCM 患者世界模型必须表达什么、允许看到什么以及什么证据可以支持什么声明。数值阈值、wire schema、W01–W20 生成器、oracle、probe 集合和 freeze digest 已由 `BENCHMARK_V1_FREEZE.json` 固定；末节给出实际候选判定。
 > 规范词：`MUST / MUST NOT / SHOULD / MAY` 分别表示硬要求、硬禁止、默认要求和允许选择。
 > 边界：K0 的隔离执行、canonical JSON、hash、append-only result 等模式可以作为测试基础设施；K0、TEL、接口或路由本身不是 UCM，也不能作为本规格的满足证据。
 
@@ -305,7 +305,7 @@ action effect 必须能区分：
 3. 同时改变两者；
 4. 只改变未来信息结构。
 
-“观察恢复正常”不得自动等价为“内部机制恢复正常”。W05–W07 将用于攻击该混淆，但这些世界和阈值目前尚未冻结。
+“观察恢复正常”不得自动等价为“内部机制恢复正常”。W05–W07 已进入冻结 benchmark，用于攻击该混淆。
 
 ## 8. 受控行为等价与充分性
 
@@ -378,7 +378,7 @@ native/GPU 候选若只经过 CPython audit hook，必须如实记录较低 isol
 
 ## 10. 操作状态与失败输出
 
-候选 operation 的 typed status 暂定为：
+候选 operation 的 typed status 已由 executable benchmark v1 contract 固定为：
 
 ```text
 ok | abstain | scope_insufficient | unsupported |
@@ -399,9 +399,12 @@ FAIL       执行证据证明候选或 run 违反该 axis
 INCOMPLETE harness、隔离或证据不足，不能据此判 PASS
 ```
 
-## 11. 暂定 failure-code registry
+## 11. benchmark v1 failure-code registry
 
-> 下列 code 是正式规格初版的稳定命名提案；其 exact trigger、阈值和测试映射仍须随 benchmark v1 冻结。任何 code 出现都必须保存原始 evidence record。`INCOMPLETE` 与候选 `FAIL` 必须分开，不得压成一句 verdict。
+> 下列 code 是 benchmark v1 的稳定命名。其 executable authority、metric triggers、
+> thresholds 与测试映射由 `research/unified_map/BENCHMARK_V1_FREEZE.json` 及其绑定的
+> contract/source bytes 给出；本文是人读说明，不覆盖 manifest。任何 code 出现都必须
+> 保存原始 evidence record。`INCOMPLETE` 与候选 `FAIL` 必须分开，不得压成一句 verdict。
 
 | Code | 触发条件 | 级别 | 直接影响 |
 |---|---|---|---|
@@ -456,7 +459,7 @@ INCOMPLETE harness、隔离或证据不足，不能据此判 PASS
 6. full-history、separate-task、true-state 和 K0-only 是 baseline/upper bound/negative control，不具备普通共享候选的 waiver 继承权。
 7. 即使达到 `L5`，结论仍限定为**已冻结合成微型世界和声明 scope**；不得声称临床有效、生产安全、真实世界因果已识别、全局最优或普遍存在有限 UCM。
 
-本轨道当前只有规格与研究计划，且 benchmark v1 尚未冻结，因此当前证据上限是 `L0-SPECIFICATION_ONLY`。
+历史 Phase 1 的证据上限曾为 `L0-SPECIFICATION_ONLY`。最终执行证据见第 15 节；该历史句不再描述当前状态。
 
 ## 13. 最小合规 evidence vector
 
@@ -484,7 +487,11 @@ INCOMPLETE harness、隔离或证据不足，不能据此判 PASS
 }
 ```
 
-`INCOMPLETE` 从不等于通过。aggregate 必须能从 append-only raw states、updates、predictions、oracle judge rows、audit transcript 和 checksums 重建；具体 result schema 在 benchmark 合同中另行冻结。
+`INCOMPLETE` 从不等于通过。aggregate 必须能从 append-only raw states、updates、
+predictions、oracle judge rows、audit transcript 和 checksums 重建。benchmark v1 的
+result/metric authority 已由 `BENCHMARK_V1_FREEZE.json` 的 `metric_contract`、
+`split_protocol` 及其冻结 runner/contract source bytes 固定；后续 schema 变更必须产生
+新 benchmark 版本，不能回写 v1。
 
 ## 14. 可推翻本规格候选原理的证据
 
@@ -497,3 +504,91 @@ INCOMPLETE harness、隔离或证据不足，不能据此判 PASS
 5. 所有 operationally closed 候选都被 separate-task baseline 严格支配，或因危险碰撞淘汰。
 
 发生这些结果时，正确结论可以是“只存在局部/动态/无压缩共享状态”或“有限共享状态不存在”。不得增加 task-specific latent 来保护 UCM 名称。
+
+## 15. 最终执行合规裁决
+
+### 15.1 Frozen authority 与实验覆盖
+
+```text
+status: FROZEN-v1
+worlds/panels: 20 / 21
+freeze root: sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+metrics: M01--M16
+primary replicates: R01--R05
+primary rows per full candidate: 1680
+canonical experiment index: 38 total / 30 eligible / 8 ineligible / 1 failed attempt
+```
+
+EXP-033 F10、EXP-034 F14、EXP-035 F18 在完整 primary scope 的 unsafe
+forced-known OOD 分别为 5、21、5，三者 `hard_gate_pass=false`。因此 **primary
+eligible Pareto 为空**。EXP-038 F22 v2 虽是有信用的第 30 个实质实验，也因 1 个
+危险碰撞与 1 个 unsafe OOD 被 `ABANDON`；失败实验仍计科学证据，不计成功候选。
+
+### 15.2 F18 最终合规向量
+
+| Field | Verdict | Decisive evidence / boundary |
+|---|---|---|
+| `operational_state_closure` | PASS in implemented scope | initialize/update/diagnose/rollout 与 demo 使用可序列化 shared state |
+| `shared_state_identity` | PASS in implemented scope | diagnosis、no-op、A/B/C 与 update 前后均绑定同一 patient-state hash |
+| `head_history_isolation` | PASS | heads 读取 `SharedPatientState`，不在 query 时重读 history |
+| `no_secondary_patient_state` | PASS | stateless heads；无 task-specific patient latent/cache |
+| `oracle_true_state_isolation` | PASS | candidate wire 不含 hidden truth；B01 单列 privileged upper bound |
+| `future_time_isolation` | PASS | future/oracle 只在 judge target/score 路径 |
+| `test_id_name_invariance` | PASS | candidate-visible wire 排除 world/test/case/seed identifiers |
+| `cache_process_isolation` | PASS on tested paths | query-order、empty/nonempty update replay 与 cold rehydrate checks 无差异 |
+| `action_semantics` | PASS only for registered catalog | v2 已登记 actions 的 query side-effect free；不代表 unseen operator 支持 |
+| `online_update_lineage` | PASS in registered catalog | public delta 产生新 bound state；REPRO5 update/replay differences 全为 0 |
+| `dangerous_collision_gate` | LOCAL PASS ONLY | primary measured F18 pairs与 v2 committed 8 rows 无 dangerous collision；未关闭未知 collision classes |
+| `parent_projected_ood_gate` | **PRIMARY FAIL** | EXP-035 有 5 个 unsafe forced-known OOD；v2 的 16/16 local OOD pass 不得冲销 primary |
+| `new_check_sufficiency` | **OPEN_WORLD_SCOPE_FAILURE** | v2 216 rollout rows 均 scope-insufficient/abstain；extension fit + visible-history replay 必需 |
+| `new_treatment_sufficiency` | **OPEN_WORLD_SCOPE_FAILURE** | opposite-response rows 全部需 migration；safe abstention 不是支持 |
+| `new_combination_sufficiency` | MIXED / NOT GENERALIZED | registered natural query 可调用；extension operator 仍 out-of-scope，未预登记 accuracy pass threshold |
+| `new_task_sufficiency` | **INCONCLUSIVE** | state/history/true-state capacity ladder无预登记判定标准；数值排序不能证明充分或失败 |
+| `state_minimality` | **NOT SUPPORTED** | v2 history-deletion trio 中 4 个 oracle-equivalent rows 均被 false-split |
+| `same_state_multi_timescale` | LOCAL PASS / OPEN-WORLD FAIL | 同一旧-catalog state 服务 1/24/168h natural queries；新 check plan 仍需 migration |
+| `reproducibility` | **FULL FROZEN CORE PASS** | REPRO5: 1,680 episodes、28,720 rollouts、260 pairs，全部 max-abs differences 与 failure counters 为 0 |
+| `eligible_for_primary_pareto` | **false** | primary OOD hard failure 不可由任何均值、lite pack 或 reproduction 补偿 |
+
+### 15.3 CONFIRM5-lite 与 secondary 证据边界
+
+`20260719T090636Z-POSTSEAL-CONFIRM5-25eeeb5ec6` 是
+`supplemental_all_world_lite`：W01--W20、C01--C05、train4/val1/test2、pair0，
+`complete_benchmark=false`、`no_pair_collision_evidence=true`。F10/F18 在该 scope
+通过，只能形成 lite 局部 Pareto；scope receipt
+`sha256:cde9098636c7e9186c398bb1b8dd42c0b866580df828aa0f14e4454889a9edc9`
+还披露此前一次未 finalization attempt 已加载 private seed。公开 reveal 证明
+commitment preimage，不把 lite 提升成 primary confirmation。
+
+M09/M10/M11/M13/M16 secondary battery 明示
+`formal_frozen_metric_claim=false`。它只能产生 exploratory descriptions，尤其不能把
+novel-readout 数值次序当 `new_task_sufficiency` 的裁决。
+
+### 15.4 Red-team v2 与 evidence level
+
+Strict source-distinct v2 bundle root 是
+`sha256:d3b0ecfd8722e9863d84d3bd88ffa30d9e00b04976ac48b50cd00f02f34040b3`，
+verdict digest 是
+`sha256:805f5264fb6ffd2308628dbdd312ab7500d1c56a65fb1ec0803fafaa91b17bf5`。
+它对 sealed F18 与 independent F18 给出一致的局部结构结果，同时明确推翻开放世界
+extension closure。旧 red-team v1 是 reused-fixture exploratory run，不给 v2 或 L4
+信用。
+
+F18 的正向声明上限仍是 **`L2-RUNNABLE` + source-distinct reproduction evidence**：
+
+- 未达到 `L3-BENCHMARK_SUPPORTED`，因为 primary OOD hard gate 失败；
+- v2 已执行但发现 open-world scope failure，故没有
+  `L4-POSTFREEZE_REDTEAM_SUPPORTED` 正向结论；
+- REPRO5 精确复现 sealed core，不能越过失败的 L3/L4 门，也不重算 oracle metrics、
+  不修复 OOD；
+- W16/W17 S1 extension-only pairs 按 frozen runner 排除在 primary REPRO5 pair scope，
+  需要独立 extension reveal。误开这些 pairs 的旧 run
+  `20260719T095421Z-I18-full-repro-f77211903c` 已留
+  `FAILED_UNFINALIZED` receipt、0 credit。
+
+### 15.5 允许的最终语义声明
+
+唯一允许的结论是：**有限封闭合成目录内存在局部可用的近似 shared state；当前没有
+合格 primary winner，开放世界 UCM 未建立。** Primary eligible Pareto 为空；
+CONFIRM5-lite 的 F10/F18 仅为 scope-relative descriptive Pareto。不得声称 clinical
+validity、production safety、全局 finite-state existence/nonexistence、L4 或 global
+optimality。新任务 sufficiency 保持未知，不得把 `INCONCLUSIVE` 改写为成功或失败。
