@@ -1,16 +1,19 @@
 # UCM Decision Record
 
-> 状态：**NO DECISION / benchmark v1 PRE-FREEZE**
+> 状态：**NO CANDIDATE DECISION / benchmark v1 FROZEN**
 
 ## Outcome
 
-当前没有资格选择最强 UCM，也没有资格给出“不存在有限 UCM”的结论。
+benchmark v1 已冻结，但候选实验尚未开始，因此当前仍没有资格选择最强 UCM，
+也没有资格给出“不存在有限 UCM”的结论。
 
 ## Key evidence
 
 - 已建立与 K0 字节/导入隔离的研究轨；
 - 已形式化共享状态、更新、干预、碰撞、虚假拆分和信息归责；
-- W01–W20 已有 PRE-FREEZE 语义规格；
+- W01–W20 的 executable generator/oracle、21-panel identity、M01–M16 contract、
+  five-replicate seed commitments 与 31-file source closure 已冻结，freeze root
+  为 `sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d`；
 - 已建立 13-root typed corpus authority graph 和 live portable mutation
   evidence，但两者仍是 PRE-FREEZE scaffold；E002/E003、authority-bound
   expected cells、raw evidence custody、完整 mutation coverage 与 typed
@@ -28,4 +31,4 @@
 
 ## Next decision checkpoint
 
-benchmark v1 的 executable PRE-FREEZE checklist 全部通过并生成 freeze manifest 后，才允许候选开发和首次架构决策更新。
+四个基线和首批八个共享状态家族完成可运行 screening 后进行第一次架构决策更新。

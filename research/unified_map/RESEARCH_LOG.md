@@ -1229,3 +1229,48 @@ architecture, experiment or Pareto credit; the formal experiment ledger remains
 0/30. The next semantic work is to close the 539 world-owned and 115 metric-owned
 gaps, plus the remaining 12 compliance gates, rather than add more control-plane
 hardening that does not directly remove a freeze blocker.
+
+## 2026-07-19 — Executable benchmark v1 freeze and research-course correction
+
+### Outcome
+
+The project stopped treating a second typed restatement of every executable
+world formula as a prerequisite for patient-map research. That route had reached
+654 formal gaps, 111/111 metric targets still marked unclosed, 21/33 mutation
+gate coverage, zero candidates and zero experiments; continuing it would violate
+the goal's roughly 20% ceiling on theory/control work.
+
+An executable benchmark authority was issued instead. It freezes the exact code
+that actually generates and scores W01--W20:
+
+- 20 worlds / 21 independently identified panels (W15A/W15B separate);
+- exact source bytes for 31 generator/oracle/schema/metric-contract files;
+- live canary digest for every panel;
+- a fixed 32-dimensional heterogeneous-oracle trajectory projection plus
+  separate expected-utility target;
+- M01--M16 noncompensating measurement contract;
+- five independent train/validation/sealed-test seed commitments and five public
+  model seeds;
+- append-only issue/verify and later seed-reveal verification.
+
+The resulting authority is `FROZEN-v1`, freeze root
+`sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d`.
+The raw seed preimages remain outside the repository until candidate artifacts
+are sealed. The older typed-scope and mutation assets remain useful assurance
+backlog, but are explicitly non-authoritative for the executable freeze.
+
+### Verification
+
+```text
+new executable freeze/contract tests: 7 passed
+frozen world/oracle regression set: 294 passed
+fresh-process manifest verification: FROZEN-v1
+freeze manifest file sha256: 6cc14e542316a0fb9ea71b01d4142532f0ada8d5a69a3287bb040c9a26b8cc74
+```
+
+### Evidence boundary and next step
+
+This checkpoint freezes a bounded synthetic benchmark; it proves neither a UCM
+candidate nor clinical validity. Architecture/experiment credit remains 0/30.
+The next work is executable only: materialize public training data, implement the
+unified runner, required baselines and eight distinct shared-state families.

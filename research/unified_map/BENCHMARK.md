@@ -1,7 +1,11 @@
-# Unified Clinical Map benchmark v1 规范
+# Unified Clinical Map benchmark assurance annex
 
-> **状态：PRE-FREEZE / 规范文本已建立，benchmark v1 尚未冻结。**
-> 只有当本文要求的 W01–W20 实现、oracle、split manifest、全部 margin、mutation-kill matrix、`FREEZE_MANIFEST.json` 和 clean-checkout replay 均存在且通过时，才能将状态改为 `FROZEN-v1`。本文不得被单独引用为“benchmark 已冻结”的证据。
+> **状态：非权威 assurance annex。** 可执行 benchmark v1 已由
+> `BENCHMARK_V1_SPEC.md` 与 `BENCHMARK_V1_FREEZE.json` 冻结；本文件记录早期更强、
+> 但工作量失衡的 typed-scope / mutation / custody 方案。这里尚未闭合的 654 个
+> typed-DSL gap 与 12 个 mutation gate 仍是有用的后续 assurance backlog，不能
+> 推翻 exact-source executable freeze，也不能继续阻塞患者世界模型实验。
+> 本文件不得单独作为 freeze authority 或候选合规结论。
 > **范围：**只定义 UCM 患者世界模型的可运行比较合同；K0 只能贡献隔离、时间切片、digest 和证据记录基础设施，不是 UCM 候选。
 > **规范词：**`MUST / MUST NOT / SHOULD / MAY` 分别表示硬要求、硬禁止、默认要求和可选实现。
 > **唯一目标：**让“同一个 `Z_t`”成为运行时可证伪事实，而不是类名、接口名或宣言。

@@ -1,7 +1,7 @@
 # Unified Clinical Map 研究计划
 
 > 轨道：`UCM`（Unified Clinical Map）
-> 状态：**Phase 2（W01–W20 executable benchmark），benchmark v1 尚未冻结；禁止实现候选**
+> 状态：**Phase 3（benchmark v1 已冻结，开始基线与候选）**
 > 起始日期：2026-07-15
 > 研究边界：患者世界模型层；不是 K0/TEL/控制面续作
 > 完成标准：以仓库根目录 goal 附件中的 15 项完成条件为准，本文件不能缩小它们。
@@ -96,7 +96,10 @@ results/unified_map/    append-only run bundle
 
 ### Phase 2 — W01–W20 与 benchmark v1
 
-状态：**进行中。** 正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
+状态：**已完成 executable freeze。** `BENCHMARK_V1_FREEZE.json` 以 exact
+source bytes、live runtime canary、20 worlds / 21 panels、M01–M16 executable
+contract、5 个 seed commitments 和 append-only verifier 发行 `FROZEN-v1`。
+早期正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
 family/strata/corpus 的结构 authority 与 portable compliance/mutation
 harness 已落地，但仍只是 scaffold。authority-bound exact expected-cell
 receipts、external mutation raw-preimage custody 与 atomic run-store
@@ -138,7 +141,12 @@ minimal behavioral quotient 仍未证明，`minimal_quotient_claimed=false` 保�
 5. freeze manifest 覆盖代码、参数域、split、oracle、指标、测试和 TRAIN5/EVAL5 协议，但不包含 confirmatory raw seed/panel digest；
 6. `FREEZE_MANIFEST.json` 与 sidecar 生成后 append-only，测试能检测静默漂移。
 
-**只有本门通过后才允许开始 Phase 3。**
+早期 654 个 typed-scope gap 与 12 个 mutation coverage gap 作为后续 assurance
+backlog 保留，但它们要求把可运行 Python 世界再翻译成第二套 DSL，已超出用户规定的
+约 20% 理论/控制工作预算，因此不再是 executable freeze 的必要条件。冻结源若有
+任何语义修复必须升版；不得原地修改 v1。
+
+**本门已经通过；允许开始 Phase 3。**
 
 ### Phase 3 — 基线与 8+ 架构家族
 
@@ -247,27 +255,18 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
 
 ## 9. 当前下一批动作
 
-1. 二十世界 patient-bound upper-bound suite 已闭合：20 worlds、21 panels、
-   94 cells、43 state bindings，全部由各自 collector fresh-process live replay。
-   该 suite 固定为 `PRE-FREEZE + upper_bound_only +
-   NOT_COUNT_ELIGIBLE + ledger_credit=0`，不得进入 candidate headline、gate、
-   实验账本或 freeze 结论。
-2. W20 已完成已知 `evidence_count` quotient 修复并重放；继续保留
-   `minimal_quotient_claimed=false`，下一步只通过新增行为等价反例扩大证明范围，
-   不把单个 repaired pair 升格为全局 minimality 结论。
-3. 从 clean committed revision 物化不含 raw seed/panel digest 的正式 `SCOPE_MANIFEST.json`，再完成 21 个
-   patient panel 的 pre-split family authority 与 dual-channel stratum authority；
-   随后补 W16/W17 extension authority、corpus pins 和 authority-bound exact
-   expected cells。不得用二十世界 upper-bound suite 代替这些 authority roots。
-4. 保持已实跑通过的 26/26 malicious mutants 与 4/4 specificity controls，补完
-   剩余 12 个 gate，使 C01–C33 达到 33/33 decisive coverage，并完成 external
-   mutation raw-preimage custody；crash、timeout 或错误 gate 不得算 kill。当前
-   live evidence 为 26/26、4/4、21/33，benchmark 仍是 `HARNESS_INCOMPLETE`。
-5. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 runtime/
-   replay locks、clean checkout replay、external custody 与一次性 atomic
-   publication；没有直接阻塞 semantic freeze 的新 hardening 不进入本轮。
-6. 重跑 dependency gap map，只有所有 PRE-FREEZE 阻断项清零并提交 code-owned
-   freeze checkpoint 后，才打开四个正式 baseline、8+ 架构家族与 30+ 登记实验。
+1. 保持 `BENCHMARK_V1_FREEZE.json` 及其 31 个 frozen source files 不变；任何
+   必要修复升为 v1.1/v2，v1 结果不覆盖。
+2. 使用冻结 seed commitments 物化 train/validation corpus；候选 seal 前不公开
+   sealed-test seed reveal。
+3. 实现统一 runner 与 FullHistory、SeparateTask、TrueStateUpperBound、K0Only
+   四个基线，并证明 diagnosis/natural/intervention 三头读取同一 state hash。
+4. 按人工机制向量、belief state、PSR、causal state、dynamic SCM、Koopman、
+   neural world model、mechanism graph 八个家族开始 executable experiments。
+5. 每 5 个实验新增反例，每 10 个实验做架构级复盘；至少 3 个候选进入
+   20 worlds × 21 panels × 5 seeds 的完整运行。
+6. 26/26 mutation 与 21/33 gate 结果保留作合规 evidence boundary；补 gate 只在
+   它直接审查真实候选时进行，不再优先于世界模型实验。
 
 候选禁令不妨碍在 Phase 2 使用**不参与 Pareto 的 harness mutation/specificity controls**验证检测器；这些 controls 不能被登记为架构实验或 UCM 候选。
 同理，Phase 2 的 judge-only true-state upper-bound probe 只校验 world/oracle/
