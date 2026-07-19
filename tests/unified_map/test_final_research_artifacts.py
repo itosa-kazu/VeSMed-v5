@@ -28,6 +28,10 @@ FULL_RUNS = (
 UPPER_BOUND = "20260719T063711Z-EXP-036-c92d3b84cb"
 REDTEAM = ROOT / "results/unified_map/redteam/20260719T064407Z-F18-redteam-69f7a4c8e6"
 REPRODUCTION = ROOT / "results/unified_map/reproduction/20260719T065132Z-I18-repro-bc7f2fab24"
+FULL_REPRODUCTION = ROOT / (
+    "results/unified_map/reproduction/"
+    "20260719T101913Z-I18-full-repro-01c908cb1b"
+)
 DEMO = ROOT / "results/unified_map/demo/20260719T073939Z-DEMO-956e6ca844"
 
 
@@ -38,7 +42,10 @@ def _json(path: Path) -> dict:
 def _verify_rows(directory: Path, rows: list[dict]) -> None:
     for row in rows:
         path = directory / row["name"]
-        raw = path.read_bytes()
+        if path.is_file():
+            raw = path.read_bytes()
+        else:
+            raw = gzip.decompress((directory / f"{row['name']}.gz").read_bytes())
         assert len(raw) == row["byte_length"]
         assert digest_bytes(raw) == row["sha256"]
 
@@ -105,6 +112,25 @@ def test_independent_implementation_exactly_reproduces_core() -> None:
     assert report["exact_core_reproduction"] is True
     assert report["update_identity_failures"] == 0
     assert set(report["differences"].values()) == {0.0}
+
+
+def test_full_independent_reproduction_covers_the_frozen_panel() -> None:
+    manifest = _verify_standard_bundle(FULL_REPRODUCTION)
+    report = _json(FULL_REPRODUCTION / "reproduction.json")
+    assert manifest["bundle_root"] == (
+        "sha256:deee6e6339d88d500a52770052f20a14cfac30ac43b2c839574a377be08257af"
+    )
+    assert report["scope"]["world_count"] == 20
+    assert report["scope"]["panel_count"] == 21
+    assert report["scope"]["replicate_ids"] == ["R01", "R02", "R03", "R04", "R05"]
+    assert report["episode_count"] == 1680
+    assert report["rollout_query_count"] == 28720
+    assert report["pair_count"] == 260
+    assert report["exact_core_reproduction"] is True
+    assert set(report["differences"].values()) == {0.0}
+    assert set(report["failures"].values()) == {0}
+    assert report["claim_boundary"]["oracle_metric_recomputation"] is False
+    assert report["claim_boundary"]["does_not_repair_sealed_ood_failure"] is True
 
 
 def test_demo_fans_out_one_state_then_updates_one_state() -> None:
