@@ -55,6 +55,7 @@ from .schema import CandidateVisibleEvent, EventKind, VisibleDelta
 
 RUN_PROTOCOL = "ucm-source-distinct-redteam-run/2"
 MANIFEST_PROTOCOL = "ucm-source-distinct-redteam-manifest/2"
+EVALUATOR_AMENDMENT_PROTOCOL = "ucm-redteam-v2-evaluator-amendment/1"
 MODEL_SEED = 610_271
 
 
@@ -128,6 +129,8 @@ def _verify_commitment_chronology(
     commitment_path: Path,
     commitment_git_commit: str,
     commitment: dict[str, Any],
+    *,
+    require_live_prepack_protocol: bool = True,
 ) -> dict[str, Any]:
     relative = commitment_path.resolve().relative_to(repository_root.resolve()).as_posix()
     shown = subprocess.run(
@@ -204,7 +207,7 @@ def _verify_commitment_chronology(
             raise ProtocolViolation(f"pre-pack commit lacks protocol source: {relative_source}")
         source_hash = digest_bytes(shown_source.stdout)
         live_hash = digest_bytes(live_protocol_paths[label].read_bytes())
-        if source_hash != live_hash:
+        if require_live_prepack_protocol and source_hash != live_hash:
             raise ProtocolViolation(f"pre-pack protocol source binding mismatch: {label}")
         prepack_protocol_receipts[label] = {
             "path": relative_source,
@@ -227,7 +230,219 @@ def _verify_commitment_chronology(
             "byte_length": len(shown_generator.stdout),
         },
         "prepack_protocol_source_receipts": prepack_protocol_receipts,
+        "live_prepack_protocol_match_required": require_live_prepack_protocol,
     }
+
+
+def _require_ancestor(
+    repository_root: Path,
+    ancestor: str,
+    descendant: str,
+    *,
+    strict: bool,
+    label: str,
+) -> None:
+    completed = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        cwd=repository_root,
+        check=False,
+        capture_output=True,
+    )
+    if completed.returncode != 0 or (strict and ancestor == descendant):
+        relation = "strict ancestor" if strict else "ancestor-or-equal"
+        raise ProtocolViolation(f"{label} must be {relation}")
+
+
+def _verify_evaluator_amendment(
+    repository_root: Path,
+    evaluator_amendment_path: Path,
+    evaluator_amendment_git_commit: str,
+    commitment: dict[str, Any],
+    commitment_git_commit: str,
+    base_chronology: dict[str, Any],
+) -> dict[str, Any]:
+    root = repository_root.resolve()
+    amendment_path = evaluator_amendment_path.resolve()
+    try:
+        relative = amendment_path.relative_to(root).as_posix()
+    except ValueError as exc:
+        raise ProtocolViolation("evaluator amendment must be stored inside repository root") from exc
+    raw = amendment_path.read_bytes()
+    amendment = _read_object(amendment_path)
+    if raw != canonical_json_bytes(amendment):
+        raise ProtocolViolation("evaluator amendment must be canonical JSON")
+    shown = subprocess.run(
+        ["git", "show", f"{evaluator_amendment_git_commit}:{relative}"],
+        cwd=repository_root,
+        check=False,
+        capture_output=True,
+    )
+    if shown.returncode or shown.stdout != raw:
+        raise ProtocolViolation("evaluator amendment differs from durable git blob")
+    required = {
+        "protocol",
+        "original_commitment_digest",
+        "original_pack_digest",
+        "commitment_git_commit",
+        "prepack_bindings",
+        "final_protocol_source_bindings",
+        "declarations",
+    }
+    if set(amendment) != required:
+        raise ProtocolViolation("evaluator amendment top-level fields mismatch")
+    if amendment["protocol"] != EVALUATOR_AMENDMENT_PROTOCOL:
+        raise ProtocolViolation("evaluator amendment protocol mismatch")
+    if amendment["original_commitment_digest"] != digest_json(commitment):
+        raise ProtocolViolation("evaluator amendment commitment digest mismatch")
+    if amendment["original_pack_digest"] != commitment["pack_digest"]:
+        raise ProtocolViolation("evaluator amendment pack digest mismatch")
+    if amendment["commitment_git_commit"] != commitment_git_commit:
+        raise ProtocolViolation("evaluator amendment commitment git binding mismatch")
+    prepack = amendment["prepack_bindings"]
+    if type(prepack) is not dict or set(prepack) != {
+        "pre_pack_git_commit",
+        "candidate_source_bindings",
+        "generator_source_digest",
+        "protocol_source_bindings",
+    }:
+        raise ProtocolViolation("evaluator amendment prepack bindings mismatch")
+    expected_prepack = {
+        "pre_pack_git_commit": commitment["pre_pack_git_commit"],
+        "candidate_source_bindings": commitment["candidate_source_bindings"],
+        "generator_source_digest": commitment["generator_source_digest"],
+        "protocol_source_bindings": base_chronology["prepack_protocol_source_receipts"],
+    }
+    if prepack != expected_prepack:
+        raise ProtocolViolation("evaluator amendment changed original prepack bindings")
+    expected_declarations = {
+        "scope": "evaluator_observability_custody_and_verification_only",
+        "candidate_sources_changed": False,
+        "generator_source_changed": False,
+        "pack_digest_changed": False,
+        "private_reveal_accessed_for_amendment": False,
+    }
+    if amendment["declarations"] != expected_declarations:
+        raise ProtocolViolation("evaluator amendment declarations mismatch")
+    if candidate_source_bindings() != commitment["candidate_source_bindings"]:
+        raise ProtocolViolation("live candidate sources changed after commitment")
+    live_generator = Path(sys.modules[verify_reveal.__module__].__file__)
+    if digest_bytes(live_generator.read_bytes()) != commitment["generator_source_digest"]:
+        raise ProtocolViolation("live generator source changed after commitment")
+    _require_ancestor(
+        repository_root,
+        commitment_git_commit,
+        evaluator_amendment_git_commit,
+        strict=True,
+        label="commitment commit to evaluator amendment commit",
+    )
+    current_head = _git(repository_root, "rev-parse", "HEAD")
+    _require_ancestor(
+        repository_root,
+        evaluator_amendment_git_commit,
+        current_head,
+        strict=False,
+        label="evaluator amendment commit to current HEAD",
+    )
+    unchanged_paths = {
+        "sealed_f18": "prototype/unified_map/candidate_families.py",
+        "independent_f18": "prototype/unified_map/independent_f18.py",
+        "generator": "prototype/unified_map/redteam_v2_pack.py",
+    }
+    unchanged_expected = {
+        **commitment["candidate_source_bindings"],
+        "generator": commitment["generator_source_digest"],
+    }
+    unchanged_receipts: dict[str, dict[str, Any]] = {}
+    for label, source_path in unchanged_paths.items():
+        source = subprocess.run(
+            ["git", "show", f"{evaluator_amendment_git_commit}:{source_path}"],
+            cwd=repository_root,
+            check=False,
+            capture_output=True,
+        )
+        if source.returncode:
+            raise ProtocolViolation(f"evaluator amendment commit lacks unchanged {label} source")
+        source_hash = digest_bytes(source.stdout)
+        if source_hash != unchanged_expected[label]:
+            raise ProtocolViolation(f"evaluator amendment commit changed {label} source")
+        unchanged_receipts[label] = {
+            "path": source_path,
+            "sha256": source_hash,
+            "byte_length": len(source.stdout),
+        }
+    protocol_paths = {
+        "adapter": "prototype/unified_map/redteam_v2_adapter.py",
+        "runner": "prototype/unified_map/redteam_v2_runner.py",
+    }
+    live_paths = {
+        "adapter": Path(sys.modules[fit_implementations.__module__].__file__),
+        "runner": Path(__file__),
+    }
+    final_receipts: dict[str, dict[str, Any]] = {}
+    for label, source_path in protocol_paths.items():
+        source = subprocess.run(
+            ["git", "show", f"{evaluator_amendment_git_commit}:{source_path}"],
+            cwd=repository_root,
+            check=False,
+            capture_output=True,
+        )
+        if source.returncode:
+            raise ProtocolViolation(f"evaluator amendment commit lacks final {label} source")
+        receipt = {
+            "path": source_path,
+            "sha256": digest_bytes(source.stdout),
+            "byte_length": len(source.stdout),
+        }
+        if amendment["final_protocol_source_bindings"].get(label) != receipt:
+            raise ProtocolViolation(f"evaluator amendment final {label} binding mismatch")
+        if source.stdout != live_paths[label].read_bytes():
+            raise ProtocolViolation(f"live final {label} bytes differ from amendment commit")
+        final_receipts[label] = receipt
+    if set(amendment["final_protocol_source_bindings"]) != set(protocol_paths):
+        raise ProtocolViolation("evaluator amendment final source registry mismatch")
+    return {
+        "protocol": EVALUATOR_AMENDMENT_PROTOCOL,
+        "amendment_path": relative,
+        "amendment_git_commit": evaluator_amendment_git_commit,
+        "amendment_blob_digest": digest_bytes(raw),
+        "amendment_digest": digest_json(amendment),
+        "commitment_git_commit_strict_ancestor": True,
+        "amendment_commit_ancestor_or_equal_run_head": True,
+        "run_git_head": current_head,
+        "final_protocol_source_receipts": final_receipts,
+        "unchanged_candidate_generator_receipts": unchanged_receipts,
+        "original_candidate_generator_pack_bindings_unchanged": True,
+        "private_reveal_used_for_amendment": False,
+    }
+
+
+def verify_evaluator_amendment(
+    *,
+    repository_root: Path,
+    commitment_path: Path,
+    commitment_git_commit: str,
+    evaluator_amendment_path: Path,
+    evaluator_amendment_git_commit: str,
+) -> dict[str, Any]:
+    """Verify an evaluator-only amendment without opening the private reveal."""
+
+    commitment = _read_object(commitment_path)
+    base = _verify_commitment_chronology(
+        repository_root,
+        commitment_path,
+        commitment_git_commit,
+        commitment,
+        require_live_prepack_protocol=False,
+    )
+    amendment = _verify_evaluator_amendment(
+        repository_root,
+        evaluator_amendment_path,
+        evaluator_amendment_git_commit,
+        commitment,
+        commitment_git_commit,
+        base,
+    )
+    return {"commitment": base, "evaluator_amendment": amendment, "verified": True}
 
 
 def _squared_error(left: Iterable[float], right: Iterable[float]) -> float:
@@ -786,6 +1001,8 @@ def run_redteam_v2(
     external_reveal_path: Path,
     output_root: Path,
     commitment_git_commit: str | None,
+    evaluator_amendment_path: Path | None = None,
+    evaluator_amendment_git_commit: str | None = None,
     enforce_git_chronology: bool = True,
     model_seed: int = MODEL_SEED,
 ) -> Path:
@@ -793,23 +1010,52 @@ def run_redteam_v2(
 
     started = datetime.now(UTC).isoformat()
     commitment = _read_object(commitment_path)
-    reveal = _read_object(external_reveal_path)
-    pack = verify_reveal(commitment, reveal)
+    if commitment.get("protocol") != COMMITMENT_PROTOCOL:
+        raise ProtocolViolation("red-team commitment protocol mismatch")
     if commitment["candidate_source_bindings"] != candidate_source_bindings():
         raise ProtocolViolation("live candidate sources differ from pre-pack bindings")
+    amendment_requested = evaluator_amendment_path is not None or evaluator_amendment_git_commit is not None
+    if (evaluator_amendment_path is None) != (evaluator_amendment_git_commit is None):
+        raise ProtocolViolation("evaluator amendment path and git commit must be supplied together")
+    if amendment_requested and not enforce_git_chronology:
+        raise ProtocolViolation("evaluator amendment requires enforced git chronology")
     if enforce_git_chronology:
         if not commitment_git_commit:
             raise ProtocolViolation("durable commitment git commit is required")
         chronology_git = _verify_commitment_chronology(
-            repository_root, commitment_path, commitment_git_commit, commitment
+            repository_root,
+            commitment_path,
+            commitment_git_commit,
+            commitment,
+            require_live_prepack_protocol=not amendment_requested,
         )
+        if amendment_requested:
+            assert evaluator_amendment_path is not None
+            assert evaluator_amendment_git_commit is not None
+            chronology_git["evaluator_amendment"] = _verify_evaluator_amendment(
+                repository_root,
+                evaluator_amendment_path,
+                evaluator_amendment_git_commit,
+                commitment,
+                commitment_git_commit,
+                chronology_git,
+            )
+        else:
+            chronology_git["evaluator_amendment"] = None
     else:
         chronology_git = {
             "pre_pack_git_commit": commitment["pre_pack_git_commit"],
             "commitment_git_commit": commitment_git_commit,
             "git_chronology_enforced": False,
             "test_only": True,
+            "evaluator_amendment": None,
         }
+    evaluator_authority_verified_at = datetime.now(UTC).isoformat()
+    # Private reveal opening is deliberately after all pre-pack/amendment
+    # authority checks.  This ordering is part of the persisted chronology.
+    reveal = _read_object(external_reveal_path)
+    pack = verify_reveal(commitment, reveal)
+    reveal_opened_at = datetime.now(UTC).isoformat()
     run_id = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ") + "-RT2-" + uuid.uuid4().hex[:10]
     output_root.mkdir(parents=True, exist_ok=True)
     temporary = output_root / ("." + run_id + ".tmp")
@@ -817,6 +1063,11 @@ def run_redteam_v2(
         shutil.rmtree(temporary)
     temporary.mkdir()
     _write_object(temporary / "commitment.json", commitment)
+    if evaluator_amendment_path is not None:
+        _write_object(
+            temporary / "evaluator-amendment.json",
+            _read_object(evaluator_amendment_path),
+        )
     candidates, fit_traces = fit_implementations(pack, model_seed=model_seed)
     static_before = {
         implementation_id: candidate_static_closure(candidate)
@@ -881,6 +1132,11 @@ def run_redteam_v2(
         "protocol": "ucm-redteam-v2-chronology/1",
         **chronology_git,
         "run_started_at": started,
+        "evaluator_authority_verified_at": evaluator_authority_verified_at,
+        "reveal_opened_at": reveal_opened_at,
+        "evaluator_authority_verified_before_reveal_open": (
+            evaluator_authority_verified_at <= reveal_opened_at
+        ),
         "implementation_started_at": implementation_started,
         "implementation_finished_at": implementation_finished,
         "both_implementations_finished_before_reveal": all(
@@ -907,6 +1163,13 @@ def run_redteam_v2(
         "unsafe_ood_forced_known_count": sum(bool(row.get("unsafe_ood_forced_known")) for row in all_episodes),
         "candidate_source_bindings": candidate_source_bindings(),
         "pack_digest": commitment["pack_digest"],
+        "evaluator_amendment_used": amendment_requested,
+        "evaluator_amendment_git_commit": evaluator_amendment_git_commit,
+        "evaluator_amendment_digest": (
+            chronology_git["evaluator_amendment"]["amendment_digest"]
+            if chronology_git["evaluator_amendment"] is not None
+            else None
+        ),
         "raw_receipts": raw_receipts,
         "evidence_boundary": {
             "source_distinct_generator": True,
@@ -951,6 +1214,8 @@ def run_redteam_v2(
         final,
         repository_root=repository_root if enforce_git_chronology else None,
         require_git_chronology=enforce_git_chronology,
+        evaluator_amendment_path=evaluator_amendment_path,
+        evaluator_amendment_git_commit=evaluator_amendment_git_commit,
     )
     return final
 
@@ -960,6 +1225,8 @@ def verify_redteam_v2_run(
     *,
     repository_root: Path | None = None,
     require_git_chronology: bool | None = None,
+    evaluator_amendment_path: Path | None = None,
+    evaluator_amendment_git_commit: str | None = None,
 ) -> dict[str, Any]:
     manifest = _read_object(directory / "manifest.json")
     if manifest.get("protocol") != MANIFEST_PROTOCOL:
@@ -989,10 +1256,21 @@ def verify_redteam_v2_run(
     if live_sources != manifest.get("source_files"):
         raise ProtocolViolation("red-team protocol source binding mismatch")
     commitment = _read_object(directory / "commitment.json")
-    reveal = _read_object(directory / "reveal.json")
-    pack = verify_reveal(commitment, reveal)
     summary = _read_object(directory / "summary.json")
     chronology = _read_object(directory / "chronology.json")
+    amendment_receipt = chronology.get("evaluator_amendment")
+    amendment_used = amendment_receipt is not None
+    if summary.get("evaluator_amendment_used") is not amendment_used:
+        raise ProtocolViolation("summary/amendment chronology mismatch")
+    if amendment_used and (
+        summary.get("evaluator_amendment_git_commit")
+        != amendment_receipt.get("amendment_git_commit")
+        or summary.get("evaluator_amendment_digest")
+        != amendment_receipt.get("amendment_digest")
+    ):
+        raise ProtocolViolation("summary evaluator amendment binding mismatch")
+    if (evaluator_amendment_path is None) != (evaluator_amendment_git_commit is None):
+        raise ProtocolViolation("evaluator amendment path and git commit must be supplied together")
     if require_git_chronology is None:
         require_git_chronology = bool(chronology.get("git_chronology_enforced"))
     if require_git_chronology:
@@ -1007,6 +1285,7 @@ def verify_redteam_v2_run(
             repository_root / Path(blob_path),
             commit_id,
             commitment,
+            require_live_prepack_protocol=not amendment_used,
         )
         for key in (
             "pre_pack_git_commit",
@@ -1019,6 +1298,47 @@ def verify_redteam_v2_run(
         ):
             if live_chronology.get(key) != chronology.get(key):
                 raise ProtocolViolation(f"git chronology receipt mismatch: {key}")
+        if amendment_used:
+            assert type(amendment_receipt) is dict
+            if evaluator_amendment_path is None:
+                evaluator_amendment_path = repository_root / amendment_receipt["amendment_path"]
+                evaluator_amendment_git_commit = amendment_receipt["amendment_git_commit"]
+            assert evaluator_amendment_git_commit is not None
+            if evaluator_amendment_git_commit != amendment_receipt["amendment_git_commit"]:
+                raise ProtocolViolation("evaluator amendment git commit argument mismatch")
+            live_amendment = _verify_evaluator_amendment(
+                repository_root,
+                evaluator_amendment_path,
+                evaluator_amendment_git_commit,
+                commitment,
+                commit_id,
+                live_chronology,
+            )
+            stable_keys = (
+                "protocol",
+                "amendment_path",
+                "amendment_git_commit",
+                "amendment_blob_digest",
+                "amendment_digest",
+                "commitment_git_commit_strict_ancestor",
+                "amendment_commit_ancestor_or_equal_run_head",
+                "final_protocol_source_receipts",
+                "unchanged_candidate_generator_receipts",
+                "original_candidate_generator_pack_bindings_unchanged",
+                "private_reveal_used_for_amendment",
+            )
+            for key in stable_keys:
+                if live_amendment.get(key) != amendment_receipt.get(key):
+                    raise ProtocolViolation(f"evaluator amendment receipt mismatch: {key}")
+            published_amendment = _read_object(directory / "evaluator-amendment.json")
+            if digest_json(published_amendment) != amendment_receipt["amendment_digest"]:
+                raise ProtocolViolation("published evaluator amendment digest mismatch")
+        elif evaluator_amendment_path is not None:
+            raise ProtocolViolation("amendment arguments supplied for a non-amended run")
+    elif amendment_used:
+        raise ProtocolViolation("amended run cannot be verified without git chronology")
+    reveal = _read_object(directory / "reveal.json")
+    pack = verify_reveal(commitment, reveal)
     pre_reveal_entries = chronology.get("pre_reveal_artifacts")
     if type(pre_reveal_entries) is not list or not pre_reveal_entries:
         raise ProtocolViolation("pre-reveal artifact registry is missing")
@@ -1039,6 +1359,11 @@ def verify_redteam_v2_run(
         raise ProtocolViolation("red-team phase timestamps are out of order")
     if not chronology.get("both_implementations_finished_before_reveal"):
         raise ProtocolViolation("both implementations were not sealed before reveal")
+    if amendment_used and not (
+        chronology.get("evaluator_authority_verified_before_reveal_open")
+        and chronology["evaluator_authority_verified_at"] <= chronology["reveal_opened_at"]
+    ):
+        raise ProtocolViolation("evaluator amendment was not verified before reveal opening")
     if summary.get("attack_classes") != list(REQUIRED_ATTACK_CLASSES):
         raise ProtocolViolation("red-team summary attack registry mismatch")
     for name, receipt in summary["raw_receipts"].items():
@@ -1135,6 +1460,7 @@ def verify_redteam_v2_run(
         "artifact_count": len(manifest["artifacts"]),
         "verification_scope": "bundle_integrity_reveal_binding_and_raw_receipts",
         "git_chronology_reverified": bool(require_git_chronology),
+        "evaluator_amendment_reverified": bool(amendment_used and require_git_chronology),
         "pre_reveal_output_root_reverified": True,
         "pre_reveal_wall_clock_order_reverified": True,
         "verified": True,
@@ -1146,4 +1472,11 @@ def verify_redteam_v2_run(
 import sys  # noqa: E402  (intentional evidence dependency)
 
 
-__all__ = ["MANIFEST_PROTOCOL", "RUN_PROTOCOL", "run_redteam_v2", "verify_redteam_v2_run"]
+__all__ = [
+    "EVALUATOR_AMENDMENT_PROTOCOL",
+    "MANIFEST_PROTOCOL",
+    "RUN_PROTOCOL",
+    "run_redteam_v2",
+    "verify_evaluator_amendment",
+    "verify_redteam_v2_run",
+]

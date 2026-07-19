@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import inspect
 import json
 import shutil
 import subprocess
@@ -22,6 +23,10 @@ from prototype.unified_map.redteam_v2_pack import (
     verify_reveal,
 )
 from prototype.unified_map.redteam_v2_runner import run_redteam_v2, verify_redteam_v2_run
+from prototype.unified_map.redteam_v2_runner import (
+    EVALUATOR_AMENDMENT_PROTOCOL,
+    verify_evaluator_amendment,
+)
 
 
 DUMMY_SECRET = b"unit-test-only-redteam-secret-0001"
@@ -147,6 +152,140 @@ def test_custody_is_hiding_external_and_tamper_evident(tmp_path: Path) -> None:
             created_at="2026-07-19T00:00:00+00:00",
             training_count=24,
             ordinary_test_count=12,
+        )
+
+
+def test_evaluator_amendment_binds_final_protocol_without_opening_reveal(
+    tmp_path: Path,
+) -> None:
+    for function in (run_redteam_v2, verify_redteam_v2_run):
+        parameters = inspect.signature(function).parameters
+        assert "evaluator_amendment_path" in parameters
+        assert "evaluator_amendment_git_commit" in parameters
+    repository = tmp_path / "amendment-repository"
+    repository.mkdir()
+    _git(repository, "init")
+    _git(repository, "config", "user.email", "redteam-test@example.invalid")
+    _git(repository, "config", "user.name", "Redteam Test")
+    (repository / ".gitattributes").write_text("* -text\n", encoding="utf-8")
+    immutable_sources = (
+        Path("prototype/unified_map/candidate_families.py"),
+        Path("prototype/unified_map/independent_f18.py"),
+        Path("prototype/unified_map/redteam_v2_pack.py"),
+    )
+    for source in immutable_sources:
+        target = repository / source
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+    old_protocol = {
+        "adapter": b"# pre-amendment adapter placeholder\n",
+        "runner": b"# pre-amendment runner placeholder\n",
+    }
+    protocol_paths = {
+        "adapter": Path("prototype/unified_map/redteam_v2_adapter.py"),
+        "runner": Path("prototype/unified_map/redteam_v2_runner.py"),
+    }
+    for label, relative in protocol_paths.items():
+        target = repository / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(old_protocol[label])
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "pre-pack sources")
+    pre_pack_commit = _git(repository, "rev-parse", "HEAD")
+
+    commitment_path = repository / "commitment.json"
+    external_reveal = tmp_path / "external" / "unused-dummy-reveal.json"
+    commitment = prepare_custody(
+        secret=DUMMY_SECRET,
+        repository_root=repository,
+        commitment_path=commitment_path,
+        external_reveal_path=external_reveal,
+        pre_pack_git_commit=pre_pack_commit,
+        candidate_source_bindings=candidate_source_bindings(),
+        created_at="2026-07-19T00:00:00+00:00",
+        training_count=24,
+        ordinary_test_count=12,
+    )
+    _git(repository, "add", "commitment.json")
+    _git(repository, "commit", "-m", "original hiding commitment")
+    commitment_commit = _git(repository, "rev-parse", "HEAD")
+
+    final_receipts: dict[str, dict] = {}
+    prepack_receipts: dict[str, dict] = {}
+    for label, relative in protocol_paths.items():
+        final_raw = relative.read_bytes()
+        (repository / relative).write_bytes(final_raw)
+        final_receipts[label] = {
+            "path": relative.as_posix(),
+            "sha256": digest_bytes(final_raw),
+            "byte_length": len(final_raw),
+        }
+        prepack_receipts[label] = {
+            "path": relative.as_posix(),
+            "sha256": digest_bytes(old_protocol[label]),
+            "byte_length": len(old_protocol[label]),
+        }
+    amendment = {
+        "protocol": EVALUATOR_AMENDMENT_PROTOCOL,
+        "original_commitment_digest": digest_json(commitment),
+        "original_pack_digest": commitment["pack_digest"],
+        "commitment_git_commit": commitment_commit,
+        "prepack_bindings": {
+            "pre_pack_git_commit": pre_pack_commit,
+            "candidate_source_bindings": commitment["candidate_source_bindings"],
+            "generator_source_digest": commitment["generator_source_digest"],
+            "protocol_source_bindings": prepack_receipts,
+        },
+        "final_protocol_source_bindings": final_receipts,
+        "declarations": {
+            "scope": "evaluator_observability_custody_and_verification_only",
+            "candidate_sources_changed": False,
+            "generator_source_changed": False,
+            "pack_digest_changed": False,
+            "private_reveal_accessed_for_amendment": False,
+        },
+    }
+    amendment_path = repository / "evaluator-amendment.json"
+    amendment_path.write_bytes(canonical_json_bytes(amendment))
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "evaluator-only amendment")
+    amendment_commit = _git(repository, "rev-parse", "HEAD")
+
+    result = verify_evaluator_amendment(
+        repository_root=repository,
+        commitment_path=commitment_path,
+        commitment_git_commit=commitment_commit,
+        evaluator_amendment_path=amendment_path,
+        evaluator_amendment_git_commit=amendment_commit,
+    )
+    assert result["verified"] is True
+    assert result["evaluator_amendment"]["private_reveal_used_for_amendment"] is False
+    assert result["evaluator_amendment"]["final_protocol_source_receipts"] == final_receipts
+
+    amendment_path.write_bytes(b"{}\n")
+    with pytest.raises(ProtocolViolation, match="differs from durable git blob"):
+        verify_evaluator_amendment(
+            repository_root=repository,
+            commitment_path=commitment_path,
+            commitment_git_commit=commitment_commit,
+            evaluator_amendment_path=amendment_path,
+            evaluator_amendment_git_commit=amendment_commit,
+        )
+    amendment_path.write_bytes(canonical_json_bytes(amendment))
+    bad_amendment = json.loads(canonical_json_bytes(amendment))
+    bad_amendment["original_pack_digest"] = "sha256:" + ("0" * 64)
+    bad_path = repository / "bad-evaluator-amendment.json"
+    bad_path.write_bytes(canonical_json_bytes(bad_amendment))
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "tampered amendment fixture")
+    bad_commit = _git(repository, "rev-parse", "HEAD")
+    with pytest.raises(ProtocolViolation, match="pack digest mismatch"):
+        verify_evaluator_amendment(
+            repository_root=repository,
+            commitment_path=commitment_path,
+            commitment_git_commit=commitment_commit,
+            evaluator_amendment_path=bad_path,
+            evaluator_amendment_git_commit=bad_commit,
         )
 
 
