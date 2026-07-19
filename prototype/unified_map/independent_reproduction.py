@@ -49,7 +49,7 @@ from .canonical import (
 )
 from .independent_f18 import IndependentStructuralEnsemble
 from .schema import VisibleDelta, VisibleHistory
-from .world_registry import WORLD_REGISTRY
+from .world_registry import EXTENSION_WORLD_REGISTRY, WORLD_REGISTRY
 from .worlds.base import MicroWorld, PrivateEpisode, WorldSplit
 
 
@@ -467,6 +467,14 @@ def _evaluate_pairs(
     count = 0
     maximum = 0.0
     for slot, panel, world in panels:
+        # Match the frozen benchmark runner's primary-scope pair protocol.
+        # W16/W17 pair declarations belong to the separately committed S1
+        # extension workflow and deliberately fail before its reveal.  Calling
+        # them here would widen REPRO5 beyond the sealed F18 run rather than
+        # reproduce it (benchmark_v1_runner._precompute_pair_oracles applies
+        # the same exclusion).
+        if slot in EXTENSION_WORLD_REGISTRY:
+            continue
         for declaration in panel.probes:
             for probe_index in range(
                 min(PAIR_LIMIT_PER_DECLARATION, declaration.indexed_count)
@@ -746,6 +754,16 @@ def reproduce(
                     "sealed_test"
                 ],
                 "pair_probe_limit_per_declaration": PAIR_LIMIT_PER_DECLARATION,
+                "pair_probe_world_slots": [
+                    slot for slot in WORLD_REGISTRY if slot not in EXTENSION_WORLD_REGISTRY
+                ],
+                "pair_probe_excluded_extension_world_slots": list(
+                    EXTENSION_WORLD_REGISTRY
+                ),
+                "pair_probe_scope_rule": (
+                    "match benchmark_v1_runner primary-scope pair materialization; "
+                    "W16/W17 S1 pairs require separate extension reveal"
+                ),
             },
             "episode_count": episode_count,
             "rollout_query_count": rollout_query_count,
@@ -915,6 +933,20 @@ def verify_reproduction_bundle(
         "pair_count"
     ):
         raise ProtocolViolation("reproduction pair row count mismatch")
+    pair_scope = summary.get("scope", {})
+    expected_pair_slots = [
+        slot for slot in WORLD_REGISTRY if slot not in EXTENSION_WORLD_REGISTRY
+    ]
+    if (
+        pair_scope.get("pair_probe_world_slots") != expected_pair_slots
+        or pair_scope.get("pair_probe_excluded_extension_world_slots")
+        != list(EXTENSION_WORLD_REGISTRY)
+    ):
+        raise ProtocolViolation("reproduction pair scope mismatch")
+    for line in pair_raw.splitlines():
+        row = json.loads(line)
+        if row.get("world_slot") in EXTENSION_WORLD_REGISTRY:
+            raise ProtocolViolation("extension-world S1 pair leaked into primary REPRO5")
 
     if require_live_sources:
         for section in ("sources", "authorities"):

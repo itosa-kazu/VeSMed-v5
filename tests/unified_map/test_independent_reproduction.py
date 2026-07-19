@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import gzip
+import io
 import json
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from prototype.unified_map.canonical import canonical_json_bytes
 from prototype.unified_map.independent_f18 import IndependentStructuralEnsemble
 from prototype.unified_map.independent_reproduction import (
     _derived_seed,
+    _evaluate_pairs,
     _split_history,
     _write_deterministic_gzip,
 )
@@ -128,3 +130,24 @@ def test_reproduction_gzip_is_deterministic(tmp_path: Path) -> None:
     _write_deterministic_gzip(source, second)
     assert first.read_bytes() == second.read_bytes()
     assert gzip.decompress(first.read_bytes()) == source.read_bytes()
+
+
+def test_primary_reproduction_does_not_open_extension_world_pairs() -> None:
+    """W16/W17 pair fixtures are S1-only and must not enter primary REPRO5."""
+
+    panels = []
+    for slot in ("W16", "W17"):
+        panel = WORLD_REGISTRY[slot].panels[0]
+        panels.append((slot, panel, panel.instantiate()))
+    writer = io.BytesIO()
+    pair_count, maximum = _evaluate_pairs(
+        reference=object(),
+        independent=object(),
+        panels=panels,
+        replicate_id="R01",
+        seed_root=123,
+        writer=writer,
+    )
+    assert pair_count == 0
+    assert maximum == 0.0
+    assert writer.getvalue() == b""
