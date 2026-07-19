@@ -9,9 +9,12 @@ freeze, candidate/runner source hashes, configuration and raw per-query rows.
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
+import gzip
 import hashlib
 import json
 import math
+import multiprocessing
 import os
 import shutil
 import statistics
@@ -222,13 +225,57 @@ def _panels(world_slots: Iterable[str]) -> list[tuple[str, Any, MicroWorld]]:
     return rows
 
 
+def _instantiate_panel(slot: str, panel_id: str) -> MicroWorld:
+    for panel in WORLD_REGISTRY[slot].panels:
+        if panel.panel_id == panel_id:
+            return panel.instantiate()
+    raise ProtocolViolation(f"unknown panel {slot}/{panel_id}")
+
+
+def _oracle_worker_count(task_count: int) -> int:
+    configured = int(os.environ.get("UCM_ORACLE_WORKERS", "0"))
+    available = os.cpu_count() or 1
+    requested = configured if configured > 0 else min(10, available)
+    return max(1, min(requested, task_count))
+
+
+def _build_training_record_worker(
+    task: tuple[str, str, int, int, int],
+) -> PublicTrainingRecord:
+    slot, panel_id, generator_seed, oracle_root, index = task
+    world = _instantiate_panel(slot, panel_id)
+    episode = world.generate_episode(WorldSplit.TRAIN, generator_seed, index)
+    return build_public_training_record(
+        world,
+        episode,
+        oracle_seed=_derived_seed(oracle_root, index),
+    )
+
+
+_PUBLIC_TRAINING_CACHE: dict[
+    tuple[tuple[tuple[str, str], ...], int, int],
+    tuple[tuple[Any, ...], tuple[PublicTrainingRecord, ...]],
+] = {}
+
+
 def _training_records(
     panel_rows: list[tuple[str, Any, MicroWorld]],
     seed_row: dict[str, Any],
     count: int,
 ) -> tuple[tuple[Any, ...], tuple[PublicTrainingRecord, ...]]:
+    # A multi-candidate suite must use byte-identical public training records.
+    # Reuse them in-process; private episodes/oracles from the sealed test split
+    # are intentionally never cached here or exposed to candidate code.
+    cache_key = (
+        tuple((slot, panel.panel_id) for slot, panel, _ in panel_rows),
+        int(seed_row["train_root_seed"]),
+        count,
+    )
+    cached = _PUBLIC_TRAINING_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
     catalogs: list[Any] = []
-    records: list[PublicTrainingRecord] = []
+    tasks: list[tuple[str, str, int, int, int]] = []
     for slot, panel, world in panel_rows:
         catalogs.append(world.catalog)
         generator_seed = _derived_seed(
@@ -237,16 +284,21 @@ def _training_records(
         oracle_root = _derived_seed(
             seed_row["train_root_seed"], slot, panel.panel_id, "oracle"
         )
-        for index in range(count):
-            episode = world.generate_episode(WorldSplit.TRAIN, generator_seed, index)
-            records.append(
-                build_public_training_record(
-                    world,
-                    episode,
-                    oracle_seed=_derived_seed(oracle_root, index),
-                )
-            )
-    return tuple(catalogs), tuple(records)
+        tasks.extend(
+            (slot, panel.panel_id, generator_seed, oracle_root, index)
+            for index in range(count)
+        )
+    if count >= SPLIT_EPISODES_PER_PANEL["train"] and len(tasks) > 1:
+        context = multiprocessing.get_context("spawn")
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=_oracle_worker_count(len(tasks)), mp_context=context
+        ) as executor:
+            records = list(executor.map(_build_training_record_worker, tasks, chunksize=1))
+    else:
+        records = [_build_training_record_worker(task) for task in tasks]
+    result = (tuple(catalogs), tuple(records))
+    _PUBLIC_TRAINING_CACHE[cache_key] = result
+    return result
 
 
 def _oracle_rows(
@@ -264,6 +316,77 @@ def _oracle_rows(
         )
         for index, plan in enumerate(world.policy_set(horizon))
     )
+
+
+def _sealed_episode_worker(
+    task: tuple[str, str, int, int, int],
+) -> tuple[PrivateEpisode, dict[int, tuple[CounterfactualOracle, ...]]]:
+    slot, panel_id, generator_seed, oracle_root, episode_index = task
+    world = _instantiate_panel(slot, panel_id)
+    episode = world.generate_episode(
+        WorldSplit.SEALED_TEST, generator_seed, episode_index
+    )
+    episode_oracle_root = _derived_seed(oracle_root, episode_index)
+    rows = {
+        horizon: _oracle_rows(world, episode, horizon, episode_oracle_root)
+        for horizon in world.catalog.horizons
+    }
+    return episode, rows
+
+
+_SEALED_JUDGE_CACHE: dict[
+    tuple[tuple[tuple[str, str], ...], int, int],
+    dict[
+        tuple[str, str, int],
+        tuple[PrivateEpisode, dict[int, tuple[CounterfactualOracle, ...]]],
+    ],
+] = {}
+
+
+def _sealed_evaluation_rows(
+    panel_rows: list[tuple[str, Any, MicroWorld]],
+    seed_row: dict[str, Any],
+    count: int,
+) -> dict[
+    tuple[str, str, int],
+    tuple[PrivateEpisode, dict[int, tuple[CounterfactualOracle, ...]]],
+]:
+    cache_key = (
+        tuple((slot, panel.panel_id) for slot, panel, _ in panel_rows),
+        int(seed_row["sealed_test_root_seed"]),
+        count,
+    )
+    cached = _SEALED_JUDGE_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+    tasks: list[tuple[str, str, int, int, int]] = []
+    keys: list[tuple[str, str, int]] = []
+    for slot, panel, _ in panel_rows:
+        generator_seed = _derived_seed(
+            seed_row["sealed_test_root_seed"], slot, panel.panel_id, "population"
+        )
+        oracle_root = _derived_seed(
+            seed_row["sealed_test_root_seed"], slot, panel.panel_id, "oracle"
+        )
+        for episode_index in range(count):
+            tasks.append(
+                (slot, panel.panel_id, generator_seed, oracle_root, episode_index)
+            )
+            keys.append((slot, panel.panel_id, episode_index))
+    if count >= SPLIT_EPISODES_PER_PANEL["sealed_test"] and len(tasks) > 1:
+        context = multiprocessing.get_context("spawn")
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=_oracle_worker_count(len(tasks)), mp_context=context
+        ) as executor:
+            values = list(executor.map(_sealed_episode_worker, tasks, chunksize=1))
+    else:
+        values = [_sealed_episode_worker(task) for task in tasks]
+    result = dict(zip(keys, values, strict=True))
+    # Judge-side only: this object is never passed to fit/initialize/heads.  It
+    # makes a multi-candidate suite reuse the exact sealed oracles instead of
+    # recomputing them with candidate-dependent timing.
+    _SEALED_JUDGE_CACHE[cache_key] = result
+    return result
 
 
 def _mean(rows: list[float]) -> float | None:
@@ -293,6 +416,7 @@ def _evaluate_episode(
     episode_index: int,
     oracle_root: int,
     raw_writer: Any,
+    precomputed_oracles: dict[int, tuple[CounterfactualOracle, ...]] | None = None,
 ) -> dict[str, Any]:
     started = time.perf_counter_ns()
     state = candidate.initialize(
@@ -331,7 +455,11 @@ def _evaluate_episode(
     first_rollout: RolloutPrediction | None = None
     for horizon in world.catalog.horizons:
         policies = world.policy_set(horizon)
-        oracles = _oracle_rows(world, episode, horizon, oracle_root)
+        oracles = (
+            precomputed_oracles[horizon]
+            if precomputed_oracles is not None
+            else _oracle_rows(world, episode, horizon, oracle_root)
+        )
         predictions: list[RolloutPrediction] = []
         for policy_index, (policy, oracle) in enumerate(zip(policies, oracles)):
             began = time.perf_counter_ns()
@@ -448,6 +576,115 @@ def _flatten_probe_result(result: object, mapping: bool) -> list[tuple[PrivateEp
     raise ProtocolViolation("probe result is invalid")
 
 
+def _pair_probe_oracle_worker(
+    task: tuple[str, str, str, str, int, bool, int, int],
+) -> list[dict[str, Any]]:
+    (
+        slot,
+        panel_id,
+        probe_id,
+        method_name,
+        indexed_count,
+        mapping_result,
+        probe_index,
+        seed,
+    ) = task
+    world = _instantiate_panel(slot, panel_id)
+    method = getattr(world, method_name)
+    result = (
+        method(seed, probe_index=probe_index)
+        if indexed_count > 1
+        else method(seed)
+    )
+    rows: list[dict[str, Any]] = []
+    for group_index, episodes in enumerate(
+        _flatten_probe_result(result, mapping_result)
+    ):
+        if len(episodes) < 2:
+            continue
+        left, right = episodes[0], episodes[1]
+        left_oracles: list[CounterfactualOracle] = []
+        right_oracles: list[CounterfactualOracle] = []
+        for horizon in world.catalog.horizons:
+            left_oracles.extend(_oracle_rows(world, left, horizon, seed + 11))
+            right_oracles.extend(_oracle_rows(world, right, horizon, seed + 11))
+        rows.append(
+            {
+                "world_slot": slot,
+                "panel_id": panel_id,
+                "probe_id": probe_id,
+                "probe_index": probe_index,
+                "group_index": group_index,
+                "seed": seed,
+                "left": left,
+                "right": right,
+                "left_oracles": tuple(left_oracles),
+                "right_oracles": tuple(right_oracles),
+            }
+        )
+    return rows
+
+
+_PAIR_JUDGE_CACHE: dict[
+    tuple[tuple[tuple[str, str], ...], int, int],
+    dict[tuple[str, str], list[dict[str, Any]]],
+] = {}
+
+
+def _precompute_pair_oracles(
+    panel_rows: list[tuple[str, Any, MicroWorld]], seed_root: int, limit: int
+) -> dict[tuple[str, str], list[dict[str, Any]]]:
+    cache_key = (
+        tuple((slot, panel.panel_id) for slot, panel, _ in panel_rows),
+        int(seed_root),
+        limit,
+    )
+    cached = _PAIR_JUDGE_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+    tasks: list[tuple[str, str, str, str, int, bool, int, int]] = []
+    for slot, panel, _ in panel_rows:
+        if limit == 0 or slot in EXTENSION_WORLD_REGISTRY:
+            continue
+        for declaration in panel.probes:
+            for probe_index in range(min(limit, declaration.indexed_count)):
+                seed = _derived_seed(
+                    seed_root,
+                    slot,
+                    panel.panel_id,
+                    declaration.probe_id,
+                    probe_index,
+                )
+                tasks.append(
+                    (
+                        slot,
+                        panel.panel_id,
+                        declaration.probe_id,
+                        declaration.method_name,
+                        declaration.indexed_count,
+                        declaration.mapping_result,
+                        probe_index,
+                        seed,
+                    )
+                )
+    if limit >= 2 and len(tasks) > 1:
+        context = multiprocessing.get_context("spawn")
+        with concurrent.futures.ProcessPoolExecutor(
+            max_workers=_oracle_worker_count(len(tasks)), mp_context=context
+        ) as executor:
+            task_rows = list(executor.map(_pair_probe_oracle_worker, tasks, chunksize=1))
+    else:
+        task_rows = [_pair_probe_oracle_worker(task) for task in tasks]
+    result: dict[tuple[str, str], list[dict[str, Any]]] = {
+        (slot, panel.panel_id): [] for slot, panel, _ in panel_rows
+    }
+    for rows in task_rows:
+        for row in rows:
+            result[(row["world_slot"], row["panel_id"])].append(row)
+    _PAIR_JUDGE_CACHE[cache_key] = result
+    return result
+
+
 def _pair_probes(
     *,
     candidate: Any,
@@ -456,7 +693,32 @@ def _pair_probes(
     world: MicroWorld,
     seed_root: int,
     limit: int,
+    precomputed: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
+    if precomputed is not None:
+        rows = []
+        for item in precomputed:
+            seed = int(item["seed"])
+            states = (
+                candidate.initialize(item["left"].public_history, inference_seed=seed + 1),
+                candidate.initialize(item["right"].public_history, inference_seed=seed + 2),
+            )
+            classification = classify_state_pair(
+                states[0], states[1], item["left_oracles"], item["right_oracles"]
+            )
+            rows.append(
+                {
+                    "world_slot": item["world_slot"],
+                    "panel_id": item["panel_id"],
+                    "probe_id": item["probe_id"],
+                    "probe_index": item["probe_index"],
+                    "group_index": item["group_index"],
+                    "left_state_hash": states[0].state_hash,
+                    "right_state_hash": states[1].state_hash,
+                    **classification,
+                }
+            )
+        return rows
     if limit == 0 or slot in EXTENSION_WORLD_REGISTRY:
         return []
     rows: list[dict[str, Any]] = []
@@ -620,6 +882,7 @@ def _source_binding() -> dict[str, Any]:
     root = _repo_root()
     paths = (
         "prototype/unified_map/benchmark_v1_runner.py",
+        "prototype/unified_map/benchmark_v1_full_suite.py",
         "prototype/unified_map/candidate_families.py",
     )
     rows = []
@@ -670,19 +933,24 @@ def run_benchmark(
                 fit_started = time.perf_counter()
                 candidate.fit(catalogs, training, model_seed=model_seed)
                 fit_seconds = time.perf_counter() - fit_started
+                sealed_rows = _sealed_evaluation_rows(
+                    panel_rows, seed_row, config.test_episodes_per_panel
+                )
+                pair_oracle_rows = _precompute_pair_oracles(
+                    panel_rows,
+                    seed_row["sealed_test_root_seed"],
+                    config.pair_probe_limit_per_declaration,
+                )
                 episode_rows: list[dict[str, Any]] = []
                 pair_rows: list[dict[str, Any]] = []
                 for slot, panel, world in panel_rows:
-                    generator_seed = _derived_seed(
-                        seed_row["sealed_test_root_seed"], slot, panel.panel_id, "population"
-                    )
                     oracle_root = _derived_seed(
                         seed_row["sealed_test_root_seed"], slot, panel.panel_id, "oracle"
                     )
                     for episode_index in range(config.test_episodes_per_panel):
-                        episode = world.generate_episode(
-                            WorldSplit.SEALED_TEST, generator_seed, episode_index
-                        )
+                        episode, precomputed_oracles = sealed_rows[
+                            (slot, panel.panel_id, episode_index)
+                        ]
                         episode_rows.append(
                             _evaluate_episode(
                                 candidate=candidate,
@@ -694,6 +962,7 @@ def run_benchmark(
                                 episode_index=episode_index,
                                 oracle_root=_derived_seed(oracle_root, episode_index),
                                 raw_writer=raw_writer,
+                                precomputed_oracles=precomputed_oracles,
                             )
                         )
                     panel_pairs = _pair_probes(
@@ -703,6 +972,7 @@ def run_benchmark(
                         world=world,
                         seed_root=seed_row["sealed_test_root_seed"],
                         limit=config.pair_probe_limit_per_declaration,
+                        precomputed=pair_oracle_rows[(slot, panel.panel_id)],
                     )
                     pair_rows.extend(panel_pairs)
                     for row in panel_pairs:
@@ -798,7 +1068,17 @@ def verify_run_bundle(path: Path) -> dict[str, Any]:
         raise ProtocolViolation("run bundle root mismatch")
     for row in manifest["files"]:
         member = path / row["name"]
-        raw = member.read_bytes()
+        if member.is_file():
+            raw = member.read_bytes()
+        else:
+            compressed = member.with_name(member.name + ".gz")
+            if not compressed.is_file():
+                raise ProtocolViolation("run bundle member is missing")
+            try:
+                with gzip.open(compressed, "rb") as handle:
+                    raw = handle.read(int(row["byte_length"]) + 1)
+            except (OSError, EOFError) as exc:
+                raise ProtocolViolation("run bundle gzip sidecar is invalid") from exc
         if len(raw) != row["byte_length"] or digest_bytes(raw) != row["sha256"]:
             raise ProtocolViolation("run bundle member drifted")
     summary = _decode_canonical(path / "summary.json", "run summary")

@@ -23,3 +23,15 @@ prototype/unified_map/worlds/*.py ucm-upper-bound-evidence
 results/unified_map/pre_freeze/20260717-*/vertical-slice.json ucm-upper-bound-evidence
 results/unified_map/pre_freeze/20260718-eight-world-upper-bound-suite/** ucm-upper-bound-evidence
 results/unified_map/pre_freeze/20260718-twenty-world-upper-bound-suite/** ucm-upper-bound-evidence
+
+# Raw UCM transport sidecars are binary.  Their decompressed bytes are bound by
+# each run's existing canonical manifest.
+# All UCM evidence is content-addressed over the exact checked-in bytes.  Do not
+# let core.autocrlf rewrite frozen sources, manifests, tests, or reports in a
+# Windows clean checkout.  Some frozen v1 files intentionally contain CRLF.
+[attr]ucm-evidence -text whitespace=cr-at-eol
+prototype/unified_map/** ucm-evidence
+research/unified_map/** ucm-evidence
+results/unified_map/** ucm-evidence
+tests/unified_map/** ucm-evidence
+results/unified_map/runs/**/raw-*.jsonl.gz -text -diff

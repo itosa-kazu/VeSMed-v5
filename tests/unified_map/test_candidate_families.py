@@ -42,7 +42,7 @@ def test_feature_accumulator_is_finite_and_history_order_sensitive() -> None:
     assert np.any(vector != 0.0)
 
 
-def test_all_eight_families_and_three_public_baselines_execute_same_state_heads() -> None:
+def test_all_registered_families_and_public_baselines_execute_same_state_heads() -> None:
     world, records = _w01_training()
     episode = world.generate_episode(WorldSplit.VALIDATION, 991, 0)
     state_shapes: dict[str, int] = {}
@@ -77,6 +77,21 @@ def test_all_eight_families_and_three_public_baselines_execute_same_state_heads(
         "F06",
         "F07",
         "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F09S",
+        "F09L",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20",
+        "F21",
         "B02",
         "B03",
         "B04",
@@ -106,4 +121,3 @@ def test_baseline_truth_is_explicit_in_state_class() -> None:
     separate_state = separate.initialize(episode.public_history, inference_seed=1)
     assert separate_state.compactness_class == "separate_task_baseline"
     assert b"task_states" in separate_state.payload
-

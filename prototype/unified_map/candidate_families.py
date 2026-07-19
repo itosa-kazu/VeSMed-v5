@@ -24,7 +24,7 @@ from .benchmark_v1_contract import (
     policy_key,
 )
 from .canonical import ProtocolViolation, canonical_json_bytes
-from .schema import ActionPlan, EventKind, VisibleDelta, VisibleHistory
+from .schema import ActionPlan, EventKind, PlanKind, VisibleDelta, VisibleHistory
 from .worlds.base import PublicCatalog
 
 
@@ -59,6 +59,10 @@ def _empty_accumulator(catalog_digest: str, as_of: int) -> dict[str, Any]:
         "treatment_counts": [0] * ACTION_BINS,
         "check_counts": [0] * ACTION_BINS,
         "kind_counts": [0] * len(EventKind),
+        "ordered_short": [0.0] * 32,
+        "ordered_long": [0.0] * 32,
+        "observation_ordered_short": [0.0] * 32,
+        "observation_ordered_long": [0.0] * 32,
     }
 
 
@@ -76,6 +80,31 @@ def _numeric_observation(event: Any) -> tuple[str, float] | None:
 
 
 def _accumulate_event(accumulator: dict[str, Any], event: Any) -> None:
+    token_parts = [event.kind.value]
+    for key in ("channel_id", "action_id", "check_id"):
+        value = event.payload.get(key)
+        if type(value) is str:
+            token_parts.append(f"{key}={value}")
+    token_parts.extend(
+        (
+            f"availability_lag={event.available_at - event.occurred_at}",
+            f"collection_lag={0 if event.collected_at is None else event.available_at - event.collected_at}",
+        )
+    )
+    token = "|".join(token_parts)
+    digest = hashlib.sha256(b"UCM_ORDERED_EVENT_SKETCH_V1\0" + token.encode("utf-8")).digest()
+    index = int.from_bytes(digest[:4], "big") % 32
+    sign = -1.0 if digest[4] & 1 else 1.0
+    for key, decay in (("ordered_short", 0.65), ("ordered_long", 0.95)):
+        accumulator[key] = [decay * float(value) for value in accumulator[key]]
+        accumulator[key][index] += sign
+    if event.kind is not EventKind.PERFORMED_TREATMENT:
+        for key, decay in (
+            ("observation_ordered_short", 0.65),
+            ("observation_ordered_long", 0.95),
+        ):
+            accumulator[key] = [decay * float(value) for value in accumulator[key]]
+            accumulator[key][index] += sign
     accumulator["total_events"] += 1
     accumulator["kind_counts"][tuple(EventKind).index(event.kind)] += 1
     observed = _numeric_observation(event)
@@ -156,12 +185,57 @@ def feature_vector(accumulator: dict[str, Any]) -> np.ndarray:
     return result
 
 
+def path_feature_vector(accumulator: dict[str, Any]) -> np.ndarray:
+    """Fixed recursive state with short and long event-order/availability memory."""
+
+    base = feature_vector(accumulator)
+    ordered = np.asarray(
+        [*accumulator["ordered_short"], *accumulator["ordered_long"]],
+        dtype=np.float64,
+    )
+    result = np.concatenate((base, ordered))
+    if not np.all(np.isfinite(result)):
+        raise ProtocolViolation("ordered path feature vector is invalid")
+    return result
+
+
+def short_path_feature_vector(accumulator: dict[str, Any]) -> np.ndarray:
+    return np.concatenate(
+        (feature_vector(accumulator), np.asarray(accumulator["ordered_short"], dtype=np.float64))
+    )
+
+
+def long_path_feature_vector(accumulator: dict[str, Any]) -> np.ndarray:
+    return np.concatenate(
+        (feature_vector(accumulator), np.asarray(accumulator["ordered_long"], dtype=np.float64))
+    )
+
+
+def no_action_path_feature_vector(accumulator: dict[str, Any]) -> np.ndarray:
+    base = feature_vector(accumulator).copy()
+    start = 4 * OBSERVATION_BINS
+    base[start : start + ACTION_BINS] = 0.0
+    ordered = np.asarray(
+        [
+            *accumulator["observation_ordered_short"],
+            *accumulator["observation_ordered_long"],
+        ],
+        dtype=np.float64,
+    )
+    return np.concatenate((base, ordered))
+
+
 @dataclass(slots=True)
 class _Dataset:
     catalog: PublicCatalog
     labels: tuple[str, ...]
     query_keys: tuple[str, ...]
+    natural_query_keys: tuple[str, ...]
     raw: np.ndarray
+    path: np.ndarray
+    short_path: np.ndarray
+    long_path: np.ndarray
+    no_action_path: np.ndarray
     diagnosis: np.ndarray
     rollouts: dict[str, np.ndarray]
 
@@ -197,7 +271,16 @@ def _dataset_for(
         raise ProtocolViolation("candidate fit received an empty catalog partition")
     labels = catalog.diagnostic_labels
     query_keys = tuple(row.query_key for row in records[0].rollouts)
+    natural_query_keys = tuple(
+        row.query_key
+        for row in records[0].rollouts
+        if row.policy.kind in {PlanKind.NO_NEW_ACTION, PlanKind.CONTINUE_CURRENT}
+    )
     raw_rows: list[np.ndarray] = []
+    path_rows: list[np.ndarray] = []
+    short_path_rows: list[np.ndarray] = []
+    long_path_rows: list[np.ndarray] = []
+    no_action_path_rows: list[np.ndarray] = []
     diagnosis_rows: list[list[float]] = []
     rollout_rows: dict[str, list[list[float]]] = {key: [] for key in query_keys}
     for record in records:
@@ -205,7 +288,12 @@ def _dataset_for(
             raise ProtocolViolation("training record/catalog digest mismatch")
         if tuple(row.query_key for row in record.rollouts) != query_keys:
             raise ProtocolViolation("training query set drifted within one catalog")
-        raw_rows.append(feature_vector(accumulator_from_history(record.history)))
+        accumulator = accumulator_from_history(record.history)
+        raw_rows.append(feature_vector(accumulator))
+        path_rows.append(path_feature_vector(accumulator))
+        short_path_rows.append(short_path_feature_vector(accumulator))
+        long_path_rows.append(long_path_feature_vector(accumulator))
+        no_action_path_rows.append(no_action_path_feature_vector(accumulator))
         diagnosis_rows.append([float(record.diagnostic_target[label]) for label in labels])
         for target in record.rollouts:
             rollout_rows[target.query_key].append(
@@ -215,7 +303,12 @@ def _dataset_for(
         catalog,
         labels,
         query_keys,
+        natural_query_keys,
         np.vstack(raw_rows),
+        np.vstack(path_rows),
+        np.vstack(short_path_rows),
+        np.vstack(long_path_rows),
+        np.vstack(no_action_path_rows),
         np.asarray(diagnosis_rows, dtype=np.float64),
         {key: np.asarray(value, dtype=np.float64) for key, value in rollout_rows.items()},
     )
@@ -639,6 +732,621 @@ class MechanismGraphCandidate(LinearSharedCandidate):
         return np.concatenate((second.ravel(), treatments))
 
 
+class RecursivePathCandidate(LinearSharedCandidate):
+    """Two-timescale recursive event-order and availability state."""
+
+    family_id = "F09-recursive-path-state"
+    candidate_id = "F09-two-timescale-path-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        return {}, dataset.path.copy()
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        del model
+        return path_feature_vector(accumulator)
+
+
+def _support_data(dataset: _Dataset) -> dict[str, Any]:
+    scale = np.std(dataset.path, axis=0) + 0.1
+    normalized = dataset.path / scale
+    if len(normalized) > 1:
+        pair = np.sqrt(
+            np.sum((normalized[:, None, :] - normalized[None, :, :]) ** 2, axis=2)
+        )
+        pair += np.eye(len(pair)) * 1e12
+        nearest = np.min(pair, axis=1)
+        reference = float(np.quantile(nearest, 0.90))
+    else:
+        reference = 1.0
+    return {
+        "exemplars": dataset.path.tolist(),
+        "diagnosis_targets": dataset.diagnosis.tolist(),
+        "scale": scale.tolist(),
+        "reference_distance": max(reference, 1e-6),
+        "label_count": len(dataset.labels),
+    }
+
+
+def _support_transform(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+    exemplars = np.asarray(data["exemplars"], dtype=np.float64)
+    targets = np.asarray(data["diagnosis_targets"], dtype=np.float64)
+    scale = np.asarray(data["scale"], dtype=np.float64)
+    distances = np.sqrt(np.sum(((exemplars - path[None, :]) / scale) ** 2, axis=1))
+    reference = float(data["reference_distance"])
+    weights = np.exp(-0.5 * (distances / reference) ** 2)
+    if float(weights.sum()) <= 1e-15:
+        posterior = targets.mean(axis=0)
+    else:
+        posterior = weights @ targets / weights.sum()
+    minimum = float(distances.min())
+    novelty = 1.0 - math.exp(-max(0.0, minimum - reference) / reference)
+    return np.concatenate((posterior, [minimum / reference, novelty]))
+
+
+def _open_world_probabilities(
+    representation: np.ndarray, labels: tuple[str, ...], offset: int = 0
+) -> np.ndarray:
+    probabilities = np.maximum(
+        representation[offset : offset + len(labels)].copy(), 1e-12
+    )
+    if "unknown" in labels:
+        unknown = labels.index("unknown")
+        known = np.delete(probabilities, unknown)
+        # A point can be close to the sampled support yet lie between competing
+        # known manifolds.  Preserve both nearest-support novelty and posterior
+        # ambiguity in the same shared state instead of forcing a known class.
+        ambiguity = min(1.0, 2.0 * max(0.0, 1.0 - float(known.max())))
+        unknown_probability = min(
+            1.0,
+            max(float(probabilities[unknown]), float(representation[-1]), ambiguity),
+        )
+        known_total = float(known.sum())
+        probabilities[:] = 0.0
+        if known_total > 0.0:
+            probabilities[np.arange(len(labels)) != unknown] = (
+                known / known_total * (1.0 - unknown_probability)
+            )
+        probabilities[unknown] = unknown_probability
+    else:
+        probabilities /= probabilities.sum()
+    return probabilities
+
+
+class SupportAwareBeliefCandidate(LinearSharedCandidate):
+    """Nonparametric support/posterior belief stored inside the shared state."""
+
+    family_id = "F10-support-aware-belief"
+    candidate_id = "F10-nonparametric-support-belief-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        data = _support_data(dataset)
+        return data, np.vstack([_support_transform(row, data) for row in dataset.path])
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return _support_transform(path_feature_vector(accumulator), model.representation_data)
+
+    def diagnose(
+        self,
+        state: SharedPatientState,
+        label_catalog: tuple[str, ...],
+        *,
+        query_seed: int,
+    ) -> DiagnosisPrediction:
+        del query_seed
+        _, model, representation = self._decoded(state)
+        if label_catalog != model.labels:
+            raise ProtocolViolation("diagnosis query labels drifted")
+        probabilities = _open_world_probabilities(representation, model.labels)
+        return DiagnosisPrediction(
+            {label: float(probabilities[index]) for index, label in enumerate(model.labels)}
+        )
+
+
+class PathCausalStateCandidate(CausalStateCandidate):
+    """Behavioral quotient learned from an order-aware recursive public state."""
+
+    family_id = "F11-path-causal-state"
+    candidate_id = "F11-order-aware-behavioral-quotient-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        behavior = np.concatenate(
+            (dataset.diagnosis, *(dataset.rollouts[key] for key in dataset.query_keys)),
+            axis=1,
+        )
+        _, assignment = _kmeans(behavior, self.clusters, model_seed)
+        feature_centroids = np.vstack(
+            [dataset.path[assignment == index].mean(axis=0) for index in sorted(set(assignment))]
+        )
+        scale = np.std(dataset.path, axis=0) + 0.1
+        data = {"feature_centroids": feature_centroids.tolist(), "scale": scale.tolist()}
+        return data, np.vstack([self._transform(row, data) for row in dataset.path])
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._transform(path_feature_vector(accumulator), model.representation_data)
+
+
+class PathSupportCausalCandidate(PathCausalStateCandidate):
+    """Order-aware behavioral clusters plus in-state epistemic support belief."""
+
+    family_id = "F12-path-support-causal"
+    candidate_id = "F12-path-support-behavioral-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        behavior = np.concatenate(
+            (dataset.diagnosis, *(dataset.rollouts[key] for key in dataset.query_keys)),
+            axis=1,
+        )
+        _, assignment = _kmeans(behavior, self.clusters, model_seed)
+        feature_centroids = np.vstack(
+            [dataset.path[assignment == index].mean(axis=0) for index in sorted(set(assignment))]
+        )
+        cluster_scale = np.std(dataset.path, axis=0) + 0.1
+        support = _support_data(dataset)
+        data = {
+            "feature_centroids": feature_centroids.tolist(),
+            "scale": cluster_scale.tolist(),
+            "support": support,
+            "cluster_count": len(feature_centroids),
+        }
+        z = np.vstack([self._combined(row, data) for row in dataset.path])
+        return data, z
+
+    @staticmethod
+    def _combined(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        centroids = np.asarray(data["feature_centroids"], dtype=np.float64)
+        scale = np.asarray(data["scale"], dtype=np.float64)
+        distances = np.sum(((centroids - path[None, :]) / scale) ** 2, axis=1)
+        logits = -0.5 * distances
+        logits -= logits.max()
+        clusters = np.exp(logits)
+        clusters /= clusters.sum()
+        return np.concatenate((clusters, _support_transform(path, data["support"])))
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._combined(path_feature_vector(accumulator), model.representation_data)
+
+    def diagnose(
+        self,
+        state: SharedPatientState,
+        label_catalog: tuple[str, ...],
+        *,
+        query_seed: int,
+    ) -> DiagnosisPrediction:
+        del query_seed
+        _, model, representation = self._decoded(state)
+        if label_catalog != model.labels:
+            raise ProtocolViolation("diagnosis query labels drifted")
+        offset = int(model.representation_data["cluster_count"])
+        probabilities = _open_world_probabilities(representation, model.labels, offset)
+        return DiagnosisPrediction(
+            {label: float(probabilities[index]) for index, label in enumerate(model.labels)}
+        )
+
+
+def _fit_path_behavior_quotient(
+    inputs: np.ndarray,
+    diagnosis: np.ndarray,
+    rollouts: dict[str, np.ndarray],
+    query_keys: tuple[str, ...],
+    clusters: int,
+    model_seed: int,
+) -> tuple[dict[str, Any], np.ndarray, np.ndarray]:
+    """Fit a behavior partition, then learn where public histories enter it."""
+
+    behavior = np.concatenate(
+        (diagnosis, *(rollouts[key] for key in query_keys)), axis=1
+    )
+    _, assignment = _kmeans(behavior, clusters, model_seed)
+    active = sorted(set(int(value) for value in assignment))
+    feature_centroids = np.vstack(
+        [inputs[assignment == index].mean(axis=0) for index in active]
+    )
+    cluster_diagnosis = np.vstack(
+        [diagnosis[assignment == index].mean(axis=0) for index in active]
+    )
+    data = {
+        "feature_centroids": feature_centroids.tolist(),
+        "scale": (np.std(inputs, axis=0) + 0.1).tolist(),
+        "cluster_diagnosis": cluster_diagnosis.tolist(),
+        "cluster_count": len(active),
+    }
+    z = np.vstack([_soft_path_clusters(row, data) for row in inputs])
+    return data, z, assignment
+
+
+def _soft_path_clusters(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+    centroids = np.asarray(data["feature_centroids"], dtype=np.float64)
+    scale = np.asarray(data["scale"], dtype=np.float64)
+    distances = np.sum(((centroids - path[None, :]) / scale) ** 2, axis=1)
+    logits = -0.5 * distances
+    logits -= logits.max()
+    posterior = np.exp(logits)
+    posterior /= posterior.sum()
+    return posterior
+
+
+def _path_lift_data(paths: np.ndarray, rank: int = 48) -> dict[str, Any]:
+    variance = np.var(paths, axis=0)
+    chosen = np.argsort(variance)[-min(rank, paths.shape[1]) :]
+    chosen = np.asarray(sorted(int(index) for index in chosen), dtype=np.int64)
+    return {
+        "indices": chosen.tolist(),
+        "center": np.mean(paths[:, chosen], axis=0).tolist(),
+        "scale": (np.std(paths[:, chosen], axis=0) + 0.1).tolist(),
+    }
+
+
+def _path_lift(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+    indices = np.asarray(data["indices"], dtype=np.int64)
+    center = np.asarray(data["center"], dtype=np.float64)
+    scale = np.asarray(data["scale"], dtype=np.float64)
+    coordinates = np.tanh((path[indices] - center) / scale)
+    return np.concatenate(
+        (coordinates, coordinates**2, coordinates[:-1] * coordinates[1:])
+    )
+
+
+class ShortMemoryPathCandidate(RecursivePathCandidate):
+    """Ablation retaining only the fast-decaying recursive history sketch."""
+
+    family_id = "F09S-short-memory-path-state"
+    candidate_id = "F09S-short-memory-path-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        return {}, dataset.short_path.copy()
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        del model
+        return short_path_feature_vector(accumulator)
+
+
+class LongMemoryPathCandidate(RecursivePathCandidate):
+    """Ablation retaining only the slow-decaying recursive history sketch."""
+
+    family_id = "F09L-long-memory-path-state"
+    candidate_id = "F09L-long-memory-path-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        return {}, dataset.long_path.copy()
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        del model
+        return long_path_feature_vector(accumulator)
+
+
+class OpenWorldPathCausalCandidate(PathCausalStateCandidate):
+    """Behavioral quotient with an explicit in-state open-world belief."""
+
+    family_id = "F13-open-world-path-causal"
+    candidate_id = "F13-open-world-behavioral-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        data, clusters, _ = _fit_path_behavior_quotient(
+            dataset.path,
+            dataset.diagnosis,
+            dataset.rollouts,
+            dataset.query_keys,
+            self.clusters,
+            model_seed,
+        )
+        support = _support_data(dataset)
+        data["support"] = support
+        data["diagnosis_offset"] = int(data["cluster_count"])
+        z = np.vstack([self._combined(row, data) for row in dataset.path])
+        return data, z
+
+    @staticmethod
+    def _combined(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        clusters = _soft_path_clusters(path, data)
+        support_belief = _support_transform(path, data["support"])
+        return np.concatenate((clusters, support_belief))
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._combined(path_feature_vector(accumulator), model.representation_data)
+
+    def diagnose(
+        self,
+        state: SharedPatientState,
+        label_catalog: tuple[str, ...],
+        *,
+        query_seed: int,
+    ) -> DiagnosisPrediction:
+        del query_seed
+        _, model, representation = self._decoded(state)
+        if label_catalog != model.labels:
+            raise ProtocolViolation("diagnosis query labels drifted")
+        probabilities = _open_world_probabilities(
+            representation,
+            model.labels,
+            int(model.representation_data["diagnosis_offset"]),
+        )
+        return DiagnosisPrediction(
+            {label: float(probabilities[index]) for index, label in enumerate(model.labels)}
+        )
+
+
+class PathKoopmanCandidate(LinearSharedCandidate):
+    """Multiscale order-aware observables lifted into a finite operator state."""
+
+    family_id = "F14-path-koopman"
+    candidate_id = "F14-multiscale-path-koopman-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        data = _path_lift_data(dataset.path)
+        return data, np.vstack([_path_lift(row, data) for row in dataset.path])
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return _path_lift(path_feature_vector(accumulator), model.representation_data)
+
+
+class HybridSCMNeuralCandidate(LinearSharedCandidate):
+    """Explicit mechanism/action interactions plus a seeded neural residual."""
+
+    family_id = "F15-hybrid-scm-neural"
+    candidate_id = "F15-structural-neural-residual-state-v1"
+
+    def __init__(self, *, hidden_dim: int = 24, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.hidden_dim = int(hidden_dim)
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        rng = np.random.default_rng(model_seed ^ int(dataset.catalog.digest[7:15], 16))
+        scale = np.std(dataset.path, axis=0) + 0.1
+        weights = rng.normal(
+            0.0,
+            1.0 / math.sqrt(dataset.path.shape[1]),
+            (dataset.path.shape[1], self.hidden_dim),
+        )
+        data = {"scale": scale.tolist(), "weights": weights.tolist()}
+        return data, np.vstack([self._hybrid(row, data) for row in dataset.path])
+
+    @staticmethod
+    def _hybrid(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        observations = path[: 4 * OBSERVATION_BINS].reshape(OBSERVATION_BINS, 4)
+        last = observations[:, 0]
+        slope = observations[:, 2]
+        actions = path[4 * OBSERVATION_BINS : 4 * OBSERVATION_BINS + ACTION_BINS]
+        structural = np.concatenate(
+            (last, slope, actions, last[:ACTION_BINS] * (1.0 + actions), path[-64:])
+        )
+        scale = np.asarray(data["scale"], dtype=np.float64)
+        weights = np.asarray(data["weights"], dtype=np.float64)
+        residual = np.tanh((path / scale) @ weights)
+        return np.concatenate((structural, residual))
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._hybrid(path_feature_vector(accumulator), model.representation_data)
+
+
+class ProgramStateCandidate(LinearSharedCandidate):
+    """A finite executable configuration of quantized path registers."""
+
+    family_id = "F16-program-state"
+    candidate_id = "F16-quantized-clinical-program-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        del model_seed
+        variance = np.var(dataset.path, axis=0)
+        indices = np.asarray(
+            sorted(int(index) for index in np.argsort(variance)[-32:]),
+            dtype=np.int64,
+        )
+        data = {
+            "indices": indices.tolist(),
+            "center": np.median(dataset.path[:, indices], axis=0).tolist(),
+            "scale": (np.std(dataset.path[:, indices], axis=0) + 0.1).tolist(),
+        }
+        return data, np.vstack([self._program(row, data) for row in dataset.path])
+
+    @staticmethod
+    def _program(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        indices = np.asarray(data["indices"], dtype=np.int64)
+        center = np.asarray(data["center"], dtype=np.float64)
+        scale = np.asarray(data["scale"], dtype=np.float64)
+        registers = np.clip(np.rint((path[indices] - center) / scale), -3, 3).astype(int)
+        configuration = np.zeros((len(indices), 7), dtype=np.float64)
+        configuration[np.arange(len(indices)), registers + 3] = 1.0
+        return configuration.ravel()
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._program(path_feature_vector(accumulator), model.representation_data)
+
+
+class KernelPredictiveCandidate(LinearSharedCandidate):
+    """Landmark kernel state approximating controlled predictive equivalence."""
+
+    family_id = "F17-kernel-predictive-state"
+    candidate_id = "F17-kernel-landmark-predictive-state-v1"
+
+    def __init__(self, *, landmarks: int = 12, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.landmarks = int(landmarks)
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        centroids, _ = _kmeans(dataset.path, self.landmarks, model_seed)
+        scale = np.std(dataset.path, axis=0) + 0.1
+        normalized = dataset.path / scale
+        if len(normalized) > 1:
+            distance = np.sqrt(
+                np.sum((normalized[:, None, :] - normalized[None, :, :]) ** 2, axis=2)
+            )
+            bandwidth = float(np.median(distance[distance > 0]))
+        else:
+            bandwidth = 1.0
+        data = {
+            "landmarks": centroids.tolist(),
+            "scale": scale.tolist(),
+            "bandwidth": max(bandwidth, 1e-6),
+        }
+        return data, np.vstack([self._kernel(row, data) for row in dataset.path])
+
+    @staticmethod
+    def _kernel(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        landmarks = np.asarray(data["landmarks"], dtype=np.float64)
+        scale = np.asarray(data["scale"], dtype=np.float64)
+        distance = np.sqrt(np.sum(((landmarks - path[None, :]) / scale) ** 2, axis=1))
+        values = np.exp(-0.5 * (distance / float(data["bandwidth"])) ** 2)
+        total = float(values.sum())
+        return values / total if total > 1e-15 else np.full(len(values), 1.0 / len(values))
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._kernel(path_feature_vector(accumulator), model.representation_data)
+
+
+class StructuralEnsembleCandidate(OpenWorldPathCausalCandidate):
+    """One state combining a behavioral quotient with operator observables."""
+
+    family_id = "F18-structural-ensemble"
+    candidate_id = "F18-causal-operator-ensemble-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        causal, _, _ = _fit_path_behavior_quotient(
+            dataset.path,
+            dataset.diagnosis,
+            dataset.rollouts,
+            dataset.query_keys,
+            self.clusters,
+            model_seed,
+        )
+        causal["support"] = _support_data(dataset)
+        lift = _path_lift_data(dataset.path, rank=24)
+        data = {"causal": causal, "lift": lift}
+        lift_dim = len(_path_lift(dataset.path[0], lift))
+        data["diagnosis_offset"] = int(causal["cluster_count"]) + lift_dim
+        return data, np.vstack([self._ensemble(row, data) for row in dataset.path])
+
+    @staticmethod
+    def _ensemble(path: np.ndarray, data: dict[str, Any]) -> np.ndarray:
+        causal = data["causal"]
+        clusters = _soft_path_clusters(path, causal)
+        lift = _path_lift(path, data["lift"])
+        support_belief = _support_transform(path, causal["support"])
+        return np.concatenate((clusters, lift, support_belief))
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return self._ensemble(path_feature_vector(accumulator), model.representation_data)
+
+
+class NaturalOnlyPathCausalCandidate(PathCausalStateCandidate):
+    """Ablation: quotient histories only by diagnosis and natural futures."""
+
+    family_id = "F19-natural-only-causal-state"
+    candidate_id = "F19-natural-only-behavioral-quotient-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        data, z, _ = _fit_path_behavior_quotient(
+            dataset.path,
+            dataset.diagnosis,
+            dataset.rollouts,
+            dataset.natural_query_keys,
+            self.clusters,
+            model_seed,
+        )
+        return data, z
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return _soft_path_clusters(path_feature_vector(accumulator), model.representation_data)
+
+
+class NoActionPathCausalCandidate(PathCausalStateCandidate):
+    """Ablation: remove action-history information before behavior partitioning."""
+
+    family_id = "F20-no-action-path-causal"
+    candidate_id = "F20-no-action-history-behavioral-state-v1"
+
+    def _fit_representation(
+        self, dataset: _Dataset, model_seed: int
+    ) -> tuple[dict[str, Any], np.ndarray]:
+        data, z, _ = _fit_path_behavior_quotient(
+            dataset.no_action_path,
+            dataset.diagnosis,
+            dataset.rollouts,
+            dataset.query_keys,
+            self.clusters,
+            model_seed,
+        )
+        return data, z
+
+    def _representation_for_accumulator(
+        self, accumulator: dict[str, Any], model: _CatalogModel
+    ) -> np.ndarray:
+        return _soft_path_clusters(
+            no_action_path_feature_vector(accumulator), model.representation_data
+        )
+
+
+class PointCausalStateCandidate(PathCausalStateCandidate):
+    """Ablation collapsing the behavioral-state posterior to one cluster."""
+
+    family_id = "F21-point-causal-state"
+    candidate_id = "F21-point-collapsed-behavioral-state-v1"
+
+    def _transform(
+        self, raw: np.ndarray, representation_data: dict[str, Any]
+    ) -> np.ndarray:
+        posterior = super()._transform(raw, representation_data)
+        point = np.zeros_like(posterior)
+        point[int(np.argmax(posterior))] = 1.0
+        return point
+
+
 class FullHistoryBaseline(MechanismVectorCandidate):
     family_id = "B02-full-history"
     candidate_id = "B02-full-visible-history-v1"
@@ -815,6 +1523,21 @@ CANDIDATE_FACTORIES: dict[str, Callable[..., LinearSharedCandidate]] = {
     "F06": KoopmanCandidate,
     "F07": NeuralWorldCandidate,
     "F08": MechanismGraphCandidate,
+    "F09": RecursivePathCandidate,
+    "F10": SupportAwareBeliefCandidate,
+    "F11": PathCausalStateCandidate,
+    "F12": PathSupportCausalCandidate,
+    "F09S": ShortMemoryPathCandidate,
+    "F09L": LongMemoryPathCandidate,
+    "F13": OpenWorldPathCausalCandidate,
+    "F14": PathKoopmanCandidate,
+    "F15": HybridSCMNeuralCandidate,
+    "F16": ProgramStateCandidate,
+    "F17": KernelPredictiveCandidate,
+    "F18": StructuralEnsembleCandidate,
+    "F19": NaturalOnlyPathCausalCandidate,
+    "F20": NoActionPathCausalCandidate,
+    "F21": PointCausalStateCandidate,
     "B02": FullHistoryBaseline,
     "B03": SeparateTaskBaseline,
     "B04": K0OnlyBaseline,
@@ -836,13 +1559,32 @@ __all__ = [
     "FullHistoryBaseline",
     "K0OnlyBaseline",
     "KoopmanCandidate",
+    "KernelPredictiveCandidate",
+    "LongMemoryPathCandidate",
     "MechanismGraphCandidate",
     "MechanismVectorCandidate",
     "NeuralWorldCandidate",
+    "NoActionPathCausalCandidate",
+    "NaturalOnlyPathCausalCandidate",
+    "OpenWorldPathCausalCandidate",
+    "PathCausalStateCandidate",
+    "PathKoopmanCandidate",
+    "PathSupportCausalCandidate",
+    "PointCausalStateCandidate",
     "PredictiveStateCandidate",
+    "ProgramStateCandidate",
+    "RecursivePathCandidate",
     "SeparateTaskBaseline",
+    "ShortMemoryPathCandidate",
+    "StructuralEnsembleCandidate",
+    "SupportAwareBeliefCandidate",
+    "HybridSCMNeuralCandidate",
     "accumulator_from_history",
     "feature_vector",
     "make_candidate",
+    "path_feature_vector",
+    "short_path_feature_vector",
+    "long_path_feature_vector",
+    "no_action_path_feature_vector",
     "update_accumulator",
 ]
