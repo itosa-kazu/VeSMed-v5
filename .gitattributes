@@ -36,8 +36,9 @@ results/unified_map/** ucm-evidence
 tests/unified_map/** ucm-evidence
 results/unified_map/**/raw-*.jsonl.gz -text -diff
 
-# Generated UCM benchmark evidence is reviewed through its canonical manifests
-# and deterministic verifiers, not as a line-oriented source diff.  Limit this
-# performance hint to the isolated UCM track: broad `results/**` attributes
-# would change Git's filtered-blob identity for the frozen K0 result tree.
+# Result evidence is reviewed through canonical manifests and deterministic
+# verifiers, not as a line-oriented source diff.  The global rule changes only
+# the diff driver, so frozen K0 clean-filter/blob identities remain untouched.
+results/** -diff
+# UCM evidence additionally binds exact checked-in bytes cross-platform.
 results/unified_map/** -text -diff
