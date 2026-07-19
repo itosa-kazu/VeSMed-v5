@@ -18,6 +18,7 @@ from .canonical import canonical_json_bytes, digest_json
 
 INDEX_RELATIVE_PATH = Path("results/unified_map/source_snapshots/index.json")
 RUNS_RELATIVE_PATH = Path("results/unified_map/runs")
+FAILED_RUNS_RELATIVE_PATH = Path("results/unified_map/failed_runs")
 PROTOCOL = "ucm-source-snapshot-index/1"
 
 
@@ -126,6 +127,7 @@ def verify_source_snapshots(
     *,
     index_path: Path | None = None,
     runs_root: Path | None = None,
+    failed_runs_root: Path | None = None,
     through_experiment: int | None = None,
 ) -> dict[str, Any]:
     """Verify archived bytes and their coverage of run source bindings.
@@ -138,6 +140,9 @@ def verify_source_snapshots(
     repo_root = repo_root.resolve()
     index_path = (index_path or repo_root / INDEX_RELATIVE_PATH).resolve()
     runs_root = (runs_root or repo_root / RUNS_RELATIVE_PATH).resolve()
+    failed_runs_root = (
+        failed_runs_root or repo_root / FAILED_RUNS_RELATIVE_PATH
+    ).resolve()
     index = _load_json(index_path)
     if index.get("protocol") != PROTOCOL:
         raise SourceSnapshotError(
@@ -146,8 +151,15 @@ def verify_source_snapshots(
 
     raw_objects = index.get("objects")
     raw_runs = index.get("runs")
-    if type(raw_objects) is not list or type(raw_runs) is not list:
-        raise SourceSnapshotError("index objects and runs must be lists")
+    raw_failed_attempts = index.get("failed_attempts", [])
+    if (
+        type(raw_objects) is not list
+        or type(raw_runs) is not list
+        or type(raw_failed_attempts) is not list
+    ):
+        raise SourceSnapshotError(
+            "index objects, runs and failed_attempts must be lists"
+        )
 
     objects: dict[str, dict[str, Any]] = {}
     for entry in raw_objects:
@@ -208,6 +220,17 @@ def verify_source_snapshots(
         if run_id in indexed_runs:
             raise SourceSnapshotError(f"duplicate indexed run: {run_id}")
         indexed_runs[run_id] = entry
+
+    indexed_failed_attempts: dict[str, dict[str, Any]] = {}
+    for entry in raw_failed_attempts:
+        if type(entry) is not dict or type(entry.get("run_id")) is not str:
+            raise SourceSnapshotError(
+                "invalid failed attempt entry in source snapshot index"
+            )
+        run_id = entry["run_id"]
+        if run_id in indexed_failed_attempts or run_id in indexed_runs:
+            raise SourceSnapshotError(f"duplicate indexed run/attempt: {run_id}")
+        indexed_failed_attempts[run_id] = entry
 
     checked_runs = 0
     checked_bindings = 0
@@ -279,6 +302,81 @@ def verify_source_snapshots(
             checked_bindings += 1
         checked_runs += 1
 
+    checked_failed_attempts = 0
+    present_failed_attempt_ids: set[str] = set()
+    if failed_runs_root.is_dir():
+        for run_dir in sorted(failed_runs_root.iterdir()):
+            failure_path = run_dir / "failure.json"
+            manifest_path = run_dir / "manifest.json"
+            if not failure_path.is_file() or not manifest_path.is_file():
+                continue
+            failure = _load_json(failure_path)
+            experiment_id = failure.get("experiment_id")
+            experiment_number = _experiment_number(experiment_id)
+            if through_experiment is not None and experiment_number > through_experiment:
+                continue
+            manifest = _load_json(manifest_path)
+            run_id = failure.get("run_id")
+            if run_id != run_dir.name or manifest.get("run_id") != run_id:
+                raise SourceSnapshotError(
+                    f"failed attempt identity mismatch in {run_dir}"
+                )
+            present_failed_attempt_ids.add(run_id)
+            indexed = indexed_failed_attempts.get(run_id)
+            if indexed is None:
+                raise SourceSnapshotError(
+                    f"failed attempt missing from snapshot index: {run_id}"
+                )
+            if indexed.get("experiment_id") != experiment_id:
+                raise SourceSnapshotError(
+                    f"indexed failed experiment mismatch for {run_id}"
+                )
+            source_binding = failure.get("source_binding")
+            if (
+                type(source_binding) is not dict
+                or type(source_binding.get("files")) is not list
+            ):
+                raise SourceSnapshotError(
+                    f"failed attempt has no valid source_binding: {run_id}"
+                )
+            source_files = source_binding["files"]
+            if source_binding.get("source_digest") != digest_json(source_files):
+                raise SourceSnapshotError(
+                    f"failed attempt source_digest mismatch: {run_id}"
+                )
+            if (
+                indexed.get("source_digest") != source_binding["source_digest"]
+                or indexed.get("files") != source_files
+            ):
+                raise SourceSnapshotError(
+                    f"indexed failed source binding mismatch for {run_id}"
+                )
+            for binding in source_files:
+                if type(binding) is not dict:
+                    raise SourceSnapshotError(
+                        f"invalid failed source file binding in {run_id}"
+                    )
+                digest = binding.get("sha256")
+                original_path = _safe_relative_path(
+                    binding.get("relative_path"), field="relative_path"
+                ).as_posix()
+                archived = objects.get(digest)
+                if archived is None:
+                    raise SourceSnapshotError(
+                        f"failed source object {digest!r} for {run_id} is not archived"
+                    )
+                if archived.get("byte_length") != binding.get("byte_length"):
+                    raise SourceSnapshotError(
+                        f"failed source length mismatch for {run_id}: {original_path}"
+                    )
+                if original_path not in archived["_original_paths"]:
+                    raise SourceSnapshotError(
+                        f"failed source path {original_path} is not bound to {digest}"
+                    )
+                referenced_digests.add(digest)
+                checked_bindings += 1
+            checked_failed_attempts += 1
+
     extra_indexed = set(indexed_runs) - completed_run_ids
     if through_experiment is not None:
         extra_indexed = {
@@ -292,7 +390,31 @@ def verify_source_snapshots(
             "index contains runs absent from completed run ledger: "
             + ", ".join(sorted(extra_indexed))
         )
+    extra_failed = set(indexed_failed_attempts) - present_failed_attempt_ids
+    if through_experiment is not None:
+        extra_failed = {
+            run_id
+            for run_id in extra_failed
+            if _experiment_number(indexed_failed_attempts[run_id]["experiment_id"])
+            <= through_experiment
+        }
+    if extra_failed:
+        raise SourceSnapshotError(
+            "index contains failed attempts absent from failed ledger: "
+            + ", ".join(sorted(extra_failed))
+        )
     unreferenced = set(objects) - referenced_digests
+    if through_experiment is not None:
+        unreferenced = {
+            digest
+            for digest in unreferenced
+            if any(
+                _experiment_number(binding.get("experiment_id"))
+                <= through_experiment
+                for binding in objects[digest].get("bindings", [])
+                if type(binding) is dict
+            )
+        }
     if unreferenced:
         raise SourceSnapshotError(
             "index contains unreferenced source objects: "
@@ -303,6 +425,7 @@ def verify_source_snapshots(
         "protocol": PROTOCOL,
         "index": str(index_path),
         "run_count": checked_runs,
+        "failed_attempt_count": checked_failed_attempts,
         "binding_count": checked_bindings,
         "object_count": len(referenced_digests),
         "through_experiment": through_experiment,
@@ -316,6 +439,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--index", type=Path)
     parser.add_argument("--runs-root", type=Path)
+    parser.add_argument("--failed-runs-root", type=Path)
     parser.add_argument("--through-experiment", type=int)
     parser.add_argument("--sha256")
     parser.add_argument("--relative-path")
@@ -353,6 +477,7 @@ def main(argv: list[str] | None = None) -> int:
         args.repo_root,
         index_path=args.index,
         runs_root=args.runs_root,
+        failed_runs_root=args.failed_runs_root,
         through_experiment=args.through_experiment,
     )
     print(canonical_json_bytes(report).decode("utf-8"), end="")

@@ -59,6 +59,10 @@ def _accounting(experiments: list[dict]) -> dict:
         "evidence_gap_count": sum(
             row["evidence_status"] == "evidence_gap" for row in experiments
         ),
+        "failed_attempt_count": sum(
+            row["evidence_status"] == "failed_attempt_bundle"
+            for row in experiments
+        ),
         "last_experiment_id": experiments[-1]["experiment_id"],
         "role_counts": dict(sorted(Counter(row["role"] for row in experiments).items())),
         "substantive_change_class_counts": dict(
@@ -75,7 +79,7 @@ def _accounting(experiments: list[dict]) -> dict:
 def test_canonical_index_replays_all_retained_runs_and_conservative_count() -> None:
     value = verify_experiment_index(REPO_ROOT / INDEX_FILENAME, repo_root=REPO_ROOT)
     assert value["protocol"] == INDEX_PROTOCOL
-    assert len(value["experiments"]) >= 36
+    assert len(value["experiments"]) >= 38
     first_36 = value["experiments"][:36]
     assert [row["experiment_id"] for row in first_36] == [
         f"EXP-{ordinal:03d}" for ordinal in range(1, 37)
@@ -95,6 +99,15 @@ def test_canonical_index_replays_all_retained_runs_and_conservative_count() -> N
         "EXP-036",
     }
     assert all(row["evidence_status"] == "bound_run_bundle" for row in first_36)
+    exp037, exp038 = value["experiments"][36:38]
+    assert exp037["evidence_status"] == "failed_attempt_bundle"
+    assert exp037["count_eligible"] is False
+    assert exp037["decision"] == "refine"
+    assert exp038["evidence_status"] == "bound_run_bundle"
+    assert exp038["count_eligible"] is True
+    assert exp038["decision"] == "abandon"
+    assert value["accounting"]["count_eligible"] == 30
+    assert value["accounting"]["count_ineligible"] == 8
 
 
 def test_resealed_forged_accounting_is_rejected(tmp_path: Path) -> None:
@@ -120,7 +133,37 @@ def test_resealed_duplicate_run_path_is_rejected(tmp_path: Path) -> None:
     forged = copy.deepcopy(value)
     forged["experiments"][1]["run_path"] = forged["experiments"][0]["run_path"]
     path = _write(tmp_path / "index.json", _reseal(forged))
-    with pytest.raises(ProtocolViolation, match="canonical run location"):
+    with pytest.raises(ProtocolViolation, match="canonical location"):
+        verify_experiment_index(path, repo_root=REPO_ROOT)
+
+
+def test_failed_attempt_cannot_be_promoted_to_counting(tmp_path: Path) -> None:
+    value = verify_experiment_index(REPO_ROOT / INDEX_FILENAME, repo_root=REPO_ROOT)
+    forged = copy.deepcopy(value)
+    forged["experiments"][36]["count_eligible"] = True
+    forged["accounting"] = _accounting(forged["experiments"])
+    path = _write(tmp_path / "index.json", _reseal(forged))
+    with pytest.raises(ProtocolViolation, match="failed attempt cannot count"):
+        verify_experiment_index(path, repo_root=REPO_ROOT)
+
+
+def test_exp038_decision_artifact_digest_is_index_bound(tmp_path: Path) -> None:
+    value = verify_experiment_index(REPO_ROOT / INDEX_FILENAME, repo_root=REPO_ROOT)
+    forged = copy.deepcopy(value)
+    forged["experiments"][37]["decision_artifact"]["sha256"] = (
+        "sha256:" + "0" * 64
+    )
+    path = _write(tmp_path / "index.json", _reseal(forged))
+    with pytest.raises(ProtocolViolation, match="decision artifact digest mismatch"):
+        verify_experiment_index(path, repo_root=REPO_ROOT)
+
+
+def test_exp037_failure_member_digest_is_index_bound(tmp_path: Path) -> None:
+    value = verify_experiment_index(REPO_ROOT / INDEX_FILENAME, repo_root=REPO_ROOT)
+    forged = copy.deepcopy(value)
+    forged["experiments"][36]["digests"]["failure"] = "sha256:" + "0" * 64
+    path = _write(tmp_path / "index.json", _reseal(forged))
+    with pytest.raises(ProtocolViolation, match="failure digest mismatch"):
         verify_experiment_index(path, repo_root=REPO_ROOT)
 
 
@@ -138,6 +181,7 @@ def test_explicit_evidence_gap_does_not_invent_or_count_a_run(tmp_path: Path) ->
         "count_eligible": 0,
         "count_ineligible": 1,
         "evidence_gap_count": 1,
+        "failed_attempt_count": 0,
         "last_experiment_id": "EXP-001",
         "role_counts": {"unexecuted_record": 1},
         "substantive_change_class_counts": {"architecture": 1},

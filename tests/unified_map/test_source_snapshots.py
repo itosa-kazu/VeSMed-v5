@@ -18,17 +18,18 @@ ROOT = Path(__file__).resolve().parents[2]
 SNAPSHOT_ROOT = ROOT / "results/unified_map/source_snapshots"
 
 
-def test_archive_closes_run_source_bindings_through_exp036() -> None:
-    report = verify_source_snapshots(ROOT, through_experiment=36)
+def test_archive_closes_run_and_failed_source_bindings_through_exp038() -> None:
+    report = verify_source_snapshots(ROOT, through_experiment=38)
 
     assert report == {
-        "binding_count": 74,
+        "binding_count": 88,
+        "failed_attempt_count": 1,
         "index": str((SNAPSHOT_ROOT / "index.json").resolve()),
-        "object_count": 10,
+        "object_count": 16,
         "protocol": "ucm-source-snapshot-index/1",
-        "run_count": 36,
+        "run_count": 37,
         "status": "verified",
-        "through_experiment": 36,
+        "through_experiment": 38,
     }
 
     index = json.loads((SNAPSHOT_ROOT / "index.json").read_bytes())
