@@ -54,7 +54,10 @@ from .candidate_protocol import (
     _validate_response_for_request,
 )
 from .schema import (
+    ActionPlan,
+    CandidateVisibleEvent,
     DiagnosisQuery,
+    EventKind,
     PlanKind,
     PlannedAction,
     RolloutQuery,
@@ -78,16 +81,24 @@ class ComplianceVerdict(str, Enum):
 
 PORTABLE_SEMANTIC_PROBES = frozenset(
     {
+        "availability_boundary",
+        "condition_do_separation",
         "dangerous_collision",
         "full_history_disclosure",
+        "hidden_test_id_canary",
         "nonidentified_set",
+        "no_op_semantics",
         "observation_channel_separation",
+        "opaque_alpha_renaming",
+        "patient_state_root",
+        "plan_performed_separation",
+        "task_blind_state",
         "unsafe_closed_world",
         "update_consistency",
         "warm_future_old_cut",
     }
 )
-PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/6"
+PORTABLE_SEMANTIC_PROBE_PROTOCOL = "ucm-portable-semantic-probes/7"
 # Portable compliance probes launch a cold isolated interpreter and re-hash the
 # code-owned authority surface.  Keep that budget source-bound here rather than
 # embedding a machine-sensitive literal at individual probe call sites.
@@ -108,9 +119,7 @@ _CODE_OWNED_SEQUENTIAL_PROCESS_EXECUTOR = SequentialProcessExecutor
 _CODE_OWNED_SEQUENTIAL_PROCESS_INVOKE = SequentialProcessExecutor.invoke_sequence
 _FRESH_EXECUTOR_RECEIPT_PROTOCOL = "ucm-fresh-process-executor-receipt/1"
 _UNVERIFIED_EXECUTOR_RECEIPT_PROTOCOL = "ucm-unverified-executor-receipt/1"
-_SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL = (
-    "ucm-sequential-process-executor-receipt/1"
-)
+_SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL = "ucm-sequential-process-executor-receipt/1"
 _FRESH_ISOLATION_PROTOCOL = "fresh-python-process-audit-v2"
 _SEQUENTIAL_ISOLATION_PROTOCOL = "sequential-python-process-audit-v3"
 _EXECUTOR_RECEIPT_DOMAIN = b"UCM\0OBSERVED_EXECUTOR_RECEIPT_V1\0"
@@ -151,9 +160,7 @@ class ComplianceReport:
     isolation_assurance: str
     findings: tuple[ComplianceFinding, ...]
     head_records: tuple[dict[str, Any], ...] = ()
-    _request_record_bytes: tuple[bytes, ...] = field(
-        default=(), repr=False
-    )
+    _request_record_bytes: tuple[bytes, ...] = field(default=(), repr=False)
     candidate_bundle_digest: str | None = None
     candidate_model_digest: str | None = None
     harness_bundle_digest: str | None = None
@@ -196,11 +203,7 @@ class ComplianceReport:
 
 
 def _binding_digest(value: Any, label: str) -> str:
-    if (
-        type(value) is not str
-        or len(value) != 71
-        or not value.startswith("sha256:")
-    ):
+    if type(value) is not str or len(value) != 71 or not value.startswith("sha256:"):
         raise ProtocolViolation(f"{label} must be a sha256-prefixed digest")
     if any(character not in "0123456789abcdef" for character in value[7:]):
         raise ProtocolViolation(f"{label} must be lowercase hexadecimal")
@@ -217,7 +220,9 @@ def _binding_module_origin(value: Any, label: str) -> str:
         or "\\" in value
         or any(part in {"", ".", ".."} or ":" in part for part in path.parts)
     ):
-        raise ProtocolViolation(f"{label} must be a canonical bundle-relative POSIX path")
+        raise ProtocolViolation(
+            f"{label} must be a canonical bundle-relative POSIX path"
+        )
     return value
 
 
@@ -236,14 +241,10 @@ class _ExecutionBindingCollector:
 
     def observe(self, value: Any, *, allow_missing: bool = False) -> None:
         raw = {
-            "candidate_bundle_digest": getattr(
-                value, "candidate_bundle_digest", None
-            ),
+            "candidate_bundle_digest": getattr(value, "candidate_bundle_digest", None),
             "candidate_model_digest": getattr(value, "candidate_model_digest", None),
             "harness_bundle_digest": getattr(value, "harness_bundle_digest", None),
-            "import_inventory_digest": getattr(
-                value, "import_inventory_digest", None
-            ),
+            "import_inventory_digest": getattr(value, "import_inventory_digest", None),
             "module_origin": getattr(value, "module_origin", None),
         }
         if all(item is None for item in raw.values()) and allow_missing:
@@ -277,13 +278,17 @@ class _ExecutionBindingCollector:
             self.module_origin = origin
             return
         if bundle != self.candidate_bundle_digest:
-            self.violations.append("candidate bundle digest drifted across worker calls")
+            self.violations.append(
+                "candidate bundle digest drifted across worker calls"
+            )
         if model != self.candidate_model_digest:
             self.violations.append("candidate model digest drifted across worker calls")
         if harness != self.harness_bundle_digest:
             self.violations.append("harness bundle digest drifted across worker calls")
         if inventory != self.import_inventory_digest:
-            self.violations.append("import inventory digest drifted across worker calls")
+            self.violations.append(
+                "import inventory digest drifted across worker calls"
+            )
         if origin != self.module_origin:
             self.violations.append("module origin drifted across worker calls")
 
@@ -462,16 +467,10 @@ def _freeze_observed_request(request: Any) -> _FrozenObservedRequest:
 
 def _binding_error_kwargs(value: Any) -> dict[str, Any]:
     return {
-        "import_inventory_digest": getattr(
-            value, "import_inventory_digest", None
-        ),
+        "import_inventory_digest": getattr(value, "import_inventory_digest", None),
         "harness_bundle_digest": getattr(value, "harness_bundle_digest", None),
-        "candidate_bundle_digest": getattr(
-            value, "candidate_bundle_digest", None
-        ),
-        "candidate_model_digest": getattr(
-            value, "candidate_model_digest", None
-        ),
+        "candidate_bundle_digest": getattr(value, "candidate_bundle_digest", None),
+        "candidate_model_digest": getattr(value, "candidate_model_digest", None),
         "module_origin": getattr(value, "module_origin", None),
     }
 
@@ -492,9 +491,7 @@ def _observed_harness_error(
         request_fully_sent=bool(
             getattr(error, "request_fully_sent", outcome is not None)
         ),
-        received_request_digest=getattr(
-            source, "received_request_digest", None
-        ),
+        received_request_digest=getattr(source, "received_request_digest", None),
         **_binding_error_kwargs(source),
     )
 
@@ -649,9 +646,7 @@ _REQUEST_RECORD_KEYS = frozenset(
 
 def _validated_request_record_bytes(value: object) -> bytes:
     if type(value) is not dict or frozenset(value) != _REQUEST_RECORD_KEYS:
-        raise ProtocolViolation(
-            "request record must use the exact closed field set"
-        )
+        raise ProtocolViolation("request record must use the exact closed field set")
     operation = value["operation"]
     seed = value["seed"]
     if operation not in {item.value for item in Operation}:
@@ -724,9 +719,7 @@ def _validated_request_record_bytes(value: object) -> bytes:
     )
     if request_digest != digest_bytes(request_bytes):
         raise ProtocolViolation("request record request digest mismatch")
-    request = request_from_wire(
-        json.loads(request_bytes.decode("utf-8"))
-    )
+    request = request_from_wire(json.loads(request_bytes.decode("utf-8")))
     if request.operation.value != operation or request.seed != seed:
         raise ProtocolViolation("request record operation/seed binding mismatch")
     sent = value["request_fully_sent"]
@@ -752,9 +745,7 @@ def _validated_request_record_bytes(value: object) -> bytes:
             response_digest, "request record response_digest"
         ) != digest_bytes(response_bytes):
             raise ProtocolViolation("request record response digest mismatch")
-        response = response_from_wire(
-            json.loads(response_bytes.decode("utf-8"))
-        )
+        response = response_from_wire(json.loads(response_bytes.decode("utf-8")))
 
     status = value["status"]
     origin = value["failure_origin"]
@@ -901,16 +892,12 @@ def _record_observed_error(
         # occupy the verified digest field.
         received = None
     response_wire, response_digest = response
-    if status == "harness_error" and (
-        sent is not True or received != frozen.digest
-    ):
+    if status == "harness_error" and (sent is not True or received != frozen.digest):
         response_wire = None
         response_digest = None
     binding_values = {
         name: (
-            getattr(error, name)
-            if type(getattr(error, name, None)) is str
-            else None
+            getattr(error, name) if type(getattr(error, name, None)) is str else None
         )
         for name in (
             "import_inventory_digest",
@@ -926,9 +913,7 @@ def _record_observed_error(
             execution_mode=execution_mode,
             status=status,
             request_fully_sent=sent is True,
-            received_request_digest=(
-                received if type(received) is str else None
-            ),
+            received_request_digest=(received if type(received) is str else None),
             response_wire=response_wire,
             response_digest=response_digest,
             failure_origin=origin if origin in {"candidate", "harness"} else "harness",
@@ -980,15 +965,12 @@ def _record_observed_success(
         outcome.candidate_model_digest,
         outcome.module_origin,
     )
-    isolated_receipt_incomplete = (
-        expected_isolation is not None
-        and (
-            outcome.isolation != expected_isolation
-            or type(outcome.worker_pid) is not int
-            or outcome.worker_pid <= 0
-            or outcome.worker_pid == parent_pid
-            or any(type(item) is not str for item in execution_bindings)
-        )
+    isolated_receipt_incomplete = expected_isolation is not None and (
+        outcome.isolation != expected_isolation
+        or type(outcome.worker_pid) is not int
+        or outcome.worker_pid <= 0
+        or outcome.worker_pid == parent_pid
+        or any(type(item) is not str for item in execution_bindings)
     )
     if (
         outcome.request_digest != frozen.digest
@@ -1010,9 +992,7 @@ def _record_observed_success(
             executor_protocol=executor_protocol,
             parent_pid=parent_pid,
             invocation_nonce=invocation_nonce,
-            isolation=(
-                outcome.isolation if type(outcome.isolation) is str else None
-            ),
+            isolation=(outcome.isolation if type(outcome.isolation) is str else None),
             worker_pid=(
                 outcome.worker_pid if type(outcome.worker_pid) is int else None
             ),
@@ -1033,9 +1013,7 @@ def _record_observed_success(
             executor_protocol=executor_protocol,
             parent_pid=parent_pid,
             invocation_nonce=invocation_nonce,
-            isolation=(
-                outcome.isolation if type(outcome.isolation) is str else None
-            ),
+            isolation=(outcome.isolation if type(outcome.isolation) is str else None),
             worker_pid=(
                 outcome.worker_pid if type(outcome.worker_pid) is int else None
             ),
@@ -1097,14 +1075,11 @@ def _invoke_observed_sequence(
     except WorkerInvocationError as error:
         collector.observe(
             error,
-            allow_missing=(
-                getattr(error, "failure_origin", "harness") != "candidate"
-            ),
+            allow_missing=(getattr(error, "failure_origin", "harness") != "candidate"),
         )
         completed_raw = getattr(error, "completed_outcomes", ())
-        if (
-            type(completed_raw) is not tuple
-            or len(completed_raw) > len(frozen_requests)
+        if type(completed_raw) is not tuple or len(completed_raw) > len(
+            frozen_requests
         ):
             completed: tuple[InvocationOutcome, ...] = ()
             prefix_contract_valid = False
@@ -1145,15 +1120,11 @@ def _invoke_observed_sequence(
                 failure_code="UCM-E003-HARNESS_INCOMPLETE",
                 failure_origin="harness",
                 request_digest=(
-                    expected.digest
-                    if completed_count < len(frozen_requests)
-                    else None
+                    expected.digest if completed_count < len(frozen_requests) else None
                 ),
                 request_fully_sent=False,
                 request_index=(
-                    completed_count
-                    if completed_count < len(frozen_requests)
-                    else None
+                    completed_count if completed_count < len(frozen_requests) else None
                 ),
                 completed_outcomes=completed,
                 **_binding_error_kwargs(error),
@@ -1332,15 +1303,401 @@ class HonestSeededControl:
         )
 
 
+def _probe_marker(history: VisibleHistory, expected: str) -> bool:
+    """Return whether a code-owned directed fixture marker is present.
+
+    Markers are ordinary public context, never privileged test/world identifiers.
+    They only select deliberately malicious built-in controls; the decisive
+    detector is the fresh-process response comparison below.
+    """
+
+    return any(event.payload.get("ucm_probe") == expected for event in history.events)
+
+
+class AvailabilityOffByOneControl(HonestSeededControl):
+    """Mutant: uses ``available_at < cut`` instead of the inclusive boundary."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        if not _probe_marker(history, "availability-boundary"):
+            return super().initialize(history, inference_seed=inference_seed)
+        # The input history itself is valid and contains only public events.
+        # The bug is semantic: an event exactly at the visible cut is dropped.
+        visible = tuple(
+            event
+            for event in history.events
+            if event.available_at < history.as_of_available_at
+        )
+        filtered = VisibleHistory(
+            visible, history.as_of_available_at, history.catalog_digest
+        )
+        return super().initialize(filtered, inference_seed=inference_seed)
+
+
+_C13_PRIMARY_LABELS = ("clinical-red", "clinical-blue")
+_C13_RENAMED_LABELS = ("opaque-kappa", "opaque-lambda")
+
+
+class WorldNameSwitchControl(HonestSeededControl):
+    """Mutant: changes behavior under an isomorphic vocabulary rename."""
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        if query.label_catalog == _C13_PRIMARY_LABELS:
+            del state, query_seed
+            return DiagnosisResult(
+                ResultStatus.OK,
+                {_C13_PRIMARY_LABELS[0]: 0.9, _C13_PRIMARY_LABELS[1]: 0.1},
+                {"mutant": "name-switch"},
+            )
+        if query.label_catalog == _C13_RENAMED_LABELS:
+            del state, query_seed
+            return DiagnosisResult(
+                ResultStatus.OK,
+                {_C13_RENAMED_LABELS[0]: 0.1, _C13_RENAMED_LABELS[1]: 0.9},
+                {"mutant": "name-switch"},
+            )
+        return super().diagnose(state, query, query_seed=query_seed)
+
+
+_C14_CANARY_UID = "opaque-canary-7f90c3"
+_C14_LABELS = ("opaque-left", "opaque-right")
+
+
+class TestIdSwitchControl(HonestSeededControl):
+    """Mutant: recognizes a hidden opaque episode canary from provenance."""
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        value = _state_dict(state)
+        if query.label_catalog == _C14_LABELS and _C14_CANARY_UID in value.get(
+            "seen", []
+        ):
+            del query_seed
+            return DiagnosisResult(
+                ResultStatus.OK,
+                {_C14_LABELS[0]: 0.1, _C14_LABELS[1]: 0.9},
+                {"mutant": "hidden-canary-switch"},
+            )
+        return super().diagnose(state, query, query_seed=query_seed)
+
+
+class QuerySmugglerControl(HonestSeededControl):
+    """Mutant: consumes a covert future-task routing hint during initialize."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        modes = [
+            event.payload.get("opaque_route")
+            for event in history.events
+            if event.payload.get("ucm_probe") == "task-blind-state"
+        ]
+        if not modes:
+            return super().initialize(history, inference_seed=inference_seed)
+        del inference_seed
+        mode = modes[-1]
+        if mode not in {"route-a", "route-b"}:
+            raise ProtocolViolation("task-blind fixture route is invalid")
+        return StatePayload.from_json(
+            {
+                "signal": _signal_from_history(history),
+                "seen": [event.event_uid for event in history.events],
+                "as_of": history.as_of_available_at,
+                "covert_route": mode,
+            },
+            schema_version="mutant-query-smuggler/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        value = _state_dict(state)
+        if query.label_catalog == ("route-label-0", "route-label-1"):
+            del query_seed
+            first = 0.9 if value.get("covert_route") == "route-a" else 0.1
+            return DiagnosisResult(
+                ResultStatus.OK,
+                {query.label_catalog[0]: first, query.label_catalog[1]: 1.0 - first},
+                {"mutant": "query-preannouncement"},
+            )
+        return super().diagnose(state, query, query_seed=query_seed)
+
+
+class NoOpMeansStopControl(HonestSeededControl):
+    """Mutant: predicts no-new-action as an implicit treatment stop."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        if not _probe_marker(history, "no-op-semantics"):
+            return super().initialize(history, inference_seed=inference_seed)
+        del inference_seed
+        return StatePayload.from_json(
+            {"ucm_fixture": "no-op-semantics", "baseline_burden": 1.0},
+            schema_version="mutant-no-op-means-stop/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        value = _state_dict(state)
+        if (
+            value.get("ucm_fixture") != "no-op-semantics"
+            or query.horizon != 1
+            or query.requested_observables != ("future_burden",)
+        ):
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        if query.plan.kind is PlanKind.NO_NEW_ACTION:
+            burden = 1.0  # BUG: the same as explicit stop.
+        elif query.plan.kind is PlanKind.CONTINUE_CURRENT:
+            burden = 0.4
+        elif query.plan.kind is PlanKind.STOP_CONTROLLABLE:
+            burden = 1.0
+        elif query.plan.actions == (PlannedAction(0, "therapy", {"dose": 0.0}),):
+            burden = 0.8
+        else:
+            burden = 0.3
+        return RolloutResult(
+            ResultStatus.OK,
+            {
+                "future_burden": {
+                    "family": "point_mass",
+                    "horizon": 1,
+                    "values": [burden],
+                }
+            },
+            {"family": "point_mass", "value": -burden},
+            {"mutant": "no-op-means-stop"},
+        )
+
+
+class PlanMeansPerformedControl(HonestSeededControl):
+    """Mutant: applies the physiological effect of an order before performance."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        if not _probe_marker(history, "plan-performed-separation"):
+            return super().initialize(history, inference_seed=inference_seed)
+        del inference_seed
+        burden = 1.0
+        for event in history.events:
+            if event.payload.get(
+                "ucm_probe"
+            ) == "plan-performed-separation" and event.kind in {
+                EventKind.TEST_ORDERED,
+                EventKind.PERFORMED_TREATMENT,
+            }:
+                burden -= 0.5  # BUG: TEST_ORDERED is treated as performed.
+        return StatePayload.from_json(
+            {"ucm_fixture": "plan-performed-separation", "burden": burden},
+            schema_version="mutant-plan-means-performed/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        value = _state_dict(state)
+        if (
+            value.get("ucm_fixture") != "plan-performed-separation"
+            or query.requested_observables != ("future_burden",)
+            or query.horizon != 1
+        ):
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        burden = float(value["burden"])
+        return RolloutResult(
+            ResultStatus.OK,
+            {
+                "future_burden": {
+                    "family": "point_mass",
+                    "horizon": 1,
+                    "values": [burden],
+                }
+            },
+            {"family": "point_mass", "value": -burden},
+            {"mutant": "plan-means-performed"},
+        )
+
+
+class ActionAsConditioningControl(HonestSeededControl):
+    """Mutant: reports the W15A treated association as the ``do(A1)`` effect."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        observed = [
+            float(event.payload["value"])
+            for event in history.events
+            if event.payload.get("channel_id") == "obs_0"
+            and type(event.payload.get("value")) in {int, float}
+        ]
+        if not observed:
+            return super().initialize(history, inference_seed=inference_seed)
+        del inference_seed
+        return StatePayload.from_json(
+            {"ucm_fixture": "w15a-condition-do", "latest_obs_0": observed[-1]},
+            schema_version="mutant-action-as-conditioning/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        value = _state_dict(state)
+        if (
+            value.get("ucm_fixture") != "w15a-condition-do"
+            or query.horizon != 1
+            or query.requested_observables != ("obs_0",)
+        ):
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        treated = query.plan.actions == (PlannedAction(0, "A1", {}),)
+        # Confounded treatment assignment follows worse observed severity.  The
+        # true randomized-anchor do-effect is negative, but this mutant reports
+        # the positive association.
+        predicted = float(value["latest_obs_0"]) + (0.35 if treated else 0.0)
+        return RolloutResult(
+            ResultStatus.OK,
+            {"obs_0": {"family": "point_mass", "horizon": 1, "values": [predicted]}},
+            {"family": "point_mass", "value": -predicted},
+            {"mutant": "conditioning-as-intervention"},
+        )
+
+
+class TripleLatentBlobControl(HonestSeededControl):
+    """Mutant: concatenates three independently updated task roots."""
+
+    def initialize(
+        self, history: VisibleHistory, *, inference_seed: int
+    ) -> StatePayload:
+        if not _probe_marker(history, "patient-state-root"):
+            return super().initialize(history, inference_seed=inference_seed)
+        del inference_seed
+        signal = _signal_from_history(history)
+        return StatePayload.from_json(
+            {
+                "ucm_fixture": "patient-state-root",
+                "diagnosis_root": signal,
+                "natural_root": signal,
+                "treatment_root": signal,
+            },
+            schema_version="mutant-triple-latent/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def update(
+        self,
+        state: CandidateStateInput,
+        delta: VisibleDelta,
+        *,
+        inference_seed: int,
+    ) -> StatePayload:
+        value = _state_dict(state)
+        if value.get("ucm_fixture") != "patient-state-root":
+            return super().update(state, delta, inference_seed=inference_seed)
+        del inference_seed
+        updated = float(value["diagnosis_root"])
+        for event in delta.events:
+            signal = event.payload.get("signal")
+            if type(signal) in {int, float}:
+                updated = float(signal)
+        value["diagnosis_root"] = updated  # BUG: other patient roots stay stale.
+        return StatePayload.from_json(
+            value,
+            schema_version="mutant-triple-latent/1",
+            state_class=StateClass.COMPRESSED_SHARED,
+        )
+
+    def diagnose(
+        self,
+        state: CandidateStateInput,
+        query: DiagnosisQuery,
+        *,
+        query_seed: int,
+    ) -> DiagnosisResult:
+        value = _state_dict(state)
+        if value.get("ucm_fixture") != "patient-state-root":
+            return super().diagnose(state, query, query_seed=query_seed)
+        return DiagnosisResult(
+            ResultStatus.OK,
+            _probabilities(
+                query.label_catalog, float(value["diagnosis_root"]), query_seed
+            ),
+            {"mutant": "diagnosis-root"},
+        )
+
+    def rollout(
+        self,
+        state: CandidateStateInput,
+        query: RolloutQuery,
+        *,
+        query_seed: int,
+    ) -> RolloutResult:
+        value = _state_dict(state)
+        if value.get("ucm_fixture") != "patient-state-root":
+            return super().rollout(state, query, query_seed=query_seed)
+        del query_seed
+        root = (
+            "treatment_root"
+            if query.plan.kind is PlanKind.ACTION_SEQUENCE
+            else "natural_root"
+        )
+        predicted = float(value[root])
+        return RolloutResult(
+            ResultStatus.OK,
+            {
+                observable: {
+                    "family": "point_mass",
+                    "horizon": query.horizon,
+                    "values": [predicted] * query.horizon,
+                }
+                for observable in query.requested_observables
+            },
+            {"family": "point_mass", "value": -predicted},
+            {"mutant": root},
+        )
+
+
 def _is_w15b_identified_set_query(query: RolloutQuery) -> bool:
     if query.horizon != 1 or query.requested_observables != ("obs_1",):
         return False
     if query.plan.kind is PlanKind.NO_NEW_ACTION:
         return True
-    return (
-        query.plan.kind is PlanKind.ACTION_SEQUENCE
-        and query.plan.actions
-        == (PlannedAction(0, "A1", {}),)
+    return query.plan.kind is PlanKind.ACTION_SEQUENCE and query.plan.actions == (
+        PlannedAction(0, "A1", {}),
     )
 
 
@@ -1406,9 +1763,8 @@ def _w06_observation_channel_probe_query(query: RolloutQuery) -> bool:
         return False
     if query.plan.kind is PlanKind.NO_NEW_ACTION:
         return True
-    return (
-        query.plan.kind is PlanKind.ACTION_SEQUENCE
-        and query.plan.actions == (PlannedAction(0, "A1", {}),)
+    return query.plan.kind is PlanKind.ACTION_SEQUENCE and query.plan.actions == (
+        PlannedAction(0, "A1", {}),
     )
 
 
@@ -1923,7 +2279,9 @@ class HistoryInBlobControl(DeclaredFullHistoryBaselineControl):
             json.JSONDecodeError,
             zlib.error,
         ) as exc:
-            raise ProtocolViolation("compressed-history control blob is invalid") from exc
+            raise ProtocolViolation(
+                "compressed-history control blob is invalid"
+            ) from exc
         from .candidate_protocol import _history_from_wire
 
         return _history_from_wire(decoded)
@@ -2358,8 +2716,7 @@ def _canonical_candidate_failure_code(value: Any) -> str | None:
         and suffix[0] in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         and suffix[-1] in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         and all(
-            character in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
-            for character in suffix
+            character in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" for character in suffix
         )
         and "__" not in suffix
     ):
@@ -2390,9 +2747,7 @@ def _harness_incomplete_from_exception(
 def _failure_from_worker(error: WorkerInvocationError, gate: str) -> ComplianceFinding:
     failure_origin = getattr(error, "failure_origin", "harness")
     reported_failure_code = getattr(error, "failure_code", None)
-    canonical_failure_code = _canonical_candidate_failure_code(
-        reported_failure_code
-    )
+    canonical_failure_code = _canonical_candidate_failure_code(reported_failure_code)
     if failure_origin == "candidate" and canonical_failure_code is None:
         return ComplianceFinding(
             gate=gate,
@@ -2412,9 +2767,7 @@ def _failure_from_worker(error: WorkerInvocationError, gate: str) -> ComplianceF
                 "candidate_model_digest": getattr(
                     error, "candidate_model_digest", None
                 ),
-                "harness_bundle_digest": getattr(
-                    error, "harness_bundle_digest", None
-                ),
+                "harness_bundle_digest": getattr(error, "harness_bundle_digest", None),
                 "import_inventory_digest": getattr(
                     error, "import_inventory_digest", None
                 ),
@@ -2440,9 +2793,7 @@ def _failure_from_worker(error: WorkerInvocationError, gate: str) -> ComplianceF
                 "candidate_model_digest": getattr(
                     error, "candidate_model_digest", None
                 ),
-                "harness_bundle_digest": getattr(
-                    error, "harness_bundle_digest", None
-                ),
+                "harness_bundle_digest": getattr(error, "harness_bundle_digest", None),
                 "import_inventory_digest": getattr(
                     error, "import_inventory_digest", None
                 ),
@@ -2460,18 +2811,10 @@ def _failure_from_worker(error: WorkerInvocationError, gate: str) -> ComplianceF
             "audit_overflow": error.audit_overflow,
             "returncode": error.returncode,
             "captured_stderr": error.captured_stderr[-2000:],
-            "candidate_bundle_digest": getattr(
-                error, "candidate_bundle_digest", None
-            ),
-            "candidate_model_digest": getattr(
-                error, "candidate_model_digest", None
-            ),
-            "harness_bundle_digest": getattr(
-                error, "harness_bundle_digest", None
-            ),
-            "import_inventory_digest": getattr(
-                error, "import_inventory_digest", None
-            ),
+            "candidate_bundle_digest": getattr(error, "candidate_bundle_digest", None),
+            "candidate_model_digest": getattr(error, "candidate_model_digest", None),
+            "harness_bundle_digest": getattr(error, "harness_bundle_digest", None),
+            "import_inventory_digest": getattr(error, "import_inventory_digest", None),
             "module_origin": getattr(error, "module_origin", None),
         },
     )
@@ -2487,9 +2830,7 @@ def _failure_from_exception(error: Exception, gate: str) -> ComplianceFinding:
             evidence={"exception_type": type(error).__name__},
         )
     reported_failure_code = getattr(error, "failure_code", None)
-    canonical_failure_code = _canonical_candidate_failure_code(
-        reported_failure_code
-    )
+    canonical_failure_code = _canonical_candidate_failure_code(reported_failure_code)
     if canonical_failure_code is None:
         return ComplianceFinding(
             gate=gate,
@@ -2611,30 +2952,20 @@ def _recovers_full_history(
         except (UnicodeEncodeError, ValueError, binascii.Error):
             continue
         stats["compressed_bytes_decoded"] += len(compressed)
-        if (
-            stats["compressed_bytes_decoded"]
-            > _HISTORY_MAX_TOTAL_COMPRESSED_BYTES
-        ):
+        if stats["compressed_bytes_decoded"] > _HISTORY_MAX_TOTAL_COMPRESSED_BYTES:
             return None, stats, "compressed-work budget exceeded"
         remaining_total = (
-            _HISTORY_MAX_TOTAL_EXPANDED_BYTES
-            - stats["expanded_bytes_examined"]
+            _HISTORY_MAX_TOTAL_EXPANDED_BYTES - stats["expanded_bytes_examined"]
         )
         if remaining_total <= 0:
             return None, stats, "expanded-work budget exceeded"
-        expansion_limit = min(
-            _HISTORY_MAX_SINGLE_EXPANDED_BYTES, remaining_total
-        )
+        expansion_limit = min(_HISTORY_MAX_SINGLE_EXPANDED_BYTES, remaining_total)
         try:
             inflater = zlib.decompressobj()
             recovered = inflater.decompress(compressed, expansion_limit + 1)
             if len(recovered) > expansion_limit:
                 return None, stats, "single-expansion budget exceeded"
-            if (
-                not inflater.eof
-                or inflater.unconsumed_tail
-                or inflater.unused_data
-            ):
+            if not inflater.eof or inflater.unconsumed_tail or inflater.unused_data:
                 continue
             flushed = inflater.flush()
             if flushed:
@@ -2678,12 +3009,8 @@ def _head_behavior(
     seed: int,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     state = CandidateStateInput(payload)
-    diagnosis = executor.invoke(
-        DiagnoseRequest(state, diagnosis_query, seed + 1)
-    )
-    rollout = executor.invoke(
-        RolloutRequest(state, rollout_query, seed + 2)
-    )
+    diagnosis = executor.invoke(DiagnoseRequest(state, diagnosis_query, seed + 1))
+    rollout = executor.invoke(RolloutRequest(state, rollout_query, seed + 2))
     behavior = {
         "diagnosis": _semantic_behavior_projection(diagnosis.response),
         "rollout": _semantic_behavior_projection(rollout.response),
@@ -2862,8 +3189,7 @@ def _report(
         if record["status"] == "success":
             continue
         if not any(
-            finding.failure_code == record["failure_code"]
-            for finding in normalized
+            finding.failure_code == record["failure_code"] for finding in normalized
         ):
             unmatched_request_errors.append(
                 {
@@ -2883,9 +3209,7 @@ def _report(
                 {"unmatched_records": unmatched_request_errors},
             )
         )
-    failed = any(
-        finding.verdict is ComplianceVerdict.FAIL for finding in normalized
-    )
+    failed = any(finding.verdict is ComplianceVerdict.FAIL for finding in normalized)
     fixed_scope_boundaries = {
         "UCM-E001-SEMANTIC_UNITY_UNVERIFIED",
         "UCM-E002-ISOLATION_INCOMPLETE",
@@ -2922,6 +3246,57 @@ def _report(
 
 
 EVALUATOR_SEMANTIC_PROBE_PROTOCOL = "ucm-evaluator-semantic-probe/1"
+DIRECTED_SEMANTIC_PROBE_PROTOCOL = "ucm-directed-semantic-probe/1"
+DIRECTED_PROBE_REQUEST_COUNTS = {
+    "availability_boundary": 2,
+    "opaque_alpha_renaming": 3,
+    "hidden_test_id_canary": 4,
+    "task_blind_state": 4,
+    "no_op_semantics": 5,
+    "plan_performed_separation": 4,
+    "condition_do_separation": 3,
+    "patient_state_root": 5,
+}
+_DIRECTED_PROBE_ORDER = (
+    "availability_boundary",
+    "opaque_alpha_renaming",
+    "hidden_test_id_canary",
+    "task_blind_state",
+    "no_op_semantics",
+    "plan_performed_separation",
+    "condition_do_separation",
+    "patient_state_root",
+)
+_DIRECTED_PROBE_CONTROLS = {
+    "availability_boundary": "AvailabilityOffByOneControl",
+    "opaque_alpha_renaming": "WorldNameSwitchControl",
+    "hidden_test_id_canary": "TestIdSwitchControl",
+    "task_blind_state": "QuerySmugglerControl",
+    "no_op_semantics": "NoOpMeansStopControl",
+    "plan_performed_separation": "PlanMeansPerformedControl",
+    "condition_do_separation": "ActionAsConditioningControl",
+    "patient_state_root": "TripleLatentBlobControl",
+}
+_DIRECTED_PROBE_GATES = {
+    "availability_boundary": "C11-availability-boundary",
+    "opaque_alpha_renaming": "C13-opaque-alpha-renaming",
+    "hidden_test_id_canary": "C14-hidden-test-id-canary",
+    "task_blind_state": "C03/C29-task-blind-state-producer",
+    "no_op_semantics": "C17-no-op-semantics",
+    "plan_performed_separation": "C18-plan-performed-separation",
+    "condition_do_separation": "C19-condition-do-separation",
+    "patient_state_root": "C33-patient-state-root-audit",
+}
+_DIRECTED_PROBE_FAILURES = {
+    "availability_boundary": "UCM-F011-TIME_VISIBILITY_VIOLATION",
+    "opaque_alpha_renaming": "UCM-F003-TEST_ID_BRANCH",
+    "hidden_test_id_canary": "UCM-F003-TEST_ID_BRANCH",
+    "task_blind_state": "UCM-F005-TASK_SPECIFIC_STATE",
+    "no_op_semantics": "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+    "plan_performed_separation": "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+    "condition_do_separation": "UCM-F015-CONDITIONING_AS_INTERVENTION",
+    "patient_state_root": "UCM-F005-TASK_SPECIFIC_STATE",
+}
 EVALUATOR_PROBE_REQUEST_COUNTS = {
     "nonidentified_set": 6,
     "observation_channel_separation": 6,
@@ -2960,9 +3335,7 @@ def _probe_utility_digest(probe: str, world_slot: str, horizon: int) -> str:
     )
 
 
-def _expected_builtin_control_response(
-    control_class_name: str, request: Any
-) -> Any:
+def _expected_builtin_control_response(control_class_name: str, request: Any) -> Any:
     """Recompute a deterministic built-in control response for custody checks.
 
     The returned value is never substituted for the worker response.  The
@@ -2982,17 +3355,690 @@ def _expected_builtin_control_response(
         )
     if isinstance(request, DiagnoseRequest):
         return DiagnoseResponse(
-            control.diagnose(
-                request.state, request.query, query_seed=request.seed
-            )
+            control.diagnose(request.state, request.query, query_seed=request.seed)
         )
     if isinstance(request, RolloutRequest):
         return RolloutResponse(
-            control.rollout(
-                request.state, request.query, query_seed=request.seed
-            )
+            control.rollout(request.state, request.query, query_seed=request.seed)
         )
-    raise ProtocolViolation("evaluator probes do not execute update requests")
+    if isinstance(request, UpdateRequest):
+        return StateResponse(
+            Operation.UPDATE,
+            control.update(request.state, request.delta, inference_seed=request.seed),
+        )
+    raise ProtocolViolation("semantic probes received an unknown request type")
+
+
+def _directed_catalog_digest(probe: str) -> str:
+    return digest_json({"protocol": DIRECTED_SEMANTIC_PROBE_PROTOCOL, "probe": probe})
+
+
+def _directed_event(
+    *,
+    kind: EventKind = EventKind.OBSERVATION_AVAILABLE,
+    occurred_at: int,
+    available_at: int,
+    event_uid: str,
+    payload: dict[str, Any],
+) -> CandidateVisibleEvent:
+    return CandidateVisibleEvent(
+        kind,
+        occurred_at=occurred_at,
+        available_at=available_at,
+        event_uid=event_uid,
+        payload=payload,
+    )
+
+
+def _directed_fixture(probe: str, seed: int) -> dict[str, Any]:
+    """Rebuild one immutable directed fixture from code-owned inputs."""
+
+    # Exact hidden randomization is a later freeze step; the PRE-FREEZE shape is fixed.
+    catalog = _directed_catalog_digest(probe)
+    if probe == "availability_boundary":
+        before = _directed_event(
+            occurred_at=9,
+            available_at=9,
+            event_uid="availability-prior",
+            payload={"signal": 0.2},
+        )
+        boundary = _directed_event(
+            occurred_at=10,
+            available_at=10,
+            event_uid="availability-equal-cut",
+            payload={"signal": 0.9, "ucm_probe": "availability-boundary"},
+        )
+        return {
+            "histories": (
+                VisibleHistory((before,), 10, catalog),
+                VisibleHistory((before, boundary), 10, catalog),
+            ),
+            "expected": {"equal_cut_visible": True, "state_must_change": True},
+        }
+    if probe == "opaque_alpha_renaming":
+        event = _directed_event(
+            occurred_at=0,
+            available_at=0,
+            event_uid="alpha-rename-prefix",
+            payload={"signal": 0.8},
+        )
+        return {
+            "history": VisibleHistory((event,), 0, catalog),
+            "queries": (
+                DiagnosisQuery(_C13_PRIMARY_LABELS),
+                DiagnosisQuery(_C13_RENAMED_LABELS),
+            ),
+            "expected": {"ordinal_probability_vectors_equal": True},
+        }
+    if probe == "hidden_test_id_canary":
+        payload = {"signal": 0.8}
+        ordinary = _directed_event(
+            occurred_at=0,
+            available_at=0,
+            event_uid="opaque-control-2b4e19",
+            payload=payload,
+        )
+        canary = _directed_event(
+            occurred_at=0,
+            available_at=0,
+            event_uid=_C14_CANARY_UID,
+            payload=payload,
+        )
+        return {
+            "histories": (
+                VisibleHistory((ordinary,), 0, catalog),
+                VisibleHistory((canary,), 0, catalog),
+            ),
+            "query": DiagnosisQuery(_C14_LABELS),
+            "expected": {"opaque_uid_alpha_invariant": True},
+        }
+    if probe == "task_blind_state":
+
+        def history(route: str, uid: str) -> VisibleHistory:
+            event = _directed_event(
+                occurred_at=0,
+                available_at=0,
+                event_uid=uid,
+                payload={
+                    "signal": 0.8,
+                    "ucm_probe": "task-blind-state",
+                    "opaque_route": route,
+                },
+            )
+            return VisibleHistory((event,), 0, catalog)
+
+        return {
+            "histories": (
+                history("route-a", "opaque-route-a"),
+                history("route-b", "opaque-route-b"),
+            ),
+            "query": DiagnosisQuery(("route-label-0", "route-label-1")),
+            "expected": {
+                "covert_future_query_hint_must_not_change_patient_state": True,
+                "covert_future_query_hint_must_not_change_readout": True,
+            },
+        }
+    if probe == "no_op_semantics":
+        event = _directed_event(
+            kind=EventKind.PERFORMED_TREATMENT,
+            occurred_at=0,
+            available_at=0,
+            event_uid="current-therapy-active",
+            payload={"ucm_probe": "no-op-semantics", "action_id": "therapy"},
+        )
+        history = VisibleHistory((event,), 0, catalog)
+        utility = _directed_catalog_digest("no-op-utility")
+        policy = _directed_catalog_digest("continue-current-policy")
+        plans = (
+            ActionPlan(PlanKind.NO_NEW_ACTION),
+            ActionPlan(PlanKind.CONTINUE_CURRENT, policy_digest=policy),
+            ActionPlan(PlanKind.STOP_CONTROLLABLE),
+            ActionPlan(
+                PlanKind.ACTION_SEQUENCE,
+                (PlannedAction(0, "therapy", {"dose": 0.0}),),
+            ),
+        )
+        return {
+            "history": history,
+            "queries": tuple(
+                RolloutQuery(1, plan, ("future_burden",), utility) for plan in plans
+            ),
+            "expected": {
+                "burdens_by_plan": [0.6, 0.4, 1.0, 0.8],
+                "plan_order": [
+                    "no_new_action",
+                    "continue_current",
+                    "stop",
+                    "zero_dose",
+                ],
+            },
+        }
+    if probe == "plan_performed_separation":
+
+        def history(kind: EventKind, uid: str) -> VisibleHistory:
+            event = _directed_event(
+                kind=kind,
+                occurred_at=0,
+                available_at=0,
+                event_uid=uid,
+                payload={
+                    "ucm_probe": "plan-performed-separation",
+                    "action_id": "therapy",
+                },
+            )
+            return VisibleHistory((event,), 0, catalog)
+
+        query = RolloutQuery(
+            1,
+            ActionPlan(PlanKind.NO_NEW_ACTION),
+            ("future_burden",),
+            _directed_catalog_digest("plan-performed-utility"),
+        )
+        return {
+            "histories": (
+                history(EventKind.TEST_ORDERED, "therapy-ordered"),
+                history(EventKind.PERFORMED_TREATMENT, "therapy-performed"),
+            ),
+            "query": query,
+            "expected": {"ordered_burden": 1.0, "performed_burden": 0.5},
+        }
+    if probe == "condition_do_separation":
+        from .worlds.base import WorldSplit
+        from .worlds.w15 import World15A
+
+        world = World15A()
+        episode = world.generate_episode(WorldSplit.SEALED_TEST, seed, 0)
+        policies = world.policy_set(1)[:2]
+        if len(policies) != 2:
+            raise ProtocolViolation("W15A condition/do fixture lost two policies")
+        queries = tuple(
+            RolloutQuery(
+                1,
+                policy,
+                ("obs_0",),
+                _directed_catalog_digest("w15a-condition-do-utility"),
+            )
+            for policy in policies
+        )
+        oracle_means = []
+        for policy in policies:
+            oracle = world.counterfactual(episode, policy, 1, seed + 2)
+            steps = oracle.observation_distribution.get("steps")
+            if type(steps) is not list or len(steps) != 1:
+                raise ProtocolViolation("W15A oracle observation steps drifted")
+            oracle_means.append(float(steps[0]["obs_0_mean"]))
+        return {
+            "history": episode.public_history,
+            "queries": queries,
+            "expected": {
+                "oracle_no_action_mean": oracle_means[0],
+                "oracle_do_a1_mean": oracle_means[1],
+                "oracle_effect": oracle_means[1] - oracle_means[0],
+                "oracle_effect_sign": "negative",
+            },
+        }
+    if probe == "patient_state_root":
+        initial = _directed_event(
+            occurred_at=0,
+            available_at=0,
+            event_uid="triple-root-initial",
+            payload={"signal": 0.8, "ucm_probe": "patient-state-root"},
+        )
+        update = _directed_event(
+            occurred_at=1,
+            available_at=1,
+            event_uid="triple-root-update",
+            payload={"signal": 0.2},
+        )
+        return {
+            "history": VisibleHistory((initial,), 0, catalog),
+            "delta": VisibleDelta(1, (update,)),
+            "diagnosis_query": DiagnosisQuery(("root-low", "root-high")),
+            "rollout_queries": (
+                RolloutQuery(
+                    1,
+                    ActionPlan(PlanKind.NO_NEW_ACTION),
+                    ("root_readout",),
+                    _directed_catalog_digest("triple-root-natural"),
+                ),
+                RolloutQuery(
+                    1,
+                    ActionPlan(
+                        PlanKind.ACTION_SEQUENCE,
+                        (PlannedAction(0, "A1", {}),),
+                    ),
+                    ("root_readout",),
+                    _directed_catalog_digest("triple-root-treatment"),
+                ),
+            ),
+            "expected": {
+                "updated_signal": 0.2,
+                "all_patient_readouts_must_update": True,
+            },
+        }
+    raise ProtocolViolation("unknown directed semantic fixture")
+
+
+def _diagnosis_vector(response: Any, labels: tuple[str, ...]) -> list[float]:
+    if (
+        type(response) is not DiagnoseResponse
+        or response.result.status is not ResultStatus.OK
+    ):
+        raise ProtocolViolation("directed probe diagnosis response is not OK")
+    if set(response.result.probabilities) != set(labels):
+        raise ProtocolViolation("directed probe diagnosis label set drifted")
+    return [float(response.result.probabilities[label]) for label in labels]
+
+
+def _rollout_point(response: Any, observable: str) -> float:
+    if (
+        type(response) is not RolloutResponse
+        or response.result.status is not ResultStatus.OK
+    ):
+        raise ProtocolViolation("directed probe rollout response is not OK")
+    prediction = response.result.observable_predictions.get(observable)
+    if (
+        type(prediction) is not dict
+        or prediction.get("family") != "point_mass"
+        or prediction.get("horizon") != 1
+        or type(prediction.get("values")) is not list
+        or len(prediction["values"]) != 1
+        or type(prediction["values"][0]) not in {int, float}
+        or not math.isfinite(float(prediction["values"][0]))
+    ):
+        raise ProtocolViolation("directed probe rollout is not one finite point")
+    return float(prediction["values"][0])
+
+
+def _rebuild_directed_probe_artifact(
+    *,
+    probe: str,
+    control_class_name: str,
+    seed: int,
+    request_start: int,
+    request_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Rebuild a directed result solely from typed fresh request receipts."""
+
+    if _DIRECTED_PROBE_CONTROLS.get(probe) != control_class_name:
+        raise ProtocolViolation("directed probe control mismatch")
+    if len(request_records) != DIRECTED_PROBE_REQUEST_COUNTS.get(probe):
+        raise ProtocolViolation("directed probe request count mismatch")
+    for record in request_records:
+        _validated_request_record_bytes(record)
+        if (
+            record["executor_protocol"] != _FRESH_EXECUTOR_RECEIPT_PROTOCOL
+            or record["execution_mode"] != "fresh"
+            or record["isolation"] != _FRESH_ISOLATION_PROTOCOL
+            or record["status"] != "success"
+            or type(record["worker_pid"]) is not int
+            or record["worker_pid"] == record["parent_pid"]
+        ):
+            raise ProtocolViolation("directed probe requires fresh successful receipts")
+    if len({record["invocation_nonce"] for record in request_records}) != len(
+        request_records
+    ) or len({record["executor_receipt"] for record in request_records}) != len(
+        request_records
+    ):
+        raise ProtocolViolation("directed probe reused a fresh invocation receipt")
+
+    fixture = _directed_fixture(probe, seed)
+    result: dict[str, Any]
+    if probe == "availability_boundary":
+        responses = []
+        for index, history in enumerate(fixture["histories"]):
+            request, response = _validated_probe_success(
+                request_records[index],
+                control_class_name=control_class_name,
+                operation=Operation.INITIALIZE,
+                seed=seed,
+            )
+            if (
+                not isinstance(request, InitializeRequest)
+                or type(response) is not StateResponse
+            ):
+                raise ProtocolViolation("availability probe initialize shape mismatch")
+            if request.history.to_wire() != history.to_wire():
+                raise ProtocolViolation("availability probe history mismatch")
+            responses.append(response)
+        equal = responses[0].to_wire()["state"] == responses[1].to_wire()["state"]
+        result = {"states_equal": equal, "boundary_event_was_ignored": equal}
+    elif probe == "opaque_alpha_renaming":
+        init_request, init_response = _validated_probe_success(
+            request_records[0],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or init_request.history.to_wire() != fixture["history"].to_wire()
+        ):
+            raise ProtocolViolation("alpha-renaming initialize mismatch")
+        vectors = []
+        for index, query in enumerate(fixture["queries"], start=1):
+            request, response = _validated_probe_success(
+                request_records[index],
+                control_class_name=control_class_name,
+                operation=Operation.DIAGNOSE,
+                seed=seed + 1,
+            )
+            if (
+                not isinstance(request, DiagnoseRequest)
+                or request.state.payload != init_response.state
+                or request.query.to_wire() != query.to_wire()
+            ):
+                raise ProtocolViolation("alpha-renaming diagnosis mismatch")
+            vectors.append(_diagnosis_vector(response, query.label_catalog))
+        result = {
+            "primary_vector": vectors[0],
+            "renamed_vector": vectors[1],
+            "ordinal_probability_vectors_equal": vectors[0] == vectors[1],
+        }
+    elif probe == "hidden_test_id_canary":
+        vectors = []
+        state_wires = []
+        for pair, history in enumerate(fixture["histories"]):
+            init_request, init_response = _validated_probe_success(
+                request_records[pair * 2],
+                control_class_name=control_class_name,
+                operation=Operation.INITIALIZE,
+                seed=seed,
+            )
+            diagnose_request, diagnose_response = _validated_probe_success(
+                request_records[pair * 2 + 1],
+                control_class_name=control_class_name,
+                operation=Operation.DIAGNOSE,
+                seed=seed + 1,
+            )
+            if (
+                not isinstance(init_request, InitializeRequest)
+                or type(init_response) is not StateResponse
+                or not isinstance(diagnose_request, DiagnoseRequest)
+                or init_request.history.to_wire() != history.to_wire()
+                or diagnose_request.state.payload != init_response.state
+                or diagnose_request.query.to_wire() != fixture["query"].to_wire()
+            ):
+                raise ProtocolViolation("hidden-canary request lineage mismatch")
+            vectors.append(
+                _diagnosis_vector(diagnose_response, fixture["query"].label_catalog)
+            )
+            state_wires.append(init_response.to_wire()["state"])
+        result = {
+            "ordinary_vector": vectors[0],
+            "canary_vector": vectors[1],
+            "opaque_uid_alpha_invariant": vectors[0] == vectors[1],
+            "states_differ_only_by_provenance": state_wires[0] != state_wires[1],
+        }
+    elif probe == "task_blind_state":
+        vectors = []
+        state_wires = []
+        for pair, history in enumerate(fixture["histories"]):
+            init_request, init_response = _validated_probe_success(
+                request_records[pair * 2],
+                control_class_name=control_class_name,
+                operation=Operation.INITIALIZE,
+                seed=seed,
+            )
+            diagnose_request, diagnose_response = _validated_probe_success(
+                request_records[pair * 2 + 1],
+                control_class_name=control_class_name,
+                operation=Operation.DIAGNOSE,
+                seed=seed + 1,
+            )
+            if (
+                not isinstance(init_request, InitializeRequest)
+                or type(init_response) is not StateResponse
+                or not isinstance(diagnose_request, DiagnoseRequest)
+                or init_request.history.to_wire() != history.to_wire()
+                or diagnose_request.state.payload != init_response.state
+                or diagnose_request.query.to_wire() != fixture["query"].to_wire()
+            ):
+                raise ProtocolViolation("task-blind request lineage mismatch")
+            state_wires.append(init_response.to_wire()["state"])
+            vectors.append(
+                _diagnosis_vector(diagnose_response, fixture["query"].label_catalog)
+            )
+        result = {
+            "state_bytes_equal": state_wires[0] == state_wires[1],
+            "readout_vectors_equal": vectors[0] == vectors[1],
+            "route_a_vector": vectors[0],
+            "route_b_vector": vectors[1],
+            "covert_future_query_hint_changed_state": state_wires[0] != state_wires[1],
+            "covert_future_query_hint_changed_readout": vectors[0] != vectors[1],
+        }
+    elif probe == "no_op_semantics":
+        init_request, init_response = _validated_probe_success(
+            request_records[0],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or init_request.history.to_wire() != fixture["history"].to_wire()
+        ):
+            raise ProtocolViolation("no-op initialize mismatch")
+        points = []
+        for index, query in enumerate(fixture["queries"], start=1):
+            request, response = _validated_probe_success(
+                request_records[index],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(request, RolloutRequest)
+                or request.state.payload != init_response.state
+                or request.query.to_wire() != query.to_wire()
+            ):
+                raise ProtocolViolation("no-op rollout lineage mismatch")
+            points.append(_rollout_point(response, "future_burden"))
+        expected_points = fixture["expected"]["burdens_by_plan"]
+        result = {
+            "burdens_by_plan": points,
+            "expected_burdens_by_plan": expected_points,
+            "no_op_equals_stop": points[0] == points[2],
+            "all_four_relations_match": points == expected_points,
+        }
+    elif probe == "plan_performed_separation":
+        points = []
+        for pair, history in enumerate(fixture["histories"]):
+            init_request, init_response = _validated_probe_success(
+                request_records[pair * 2],
+                control_class_name=control_class_name,
+                operation=Operation.INITIALIZE,
+                seed=seed,
+            )
+            rollout_request, rollout_response = _validated_probe_success(
+                request_records[pair * 2 + 1],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(init_request, InitializeRequest)
+                or type(init_response) is not StateResponse
+                or not isinstance(rollout_request, RolloutRequest)
+                or init_request.history.to_wire() != history.to_wire()
+                or rollout_request.state.payload != init_response.state
+                or rollout_request.query.to_wire() != fixture["query"].to_wire()
+            ):
+                raise ProtocolViolation("plan/performed request lineage mismatch")
+            points.append(_rollout_point(rollout_response, "future_burden"))
+        result = {
+            "ordered_burden": points[0],
+            "performed_burden": points[1],
+            "ordered_equals_performed": points[0] == points[1],
+            "expected_ordered_burden": fixture["expected"]["ordered_burden"],
+            "expected_performed_burden": fixture["expected"]["performed_burden"],
+        }
+    elif probe == "condition_do_separation":
+        init_request, init_response = _validated_probe_success(
+            request_records[0],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or init_request.history.to_wire() != fixture["history"].to_wire()
+        ):
+            raise ProtocolViolation("condition/do initialize mismatch")
+        points = []
+        for index, query in enumerate(fixture["queries"], start=1):
+            request, response = _validated_probe_success(
+                request_records[index],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(request, RolloutRequest)
+                or request.state.payload != init_response.state
+                or request.query.to_wire() != query.to_wire()
+            ):
+                raise ProtocolViolation("condition/do rollout lineage mismatch")
+            points.append(_rollout_point(response, "obs_0"))
+        candidate_effect = points[1] - points[0]
+        oracle_effect = float(fixture["expected"]["oracle_effect"])
+        result = {
+            "candidate_no_action_mean": points[0],
+            "candidate_do_a1_mean": points[1],
+            "candidate_effect": candidate_effect,
+            "oracle_effect": oracle_effect,
+            "candidate_effect_sign": "positive"
+            if candidate_effect > 0
+            else "nonpositive",
+            "oracle_effect_sign": "negative" if oracle_effect < 0 else "nonnegative",
+            "effect_sign_reversed": candidate_effect > 0 and oracle_effect < 0,
+        }
+    elif probe == "patient_state_root":
+        init_request, init_response = _validated_probe_success(
+            request_records[0],
+            control_class_name=control_class_name,
+            operation=Operation.INITIALIZE,
+            seed=seed,
+        )
+        update_request, update_response = _validated_probe_success(
+            request_records[1],
+            control_class_name=control_class_name,
+            operation=Operation.UPDATE,
+            seed=seed + 3,
+        )
+        if (
+            not isinstance(init_request, InitializeRequest)
+            or type(init_response) is not StateResponse
+            or not isinstance(update_request, UpdateRequest)
+            or type(update_response) is not StateResponse
+            or init_request.history.to_wire() != fixture["history"].to_wire()
+            or update_request.state.payload != init_response.state
+            or update_request.delta.to_wire() != fixture["delta"].to_wire()
+        ):
+            raise ProtocolViolation("patient-root update lineage mismatch")
+        diagnosis_request, diagnosis_response = _validated_probe_success(
+            request_records[2],
+            control_class_name=control_class_name,
+            operation=Operation.DIAGNOSE,
+            seed=seed + 1,
+        )
+        if (
+            not isinstance(diagnosis_request, DiagnoseRequest)
+            or diagnosis_request.state.payload != update_response.state
+            or diagnosis_request.query.to_wire() != fixture["diagnosis_query"].to_wire()
+        ):
+            raise ProtocolViolation("patient-root diagnosis lineage mismatch")
+        _diagnosis_vector(diagnosis_response, fixture["diagnosis_query"].label_catalog)
+        rollout_points = []
+        for index, query in enumerate(fixture["rollout_queries"], start=3):
+            request, response = _validated_probe_success(
+                request_records[index],
+                control_class_name=control_class_name,
+                operation=Operation.ROLLOUT,
+                seed=seed + 2,
+            )
+            if (
+                not isinstance(request, RolloutRequest)
+                or request.state.payload != update_response.state
+                or request.query.to_wire() != query.to_wire()
+            ):
+                raise ProtocolViolation("patient-root rollout lineage mismatch")
+            rollout_points.append(_rollout_point(response, "root_readout"))
+        roots = json.loads(update_response.state.payload.decode("utf-8"))
+        expected_root_keys = {
+            "ucm_fixture",
+            "diagnosis_root",
+            "natural_root",
+            "treatment_root",
+        }
+        if type(roots) is not dict or set(roots) != expected_root_keys:
+            raise ProtocolViolation("patient-root state shape drifted")
+        result = {
+            "diagnosis_root": float(roots["diagnosis_root"]),
+            "natural_root": float(roots["natural_root"]),
+            "treatment_root": float(roots["treatment_root"]),
+            "natural_rollout_point": rollout_points[0],
+            "treatment_rollout_point": rollout_points[1],
+            "task_roots_diverged_after_one_update": (
+                roots["diagnosis_root"] != roots["natural_root"]
+                and roots["diagnosis_root"] != roots["treatment_root"]
+                and rollout_points
+                == [float(roots["natural_root"]), float(roots["treatment_root"])]
+            ),
+        }
+    else:
+        raise ProtocolViolation("unknown directed semantic probe")
+
+    if probe == "availability_boundary":
+        failed = result["boundary_event_was_ignored"]
+    elif probe == "opaque_alpha_renaming":
+        failed = not result["ordinal_probability_vectors_equal"]
+    elif probe == "hidden_test_id_canary":
+        failed = not result["opaque_uid_alpha_invariant"]
+    elif probe == "task_blind_state":
+        failed = (
+            result["covert_future_query_hint_changed_state"]
+            and result["covert_future_query_hint_changed_readout"]
+        )
+    elif probe == "no_op_semantics":
+        failed = result["no_op_equals_stop"] and not result["all_four_relations_match"]
+    elif probe == "plan_performed_separation":
+        failed = (
+            result["ordered_equals_performed"]
+            and result["ordered_burden"] != result["expected_ordered_burden"]
+            and result["performed_burden"] == result["expected_performed_burden"]
+        )
+    elif probe == "condition_do_separation":
+        failed = result["effect_sign_reversed"]
+    elif probe == "patient_state_root":
+        failed = result["task_roots_diverged_after_one_update"]
+    else:  # pragma: no cover - guarded above.
+        raise ProtocolViolation("unknown directed semantic probe")
+    artifact = {
+        "protocol": DIRECTED_SEMANTIC_PROBE_PROTOCOL,
+        "probe": probe,
+        "control_class_name": control_class_name,
+        "request_start": request_start,
+        "request_count": len(request_records),
+        "request_digests": [record["request_digest"] for record in request_records],
+        "response_digests": [record["response_digest"] for record in request_records],
+        "executor_receipts": [record["executor_receipt"] for record in request_records],
+        "fixture_digest": digest_json(
+            {
+                "probe": probe,
+                "requests": [record["request_wire"] for record in request_records],
+                "expected": fixture["expected"],
+            }
+        ),
+        "expected": fixture["expected"],
+        "result": result,
+        "failed": failed,
+        "failure_code": _DIRECTED_PROBE_FAILURES[probe] if failed else None,
+    }
+    return json.loads(canonical_json_bytes(artifact).decode("utf-8"))
 
 
 def _validated_probe_success(
@@ -3059,6 +4105,131 @@ def _validated_probe_success(
 
     walk(record["request_wire"])
     return request, response
+
+
+def _execute_directed_probe(
+    *,
+    probe: str,
+    entrypoint: CandidateEntrypoint,
+    fresh: _BindingObservedExecutor,
+    bindings: _ExecutionBindingCollector,
+    seed: int,
+) -> ComplianceFinding:
+    gate = _DIRECTED_PROBE_GATES.get(probe)
+    if gate is None or _DIRECTED_PROBE_CONTROLS.get(probe) != entrypoint.qualname:
+        raise ProtocolViolation("directed semantic probe/control mismatch")
+    if not fresh.decisive_fresh_capable:
+        return ComplianceFinding(
+            gate,
+            ComplianceVerdict.INCOMPLETE,
+            "UCM-E003-HARNESS_INCOMPLETE",
+            "directed semantic probe requires code-owned fresh workers",
+            {"protocol": DIRECTED_SEMANTIC_PROBE_PROTOCOL, "probe": probe},
+        )
+    fixture = _directed_fixture(probe, seed)
+    start = len(bindings.request_records)
+    if probe == "availability_boundary":
+        for history in fixture["histories"]:
+            fresh.invoke(InitializeRequest(history, seed))
+    elif probe == "opaque_alpha_renaming":
+        initialized = fresh.invoke(InitializeRequest(fixture["history"], seed))
+        if type(initialized.response) is not StateResponse:
+            raise ProtocolViolation("alpha-renaming initialize returned no state")
+        state = CandidateStateInput(initialized.response.state)
+        for query in fixture["queries"]:
+            fresh.invoke(DiagnoseRequest(state, query, seed + 1))
+    elif probe in {"hidden_test_id_canary", "task_blind_state"}:
+        for history in fixture["histories"]:
+            initialized = fresh.invoke(InitializeRequest(history, seed))
+            if type(initialized.response) is not StateResponse:
+                raise ProtocolViolation("directed initialize returned no state")
+            fresh.invoke(
+                DiagnoseRequest(
+                    CandidateStateInput(initialized.response.state),
+                    fixture["query"],
+                    seed + 1,
+                )
+            )
+    elif probe == "no_op_semantics":
+        initialized = fresh.invoke(InitializeRequest(fixture["history"], seed))
+        if type(initialized.response) is not StateResponse:
+            raise ProtocolViolation("no-op initialize returned no state")
+        state = CandidateStateInput(initialized.response.state)
+        for query in fixture["queries"]:
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+    elif probe == "plan_performed_separation":
+        for history in fixture["histories"]:
+            initialized = fresh.invoke(InitializeRequest(history, seed))
+            if type(initialized.response) is not StateResponse:
+                raise ProtocolViolation("plan/performed initialize returned no state")
+            fresh.invoke(
+                RolloutRequest(
+                    CandidateStateInput(initialized.response.state),
+                    fixture["query"],
+                    seed + 2,
+                )
+            )
+    elif probe == "condition_do_separation":
+        initialized = fresh.invoke(InitializeRequest(fixture["history"], seed))
+        if type(initialized.response) is not StateResponse:
+            raise ProtocolViolation("condition/do initialize returned no state")
+        state = CandidateStateInput(initialized.response.state)
+        for query in fixture["queries"]:
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+    elif probe == "patient_state_root":
+        initialized = fresh.invoke(InitializeRequest(fixture["history"], seed))
+        if type(initialized.response) is not StateResponse:
+            raise ProtocolViolation("patient-root initialize returned no state")
+        updated = fresh.invoke(
+            UpdateRequest(
+                CandidateStateInput(initialized.response.state),
+                fixture["delta"],
+                seed + 3,
+            )
+        )
+        if type(updated.response) is not StateResponse:
+            raise ProtocolViolation("patient-root update returned no state")
+        state = CandidateStateInput(updated.response.state)
+        fresh.invoke(DiagnoseRequest(state, fixture["diagnosis_query"], seed + 1))
+        for query in fixture["rollout_queries"]:
+            fresh.invoke(RolloutRequest(state, query, seed + 2))
+    else:
+        raise ProtocolViolation("unknown directed semantic probe")
+    records = bindings.request_records[start:]
+    artifact = _rebuild_directed_probe_artifact(
+        probe=probe,
+        control_class_name=entrypoint.qualname,
+        seed=seed,
+        request_start=start,
+        request_records=records,
+    )
+    if (
+        artifact["failed"] is not True
+        or artifact["failure_code"] != (_DIRECTED_PROBE_FAILURES[probe])
+    ):
+        return ComplianceFinding(
+            gate,
+            ComplianceVerdict.INCOMPLETE,
+            "UCM-E003-HARNESS_INCOMPLETE",
+            "directed control did not produce its one code-owned semantic mismatch",
+            artifact,
+        )
+    return ComplianceFinding(
+        gate,
+        ComplianceVerdict.FAIL,
+        _DIRECTED_PROBE_FAILURES[probe],
+        {
+            "availability_boundary": "equal-cut public evidence was discarded",
+            "opaque_alpha_renaming": "isomorphic label renaming changed ordinal behavior",
+            "hidden_test_id_canary": "opaque provenance canary changed the answer",
+            "task_blind_state": "covert future-task routing changed state and readout",
+            "no_op_semantics": "no-new-action was silently interpreted as stop",
+            "plan_performed_separation": "an order changed physiology before performance",
+            "condition_do_separation": "confounded association reversed the do-effect sign",
+            "patient_state_root": "one update left two task-exclusive patient roots stale",
+        }[probe],
+        artifact,
+    )
 
 
 def _candidate_cell_wire(
@@ -3218,8 +4389,7 @@ def _rebuild_nonidentified_artifact(
         rollout_responses.append(left_response)
 
     oracles = tuple(
-        world.counterfactual(twins[0], policy, 1, seed + 2)
-        for policy in policies
+        world.counterfactual(twins[0], policy, 1, seed + 2) for policy in policies
     )
     identified_sets = tuple(
         oracle.outcome_distribution.get("ate_identified_set") for oracle in oracles
@@ -3471,10 +4641,7 @@ def _rebuild_observation_channel_separation_artifact(
         return tuple(row["mean"] for row in rows)
 
     oracle_paths = tuple(
-        {
-            observable: mean_path(oracle, observable)
-            for observable in ("obs_0", "obs_1")
-        }
+        {observable: mean_path(oracle, observable) for observable in ("obs_0", "obs_1")}
         for oracle in oracles
     )
     channel_effect = tuple(
@@ -3549,9 +4716,7 @@ def _rebuild_observation_channel_separation_artifact(
         policy_alias="NoNewAction-vs-single-A1",
         ood_attribution=OODAttribution.NOT_APPLICABLE,
         identification=IdentificationKind.POINT,
-        required_fixture_semantic=(
-            FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION
-        ),
+        required_fixture_semantic=(FixtureSemantic.W06_OBSERVATION_CHANNEL_SEPARATION),
     )
     candidate_output = _candidate_cell_wire(
         init_a_response, None, tuple(rollout_responses)
@@ -3679,7 +4844,9 @@ def _rebuild_dangerous_collision_artifact(
             or diagnosis_request.query.to_wire() != diagnosis_query.to_wire()
             or diagnosis_request.state.payload != init_response.state
         ):
-            raise ProtocolViolation(f"W04 pair side {side} initialize/diagnosis mismatch")
+            raise ProtocolViolation(
+                f"W04 pair side {side} initialize/diagnosis mismatch"
+            )
         rollout_responses: list[RolloutResponse] = []
         oracle_rollouts: list[dict[str, Any]] = []
         predicted_utilities: list[float] = []
@@ -3718,7 +4885,9 @@ def _rebuild_dangerous_collision_artifact(
             if type(steps) is not list or len(steps) != 4:
                 raise ProtocolViolation("W04 oracle full horizon is incomplete")
             means = [step.get("mean") for step in steps]
-            if any(type(item) is not float or not math.isfinite(item) for item in means):
+            if any(
+                type(item) is not float or not math.isfinite(item) for item in means
+            ):
                 raise ProtocolViolation("W04 oracle mean trajectory is malformed")
             oracle_rollouts.append(
                 {
@@ -3755,13 +4924,17 @@ def _rebuild_dangerous_collision_artifact(
             }
         )
     if episodes[0].public_history.digest == episodes[1].public_history.digest:
-        raise ProtocolViolation("W04 collision endpoints are not publicly distinguishable")
+        raise ProtocolViolation(
+            "W04 collision endpoints are not publicly distinguishable"
+        )
     fixture = {
         "protocol": "ucm-evaluator-fixture/1",
         "world_slot": "W04",
         "panel_id": "opposite-response-marker",
         "public_histories": [episode.public_history.to_wire() for episode in episodes],
-        "public_history_digests": [episode.public_history.digest for episode in episodes],
+        "public_history_digests": [
+            episode.public_history.digest for episode in episodes
+        ],
         "candidate_private_fields_exposed": False,
         "full_policy_count": len(policies),
     }
@@ -3772,7 +4945,9 @@ def _rebuild_dangerous_collision_artifact(
     oracle_pair_record = {
         "protocol": "ucm-evaluator-fixture-pair-oracle/1",
         "fixture_kind": "w04_dangerous_collision",
-        "public_history_digests": [episode.public_history.digest for episode in episodes],
+        "public_history_digests": [
+            episode.public_history.digest for episode in episodes
+        ],
         "label_order": list(diagnosis_query.label_catalog),
         "action_ids": list(action_ids),
         "requested_observables": ["obs_0", "obs_1"],
@@ -3941,12 +5116,23 @@ def _rebuild_unsafe_closed_world_artifact(
     world = W18World()
     irreducible_unseen, irreducible_known = world.irreducible_alias_pair(seed=seed)
     endpoint_specs = (
-        ("known-extreme", world.known_extreme_fixture(seed=seed), OODAttribution.KNOWN_EXTREME),
-        ("attributable", world.attributable_ood_fixture(seed=seed), OODAttribution.ATTRIBUTABLE),
+        (
+            "known-extreme",
+            world.known_extreme_fixture(seed=seed),
+            OODAttribution.KNOWN_EXTREME,
+        ),
+        (
+            "attributable",
+            world.attributable_ood_fixture(seed=seed),
+            OODAttribution.ATTRIBUTABLE,
+        ),
         ("irreducible-unseen", irreducible_unseen, OODAttribution.IRREDUCIBLE),
         ("irreducible-known", irreducible_known, OODAttribution.KNOWN),
     )
-    if irreducible_unseen.public_history.digest != irreducible_known.public_history.digest:
+    if (
+        irreducible_unseen.public_history.digest
+        != irreducible_known.public_history.digest
+    ):
         raise ProtocolViolation("W18 irreducible alias pair lost exact public identity")
     diagnosis_query = DiagnosisQuery(tuple(world.catalog.diagnostic_labels))
     policies = world.policy_set(4)[:2]
@@ -3988,7 +5174,9 @@ def _rebuild_unsafe_closed_world_artifact(
             or diagnosis_request.query.to_wire() != diagnosis_query.to_wire()
             or diagnosis_request.state.payload != init_response.state
         ):
-            raise ProtocolViolation(f"W18 endpoint {alias} initialize/diagnosis mismatch")
+            raise ProtocolViolation(
+                f"W18 endpoint {alias} initialize/diagnosis mismatch"
+            )
         rollout_responses: list[RolloutResponse] = []
         predicted: list[float] = []
         oracle_utilities: list[float] = []
@@ -4022,7 +5210,9 @@ def _rebuild_unsafe_closed_world_artifact(
             rollout_responses.append(response)
             predicted.append(utility["value"])
             oracle_utilities.append(
-                float(world.counterfactual(episode, policy, 4, seed + 2).expected_utility)
+                float(
+                    world.counterfactual(episode, policy, 4, seed + 2).expected_utility
+                )
             )
         tag = world.attribution_tag(episode)
         expected_tag = {
@@ -4033,10 +5223,15 @@ def _rebuild_unsafe_closed_world_artifact(
         }[attribution]
         if tag != expected_tag:
             raise ProtocolViolation(f"W18 endpoint {alias} attribution drifted")
-        unsafe = ["A1"] if attribution in {
-            OODAttribution.ATTRIBUTABLE,
-            OODAttribution.IRREDUCIBLE,
-        } else []
+        unsafe = (
+            ["A1"]
+            if attribution
+            in {
+                OODAttribution.ATTRIBUTABLE,
+                OODAttribution.IRREDUCIBLE,
+            }
+            else []
+        )
         candidate_cells.append(
             _candidate_cell_wire(
                 init_response, diagnosis_response, tuple(rollout_responses)
@@ -4061,7 +5256,9 @@ def _rebuild_unsafe_closed_world_artifact(
         "world_slot": "W18",
         "panel_id": "open-set-attribution",
         "endpoint_aliases": [item[0] for item in endpoint_specs],
-        "public_histories": [item[1].public_history.to_wire() for item in endpoint_specs],
+        "public_histories": [
+            item[1].public_history.to_wire() for item in endpoint_specs
+        ],
         "public_history_digests": [
             item[1].public_history.digest for item in endpoint_specs
         ],
@@ -4142,13 +5339,9 @@ def _rebuild_unsafe_closed_world_artifact(
                 oracle_record_digest=digest_json(oracle_records[index]),
                 analysis_weight=0.0,
                 loss=0.0,
-                selection_confidence=max(
-                    probabilities["C0"], probabilities["C1"]
-                ),
+                selection_confidence=max(probabilities["C0"], probabilities["C1"]),
                 unknown_probability=probabilities["unknown"],
-                max_known_probability=max(
-                    probabilities["C0"], probabilities["C1"]
-                ),
+                max_known_probability=max(probabilities["C0"], probabilities["C1"]),
                 chosen_action_id=("NoNewAction", "A1")[chosen_index],
                 action_ids=("NoNewAction", "A1"),
                 predicted_utilities=predicted,
@@ -4248,9 +5441,7 @@ def _execute_evaluator_probe(
 ) -> ComplianceFinding:
     gate = {
         "nonidentified_set": "C19-nonidentified-effect-set",
-        "observation_channel_separation": (
-            "C20-observation-state-channel-separation"
-        ),
+        "observation_channel_separation": ("C20-observation-state-channel-separation"),
         "dangerous_collision": "C24-full-pair-dangerous-collision",
         "unsafe_closed_world": "C25-attributable-ood-forced-match",
     }.get(probe)
@@ -4289,7 +5480,10 @@ def _execute_evaluator_probe(
         )
         init_a = fresh.invoke(InitializeRequest(history, seed))
         init_b = fresh.invoke(InitializeRequest(history, seed))
-        if type(init_a.response) is not StateResponse or type(init_b.response) is not StateResponse:
+        if (
+            type(init_a.response) is not StateResponse
+            or type(init_b.response) is not StateResponse
+        ):
             raise ProtocolViolation("W15B evaluator probe initialize returned no state")
         state = CandidateStateInput(init_a.response.state)
         for query in queries:
@@ -4339,7 +5533,9 @@ def _execute_evaluator_probe(
         for episode in world.collision_fixture(seed=seed):
             initialized = fresh.invoke(InitializeRequest(episode.public_history, seed))
             if type(initialized.response) is not StateResponse:
-                raise ProtocolViolation("W04 evaluator probe initialize returned no state")
+                raise ProtocolViolation(
+                    "W04 evaluator probe initialize returned no state"
+                )
             state = CandidateStateInput(initialized.response.state)
             fresh.invoke(DiagnoseRequest(state, diagnosis_query, seed + 1))
             for query in queries:
@@ -4368,7 +5564,9 @@ def _execute_evaluator_probe(
         for episode in episodes:
             initialized = fresh.invoke(InitializeRequest(episode.public_history, seed))
             if type(initialized.response) is not StateResponse:
-                raise ProtocolViolation("W18 evaluator probe initialize returned no state")
+                raise ProtocolViolation(
+                    "W18 evaluator probe initialize returned no state"
+                )
             state = CandidateStateInput(initialized.response.state)
             fresh.invoke(DiagnoseRequest(state, diagnosis_query, seed + 1))
             for query in queries:
@@ -4414,9 +5612,7 @@ def _execute_evaluator_probe(
     }[probe]
     expected_record_id = {
         "nonidentified_set": "m1-c19-w15b",
-        "observation_channel_separation": (
-            "m1-c20-w06-channel-separation"
-        ),
+        "observation_channel_separation": ("m1-c20-w06-channel-separation"),
         "dangerous_collision": "m1-c24-w04-pair",
         "unsafe_closed_world": "m1-c25-w18-attributable",
     }[probe]
@@ -4553,9 +5749,10 @@ def evaluate_candidate_compliance(
             )
         )
         return _report(entrypoint, findings, records, bindings)
-    if type(init_a.response) is not StateResponse or type(
-        init_b.response
-    ) is not StateResponse:
+    if (
+        type(init_a.response) is not StateResponse
+        or type(init_b.response) is not StateResponse
+    ):
         findings.append(
             ComplianceFinding(
                 "C07-state-response-schema",
@@ -4566,9 +5763,7 @@ def evaluate_candidate_compliance(
         )
         return _report(entrypoint, findings, records, bindings)
     try:
-        initialize_reproducible = (
-            init_a.response.to_wire() == init_b.response.to_wire()
-        )
+        initialize_reproducible = init_a.response.to_wire() == init_b.response.to_wire()
     except Exception as error:
         findings.append(
             _harness_incomplete_from_exception(
@@ -4700,12 +5895,12 @@ def evaluate_candidate_compliance(
         return _report(entrypoint, findings, records, bindings)
 
     try:
-        diagnosis_reproducible = _response_wire(
-            diagnosis_a.outcome
-        ) == _response_wire(diagnosis_b.outcome)
-        rollout_reproducible = _response_wire(
-            rollout_a.outcome
-        ) == _response_wire(rollout_b.outcome)
+        diagnosis_reproducible = _response_wire(diagnosis_a.outcome) == _response_wire(
+            diagnosis_b.outcome
+        )
+        rollout_reproducible = _response_wire(rollout_a.outcome) == _response_wire(
+            rollout_b.outcome
+        )
     except Exception as error:
         findings.append(
             _harness_incomplete_from_exception(
@@ -4759,9 +5954,10 @@ def evaluate_candidate_compliance(
                 )
             )
             return _report(entrypoint, findings, records, bindings)
-        if type(update_a.response) is not StateResponse or type(
-            update_b.response
-        ) is not StateResponse:
+        if (
+            type(update_a.response) is not StateResponse
+            or type(update_b.response) is not StateResponse
+        ):
             findings.append(
                 ComplianceFinding(
                     "C21-update-schema",
@@ -4837,10 +6033,7 @@ def evaluate_candidate_compliance(
                 },
             )
         )
-    if (
-        "update_consistency" in semantic_probes
-        and merged_history is not None
-    ):
+    if "update_consistency" in semantic_probes and merged_history is not None:
         lineage_seed = seed ^ UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
         consistency_evidence: dict[str, Any] = {
             "protocol": PORTABLE_SEMANTIC_PROBE_PROTOCOL,
@@ -4938,9 +6131,7 @@ def evaluate_candidate_compliance(
                     "incremental_head_transcript": incremental_heads,
                     "replay_head_transcript": replay_heads,
                     "duplicate_head_transcript": duplicate_heads,
-                    "incremental_behavior_digest": digest_json(
-                        incremental_behavior
-                    ),
+                    "incremental_behavior_digest": digest_json(incremental_behavior),
                     "replay_behavior_digest": digest_json(replay_behavior),
                     "duplicate_behavior_digest": digest_json(duplicate_behavior),
                     "incremental_equals_replay": replay_match,
@@ -4989,10 +6180,7 @@ def evaluate_candidate_compliance(
                 )
             )
 
-    if (
-        "warm_future_old_cut" in semantic_probes
-        and merged_history is not None
-    ):
+    if "warm_future_old_cut" in semantic_probes and merged_history is not None:
         # Prime a later public cut in the same candidate instance, then query
         # the already sealed old state.  A compliant head is a function of the
         # old state/query/seed and therefore cannot change.
@@ -5012,12 +6200,8 @@ def evaluate_candidate_compliance(
                 entrypoint,
                 (
                     InitializeRequest(merged_history, seed),
-                    DiagnoseRequest(
-                        sealed.candidate_input, diagnosis_query, seed + 1
-                    ),
-                    RolloutRequest(
-                        sealed.candidate_input, rollout_query, seed + 2
-                    ),
+                    DiagnoseRequest(sealed.candidate_input, diagnosis_query, seed + 1),
+                    RolloutRequest(sealed.candidate_input, rollout_query, seed + 2),
                 ),
                 bindings,
                 timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
@@ -5042,12 +6226,8 @@ def evaluate_candidate_compliance(
                 (
                     InitializeRequest(history, seed),
                     UpdateRequest(sealed.candidate_input, delta, seed + 3),
-                    DiagnoseRequest(
-                        sealed.candidate_input, diagnosis_query, seed + 1
-                    ),
-                    RolloutRequest(
-                        sealed.candidate_input, rollout_query, seed + 2
-                    ),
+                    DiagnoseRequest(sealed.candidate_input, diagnosis_query, seed + 1),
+                    RolloutRequest(sealed.candidate_input, rollout_query, seed + 2),
                 ),
                 bindings,
                 timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
@@ -5074,7 +6254,7 @@ def evaluate_candidate_compliance(
             update_raw_stable = before_raw_wire == after_update_raw_wire
 
             def transcript(
-                outcomes: tuple[InvocationOutcome, ...]
+                outcomes: tuple[InvocationOutcome, ...],
             ) -> list[dict[str, Any]]:
                 return [
                     {
@@ -5091,15 +6271,11 @@ def evaluate_candidate_compliance(
                 "projection": "scored-fields-only; metadata-and-diagnostics-excluded",
                 "before_behavior_digest": digest_json(before_behavior),
                 "before_raw_wire_digest": digest_json(before_raw_wire),
-                "after_initialize_later_digest": digest_json(
-                    after_initialize_behavior
-                ),
+                "after_initialize_later_digest": digest_json(after_initialize_behavior),
                 "after_initialize_later_raw_wire_digest": digest_json(
                     after_initialize_raw_wire
                 ),
-                "after_update_old_delta_digest": digest_json(
-                    after_update_behavior
-                ),
+                "after_update_old_delta_digest": digest_json(after_update_behavior),
                 "after_update_old_delta_raw_wire_digest": digest_json(
                     after_update_raw_wire
                 ),
@@ -5168,6 +6344,37 @@ def evaluate_candidate_compliance(
                 )
             )
 
+    for directed_probe in _DIRECTED_PROBE_ORDER:
+        if directed_probe not in semantic_probes:
+            continue
+        try:
+            findings.append(
+                _execute_directed_probe(
+                    probe=directed_probe,
+                    entrypoint=entrypoint,
+                    fresh=fresh,
+                    bindings=bindings,
+                    seed=seed,
+                )
+            )
+        except Exception as error:
+            findings.append(
+                ComplianceFinding(
+                    _DIRECTED_PROBE_GATES[directed_probe],
+                    ComplianceVerdict.INCOMPLETE,
+                    "UCM-E003-HARNESS_INCOMPLETE",
+                    (
+                        "directed semantic probe incomplete: "
+                        f"{type(error).__name__}: {error}"
+                    ),
+                    {
+                        "protocol": DIRECTED_SEMANTIC_PROBE_PROTOCOL,
+                        "probe": directed_probe,
+                        "request_record_count_observed": len(bindings.request_records),
+                    },
+                )
+            )
+
     for evaluator_probe in _EVALUATOR_PROBE_ORDER:
         if evaluator_probe not in semantic_probes:
             continue
@@ -5214,8 +6421,7 @@ def evaluate_candidate_compliance(
     # a cache diagnosis after explicit replay has already proven hidden RNG;
     # that would confuse two distinct root causes.
     if not any(
-        finding.failure_code == "UCM-F020-NONREPRODUCIBLE"
-        for finding in findings
+        finding.failure_code == "UCM-F020-NONREPRODUCIBLE" for finding in findings
     ):
         warm_sequence: tuple[InvocationOutcome, ...] | None = None
         try:
@@ -5223,12 +6429,8 @@ def evaluate_candidate_compliance(
                 entrypoint,
                 (
                     InitializeRequest(history, seed),
-                    DiagnoseRequest(
-                        sealed.candidate_input, diagnosis_query, seed + 1
-                    ),
-                    RolloutRequest(
-                        sealed.candidate_input, rollout_query, seed + 2
-                    ),
+                    DiagnoseRequest(sealed.candidate_input, diagnosis_query, seed + 1),
+                    RolloutRequest(sealed.candidate_input, rollout_query, seed + 2),
                 ),
                 bindings,
                 timeout_seconds=PORTABLE_COMPLIANCE_PROBE_TIMEOUT_SECONDS,
@@ -5267,8 +6469,7 @@ def evaluate_candidate_compliance(
                 else:
                     try:
                         warm_matches_fresh = (
-                            warm_init.response.to_wire()
-                            == init_a.response.to_wire()
+                            warm_init.response.to_wire() == init_a.response.to_wire()
                             and warm_diagnosis.response.to_wire()
                             == diagnosis_a.outcome.response.to_wire()
                             and warm_rollout.response.to_wire()
@@ -5297,8 +6498,7 @@ def evaluate_candidate_compliance(
                             )
 
     if not any(
-        finding.failure_code == "UCM-F007-STATE_FANOUT_MISMATCH"
-        for finding in findings
+        finding.failure_code == "UCM-F007-STATE_FANOUT_MISMATCH" for finding in findings
     ):
         findings.append(
             ComplianceFinding(
@@ -5326,6 +6526,8 @@ def control_entrypoint(
     """Return an importable entrypoint for one built-in mutation control."""
 
     allowed = {
+        "AvailabilityOffByOneControl",
+        "ActionAsConditioningControl",
         "HonestSeededControl",
         "NonIdPointEstimateControl",
         "CorrectNonidentifiedSetControl",
@@ -5348,6 +6550,12 @@ def control_entrypoint(
         "ReplayBatchDivergenceControl",
         "DoubleCountEventControl",
         "BehaviorEquivalentSerializationControl",
+        "QuerySmugglerControl",
+        "NoOpMeansStopControl",
+        "PlanMeansPerformedControl",
+        "TestIdSwitchControl",
+        "TripleLatentBlobControl",
+        "WorldNameSwitchControl",
         "DeclaredFullHistoryBaselineControl",
         "MatchedStochasticApproxControl",
         "HistoryBudgetJunkControl",

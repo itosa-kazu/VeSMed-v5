@@ -144,9 +144,7 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["GlobalSecondState"].actual_failure_code == (
         "UCM-F006-HIDDEN_PATIENT_CACHE"
     )
-    assert by_id["FileHandleState"].actual_failure_code == (
-        "UCM-F008-STATE_NOT_CLOSED"
-    )
+    assert by_id["FileHandleState"].actual_failure_code == ("UCM-F008-STATE_NOT_CLOSED")
     assert by_id["RawHistoryHead"].actual_failure_code == (
         "UCM-F004-HEAD_HISTORY_ACCESS"
     )
@@ -159,16 +157,12 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["CounterfactualMutator"].actual_failure_code == (
         "UCM-F012-QUERY_MUTATES_FACT"
     )
-    assert by_id["MutableCheckpoint"].actual_failure_code == (
-        "UCM-F009-MODEL_MUTATION"
-    )
+    assert by_id["MutableCheckpoint"].actual_failure_code == ("UCM-F009-MODEL_MUTATION")
     assert by_id["TrueStateReader"].actual_failure_code == (
         "UCM-F002-ORACLE_TRUE_STATE_ACCESS"
     )
     assert by_id["FutureReader"].actual_failure_code == "UCM-F001-FUTURE_LEAK"
-    assert by_id["ImplicitRNGState"].actual_failure_code == (
-        "UCM-F020-NONREPRODUCIBLE"
-    )
+    assert by_id["ImplicitRNGState"].actual_failure_code == ("UCM-F020-NONREPRODUCIBLE")
     assert by_id["HistoryInBlob"].actual_failure_code == (
         "UCM-F018-FULL_HISTORY_MISCLAIM"
     )
@@ -182,16 +176,29 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
     assert by_id["ObservationEqualsMechanism"].actual_failure_code == (
         "UCM-F014-ACTION_SEMANTICS_CONFLATED"
     )
-    nondecisive_subjects = {
-        "AvailabilityOffByOne",
-        "TestIdSwitch",
-        "WorldNameSwitch",
-        "QuerySmuggler",
-        "NoOpMeansStop",
-        "PlanMeansPerformed",
-        "ActionAsConditioning",
-        "TripleLatentBlob",
-    }
+    assert (
+        by_id["AvailabilityOffByOne"].actual_failure_code
+        == "UCM-F011-TIME_VISIBILITY_VIOLATION"
+    )
+    assert by_id["TestIdSwitch"].actual_failure_code == "UCM-F003-TEST_ID_BRANCH"
+    assert by_id["WorldNameSwitch"].actual_failure_code == "UCM-F003-TEST_ID_BRANCH"
+    assert by_id["QuerySmuggler"].actual_failure_code == "UCM-F005-TASK_SPECIFIC_STATE"
+    assert (
+        by_id["NoOpMeansStop"].actual_failure_code
+        == "UCM-F014-ACTION_SEMANTICS_CONFLATED"
+    )
+    assert (
+        by_id["PlanMeansPerformed"].actual_failure_code
+        == "UCM-F014-ACTION_SEMANTICS_CONFLATED"
+    )
+    assert (
+        by_id["ActionAsConditioning"].actual_failure_code
+        == "UCM-F015-CONDITIONING_AS_INTERVENTION"
+    )
+    assert (
+        by_id["TripleLatentBlob"].actual_failure_code == "UCM-F005-TASK_SPECIFIC_STATE"
+    )
+    nondecisive_subjects: set[str] = set()
     assert len(rows) == len(mutation_matrix.PORTABLE_EXECUTION_CASES) == 30
     assert {
         row.subject_id for row in rows if row.decisive_record_digest is None
@@ -203,9 +210,12 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
 
     assert isinstance(bundle, mutation_evidence.MutationEvidenceBundle)
     assert bundle.benchmark_id == mutation_evidence.BENCHMARK_ID
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
     wire = bundle.to_wire()
     assert wire["status"] == "PRE-FREEZE"
     assert wire["blockers"] == [
@@ -252,9 +262,9 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
         assert pre["expected_candidate"] == report_payload["expected_candidate"]
         assert report_payload["candidate"] == report_payload["expected_candidate"]
         assert report_payload["execution_seed"] == observation.execution_seed
-        assert report_payload["input_preimage_digest"] == context[
-            "input_preimage_digest"
-        ]
+        assert (
+            report_payload["input_preimage_digest"] == context["input_preimage_digest"]
+        )
         assert report_payload["request_records"]
         assert report_payload["invocation_transcript_digest"] == canonical.digest_json(
             report_payload["request_records"]
@@ -293,9 +303,7 @@ def test_portable_mutants_emit_real_decisive_records_and_control_passes() -> Non
             "errors": [],
         }
         assert decision["derived_outcome"] == observation.outcome.value
-        assert decisive["source_record_payload_digest"] == canonical.digest_json(
-            source
-        )
+        assert decisive["source_record_payload_digest"] == canonical.digest_json(source)
         assert decisive["report_transcript_payload_digest"] == canonical.digest_json(
             report_payload
         )
@@ -314,17 +322,15 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         delta=delta,
         seed=733,
     )
-    report = evaluate_mutation_matrix(
-        bundle.observations
-    )
+    report = evaluate_mutation_matrix(bundle.observations)
     assert not report.freeze_ready
     assert report.benchmark_status == "HARNESS_INCOMPLETE"
-    assert len(report.valid_kills) == 18
-    assert len(report.missing_or_invalid_mutants) == 8
+    assert len(report.valid_kills) == 26
+    assert len(report.missing_or_invalid_mutants) == 0
     assert len(report.passed_specificity_controls) == 4
     assert len(report.failed_specificity_controls) == 0
-    assert len(report.covered_gates) == 14
-    assert len(report.uncovered_gates) == 19
+    assert len(report.covered_gates) == 21
+    assert len(report.uncovered_gates) == 12
     assert set(report.valid_kills) == {
         "GlobalSecondState",
         "FileHandleState",
@@ -344,6 +350,14 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         "ObservationEqualsMechanism",
         "DangerousMeanCompressor",
         "UnsafeClosedWorld",
+        "AvailabilityOffByOne",
+        "TestIdSwitch",
+        "WorldNameSwitch",
+        "QuerySmuggler",
+        "NoOpMeansStop",
+        "PlanMeansPerformed",
+        "ActionAsConditioning",
+        "TripleLatentBlob",
     }
     assert set(report.covered_gates) == {
         "C02",
@@ -360,6 +374,13 @@ def test_partial_real_evidence_remains_harness_incomplete() -> None:
         "C20",
         "C24",
         "C25",
+        "C03",
+        "C11",
+        "C13",
+        "C14",
+        "C17",
+        "C18",
+        "C33",
     }
     assert set(report.passed_specificity_controls) == {
         "ExplicitSeedStochasticState",
@@ -417,17 +438,21 @@ def test_new_detectors_distinguish_attacks_from_benign_counterparts() -> None:
         for finding in warm_attack.findings
         if finding.failure_code == "UCM-F001-FUTURE_LEAK"
     )
-    assert warm_finding.evidence["before_behavior_digest"] != (
-        warm_finding.evidence["after_initialize_later_digest"]
+    assert (
+        warm_finding.evidence["before_behavior_digest"]
+        != (warm_finding.evidence["after_initialize_later_digest"])
     )
-    assert warm_finding.evidence["before_behavior_digest"] != (
-        warm_finding.evidence["after_update_old_delta_digest"]
+    assert (
+        warm_finding.evidence["before_behavior_digest"]
+        != (warm_finding.evidence["after_update_old_delta_digest"])
     )
-    assert warm_finding.evidence["before_raw_wire_digest"] != (
-        warm_finding.evidence["after_initialize_later_raw_wire_digest"]
+    assert (
+        warm_finding.evidence["before_raw_wire_digest"]
+        != (warm_finding.evidence["after_initialize_later_raw_wire_digest"])
     )
-    assert warm_finding.evidence["before_raw_wire_digest"] != (
-        warm_finding.evidence["after_update_old_delta_raw_wire_digest"]
+    assert (
+        warm_finding.evidence["before_raw_wire_digest"]
+        != (warm_finding.evidence["after_update_old_delta_raw_wire_digest"])
     )
     assert warm_finding.evidence["initialize_later_stable"] is False
     assert warm_finding.evidence["update_old_delta_stable"] is False
@@ -484,8 +509,9 @@ def test_new_detectors_distinguish_attacks_from_benign_counterparts() -> None:
         if finding.gate == "C22-incremental-replay-duplicate-equivalence"
     )
     assert matched_finding.verdict is ComplianceVerdict.PASS
-    assert matched_finding.evidence["incremental_behavior_digest"] != (
-        matched_finding.evidence["replay_behavior_digest"]
+    assert (
+        matched_finding.evidence["incremental_behavior_digest"]
+        != (matched_finding.evidence["replay_behavior_digest"])
     )
     assert matched_finding.evidence["incremental_equals_replay"] is True
     assert matched_finding.evidence["duplicate_event_is_idempotent"] is True
@@ -498,9 +524,7 @@ def test_history_probe_is_budgeted_and_narrowly_scoped() -> None:
         schema_version="budget-probe/1",
         state_class=StateClass.COMPRESSED_SHARED,
     )
-    method, evidence, incomplete = compliance._recovers_full_history(
-        payload, history
-    )
+    method, evidence, incomplete = compliance._recovers_full_history(payload, history)
     assert method is None
     assert incomplete == "string-count budget exceeded"
     assert evidence["scope"] == "fixed-recoverable-codec-c27-only"
@@ -548,9 +572,7 @@ def test_enabled_delta_probes_without_delta_are_explicitly_incomplete() -> None:
         rollout_query=rollout,
         delta=None,
         seed=907,
-        semantic_probes=frozenset(
-            {"update_consistency", "warm_future_old_cut"}
-        ),
+        semantic_probes=frozenset({"update_consistency", "warm_future_old_cut"}),
     )
     probe_findings = {
         finding.gate: finding
@@ -588,8 +610,7 @@ def test_behavior_equivalent_serialization_has_paired_semantic_proof() -> None:
         "update",
     }
     assert all(
-        phase["state_serializations_distinct"]
-        and phase["semantic_behavior_equivalent"]
+        phase["state_serializations_distinct"] and phase["semantic_behavior_equivalent"]
         for phase in evidence["phases"]
     )
 
@@ -621,9 +642,7 @@ def test_source_binding_includes_probe_profile_live_code_and_control_mro(
     )
     assert constant_patched != with_probe
 
-    monkeypatch.setattr(
-        compliance, "SEMANTIC_ABS_TOLERANCE", original_tolerance
-    )
+    monkeypatch.setattr(compliance, "SEMANTIC_ABS_TOLERANCE", original_tolerance)
     original_invoke = candidate_protocol.FreshProcessExecutor.invoke
 
     def patched_invoke(self, request):
@@ -660,15 +679,11 @@ def test_source_binding_tracks_live_adjudicator_and_wire_parser(
             expected_probe_id=expected_probe_id,
         )
 
-    monkeypatch.setattr(
-        mutation_runner, "_decisive_finding", patched_decisive
-    )
+    monkeypatch.setattr(mutation_runner, "_decisive_finding", patched_decisive)
     decisive_patched = _source_digest("HonestSeededControl", probes)
     assert decisive_patched != baseline
 
-    monkeypatch.setattr(
-        mutation_runner, "_decisive_finding", original_decisive
-    )
+    monkeypatch.setattr(mutation_runner, "_decisive_finding", original_decisive)
     original_parser = candidate_protocol.response_from_wire
 
     def patched_response_from_wire(value):
@@ -729,9 +744,7 @@ def test_decisive_finding_requires_direct_gate_failure_membership() -> None:
 def test_runner_direct_gate_failure_membership_is_type_strict(
     gate: object, failure_code: object
 ) -> None:
-    assert not mutation_runner._direct_gate_allows_failure_code(
-        gate, failure_code
-    )
+    assert not mutation_runner._direct_gate_allows_failure_code(gate, failure_code)
 
 
 def test_callable_reference_rejects_truly_orphaned_function() -> None:
@@ -758,9 +771,7 @@ def test_callable_reference_rejects_foreign_owner_with_anchored_consumer(
     )
 
     with pytest.raises(ProtocolViolation, match="has no anchored owner"):
-        mutation_runner._registered_callable_reference(
-            foreign, "test.foreign_owner"
-        )
+        mutation_runner._registered_callable_reference(foreign, "test.foreign_owner")
 
 
 def test_callable_reference_rejects_orphaned_builtin_consumer_alias(
@@ -806,9 +817,7 @@ def test_source_binding_tracks_mutation_evidence_builder_and_live_alias(
     monkeypatch.setattr(mutation_runner, "portable_runner_contract", object)
     with pytest.raises(ProtocolViolation, match="critical alias identity mismatch"):
         _source_digest("HonestSeededControl", probes)
-    monkeypatch.setattr(
-        mutation_runner, "portable_runner_contract", original_contract
-    )
+    monkeypatch.setattr(mutation_runner, "portable_runner_contract", original_contract)
 
     monkeypatch.setattr(mutation_runner, "MutationEvidenceBuilder", object)
     with pytest.raises(ProtocolViolation, match="critical alias identity mismatch"):
@@ -829,9 +838,7 @@ def test_source_binding_tracks_runner_contract_and_rejects_foreign_globals(
     original_cases = mutation_runner.PORTABLE_MUTATION_CASES
     monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", ())
     assert _source_digest("HonestSeededControl", probes) != baseline
-    monkeypatch.setattr(
-        mutation_runner, "PORTABLE_MUTATION_CASES", original_cases
-    )
+    monkeypatch.setattr(mutation_runner, "PORTABLE_MUTATION_CASES", original_cases)
 
     original_decisive = mutation_runner._decisive_finding
 
@@ -848,14 +855,10 @@ def test_source_binding_tracks_runner_contract_and_rejects_foreign_globals(
         original_decisive.__closure__,
     )
     foreign_decisive.__kwdefaults__ = original_decisive.__kwdefaults__
-    monkeypatch.setattr(
-        mutation_runner, "_decisive_finding", foreign_decisive
-    )
+    monkeypatch.setattr(mutation_runner, "_decisive_finding", foreign_decisive)
     with pytest.raises(ProtocolViolation, match="foreign globals"):
         _source_digest("HonestSeededControl", probes)
-    monkeypatch.setattr(
-        mutation_runner, "_decisive_finding", original_decisive
-    )
+    monkeypatch.setattr(mutation_runner, "_decisive_finding", original_decisive)
 
     original_parser = candidate_protocol.response_from_wire
     parser_globals = dict(original_parser.__globals__)
@@ -868,9 +871,7 @@ def test_source_binding_tracks_runner_contract_and_rejects_foreign_globals(
         original_parser.__closure__,
     )
     foreign_parser.__kwdefaults__ = original_parser.__kwdefaults__
-    monkeypatch.setattr(
-        candidate_protocol, "response_from_wire", foreign_parser
-    )
+    monkeypatch.setattr(candidate_protocol, "response_from_wire", foreign_parser)
     with pytest.raises(ProtocolViolation, match="foreign globals"):
         _source_digest("HonestSeededControl", probes)
 
@@ -892,9 +893,7 @@ def test_live_callable_binding_tracks_defaults_kwdefaults_and_closure(
         {**original_entrypoint_kw, "bundle_root": repository_root},
     )
     assert _source_digest("HonestSeededControl", probes) != baseline
-    monkeypatch.setattr(
-        entrypoint_function, "__kwdefaults__", original_entrypoint_kw
-    )
+    monkeypatch.setattr(entrypoint_function, "__kwdefaults__", original_entrypoint_kw)
 
     validator = candidate_protocol.validate_json_like
     original_validator_kw = dict(validator.__kwdefaults__ or {})
@@ -940,9 +939,7 @@ def test_live_callable_binding_tracks_defaults_kwdefaults_and_closure(
         return same_code
 
     with pytest.raises(ProtocolViolation, match="registered alias|unsafe runtime"):
-        _live_callable_digest(
-            unsafe_factory(dangerous_value), "unsafe-closure"
-        )
+        _live_callable_digest(unsafe_factory(dangerous_value), "unsafe-closure")
 
 
 def test_live_callable_binding_recursively_binds_nested_functions_and_cycles() -> None:
@@ -1141,9 +1138,7 @@ def test_source_binding_rejects_critical_imported_alias_rewrite(
         FAIL = ComplianceVerdict.PASS
         INCOMPLETE = ComplianceVerdict.PASS
 
-    monkeypatch.setattr(
-        mutation_runner, "ComplianceVerdict", FakeComplianceVerdict
-    )
+    monkeypatch.setattr(mutation_runner, "ComplianceVerdict", FakeComplianceVerdict)
     with pytest.raises(ProtocolViolation, match="critical alias identity mismatch"):
         _source_digest("HonestSeededControl", frozenset())
 
@@ -1272,8 +1267,9 @@ def test_source_binding_rejects_referenced_module_and_class_alias_rewrites(
     assert _source_digest("HonestSeededControl", frozenset()) == baseline
 
 
-def test_source_binding_rejects_synchronized_executor_clone_before_metaclass_use(
-) -> None:
+def test_source_binding_rejects_synchronized_executor_clone_before_metaclass_use() -> (
+    None
+):
     original = candidate_protocol.FreshProcessExecutor
     poisoned_accesses: list[str] = []
 
@@ -1357,8 +1353,7 @@ def _invoked_execution_case(
         for case in mutation_matrix.PORTABLE_EXECUTION_CASES
         if case.control_class_name == entrypoint.qualname
         and frozenset(case.semantic_probes) == kwargs["semantic_probes"]
-        and mutation_matrix.execution_seed_for_case(base_seed, case)
-        == kwargs["seed"]
+        and mutation_matrix.execution_seed_for_case(base_seed, case) == kwargs["seed"]
     ]
     assert len(matches) == 1
     return matches[0]
@@ -1465,13 +1460,12 @@ def test_candidate_worker_failure_retains_complete_execution_binding() -> None:
     finding = compliance._failure_from_worker(error, "C02-head-history-denial")
     assert finding.verdict is ComplianceVerdict.FAIL
     assert finding.failure_code == "UCM-F004-HEAD_HISTORY_ACCESS"
-    assert finding.evidence["candidate_bundle_digest"] == binding[
-        "candidate_bundle_digest"
-    ]
+    assert (
+        finding.evidence["candidate_bundle_digest"]
+        == binding["candidate_bundle_digest"]
+    )
     assert finding.evidence["module_origin"] == binding["module_origin"]
-    assert finding.evidence["harness_bundle_digest"] == binding[
-        "harness_bundle_digest"
-    ]
+    assert finding.evidence["harness_bundle_digest"] == binding["harness_bundle_digest"]
 
 
 @pytest.mark.parametrize(
@@ -1608,9 +1602,7 @@ def test_candidate_failure_missing_binding_is_incomplete_and_not_decisive(
     file_handle_case = _execution_case("FileHandleState")
     expected_candidate = control_entrypoint(file_handle_case.control_class_name)
     runner_report = compliance.ComplianceReport(
-        candidate=(
-            f"{expected_candidate.module}:{expected_candidate.qualname}"
-        ),
+        candidate=(f"{expected_candidate.module}:{expected_candidate.qualname}"),
         operational_state_closure=report.operational_state_closure,
         semantic_unity=report.semantic_unity,
         isolation_completeness=report.isolation_completeness,
@@ -1653,9 +1645,7 @@ def test_candidate_failure_missing_binding_is_incomplete_and_not_decisive(
     monkeypatch.setattr(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
-    monkeypatch.setattr(
-        mutation_runner, "_source_binding_witness", witness
-    )
+    monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
     bundle = run_portable_mutation_evidence(
         run_id="incomplete-report-61",
         history=history,
@@ -1669,9 +1659,12 @@ def test_candidate_failure_missing_binding_is_incomplete_and_not_decisive(
     assert row.outcome is mutation_matrix.ObservationOutcome.CRASHED
     assert row.actual_failure_code is None
     assert row.decisive_record_digest is None
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 @pytest.mark.parametrize(
@@ -1840,9 +1833,7 @@ def test_fresh_executor_constructor_failure_is_harness_incomplete(
 
     assert report.operational_state_closure is ComplianceVerdict.INCOMPLETE
     finding = next(
-        item
-        for item in report.findings
-        if item.gate == "candidate-worker-construction"
+        item for item in report.findings if item.gate == "candidate-worker-construction"
     )
     assert finding.verdict is ComplianceVerdict.INCOMPLETE
     assert finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
@@ -1963,9 +1954,7 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
             )
         return original_to_wire(self)
 
-    def exact_warm_sequence(
-        entrypoint, requests, collector, *, timeout_seconds
-    ):
+    def exact_warm_sequence(entrypoint, requests, collector, *, timeout_seconds):
         nonlocal warm_phase
         del entrypoint, timeout_seconds
 
@@ -1981,9 +1970,7 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
                 return candidate_protocol.InvocationOutcome(
                     response=response,
                     request_digest=request_digest,
-                    response_digest=candidate_protocol.digest_json(
-                        response.to_wire()
-                    ),
+                    response_digest=candidate_protocol.digest_json(response.to_wire()),
                     isolation="test-exact-sequential-worker",
                     received_request_digest=request_digest,
                     **binding,
@@ -2001,9 +1988,7 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
     monkeypatch.setattr(
         candidate_protocol.StateResponse, "to_wire", conditional_to_wire
     )
-    monkeypatch.setattr(
-        compliance, "_invoke_observed_sequence", exact_warm_sequence
-    )
+    monkeypatch.setattr(compliance, "_invoke_observed_sequence", exact_warm_sequence)
     report = evaluate_candidate_compliance(
         control_entrypoint("HonestSeededControl"),
         history=history,
@@ -2014,9 +1999,7 @@ def test_warm_response_serializer_candidate_call_violation_is_incomplete(
 
     assert report.operational_state_closure is ComplianceVerdict.INCOMPLETE
     finding = next(
-        item
-        for item in report.findings
-        if item.gate == "C04-warm-cold-serialization"
+        item for item in report.findings if item.gate == "C04-warm-cold-serialization"
     )
     assert finding.verdict is ComplianceVerdict.INCOMPLETE
     assert finding.failure_code == "UCM-E003-HARNESS_INCOMPLETE"
@@ -2151,18 +2134,16 @@ def test_compliance_seal_uses_worker_exact_bundle_and_model_binding(
     assert report.module_origin == binding["module_origin"]
     assert report.head_records
     for head_record in report.head_records:
-        assert head_record["candidate_bundle_digest"] == binding[
-            "candidate_bundle_digest"
-        ]
-        assert head_record["candidate_model_digest"] == binding[
-            "candidate_model_digest"
-        ]
-        assert head_record["harness_bundle_digest"] == binding[
-            "harness_bundle_digest"
-        ]
-        assert head_record["import_inventory_digest"] == binding[
-            "import_inventory_digest"
-        ]
+        assert (
+            head_record["candidate_bundle_digest"] == binding["candidate_bundle_digest"]
+        )
+        assert (
+            head_record["candidate_model_digest"] == binding["candidate_model_digest"]
+        )
+        assert head_record["harness_bundle_digest"] == binding["harness_bundle_digest"]
+        assert (
+            head_record["import_inventory_digest"] == binding["import_inventory_digest"]
+        )
         assert head_record["module_origin"] == binding["module_origin"]
     assert report.operational_state_closure is ComplianceVerdict.PASS
 
@@ -2465,8 +2446,12 @@ def test_source_binding_rejects_inherited_new_rewrite_in_isolated_process(
     """Do not rewrite a shared ``object.__new__`` surface in pytest itself."""
 
     repository_root = candidate_protocol.Path(__file__).resolve().parents[2]
+    purelib = candidate_protocol.sysconfig.get_paths()["purelib"]
     script = inspect.cleandoc(
         f"""
+        import sys
+        sys.path.insert(0, sys.argv[1])
+
         from prototype.unified_map import candidate_protocol
         from prototype.unified_map.canonical import ProtocolViolation
         from prototype.unified_map.mutation_runner import _source_digest
@@ -2486,7 +2471,7 @@ def test_source_binding_rejects_inherited_new_rewrite_in_isolated_process(
         candidate_protocol.Path(candidate_protocol.sys.executable).resolve()
     )
     completed = subprocess.run(
-        [executable, "-S", "-c", script],
+        [executable, "-S", "-c", script, purelib],
         cwd=repository_root,
         capture_output=True,
         text=True,
@@ -2512,9 +2497,7 @@ def test_inherited_new_probe_block_leaves_parent_constructors_usable() -> None:
     assert completed.returncode == 0, completed.stderr
 
     thread_ran: list[bool] = []
-    thread = candidate_protocol.threading.Thread(
-        target=lambda: thread_ran.append(True)
-    )
+    thread = candidate_protocol.threading.Thread(target=lambda: thread_ran.append(True))
     thread.start()
     thread.join(timeout=5)
     assert not thread.is_alive()
@@ -2586,7 +2569,9 @@ def test_source_binding_rejects_candidate_protocol_origin_rewrite(
     monkeypatch.setattr(
         candidate_protocol,
         "__file__",
-        str(candidate_protocol.Path(candidate_protocol.__file__).with_name("poison.py")),
+        str(
+            candidate_protocol.Path(candidate_protocol.__file__).with_name("poison.py")
+        ),
     )
     with pytest.raises(ProtocolViolation, match="external runtime value mismatch"):
         mutation_runner._external_runtime_value_contract(
@@ -2658,9 +2643,7 @@ def test_source_binding_rejects_external_module_global_dispatch_rewrite(
     monkeypatch, owner, attribute: str
 ) -> None:
     monkeypatch.setattr(owner, attribute, lambda *args, **kwargs: None)
-    with pytest.raises(
-        ProtocolViolation, match="external .*mismatch"
-    ):
+    with pytest.raises(ProtocolViolation, match="external .*mismatch"):
         _source_digest("HonestSeededControl", frozenset())
 
 
@@ -2713,7 +2696,9 @@ def test_execution_binding_rejects_noncanonical_module_origin(
     collector = compliance._ExecutionBindingCollector()
     collector.observe(types.SimpleNamespace(**_binding_kwargs(origin=origin)))
     assert not collector.complete
-    assert any("canonical bundle-relative POSIX" in item for item in collector.violations)
+    assert any(
+        "canonical bundle-relative POSIX" in item for item in collector.violations
+    )
 
     report = types.SimpleNamespace(
         candidate="module:qualname", **_binding_kwargs(origin=origin)
@@ -2735,8 +2720,12 @@ def test_source_binding_tracks_generated_dataclass_method_defaults(
 
 def test_fresh_standalone_source_witness_is_stable_before_and_after_execution() -> None:
     repository_root = candidate_protocol.Path(__file__).resolve().parents[2]
+    purelib = candidate_protocol.sysconfig.get_paths()["purelib"]
     script = inspect.cleandoc(
         """
+        import sys
+        sys.path.insert(0, sys.argv[1])
+
         import tempfile
 
         assert tempfile.tempdir is None
@@ -2813,7 +2802,7 @@ def test_fresh_standalone_source_witness_is_stable_before_and_after_execution() 
         """
     )
     completed = subprocess.run(
-        [sys.executable, "-S", "-c", script],
+        [sys.executable, "-S", "-c", script, purelib],
         cwd=repository_root,
         capture_output=True,
         text=True,
@@ -2866,8 +2855,7 @@ def test_transient_self_restore_during_execution_cannot_produce_a_kill(
     def witness(control_class_name, semantic_probes, **kwargs):
         marker = (
             "self-restoring"
-            if mutation_runner.evaluate_candidate_compliance
-            is self_restoring_evaluator
+            if mutation_runner.evaluate_candidate_compliance is self_restoring_evaluator
             else "baseline"
         )
         return _exact_test_source_witness(
@@ -2946,8 +2934,7 @@ def test_pre_execution_source_witness_failure_is_recorded_per_row(
 
     assert len(rows) == len(mutation_matrix.PORTABLE_EXECUTION_CASES)
     assert {row.execution_case_id for row in rows} == {
-        case.execution_case_id
-        for case in mutation_matrix.PORTABLE_EXECUTION_CASES
+        case.execution_case_id for case in mutation_matrix.PORTABLE_EXECUTION_CASES
     }
     assert all(
         row.probe_id
@@ -2963,18 +2950,20 @@ def test_pre_execution_source_witness_failure_is_recorded_per_row(
     assert witness_calls == 2 * len(mutation_matrix.PORTABLE_EXECUTION_CASES)
     for record in bundle.records:
         assert record.report_transcript_digest is None
-        assert _blob_payload(bundle, record.post_source_witness_digest)[
-            "stage"
-        ] == "post-execution"
+        assert (
+            _blob_payload(bundle, record.post_source_witness_digest)["stage"]
+            == "post-execution"
+        )
         error = _blob_payload(bundle, record.error_transcript_digest)
         assert error["status"] == "error"
         assert [item["stage"] for item in error["errors"]] == [
             "pre-execution",
             "post-execution",
         ]
-        assert _blob_payload(bundle, record.decision_record_digest)[
-            "derived_outcome"
-        ] == "crashed"
+        assert (
+            _blob_payload(bundle, record.decision_record_digest)["derived_outcome"]
+            == "crashed"
+        )
 
 
 def test_paired_specificity_probe_is_inside_pre_post_source_witness(
@@ -3031,9 +3020,7 @@ def test_paired_specificity_probe_is_inside_pre_post_source_witness(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
     monkeypatch.setattr(
         mutation_runner,
         "paired_serialization_equivalence_evidence",
@@ -3124,9 +3111,7 @@ def test_runner_executes_captured_snapshot_after_caller_nested_mutation(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
 
     bundle = run_portable_mutation_evidence(
         run_id="captured-input-vs-caller-mutation-69",
@@ -3148,9 +3133,12 @@ def test_runner_executes_captured_snapshot_after_caller_nested_mutation(
         bundle.blob_bytes(context["input_preimage_digest"]).decode("utf-8")
     )
     assert captured_blob["payload"] == captured_preimage
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
@@ -3184,12 +3172,8 @@ def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
         )
         seen_inputs.append(row_inputs)
         assert row_inputs[0].events[0].payload["nested"]["value"] == "captured"
-        assert (
-            row_inputs[2].plan.actions[0].parameters["nested"]["amount"] == 1
-        )
-        assert row_inputs[3].events[0].payload["nested"]["value"] == (
-            "captured-delta"
-        )
+        assert row_inputs[2].plan.actions[0].parameters["nested"]["amount"] == 1
+        assert row_inputs[3].events[0].payload["nested"]["value"] == ("captured-delta")
         if len(seen_inputs) == 1:
             row_inputs[0].events[0].payload["nested"]["value"] = "row-one"
             row_inputs[2].plan.actions[0].parameters["nested"]["amount"] = 77
@@ -3200,9 +3184,7 @@ def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
 
     bundle = run_portable_mutation_evidence(
         run_id="per-row-input-copy-isolation-70",
@@ -3223,9 +3205,7 @@ def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
             item["stage"]
             for item in _blob_payload(
                 bundle, _record_for_case(bundle, case).error_transcript_digest
-            )[
-                "errors"
-            ]
+            )["errors"]
         }
         for case in cases
     ]
@@ -3233,9 +3213,12 @@ def test_one_row_input_mutation_cannot_pollute_a_later_row(monkeypatch) -> None:
     assert "execution-input-postcondition" not in stages[1]
     assert history.events[0].payload["nested"]["value"] == "captured"
     assert rollout.plan.actions[0].parameters["nested"]["amount"] == 1
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 def test_paired_probe_reparses_independent_inputs_after_control_mutation(
@@ -3299,9 +3282,7 @@ def test_paired_probe_reparses_independent_inputs_after_control_mutation(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
     monkeypatch.setattr(
         mutation_runner, "paired_serialization_equivalence_evidence", paired_probe
     )
@@ -3329,9 +3310,12 @@ def test_paired_probe_reparses_independent_inputs_after_control_mutation(
     assert not any(
         item["stage"] == "paired-input-postcondition" for item in error["errors"]
     )
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 def test_runtime_inventory_prewarm_failure_is_recorded_per_row(
@@ -3365,8 +3349,7 @@ def test_runtime_inventory_prewarm_failure_is_recorded_per_row(
 
     assert len(rows) == len(mutation_matrix.PORTABLE_EXECUTION_CASES)
     assert {row.execution_case_id for row in rows} == {
-        case.execution_case_id
-        for case in mutation_matrix.PORTABLE_EXECUTION_CASES
+        case.execution_case_id for case in mutation_matrix.PORTABLE_EXECUTION_CASES
     }
     assert all(
         row.probe_id
@@ -3439,9 +3422,7 @@ def test_transient_runtime_inventory_builder_cannot_poison_then_restore(
 def test_runtime_inventory_zip_authority_helper_is_preverified(
     monkeypatch,
 ) -> None:
-    monkeypatch.setattr(
-        candidate_protocol, "_approved_runtime_zip_paths", lambda: ()
-    )
+    monkeypatch.setattr(candidate_protocol, "_approved_runtime_zip_paths", lambda: ())
 
     with pytest.raises(
         ProtocolViolation, match="runtime inventory callable identity mismatch"
@@ -3594,23 +3575,25 @@ def test_runner_records_harness_exceptions_and_incomplete_controls_as_crashed(
     ) == _blob_payload(bundle, mutant_record.post_source_witness_digest)
     assert "candidate-evaluation" in {
         item["stage"]
-        for item in _blob_payload(
-            bundle, mutant_record.error_transcript_digest
-        )["errors"]
+        for item in _blob_payload(bundle, mutant_record.error_transcript_digest)[
+            "errors"
+        ]
     }
     assert control_record.report_transcript_digest is not None
     assert "compliance-report" in {
         item["stage"]
-        for item in _blob_payload(
-            bundle, control_record.error_transcript_digest
-        )["errors"]
+        for item in _blob_payload(bundle, control_record.error_transcript_digest)[
+            "errors"
+        ]
     }
-    assert _blob_payload(
-        bundle, mutant_record.decision_record_digest
-    )["derived_outcome"] == "crashed"
-    assert _blob_payload(
-        bundle, control_record.decision_record_digest
-    )["derived_outcome"] == "crashed"
+    assert (
+        _blob_payload(bundle, mutant_record.decision_record_digest)["derived_outcome"]
+        == "crashed"
+    )
+    assert (
+        _blob_payload(bundle, control_record.decision_record_digest)["derived_outcome"]
+        == "crashed"
+    )
 
 
 def test_evaluator_none_is_a_serializable_zero_request_crash(monkeypatch) -> None:
@@ -3640,9 +3623,7 @@ def test_evaluator_none_is_a_serializable_zero_request_crash(monkeypatch) -> Non
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
 
     bundle = run_portable_mutation_evidence(
         run_id="evaluator-none-zero-request-72",
@@ -3670,9 +3651,12 @@ def test_evaluator_none_is_a_serializable_zero_request_crash(monkeypatch) -> Non
     decision = _blob_payload(bundle, record.decision_record_digest)
     assert decision["input_preimage_digest"] == context["input_preimage_digest"]
     assert decision["invocation_transcript_digest"] == canonical.digest_json([])
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 def test_shared_empty_request_reports_are_retained_but_not_treated_as_reuse(
@@ -3717,9 +3701,7 @@ def test_shared_empty_request_reports_are_retained_but_not_treated_as_reuse(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
 
     bundle = run_portable_mutation_evidence(
         run_id="empty-request-report-73",
@@ -3747,9 +3729,12 @@ def test_shared_empty_request_reports_are_retained_but_not_treated_as_reuse(
             and "cannot prove that candidate execution started" in item["message"]
             for item in error["errors"]
         )
-    assert mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
-        bundle.canonical_bytes()
-    ) == bundle
+    assert (
+        mutation_evidence.MutationEvidenceBundle.from_canonical_bytes(
+            bundle.canonical_bytes()
+        )
+        == bundle
+    )
 
 
 def test_paired_probe_non_object_is_typed_fail_closed(monkeypatch) -> None:
@@ -3788,9 +3773,7 @@ def test_paired_probe_non_object_is_typed_fail_closed(monkeypatch) -> None:
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
     monkeypatch.setattr(
         mutation_runner,
         "paired_serialization_equivalence_evidence",
@@ -3865,9 +3848,7 @@ def test_unrenderable_harness_exception_is_retained_as_typed_error(
         mutation_runner, "_prepare_runtime_import_cache", prepared_cache
     )
     monkeypatch.setattr(mutation_runner, "_source_binding_witness", witness)
-    monkeypatch.setattr(
-        mutation_runner, "evaluate_candidate_compliance", evaluator
-    )
+    monkeypatch.setattr(mutation_runner, "evaluate_candidate_compliance", evaluator)
     monkeypatch.setattr(
         mutation_runner, "_report_execution_binding", unrenderable_binding
     )
@@ -3886,14 +3867,12 @@ def test_unrenderable_harness_exception_is_retained_as_typed_error(
     assert record.observation.outcome is mutation_matrix.ObservationOutcome.CRASHED
     assert record.observation.decisive_record_digest is None
     error = _blob_payload(bundle, record.error_transcript_digest)
-    binding_errors = [item for item in error["errors"] if item["stage"] == "report-binding"]
+    binding_errors = [
+        item for item in error["errors"] if item["stage"] == "report-binding"
+    ]
     assert len(binding_errors) == 1
-    assert binding_errors[0]["exception_type"].endswith(
-        ".UnrenderableHarnessError"
-    )
-    assert binding_errors[0]["message"].startswith(
-        "unrenderable exception message: "
-    )
+    assert binding_errors[0]["exception_type"].endswith(".UnrenderableHarnessError")
+    assert binding_errors[0]["message"].startswith("unrenderable exception message: ")
 
 
 def test_runner_rejects_seed_that_protocol_or_lineage_would_reject() -> None:
@@ -3916,8 +3895,7 @@ def test_runner_rejects_seed_that_protocol_or_lineage_would_reject() -> None:
     execution_seed = (2**64 - 1) ^ compliance.UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
     base_seed = (
         execution_seed
-        - update_case.execution_ordinal
-        * mutation_matrix.EXECUTION_CASE_SEED_STRIDE
+        - update_case.execution_ordinal * mutation_matrix.EXECUTION_CASE_SEED_STRIDE
     )
     with pytest.raises(ProtocolViolation, match="lineage seeds"):
         run_portable_mutation_evidence(

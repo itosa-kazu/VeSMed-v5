@@ -872,7 +872,7 @@ def _paired_semantic_evidence(
             }
         )
     return {
-        "protocol": "ucm-portable-semantic-probes/6",
+        "protocol": compliance.PORTABLE_SEMANTIC_PROBE_PROTOCOL,
         "comparison": "paired-honest-vs-affine-scored-semantics",
         "absolute_tolerance": 1e-9,
         "relative_tolerance": 0.0,
@@ -943,7 +943,7 @@ def _source_witness(
         "portable_runner_contract": mutation_evidence.portable_runner_contract(
             TEST_RUNNER_PROTOCOL
         ),
-        "semantic_probe_contract": "ucm-portable-semantic-probes/6",
+        "semantic_probe_contract": compliance.PORTABLE_SEMANTIC_PROBE_PROTOCOL,
         "enabled_semantic_probes": list(semantic_probes),
         "runtime_metadata": deepcopy(TEST_RUNTIME_METADATA),
     }

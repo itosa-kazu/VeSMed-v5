@@ -62,9 +62,7 @@ class MutantSpec:
         _nonempty_unique_strings(self.expected_gates, "expected_gates")
         if any(not _is_gate(gate) for gate in self.expected_gates):
             raise ProtocolViolation("mutant expected_gates must be C01 through C33")
-        _nonempty_unique_strings(
-            self.expected_failure_codes, "expected_failure_codes"
-        )
+        _nonempty_unique_strings(self.expected_failure_codes, "expected_failure_codes")
 
     def to_wire(self) -> dict[str, Any]:
         return {
@@ -200,7 +198,13 @@ def _digest(value: object, label: str) -> str:
 
 
 def _is_gate(value: object) -> bool:
-    return type(value) is str and len(value) == 3 and value[0] == "C" and value[1:].isdigit() and 1 <= int(value[1:]) <= 33
+    return (
+        type(value) is str
+        and len(value) == 3
+        and value[0] == "C"
+        and value[1:].isdigit()
+        and 1 <= int(value[1:]) <= 33
+    )
 
 
 def _finding_gate_tokens(value: str) -> frozenset[str]:
@@ -229,12 +233,40 @@ GATE_SPECS: tuple[GateSpec, ...] = (
     GateSpec("C01", ("UCM-F007-STATE_FANOUT_MISMATCH",)),
     GateSpec("C02", ("UCM-F004-HEAD_HISTORY_ACCESS",)),
     GateSpec("C03", ("UCM-F005-TASK_SPECIFIC_STATE",)),
-    GateSpec("C04", ("UCM-F006-HIDDEN_PATIENT_CACHE", "UCM-F008-STATE_NOT_CLOSED", "UCM-F020-NONREPRODUCIBLE")),
-    GateSpec("C05", ("UCM-F006-HIDDEN_PATIENT_CACHE", "UCM-F001-FUTURE_LEAK", "UCM-F020-NONREPRODUCIBLE")),
+    GateSpec(
+        "C04",
+        (
+            "UCM-F006-HIDDEN_PATIENT_CACHE",
+            "UCM-F008-STATE_NOT_CLOSED",
+            "UCM-F020-NONREPRODUCIBLE",
+        ),
+    ),
+    GateSpec(
+        "C05",
+        (
+            "UCM-F006-HIDDEN_PATIENT_CACHE",
+            "UCM-F001-FUTURE_LEAK",
+            "UCM-F020-NONREPRODUCIBLE",
+        ),
+    ),
     GateSpec("C06", ("UCM-F009-MODEL_MUTATION",)),
-    GateSpec("C07", ("UCM-F008-STATE_NOT_CLOSED", "UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
+    GateSpec(
+        "C07",
+        (
+            "UCM-F008-STATE_NOT_CLOSED",
+            "UCM-F001-FUTURE_LEAK",
+            "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+        ),
+    ),
     GateSpec("C08", ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
-    GateSpec("C09", ("UCM-F002-ORACLE_TRUE_STATE_ACCESS", "UCM-F004-HEAD_HISTORY_ACCESS", "UCM-F008-STATE_NOT_CLOSED")),
+    GateSpec(
+        "C09",
+        (
+            "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+            "UCM-F004-HEAD_HISTORY_ACCESS",
+            "UCM-F008-STATE_NOT_CLOSED",
+        ),
+    ),
     GateSpec("C10", ("UCM-F001-FUTURE_LEAK",)),
     GateSpec("C11", ("UCM-F011-TIME_VISIBILITY_VIOLATION",)),
     GateSpec("C12", ("UCM-F001-FUTURE_LEAK",)),
@@ -246,7 +278,14 @@ GATE_SPECS: tuple[GateSpec, ...] = (
     GateSpec("C18", ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
     GateSpec("C19", ("UCM-F015-CONDITIONING_AS_INTERVENTION",)),
     GateSpec("C20", ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
-    GateSpec("C21", ("UCM-F007-STATE_FANOUT_MISMATCH", "UCM-F010-UPDATE_NOT_RECURSIVE", "UCM-F005-TASK_SPECIFIC_STATE")),
+    GateSpec(
+        "C21",
+        (
+            "UCM-F007-STATE_FANOUT_MISMATCH",
+            "UCM-F010-UPDATE_NOT_RECURSIVE",
+            "UCM-F005-TASK_SPECIFIC_STATE",
+        ),
+    ),
     GateSpec("C22", ("UCM-F019-UPDATE_INCONSISTENT",)),
     GateSpec("C23", ("UCM-F011-TIME_VISIBILITY_VIOLATION", "UCM-F001-FUTURE_LEAK")),
     GateSpec("C24", ("UCM-F016-DANGEROUS_COLLISION",)),
@@ -263,32 +302,86 @@ GATE_SPECS: tuple[GateSpec, ...] = (
 
 
 MUTANT_SPECS: tuple[MutantSpec, ...] = (
-    MutantSpec("GlobalSecondState", _gates("C04 C05 C15"), ("UCM-F006-HIDDEN_PATIENT_CACHE",)),
-    MutantSpec("FileHandleState", _gates("C04 C07 C09"), ("UCM-F008-STATE_NOT_CLOSED",)),
+    MutantSpec(
+        "GlobalSecondState", _gates("C04 C05 C15"), ("UCM-F006-HIDDEN_PATIENT_CACHE",)
+    ),
+    MutantSpec(
+        "FileHandleState", _gates("C04 C07 C09"), ("UCM-F008-STATE_NOT_CLOSED",)
+    ),
     MutantSpec("RawHistoryHead", _gates("C02 C09"), ("UCM-F004-HEAD_HISTORY_ACCESS",)),
-    MutantSpec("TrainerTargetSmuggler", _gates("C07 C08 C10 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
+    MutantSpec(
+        "TrainerTargetSmuggler",
+        _gates("C07 C08 C10 C12"),
+        ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
+    ),
     MutantSpec("HistoryInBlob", _gates("C27 C31"), ("UCM-F018-FULL_HISTORY_MISCLAIM",)),
     MutantSpec("MutableCheckpoint", _gates("C06"), ("UCM-F009-MODEL_MUTATION",)),
-    MutantSpec("WarmFutureCache", _gates("C05 C10 C12 C23"), ("UCM-F001-FUTURE_LEAK", "UCM-F011-TIME_VISIBILITY_VIOLATION")),
-    MutantSpec("AvailabilityOffByOne", _gates("C11"), ("UCM-F011-TIME_VISIBILITY_VIOLATION",)),
-    MutantSpec("TrueStateReader", _gates("C08 C09"), ("UCM-F002-ORACLE_TRUE_STATE_ACCESS",)),
-    MutantSpec("FutureReader", _gates("C08 C09 C10 C12"), ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS")),
+    MutantSpec(
+        "WarmFutureCache",
+        _gates("C05 C10 C12 C23"),
+        ("UCM-F001-FUTURE_LEAK", "UCM-F011-TIME_VISIBILITY_VIOLATION"),
+    ),
+    MutantSpec(
+        "AvailabilityOffByOne", _gates("C11"), ("UCM-F011-TIME_VISIBILITY_VIOLATION",)
+    ),
+    MutantSpec(
+        "TrueStateReader", _gates("C08 C09"), ("UCM-F002-ORACLE_TRUE_STATE_ACCESS",)
+    ),
+    MutantSpec(
+        "FutureReader",
+        _gates("C08 C09 C10 C12"),
+        ("UCM-F001-FUTURE_LEAK", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
+    ),
     MutantSpec("TestIdSwitch", _gates("C13 C14"), ("UCM-F003-TEST_ID_BRANCH",)),
     MutantSpec("WorldNameSwitch", _gates("C13 C14"), ("UCM-F003-TEST_ID_BRANCH",)),
-    MutantSpec("ImplicitRNGState", _gates("C04 C05 C28 C30"), ("UCM-F020-NONREPRODUCIBLE",)),
+    MutantSpec(
+        "ImplicitRNGState", _gates("C04 C05 C28 C30"), ("UCM-F020-NONREPRODUCIBLE",)
+    ),
     MutantSpec("QuerySmuggler", _gates("C03 C29"), ("UCM-F005-TASK_SPECIFIC_STATE",)),
-    MutantSpec("QueryReencoder", _gates("C02 C03 C26 C29 C32"), ("UCM-F004-HEAD_HISTORY_ACCESS", "UCM-F005-TASK_SPECIFIC_STATE", "UCM-F013-SPLIT_TRANSITION_CORE")),
-    MutantSpec("CounterfactualMutator", _gates("C16"), ("UCM-F012-QUERY_MUTATES_FACT",)),
-    MutantSpec("NoOpMeansStop", _gates("C17"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
-    MutantSpec("PlanMeansPerformed", _gates("C18"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
-    MutantSpec("ActionAsConditioning", _gates("C19"), ("UCM-F015-CONDITIONING_AS_INTERVENTION",)),
-    MutantSpec("NonIdPointEstimate", _gates("C19"), ("UCM-F015-CONDITIONING_AS_INTERVENTION",)),
-    MutantSpec("ObservationEqualsMechanism", _gates("C20"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)),
-    MutantSpec("ReplayBatchDivergence", _gates("C21 C22"), ("UCM-F019-UPDATE_INCONSISTENT", "UCM-F010-UPDATE_NOT_RECURSIVE")),
+    MutantSpec(
+        "QueryReencoder",
+        _gates("C02 C03 C26 C29 C32"),
+        (
+            "UCM-F004-HEAD_HISTORY_ACCESS",
+            "UCM-F005-TASK_SPECIFIC_STATE",
+            "UCM-F013-SPLIT_TRANSITION_CORE",
+        ),
+    ),
+    MutantSpec(
+        "CounterfactualMutator", _gates("C16"), ("UCM-F012-QUERY_MUTATES_FACT",)
+    ),
+    MutantSpec(
+        "NoOpMeansStop", _gates("C17"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)
+    ),
+    MutantSpec(
+        "PlanMeansPerformed", _gates("C18"), ("UCM-F014-ACTION_SEMANTICS_CONFLATED",)
+    ),
+    MutantSpec(
+        "ActionAsConditioning",
+        _gates("C19"),
+        ("UCM-F015-CONDITIONING_AS_INTERVENTION",),
+    ),
+    MutantSpec(
+        "NonIdPointEstimate", _gates("C19"), ("UCM-F015-CONDITIONING_AS_INTERVENTION",)
+    ),
+    MutantSpec(
+        "ObservationEqualsMechanism",
+        _gates("C20"),
+        ("UCM-F014-ACTION_SEMANTICS_CONFLATED",),
+    ),
+    MutantSpec(
+        "ReplayBatchDivergence",
+        _gates("C21 C22"),
+        ("UCM-F019-UPDATE_INCONSISTENT", "UCM-F010-UPDATE_NOT_RECURSIVE"),
+    ),
     MutantSpec("DoubleCountEvent", _gates("C22"), ("UCM-F019-UPDATE_INCONSISTENT",)),
-    MutantSpec("TripleLatentBlob", _gates("C21 C26 C32 C33"), ("UCM-F005-TASK_SPECIFIC_STATE",)),
+    MutantSpec(
+        "TripleLatentBlob", _gates("C21 C26 C32 C33"), ("UCM-F005-TASK_SPECIFIC_STATE",)
+    ),
     MutantSpec("UnsafeClosedWorld", _gates("C25"), ("UCM-F017-OOD_FORCED_MATCH",)),
-    MutantSpec("DangerousMeanCompressor", _gates("C24"), ("UCM-F016-DANGEROUS_COLLISION",)),
+    MutantSpec(
+        "DangerousMeanCompressor", _gates("C24"), ("UCM-F016-DANGEROUS_COLLISION",)
+    ),
 )
 
 
@@ -301,7 +394,7 @@ SPECIFICITY_CONTROLS: tuple[SpecificityControlSpec, ...] = (
 
 
 PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL = "ucm-portable-execution-cases/1"
-PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS = "ucm-portable-semantic-probes/6"
+PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS = "ucm-portable-semantic-probes/7"
 EXECUTION_CASE_SEED_STRIDE = 16
 EXECUTION_CASE_MAIN_OFFSETS = (0, 1, 2, 3)
 UPDATE_CONSISTENCY_LINEAGE_OFFSETS = (0, 1, 2)
@@ -360,7 +453,9 @@ class PortableExecutionCaseSpec:
                 "portable execution case semantic_probes must be a sorted unique tuple"
             )
         if self.head_record_shape not in {"empty", "replay_ddrr"}:
-            raise ProtocolViolation("portable execution case head_record_shape is invalid")
+            raise ProtocolViolation(
+                "portable execution case head_record_shape is invalid"
+            )
 
         mutant_by_id = {item.mutant_id: item for item in MUTANT_SPECS}
         control_by_id = {item.control_id: item for item in SPECIFICITY_CONTROLS}
@@ -474,36 +569,310 @@ def _specificity_case(
 # implemented in compliance.py; their executions honestly become non-decisive
 # CRASHED rows and keep PRE-FREEZE/HARNESS_INCOMPLETE status.
 PORTABLE_EXECUTION_CASES: tuple[PortableExecutionCaseSpec, ...] = (
-    _mutant_case("case.mutant.GlobalSecondState.C04.v1", "C04/C05/C15-warm-cold-equivalence", 0, "GlobalSecondState", "GlobalSecondStateControl", "C04", "UCM-F006-HIDDEN_PATIENT_CACHE", head_record_shape="replay_ddrr"),
-    _mutant_case("case.mutant.FileHandleState.C07.v1", "C07-state-closed-schema", 1, "FileHandleState", "FileHandleStateControl", "C07", "UCM-F008-STATE_NOT_CLOSED"),
-    _mutant_case("case.mutant.RawHistoryHead.C02.v1", "C02-head-history-denial", 2, "RawHistoryHead", "RawHistoryHeadControl", "C02", "UCM-F004-HEAD_HISTORY_ACCESS"),
-    _mutant_case("case.mutant.TrainerTargetSmuggler.C08.v1", "C08-candidate-view-physical-isolation", 3, "TrainerTargetSmuggler", "TrainerTargetSmugglerControl", "C08", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
-    _mutant_case("case.mutant.HistoryInBlob.C27.v1", "C27-fixed-codec-full-history-disclosure", 4, "HistoryInBlob", "HistoryInBlobControl", "C27", "UCM-F018-FULL_HISTORY_MISCLAIM", ("full_history_disclosure",), "replay_ddrr"),
-    _mutant_case("case.mutant.MutableCheckpoint.C06.v1", "C06-model-immutability", 5, "MutableCheckpoint", "MutableCheckpointControl", "C06", "UCM-F009-MODEL_MUTATION"),
-    _mutant_case("case.mutant.WarmFutureCache.C23.v1", "C23-late-event-old-cut-stability", 6, "WarmFutureCache", "WarmFutureCacheControl", "C23", "UCM-F001-FUTURE_LEAK", ("warm_future_old_cut",), "replay_ddrr"),
-    _mutant_case("case.mutant.AvailabilityOffByOne.C11.v1", "C11-availability-boundary", 7, "AvailabilityOffByOne", "AvailabilityOffByOneControl", "C11", "UCM-F011-TIME_VISIBILITY_VIOLATION"),
-    _mutant_case("case.mutant.TrueStateReader.C08.v1", "C08-candidate-view-physical-isolation", 8, "TrueStateReader", "TrueStateReaderControl", "C08", "UCM-F002-ORACLE_TRUE_STATE_ACCESS"),
-    _mutant_case("case.mutant.FutureReader.C08.v1", "C08-candidate-view-physical-isolation", 9, "FutureReader", "FutureReaderControl", "C08", "UCM-F001-FUTURE_LEAK"),
-    _mutant_case("case.mutant.TestIdSwitch.C13.v1", "C13-opaque-alpha-renaming", 10, "TestIdSwitch", "TestIdSwitchControl", "C13", "UCM-F003-TEST_ID_BRANCH"),
-    _mutant_case("case.mutant.WorldNameSwitch.C14.v1", "C14-hidden-test-id-canary", 11, "WorldNameSwitch", "WorldNameSwitchControl", "C14", "UCM-F003-TEST_ID_BRANCH"),
-    _mutant_case("case.mutant.ImplicitRNGState.C30.v1", "C28/C30-explicit-head-replay", 12, "ImplicitRNGState", "ImplicitRNGControl", "C30", "UCM-F020-NONREPRODUCIBLE", head_record_shape="replay_ddrr"),
-    _mutant_case("case.mutant.QuerySmuggler.C03.v1", "C03/C29-task-blind-state-producer", 13, "QuerySmuggler", "QuerySmugglerControl", "C03", "UCM-F005-TASK_SPECIFIC_STATE"),
-    _mutant_case("case.mutant.QueryReencoder.C02.v1", "C02-head-history-denial", 14, "QueryReencoder", "QueryReencoderControl", "C02", "UCM-F004-HEAD_HISTORY_ACCESS"),
-    _mutant_case("case.mutant.CounterfactualMutator.C16.v1", "C16-counterfactual-purity-order", 15, "CounterfactualMutator", "QueryMutatorControl", "C16", "UCM-F012-QUERY_MUTATES_FACT"),
-    _mutant_case("case.mutant.NoOpMeansStop.C17.v1", "C17-no-op-semantics", 16, "NoOpMeansStop", "NoOpMeansStopControl", "C17", "UCM-F014-ACTION_SEMANTICS_CONFLATED"),
-    _mutant_case("case.mutant.PlanMeansPerformed.C18.v1", "C18-plan-performed-separation", 17, "PlanMeansPerformed", "PlanMeansPerformedControl", "C18", "UCM-F014-ACTION_SEMANTICS_CONFLATED"),
-    _mutant_case("case.mutant.ActionAsConditioning.C19.v1", "C19-condition-do-separation", 18, "ActionAsConditioning", "ActionAsConditioningControl", "C19", "UCM-F015-CONDITIONING_AS_INTERVENTION"),
-    _mutant_case("case.mutant.NonIdPointEstimate.C19.v1", "C19-nonidentified-effect-set", 19, "NonIdPointEstimate", "NonIdPointEstimateControl", "C19", "UCM-F015-CONDITIONING_AS_INTERVENTION", ("nonidentified_set",), "replay_ddrr"),
-    _mutant_case("case.mutant.ObservationEqualsMechanism.C20.v1", "C20-observation-state-channel-separation", 20, "ObservationEqualsMechanism", "ObservationEqualsMechanismControl", "C20", "UCM-F014-ACTION_SEMANTICS_CONFLATED", ("observation_channel_separation",), "replay_ddrr"),
-    _mutant_case("case.mutant.ReplayBatchDivergence.C22.v1", "C22-incremental-replay-duplicate-equivalence", 21, "ReplayBatchDivergence", "ReplayBatchDivergenceControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
-    _mutant_case("case.mutant.DoubleCountEvent.C22.v1", "C22-incremental-replay-duplicate-equivalence", 22, "DoubleCountEvent", "DoubleCountEventControl", "C22", "UCM-F019-UPDATE_INCONSISTENT", ("update_consistency",), "replay_ddrr"),
-    _mutant_case("case.mutant.TripleLatentBlob.C33.v1", "C33-patient-state-root-audit", 23, "TripleLatentBlob", "TripleLatentBlobControl", "C33", "UCM-F005-TASK_SPECIFIC_STATE"),
-    _mutant_case("case.mutant.UnsafeClosedWorld.C25.v1", "C25-attributable-ood-forced-match", 24, "UnsafeClosedWorld", "UnsafeClosedWorldControl", "C25", "UCM-F017-OOD_FORCED_MATCH", ("unsafe_closed_world",), "replay_ddrr"),
-    _mutant_case("case.mutant.DangerousMeanCompressor.C24.v1", "C24-full-pair-dangerous-collision", 25, "DangerousMeanCompressor", "DangerousMeanCompressorControl", "C24", "UCM-F016-DANGEROUS_COLLISION", ("dangerous_collision",), "replay_ddrr"),
-    _specificity_case("case.specificity.ExplicitSeedStochasticState.v1", "probe.specificity.ExplicitSeedStochasticState.v1", 26, "ExplicitSeedStochasticState", "HonestSeededControl", "ordinary_candidate", ("full_history_disclosure", "update_consistency", "warm_future_old_cut")),
-    _specificity_case("case.specificity.BehaviorEquivalentSerialization.v1", "probe.specificity.BehaviorEquivalentSerialization.v1", 27, "BehaviorEquivalentSerialization", "BehaviorEquivalentSerializationControl", "ordinary_candidate", ("update_consistency",)),
-    _specificity_case("case.specificity.DeclaredFullHistoryBaseline.v1", "probe.specificity.DeclaredFullHistoryBaseline.v1", 28, "DeclaredFullHistoryBaseline", "DeclaredFullHistoryBaselineControl", "baseline_only", ("full_history_disclosure",)),
-    _specificity_case("case.specificity.CorrectNonidentifiedSet.v1", "probe.specificity.CorrectNonidentifiedSet.v1", 29, "CorrectNonidentifiedSet", "CorrectNonidentifiedSetControl", "ordinary_candidate", ("nonidentified_set",)),
+    _mutant_case(
+        "case.mutant.GlobalSecondState.C04.v1",
+        "C04/C05/C15-warm-cold-equivalence",
+        0,
+        "GlobalSecondState",
+        "GlobalSecondStateControl",
+        "C04",
+        "UCM-F006-HIDDEN_PATIENT_CACHE",
+        head_record_shape="replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.FileHandleState.C07.v1",
+        "C07-state-closed-schema",
+        1,
+        "FileHandleState",
+        "FileHandleStateControl",
+        "C07",
+        "UCM-F008-STATE_NOT_CLOSED",
+    ),
+    _mutant_case(
+        "case.mutant.RawHistoryHead.C02.v1",
+        "C02-head-history-denial",
+        2,
+        "RawHistoryHead",
+        "RawHistoryHeadControl",
+        "C02",
+        "UCM-F004-HEAD_HISTORY_ACCESS",
+    ),
+    _mutant_case(
+        "case.mutant.TrainerTargetSmuggler.C08.v1",
+        "C08-candidate-view-physical-isolation",
+        3,
+        "TrainerTargetSmuggler",
+        "TrainerTargetSmugglerControl",
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+    ),
+    _mutant_case(
+        "case.mutant.HistoryInBlob.C27.v1",
+        "C27-fixed-codec-full-history-disclosure",
+        4,
+        "HistoryInBlob",
+        "HistoryInBlobControl",
+        "C27",
+        "UCM-F018-FULL_HISTORY_MISCLAIM",
+        ("full_history_disclosure",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.MutableCheckpoint.C06.v1",
+        "C06-model-immutability",
+        5,
+        "MutableCheckpoint",
+        "MutableCheckpointControl",
+        "C06",
+        "UCM-F009-MODEL_MUTATION",
+    ),
+    _mutant_case(
+        "case.mutant.WarmFutureCache.C23.v1",
+        "C23-late-event-old-cut-stability",
+        6,
+        "WarmFutureCache",
+        "WarmFutureCacheControl",
+        "C23",
+        "UCM-F001-FUTURE_LEAK",
+        ("warm_future_old_cut",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.AvailabilityOffByOne.C11.v1",
+        "C11-availability-boundary",
+        7,
+        "AvailabilityOffByOne",
+        "AvailabilityOffByOneControl",
+        "C11",
+        "UCM-F011-TIME_VISIBILITY_VIOLATION",
+        ("availability_boundary",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.TrueStateReader.C08.v1",
+        "C08-candidate-view-physical-isolation",
+        8,
+        "TrueStateReader",
+        "TrueStateReaderControl",
+        "C08",
+        "UCM-F002-ORACLE_TRUE_STATE_ACCESS",
+    ),
+    _mutant_case(
+        "case.mutant.FutureReader.C08.v1",
+        "C08-candidate-view-physical-isolation",
+        9,
+        "FutureReader",
+        "FutureReaderControl",
+        "C08",
+        "UCM-F001-FUTURE_LEAK",
+    ),
+    _mutant_case(
+        "case.mutant.TestIdSwitch.C14.v1",
+        "C14-hidden-test-id-canary",
+        10,
+        "TestIdSwitch",
+        "TestIdSwitchControl",
+        "C14",
+        "UCM-F003-TEST_ID_BRANCH",
+        ("hidden_test_id_canary",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.WorldNameSwitch.C13.v1",
+        "C13-opaque-alpha-renaming",
+        11,
+        "WorldNameSwitch",
+        "WorldNameSwitchControl",
+        "C13",
+        "UCM-F003-TEST_ID_BRANCH",
+        ("opaque_alpha_renaming",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.ImplicitRNGState.C30.v1",
+        "C28/C30-explicit-head-replay",
+        12,
+        "ImplicitRNGState",
+        "ImplicitRNGControl",
+        "C30",
+        "UCM-F020-NONREPRODUCIBLE",
+        head_record_shape="replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.QuerySmuggler.C03.v1",
+        "C03/C29-task-blind-state-producer",
+        13,
+        "QuerySmuggler",
+        "QuerySmugglerControl",
+        "C03",
+        "UCM-F005-TASK_SPECIFIC_STATE",
+        ("task_blind_state",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.QueryReencoder.C02.v1",
+        "C02-head-history-denial",
+        14,
+        "QueryReencoder",
+        "QueryReencoderControl",
+        "C02",
+        "UCM-F004-HEAD_HISTORY_ACCESS",
+    ),
+    _mutant_case(
+        "case.mutant.CounterfactualMutator.C16.v1",
+        "C16-counterfactual-purity-order",
+        15,
+        "CounterfactualMutator",
+        "QueryMutatorControl",
+        "C16",
+        "UCM-F012-QUERY_MUTATES_FACT",
+    ),
+    _mutant_case(
+        "case.mutant.NoOpMeansStop.C17.v1",
+        "C17-no-op-semantics",
+        16,
+        "NoOpMeansStop",
+        "NoOpMeansStopControl",
+        "C17",
+        "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+        ("no_op_semantics",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.PlanMeansPerformed.C18.v1",
+        "C18-plan-performed-separation",
+        17,
+        "PlanMeansPerformed",
+        "PlanMeansPerformedControl",
+        "C18",
+        "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+        ("plan_performed_separation",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.ActionAsConditioning.C19.v1",
+        "C19-condition-do-separation",
+        18,
+        "ActionAsConditioning",
+        "ActionAsConditioningControl",
+        "C19",
+        "UCM-F015-CONDITIONING_AS_INTERVENTION",
+        ("condition_do_separation",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.NonIdPointEstimate.C19.v1",
+        "C19-nonidentified-effect-set",
+        19,
+        "NonIdPointEstimate",
+        "NonIdPointEstimateControl",
+        "C19",
+        "UCM-F015-CONDITIONING_AS_INTERVENTION",
+        ("nonidentified_set",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.ObservationEqualsMechanism.C20.v1",
+        "C20-observation-state-channel-separation",
+        20,
+        "ObservationEqualsMechanism",
+        "ObservationEqualsMechanismControl",
+        "C20",
+        "UCM-F014-ACTION_SEMANTICS_CONFLATED",
+        ("observation_channel_separation",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.ReplayBatchDivergence.C22.v1",
+        "C22-incremental-replay-duplicate-equivalence",
+        21,
+        "ReplayBatchDivergence",
+        "ReplayBatchDivergenceControl",
+        "C22",
+        "UCM-F019-UPDATE_INCONSISTENT",
+        ("update_consistency",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.DoubleCountEvent.C22.v1",
+        "C22-incremental-replay-duplicate-equivalence",
+        22,
+        "DoubleCountEvent",
+        "DoubleCountEventControl",
+        "C22",
+        "UCM-F019-UPDATE_INCONSISTENT",
+        ("update_consistency",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.TripleLatentBlob.C33.v1",
+        "C33-patient-state-root-audit",
+        23,
+        "TripleLatentBlob",
+        "TripleLatentBlobControl",
+        "C33",
+        "UCM-F005-TASK_SPECIFIC_STATE",
+        ("patient_state_root",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.UnsafeClosedWorld.C25.v1",
+        "C25-attributable-ood-forced-match",
+        24,
+        "UnsafeClosedWorld",
+        "UnsafeClosedWorldControl",
+        "C25",
+        "UCM-F017-OOD_FORCED_MATCH",
+        ("unsafe_closed_world",),
+        "replay_ddrr",
+    ),
+    _mutant_case(
+        "case.mutant.DangerousMeanCompressor.C24.v1",
+        "C24-full-pair-dangerous-collision",
+        25,
+        "DangerousMeanCompressor",
+        "DangerousMeanCompressorControl",
+        "C24",
+        "UCM-F016-DANGEROUS_COLLISION",
+        ("dangerous_collision",),
+        "replay_ddrr",
+    ),
+    _specificity_case(
+        "case.specificity.ExplicitSeedStochasticState.v1",
+        "probe.specificity.ExplicitSeedStochasticState.v1",
+        26,
+        "ExplicitSeedStochasticState",
+        "HonestSeededControl",
+        "ordinary_candidate",
+        ("full_history_disclosure", "update_consistency", "warm_future_old_cut"),
+    ),
+    _specificity_case(
+        "case.specificity.BehaviorEquivalentSerialization.v1",
+        "probe.specificity.BehaviorEquivalentSerialization.v1",
+        27,
+        "BehaviorEquivalentSerialization",
+        "BehaviorEquivalentSerializationControl",
+        "ordinary_candidate",
+        ("update_consistency",),
+    ),
+    _specificity_case(
+        "case.specificity.DeclaredFullHistoryBaseline.v1",
+        "probe.specificity.DeclaredFullHistoryBaseline.v1",
+        28,
+        "DeclaredFullHistoryBaseline",
+        "DeclaredFullHistoryBaselineControl",
+        "baseline_only",
+        ("full_history_disclosure",),
+    ),
+    _specificity_case(
+        "case.specificity.CorrectNonidentifiedSet.v1",
+        "probe.specificity.CorrectNonidentifiedSet.v1",
+        29,
+        "CorrectNonidentifiedSet",
+        "CorrectNonidentifiedSetControl",
+        "ordinary_candidate",
+        ("nonidentified_set",),
+    ),
 )
 
 
@@ -565,18 +934,12 @@ def portable_runner_contract(runner_protocol: str) -> dict[str, Any]:
     _name(runner_protocol, "portable runner contract runner_protocol")
     return {
         "runner_protocol": runner_protocol,
-        "execution_case_registry_protocol": (
-            PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL
-        ),
+        "execution_case_registry_protocol": (PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL),
         "runner_semantic_probe_protocol_alias": PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS,
         "execution_case_seed_stride": EXECUTION_CASE_SEED_STRIDE,
         "execution_case_main_offsets": list(EXECUTION_CASE_MAIN_OFFSETS),
-        "update_consistency_lineage_offsets": list(
-            UPDATE_CONSISTENCY_LINEAGE_OFFSETS
-        ),
-        "update_consistency_lineage_xor_mask": (
-            UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
-        ),
+        "update_consistency_lineage_offsets": list(UPDATE_CONSISTENCY_LINEAGE_OFFSETS),
+        "update_consistency_lineage_xor_mask": (UPDATE_CONSISTENCY_LINEAGE_XOR_MASK),
         "execution_cases": [item.to_wire() for item in PORTABLE_EXECUTION_CASES],
     }
 
@@ -585,9 +948,7 @@ def _case_seed_domain(
     base_seed: int, case: PortableExecutionCaseSpec
 ) -> frozenset[int]:
     execution_seed = execution_seed_for_case(base_seed, case)
-    seeds = {
-        execution_seed + offset for offset in EXECUTION_CASE_MAIN_OFFSETS
-    }
+    seeds = {execution_seed + offset for offset in EXECUTION_CASE_MAIN_OFFSETS}
     if max(seeds) >= 2**64:
         raise ProtocolViolation(
             "base_seed and code-owned operation seeds must fit unsigned 64-bit integer"
@@ -595,8 +956,7 @@ def _case_seed_domain(
     if "update_consistency" in case.semantic_probes:
         lineage_seed = execution_seed ^ UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
         lineage = {
-            lineage_seed + offset
-            for offset in UPDATE_CONSISTENCY_LINEAGE_OFFSETS
+            lineage_seed + offset for offset in UPDATE_CONSISTENCY_LINEAGE_OFFSETS
         }
         if max(lineage) >= 2**64:
             raise ProtocolViolation(
@@ -617,29 +977,21 @@ def _validate_base_seed_execution_domain(base_seed: object, label: str) -> int:
         for derived_seed in _case_seed_domain(checked_base_seed, case):
             previous = owners.setdefault(derived_seed, case.execution_case_id)
             if previous != case.execution_case_id:
-                raise ProtocolViolation(
-                    f"{label} causes cross-case derived seed reuse"
-                )
+                raise ProtocolViolation(f"{label} causes cross-case derived seed reuse")
     return checked_base_seed
 
 
 def _registry_wire() -> dict[str, Any]:
     return {
         "protocol": MATRIX_PROTOCOL,
-        "execution_case_registry_protocol": (
-            PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL
-        ),
+        "execution_case_registry_protocol": (PORTABLE_EXECUTION_CASE_REGISTRY_PROTOCOL),
         "portable_semantic_probe_protocol_alias": (
             PORTABLE_SEMANTIC_PROBE_PROTOCOL_ALIAS
         ),
         "execution_case_seed_stride": EXECUTION_CASE_SEED_STRIDE,
         "execution_case_main_offsets": list(EXECUTION_CASE_MAIN_OFFSETS),
-        "update_consistency_lineage_offsets": list(
-            UPDATE_CONSISTENCY_LINEAGE_OFFSETS
-        ),
-        "update_consistency_lineage_xor_mask": (
-            UPDATE_CONSISTENCY_LINEAGE_XOR_MASK
-        ),
+        "update_consistency_lineage_offsets": list(UPDATE_CONSISTENCY_LINEAGE_OFFSETS),
+        "update_consistency_lineage_xor_mask": (UPDATE_CONSISTENCY_LINEAGE_XOR_MASK),
         "gates": [gate.to_wire() for gate in GATE_SPECS],
         "mutants": [mutant.to_wire() for mutant in MUTANT_SPECS],
         "specificity_controls": [control.to_wire() for control in SPECIFICITY_CONTROLS],
@@ -706,9 +1058,13 @@ def evaluate_mutation_matrix(
         if row.subject_kind is SubjectKind.MUTANT:
             spec = mutant_by_id.get(row.subject_id)
             if spec is None:
-                raise ProtocolViolation(f"unknown mutant observation {row.subject_id!r}")
+                raise ProtocolViolation(
+                    f"unknown mutant observation {row.subject_id!r}"
+                )
             if row.classification is not None:
-                raise ProtocolViolation("mutant observation cannot carry classification")
+                raise ProtocolViolation(
+                    "mutant observation cannot carry classification"
+                )
             gate_spec = gate_by_id.get(row.actual_gate)
             valid = (
                 row.outcome is ObservationOutcome.KILLED

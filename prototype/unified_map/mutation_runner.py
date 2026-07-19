@@ -19,7 +19,7 @@ from dataclasses import fields, is_dataclass
 from enum import Enum
 from functools import lru_cache
 from pathlib import PurePosixPath
-from types import CodeType
+from types import CodeType, ModuleType
 from typing import Any
 
 from .candidate_protocol import (
@@ -63,7 +63,7 @@ from .mutation_evidence import (
 from .schema import DiagnosisQuery, RolloutQuery, VisibleDelta, VisibleHistory
 
 
-RUNNER_PROTOCOL = "ucm-portable-mutation-runner/19"
+RUNNER_PROTOCOL = "ucm-portable-mutation-runner/20"
 
 
 def _runtime_metadata() -> dict[str, Any]:
@@ -101,7 +101,9 @@ def _registered_runtime_reference(value: Any, label: str) -> dict[str, Any]:
         name for name, candidate in vars(owner).items() if candidate is value
     )
     if not aliases:
-        raise ProtocolViolation(f"runtime singleton has no registered alias for {label}")
+        raise ProtocolViolation(
+            f"runtime singleton has no registered alias for {label}"
+        )
     safe_singletons = {
         ("dataclasses", "MISSING"),
         ("dataclasses", "_HAS_DEFAULT_FACTORY"),
@@ -144,7 +146,9 @@ def _registered_class_binding(value: Any, label: str) -> dict[str, Any]:
             )
         aliases = sorted(set(aliases))
     if not aliases:
-        raise ProtocolViolation(f"runtime class has no registered owner alias for {label}")
+        raise ProtocolViolation(
+            f"runtime class has no registered owner alias for {label}"
+        )
     qualname = type.__getattribute__(value, "__qualname__")
     if type(qualname) is not str:
         raise ProtocolViolation(f"runtime class has malformed qualname for {label}")
@@ -261,8 +265,7 @@ def _stable_code_constant_binding(
             _depth=_depth + 1,
         )
     raise ProtocolViolation(
-        f"unsupported code constant {kind.__module__}.{kind.__qualname__} "
-        f"for {label}"
+        f"unsupported code constant {kind.__module__}.{kind.__qualname__} for {label}"
     )
 
 
@@ -276,7 +279,9 @@ def _stable_code_binding(
     """Canonicalize an exact code object independently of adaptive caches."""
 
     if type(code) is not CodeType:
-        raise ProtocolViolation(f"runtime value is not an exact code object for {label}")
+        raise ProtocolViolation(
+            f"runtime value is not an exact code object for {label}"
+        )
     if _depth > 32:
         raise ProtocolViolation(f"code binding depth exceeded for {label}")
     if _seen is None:
@@ -394,7 +399,9 @@ def _code_global_names(code: CodeType, label: str) -> tuple[str, ...]:
     """
 
     if type(code) is not CodeType:
-        raise ProtocolViolation(f"runtime value is not an exact code object for {label}")
+        raise ProtocolViolation(
+            f"runtime value is not an exact code object for {label}"
+        )
     pending = [code]
     seen: set[int] = set()
     names: set[str] = set()
@@ -419,13 +426,10 @@ def _code_global_names(code: CodeType, label: str) -> tuple[str, ...]:
             raise
         except Exception as exc:
             raise ProtocolViolation(
-                f"cannot inspect global dependencies for {label}: "
-                f"{type(exc).__name__}"
+                f"cannot inspect global dependencies for {label}: {type(exc).__name__}"
             ) from exc
         pending.extend(
-            constant
-            for constant in current.co_consts
-            if type(constant) is CodeType
+            constant for constant in current.co_consts if type(constant) is CodeType
         )
     return tuple(sorted(names))
 
@@ -434,7 +438,9 @@ def _code_stored_global_names(code: CodeType, label: str) -> tuple[str, ...]:
     """Return module slots explicitly mutated by a callable or nested code."""
 
     if type(code) is not CodeType:
-        raise ProtocolViolation(f"runtime value is not an exact code object for {label}")
+        raise ProtocolViolation(
+            f"runtime value is not an exact code object for {label}"
+        )
     pending = [code]
     seen: set[int] = set()
     names: set[str] = set()
@@ -458,13 +464,10 @@ def _code_stored_global_names(code: CodeType, label: str) -> tuple[str, ...]:
             raise
         except Exception as exc:
             raise ProtocolViolation(
-                f"cannot inspect stored globals for {label}: "
-                f"{type(exc).__name__}"
+                f"cannot inspect stored globals for {label}: {type(exc).__name__}"
             ) from exc
         pending.extend(
-            constant
-            for constant in current.co_consts
-            if type(constant) is CodeType
+            constant for constant in current.co_consts if type(constant) is CodeType
         )
     return tuple(sorted(names))
 
@@ -539,9 +542,7 @@ def _registered_callable_reference(value: Any, label: str) -> dict[str, Any]:
                 f"callable dependency has no owner alias for {label}"
             )
         anchors = globals().get("_SOURCE_IDENTITY_ANCHORS")
-        bound_modules = (
-            anchors.get("modules") if type(anchors) is dict else None
-        )
+        bound_modules = anchors.get("modules") if type(anchors) is dict else None
         if type(bound_modules) is not dict:
             raise ProtocolViolation(f"malformed source module anchors for {label}")
         anchored_owner = False
@@ -565,7 +566,9 @@ def _registered_callable_reference(value: Any, label: str) -> dict[str, Any]:
                 type(bound_name) is not str
                 or sys.modules.get(bound_name) is not bound_module
             ):
-                raise ProtocolViolation(f"unregistered source module anchor for {label}")
+                raise ProtocolViolation(
+                    f"unregistered source module anchor for {label}"
+                )
             discovered.update(
                 f"{bound_name}.{name}"
                 for name, candidate in vars(bound_module).items()
@@ -653,9 +656,7 @@ def _resolved_global_dependencies(
     # read it in another.  Determine mutability from the whole owning module,
     # not only from the current function.  The code-tuple cache invalidates on
     # every live function replacement.
-    stored_names = _stored_global_names_for_codes(
-        _module_live_codes(globals_mapping)
-    )
+    stored_names = _stored_global_names_for_codes(_module_live_codes(globals_mapping))
     builtins_value = globals_mapping.get("__builtins__", builtins)
     if inspect.ismodule(builtins_value):
         if builtins_value is not builtins:
@@ -692,7 +693,9 @@ def _resolved_global_dependencies(
         builtin_value = builtins_mapping[name]
         canonical_builtin = vars(builtins).get(name)
         if builtin_value is not canonical_builtin:
-            raise ProtocolViolation(f"rewritten builtin dependency {name!r} for {label}")
+            raise ProtocolViolation(
+                f"rewritten builtin dependency {name!r} for {label}"
+            )
         dependencies[name] = {
             "resolution": "builtins",
             "binding": (
@@ -750,9 +753,7 @@ def _runtime_value_binding(
     if type(anchors) is dict:
         external_aliases = sorted(
             name
-            for name, expected in anchors.get(
-                "external_attributes", {}
-            ).items()
+            for name, expected in anchors.get("external_attributes", {}).items()
             if value is expected
         )
         if external_aliases:
@@ -764,9 +765,7 @@ def _runtime_value_binding(
                 "type": f"{type(value).__module__}.{type(value).__qualname__}",
             }
         surface_aliases: list[str] = []
-        for surface_name, surface in anchors.get(
-            "external_class_surfaces", {}
-        ).items():
+        for surface_name, surface in anchors.get("external_class_surfaces", {}).items():
             if value is surface.get("class"):
                 surface_aliases.append(surface_name)
             for descriptor_name, (_, descriptor) in surface.get(
@@ -783,9 +782,7 @@ def _runtime_value_binding(
     if isinstance(value, Enum):
         return {
             "kind": "enum-member",
-            "enum": _registered_class_binding(
-                type(value), f"{label}.enum_class"
-            ),
+            "enum": _registered_class_binding(type(value), f"{label}.enum_class"),
             "name": value.name,
             "value": _runtime_value_binding(
                 value.value,
@@ -869,9 +866,7 @@ def _runtime_value_binding(
         if is_dataclass(value) and not inspect.isclass(value):
             return {
                 "kind": "dataclass",
-                "type": _registered_class_binding(
-                    kind, f"{label}.dataclass_type"
-                ),
+                "type": _registered_class_binding(kind, f"{label}.dataclass_type"),
                 "fields": {
                     field.name: _runtime_value_binding(
                         getattr(value, field.name),
@@ -1054,8 +1049,7 @@ def _live_module_code_binding(module: Any) -> dict[str, Any]:
     functions: dict[str, str] = {}
     classes: dict[str, dict[str, str]] = {}
     bound_module_names = {
-        value.__name__
-        for value in _SOURCE_IDENTITY_ANCHORS["modules"].values()
+        value.__name__ for value in _SOURCE_IDENTITY_ANCHORS["modules"].values()
     }
     for name, value in sorted(vars(module).items()):
         if _is_bindable_callable(value, f"{module.__name__}.{name}"):
@@ -1366,7 +1360,11 @@ def _adjudicator_external_attributes(
     )
     attributes: dict[str, Any] = {}
     for consumer, owner, names in consumers:
-        if not inspect.ismodule(owner):
+        # Do not use the very ``inspect.ismodule`` callable whose live identity
+        # this contract is meant to attest.  If that callable is rewritten, the
+        # inventory must still materialize far enough for the exact external-
+        # attribute comparison below to report the tamper deterministically.
+        if not isinstance(owner, ModuleType):
             raise ProtocolViolation(
                 f"adjudicator external owner is not a module: {consumer}"
             )
@@ -1664,9 +1662,9 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "suffix",
         "parts",
     ):
-        external_attributes[
-            f"candidate_protocol.concrete_Path.{name}"
-        ] = getattr(concrete_path_type, name)
+        external_attributes[f"candidate_protocol.concrete_Path.{name}"] = getattr(
+            concrete_path_type, name
+        )
     external_attributes["candidate_protocol.concrete_Path.cwd.__func__"] = (
         concrete_path_type.cwd.__func__
     )
@@ -1789,9 +1787,7 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
             "value": value,
             "code": value.__code__ if inspect.isfunction(value) else None,
         }
-        for label, value in _nested_external_dispatch_roots(
-            candidate_protocol
-        ).items()
+        for label, value in _nested_external_dispatch_roots(candidate_protocol).items()
     }
     return {
         "modules": modules,
@@ -1805,9 +1801,7 @@ def _capture_source_identity_anchors() -> dict[str, Any]:
         "prewarm_callables": prewarm_callables,
         "prewarm_constants": prewarm_constants,
         "runtime_import_roots": tuple(sorted(set(runtime_roots))),
-        "approved_runtime_archives": tuple(
-            sorted(set(approved_runtime_archives))
-        ),
+        "approved_runtime_archives": tuple(sorted(set(approved_runtime_archives))),
         "runtime_path_separator": candidate_protocol.os.sep,
         "worker_executable": {
             "resolved_path": str(executable_path),
@@ -1835,9 +1829,7 @@ def _source_identity_anchor_contract(
                 f"critical alias identity mismatch: module {logical_name}"
             )
         namespace = vars(module)
-        for alias, (kind, expected) in sorted(
-            expected_aliases[logical_name].items()
-        ):
+        for alias, (kind, expected) in sorted(expected_aliases[logical_name].items()):
             current = namespace.get(alias)
             if current is not expected:
                 raise ProtocolViolation(
@@ -1854,8 +1846,7 @@ def _source_identity_anchor_contract(
                     "owner": type.__getattribute__(expected, "__module__"),
                     "qualname": type.__getattribute__(expected, "__qualname__"),
                     "metaclass": (
-                        f"{type(expected).__module__}."
-                        f"{type(expected).__qualname__}"
+                        f"{type(expected).__module__}.{type(expected).__qualname__}"
                     ),
                     "mro": [
                         f"{type.__getattribute__(base, '__module__')}."
@@ -1917,9 +1908,7 @@ def _external_callable_identity_binding(value: Any, label: str) -> dict[str, Any
     if inspect.isclass(value):
         return _registered_class_binding(value, label)
     if inspect.isfunction(value):
-        return _live_callable_binding(
-            value, label, _bind_global_dependencies=False
-        )
+        return _live_callable_binding(value, label, _bind_global_dependencies=False)
     if inspect.isbuiltin(value):
         return _registered_callable_reference(value, label)
     raise ProtocolViolation(f"critical external attribute is not callable: {label}")
@@ -2184,9 +2173,7 @@ def _external_attribute_identity_contract(
     return rows
 
 
-def _external_global_dispatch_contract(
-    *, candidate_protocol: Any
-) -> dict[str, Any]:
+def _external_global_dispatch_contract(*, candidate_protocol: Any) -> dict[str, Any]:
     """Verify transitive stdlib Python globals and selected C/module slots."""
 
     expected_roots = _SOURCE_IDENTITY_ANCHORS["external_global_roots"]
@@ -2239,9 +2226,7 @@ def _external_global_dispatch_contract(
 
     python_rows = verify(live_roots, expected_roots, "Python-global root")
     live_nested = _nested_external_dispatch_roots(candidate_protocol)
-    expected_nested = _SOURCE_IDENTITY_ANCHORS[
-        "nested_external_dispatch_roots"
-    ]
+    expected_nested = _SOURCE_IDENTITY_ANCHORS["nested_external_dispatch_roots"]
     if set(live_nested) != set(expected_nested):
         raise ProtocolViolation("nested external dispatch root set mismatch")
     nested_rows = verify(live_nested, expected_nested, "nested-dispatch root")
@@ -2579,9 +2564,7 @@ def _prewarm_runtime_inventory_authority_contract() -> dict[str, Any]:
         "source_identities_digest": digest_json(source_identities),
         "internal_callables": internal_callables,
         "external_attributes_digest": digest_json(external_attributes),
-        "external_global_dispatch_digest": digest_json(
-            external_global_dispatch
-        ),
+        "external_global_dispatch_digest": digest_json(external_global_dispatch),
         "external_class_surfaces_digest": digest_json(external_surfaces),
         "external_runtime_objects_digest": digest_json(external_objects),
         "external_runtime_values_digest": digest_json(external_values),
@@ -2624,9 +2607,7 @@ def _runtime_import_cache_contract(*, candidate_protocol: Any) -> dict[str, Any]
         if candidate_protocol._normalized_file_path(value) != value:
             raise ProtocolViolation(f"{label} is not a canonical normalized path")
         parts = {
-            part.casefold()
-            for part in value.replace("\\", "/").split("/")
-            if part
+            part.casefold() for part in value.replace("\\", "/").split("/") if part
         }
         if parts & forbidden_parts:
             raise ProtocolViolation(f"{label} enters a pruned import tree")
@@ -2665,9 +2646,7 @@ def _runtime_import_cache_contract(*, candidate_protocol: Any) -> dict[str, Any]
             )
         entry_paths.append(path)
         observed_total_bytes += size_bytes
-        entry_rows.append(
-            {"path": path, "size_bytes": size_bytes, "sha256": digest}
-        )
+        entry_rows.append({"path": path, "size_bytes": size_bytes, "sha256": digest})
     if entry_paths != sorted(set(entry_paths)):
         raise ProtocolViolation("runtime import entries must be sorted and unique")
     if actual_files != len(entry_rows) or total_bytes != observed_total_bytes:
@@ -2823,10 +2802,7 @@ def _expected_live_execution_binding(control_class_name: str) -> dict[str, str]:
         or module_path.is_absolute()
         or module_path.as_posix() != module_origin
         or "\\" in module_origin
-        or any(
-            part in {"", ".", ".."} or ":" in part
-            for part in module_path.parts
-        )
+        or any(part in {"", ".", ".."} or ":" in part for part in module_path.parts)
     ):
         raise ProtocolViolation("expected module_origin is not canonical")
     return binding
@@ -2837,12 +2813,9 @@ def _expected_live_execution_binding(control_class_name: str) -> dict[str, str]:
 # row is rejoined to its exact code-owned execution-case preimage before use.
 PortableMutationCase = PortableExecutionCaseSpec
 PORTABLE_MUTATION_CASES: tuple[PortableExecutionCaseSpec, ...] = tuple(
-    case for case in PORTABLE_EXECUTION_CASES
-    if case.subject_kind is SubjectKind.MUTANT
+    case for case in PORTABLE_EXECUTION_CASES if case.subject_kind is SubjectKind.MUTANT
 )
-PORTABLE_SPECIFICITY_CASES: tuple[
-    tuple[str, str, str, frozenset[str]], ...
-] = tuple(
+PORTABLE_SPECIFICITY_CASES: tuple[tuple[str, str, str, frozenset[str]], ...] = tuple(
     (
         case.subject_id,
         case.control_class_name,
@@ -2865,11 +2838,7 @@ def _finding_wire(finding: ComplianceFinding) -> dict[str, Any]:
 
 
 def _exact_digest(value: Any, label: str) -> str:
-    if (
-        type(value) is not str
-        or len(value) != 71
-        or not value.startswith("sha256:")
-    ):
+    if type(value) is not str or len(value) != 71 or not value.startswith("sha256:"):
         raise ProtocolViolation(f"{label} must be a sha256-prefixed digest")
     if any(character not in "0123456789abcdef" for character in value[7:]):
         raise ProtocolViolation(f"{label} must be lowercase hexadecimal")
@@ -2914,10 +2883,7 @@ def _report_execution_binding(
         module_path.is_absolute()
         or module_path.as_posix() != module_origin
         or "\\" in module_origin
-        or any(
-            part in {"", ".", ".."} or ":" in part
-            for part in module_path.parts
-        )
+        or any(part in {"", ".", ".."} or ":" in part for part in module_path.parts)
     ):
         raise ProtocolViolation(
             "report module_origin must be a canonical bundle-relative POSIX path"
@@ -2963,8 +2929,7 @@ def _report_execution_binding(
             type(expected_execution_binding) is not dict
             or set(expected_execution_binding) != set(binding)
             or any(
-                type(value) is not str
-                for value in expected_execution_binding.values()
+                type(value) is not str for value in expected_execution_binding.values()
             )
         ):
             raise ProtocolViolation("live expected execution binding is malformed")
@@ -3099,8 +3064,7 @@ def paired_serialization_equivalence_evidence(
         append_phase("update")
 
     passed = all(
-        phase["state_serializations_distinct"]
-        and phase["semantic_behavior_equivalent"]
+        phase["state_serializations_distinct"] and phase["semantic_behavior_equivalent"]
         for phase in phases
     )
     return {
@@ -3147,9 +3111,7 @@ def _active_portable_execution_rows(
     if code_owned_contract.get("update_consistency_lineage_offsets") != list(
         UPDATE_CONSISTENCY_LINEAGE_OFFSETS
     ):
-        raise ProtocolViolation(
-            "portable update-consistency lineage offsets drifted"
-        )
+        raise ProtocolViolation("portable update-consistency lineage offsets drifted")
 
     by_id = {case.execution_case_id: case for case in PORTABLE_EXECUTION_CASES}
     mutant_rows: list[tuple[int, PortableExecutionCaseSpec, str]] = []
@@ -3183,10 +3145,7 @@ def _active_portable_execution_rows(
             and case.classification == classification
             and frozenset(case.semantic_probes) == semantic_probes
         ]
-        if (
-            len(matches) != 1
-            or matches[0].execution_case_id in selected_ids
-        ):
+        if len(matches) != 1 or matches[0].execution_case_id in selected_ids:
             raise ProtocolViolation(
                 "active portable specificity case is not one code-owned case"
             )
@@ -3205,9 +3164,7 @@ def _enum_runtime_contract(value: Any, label: str) -> dict[str, Any]:
         "members": [
             {
                 "name": member.name,
-                "value": _runtime_value_binding(
-                    member.value, f"{label}.{member.name}"
-                ),
+                "value": _runtime_value_binding(member.value, f"{label}.{member.name}"),
             }
             for member in value
         ],
@@ -3703,9 +3660,7 @@ def _source_binding_witness(
     runtime_import_cache = (
         _prepare_runtime_import_cache()
         if expected_runtime_import_cache_contract_digest is None
-        else _verify_runtime_import_cache(
-            expected_runtime_import_cache_contract_digest
-        )
+        else _verify_runtime_import_cache(expected_runtime_import_cache_contract_digest)
     )
 
     runner_module = sys.modules.get(__name__)
@@ -3751,10 +3706,8 @@ def _source_binding_witness(
     external_class_surfaces = _external_class_surface_contract(
         candidate_protocol=candidate_protocol
     )
-    external_runtime_object_identities = (
-        _external_runtime_object_identity_contract(
-            candidate_protocol=candidate_protocol
-        )
+    external_runtime_object_identities = _external_runtime_object_identity_contract(
+        candidate_protocol=candidate_protocol
     )
     external_runtime_values = _external_runtime_value_contract(
         candidate_protocol=candidate_protocol
@@ -3915,12 +3868,8 @@ def _source_binding_witness(
         "history_max_total_expanded_bytes": (
             compliance._HISTORY_MAX_TOTAL_EXPANDED_BYTES
         ),
-        "world06_rho": _runtime_value_binding(
-            w06.World06._RHO, "World06._RHO"
-        ),
-        "world06_bias": _runtime_value_binding(
-            w06.World06._BIAS, "World06._BIAS"
-        ),
+        "world06_rho": _runtime_value_binding(w06.World06._RHO, "World06._RHO"),
+        "world06_bias": _runtime_value_binding(w06.World06._BIAS, "World06._BIAS"),
         "request_protocol": candidate_protocol.REQUEST_PROTOCOL,
         "response_protocol": candidate_protocol.RESPONSE_PROTOCOL,
         "worker_protocol": candidate_protocol.WORKER_PROTOCOL,
@@ -3963,9 +3912,7 @@ def _source_binding_witness(
         control_class_name
     )
     expected_entrypoint = compliance.control_entrypoint(control_class_name)
-    expected_candidate = (
-        f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
-    )
+    expected_candidate = f"{expected_entrypoint.module}:{expected_entrypoint.qualname}"
     return {
         "protocol": "ucm-portable-control-source-binding/20",
         "control": control_class_name,
@@ -3996,9 +3943,7 @@ def _source_binding_witness(
     }
 
 
-def _source_digest(
-    control_class_name: str, semantic_probes: frozenset[str]
-) -> str:
+def _source_digest(control_class_name: str, semantic_probes: frozenset[str]) -> str:
     """Digest :func:`_source_binding_witness` using canonical JSON bytes."""
 
     return digest_json(_source_binding_witness(control_class_name, semantic_probes))
@@ -4132,9 +4077,12 @@ def _fresh_execution_inputs(
         or (delta is not None and type(delta) is not VisibleDelta)
     ):
         raise ProtocolViolation("runner input reparse returned an inexact schema type")
-    if canonical_json_bytes(
-        _execution_input_wire(history, diagnosis_query, rollout_query, delta)
-    ) != snapshot:
+    if (
+        canonical_json_bytes(
+            _execution_input_wire(history, diagnosis_query, rollout_query, delta)
+        )
+        != snapshot
+    ):
         raise ProtocolViolation("runner input typed reparse did not round-trip exactly")
     return history, diagnosis_query, rollout_query, delta
 
@@ -4158,18 +4106,14 @@ def _assert_execution_inputs_unchanged(
         )
 
 
-def _execution_input_incomplete_error(
-    stage: str, error: Exception
-) -> dict[str, str]:
+def _execution_input_incomplete_error(stage: str, error: Exception) -> dict[str, str]:
     """Retain the typed cause while classifying input closure as E003."""
 
     typed_error = _typed_execution_error(stage, error)
     return {
         "stage": stage,
         "exception_type": "UCM-E003-HARNESS_INCOMPLETE",
-        "message": (
-            f"{typed_error['exception_type']}: {typed_error['message']}"
-        ),
+        "message": (f"{typed_error['exception_type']}: {typed_error['message']}"),
     }
 
 
@@ -4289,8 +4233,7 @@ def _validate_complete_report_transcript(
     if transcript["candidate"] != transcript["expected_candidate"]:
         raise ProtocolViolation("report candidate differs from expected candidate")
     if (
-        pre_source_witness.get("execution_case_id")
-        != transcript["execution_case_id"]
+        pre_source_witness.get("execution_case_id") != transcript["execution_case_id"]
         or pre_source_witness.get("probe_id") != transcript["probe_id"]
     ):
         raise ProtocolViolation("report execution-case/probe differs from pre witness")
@@ -4342,7 +4285,10 @@ def _validate_complete_report_transcript(
             "report request_records cannot prove that candidate execution started"
         )
     for index, request_record in enumerate(request_records):
-        if type(request_record) is not dict or set(request_record) != request_record_fields:
+        if (
+            type(request_record) is not dict
+            or set(request_record) != request_record_fields
+        ):
             raise ProtocolViolation(
                 f"report request record {index} is not one exact 23-field record"
             )
@@ -4490,7 +4436,11 @@ def _validate_complete_report_transcript(
                 f"report head record {index} {digest_field}",
             )
         isolation = head_record["isolation"]
-        if type(isolation) is not str or not isolation or isolation.strip() != isolation:
+        if (
+            type(isolation) is not str
+            or not isolation
+            or isolation.strip() != isolation
+        ):
             raise ProtocolViolation(
                 f"report head record {index} isolation is not canonical"
             )
@@ -4546,9 +4496,7 @@ def _complete_report_transcript(
         "isolation_completeness": report.isolation_completeness.value,
         "isolation_assurance": report.isolation_assurance,
         "failure_codes": list(report.failure_codes),
-        "candidate_bundle_digest": getattr(
-            report, "candidate_bundle_digest", None
-        ),
+        "candidate_bundle_digest": getattr(report, "candidate_bundle_digest", None),
         "candidate_model_digest": getattr(report, "candidate_model_digest", None),
         "harness_bundle_digest": getattr(report, "harness_bundle_digest", None),
         "import_inventory_digest": getattr(report, "import_inventory_digest", None),
@@ -4583,9 +4531,7 @@ def _raw_source_record(
     execution_binding: dict[str, str],
     harness_stable: bool,
 ) -> dict[str, Any]:
-    executed = _execution_bound_source_witness(
-        pre_source_witness, execution_binding
-    )
+    executed = _execution_bound_source_witness(pre_source_witness, execution_binding)
     return {
         "runner_protocol": RUNNER_PROTOCOL,
         "execution_bound_source_witness": executed,
@@ -4677,9 +4623,7 @@ def run_portable_mutation_evidence(
         "benchmark_id": BENCHMARK_ID,
         "runtime_metadata": _runtime_metadata(),
         "portable_runner_contract": code_owned_contract,
-        "runtime_import_cache_contract_digest": (
-            runtime_import_cache_baseline_digest
-        ),
+        "runtime_import_cache_contract_digest": (runtime_import_cache_baseline_digest),
         "source_preparation_error": source_preparation_record,
     }
     builder = MutationEvidenceBuilder(
@@ -4812,9 +4756,7 @@ def run_portable_mutation_evidence(
         binding_error: str | None = None
         decisive: ComplianceFinding | None = None
         harness_incomplete = not execution_input_closure_ok
-        decision_processing_complete = (
-            report is not None and execution_input_closure_ok
-        )
+        decision_processing_complete = report is not None and execution_input_closure_ok
         report_transcript: dict[str, Any] | None = None
         if report is not None:
             try:
@@ -4925,9 +4867,7 @@ def run_portable_mutation_evidence(
             )
         )
         actual_gate = case.decisive_gate if decisive is not None else None
-        actual_failure_code = (
-            decisive.failure_code if decisive is not None else None
-        )
+        actual_failure_code = decisive.failure_code if decisive is not None else None
         source_record = _raw_source_record(
             pre_source_witness=pre_source_witness,
             post_source_witness=post_source_witness,
@@ -4966,9 +4906,7 @@ def run_portable_mutation_evidence(
                 "candidate": report_transcript["candidate"],
                 "finding": _finding_wire(decisive),
                 "source_record_payload_digest": digest_json(source_record),
-                "report_transcript_payload_digest": digest_json(
-                    report_transcript
-                ),
+                "report_transcript_payload_digest": digest_json(report_transcript),
                 "decision_record_payload_digest": digest_json(decision_record),
                 "runtime_metadata": _runtime_metadata(),
                 "input_preimage_digest": input_preimage_digest,
@@ -5150,12 +5088,14 @@ def run_portable_mutation_evidence(
                             )
                         else:
                             try:
-                                paired_result = paired_serialization_equivalence_evidence(
-                                    history=paired_inputs[0],
-                                    diagnosis_query=paired_inputs[1],
-                                    rollout_query=paired_inputs[2],
-                                    delta=paired_inputs[3],
-                                    seed=execution_seed,
+                                paired_result = (
+                                    paired_serialization_equivalence_evidence(
+                                        history=paired_inputs[0],
+                                        diagnosis_query=paired_inputs[1],
+                                        rollout_query=paired_inputs[2],
+                                        delta=paired_inputs[3],
+                                        seed=execution_seed,
+                                    )
                                 )
                                 if type(paired_result) is not dict:
                                     raise ProtocolViolation(
@@ -5383,9 +5323,7 @@ def run_portable_mutation_evidence(
                 "candidate": report_transcript["candidate"],
                 "classification": classification,
                 "source_record_payload_digest": digest_json(source_record),
-                "report_transcript_payload_digest": digest_json(
-                    report_transcript
-                ),
+                "report_transcript_payload_digest": digest_json(report_transcript),
                 "decision_record_payload_digest": digest_json(decision_record),
                 "runtime_metadata": _runtime_metadata(),
                 "input_preimage_digest": input_preimage_digest,

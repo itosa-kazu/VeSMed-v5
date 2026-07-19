@@ -152,9 +152,7 @@ _SOURCE_REQUIRED_FIELDS = frozenset(
         "pre_source_witness_digest",
     }
 )
-_FINDING_KEYS = frozenset(
-    {"gate", "verdict", "failure_code", "detail", "evidence"}
-)
+_FINDING_KEYS = frozenset({"gate", "verdict", "failure_code", "detail", "evidence"})
 _PAIRED_EVIDENCE_KEYS = frozenset(
     {
         "protocol",
@@ -215,9 +213,7 @@ _EXECUTION_CONTEXT_KEYS = frozenset(
         "source_preparation_error",
     }
 )
-_SOURCE_PREPARATION_ERROR_KEYS = frozenset(
-    {"stage", "exception_type", "message"}
-)
+_SOURCE_PREPARATION_ERROR_KEYS = frozenset({"stage", "exception_type", "message"})
 _EXECUTION_ERROR_KEYS = _SOURCE_PREPARATION_ERROR_KEYS
 _SOURCE_WITNESS_KEYS = frozenset(
     {
@@ -411,7 +407,9 @@ def _name(value: object, label: str) -> str:
     try:
         value.encode("utf-8")
     except UnicodeEncodeError as exc:
-        raise ProtocolViolation(f"{label} contains an invalid Unicode surrogate") from exc
+        raise ProtocolViolation(
+            f"{label} contains an invalid Unicode surrogate"
+        ) from exc
     return value
 
 
@@ -445,7 +443,13 @@ def _canonical_bytes(value: Any, label: str) -> bytes:
         return canonical_json_bytes(value)
     except ProtocolViolation:
         raise
-    except (UnicodeEncodeError, RecursionError, TypeError, ValueError, OverflowError) as exc:
+    except (
+        UnicodeEncodeError,
+        RecursionError,
+        TypeError,
+        ValueError,
+        OverflowError,
+    ) as exc:
         raise ProtocolViolation(f"{label} cannot be canonically encoded") from exc
 
 
@@ -454,7 +458,13 @@ def _json_digest(value: Any, label: str) -> str:
         return digest_json(value)
     except ProtocolViolation:
         raise
-    except (UnicodeEncodeError, RecursionError, TypeError, ValueError, OverflowError) as exc:
+    except (
+        UnicodeEncodeError,
+        RecursionError,
+        TypeError,
+        ValueError,
+        OverflowError,
+    ) as exc:
         raise ProtocolViolation(f"{label} cannot be canonically digested") from exc
 
 
@@ -529,7 +539,12 @@ def _decode_canonical_json(payload: bytes, label: str) -> dict[str, Any]:
         raise ProtocolViolation(f"{label} payload must be exact bytes")
     try:
         value = json.loads(payload.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError, RecursionError, ValueError) as exc:
+    except (
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        RecursionError,
+        ValueError,
+    ) as exc:
         raise ProtocolViolation(f"{label} is not UTF-8 JSON") from exc
     if type(value) is not dict:
         raise ProtocolViolation(f"{label} must be a JSON object")
@@ -621,7 +636,9 @@ def _observation_from_wire(value: object) -> MutationObservation:
         subject_kind = SubjectKind(body["subject_kind"])
         outcome = ObservationOutcome(body["outcome"])
     except (TypeError, ValueError) as exc:
-        raise ProtocolViolation("mutation observation contains an unknown enum") from exc
+        raise ProtocolViolation(
+            "mutation observation contains an unknown enum"
+        ) from exc
     return MutationObservation(
         subject_id=body["subject_id"],
         subject_kind=subject_kind,
@@ -677,9 +694,13 @@ class MutationEvidenceRecord:
             ObservationOutcome.PASSED,
         }:
             if self.observation.decisive_record_digest is None:
-                raise ProtocolViolation("killed/passed observation needs decisive record")
+                raise ProtocolViolation(
+                    "killed/passed observation needs decisive record"
+                )
             if self.report_transcript_digest is None:
-                raise ProtocolViolation("killed/passed observation needs report transcript")
+                raise ProtocolViolation(
+                    "killed/passed observation needs report transcript"
+                )
         elif self.observation.decisive_record_digest is not None:
             raise ProtocolViolation(
                 "non-killed/non-passed observation cannot claim a decisive record"
@@ -701,7 +722,9 @@ class MutationEvidenceRecord:
                 ObservationOutcome.CRASHED,
                 ObservationOutcome.TIMED_OUT,
             }:
-                raise ProtocolViolation("specificity observation has an invalid outcome")
+                raise ProtocolViolation(
+                    "specificity observation has an invalid outcome"
+                )
             if self.observation.classification is None:
                 raise ProtocolViolation(
                     "specificity observation requires a classification"
@@ -711,7 +734,9 @@ class MutationEvidenceRecord:
                 self.observation.actual_gate is None
                 or self.observation.actual_failure_code is None
             ):
-                raise ProtocolViolation("killed observation needs gate and failure code")
+                raise ProtocolViolation(
+                    "killed observation needs gate and failure code"
+                )
         elif (
             self.observation.actual_gate is not None
             or self.observation.actual_failure_code is not None
@@ -888,9 +913,7 @@ def _typed_input_preimage(
         history = _history_from_wire(body["history"])
         diagnosis_query = _diagnosis_query_from_wire(body["diagnosis_query"])
         rollout_query = _rollout_query_from_wire(body["rollout_query"])
-        delta = (
-            None if body["delta"] is None else _delta_from_wire(body["delta"])
-        )
+        delta = None if body["delta"] is None else _delta_from_wire(body["delta"])
     except ProtocolViolation:
         raise
     except (TypeError, ValueError) as exc:  # pragma: no cover - parser guard.
@@ -1001,26 +1024,37 @@ def _validate_request_records(
     from . import compliance as compliance_module
 
     evaluator_probe_counts = compliance_module.EVALUATOR_PROBE_REQUEST_COUNTS
+    directed_probe_counts = compliance_module.DIRECTED_PROBE_REQUEST_COUNTS
+    directed_probe_order = tuple(
+        probe
+        for probe in compliance_module._DIRECTED_PROBE_ORDER
+        if probe in expected_semantic_probes
+    )
     evaluator_probe_order = tuple(
         probe
         for probe in compliance_module._EVALUATOR_PROBE_ORDER
         if probe in expected_semantic_probes
     )
     main_length = 8 if delta is not None else 6
-    evaluator_start = main_length
+    semantic_start = main_length
     if "update_consistency" in expected_semantic_probes:
-        evaluator_start += 10
+        semantic_start += 10
     if "warm_future_old_cut" in expected_semantic_probes:
-        evaluator_start += 7
+        semantic_start += 7
+    directed_ranges: dict[str, tuple[int, int]] = {}
+    cursor = semantic_start
+    for probe in directed_probe_order:
+        count = directed_probe_counts[probe]
+        directed_ranges[probe] = (cursor, cursor + count)
+        cursor += count
     evaluator_ranges: dict[str, tuple[int, int]] = {}
-    cursor = evaluator_start
     for probe in evaluator_probe_order:
         count = evaluator_probe_counts[probe]
         evaluator_ranges[probe] = (cursor, cursor + count)
         cursor += count
-    evaluator_indices = frozenset(
+    semantic_fixture_indices = frozenset(
         index
-        for start, end in evaluator_ranges.values()
+        for start, end in (*directed_ranges.values(), *evaluator_ranges.values())
         for index in range(start, end)
     )
     expected_case = portable_execution_case(expected_execution_case_id)
@@ -1033,9 +1067,7 @@ def _validate_request_records(
         ObservationOutcome.KILLED,
         ObservationOutcome.PASSED,
     }
-    merged_history_probes = frozenset(
-        {"update_consistency", "warm_future_old_cut"}
-    )
+    merged_history_probes = frozenset({"update_consistency", "warm_future_old_cut"})
     if (
         decisive
         and merged_history_probes.intersection(expected_semantic_probes)
@@ -1111,12 +1143,10 @@ def _validate_request_records(
                 observed_code_owned_bindings.append(
                     {field: record[field] for field in executor_binding_fields}
                 )
-        if decisive and evaluator_probe_order:
+        if decisive and (directed_probe_order or evaluator_probe_order):
             expected_executor_protocol = {
                 "fresh": compliance_module._FRESH_EXECUTOR_RECEIPT_PROTOCOL,
-                "sequential": (
-                    compliance_module._SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL
-                ),
+                "sequential": (compliance_module._SEQUENTIAL_EXECUTOR_RECEIPT_PROTOCOL),
             }.get(record["execution_mode"])
             expected_isolation = {
                 "fresh": compliance_module._FRESH_ISOLATION_PROTOCOL,
@@ -1269,7 +1299,10 @@ def _validate_request_records(
                         f"request record {index} harness_error response is partial"
                     )
                 if response_wire is not None:
-                    if fully_sent is not True or received_digest != expected_request_digest:
+                    if (
+                        fully_sent is not True
+                        or received_digest != expected_request_digest
+                    ):
                         raise ProtocolViolation(
                             f"request record {index} harness_error cannot bind a "
                             "response without exact sent/received proof"
@@ -1314,8 +1347,8 @@ def _validate_request_records(
         # not merely to a self-consistent request digest.  Evaluator-fixture
         # suffixes are regenerated from code-owned worlds below; they must not
         # be mistaken for caller-supplied main inputs.
-        evaluator_fixture_record = index in evaluator_indices
-        if evaluator_fixture_record:
+        semantic_fixture_record = index in semantic_fixture_indices
+        if semantic_fixture_record:
             pass
         elif operation is Operation.INITIALIZE:
             request_history = request.history.to_wire()
@@ -1501,9 +1534,7 @@ def _validate_request_records(
                 f"{label} differs from the code-owned exact invocation shape"
             )
 
-    def require_successful_records(
-        records: list[dict[str, Any]], label: str
-    ) -> None:
+    def require_successful_records(records: list[dict[str, Any]], label: str) -> None:
         if any(record["status"] != "success" for record in records):
             raise ProtocolViolation(f"{label} must contain only successful invocations")
 
@@ -1522,9 +1553,7 @@ def _validate_request_records(
             "rollout": _scored_semantic_projection(response_at(rollout_index)),
         }
 
-    def raw_head_behavior(
-        diagnosis_index: int, rollout_index: int
-    ) -> dict[str, Any]:
+    def raw_head_behavior(diagnosis_index: int, rollout_index: int) -> dict[str, Any]:
         return {
             "diagnosis": value[diagnosis_index]["response_wire"],
             "rollout": value[rollout_index]["response_wire"],
@@ -1577,19 +1606,16 @@ def _validate_request_records(
             duplicate_state,
             duplicate_state,
         )
-        if tuple(
-            record["request_wire"]["state"] for record in consistency[4:]
-        ) != expected_head_states:
+        if (
+            tuple(record["request_wire"]["state"] for record in consistency[4:])
+            != expected_head_states
+        ):
             raise ProtocolViolation(
                 "update-consistency head calls do not bind all three actual lineages"
             )
-        incremental_behavior = head_behavior(
-            absolute_offset + 4, absolute_offset + 5
-        )
+        incremental_behavior = head_behavior(absolute_offset + 4, absolute_offset + 5)
         replay_behavior = head_behavior(absolute_offset + 6, absolute_offset + 7)
-        duplicate_behavior = head_behavior(
-            absolute_offset + 8, absolute_offset + 9
-        )
+        duplicate_behavior = head_behavior(absolute_offset + 8, absolute_offset + 9)
         return {
             "incremental_behavior_digest": _json_digest(
                 incremental_behavior, "incremental scored behavior"
@@ -1654,9 +1680,7 @@ def _validate_request_records(
         after_initialize_raw_wire = raw_head_behavior(
             absolute_offset + 1, absolute_offset + 2
         )
-        after_update_behavior = head_behavior(
-            absolute_offset + 5, absolute_offset + 6
-        )
+        after_update_behavior = head_behavior(absolute_offset + 5, absolute_offset + 6)
         after_update_raw_wire = raw_head_behavior(
             absolute_offset + 5, absolute_offset + 6
         )
@@ -1687,10 +1711,8 @@ def _validate_request_records(
             "update_old_delta_stable": _scored_semantic_equal(
                 before_behavior, after_update_behavior
             ),
-            "initialize_later_raw_exact": before_raw_wire
-            == after_initialize_raw_wire,
-            "update_old_delta_raw_exact": before_raw_wire
-            == after_update_raw_wire,
+            "initialize_later_raw_exact": before_raw_wire == after_initialize_raw_wire,
+            "update_old_delta_raw_exact": before_raw_wire == after_update_raw_wire,
         }
 
     def validate_warm_cold_suffix(
@@ -1749,6 +1771,81 @@ def _validate_request_records(
             return endpoint * 4
         raise ProtocolViolation("unknown evaluator probe shape")
 
+    def directed_probe_shape(probe: str) -> list[tuple[str, str, int]]:
+        shapes = {
+            "availability_boundary": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+            ],
+            "opaque_alpha_renaming": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+            ],
+            "hidden_test_id_canary": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+            ],
+            "task_blind_state": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+            ],
+            "no_op_semantics": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                *[
+                    ("fresh", Operation.ROLLOUT.value, execution_seed + 2)
+                    for _ in range(4)
+                ],
+            ],
+            "plan_performed_separation": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+            ],
+            "condition_do_separation": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+            ],
+            "patient_state_root": [
+                ("fresh", Operation.INITIALIZE.value, execution_seed),
+                ("fresh", Operation.UPDATE.value, execution_seed + 3),
+                ("fresh", Operation.DIAGNOSE.value, execution_seed + 1),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+                ("fresh", Operation.ROLLOUT.value, execution_seed + 2),
+            ],
+        }
+        try:
+            return shapes[probe]
+        except KeyError as exc:
+            raise ProtocolViolation("unknown directed probe shape") from exc
+
+    def validate_directed_probe(probe: str) -> dict[str, Any]:
+        start, end = directed_ranges[probe]
+        records = value[start:end]
+        require_exact_shape(
+            records,
+            directed_probe_shape(probe),
+            f"{probe} directed suffix",
+        )
+        require_successful_records(records, f"{probe} directed suffix")
+        artifact = compliance_module._rebuild_directed_probe_artifact(
+            probe=probe,
+            control_class_name=expected_control_class_name,
+            seed=execution_seed,
+            request_start=start,
+            request_records=records,
+        )
+        if artifact["request_count"] != directed_probe_counts[probe]:
+            raise ProtocolViolation("directed artifact request count mismatch")
+        actual_probe_evidence[probe] = artifact
+        return artifact
+
     def validate_evaluator_probe(probe: str) -> dict[str, Any]:
         start, end = evaluator_ranges[probe]
         records = value[start:end]
@@ -1771,7 +1868,9 @@ def _validate_request_records(
         return artifact
 
     if decisive and not main_attempts[Operation.INITIALIZE]:
-        raise ProtocolViolation("killed/passed transcript lacks attempted main initialize")
+        raise ProtocolViolation(
+            "killed/passed transcript lacks attempted main initialize"
+        )
     if observation_outcome is ObservationOutcome.PASSED:
         if any(status != "success" for status in record_statuses):
             raise ProtocolViolation(
@@ -1810,6 +1909,8 @@ def _validate_request_records(
                     ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
                 ]
             )
+        for probe in directed_probe_order:
+            expected_suffix_shape.extend(directed_probe_shape(probe))
         for probe in evaluator_probe_order:
             expected_suffix_shape.extend(evaluator_probe_shape(probe))
         # The warm-vs-cold sequence is part of every successful compliance
@@ -1863,10 +1964,27 @@ def _validate_request_records(
                     "passed warm-future transcript contains actual old-cut drift"
                 )
             suffix_offset += 7
+        for probe in directed_probe_order:
+            start, end = directed_ranges[probe]
+            expected_relative_start = main_length + suffix_offset
+            if (
+                start != expected_relative_start
+                or end - start != directed_probe_counts[probe]
+            ):
+                raise ProtocolViolation("directed probe suffix offset drifted")
+            artifact = validate_directed_probe(probe)
+            if artifact["failed"]:
+                raise ProtocolViolation(
+                    "passed directed probe transcript contains its semantic mismatch"
+                )
+            suffix_offset += directed_probe_counts[probe]
         for probe in evaluator_probe_order:
             start, end = evaluator_ranges[probe]
             expected_relative_start = main_length + suffix_offset
-            if start != expected_relative_start or end - start != evaluator_probe_counts[probe]:
+            if (
+                start != expected_relative_start
+                or end - start != evaluator_probe_counts[probe]
+            ):
                 raise ProtocolViolation("evaluator probe suffix offset drifted")
             validate_evaluator_probe(probe)
             suffix_offset += evaluator_probe_counts[probe]
@@ -1930,6 +2048,11 @@ def _validate_request_records(
             raise ProtocolViolation(
                 "one killed execution case cannot own multiple evaluator probes"
             )
+        if len(directed_probe_order) > 1:
+            raise ProtocolViolation(
+                "one killed execution case cannot own multiple directed probes"
+            )
+        directed_kill_probe = directed_probe_order[0] if directed_probe_order else None
         evaluator_kill_probe = (
             evaluator_probe_order[0] if evaluator_probe_order else None
         )
@@ -1941,6 +2064,7 @@ def _validate_request_records(
             )
             or expected_failure_code == "UCM-F019-UPDATE_INCONSISTENT"
             or expected_failure_code == "UCM-F020-NONREPRODUCIBLE"
+            or directed_kill_probe is not None
             or evaluator_kill_probe is not None
         )
         if expected_head_record_shape == "replay_ddrr":
@@ -1991,9 +2115,7 @@ def _validate_request_records(
 
         allowed_response_drift_positions: set[int] = set()
         if comparison_failure:
-            require_successful_records(
-                value, "code-owned comparison killed transcript"
-            )
+            require_successful_records(value, "code-owned comparison killed transcript")
             if fresh_main_sequence != expected_fresh_main_sequence:
                 raise ProtocolViolation(
                     "code-owned comparison killed transcript lacks the exact "
@@ -2001,7 +2123,31 @@ def _validate_request_records(
                 )
             main_state_wire = fresh_main_records[2]["request_wire"]["state"]
             killed_suffix = value[main_length:]
-            if evaluator_kill_probe is not None:
+            if directed_kill_probe is not None:
+                probe = directed_kill_probe
+                require_exact_shape(
+                    killed_suffix,
+                    directed_probe_shape(probe)
+                    + [
+                        ("sequential", Operation.INITIALIZE.value, execution_seed),
+                        ("sequential", Operation.DIAGNOSE.value, execution_seed + 1),
+                        ("sequential", Operation.ROLLOUT.value, execution_seed + 2),
+                    ],
+                    f"{probe} killed directed/warm suffix",
+                )
+                artifact = validate_directed_probe(probe)
+                if (
+                    artifact["failed"] is not True
+                    or artifact["failure_code"] != expected_failure_code
+                ):
+                    raise ProtocolViolation(
+                        "directed killed artifact lacks its exact semantic mismatch"
+                    )
+                validate_warm_cold_suffix(
+                    killed_suffix[directed_probe_counts[probe] :],
+                    main_state_wire=main_state_wire,
+                )
+            elif evaluator_kill_probe is not None:
                 probe = evaluator_kill_probe
                 require_exact_shape(
                     killed_suffix,
@@ -2015,7 +2161,9 @@ def _validate_request_records(
                 )
                 artifact = validate_evaluator_probe(probe)
                 report_failures = artifact["evaluation_report"]["failures"]
-                if [item["code"] for item in report_failures] != [expected_failure_code]:
+                if [item["code"] for item in report_failures] != [
+                    expected_failure_code
+                ]:
                     raise ProtocolViolation(
                         "evaluator killed artifact lacks its one exact decisive issue"
                     )
@@ -2207,7 +2355,9 @@ def _validate_request_records(
         )
     if observed_code_owned_bindings:
         first_binding = observed_code_owned_bindings[0]
-        if any(binding != first_binding for binding in observed_code_owned_bindings[1:]):
+        if any(
+            binding != first_binding for binding in observed_code_owned_bindings[1:]
+        ):
             raise ProtocolViolation(
                 "request transcript spliced distinct live execution bindings"
             )
@@ -2265,13 +2415,15 @@ def _validate_paired_semantic_evidence(
         raise ProtocolViolation("paired semantic evidence protocol mismatch")
     if paired["comparison"] != "paired-honest-vs-affine-scored-semantics":
         raise ProtocolViolation("paired semantic evidence comparison mismatch")
-    if type(paired["absolute_tolerance"]) is not float or paired[
-        "absolute_tolerance"
-    ] != 1e-9:
+    if (
+        type(paired["absolute_tolerance"]) is not float
+        or paired["absolute_tolerance"] != 1e-9
+    ):
         raise ProtocolViolation("paired semantic evidence absolute tolerance mismatch")
-    if type(paired["relative_tolerance"]) is not float or paired[
-        "relative_tolerance"
-    ] != 0.0:
+    if (
+        type(paired["relative_tolerance"]) is not float
+        or paired["relative_tolerance"] != 0.0
+    ):
         raise ProtocolViolation("paired semantic evidence relative tolerance mismatch")
     phases = paired["phases"]
     if type(phases) is not list or len(phases) not in {1, 2}:
@@ -2295,11 +2447,15 @@ def _validate_paired_semantic_evidence(
         ):
             _digest(phase[digest_field], f"paired semantic phase {digest_field}")
         if phase["honest_state_digest"] == phase["affine_state_digest"]:
-            raise ProtocolViolation("paired semantic states are not serialization-distinct")
+            raise ProtocolViolation(
+                "paired semantic states are not serialization-distinct"
+            )
         if phase["state_serializations_distinct"] is not True:
             raise ProtocolViolation("paired semantic state distinction is not proven")
         if phase["semantic_behavior_equivalent"] is not True:
-            raise ProtocolViolation("paired semantic behavior equivalence is not proven")
+            raise ProtocolViolation(
+                "paired semantic behavior equivalence is not proven"
+            )
     if phase_names != list(expected_phases):
         raise ProtocolViolation(
             "paired semantic phase order/set differs from the input delta"
@@ -2351,12 +2507,11 @@ def _validate_decisive_source_witness(
         )
     for object_field in _SOURCE_WITNESS_OBJECT_FIELDS:
         if type(witness[object_field]) is not dict:
-            raise ProtocolViolation(
-                f"{label} {object_field} must be an exact object"
-            )
-    if _json_digest(witness["runtime_import_cache"], label) != execution_context_payload[
-        "runtime_import_cache_contract_digest"
-    ]:
+            raise ProtocolViolation(f"{label} {object_field} must be an exact object")
+    if (
+        _json_digest(witness["runtime_import_cache"], label)
+        != execution_context_payload["runtime_import_cache_contract_digest"]
+    ):
         raise ProtocolViolation(f"{label} runtime import cache binding mismatch")
 
 
@@ -2426,9 +2581,7 @@ def _validate_record_semantics(
             witness.get("execution_case_id") != observation.execution_case_id
             or witness.get("probe_id") != observation.probe_id
         ):
-            raise ProtocolViolation(
-                f"{label} execution-case/probe identity mismatch"
-            )
+            raise ProtocolViolation(f"{label} execution-case/probe identity mismatch")
         if witness.get("control") != expected_control:
             raise ProtocolViolation(
                 f"{label} control differs from the code-owned subject mapping"
@@ -2441,7 +2594,10 @@ def _validate_record_semantics(
                 f"{label} semantic probes differ from the code-owned subject mapping"
             )
         witnessed_candidate = witness.get("expected_candidate")
-        if witnessed_candidate is not None and witnessed_candidate != code_owned_candidate:
+        if (
+            witnessed_candidate is not None
+            and witnessed_candidate != code_owned_candidate
+        ):
             raise ProtocolViolation(
                 f"{label} candidate differs from the code-owned subject mapping"
             )
@@ -2474,13 +2630,8 @@ def _validate_record_semantics(
             )
         if decision["actual_gate"] != observation.actual_gate:
             raise ProtocolViolation("mutant decision actual_gate mismatch")
-        if (
-            decision["actual_failure_code"]
-            != observation.actual_failure_code
-        ):
-            raise ProtocolViolation(
-                "mutant decision actual_failure_code mismatch"
-            )
+        if decision["actual_failure_code"] != observation.actual_failure_code:
+            raise ProtocolViolation("mutant decision actual_failure_code mismatch")
         if observation.outcome is ObservationOutcome.KILLED and not (
             _direct_gate_allows_failure_code(
                 decision["actual_gate"], decision["actual_failure_code"]
@@ -2503,9 +2654,7 @@ def _validate_record_semantics(
             "specificity decision record",
         )
         if decision["classification"] != expected_classification:
-            raise ProtocolViolation(
-                "specificity decision classification mismatch"
-            )
+            raise ProtocolViolation("specificity decision classification mismatch")
         decision_boolean_fields = (
             "report_available",
             "harness_stable_during_execution",
@@ -2546,7 +2695,9 @@ def _validate_record_semantics(
         "error transcript payload",
     )
     if error_transcript["runner_protocol"] != expected_runner_protocol:
-        raise ProtocolViolation("error transcript runner_protocol differs from bundle runner")
+        raise ProtocolViolation(
+            "error transcript runner_protocol differs from bundle runner"
+        )
     errors = error_transcript["errors"]
     if type(errors) is not list or any(type(item) is not dict for item in errors):
         raise ProtocolViolation("error transcript errors must be a list of objects")
@@ -2638,7 +2789,10 @@ def _validate_record_semantics(
             observation_outcome=observation.outcome,
             head_records=[],
         )
-        if retained_report["invocation_transcript_digest"] != retained_invocation_digest:
+        if (
+            retained_report["invocation_transcript_digest"]
+            != retained_invocation_digest
+        ):
             raise ProtocolViolation("report invocation_transcript_digest mismatch")
         if decision["invocation_transcript_digest"] != retained_invocation_digest:
             raise ProtocolViolation(
@@ -2709,7 +2863,9 @@ def _validate_record_semantics(
         observation.subject_kind is SubjectKind.MUTANT
         and report["paired_semantic_equivalence"] is not None
     ):
-        raise ProtocolViolation("mutant report cannot carry paired specificity evidence")
+        raise ProtocolViolation(
+            "mutant report cannot carry paired specificity evidence"
+        )
     for verdict_field in (
         "operational_state_closure",
         "semantic_unity",
@@ -2754,8 +2910,7 @@ def _validate_record_semantics(
                 )
             gate_tokens = _finding_gate_tokens(finding["gate"])
             if not gate_tokens or any(
-                token not in _CANONICAL_FAILURE_CODES_BY_GATE
-                for token in gate_tokens
+                token not in _CANONICAL_FAILURE_CODES_BY_GATE for token in gate_tokens
             ):
                 raise ProtocolViolation(
                     f"report failed finding {index} has an unknown gate token"
@@ -2785,10 +2940,13 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 f"report finding {index} evidence must be an exact object"
             )
-    if any(
-        item.get("failure_code") == HARNESS_INCOMPLETE_CODE for item in findings
-    ) or HARNESS_INCOMPLETE_CODE in failure_codes:
-        raise ProtocolViolation("killed/passed report contains harness-incomplete finding")
+    if (
+        any(item.get("failure_code") == HARNESS_INCOMPLETE_CODE for item in findings)
+        or HARNESS_INCOMPLETE_CODE in failure_codes
+    ):
+        raise ProtocolViolation(
+            "killed/passed report contains harness-incomplete finding"
+        )
     if failure_codes != derived_failure_codes:
         raise ProtocolViolation(
             "report failure_codes do not equal the ordered unique failed findings"
@@ -2808,9 +2966,7 @@ def _validate_record_semantics(
             "decisive report must retain semantic-unity incompleteness"
         )
     if report["isolation_completeness"] != "incomplete":
-        raise ProtocolViolation(
-            "decisive report must retain isolation incompleteness"
-        )
+        raise ProtocolViolation("decisive report must retain isolation incompleteness")
     fixed_scope_rows = [
         (item["gate"], item["verdict"], item["failure_code"])
         for item in findings
@@ -2820,9 +2976,7 @@ def _validate_record_semantics(
         len(fixed_scope_rows) != len(_FIXED_SCOPE_FINDINGS)
         or set(fixed_scope_rows) != _FIXED_SCOPE_FINDINGS
     ):
-        raise ProtocolViolation(
-            "decisive report lacks the exact fixed scope findings"
-        )
+        raise ProtocolViolation("decisive report lacks the exact fixed scope findings")
     if report["execution_binding_error"] is not None:
         raise ProtocolViolation("killed/passed report has incomplete execution binding")
     execution_binding = report["execution_binding"]
@@ -2843,7 +2997,9 @@ def _validate_record_semantics(
         )
     for digest_field in _EXECUTION_BINDING_KEYS.difference({"module_origin"}):
         _digest(execution_binding[digest_field], f"execution binding {digest_field}")
-    _module_origin(execution_binding["module_origin"], "execution binding module_origin")
+    _module_origin(
+        execution_binding["module_origin"], "execution binding module_origin"
+    )
     if execution_binding["module_origin"] != _expected_module_origin(
         code_owned_candidate
     ):
@@ -2933,12 +3089,7 @@ def _validate_record_semantics(
         )
     if (
         expected_head_record_shape == "replay_ddrr"
-        and len(
-            {
-                head_record["consumed_state_hash"]
-                for head_record in head_records
-            }
-        )
+        and len({head_record["consumed_state_hash"] for head_record in head_records})
         != 1
     ):
         raise ProtocolViolation(
@@ -2946,9 +3097,7 @@ def _validate_record_semantics(
         )
     if expected_head_record_shape == "replay_ddrr":
         pair_indices = ((0, 1), (2, 3))
-        request_bound_fields = _HEAD_RECORD_KEYS.difference(
-            {"response_digest"}
-        )
+        request_bound_fields = _HEAD_RECORD_KEYS.difference({"response_digest"})
         for left_index, right_index in pair_indices:
             if any(
                 head_records[left_index][field_name]
@@ -3006,9 +3155,7 @@ def _validate_record_semantics(
         raise ProtocolViolation("killed/passed report does not prove stable harness")
     if report["post_source_witness_error"] is not None:
         raise ProtocolViolation("killed/passed report has a post-witness error")
-    if report["pre_source_witness_digest"] != _json_digest(
-        pre, "pre-source witness"
-    ):
+    if report["pre_source_witness_digest"] != _json_digest(pre, "pre-source witness"):
         raise ProtocolViolation("report pre-source witness digest mismatch")
     if report["post_source_witness_digest"] != _json_digest(
         post, "post-source witness"
@@ -3026,7 +3173,9 @@ def _validate_record_semantics(
             f"extra={sorted(extra_source_fields)!r}"
         )
     if source["runner_protocol"] != expected_runner_protocol:
-        raise ProtocolViolation("source record runner_protocol differs from bundle runner")
+        raise ProtocolViolation(
+            "source record runner_protocol differs from bundle runner"
+        )
     executed_source = source["execution_bound_source_witness"]
     executed_source = _closed_object(
         executed_source,
@@ -3043,9 +3192,7 @@ def _validate_record_semantics(
         executed_source, "executed source witness"
     ):
         raise ProtocolViolation("executed source witness digest mismatch")
-    if source["pre_source_witness_digest"] != _json_digest(
-        pre, "pre-source witness"
-    ):
+    if source["pre_source_witness_digest"] != _json_digest(pre, "pre-source witness"):
         raise ProtocolViolation("source record pre-source witness digest mismatch")
     if source["post_source_witness_digest"] != _json_digest(
         post, "post-source witness"
@@ -3059,7 +3206,9 @@ def _validate_record_semantics(
     if decision.get("input_preimage_digest") != input_preimage_digest:
         raise ProtocolViolation("decision input_preimage_digest binding mismatch")
     if decision.get("invocation_transcript_digest") != invocation_transcript_digest:
-        raise ProtocolViolation("decision invocation_transcript_digest binding mismatch")
+        raise ProtocolViolation(
+            "decision invocation_transcript_digest binding mismatch"
+        )
     if decision.get("report_available") is not True:
         raise ProtocolViolation("decisive decision does not bind an available report")
     if decision.get("harness_stable_during_execution") is not True:
@@ -3075,7 +3224,9 @@ def _validate_record_semantics(
     if decisive.get("input_preimage_digest") != input_preimage_digest:
         raise ProtocolViolation("decisive input_preimage_digest binding mismatch")
     if decisive.get("invocation_transcript_digest") != invocation_transcript_digest:
-        raise ProtocolViolation("decisive invocation_transcript_digest binding mismatch")
+        raise ProtocolViolation(
+            "decisive invocation_transcript_digest binding mismatch"
+        )
     expected_payload_digests = {
         "source_record_payload_digest": _json_digest(source, "source record"),
         "report_transcript_payload_digest": _json_digest(report, "report transcript"),
@@ -3115,7 +3266,10 @@ def _validate_record_semantics(
             ),
             "mutant decisive record",
         )
-        if decisive["runtime_metadata"] != execution_context_payload["runtime_metadata"]:
+        if (
+            decisive["runtime_metadata"]
+            != execution_context_payload["runtime_metadata"]
+        ):
             raise ProtocolViolation(
                 "mutant decisive runtime metadata differs from execution context"
             )
@@ -3137,9 +3291,7 @@ def _validate_record_semantics(
                 "killed observation gate does not directly allow its failure code"
             )
         matches = [
-            item
-            for item in code_matches
-            if item.get("gate") == observation.probe_id
+            item for item in code_matches if item.get("gate") == observation.probe_id
         ]
         if len(matches) != 1:
             raise ProtocolViolation(
@@ -3160,8 +3312,7 @@ def _validate_record_semantics(
                 "duplicate_event_is_idempotent",
             )
             if any(
-                finding_evidence.get(field_name)
-                != actual_consistency[field_name]
+                finding_evidence.get(field_name) != actual_consistency[field_name]
                 for field_name in evidence_fields
             ):
                 raise ProtocolViolation(
@@ -3199,6 +3350,24 @@ def _validate_record_semantics(
                 )
         from . import compliance as compliance_module
 
+        directed_probes = tuple(
+            probe
+            for probe in expected_semantic_probes
+            if probe in compliance_module.DIRECTED_PROBE_REQUEST_COUNTS
+        )
+        if len(directed_probes) > 1:
+            raise ProtocolViolation(
+                "one killed execution case cannot own multiple directed artifacts"
+            )
+        directed_probe = directed_probes[0] if directed_probes else None
+        if directed_probe is not None:
+            actual_artifact = actual_probe_evidence.get(directed_probe)
+            if type(actual_artifact) is not dict or _canonical_bytes(
+                finding_evidence, "stored directed finding evidence"
+            ) != _canonical_bytes(actual_artifact, "rebuilt directed finding evidence"):
+                raise ProtocolViolation(
+                    "directed finding evidence differs from exact rebuilt receipts"
+                )
         evaluator_probes = tuple(
             probe
             for probe in expected_semantic_probes
@@ -3272,7 +3441,10 @@ def _validate_record_semantics(
             ),
             "specificity decisive record",
         )
-        if decisive["runtime_metadata"] != execution_context_payload["runtime_metadata"]:
+        if (
+            decisive["runtime_metadata"]
+            != execution_context_payload["runtime_metadata"]
+        ):
             raise ProtocolViolation(
                 "specificity decisive runtime metadata differs from execution context"
             )
@@ -3284,10 +3456,7 @@ def _validate_record_semantics(
             raise ProtocolViolation(
                 "passed specificity control contains a failed finding"
             )
-        if (
-            head_records[0] != head_records[1]
-            or head_records[2] != head_records[3]
-        ):
+        if head_records[0] != head_records[1] or head_records[2] != head_records[3]:
             raise ProtocolViolation(
                 "passed specificity replay heads are not internally consistent"
             )
@@ -3346,7 +3515,9 @@ def _validate_record_semantics(
         if decision.get("classification") != observation.classification:
             raise ProtocolViolation("specificity decision classification mismatch")
         if decision.get("probe_incomplete") is not False:
-            raise ProtocolViolation("specificity decisive decision has incomplete probes")
+            raise ProtocolViolation(
+                "specificity decisive decision has incomplete probes"
+            )
         if decision.get("report_processing_complete") is not True:
             raise ProtocolViolation("specificity report processing is incomplete")
         expected_semantic_equivalence = None if paired is None else True
@@ -3403,8 +3574,7 @@ class MutationEvidenceBundle:
         if self.records != tuple(sorted(self.records, key=_record_sort_key)):
             raise ProtocolViolation("bundle records are not canonically sorted")
         record_identities = tuple(
-            record.observation.execution_case_id
-            for record in self.records
+            record.observation.execution_case_id for record in self.records
         )
         if len(record_identities) != len(set(record_identities)):
             raise ProtocolViolation("bundle contains duplicate execution_case_id")
@@ -3494,9 +3664,7 @@ class MutationEvidenceBundle:
         runtime_cache_digest = execution_context_payload[
             "runtime_import_cache_contract_digest"
         ]
-        source_preparation_error = execution_context_payload[
-            "source_preparation_error"
-        ]
+        source_preparation_error = execution_context_payload["source_preparation_error"]
         if source_preparation_error is None:
             _digest(
                 runtime_cache_digest,
@@ -3557,9 +3725,7 @@ class MutationEvidenceBundle:
             input_delta,
         ) = _typed_input_preimage(input_preimage)
         expected_paired_phases = (
-            ("initialize", "update")
-            if input_delta is not None
-            else ("initialize",)
+            ("initialize", "update") if input_delta is not None else ("initialize",)
         )
 
         expected_blob_digests = {
@@ -3581,9 +3747,7 @@ class MutationEvidenceBundle:
             identity = _name(value, label)
             previous = owners.setdefault(identity, execution_case_id)
             if previous != execution_case_id:
-                raise ProtocolViolation(
-                    f"bundle reuses {label} across execution cases"
-                )
+                raise ProtocolViolation(f"bundle reuses {label} across execution cases")
 
         for record in self.records:
             if record.run_id != self.run_id:
@@ -3830,13 +3994,18 @@ class MutationEvidenceBundle:
                 raise ProtocolViolation(f"bundle code-owned field differs: {key}")
         claimed_digest = _digest(body["bundle_digest"], "bundle_digest")
         unsigned = {key: value for key, value in body.items() if key != "bundle_digest"}
-        if _json_digest(unsigned, "unsigned mutation evidence bundle") != claimed_digest:
+        if (
+            _json_digest(unsigned, "unsigned mutation evidence bundle")
+            != claimed_digest
+        ):
             raise ProtocolViolation("mutation evidence bundle self-digest mismatch")
         if type(body["records"]) is not list:
             raise ProtocolViolation("bundle records must be a list")
         if type(body["blobs"]) is not list:
             raise ProtocolViolation("bundle blobs must be a list")
-        records = tuple(MutationEvidenceRecord.from_wire(row) for row in body["records"])
+        records = tuple(
+            MutationEvidenceRecord.from_wire(row) for row in body["records"]
+        )
         blobs = tuple(ContentAddressedBlob.from_wire(row) for row in body["blobs"])
         return cls(
             run_id=body["run_id"],
@@ -3982,11 +4151,17 @@ class MutationEvidenceBuilder:
             raise ProtocolViolation("builder outcome must be ObservationOutcome")
         if outcome in {ObservationOutcome.KILLED, ObservationOutcome.PASSED}:
             if decisive_record is None:
-                raise ProtocolViolation("killed/passed record needs decisive raw preimage")
+                raise ProtocolViolation(
+                    "killed/passed record needs decisive raw preimage"
+                )
             if report_transcript is None:
-                raise ProtocolViolation("killed/passed record needs raw report transcript")
+                raise ProtocolViolation(
+                    "killed/passed record needs raw report transcript"
+                )
         elif decisive_record is not None:
-            raise ProtocolViolation("non-decisive outcome cannot supply decisive preimage")
+            raise ProtocolViolation(
+                "non-decisive outcome cannot supply decisive preimage"
+            )
 
         identity = {
             "subject_id": subject_id,
