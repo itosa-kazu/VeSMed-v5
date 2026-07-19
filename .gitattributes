@@ -35,3 +35,10 @@ research/unified_map/** ucm-evidence
 results/unified_map/** ucm-evidence
 tests/unified_map/** ucm-evidence
 results/unified_map/**/raw-*.jsonl.gz -text -diff
+
+# Generated benchmark evidence is reviewed through its canonical manifests and
+# deterministic verifiers, not as a line-oriented source diff.  Mark every
+# result payload binary so Codex/Git does not repeatedly parse megabytes of JSON
+# while rendering the Changes panel.  This changes diff/checkout treatment only;
+# it does not alter any committed evidence bytes or content hashes.
+results/** -text -diff
