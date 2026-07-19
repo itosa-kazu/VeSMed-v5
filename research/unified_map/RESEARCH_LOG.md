@@ -1274,3 +1274,40 @@ This checkpoint freezes a bounded synthetic benchmark; it proves neither a UCM
 candidate nor clinical validity. Architecture/experiment credit remains 0/30.
 The next work is executable only: materialize public training data, implement the
 unified runner, required baselines and eight distinct shared-state families.
+
+## 2026-07-19 — First 11 post-freeze executable runs
+
+### Outcome
+
+Implemented one unified append-only runner, eight shared-state family prototypes
+and three public baselines. Eleven real screening bundles were run under the
+same frozen R01 corpus subset; all raw episode/policy and pair rows are retained
+under `results/unified_map/runs/` and all bundle manifests reverified.
+
+No candidate passed hard gates. F04 behavioral quotient had the lowest regret
+(.680), while F06 Koopman lift had the best natural/intervention signature RMSE
+(.207/.266), but both shared the decisive W08 exact collision and two W18 unsafe
+forced-known outputs. B02 full history removed the W08 collision but doubled
+state bytes and produced six false splits; it did not fix OOD. B04 K0-only had
+five dangerous collisions, directly confirming that control-plane metadata is
+not a patient map.
+
+### Verification
+
+```text
+candidate/runner unit tests: 6 passed
+machine runs: EXP-001 through EXP-011, 11/11 bundle manifests verified
+raw bundle bytes: 11,591,607
+per run: 7 world slots / 8 panels / R01 / 19 pair probes
+ordinary shared-state families: 8
+hard-gate survivors: 0
+complete W01-W20 five-seed candidates: 0/3
+```
+
+### Evidence boundary and next step
+
+These are screening experiments, not complete benchmark results. The common
+history accumulator means the eight family results do not yet prove eight
+end-to-end sufficient maps. CE-005 and CE-010 redirect the next batch to two
+architecture-level changes: recursive order/availability memory and support-aware
+open-world state. Shallow neural and fixed-ring graph parameter tuning is stopped.

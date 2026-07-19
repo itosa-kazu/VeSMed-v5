@@ -751,3 +751,193 @@ test_redteam_artifacts_do_not_rewrite_benchmark_v1
 - 五 seed 只支持冻结合成 benchmark 内的稳定性估计，不支持真实临床有效性；
 - hash 链是仓库内篡改检测，不是外部签名 WORM；
 - K0 的历史结果只提供原子发布/hash/隔离模式经验，不能提供 UCM 动力学证据。
+
+## 20. FROZEN-v1 executable experiment ledger
+
+> 本节从 commit `9d0608f` 的 executable freeze 后开始，覆盖第 15 节未冻结的
+> 计划编号。机器 run bundle 中的 `experiment_id` 是唯一实际编号；第 15 节保留为
+> 历史搜索预算，不得用其旧含义重解释以下 raw results。
+
+### 20.1 Shared execution contract
+
+本批 11 个 screening 全部使用：
+
+```text
+freeze_root: sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+worlds: W01,W04,W08,W15A,W15B,W18,W19,W20 (7 slots / 8 panels)
+replicate: R01
+train/test: 12 / 6 episodes per panel
+pair probes: 19 per run
+runner+candidate source digest: sha256:c04704383c297696f7b2e545b9bccd18afa5f9d63f19ab3ca54cd7e72b6a3323
+raw custody: each run has manifest.json, summary.json, raw-episodes.jsonl, raw-pairs.jsonl
+status: screening only; none may be called complete W01-W20 benchmark
+```
+
+每个 ordinary family 的 patient state 由一个 public-history accumulator 产生；
+diagnosis 和所有自然/治疗 rollout 只收到同一 `SharedPatientState`。这次共同的
+accumulator 本身被 W08 反例杀死，因此“八个 transform/head 不同”不能被夸大为
+八个端到端充分的地图；下一批必须改变 history-to-state architecture。
+
+### 20.2 Results
+
+| Experiment | Family / hypothesis | diag acc | natural RMSE | intervention RMSE | regret | mean bytes | dangerous collision | unsafe OOD | false split | decision |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| EXP-001 | F01 hand mechanism vector：固定显式统计足够 | .786 | .326 | .373 | 2.401 | 2,184 | 1 | 2 | 3 | refine |
+| EXP-002 | F02 Gaussian belief：posterior 修复 point alias | .679 | .369 | .556 | 1.141 | 1,791 | 4 | 2 | 1 | abandon v1 |
+| EXP-003 | F03 controlled predictive state：低秩 future-test state | .786 | .326 | .375 | 2.384 | 2,026 | 1 | 2 | 3 | refine |
+| EXP-004 | F04 causal-state clustering：行为 quotient 更低 regret | .702 | .320 | .359 | **.680** | 1,912 | 1 | 2 | 3 | keep/refine |
+| EXP-005 | F05 dynamic SCM interactions：显式 host/action interaction | .738 | .262 | .301 | 2.501 | 2,081 | 1 | 2 | 3 | refine action semantics |
+| EXP-006 | F06 polynomial Koopman：lift 改善 rollout | .738 | **.207** | **.266** | 1.748 | 2,306 | 1 | 2 | 3 | keep/refine |
+| EXP-007 | F07 single neural latent：非线性共享 state | .714 | .280 | .351 | 2.828 | 2,371 | 1 | 2 | 3 | abandon shallow ELM |
+| EXP-008 | F08 mechanism graph：fixed local message passing | .690 | .268 | .335 | 2.158 | 2,392 | 1 | 2 | 3 | abandon fixed ring |
+| EXP-009 | B02 full visible history：无压缩信息基线 | .786 | .326 | .373 | 2.401 | 4,084 | **0** | 2 | 6 | keep baseline only |
+| EXP-010 | B03 separate-task state：不共享参考 | .786 | .326 | .373 | 2.401 | 2,913 | 1 | 2 | 3 | keep illegal comparator |
+| EXP-011 | B04 K0-only：控制面不能替代患者地图 | .548 | .383 | .571 | 1.013 | 1,779 | **5** | 2 | 0 | keep negative control |
+
+所有 run 的 `update_replay_failure_count=0`、`query_order_failure_count=0`；
+它们只证明实现的递归/查询纯度 smoke gate，不抵消 collision/OOD hard failure。
+
+### 20.3 Fixed-loop cards
+
+#### EXP-001 — F01 mechanism vector
+
+- 假说/已知失败：少量 last/mean/slope/exposure 机制统计应区分 W04/W19。
+- 最小改动：87 维公共 accumulator 直接作为 state，所有 heads 用同一 ridge readout。
+- 测试/运行：candidate+runner 6 tests green；run
+  `20260719T023121Z-EXP-001-7ef593ca2e`。
+- 证据：诊断较强，但 W08 exact collision 1、unsafe OOD 2、regret 2.401。
+- 决定/下一步：`refine`；加入顺序/availability 递归记忆，而非调 ridge。
+
+#### EXP-002 — F02 Gaussian belief
+
+- 假说/已知失败：显式 posterior 可修复 point-state alias。
+- 最小改动：class-conditioned diagonal Gaussian posterior 是唯一 patient state。
+- 运行：`20260719T023152Z-EXP-002-cd13333510`。
+- 证据：collision 反增至 4，intervention RMSE .556；posterior 坐标没有保留
+  action-conditioned future。
+- 决定：`abandon v1`；下一版本必须对行为/动作建 posterior，不再仅按 diagnosis class。
+
+#### EXP-003 — F03 controlled PSR
+
+- 假说/已知失败：训练时所有 action/horizon future tests 的低秩预测可直接作为 state。
+- 最小改动：ridge 预测完整 test vector，再以 SVD 取最多 24 个 core coordinates。
+- 运行：`20260719T023156Z-EXP-003-0bf248e2dc`。
+- 证据：与 F01 几乎相同，W08 collision 与 OOD 未修复，说明输入历史压缩先丢信息。
+- 决定：`refine`；先修 history state，再研究 core-test rank/new action。
+
+#### EXP-004 — F04 causal-state clustering
+
+- 假说/已知失败：按全部诊断+受控未来行为聚类比表型向量更接近 quotient。
+- 最小改动：behavior target k-means，state 为 feature-to-cluster posterior。
+- 运行：`20260719T023200Z-EXP-004-892bf558a2`。
+- 证据：本批最低 regret .680、状态较小；仍有 W08 collision 1、OOD 2。
+- 决定：`keep/refine`；当前 development leader，但 hard gate 未过，不能进 Pareto winner。
+
+#### EXP-005 — F05 dynamic SCM interactions
+
+- 假说/已知失败：last/mean/slope × treatment exposure 显式交互改善 do() 预测。
+- 最小改动：64 维 structural interaction state，统一线性 action/horizon heads。
+- 运行：`20260719T023205Z-EXP-005-624e359e1b`。
+- 证据：forecast 明显改善，但 regret 2.501；观测拟合未变成安全动作选择。
+- 决定：`refine`；必须拆 association 与 intervention operator，不调正则补救。
+
+#### EXP-006 — F06 Koopman lift
+
+- 假说/已知失败：固定二次 observable lift 可线性化非线性轨迹。
+- 最小改动：base、square、相邻 product 组成 95 维 shared lift。
+- 运行：`20260719T023209Z-EXP-006-6897ba5f6f`。
+- 证据：自然/干预 RMSE 本批最优，但 regret 1.748、W08 collision、OOD 均失败。
+- 决定：`keep/refine`；作为 forecast Pareto 参照，不能称统一地图赢家。
+
+#### EXP-007 — F07 neural world latent
+
+- 假说/已知失败：一个 32 维非线性 tanh latent 可共享三任务。
+- 最小改动：seeded random neural encoder + single latent + stateless heads。
+- 运行：`20260719T023214Z-EXP-007-4e42aef15e`。
+- 证据：regret 2.828 为 ordinary families 最差，仍 collision/OOD。
+- 决定：`abandon shallow ELM`；下一 neural 路线必须递归建模 action/observation，不只换非线性投影。
+
+#### EXP-008 — F08 mechanism graph
+
+- 假说/已知失败：局部机制节点/message passing 保留组合结构。
+- 最小改动：16 observation nodes 的两轮 ring message passing + exposure nodes。
+- 运行：`20260719T023218Z-EXP-008-389cd03a63`。
+- 证据：forecast 中等、regret 2.158；固定 ring 没有可证机制含义，hard failures 未变。
+- 决定：`abandon fixed ring`；只有 learned/declared mechanism edges 才值得继续。
+
+#### EXP-009 — B02 full-history baseline
+
+- 用途：判定 W08 collision 是否来自可见历史压缩。
+- 最小改动：payload 保留 exact visible history；heads 仍只读 state 内的 stored representation。
+- 运行：`20260719T023222Z-EXP-009-15e2fa0807`。
+- 证据：危险 collision 从 1 降到 0，但 bytes 4,084、false splits 6、OOD 仍 2。
+- 决定：`keep baseline only`；证明 W08 差异可观察且 compact accumulator 丢失，不证明完整史是好 UCM。
+
+#### EXP-010 — B03 separate-task baseline
+
+- 用途：披露三套 patient latent 的非法 comparator。
+- 最小改动：payload 明示 `task_states={diagnosis,natural,intervention}`；不包装成合规。
+- 运行：`20260719T023227Z-EXP-010-6336703880`。
+- 证据：未带来性能优势，仍 collision/OOD；`shared_state_compliant_by_design=false`。
+- 决定：`keep illegal comparator`；永不进入 UCM winner。
+
+#### EXP-011 — B04 K0-only negative control
+
+- 用途：验证 custody/timing/接口元数据不能完成患者动力学。
+- 最小改动：state 只有 as-of 和 event-count 类控制元数据。
+- 运行：`20260719T023231Z-EXP-011-710d7fc132`。
+- 证据：diagnosis .548、forecast 最差、危险 collision 5；控制面不能替代患者地图。
+- 决定：`keep negative control`；不计架构成功。
+
+### 20.4 Cadence counterexamples and architecture review
+
+#### CE-005 — W08 ordered/availability history collision
+
+在 EXP-005 完成后，W08 `probe-fixtures` group 2 对 F01/F03/F04/F05/F06/F07/F08
+均给出相同 state、不同受控未来。EXP-005 的 decisive witness：
+
+```text
+left_state_hash = right_state_hash =
+  sha256:9e5965b1112d50fba8a398fb5e09444c290c58a0dbc856dc4e3d4b5e9ff07d89
+candidate_distance: 0.0
+oracle_behavior_distance: 1.4725555397536851
+classification: dangerous_collision
+```
+
+B02 full-history 的同批 collision 为 0，故 root cause 是共享 public accumulator
+删除了事件顺序/availability path，不是世界不可识别。下一实验必须改 state update
+architecture；调 ridge/hidden size 不具信息增益。
+
+#### CE-010 — W18 confident forced-known OOD
+
+EXP-010 cadence 后，所有 ordinary candidates 和 baselines 在两个 W18 test episodes
+把大量/全部 `unknown` posterior 压到约 `1e-9`：
+
+```text
+episode 0: target unknown=1.0, predicted unknown≈1e-9, brier≈0.999999998
+episode 1: target unknown=0.829774, predicted unknown≈1e-9, brier=0.688524899
+classification: unsafe_non_abstain
+```
+
+这证明 closed-set nonnegative ridge normalization 不能冒充 OOD。下一批必须让
+support/epistemic uncertainty 成为同一 patient state 的一部分，而不是在 head 外贴阈值。
+
+#### AR-010 — first architecture review
+
+1. **当前最强假说**：F04 的 behavior-target quotient 是最低 regret 路线；F06 是
+   forecast Pareto 路线。
+2. **失败世界**：共同在 W08 顺序/availability pair 危险碰撞，在 W18 强制 known；
+   W15/W20 等价 pair 还出现 false split。
+3. **参数还是表示**：是表示问题。八个 family 共用的 history accumulator 已丢掉
+   W08 决定性信息；B02 保留完整可见史便消除 collision。OOD 则是 state 中没有
+   support/epistemic 坐标。
+4. **是否偷拆三任务**：F01–F08 没有；同一 state hash 到达 diagnosis 与全部 rollout。
+   B03 明确违规且只作 comparator。
+5. **是否回到基础定义**：是。先保留能改变任意允许 action future 的 path/support，
+   再做 quotient；不能先按诊断表型压缩。
+6. **搜索空间缺口/下一批**：加入 recursive order-aware state、support-aware belief、
+   action-conditioned update、非参数 OOD、history deletion 和 W08/W18 focused gates；
+   暂停 shallow neural/fixed ring 局部调参。
+
+当前计数：11 个机器运行完成；其中 8 个是 distinct family screening、3 个 baseline。
+它们都包含实质架构差异，但全部 hard-fail，完整 benchmark 仍为 0/3，不能给 winner。

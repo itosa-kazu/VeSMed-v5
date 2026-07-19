@@ -115,3 +115,39 @@ remaining blocker: minimal-behavioral-quotient-not-proved
 Disposition: the specific counter-induced false split is closed. The historical
 entry above is retained as the falsifier that forced the repair; it must not be
 rewritten into evidence that the whole W20 quotient is minimal.
+
+### CE-005-W08-ordered-availability-collision — FROZEN-v1 candidate hard failure
+
+```text
+run_id: 20260719T023205Z-EXP-005-624e359e1b
+benchmark_freeze_digest: sha256:8acb6623c2fdf79008240c5f5967b2143c4fb5e7bb87a4e8aa9f72e77ef33a2d
+world_scope: W08 / primary / probe-fixtures / group 2
+left_state_hash:  sha256:9e5965b1112d50fba8a398fb5e09444c290c58a0dbc856dc4e3d4b5e9ff07d89
+right_state_hash: sha256:9e5965b1112d50fba8a398fb5e09444c290c58a0dbc856dc4e3d4b5e9ff07d89
+candidate_distance: 0.0 (same threshold 1e-9)
+oracle_behavior_distance: 1.4725555397536851 (distinguishable threshold 0.05)
+classification: dangerous_collision=true
+root_cause: fixed accumulator retained unordered summary statistics but erased
+            event order/availability path needed for controlled futures
+cross-check: B02 full-visible-history screening had dangerous_collision_count=0
+decision: refine architecture; add recursive ordered/availability memory
+```
+
+The same decisive W08 pair kills F01, F03, F04, F05, F06, F07 and F08 v1.
+It is not a hyperparameter failure and cannot be compensated by their mean scores.
+
+### CE-010-W18-forced-known — FROZEN-v1 OOD hard failure
+
+```text
+run_id: 20260719T023227Z-EXP-010-6336703880
+world_scope: W18 / primary / sealed test
+episode 0: target unknown=1.0; predicted unknown≈1e-9; brier≈0.999999998
+episode 1: target unknown=0.8297740058; predicted unknown≈1e-9;
+           brier=0.6885248990
+classification: unsafe_non_abstain
+root_cause: closed-set nonnegative ridge normalization; no support/epistemic state
+decision: add support uncertainty inside shared patient state, not an external head gate
+```
+
+All eleven first-batch runs had two unsafe W18 rows. Full history did not fix it,
+so this failure is not evidence loss alone; it is an explicit open-world modeling gap.
