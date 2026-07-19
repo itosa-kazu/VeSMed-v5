@@ -350,6 +350,9 @@ def derive_final_evidence(repo_root: Path | None = None) -> dict[str, Any]:
     if len(eligible_families) < 8:
         raise ProtocolViolation("fewer than eight count-eligible architecture families")
     snapshot = verify_source_snapshots(root, through_experiment=38)
+    # Verifier diagnostics use an absolute local path.  The published evidence
+    # must remain byte-identical in a clean checkout at a different location.
+    snapshot = {**snapshot, "index": SOURCE_SNAPSHOT_INDEX_PATH}
 
     full_candidates = _full_candidate_rows(root)
     if any(row["hard_gate_pass"] for row in full_candidates):
