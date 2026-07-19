@@ -99,9 +99,11 @@ results/unified_map/    append-only run bundle
 状态：**进行中。** 正式 PRE-FREEZE 语义规格已覆盖 W01–W20；pre-split
 family/strata/corpus 的结构 authority 与 portable compliance/mutation
 harness 已落地，但仍只是 scaffold。authority-bound exact expected-cell
-receipts、mutation raw-preimage custody 与 atomic run-store publication、
-26/26 mutants、4/4 specificity controls、C01–C33 decisive coverage、16/16
-collector-owned extractors、external custody 和 clean freeze replay 尚未齐全。
+receipts、external mutation raw-preimage custody 与 atomic run-store
+publication、C01–C33 全覆盖、16/16 collector-owned extractors、external
+custody 和 clean freeze replay 尚未齐全。26/26 malicious mutants 与 4/4
+specificity controls 已有 live decisive records，但只覆盖 21/33 gates，不能
+把 mutant closure 误写成 harness closure。
 `UCM-E002-ISOLATION_INCOMPLETE` 与 `UCM-E003-HARNESS_INCOMPLETE` 均保持有效。
 
 二十个 patient-bound upper-bound evaluator 现已汇入一个 fresh-process
@@ -112,7 +114,9 @@ live-replay suite：20 个 world members、21 个独立 panels（W15A/W15B 分�
 
 最近一次只读 freeze dependency gap map（不是 freeze artifact）仍显示 16/16
 axes 为 `INCOMPLETE`，315-shard coverage lock 未就绪，正式 scope/corpus pins
-未建立。W20 已把行为无关的 raw `evidence_count` 与 history provenance 移出
+未建立。formal producer 当前精确保留 654 个语义 gap：539 个由 world scope
+拥有，115 个由 metric registry 拥有；metric runtime inventory 仍是 111 targets、
+`closed_target_count=0`。W20 已把行为无关的 raw `evidence_count` 与 history provenance 移出
 sealed state identity：count 为 5/6 的 pair 现在同 state hash，且 9/9 个
 horizon-4 policy semantics exact-equal。该已知 false split 已修复，但完整
 minimal behavioral quotient 仍未证明，`minimal_quotient_claimed=false` 保持不变。
@@ -255,9 +259,10 @@ code-owned `FROZEN-v1` 后先发布 `TRAIN5_PRECOMMIT.json`，再实现四个规
    patient panel 的 pre-split family authority 与 dual-channel stratum authority；
    随后补 W16/W17 extension authority、corpus pins 和 authority-bound exact
    expected cells。不得用二十世界 upper-bound suite 代替这些 authority roots。
-4. 补完 26/26 malicious mutants、4/4 specificity controls、C01–C33 decisive
-   coverage 与 mutation raw-preimage custody；crash、timeout 或错误 gate 不得算
-   kill。只读 gap snapshot 的当前实证仅为 18/26、4/4、14/33。
+4. 保持已实跑通过的 26/26 malicious mutants 与 4/4 specificity controls，补完
+   剩余 12 个 gate，使 C01–C33 达到 33/33 decisive coverage，并完成 external
+   mutation raw-preimage custody；crash、timeout 或错误 gate 不得算 kill。当前
+   live evidence 为 26/26、4/4、21/33，benchmark 仍是 `HARNESS_INCOMPLETE`。
 5. 为 16/16 freeze axes 实现 collector-owned typed extractors，完成 runtime/
    replay locks、clean checkout replay、external custody 与一次性 atomic
    publication；没有直接阻塞 semantic freeze 的新 hardening 不进入本轮。

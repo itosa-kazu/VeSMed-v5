@@ -1174,3 +1174,58 @@ The suite remains privileged, heterogeneous, `upper_bound_only`,
 expected-cell corpus or benchmark freeze. The next dependency-respecting work is
 the typed 11-axis scope plus panel/split/strata authority and metric semantics;
 the suite must not be used to bypass those gates or start candidate experiments.
+
+## 2026-07-19 — Formal-scope checkpoint and portable mutation closure
+
+### Outcome
+
+Two previously uncommitted PRE-FREEZE infrastructure batches were isolated into
+reproducible checkpoints and pushed to `codex/unified-clinical-map`:
+
+- `b68e1ad` builds the fail-closed formal-scope producer, exact W16/W17 transition
+  protocols and metric runtime binding inventory. The live producer remains
+  `PRE-FREEZE`, emits no `ScopeManifest`, and reports 654 exact gaps: 539
+  world-owned plus 115 metric-registry-owned. Transition, task, seed and producer
+  source-closure predecessors contribute zero gaps. The runtime metric inventory
+  remains 111 targets with `closed_target_count=0` and coverage
+  `72 formula_executable_unbound / 14 partial_formula_coverage_unbound /
+  17 partial_untrusted_collector / 8 unimplemented`.
+- `119f9cd` executes all 26 malicious mutation subjects and all four specificity
+  controls as 30 real cases. Every mutant has a same-row decisive record and all
+  specificity controls pass. Gate coverage is 21/33, so the result remains
+  `HARNESS_INCOMPLETE`; it is not a freeze result.
+
+The formal producer deliberately records each metric semantic gap once under the
+metric registry while requiring an exact world-to-metric cross-reference. A stale
+test that counted the same 115 gaps under both predecessors was corrected; no gap
+was deleted or reclassified as closed.
+
+### Verification
+
+```text
+metric runtime bindings: 17 passed
+world scope fragments: 19 passed
+scope transition protocols: 44 passed
+formal scope producer: 28 passed
+adjacent scope/metric/freeze tests: 197 passed
+directed mutation controls: 6 passed
+mutation matrix: 13 passed
+mutation evidence: 149 passed
+full live 30-case mutation execution: 1 passed in 1560.71s
+mutation-runner remainder before six focused fixes: 275 passed, 6 failed
+the six exact failing nodes after fixes: 6 passed
+```
+
+The six focused fixes were one protocol-fixture version drift, deterministic
+detection of a rewritten `inspect.ismodule`, and explicit isolated access to the
+approved interpreter's `purelib` under `python -S`. The full mutation-runner
+remainder has not yet been rerun after those focused fixes; the log therefore does
+not claim a fresh all-file green run.
+
+### Evidence boundary and next step
+
+Both checkpoints are candidate-neutral PRE-FREEZE machinery. They receive no
+architecture, experiment or Pareto credit; the formal experiment ledger remains
+0/30. The next semantic work is to close the 539 world-owned and 115 metric-owned
+gaps, plus the remaining 12 compliance gates, rather than add more control-plane
+hardening that does not directly remove a freeze blocker.
