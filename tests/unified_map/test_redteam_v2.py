@@ -3,11 +3,17 @@ from __future__ import annotations
 import ast
 import json
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
 
-from prototype.unified_map.canonical import ProtocolViolation, canonical_json_bytes, digest_json
+from prototype.unified_map.canonical import (
+    ProtocolViolation,
+    canonical_json_bytes,
+    digest_bytes,
+    digest_json,
+)
 from prototype.unified_map.redteam_v2_adapter import candidate_source_bindings, training_records
 from prototype.unified_map.redteam_v2_pack import (
     REQUIRED_ATTACK_CLASSES,
@@ -29,6 +35,18 @@ def _rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_bytes().splitlines()]
 
 
+def _git(repository: Path, *args: str) -> str:
+    completed = subprocess.run(
+        ["git", *args],
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return completed.stdout.strip()
+
+
 def test_pack_is_source_distinct_and_has_numeric_paired_controls() -> None:
     modules = (
         Path("prototype/unified_map/redteam_v2_pack.py"),
@@ -45,6 +63,17 @@ def test_pack_is_source_distinct_and_has_numeric_paired_controls() -> None:
             elif isinstance(node, ast.ImportFrom):
                 imports.append(("." * node.level) + (node.module or ""))
         assert not any(token in name for name in imports for token in forbidden), (path, imports)
+    runner_tree = ast.parse(modules[-1].read_text(encoding="utf-8"))
+    direct_candidate_calls = [
+        node
+        for node in ast.walk(runner_tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "candidate"
+        and node.func.attr in {"fit", "initialize", "update", "diagnose", "rollout"}
+    ]
+    assert direct_candidate_calls == []
 
     pack = build_secret_pack(DUMMY_SECRET, training_count=24, ordinary_test_count=12)
     assert tuple(pack["attack_classes"]) == REQUIRED_ATTACK_CLASSES
@@ -122,8 +151,26 @@ def test_custody_is_hiding_external_and_tamper_evident(tmp_path: Path) -> None:
 
 
 def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_path: Path) -> None:
-    repository = tmp_path / "fake-repository"
+    repository = tmp_path / "chronology-repository"
     repository.mkdir()
+    _git(repository, "init")
+    _git(repository, "config", "user.email", "redteam-test@example.invalid")
+    _git(repository, "config", "user.name", "Redteam Test")
+    (repository / ".gitattributes").write_text("* -text\n", encoding="utf-8")
+    bound_sources = (
+        Path("prototype/unified_map/candidate_families.py"),
+        Path("prototype/unified_map/independent_f18.py"),
+        Path("prototype/unified_map/redteam_v2_pack.py"),
+        Path("prototype/unified_map/redteam_v2_adapter.py"),
+        Path("prototype/unified_map/redteam_v2_runner.py"),
+    )
+    for source in bound_sources:
+        target = repository / source
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+    _git(repository, "add", ".")
+    _git(repository, "commit", "-m", "pre-pack frozen sources")
+    pre_pack_commit = _git(repository, "rev-parse", "HEAD")
     commitment_path = repository / "commitment.json"
     reveal_path = tmp_path / "external" / "reveal.json"
     prepare_custody(
@@ -131,22 +178,31 @@ def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_pa
         repository_root=repository,
         commitment_path=commitment_path,
         external_reveal_path=reveal_path,
-        pre_pack_git_commit="deadbeef",
+        pre_pack_git_commit=pre_pack_commit,
         candidate_source_bindings=candidate_source_bindings(),
         created_at="2026-07-19T00:00:00+00:00",
         training_count=24,
         ordinary_test_count=12,
     )
+    _git(repository, "add", "commitment.json")
+    _git(repository, "commit", "-m", "hiding commitment")
+    commitment_git_commit = _git(repository, "rev-parse", "HEAD")
     run = run_redteam_v2(
         repository_root=repository,
         commitment_path=commitment_path,
         external_reveal_path=reveal_path,
         output_root=tmp_path / "results",
-        commitment_git_commit=None,
-        enforce_git_chronology=False,
+        commitment_git_commit=commitment_git_commit,
+        enforce_git_chronology=True,
     )
-    verification = verify_redteam_v2_run(run)
+    verification = verify_redteam_v2_run(
+        run,
+        repository_root=repository,
+        require_git_chronology=True,
+    )
     assert verification["verified"] is True
+    assert verification["git_chronology_reverified"] is True
+    assert verification["pre_reveal_output_root_reverified"] is True
     summary = _json(run / "summary.json")
     chronology = _json(run / "chronology.json")
     assert summary["implementations"] == ["independent_f18", "sealed_f18"]
@@ -154,6 +210,7 @@ def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_pa
     assert chronology["retry_count"] == 0
     assert summary["evidence_boundary"]["os_sandbox"] is False
     assert summary["evidence_boundary"]["head_inputs_state_only"] is True
+    assert summary["evidence_boundary"]["all_candidate_calls_audited"] is True
 
     episodes = _rows(run / "raw-episodes.jsonl")
     pairs = _rows(run / "raw-pairs.jsonl")
@@ -163,6 +220,15 @@ def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_pa
     attack_ids = {row["attack_id"] for row in [*episodes, *pairs, *probes]}
     assert set(REQUIRED_ATTACK_CLASSES) <= attack_ids
     assert {row["implementation_id"] for row in closures} == {"sealed_f18", "independent_f18"}
+    assert all(row["patient_specific_reachable_bytes_complete"] for row in closures)
+    assert {
+        "new_task_training_state",
+        "history_deletion_left",
+        "history_deletion_right",
+        "cold_rehydrated_state",
+        "primary_scope_updated_state",
+        "primary_scope_replay_state",
+    } <= {row["state_role"] for row in closures}
     assert all(row["pre_state_hash"] == row["post_state_hash"] for row in episodes)
     assert all(row["passed"] for row in access)
     assert all(
@@ -207,7 +273,34 @@ def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_pa
     shutil.copytree(run, compressed_only)
     for name in summary["raw_receipts"]:
         (compressed_only / name).unlink()
-    assert verify_redteam_v2_run(compressed_only)["verified"] is True
+    assert verify_redteam_v2_run(
+        compressed_only,
+        repository_root=repository,
+        require_git_chronology=True,
+    )["verified"] is True
+
+    root_damaged = tmp_path / "pre-reveal-root-damaged"
+    shutil.copytree(run, root_damaged)
+    chronology_path = root_damaged / "chronology.json"
+    chronology_value = _json(chronology_path)
+    chronology_value["pre_reveal_output_root"] = "sha256:" + ("0" * 64)
+    chronology_path.write_bytes(canonical_json_bytes(chronology_value))
+    manifest_path = root_damaged / "manifest.json"
+    manifest_value = _json(manifest_path)
+    chronology_raw = chronology_path.read_bytes()
+    chronology_entry = next(
+        row for row in manifest_value["artifacts"] if row["path"] == "chronology.json"
+    )
+    chronology_entry["byte_length"] = len(chronology_raw)
+    chronology_entry["sha256"] = digest_bytes(chronology_raw)
+    manifest_value["bundle_root"] = digest_json(manifest_value["artifacts"])
+    manifest_path.write_bytes(canonical_json_bytes(manifest_value))
+    with pytest.raises(ProtocolViolation, match="pre-reveal output root mismatch"):
+        verify_redteam_v2_run(
+            root_damaged,
+            repository_root=repository,
+            require_git_chronology=True,
+        )
 
     # The verifier must independently reject an artifact byte mutation.
     damaged = tmp_path / "damaged"
@@ -215,4 +308,16 @@ def test_dummy_one_shot_run_has_both_implementations_all_raw_and_verifies(tmp_pa
     path = damaged / "raw-pairs.jsonl"
     path.write_bytes(path.read_bytes() + b"{}\n")
     with pytest.raises(ProtocolViolation, match="artifact digest mismatch"):
-        verify_redteam_v2_run(damaged)
+        verify_redteam_v2_run(
+            damaged,
+            repository_root=repository,
+            require_git_chronology=True,
+        )
+
+    commitment_path.write_bytes(b"{}\n")
+    with pytest.raises(ProtocolViolation, match="local commitment bytes differ"):
+        verify_redteam_v2_run(
+            run,
+            repository_root=repository,
+            require_git_chronology=True,
+        )

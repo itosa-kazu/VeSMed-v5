@@ -10,11 +10,15 @@ from __future__ import annotations
 
 import base64
 import contextlib
+import dataclasses
+import enum
 import json
 import sys
 import threading
 from pathlib import Path
 from typing import Any, Callable, Iterator
+
+import numpy as np
 
 from . import candidate_families as _sealed_module
 from .canonical import ProtocolViolation, canonical_json_bytes, digest_bytes, digest_json
@@ -53,6 +57,78 @@ def candidate_source_bindings() -> dict[str, str]:
         "independent_f18": digest_bytes(
             Path(sys.modules[IndependentStructuralEnsemble.__module__].__file__).read_bytes()
         ),
+    }
+
+
+def _static_wire(value: Any, *, seen: set[int]) -> Any:
+    """Canonical, cycle-safe preimage for fitted static candidate objects."""
+
+    if value is None or type(value) in {bool, int, float, str}:
+        return value
+    if type(value) is bytes:
+        return {"type": "bytes", "byte_length": len(value), "sha256": digest_bytes(value)}
+    if isinstance(value, enum.Enum):
+        return {"type": type(value).__qualname__, "value": value.value}
+    if isinstance(value, np.ndarray):
+        contiguous = np.ascontiguousarray(value)
+        return {
+            "type": "numpy.ndarray",
+            "dtype": str(contiguous.dtype),
+            "shape": list(contiguous.shape),
+            "byte_length": contiguous.nbytes,
+            "sha256": digest_bytes(contiguous.tobytes(order="C")),
+        }
+    identity = id(value)
+    if identity in seen:
+        return {"cycle_ref": type(value).__qualname__}
+    seen.add(identity)
+    try:
+        if type(value) in {list, tuple}:
+            return {
+                "type": type(value).__name__,
+                "items": [_static_wire(item, seen=seen) for item in value],
+            }
+        if type(value) is dict:
+            return {
+                "type": "dict",
+                "items": [
+                    [str(key), _static_wire(value[key], seen=seen)]
+                    for key in sorted(value, key=str)
+                ],
+            }
+        if dataclasses.is_dataclass(value) and not isinstance(value, type):
+            return {
+                "type": f"{type(value).__module__}.{type(value).__qualname__}",
+                "fields": {
+                    field.name: _static_wire(getattr(value, field.name), seen=seen)
+                    for field in dataclasses.fields(value)
+                },
+            }
+        if hasattr(value, "__dict__"):
+            return {
+                "type": f"{type(value).__module__}.{type(value).__qualname__}",
+                "attributes": {
+                    str(key): _static_wire(item, seen=seen)
+                    for key, item in sorted(value.__dict__.items())
+                },
+            }
+        raise ProtocolViolation(f"unsupported static candidate object: {type(value)!r}")
+    finally:
+        seen.remove(identity)
+
+
+def candidate_static_closure(candidate: Any) -> dict[str, Any]:
+    wire = {
+        "protocol": "ucm-redteam-v2-candidate-static-closure/1",
+        "candidate_type": f"{type(candidate).__module__}.{type(candidate).__qualname__}",
+        "candidate_id": candidate.candidate_id,
+        "family_id": candidate.family_id,
+        "object_graph": _static_wire(candidate, seen=set()),
+    }
+    return {
+        "wire": wire,
+        "sha256": digest_json(wire),
+        "patient_specific_cache_declared": False,
     }
 
 
@@ -384,6 +460,7 @@ __all__ = [
     "append_delta_history",
     "call_with_access_trace",
     "candidate_source_bindings",
+    "candidate_static_closure",
     "catalog_from_wire",
     "fit_implementations",
     "history_from_wire",

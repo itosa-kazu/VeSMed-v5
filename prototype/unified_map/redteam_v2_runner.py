@@ -6,11 +6,12 @@ reveal into the result bundle.  Raw rows, actual Python audit-hook events,
 state closure bytes, paired controls, source hashes and chronology are all
 bound into one non-circular bundle root.
 
-This is process-level evidence, not an OS sandbox: the manifest says so.  Main
-evaluation calls are observed by a live Python audit hook, while several
-derived probe calls are currently outside that hook and are disclosed as such.
-Cold rehydration reconstructs each recorded initial test-state closure; derived
-probe states are evidenced by hashes, not complete closure bytes.
+This is process-level evidence, not an OS sandbox: the manifest says so.  Every
+candidate fit/initialize/update/diagnose/rollout call is observed by the live
+Python audit hook.  Every patient state created by initialize, update, replay,
+deletion, capacity probing, or cold rehydration is persisted as closure bytes;
+the fitted static candidate object graph is separately hashed before and after
+all patient calls to detect an external patient cache.
 """
 
 from __future__ import annotations
@@ -34,6 +35,7 @@ from .redteam_v2_adapter import (
     append_delta_history,
     call_with_access_trace,
     candidate_source_bindings,
+    candidate_static_closure,
     fit_implementations,
     history_from_wire,
     make_check_delta,
@@ -182,6 +184,33 @@ def _verify_commitment_chronology(
     generator_hash = digest_bytes(shown_generator.stdout)
     if generator_hash != commitment["generator_source_digest"]:
         raise ProtocolViolation("pre-pack red-team generator source binding mismatch")
+    protocol_paths = {
+        "adapter": "prototype/unified_map/redteam_v2_adapter.py",
+        "runner": "prototype/unified_map/redteam_v2_runner.py",
+    }
+    live_protocol_paths = {
+        "adapter": Path(sys.modules[fit_implementations.__module__].__file__),
+        "runner": Path(__file__),
+    }
+    prepack_protocol_receipts: dict[str, dict[str, Any]] = {}
+    for label, relative_source in protocol_paths.items():
+        shown_source = subprocess.run(
+            ["git", "show", f"{pre_pack}:{relative_source}"],
+            cwd=repository_root,
+            check=False,
+            capture_output=True,
+        )
+        if shown_source.returncode:
+            raise ProtocolViolation(f"pre-pack commit lacks protocol source: {relative_source}")
+        source_hash = digest_bytes(shown_source.stdout)
+        live_hash = digest_bytes(live_protocol_paths[label].read_bytes())
+        if source_hash != live_hash:
+            raise ProtocolViolation(f"pre-pack protocol source binding mismatch: {label}")
+        prepack_protocol_receipts[label] = {
+            "path": relative_source,
+            "sha256": source_hash,
+            "byte_length": len(shown_source.stdout),
+        }
     head = _git(repository_root, "rev-parse", "HEAD")
     return {
         "pre_pack_git_commit": pre_pack,
@@ -190,12 +219,14 @@ def _verify_commitment_chronology(
         "commitment_blob_path": relative,
         "commitment_blob_digest": digest_bytes(committed),
         "pre_pack_is_strict_ancestor": True,
+        "git_chronology_enforced": True,
         "prepack_candidate_source_receipts": prepack_source_receipts,
         "prepack_generator_source_receipt": {
             "path": generator_path,
             "sha256": generator_hash,
             "byte_length": len(shown_generator.stdout),
         },
+        "prepack_protocol_source_receipts": prepack_protocol_receipts,
     }
 
 
@@ -266,16 +297,26 @@ def _probe_rows(
     candidate: Any,
     pack: dict[str, Any],
     states: dict[str, Any],
+    invoke: Any,
+    record_closure: Any,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     train_episodes = pack["training_episodes"]
     test_episodes = pack["test_episodes"]
     # RT04 uses a pre-registered noise-integrated target and a matched capacity
     # ladder across state, exact allowed history, and judge true-state views.
-    train_states = [
-        candidate.initialize(history_from_wire(row["public_history"]), inference_seed=MODEL_SEED + i)
-        for i, row in enumerate(train_episodes)
-    ]
+    train_states: list[Any] = []
+    for i, row in enumerate(train_episodes):
+        state = invoke(
+            "initialize",
+            row["instance_id"],
+            "VisibleHistory",
+            candidate.initialize,
+            history_from_wire(row["public_history"]),
+            inference_seed=MODEL_SEED + i,
+        )
+        record_closure(state, row["instance_id"], "new_task_training_state")
+        train_states.append(state)
     for capacity in pack["new_task_contract"]["capacities"]:
         targets_train = np.asarray(
             [row["judge_private"]["conditional_expected_future_utility"] for row in train_episodes],
@@ -350,32 +391,79 @@ def _run_one(
     plans = {row["plan_id"]: plan_from_wire(row) for row in pack["plans"]}
     labels = tuple(pack["catalog"]["diagnostic_labels"])
 
+    def invoke(
+        operation: str,
+        instance_id: str,
+        allowed_patient_input: str,
+        function: Any,
+        /,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        result, trace = call_with_access_trace(
+            operation,
+            implementation_id,
+            function,
+            *args,
+            **kwargs,
+        )
+        trace.update(
+            {
+                "run_id": run_id,
+                "instance_id": instance_id,
+                "allowed_patient_input": allowed_patient_input,
+            }
+        )
+        access_rows.append(trace)
+        return result
+
+    def record_closure(
+        state: Any,
+        instance_id: str,
+        role: str,
+        *,
+        parent_state_hash: str | None = None,
+        delta_digest: str | None = None,
+    ) -> None:
+        closure = state_closure(state)
+        closure.pop("closure_digest", None)
+        closure.update(
+            {
+                "run_id": run_id,
+                "implementation_id": implementation_id,
+                "instance_id": instance_id,
+                "state_role": role,
+                "parent_state_hash": parent_state_hash,
+                "delta_digest": delta_digest,
+                "patient_specific_reachable_bytes_complete": True,
+                "candidate_static_model_bound_separately": True,
+            }
+        )
+        closure["closure_digest"] = digest_json(closure)
+        closure_rows.append(closure)
+
     for position, episode in enumerate(pack["test_episodes"]):
         instance_id = episode["instance_id"]
         history = history_from_wire(episode["public_history"])
-        state, trace = call_with_access_trace(
+        state = invoke(
             "initialize",
-            implementation_id,
+            instance_id,
+            "VisibleHistory",
             candidate.initialize,
             history,
             inference_seed=MODEL_SEED + position,
         )
-        trace.update({"run_id": run_id, "instance_id": instance_id, "allowed_patient_input": "VisibleHistory"})
-        access_rows.append(trace)
         states[instance_id] = state
-        closure = state_closure(state)
-        closure.update({"run_id": run_id, "implementation_id": implementation_id, "instance_id": instance_id})
-        closure_rows.append(closure)
-        diagnosis, trace = call_with_access_trace(
+        record_closure(state, instance_id, "initial_secret_test_state")
+        diagnosis = invoke(
             "diagnose",
-            implementation_id,
+            instance_id,
+            "SharedPatientState only",
             candidate.diagnose,
             state,
             labels,
             query_seed=MODEL_SEED + 10_000 + position,
         )
-        trace.update({"run_id": run_id, "instance_id": instance_id, "allowed_patient_input": "SharedPatientState only"})
-        access_rows.append(trace)
         target = episode["judge_private"]["diagnostic_target"]
         episode_rows.append(
             {
@@ -393,17 +481,16 @@ def _run_one(
         )
         for oracle in episode["judge_private"]["oracle_rows"]:
             plan = plans[oracle["plan_id"]]
-            prediction, trace = call_with_access_trace(
+            prediction = invoke(
                 "rollout",
-                implementation_id,
+                instance_id,
+                "SharedPatientState only",
                 candidate.rollout,
                 state,
                 plan,
                 oracle["horizon"],
                 query_seed=MODEL_SEED + 20_000 + position * 101 + oracle["horizon"],
             )
-            trace.update({"run_id": run_id, "instance_id": instance_id, "allowed_patient_input": "SharedPatientState only"})
-            access_rows.append(trace)
             attack = "same_state_time_scales" if instance_id == pack["paired_controls"]["time_scales"]["instance_id"] else "rollout_control"
             if oracle["plan_id"] in {"biphasic"}:
                 attack = "new_treatment_opposite_response"
@@ -481,8 +568,24 @@ def _run_one(
     # Three deletion controls are encoded independently and bind numeric oracle
     # distances, not only verbal relations.
     for pair in pack["paired_controls"]["history_deletion"]:
-        left = candidate.initialize(history_from_wire(pair["left"]["public_history"]), inference_seed=MODEL_SEED + 31)
-        right = candidate.initialize(history_from_wire(pair["right"]["public_history"]), inference_seed=MODEL_SEED + 32)
+        left = invoke(
+            "initialize",
+            pair["pair_id"] + "-left",
+            "VisibleHistory",
+            candidate.initialize,
+            history_from_wire(pair["left"]["public_history"]),
+            inference_seed=MODEL_SEED + 31,
+        )
+        right = invoke(
+            "initialize",
+            pair["pair_id"] + "-right",
+            "VisibleHistory",
+            candidate.initialize,
+            history_from_wire(pair["right"]["public_history"]),
+            inference_seed=MODEL_SEED + 32,
+        )
+        record_closure(left, pair["pair_id"] + "-left", "history_deletion_left")
+        record_closure(right, pair["pair_id"] + "-right", "history_deletion_right")
         distance = _distance(left, right)
         pair_rows.append(
             {
@@ -510,18 +613,40 @@ def _run_one(
     ):
         episode = next(row for row in pack["test_episodes"] if row["instance_id"] == instance_id)
         old_state = states[instance_id]
-        old_diag = candidate.diagnose(old_state, labels, query_seed=71)
-        delta = make_check_delta(episode, informative=informative)
-        new_state, trace = call_with_access_trace(
-            "update", implementation_id, candidate.update, old_state, delta, inference_seed=72
+        old_diag = invoke(
+            "diagnose", instance_id, "SharedPatientState only", candidate.diagnose, old_state, labels, query_seed=71
         )
-        trace.update({"run_id": run_id, "instance_id": instance_id, "allowed_patient_input": "old SharedPatientState plus VisibleDelta"})
-        access_rows.append(trace)
-        new_diag = candidate.diagnose(new_state, labels, query_seed=73)
+        delta = make_check_delta(episode, informative=informative)
+        new_state = invoke(
+            "update",
+            instance_id,
+            "old SharedPatientState plus VisibleDelta",
+            candidate.update,
+            old_state,
+            delta,
+            inference_seed=72,
+        )
+        record_closure(
+            new_state,
+            instance_id,
+            f"new_check_{control}_updated",
+            parent_state_hash=old_state.state_hash,
+            delta_digest=digest_json(delta.to_wire()),
+        )
+        new_diag = invoke(
+            "diagnose", instance_id, "SharedPatientState only", candidate.diagnose, new_state, labels, query_seed=73
+        )
         replay_history = append_delta_history(history_from_wire(episode["public_history"]), delta)
-        replay_state = candidate.initialize(replay_history, inference_seed=74)
-        natural_before = candidate.rollout(old_state, plans["natural"], 24, query_seed=75)
-        natural_after = candidate.rollout(new_state, plans["natural"], 24, query_seed=76)
+        replay_state = invoke(
+            "initialize", instance_id, "VisibleHistory", candidate.initialize, replay_history, inference_seed=74
+        )
+        record_closure(replay_state, instance_id, f"new_check_{control}_replay")
+        natural_before = invoke(
+            "rollout", instance_id, "SharedPatientState only", candidate.rollout, old_state, plans["natural"], 24, query_seed=75
+        )
+        natural_after = invoke(
+            "rollout", instance_id, "SharedPatientState only", candidate.rollout, new_state, plans["natural"], 24, query_seed=76
+        )
         probe_rows.append(
             {
                 **_row_base(run_id, implementation_id, "new_check"),
@@ -554,14 +679,27 @@ def _run_one(
     # closure; no history is supplied to either head.
     anchor = pack["test_episodes"][0]
     anchor_state = states[anchor["instance_id"]]
-    first_diag = candidate.diagnose(anchor_state, labels, query_seed=81)
-    first_roll = candidate.rollout(anchor_state, plans["natural"], 24, query_seed=82)
-    second_roll = candidate.rollout(anchor_state, plans["natural"], 24, query_seed=82)
-    second_diag = candidate.diagnose(anchor_state, labels, query_seed=81)
+    first_diag = invoke(
+        "diagnose", anchor["instance_id"], "SharedPatientState only", candidate.diagnose, anchor_state, labels, query_seed=81
+    )
+    first_roll = invoke(
+        "rollout", anchor["instance_id"], "SharedPatientState only", candidate.rollout, anchor_state, plans["natural"], 24, query_seed=82
+    )
+    second_roll = invoke(
+        "rollout", anchor["instance_id"], "SharedPatientState only", candidate.rollout, anchor_state, plans["natural"], 24, query_seed=82
+    )
+    second_diag = invoke(
+        "diagnose", anchor["instance_id"], "SharedPatientState only", candidate.diagnose, anchor_state, labels, query_seed=81
+    )
     closure = state_closure(anchor_state)
     cold = rehydrate_state(closure)
-    cold_diag = candidate.diagnose(cold, labels, query_seed=81)
-    cold_roll = candidate.rollout(cold, plans["natural"], 24, query_seed=82)
+    record_closure(cold, anchor["instance_id"], "cold_rehydrated_state")
+    cold_diag = invoke(
+        "diagnose", anchor["instance_id"], "SharedPatientState only", candidate.diagnose, cold, labels, query_seed=81
+    )
+    cold_roll = invoke(
+        "rollout", anchor["instance_id"], "SharedPatientState only", candidate.rollout, cold, plans["natural"], 24, query_seed=82
+    )
     primary_event = CandidateVisibleEvent(
         EventKind.OBSERVATION_AVAILABLE,
         2,
@@ -571,21 +709,31 @@ def _run_one(
         2,
     )
     primary_delta = VisibleDelta(2, (primary_event,))
-    primary_updated, primary_trace = call_with_access_trace(
-        "update", implementation_id, candidate.update, anchor_state, primary_delta, inference_seed=83
+    primary_updated = invoke(
+        "update",
+        anchor["instance_id"],
+        "old SharedPatientState plus VisibleDelta",
+        candidate.update,
+        anchor_state,
+        primary_delta,
+        inference_seed=83,
     )
-    primary_trace.update(
-        {
-            "run_id": run_id,
-            "instance_id": anchor["instance_id"],
-            "allowed_patient_input": "old SharedPatientState plus VisibleDelta",
-        }
+    record_closure(
+        primary_updated,
+        anchor["instance_id"],
+        "primary_scope_updated_state",
+        parent_state_hash=anchor_state.state_hash,
+        delta_digest=digest_json(primary_delta.to_wire()),
     )
-    access_rows.append(primary_trace)
-    primary_replay = candidate.initialize(
+    primary_replay = invoke(
+        "initialize",
+        anchor["instance_id"],
+        "VisibleHistory",
+        candidate.initialize,
         append_delta_history(history_from_wire(anchor["public_history"]), primary_delta),
         inference_seed=84,
     )
+    record_closure(primary_replay, anchor["instance_id"], "primary_scope_replay_state")
     probe_rows.append(
         {
             **_row_base(run_id, implementation_id, "query_update_rehydrate_compliance"),
@@ -606,7 +754,17 @@ def _run_one(
             "primary_scope_update_replay_match": primary_updated.state_hash == primary_replay.state_hash,
         }
     )
-    probe_rows.extend(_probe_rows(run_id, implementation_id, candidate, pack, states))
+    probe_rows.extend(
+        _probe_rows(
+            run_id,
+            implementation_id,
+            candidate,
+            pack,
+            states,
+            invoke,
+            record_closure,
+        )
+    )
     return episode_rows, pair_rows, probe_rows, access_rows, closure_rows
 
 
@@ -660,6 +818,10 @@ def run_redteam_v2(
     temporary.mkdir()
     _write_object(temporary / "commitment.json", commitment)
     candidates, fit_traces = fit_implementations(pack, model_seed=model_seed)
+    static_before = {
+        implementation_id: candidate_static_closure(candidate)
+        for implementation_id, candidate in candidates.items()
+    }
     all_episodes: list[dict[str, Any]] = []
     all_pairs: list[dict[str, Any]] = []
     all_probes: list[dict[str, Any]] = []
@@ -684,6 +846,24 @@ def run_redteam_v2(
         all_probes.extend(probes)
         all_access.extend(access)
         all_closures.extend(closures)
+    static_after = {
+        implementation_id: candidate_static_closure(candidate)
+        for implementation_id, candidate in candidates.items()
+    }
+    if {
+        key: value["sha256"] for key, value in static_before.items()
+    } != {key: value["sha256"] for key, value in static_after.items()}:
+        raise ProtocolViolation("candidate static model mutated during patient-time evaluation")
+    _write_object(
+        temporary / "candidate-static-closures.json",
+        {
+            "protocol": "ucm-redteam-v2-static-closure-comparison/1",
+            "before": static_before,
+            "after": static_after,
+            "unchanged": True,
+            "patient_specific_cache_detected": False,
+        },
+    )
     raw_receipts = {
         "raw-episodes.jsonl": _write_jsonl(temporary / "raw-episodes.jsonl", all_episodes),
         "raw-pairs.jsonl": _write_jsonl(temporary / "raw-pairs.jsonl", all_pairs),
@@ -708,6 +888,7 @@ def run_redteam_v2(
         ),
         "retry_count": 0,
         "raw_sealed_at": raw_sealed_at,
+        "pre_reveal_artifacts": pre_reveal_entries,
         "pre_reveal_output_root": pre_reveal_output_root,
         "reveal_published_at": reveal_published_at,
     }
@@ -730,13 +911,13 @@ def run_redteam_v2(
         "evidence_boundary": {
             "source_distinct_generator": True,
             "head_inputs_state_only": True,
-            "python_audit_hook_main_evaluation_calls": True,
-            "all_candidate_calls_audited": False,
-            "unaudited_call_scope": "derived capacity/deletion/check/compliance probe calls",
+            "python_audit_hook_all_candidate_calls": True,
+            "all_candidate_calls_audited": True,
             "os_sandbox": False,
             "cold_rehydrate": "fresh SharedPatientState object in same process/static model",
-            "state_closure_scope": "initial secret test states only; derived probe states are hash-only",
-            "verifier_scope": "bundle integrity and reveal binding; live git chronology enforced at run start, not re-run by offline verifier",
+            "state_closure_scope": "all initialized, updated, replayed, training-probe, deletion, and cold-rehydrated patient states",
+            "external_patient_cache_check": "fitted candidate static object graph digest unchanged before/after all patient calls",
+            "verifier_scope": "bundle/reveal/raw/closure/pre-reveal-root integrity plus live git chronology when required",
             "independent_implementation": True,
         },
     }
@@ -766,11 +947,20 @@ def run_redteam_v2(
     _write_object(temporary / "manifest.json", manifest)
     final = output_root / run_id
     temporary.replace(final)
-    verify_redteam_v2_run(final)
+    verify_redteam_v2_run(
+        final,
+        repository_root=repository_root if enforce_git_chronology else None,
+        require_git_chronology=enforce_git_chronology,
+    )
     return final
 
 
-def verify_redteam_v2_run(directory: Path) -> dict[str, Any]:
+def verify_redteam_v2_run(
+    directory: Path,
+    *,
+    repository_root: Path | None = None,
+    require_git_chronology: bool | None = None,
+) -> dict[str, Any]:
     manifest = _read_object(directory / "manifest.json")
     if manifest.get("protocol") != MANIFEST_PROTOCOL:
         raise ProtocolViolation("red-team v2 manifest protocol mismatch")
@@ -803,6 +993,50 @@ def verify_redteam_v2_run(directory: Path) -> dict[str, Any]:
     pack = verify_reveal(commitment, reveal)
     summary = _read_object(directory / "summary.json")
     chronology = _read_object(directory / "chronology.json")
+    if require_git_chronology is None:
+        require_git_chronology = bool(chronology.get("git_chronology_enforced"))
+    if require_git_chronology:
+        if repository_root is None:
+            raise ProtocolViolation("repository_root is required to reverify git chronology")
+        blob_path = chronology.get("commitment_blob_path")
+        commit_id = chronology.get("commitment_git_commit")
+        if type(blob_path) is not str or type(commit_id) is not str:
+            raise ProtocolViolation("git chronology evidence is incomplete")
+        live_chronology = _verify_commitment_chronology(
+            repository_root,
+            repository_root / Path(blob_path),
+            commit_id,
+            commitment,
+        )
+        for key in (
+            "pre_pack_git_commit",
+            "commitment_git_commit",
+            "commitment_blob_path",
+            "commitment_blob_digest",
+            "prepack_candidate_source_receipts",
+            "prepack_generator_source_receipt",
+            "prepack_protocol_source_receipts",
+        ):
+            if live_chronology.get(key) != chronology.get(key):
+                raise ProtocolViolation(f"git chronology receipt mismatch: {key}")
+    pre_reveal_entries = chronology.get("pre_reveal_artifacts")
+    if type(pre_reveal_entries) is not list or not pre_reveal_entries:
+        raise ProtocolViolation("pre-reveal artifact registry is missing")
+    if any(entry.get("path") == "reveal.json" for entry in pre_reveal_entries):
+        raise ProtocolViolation("reveal was included in pre-reveal output root")
+    for entry in pre_reveal_entries:
+        raw = _read_artifact_bytes(directory, entry["path"])
+        if len(raw) != entry["byte_length"] or digest_bytes(raw) != entry["sha256"]:
+            raise ProtocolViolation(f"pre-reveal artifact mismatch: {entry['path']}")
+        if "line_count" in entry and len(raw.splitlines()) != entry["line_count"]:
+            raise ProtocolViolation(f"pre-reveal row count mismatch: {entry['path']}")
+    if digest_json(pre_reveal_entries) != chronology.get("pre_reveal_output_root"):
+        raise ProtocolViolation("pre-reveal output root mismatch")
+    if not (
+        all(value <= chronology["raw_sealed_at"] for value in chronology["implementation_finished_at"].values())
+        and chronology["raw_sealed_at"] <= chronology["reveal_published_at"]
+    ):
+        raise ProtocolViolation("red-team phase timestamps are out of order")
     if not chronology.get("both_implementations_finished_before_reveal"):
         raise ProtocolViolation("both implementations were not sealed before reveal")
     if summary.get("attack_classes") != list(REQUIRED_ATTACK_CLASSES):
@@ -818,14 +1052,51 @@ def verify_redteam_v2_run(directory: Path) -> dict[str, Any]:
     for closure in closure_rows:
         if digest_bytes(__import__("base64").b64decode(closure["payload_base64"])) != closure["payload_digest"]:
             raise ProtocolViolation("state closure payload digest mismatch")
-        preimage = {
-            key: value
-            for key, value in closure.items()
-            if key not in {"closure_digest", "run_id", "implementation_id", "instance_id"}
-        }
+        preimage = {key: value for key, value in closure.items() if key != "closure_digest"}
         if digest_json(preimage) != closure["closure_digest"]:
             raise ProtocolViolation("state closure digest mismatch")
         rehydrate_state(closure)
+    required_state_roles = {
+        "initial_secret_test_state",
+        "new_task_training_state",
+        "history_deletion_left",
+        "history_deletion_right",
+        "new_check_informative_updated",
+        "new_check_informative_replay",
+        "new_check_null_updated",
+        "new_check_null_replay",
+        "new_check_locality_updated",
+        "new_check_locality_replay",
+        "cold_rehydrated_state",
+        "primary_scope_updated_state",
+        "primary_scope_replay_state",
+    }
+    for implementation_id in summary["implementations"]:
+        roles = {
+            row["state_role"]
+            for row in closure_rows
+            if row["implementation_id"] == implementation_id
+        }
+        missing_roles = required_state_roles - roles
+        if missing_roles:
+            raise ProtocolViolation(
+                f"patient state closure roles missing for {implementation_id}: {sorted(missing_roles)!r}"
+            )
+        if any(
+            not row.get("patient_specific_reachable_bytes_complete")
+            for row in closure_rows
+            if row["implementation_id"] == implementation_id
+        ):
+            raise ProtocolViolation("patient state closure completeness flag is false")
+    static_closures = _read_object(directory / "candidate-static-closures.json")
+    if not static_closures.get("unchanged") or static_closures.get("patient_specific_cache_detected"):
+        raise ProtocolViolation("candidate static object graph changed during patient evaluation")
+    if {
+        key: value["sha256"] for key, value in static_closures["before"].items()
+    } != {
+        key: value["sha256"] for key, value in static_closures["after"].items()
+    }:
+        raise ProtocolViolation("candidate static closure hash mismatch")
     access_rows = [json.loads(line) for line in _read_artifact_bytes(directory, "access-trace.jsonl").splitlines()]
     if any(not row.get("passed") for row in access_rows):
         raise ProtocolViolation("candidate access trace contains a denied/failed operation")
@@ -863,8 +1134,9 @@ def verify_redteam_v2_run(directory: Path) -> dict[str, Any]:
         "pack_digest": digest_json(pack),
         "artifact_count": len(manifest["artifacts"]),
         "verification_scope": "bundle_integrity_reveal_binding_and_raw_receipts",
-        "git_chronology_reverified": False,
-        "pre_reveal_wall_clock_order_reverified": False,
+        "git_chronology_reverified": bool(require_git_chronology),
+        "pre_reveal_output_root_reverified": True,
+        "pre_reveal_wall_clock_order_reverified": True,
         "verified": True,
     }
 
