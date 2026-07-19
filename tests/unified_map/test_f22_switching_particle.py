@@ -4,6 +4,7 @@ import inspect
 import json
 
 import numpy as np
+import pytest
 
 from prototype.unified_map.benchmark_v1_contract import (
     SharedPatientState,
@@ -15,7 +16,14 @@ from prototype.unified_map.f22_switching_particle import (
     SwitchingParticleBeliefCandidate,
     make_f22_candidate,
 )
-from prototype.unified_map.schema import PlanKind, VisibleDelta, VisibleHistory
+from prototype.unified_map.canonical import ProtocolViolation
+from prototype.unified_map.schema import (
+    ActionPlan,
+    PlanKind,
+    PlannedAction,
+    VisibleDelta,
+    VisibleHistory,
+)
 from prototype.unified_map.world_registry import WORLD_REGISTRY
 from prototype.unified_map.worlds.base import WorldSplit
 
@@ -180,10 +188,10 @@ def test_f22_is_structurally_a_switching_prototype_posterior_not_existing_family
     state = candidate.initialize(episode.public_history, inference_seed=23)
     _, model, posterior, _ = candidate._decoded(state)
     horizon, natural, action = _first_plans(world)
-    natural_posterior = candidate._counterfactual_posterior(
+    natural_posterior, natural_fallback = candidate._counterfactual_posterior(
         posterior, natural, horizon, model
     )
-    action_posterior = candidate._counterfactual_posterior(
+    action_posterior, action_fallback = candidate._counterfactual_posterior(
         posterior, action, horizon, model
     )
 
@@ -199,8 +207,58 @@ def test_f22_is_structurally_a_switching_prototype_posterior_not_existing_family
         and np.allclose(matrix.sum(axis=1), 1.0)
         for matrix in model.transitions.values()
     )
+    assert not natural_fallback
+    assert not action_fallback
     assert not np.allclose(natural_posterior, action_posterior)
     # The single patient object is a posterior plus uncertainty/lag coordinates,
     # rather than Gaussian moments, exemplar kernels, or an ensemble concatenation.
     assert len(state.distance_vector) == len(posterior) + 4
 
+
+def test_f22_catalog_legal_zero_evidence_control_uses_natural_abstaining_fallback() -> None:
+    world, _, episode, candidate = _fitted_candidate()
+    state = candidate.initialize(episode.public_history, inference_seed=23)
+    _, model, posterior, _ = candidate._decoded(state)
+    horizon, natural, _ = _first_plans(world)
+    zero_evidence = {
+        key for key, count in model.operator_evidence_counts.items() if count == 0
+    }
+    assert zero_evidence
+    fallback_policy = next(
+        plan
+        for plan in world.policy_set(horizon)
+        if plan.kind is PlanKind.ACTION_SEQUENCE
+        and any(
+            f"action:{action.action_id}" in zero_evidence
+            or f"check:{action.action_id}" in zero_evidence
+            for action in plan.actions
+        )
+    )
+
+    switched, used_fallback = candidate._counterfactual_posterior(
+        posterior, fallback_policy, horizon, model
+    )
+    natural_result = candidate.rollout(state, natural, horizon, query_seed=40)
+    fallback_result = candidate.rollout(
+        state, fallback_policy, horizon, query_seed=41
+    )
+    assert used_fallback
+    assert np.all(np.isfinite(switched))
+    assert abs(float(switched.sum()) - 1.0) < 1e-12
+    assert fallback_result.abstained
+    assert fallback_result.signature == natural_result.signature
+    assert fallback_result.expected_utility == natural_result.expected_utility
+
+    # Every frozen catalog-legal public policy is total; genuinely undeclared
+    # identifiers remain fail-closed instead of receiving the fallback.
+    for plan in world.policy_set(horizon):
+        candidate.rollout(state, plan, horizon, query_seed=42)
+    undeclared = ActionPlan(
+        PlanKind.ACTION_SEQUENCE,
+        (PlannedAction(0, "GENERIC_UNDECLARED_CONTROL"),),
+    )
+    with pytest.raises(ProtocolViolation, match="absent from its public catalog"):
+        candidate.rollout(state, undeclared, horizon, query_seed=43)
+
+    summary = candidate.model_summary()
+    assert summary["zero_evidence_operator_count"] >= 1

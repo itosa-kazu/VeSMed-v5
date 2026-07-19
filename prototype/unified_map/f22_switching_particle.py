@@ -114,12 +114,32 @@ def _action_operator_key(action_id: str) -> str:
     return f"action:{action_id}"
 
 
+def _check_operator_key(check_id: str) -> str:
+    if type(check_id) is not str or not check_id:
+        raise ProtocolViolation("F22 check operator requires a check id")
+    return f"check:{check_id}"
+
+
 def _event_operator_key(event: Any) -> str:
     if event.kind is EventKind.PERFORMED_TREATMENT:
         action_id = event.payload.get("action_id")
         if type(action_id) is str and action_id:
             return _action_operator_key(action_id)
+    if event.kind in {EventKind.TEST_ORDERED, EventKind.TEST_PERFORMED}:
+        check_id = event.payload.get("check_id")
+        if type(check_id) is str and check_id:
+            return _check_operator_key(check_id)
     return NATURAL_OPERATOR
+
+
+def _catalog_operator_key(identifier: str, catalog: PublicCatalog) -> str | None:
+    """Resolve a generic public policy control without world/id special cases."""
+
+    if identifier in {row.action_id for row in catalog.actions}:
+        return _action_operator_key(identifier)
+    if identifier in {row.check_id for row in catalog.checks}:
+        return _check_operator_key(identifier)
+    return None
 
 
 def _row_stochastic(counts: np.ndarray, *, identity_prior: float = 0.5) -> np.ndarray:
@@ -141,9 +161,11 @@ class _SwitchingModel:
     emission_variance: np.ndarray
     prior: np.ndarray
     transitions: dict[str, np.ndarray]
+    operator_evidence_counts: dict[str, int]
     diagnosis_statistics: np.ndarray
     outcome_statistics: dict[str, np.ndarray]
     outcome_global: dict[str, np.ndarray]
+    natural_query_keys: dict[int, str]
     support_reference: float
     training_count: int
 
@@ -152,7 +174,7 @@ class SwitchingParticleBeliefCandidate:
     """One recursively filtered posterior over action-switching prototypes."""
 
     family_id = "F22-switching-particle-belief"
-    candidate_id = "F22-action-conditioned-trajectory-particle-state-v1"
+    candidate_id = "F22-action-conditioned-trajectory-particle-state-v2"
 
     def __init__(
         self,
@@ -271,7 +293,16 @@ class SwitchingParticleBeliefCandidate:
 
         outcome_statistics: dict[str, np.ndarray] = {}
         outcome_global: dict[str, np.ndarray] = {}
+        natural_query_keys: dict[int, str] = {}
         for target_index, key in enumerate(query_keys):
+            target_template = records[0].rollouts[target_index]
+            if target_template.policy.kind is PlanKind.NO_NEW_ACTION:
+                natural_query_keys[target_template.horizon] = key
+            elif (
+                target_template.policy.kind is PlanKind.CONTINUE_CURRENT
+                and target_template.horizon not in natural_query_keys
+            ):
+                natural_query_keys[target_template.horizon] = key
             targets = np.asarray(
                 [
                     [
@@ -294,6 +325,7 @@ class SwitchingParticleBeliefCandidate:
 
         operator_names = {NATURAL_OPERATOR}
         operator_names.update(_action_operator_key(action.action_id) for action in catalog.actions)
+        operator_names.update(_check_operator_key(check.check_id) for check in catalog.checks)
         transition_counts = {
             name: np.zeros((count, count), dtype=np.float64) for name in operator_names
         }
@@ -310,11 +342,29 @@ class SwitchingParticleBeliefCandidate:
                 current = self._nearest_prototype(
                     path_feature_vector(accumulator), center, scale, prototypes
                 )
-                transition_counts[_event_operator_key(event)][previous, current] += 1.0
+                operator_key = _event_operator_key(event)
+                if operator_key not in transition_counts:
+                    raise ProtocolViolation(
+                        "F22 visible event references a control absent from its catalog"
+                    )
+                transition_counts[operator_key][previous, current] += 1.0
                 previous = current
-        transitions = {
-            name: _row_stochastic(counts) for name, counts in transition_counts.items()
+        operator_evidence_counts = {
+            name: int(counts.sum()) for name, counts in transition_counts.items()
         }
+        natural_transition = _row_stochastic(transition_counts[NATURAL_OPERATOR])
+        transitions: dict[str, np.ndarray] = {NATURAL_OPERATOR: natural_transition}
+        for name, counts in transition_counts.items():
+            if name == NATURAL_OPERATOR:
+                continue
+            if operator_evidence_counts[name] == 0:
+                # This is an epistemic prior, not a learned treatment/check effect.
+                # Keeping equal identity/natural mass makes the legal query total
+                # while the rollout head separately abstains and returns its
+                # natural-policy prediction rather than inventing an effect.
+                transitions[name] = 0.5 * np.eye(count, dtype=np.float64) + 0.5 * natural_transition
+            else:
+                transitions[name] = _row_stochastic(counts)
 
         endpoint_distance = np.sqrt(
             np.min(
@@ -337,9 +387,11 @@ class SwitchingParticleBeliefCandidate:
             emission_variance=emission_variance,
             prior=prior,
             transitions=transitions,
+            operator_evidence_counts=operator_evidence_counts,
             diagnosis_statistics=diagnosis_statistics,
             outcome_statistics=outcome_statistics,
             outcome_global=outcome_global,
+            natural_query_keys=natural_query_keys,
             support_reference=support_reference,
             training_count=len(records),
         )
@@ -527,26 +579,38 @@ class SwitchingParticleBeliefCandidate:
         policy: ActionPlan,
         horizon: int,
         model: _SwitchingModel,
-    ) -> np.ndarray:
+    ) -> tuple[np.ndarray, bool]:
+        """Return switched belief and whether any operator has zero evidence."""
+
         if policy.kind is PlanKind.ACTION_SEQUENCE:
             current_offset = 0
             result = posterior.copy()
+            used_epistemic_fallback = False
             for action in policy.actions:
                 gap = max(0, min(8, action.offset - current_offset))
                 result = result @ self._natural_power(model, gap)
-                operator = model.transitions.get(_action_operator_key(action.action_id))
-                if operator is None:
-                    raise ProtocolViolation("F22 policy references an untrained public action")
-                result = result @ operator
+                operator_key = _catalog_operator_key(action.action_id, model.catalog)
+                if operator_key is None:
+                    raise ProtocolViolation(
+                        "F22 policy references a control absent from its public catalog"
+                    )
+                result = result @ model.transitions[operator_key]
+                used_epistemic_fallback = (
+                    used_epistemic_fallback
+                    or model.operator_evidence_counts[operator_key] == 0
+                )
                 current_offset = action.offset
             result = result @ self._natural_power(
                 model, max(0, min(8, horizon - current_offset))
             )
-            return _normalize(result)
+            return _normalize(result), used_epistemic_fallback
         # no-new-action, continue-current, and stop-controllable are all explicit
         # public policy operators with no new treatment insertion.
-        return _normalize(
-            posterior @ self._natural_power(model, max(1, min(8, horizon)))
+        return (
+            _normalize(
+                posterior @ self._natural_power(model, max(1, min(8, horizon)))
+            ),
+            False,
         )
 
     def rollout(
@@ -562,20 +626,39 @@ class SwitchingParticleBeliefCandidate:
         if type(query_seed) is not int:
             raise ProtocolViolation("F22 query_seed must be an exact integer")
         _, model, posterior, novelty = self._decoded(state)
+        if policy.kind is PlanKind.ACTION_SEQUENCE and any(
+            _catalog_operator_key(action.action_id, model.catalog) is None
+            for action in policy.actions
+        ):
+            raise ProtocolViolation(
+                "F22 policy references a control absent from its public catalog"
+            )
         key = policy_key(policy, horizon)
         statistics = model.outcome_statistics.get(key)
         if statistics is None:
             return RolloutPrediction((0.0,) * 32, 0.0, abstained=True)
-        counterfactual = self._counterfactual_posterior(
+        counterfactual, used_epistemic_fallback = self._counterfactual_posterior(
             posterior, policy, horizon, model
         )
+        prediction_key = key
+        if used_epistemic_fallback:
+            # A zero-evidence operator is explicitly not a learned effect.  Use
+            # the corresponding natural-policy head and declare abstention.
+            prediction_key = model.natural_query_keys.get(horizon, key)
+            statistics = model.outcome_statistics[prediction_key]
+            counterfactual = _normalize(
+                posterior @ self._natural_power(model, max(1, min(8, horizon)))
+            )
         local = counterfactual @ statistics
         ood_weight = 1.0 - math.exp(-max(0.0, novelty - 1.0))
-        prediction = (1.0 - ood_weight) * local + ood_weight * model.outcome_global[key]
+        prediction = (
+            (1.0 - ood_weight) * local
+            + ood_weight * model.outcome_global[prediction_key]
+        )
         return RolloutPrediction(
             tuple(float(value) for value in prediction[:-1]),
             float(prediction[-1]),
-            abstained=bool(ood_weight > 0.995),
+            abstained=bool(used_epistemic_fallback or ood_weight > 0.995),
         )
 
     def model_artifact(self) -> bytes:
@@ -594,6 +677,9 @@ class SwitchingParticleBeliefCandidate:
                 "transitions": {
                     key: value.tolist() for key, value in sorted(model.transitions.items())
                 },
+                "operator_evidence_counts": dict(
+                    sorted(model.operator_evidence_counts.items())
+                ),
                 "diagnosis_statistics": model.diagnosis_statistics.tolist(),
                 "outcome_statistics": {
                     key: value.tolist()
@@ -601,6 +687,9 @@ class SwitchingParticleBeliefCandidate:
                 },
                 "outcome_global": {
                     key: value.tolist() for key, value in sorted(model.outcome_global.items())
+                },
+                "natural_query_keys": {
+                    str(key): value for key, value in sorted(model.natural_query_keys.items())
                 },
                 "support_reference": model.support_reference,
                 "training_count": model.training_count,
@@ -653,6 +742,10 @@ class SwitchingParticleBeliefCandidate:
                     key: np.asarray(value, dtype=np.float64)
                     for key, value in row["transitions"].items()
                 },
+                operator_evidence_counts={
+                    key: int(value)
+                    for key, value in row["operator_evidence_counts"].items()
+                },
                 diagnosis_statistics=np.asarray(
                     row["diagnosis_statistics"], dtype=np.float64
                 ),
@@ -663,6 +756,9 @@ class SwitchingParticleBeliefCandidate:
                 outcome_global={
                     key: np.asarray(value, dtype=np.float64)
                     for key, value in row["outcome_global"].items()
+                },
+                natural_query_keys={
+                    int(key): value for key, value in row["natural_query_keys"].items()
                 },
                 support_reference=float(row["support_reference"]),
                 training_count=int(row["training_count"]),
@@ -686,6 +782,14 @@ class SwitchingParticleBeliefCandidate:
             },
             "transition_operator_count": sum(
                 len(model.transitions) for model in self._models.values()
+            ),
+            "zero_evidence_operator_count": sum(
+                sum(
+                    count == 0
+                    for key, count in model.operator_evidence_counts.items()
+                    if key != NATURAL_OPERATOR
+                )
+                for model in self._models.values()
             ),
             "training_count": sum(model.training_count for model in self._models.values()),
             "parameter_count": sum(
